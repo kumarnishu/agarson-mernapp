@@ -103,9 +103,7 @@ export const bucketName = String(process.env.bucketName)
 export const bucket = storage.bucket(bucketName)
 
 
-export const GreetingManager = new CronJobManager()
-export const BroadcastManager = new CronJobManager()
-export const ReportManager = new CronJobManager()
+export const AppManager = new CronJobManager()
 
 //server routes
 app.use("/api/v1", UserRoutes)

@@ -1,20 +1,27 @@
 import mongoose from "mongoose"
 import { IUser } from "../users/user.model"
 import { IMaintenanceCategory } from "./maintainence.category.model"
-import { IMachine } from "../production/machine.model"
+import { IMaintenanceItem } from "./maintainence.item.model"
 
 export type IMaintenance = {
     _id: string,
     work: string,
+    active:boolean,
     category: IMaintenanceCategory,
     frequency:string,
-    maintainable_item:string,
+    user:IUser,
+    item:string,
+    items: IMaintenanceItem[]
     created_at: Date,
     updated_at: Date,
     created_by: IUser,
     updated_by: IUser
 }
 const MaintenanceSchema = new mongoose.Schema<IMaintenance, mongoose.Model<IMaintenance, {}, {}>, {}>({
+    active: {
+        type: Boolean,
+        default: true
+    },
     work: {
         type: String,
         required: true,
@@ -27,8 +34,18 @@ const MaintenanceSchema = new mongoose.Schema<IMaintenance, mongoose.Model<IMain
         required: true
     },
     frequency:String,
-    maintainable_item:String,
-   
+    item:String,
+    items:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'MaintenanceItem',
+        }
+    ],
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     created_at: {
         type: Date,
         default: new Date(),

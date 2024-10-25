@@ -3,25 +3,19 @@ import { IUser } from "../users/user.model"
 
 export type IMaintenanceCategory = {
     _id: string,
-    name: string,
+    category: string,
     active: boolean,
-    display_name: string,
     created_at: Date,
     updated_at: Date,
     created_by: IUser,
     updated_by: IUser
 }
 const MaintenanceCategorySchema = new mongoose.Schema<IMaintenanceCategory, mongoose.Model<IMaintenanceCategory, {}, {}>, {}>({
-    name: {
+    category: {
         type: String,
         required: true,
         trim: true,
         lowercase: true
-    },
-    display_name: {
-        type: String,
-        required: true,
-        trim: true
     },
     active: {
         type: Boolean,
