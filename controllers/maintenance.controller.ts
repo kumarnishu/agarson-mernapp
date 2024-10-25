@@ -658,4 +658,35 @@ export const GetMaintenceItemDates = async (dt1: Date, dt2: Date, frequency: str
     return result;
 }
 
-
+// if (frequency == "daily") {
+//     let current_date = new Date(dt1)
+//     current_date.setDate(1)
+//     while (current_date <= new Date(dt2)) {
+//         await new MaintenanceBox({
+//             date: new Date(current_date),
+//             checked: false,
+//             checklist: checklist._id,
+//             created_at: new Date(),
+//             updated_at: new Date(),
+//             created_by: req.user,
+//             updated_by: req.user
+//         }).save()
+//         current_date.setDate(new Date(current_date).getDate() + 1)
+//     }
+// }
+// if (dt2 && frequency == "weekly") {
+//     let current_date = new Date()
+//     current_date.setDate(1)
+//     while (current_date <= new Date(dt2)) {
+//         await new MaintenanceBox({
+//             date: new Date(current_date),
+//             checked: false,
+//             checklist: checklist._id,
+//             created_at: new Date(),
+//             updated_at: new Date(),
+//             created_by: req.user,
+//             updated_by: req.user
+//         }).save()
+//         current_date.setDate(new Date(current_date).getDate() + 6)
+//     }
+// }
