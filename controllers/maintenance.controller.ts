@@ -1,11 +1,8 @@
 import { NextFunction, Request, Response } from "express"
-import { Asset, User } from "../models/users/user.model";
+import {  User } from "../models/users/user.model";
 import isMongoId from "validator/lib/isMongoId";
-import { isvalidDate } from "../utils/isValidDate";
 import { CreateOrEditDropDownDto, DropDownDto } from "../dtos/common/dropdown.dto";
-import { uploadFileToCloud } from "../utils/uploadFile.util";
 import moment from "moment";
-import { destroyFile } from "../utils/destroyFile.util";
 import xlsx from "xlsx";
 import SaveFileOnDisk from "../utils/ExportToExcel";
 import { MaintenanceCategory } from "../models/maintainence/maintainence.category.model";
@@ -465,7 +462,7 @@ export const ViewMaintenanceItemRemarkHistory = async (req: Request, res: Respon
     })
     return res.status(200).json(result)
 }
-export const ViewMaintenanceItemRemarkHistoryByDate = async (req: Request, res: Response, next: NextFunction) => {
+export const ViewMaintenanceItemRemarkHistoryByDates = async (req: Request, res: Response, next: NextFunction) => {
 
     let dt1 = new Date()
     let dt2 = new Date()
@@ -536,7 +533,12 @@ export const GetAllMaintenanceReport = async (req: Request, res: Response, next:
     let start_date = req.query.start_date
     let end_date = req.query.end_date
     let dt1 = new Date(String(start_date))
+    dt1.setHours(0)
+    dt1.setMinutes(0)
     let dt2 = new Date(String(end_date))
+    dt2.setHours(0)
+    dt2.setMinutes(0)
+
     let ids = req.user?.assigned_users.map((id) => { return id._id })
     let result: GetMaintenanceReportDto[] = []
 
@@ -602,7 +604,7 @@ export const GetAllMaintenanceReport = async (req: Request, res: Response, next:
             let items: GetMaintenanceItemDto[] = []
             for (let j = 0; j < maintenance.items.length; j++) {
                 let item = maintenance.items[i];
-                let itemboxes = await GetMaintenceItemDates(dt1, dt2, maintenance.frequency,item._id);
+                let itemboxes = await GetMaintenceItemDates(dt1, dt2, maintenance.frequency, item);
                 items.push({
                     _id: item._id,
                     item: item.machine ? item.machine.name : item.other,
@@ -638,55 +640,105 @@ export const GetAllMaintenanceReport = async (req: Request, res: Response, next:
         return res.status(400).json({ message: "bad request" })
 }
 
-export const GetMaintenceItemDates = async (dt1: Date, dt2: Date, frequency: string,itemid:string) => {
+export const GetMaintenceItemBoxes = async (dt1: Date, dt2: Date, frequency: string, item: IMaintenanceItem) => {
     let result: {
-        date: string,
+        dt1: string,
+        dt2: string,
         checked: boolean
     }[] = []
 
     if (frequency == "daily") {
-        
+        let current_date = new Date(dt1)
+
+        while (current_date <= new Date(dt2)) {
+            let tmpDate = current_date;
+            tmpDate.setDate(new Date(current_date).getDate() + 1)
+
+            let remark = await Remark.findOne({ maintainable_item: item._id, created_at: { $gte: current_date, $lt: tmpDate } });
+            result.push({
+                dt1: current_date.toString(),
+                dt2: tmpDate.toString(),
+                checked: remark && item.stage == 'done' ? true : false
+            })
+            current_date.setDate(new Date(current_date).getDate() + 1)
+        }
     }
     if (frequency == "weekly") {
         let current_date = new Date()
         current_date.setDate(1)
         while (current_date <= new Date(dt2)) {
-           console.log()
+            let tmpDate = current_date;
+            tmpDate.setDate(new Date(current_date).getDate() + 6)
+            if (current_date >= dt1 && current_date <= dt2) {
+                let remark = await Remark.findOne({ maintainable_item: item._id, created_at: { $gte: current_date, $lt: tmpDate } });
+                result.push({
+                    dt1: current_date.toString(),
+                    dt2: tmpDate.toString(),
+                    checked: remark && item.stage == 'done' ? true : false
+                })
+            }
+
             current_date.setDate(new Date(current_date).getDate() + 6)
         }
     }
+    if (frequency === "monthly") {
+        let current_date = new Date(dt1); // Start from the first date of the range
+        current_date.setDate(1); // Set to the first day of the month
+
+        // Iterate while current_date is less than or equal to dt2
+        while (current_date <= new Date(dt2)) {
+            // Calculate the next month's date
+            let nextMonthDate = new Date(current_date);
+            nextMonthDate.setMonth(current_date.getMonth() + 1);
+
+            // Check if the current month is within the specified date range
+            if (current_date >= dt1 && current_date < dt2) {
+                let remark = await Remark.findOne({
+                    maintainable_item: item._id,
+                    created_at: { $gte: current_date, $lt: nextMonthDate }
+                });
+
+                result.push({
+                    dt1: current_date.toString(),
+                    dt2: nextMonthDate.toString(),
+                    checked: remark && item.stage === 'done' ? true : false
+                });
+            }
+
+            // Move to the next month
+            current_date.setMonth(current_date.getMonth() + 1);
+        }
+    }
+
+    if (frequency === "yearly") {
+        let current_date = new Date(dt1); // Start from the first date of the range
+        current_date.setMonth(0); // Set to January (month 0)
+        current_date.setDate(1); // Set to the first day of the month
+
+        // Iterate while current_date is less than or equal to dt2
+        while (current_date <= new Date(dt2)) {
+            // Calculate the next year's date
+            let nextYearDate = new Date(current_date);
+            nextYearDate.setFullYear(current_date.getFullYear() + 1);
+
+            // Check if the current year is within the specified date range
+            if (current_date >= dt1 && current_date < dt2) {
+                let remark = await Remark.findOne({
+                    maintainable_item: item._id,
+                    created_at: { $gte: current_date, $lt: nextYearDate }
+                });
+
+                result.push({
+                    dt1: current_date.toString(),
+                    dt2: nextYearDate.toString(),
+                    checked: remark && item.stage === 'done' ? true : false
+                });
+            }
+
+            // Move to the next year
+            current_date.setFullYear(current_date.getFullYear() + 1);
+        }
+    }
+
     return result;
 }
-
-// if (frequency == "daily") {
-//     let current_date = new Date(dt1)
-//     current_date.setDate(1)
-//     while (current_date <= new Date(dt2)) {
-//         await new MaintenanceBox({
-//             date: new Date(current_date),
-//             checked: false,
-//             checklist: checklist._id,
-//             created_at: new Date(),
-//             updated_at: new Date(),
-//             created_by: req.user,
-//             updated_by: req.user
-//         }).save()
-//         current_date.setDate(new Date(current_date).getDate() + 1)
-//     }
-// }
-// if (dt2 && frequency == "weekly") {
-//     let current_date = new Date()
-//     current_date.setDate(1)
-//     while (current_date <= new Date(dt2)) {
-//         await new MaintenanceBox({
-//             date: new Date(current_date),
-//             checked: false,
-//             checklist: checklist._id,
-//             created_at: new Date(),
-//             updated_at: new Date(),
-//             created_by: req.user,
-//             updated_by: req.user
-//         }).save()
-//         current_date.setDate(new Date(current_date).getDate() + 6)
-//     }
-// }
