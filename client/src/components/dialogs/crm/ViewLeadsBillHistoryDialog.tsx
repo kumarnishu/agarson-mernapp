@@ -69,8 +69,7 @@ function ViewLeadsBillHistoryDialog({ id }: { id: string }) {
                                             
                                             {user?.assigned_permissions.includes('delete_lead_bills') && <IconButton size="small" color="error" onClick={() => {
                                                 setBill(item)
-                                                setDisplay(false)
-                                                setChoice({ type: LeadChoiceActions.view_bills_photo })
+                                                setDisplay(true)
                                             }}>
                                                 Delete</IconButton>}
                                             { user && item && user?.username === item.created_by.value && new Date(item.created_at) > new Date(previous_date) &&user?.assigned_permissions.includes('edit_lead_bills') && <IconButton size="small" color="success"

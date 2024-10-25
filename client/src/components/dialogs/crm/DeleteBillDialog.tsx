@@ -12,7 +12,7 @@ import {  GetBillDto } from '../../../dtos/crm/crm.dto';
 
 
 function DeleteBillDialog({ bill, display, setDisplay }: { bill: GetBillDto, display: boolean, setDisplay: React.Dispatch<React.SetStateAction<boolean>> }) {
-  const { choice, setChoice } = useContext(ChoiceContext)
+  const {  setChoice } = useContext(ChoiceContext)
   const { mutate, isLoading, isSuccess, error, isError } = useMutation
     <AxiosResponse<any>, BackendError, string>
     (DeleteBill, {
@@ -30,7 +30,7 @@ function DeleteBillDialog({ bill, display, setDisplay }: { bill: GetBillDto, dis
   }, [isSuccess])
 
   return (
-    <Dialog open={choice === LeadChoiceActions.delete_bill || display ? true : false}
+    <Dialog open={display ? true : false}
     >
       <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
         if (!display)
