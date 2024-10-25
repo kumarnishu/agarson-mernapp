@@ -34,5 +34,5 @@ router.post("/password/reset", SendPasswordResetMail)
 router.patch("/password/reset/:token", ResetPassword)
 router.route("/permissions").get(isAuthenticatedUser, GetAllPermissions).post(isAuthenticatedUser, AssignPermissionsToUsers)
 router.route("/permissions/one").post(isAuthenticatedUser, AssignPermissionsToOneUser)
-router.post("/test",test)
+// router.post("/test",test)
 export default router;
