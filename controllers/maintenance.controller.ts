@@ -17,7 +17,6 @@ import { Remark } from "../models/leads/remark.model";
 import { CreateOrEditRemarkDto } from "../dtos/crm/crm.dto";
 
 
-
 export const GetAllMaintenanceCategory = async (req: Request, res: Response, next: NextFunction) => {
     let result = await MaintenanceCategory.find();
     let data: DropDownDto[];
@@ -446,7 +445,6 @@ export const ToogleMaintenanceItem = async (req: Request, res: Response, next: N
     return res.status(200).json("successfully changed")
 }
 
-
 export const ViewMaintenanceItemRemarkHistory = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetMaintenanceItemRemarkDto[] = []
     const id = req.params.id;
@@ -493,7 +491,6 @@ export const ViewMaintenanceItemRemarkHistoryByDate = async (req: Request, res: 
     })
     return res.status(200).json(result)
 }
-
 
 export const AddMaintenanceItemRemark = async (req: Request, res: Response, next: NextFunction) => {
     const { remark, stage } = req.body as CreateOrEditRemarkDto
@@ -605,7 +602,7 @@ export const GetAllMaintenanceReport = async (req: Request, res: Response, next:
             let items: GetMaintenanceItemDto[] = []
             for (let j = 0; j < maintenance.items.length; j++) {
                 let item = maintenance.items[i];
-                let itemboxes = await GetMaintenceItemDates(dt1, dt2, maintenance.frequency);
+                let itemboxes = await GetMaintenceItemDates(dt1, dt2, maintenance.frequency,item._id);
                 items.push({
                     _id: item._id,
                     item: item.machine ? item.machine.name : item.other,
@@ -641,25 +638,24 @@ export const GetAllMaintenanceReport = async (req: Request, res: Response, next:
         return res.status(400).json({ message: "bad request" })
 }
 
-export const GetMaintenceItemDates = async (dt1: Date, dt2: Date, frequency: string) => {
+export const GetMaintenceItemDates = async (dt1: Date, dt2: Date, frequency: string,itemid:string) => {
     let result: {
         date: string,
         checked: boolean
     }[] = []
 
     if (frequency == "daily") {
-        let current_date = new Date(dt1)
-        while (current_date <= new Date(dt2)) {
-            current_date.setDate(new Date(current_date).getDate() + 1)
-        }
+        
     }
     if (frequency == "weekly") {
         let current_date = new Date()
         current_date.setDate(1)
         while (current_date <= new Date(dt2)) {
-           
+           console.log()
             current_date.setDate(new Date(current_date).getDate() + 6)
         }
     }
     return result;
 }
+
+
