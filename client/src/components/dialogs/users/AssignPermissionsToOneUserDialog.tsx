@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, CircularProgress, Checkbox } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, CircularProgress } from '@mui/material'
 import { useContext, useEffect, useState } from 'react';
 import { ChoiceContext, UserChoiceActions } from '../../../contexts/dialogContext';
 import { Cancel, CheckBoxOutlineBlank, CheckCircleOutline } from '@mui/icons-material';
