@@ -3469,6 +3469,14 @@ export const DeleteBill = async (req: Request, res: Response, next: NextFunction
     if (bill.billphoto)
         await destroyFile(bill.billphoto._id)
     await bill.remove();
+    if (bill.lead) {
+        let count = await Bill.find({ lead: bill.lead }).countDocuments()
+        await Lead.findByIdAndUpdate(bill.lead, { uploaded_bills: count })
+    }
+    if (bill.refer) {
+        let count = await Bill.find({ refer: bill.refer }).countDocuments()
+        await ReferredParty.findByIdAndUpdate(bill.refer, { uploaded_bills: count })
+    }
     return res.status(200).json({ message: "bill deleted successfully" })
 }
 
