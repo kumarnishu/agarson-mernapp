@@ -20,11 +20,11 @@ function RenderTree({ permissiontree, permissions, setPermissions }: { permissio
             <div key={index} style={{ padding: 10 }}>
                 <h3 style={{ paddingLeft: item.menues && item.permissions ? '10px' : '25px' }}>{item.label}</h3>
                 {item.permissions && (
-                    <Stack flexDirection={'row'}  paddingTop={2}>
+                    <Stack flexDirection={'row'} paddingTop={2}>
                         {item.permissions.map((perm: IPermission, idx: number) => (
                             <Stack flexDirection={'row'} pl={item.menues && item.permissions ? '10px' : '25px'} key={idx}>
                                 <input type="checkbox"
-                                    defaultChecked={permissions.includes(perm.value)}
+                                    checked={permissions.includes(perm.value) ? true : false}
                                     onChange={(e) => {
                                         if (e.target.checked) {
                                             let perms = permissions;
@@ -76,7 +76,7 @@ function AssignPermissionsToOneUserDialog({ user }: { user: GetUserDto }) {
 
     }, [isPermSuccess, user])
 
-    
+
 
     useEffect(() => {
         setPermissions(user.assigned_permissions)
@@ -94,12 +94,10 @@ function AssignPermissionsToOneUserDialog({ user }: { user: GetUserDto }) {
             open={choice === UserChoiceActions.assign_permissions ? true : false}
             onClose={() => {
                 setChoice({ type: UserChoiceActions.close_user });
-                setPermissiontree(undefined)
             }}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
                 setChoice({ type: UserChoiceActions.close_user });
-                setPermissiontree(undefined)
             }}>
                 <Cancel fontSize='large' />
             </IconButton>

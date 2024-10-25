@@ -49,7 +49,7 @@ function AssignPermissionsToUsersDialog({ user_ids, flag }: { user_ids: string[]
                             {item.permissions.map((perm: IPermission, idx: number) => (
                                 <Stack flexDirection={'row'} pl={item.menues && item.permissions ? '10px' : '25px'} key={idx}>
                                     <input type="checkbox"
-                                        defaultChecked={permissions.includes(perm.value)}
+                                        checked={permissions.includes(perm.value) ? true : false}
                                         onChange={(e) => {
                                             if (e.target.checked) {
                                                 let perms = permissions;
