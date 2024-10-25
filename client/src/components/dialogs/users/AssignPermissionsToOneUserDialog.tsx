@@ -1,7 +1,7 @@
-import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, CircularProgress } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, CircularProgress, Checkbox } from '@mui/material'
 import { useContext, useEffect, useState } from 'react';
 import { ChoiceContext, UserChoiceActions } from '../../../contexts/dialogContext';
-import { Cancel } from '@mui/icons-material';
+import { Cancel, CheckBoxOutlineBlank, CheckCircleOutline } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { useMutation, useQuery } from 'react-query';
 import { BackendError } from '../../..';
@@ -13,7 +13,6 @@ import { GetUserDto, IMenu, IPermission } from '../../../dtos/users/user.dto';
 
 
 function RenderTree({ permissiontree, permissions, setPermissions }: { permissiontree: any, permissions: string[], setPermissions: React.Dispatch<React.SetStateAction<string[]>> }) {
-    console.log(permissions);
 
     if (Array.isArray(permissiontree)) {
         return permissiontree.map((item: IMenu, index: number) => (
@@ -23,21 +22,25 @@ function RenderTree({ permissiontree, permissions, setPermissions }: { permissio
                     <Stack flexDirection={'row'} paddingTop={2}>
                         {item.permissions.map((perm: IPermission, idx: number) => (
                             <Stack flexDirection={'row'} pl={item.menues && item.permissions ? '10px' : '25px'} key={idx}>
-                                <input type="checkbox"
-                                    checked={permissions.includes(perm.value) ? true : false}
-                                    onChange={(e) => {
-                                        if (e.target.checked) {
-                                            let perms = permissions;
-                                            if (!perms.includes(perm.value)) {
-                                                perms.push(perm.value);
-                                                setPermissions(perms);
-                                            }
-                                        }
-                                        else {
+                                {permissions.includes(perm.value) ?
+                                    <CheckCircleOutline color='success' onClick={() => {
+                                        let perms = permissions.filter((i) => { return i !== perm.value })
+                                        setPermissions(perms);
+                                       
+                                    }} />
+
+                                    :
+                                    <CheckBoxOutlineBlank 
+                                        onClick={() => {
                                             let perms = permissions.filter((i) => { return i !== perm.value })
+                                            perms.push(perm.value);
                                             setPermissions(perms);
-                                        }
-                                    }} /><span style={{ paddingLeft: 5 }}>{perm.label}</span>
+                                            
+                                        }}
+                                    />}
+
+                               
+                                <span style={{ paddingLeft: 5 }}>{perm.label}</span>
                             </Stack>
                         ))}
                     </Stack>
