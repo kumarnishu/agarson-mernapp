@@ -203,7 +203,7 @@ export const GetAllMaintenance = async (req: Request, res: Response, next: NextF
     if (!Number.isNaN(limit) && !Number.isNaN(page)) {
         if (req.user?.is_admin && !id) {
             {
-                maintenances = await Maintenance.find().populate('created_by').populate('updated_by').populate('category')
+                maintenances = await Maintenance.find({active:true}).populate('created_by').populate('updated_by').populate('category')
                     .populate({
                         path: 'items',
                         populate: [
@@ -214,12 +214,12 @@ export const GetAllMaintenance = async (req: Request, res: Response, next: NextF
                         ]
                     })
                     .populate('user').sort('updated_at').skip((page - 1) * limit).limit(limit)
-                count = await Maintenance.find().countDocuments()
+                count = await Maintenance.find({ active: true }).countDocuments()
             }
         }
         else if (ids && ids.length > 0 && !id) {
             {
-                maintenances = await Maintenance.find({ user: { $in: ids } }).populate('created_by').populate('updated_by').populate('category').populate({
+                maintenances = await Maintenance.find({ user: { $in: ids }, active: true }).populate('created_by').populate('updated_by').populate('category').populate({
                     path: 'items',
                     populate: [
                         {
@@ -228,11 +228,11 @@ export const GetAllMaintenance = async (req: Request, res: Response, next: NextF
                         }
                     ]
                 }).populate('user').sort('updated_at').skip((page - 1) * limit).limit(limit)
-                count = await Maintenance.find({ user: { $in: ids } }).countDocuments()
+                count = await Maintenance.find({ user: { $in: ids }, active: true }).countDocuments()
             }
         }
         else if (!id) {
-            maintenances = await Maintenance.find({ user: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate({
+            maintenances = await Maintenance.find({ user: req.user?._id, active: true }).populate('created_by').populate('updated_by').populate('category').populate({
                 path: 'items',
                 populate: [
                     {
@@ -241,11 +241,11 @@ export const GetAllMaintenance = async (req: Request, res: Response, next: NextF
                     }
                 ]
             }).populate('user').sort('updated_at').skip((page - 1) * limit).limit(limit)
-            count = await Maintenance.find({ user: req.user?._id }).countDocuments()
+            count = await Maintenance.find({ user: req.user?._id, active: true }).countDocuments()
         }
 
         else {
-            maintenances = await Maintenance.find({ user: id }).populate('created_by').populate('updated_by').populate('category').populate({
+            maintenances = await Maintenance.find({ user: id, active: true }).populate('created_by').populate('updated_by').populate('category').populate({
                 path: 'items',
                 populate: [
                     {
@@ -254,7 +254,7 @@ export const GetAllMaintenance = async (req: Request, res: Response, next: NextF
                     }
                 ]
             }).populate('user').sort('updated_at').skip((page - 1) * limit).limit(limit)
-            count = await Maintenance.find({ user: id }).countDocuments()
+            count = await Maintenance.find({ user: id, active: true }).countDocuments()
         }
 
         result = maintenances.map((mt) => {
@@ -604,7 +604,7 @@ export const GetAllMaintenanceReport = async (req: Request, res: Response, next:
             let items: GetMaintenanceItemDto[] = []
             for (let j = 0; j < maintenance.items.length; j++) {
                 let item = maintenance.items[i];
-                let itemboxes = await GetMaintenceItemDates(dt1, dt2, maintenance.frequency, item);
+                let itemboxes = await GetMaintenceItemBoxes(dt1, dt2, maintenance.frequency, item);
                 items.push({
                     _id: item._id,
                     item: item.machine ? item.machine.name : item.other,
