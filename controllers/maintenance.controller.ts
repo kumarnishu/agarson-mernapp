@@ -652,13 +652,12 @@ export const GetMaintenceItemBoxes = async (dt1: Date, dt2: Date, frequency: str
 
     if (frequency == "daily") {
         let current_date = new Date(dt1)
-        let tmpDate = current_date;
         while (current_date <= new Date(dt2)) {
-            tmpDate.setDate(new Date(current_date).getDate() + 1)
+            let tmpDate =new Date(new Date().setDate(new Date(current_date).getDate() + 1)).toString()
             let remark = await Remark.findOne({ maintainable_item: item._id, created_at: { $gte: current_date, $lt: tmpDate } });
             result.push({
                 dt1: current_date.toString(),
-                dt2: tmpDate.toString(),
+                dt2: tmpDate,
                 checked: remark && item.stage == 'done' ? true : false
             })
             current_date.setDate(new Date(current_date).getDate() + 1)
@@ -666,15 +665,14 @@ export const GetMaintenceItemBoxes = async (dt1: Date, dt2: Date, frequency: str
     }
     if (frequency == "weekly") {
         let current_date = new Date()
-        let tmpDate = current_date;
         current_date.setDate(1)
         while (current_date <= new Date(dt2)) {
-            tmpDate.setDate(new Date(current_date).getDate() + 6)
+            let tmpDate = new Date(new Date().setDate(new Date(current_date).getDate() + 6)).toString()
             if (current_date >= dt1 && current_date <= dt2) {
                 let remark = await Remark.findOne({ maintainable_item: item._id, created_at: { $gte: current_date, $lt: tmpDate } });
                 result.push({
                     dt1: current_date.toString(),
-                    dt2: tmpDate.toString(),
+                    dt2: tmpDate,
                     checked: remark && item.stage == 'done' ? true : false
                 })
             }
@@ -743,3 +741,4 @@ export const GetMaintenceItemBoxes = async (dt1: Date, dt2: Date, frequency: str
 
     return result;
 }
+

@@ -32,17 +32,14 @@ function MaintenanceItem({ item }: {
     }>()
     return (
         <>
-            <Stack direction={'row'} gap={1} sx={{ overflowX: 'scroll' }}>
+            <Stack  gap={1} sx={{ overflow: 'scroll' }}>
                 <p>{item.boxes?.length}</p>
                 {item.boxes && item.boxes.map((item) => {
                     return (
                         <Stack sx={{ border: 1, gap: 1, pl: 1, pr: 0.2, cursor: 'pointer', scrollbarWidth: 0, borderRadius: 2, backgroundColor: item.checked ? 'green' : "red" }}
 
                         >
-                            <RemoveRedEye color="action" onClick={() => {
-                                setLocalitem(item)
-                                alert("view remarks" + item.dt1.toString() + item.dt2.toString());
-                            }} />
+                            <Button>{new Date(item.dt1).getDate()}</Button>
 
                         </Stack>
                     )
@@ -61,8 +58,8 @@ function MaintenanceReportPage() {
     const [categories, setCategories] = useState<DropDownDto[]>([])
     const [userId, setUserId] = useState<string>()
     const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
-        start_date: moment(new Date().setDate(new Date().getDate() - 6)).format("YYYY-MM-DD")
-        , end_date: moment(new Date().setDate(new Date().getDate() + 4)).format("YYYY-MM-DD")
+        start_date: moment(new Date().setDate(new Date().getDate() - 30)).format("YYYY-MM-DD")
+        , end_date: moment(new Date().setDate(new Date().getDate())).format("YYYY-MM-DD")
     })
     const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("maintenance_categories", GetAllMaintenanceCategory)
     const { choice, setChoice } = useContext(ChoiceContext)
