@@ -261,6 +261,31 @@ export function FetchAllPermissions() {
                 }
             ]
         },
+        {
+            label: 'Maintenance',
+            permissions: [
+                {
+                    value: 'maintenance_view',
+                    label: 'view'
+                },
+                {
+                    value: 'maintenance_create',
+                    label: 'create'
+                },
+                {
+                    value: 'maintenance_edit',
+                    label: 'edit'
+                },
+                {
+                    value: 'maintenance_delete',
+                    label: 'delete'
+                },
+                {
+                    value: 'maintenance_export',
+                    label: 'export'
+                }
+            ]
+        },
 
     ]
     }
@@ -977,7 +1002,33 @@ export function FetchAllPermissions() {
                         label: 'export'
                     }
                 ]
-            }
+            },
+            {
+                label: 'Maintenance Category',
+                permissions: [
+                    {
+                        value: 'maintenance_category_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'maintenance_category_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'maintenance_category_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'maintenance_category_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'maintenance_category_export',
+                        label: 'export'
+                    }
+                ]
+            },
+
         ]
     }
 

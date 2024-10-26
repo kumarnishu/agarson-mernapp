@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/userContext";
 import { ButtonLogo } from "../components/logo/Agarson";
+import { toTitleCase } from "../utils/TitleCase";
 
 function DropDownDashboard() {
     const [features, setFeatures] = useState<{ feature: string, is_visible: boolean, url: string }[]>([])
@@ -24,6 +25,7 @@ function DropDownDashboard() {
         user?.assigned_permissions.includes('dye_view') && tmpfeatures.push({ feature: 'dyes ', is_visible: true, url: "DyePage" })
         user?.assigned_permissions.includes('checklist_category_view') && tmpfeatures.push({ feature: 'Checklist Category ', is_visible: true, url: "ChecklistCategoriesPage" })
         user?.assigned_permissions.includes('erp_employee_view') && tmpfeatures.push({ feature: 'Erp Employee ', is_visible: true, url: "ErpEmployeesPage" })
+        user?.assigned_permissions.includes('maintenance_category_view') && tmpfeatures.push({ feature: 'maintenance category ', is_visible: true, url: "MaintenanceCategoriesPage" })
         
         tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
 
@@ -32,25 +34,52 @@ function DropDownDashboard() {
     }, [user])
 
     return (
-        <>
-            <Grid container sx={{ pt: 2 }} >
-                {features.map((feat, index) => {
-                    return (
-                        <Grid key={index} item xs={12} md={4} lg={3} sx={{ p: 1 }}>
-                            <Link to={feat.url} style={{ textDecoration: 'none' }}>
-                                <Paper sx={{ p: 2, m: 0, height: 80, bgcolor: feat.feature.includes('report') ? 'lightblue' : 'white', boxShadow: 2, borderRadius: 5, borderColor: 'white' }} >
-                                    <Stack flexDirection={"row"} gap={2} sx={{ alignItems: 'center' }}>
-                                        <ButtonLogo title="" height={50} width={50} />
-                                        <Typography variant="button" fontSize={15} component="div">
-                                            {feat.feature.toUpperCase()}
-                                        </Typography>
-                                    </Stack>
-                                </Paper>
-                            </Link>
-                        </Grid>
-                    )
-                })}
-            </Grid>
+        <>  <Grid container sx={{ pt: 2 }} >
+            {features.map((feat, index) => {
+                return (
+                    <Grid key={index} item xs={12} md={4} lg={3} sx={{ p: 1 }}>
+                        <Link to={feat.url} style={{ textDecoration: 'none' }}>
+                            <Paper
+                                sx={{
+                                    p: 2,
+                                    m: 0,
+                                    height: 80,
+                                    boxShadow: 3,
+                                    borderRadius: 4,
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                    backdropFilter: 'blur(10px)', // Blurry effect
+                                    backgroundColor: 'rgba(255, 255, 255, 0.6)', // Semi-transparent blue
+                                    transition: '0.3s',
+                                    '&:hover': {
+                                        boxShadow: 6,
+                                        transform: 'translateY(-2px)',
+                                        backgroundColor: 'rgba(70, 130, 180, 0.7)', // Darken on hover
+                                    },
+                                }}
+                            >
+                                <Stack
+                                    flexDirection="row"
+                                    gap={2}
+                                    sx={{ alignItems: 'center' }}
+                                >
+                                    <ButtonLogo title="" height={40} width={40} />
+                                    <Typography
+                                        variant="h6"
+                                        component="div"
+                                        sx={{
+                                            fontWeight: 'medium',
+                                        }}
+                                    >
+                                        {toTitleCase(feat.feature)}
+                                    </Typography>
+                                </Stack>
+                            </Paper>
+                        </Link>
+                    </Grid>
+                )
+            })}
+        </Grid>
         </>
     )
 }

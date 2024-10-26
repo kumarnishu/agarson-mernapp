@@ -63,15 +63,16 @@ export const UpdateMaintenanceCategory = async (req: Request, res: Response, nex
 }
 
 
-export const DeleteMaintenanceCategory = async (req: Request, res: Response, next: NextFunction) => {
+export const ToogleMaintenanceCategory = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "category id not valid" })
     let category = await MaintenanceCategory.findById(id);
     if (!category) {
         return res.status(404).json({ message: "category not found" })
     }
-    await category.remove();
-    return res.status(200).json({ message: "category deleted successfully" })
+    category.active=!category.active;
+    await category.save();
+    return res.status(200).json({ message: "category status changed successfully" })
 }
 
 export const CreateMaintenance = async (req: Request, res: Response, next: NextFunction) => {

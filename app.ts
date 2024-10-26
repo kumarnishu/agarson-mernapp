@@ -9,14 +9,15 @@ import { connectDatabase } from './config/db';
 import UserRoutes from "./routes/user.routes";
 import LeadRoutes from "./routes/lead.routes";
 import CheckListkRoutes from "./routes/checklist.routes";
+import MaintenanceRoutes from "./routes/maintenance.route";
 import ErpRoutes from "./routes/erp.routes";
 import ProductionRoutes from "./routes/production.routes";
-import CronJobManager from "cron-job-manager";
 import path from 'path';
 import { Server } from "socket.io";
 import { getCurrentUser, userJoin, userLeave } from "./utils/handleSocketUsers";
 import { Storage } from '@google-cloud/storage';
 import morgan from 'morgan';
+import { ActivateMaintenanceWork } from './utils/activateMaintenanceWork';
 
 const app = express()
 const server = createServer(app)
@@ -73,7 +74,7 @@ io.on("connection", (socket) => {
         console.log("running in room", id)
         const user = userJoin(id)
         socket.join(user.id)
-       
+
         socket.on("disconnect", (reason) => {
             let user = getCurrentUser(id)
             if (user)
@@ -103,15 +104,15 @@ export const bucketName = String(process.env.bucketName)
 export const bucket = storage.bucket(bucketName)
 
 
-export const AppManager = new CronJobManager()
 
 //server routes
 app.use("/api/v1", UserRoutes)
 app.use("/api/v1", LeadRoutes)
 app.use("/api/v1", CheckListkRoutes)
+app.use("/api/v1", MaintenanceRoutes)
 app.use("/api/v1", ErpRoutes)
 app.use("/api/v1", ProductionRoutes)
-
+ActivateMaintenanceWork();
 
 
 //react app handler

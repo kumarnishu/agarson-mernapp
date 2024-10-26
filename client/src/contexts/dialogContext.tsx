@@ -1,17 +1,14 @@
 import React, { useReducer } from "react"
 
+
 type UserChoices = "signup" | "reset_password_mail" | "close_user" | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "control_access" | "delete_user" | "toogle_flow_status" | "create_or_edit_erpstate" | "update_state" | "delete_erp_state" |
   "block_user" | "unblock_user" | "make_admin" | "remove_admin" | "refresh_whatsapp" | "update_user_password" | "block_multi_login" | "reset_multi_login" | "assign_users" | "bulk_assign_erp_states" | "toogle_show_visitingcard" | "assign_permissions" | "bulk_assign_permissions" | "delete_role" | "bulk_assign_erp_employees" |"create_or_edit_erpemployee"|"delete_erp_employee"
 
 
-type GreetingChoices = "create_greeting" | "update_greeting" | "delete_greeting" | "bulk_start_greeting" | "close_greeting" | "bulk_stop_greeting" | "stop_greeting" | "start_greeting"
-
-type VisitChoices = "start_day" | "end_day" | "visit_in" | "visit_out" | "close_visit" | "view_visit" | "validate_visit" | "add_summary" | "edit_summary" | "add_ankit_input" | "view_comments" | "view_visit_photo" | "mark_attendence" | "upload_samples"
-
-
-type TodoChoices = "delete_bulk_todo" | "bulk_start_todo" | "close_todo" | "bulk_stop_todo" | "add_reply" | "view_replies" | "view_contacts"
 
 type CheckListChoices = "create_or_edit_checklist" | "create_or_edit_checklist_category" | "delete_checklist" | "close_checklist" | "edit_checklist" | "delete_checklist_category" | "toogle_checklist"
+
+type MaintenanceChoices = "create_or_edit_maintenance" | "create_or_edit_maintenance_category" | "delete_maintenance" | "close_maintenance"  | "toogle_maintenance_category"
 
 
 type LeadChoices = "create_or_edit_refer" |"create_or_edit_leadtype"| "create_or_edit_source" | "delete_crm_item" | "view_remarks" | "close_lead" | "create_or_edit_city" | "bulk_assign_crm_cities" | "find_unknown_stages" | "create_or_edit_bill" | "convert_lead_to_refer" | "bulk_delete_useless_leads" | "view_referrals" | "delete_crm_state" |"find_unknown_cities"|
@@ -21,11 +18,7 @@ type LeadChoices = "create_or_edit_refer" |"create_or_edit_leadtype"| "create_or
 type ProductionChoices = "create_or_edit_machine" | "close_production" | "create_or_edit_spareDye" | "create_or_edit_article" | "create_or_edit_thickness" | "create_or_edit_dye" | "update_dye" | "validate_weight" | "toogle_machine" | "toogle_article" | "toogle_dye" | "view_shoe_photo" | "view_shoe_photo2" | "view_shoe_photo3" | "create_or_edit_shoe_weight" | "validate_spareDye" | "view_spare_dye_photo" | "create_or_edit_production" | "update_production" | "delete_production_item" | "create_or_edit_location" | "toogle_dye_location" | "update_shoe_weight2" | "update_shoe_weight3" |"create_or_edit_machine_category"
 
 
-type TemplateChoices = "create_template" | "update_template" | "delete_template" | "view_template" | "close_template" | "view_template"
-
-
-
-type ChoiceState = UserChoices | LeadChoices | TemplateChoices | VisitChoices | CheckListChoices | GreetingChoices | ProductionChoices | TodoChoices
+type ChoiceState = UserChoices | LeadChoices   | CheckListChoices  | ProductionChoices  | MaintenanceChoices
 
 const initialState: ChoiceState | null = null
 
@@ -58,44 +51,7 @@ export enum ProductionChoiceActions {
   update_production = "update_production"
 }
 
-export enum GreetingChoiceActions {
-  create_greeting = "create_greeting",
-  update_greeting = "update_greeting",
-  delete_greeting = "delete_greeting",
-  start_greeting = "start_greeting",
-  bulk_start_greeting = "bulk_start_greeting",
-  close_greeting = "close_greeting",
-  bulk_stop_greeting = "bulk_stop_greeting",
-  stop_greeting = "stop_greeting"
-}
 
-export enum TodoChoiceActions {
-  delete_bulk_todo = "delete_bulk_todo",
-  bulk_start_todo = "bulk_start_todo",
-  close_todo = "close_todo",
-  bulk_stop_todo = "bulk_stop_todo",
-  add_reply = "add_reply",
-  view_replies = "view_replies",
-  view_contacts = "view_contacts"
-
-}
-export enum VisitChoiceActions {
-  upload_samples = "upload_samples",
-  view_visit_photo = "view_visit_photo",
-  mark_attendence = "mark_attendence",
-  start_day = "start_day",
-  end_day = "end_day",
-  visit_in = "visit_in",
-  visit_out = "visit_out",
-  close_visit = "close_visit",
-  view_visit = "view_visit",
-  validate_visit = "validate_visit",
-  add_summary = "add_summary",
-  edit_summary = "edit_summary",
-  add_ankit_input = "add_ankit_input",
-  view_comments = "view_comments"
-
-}
 
 export enum CheckListChoiceActions {
   create_or_edit_checklist = "create_or_edit_checklist",
@@ -107,14 +63,12 @@ export enum CheckListChoiceActions {
   toogle_checklist = "toogle_checklist"
 }
 
-
-export enum TemplateChoiceActions {
-  create_template = "create_template",
-  update_template = "update_template",
-  delete_template = "delete_template",
-  close_template = "close_template",
-  view_template = "view_template"
-
+export enum MaintenanceChoiceActions {
+  create_or_edit_maintenance = "create_or_edit_maintenance",
+  create_or_edit_maintenance_category = "create_or_edit_maintenance_category",
+  delete_maintenance = "delete_maintenance",
+  close_maintenance = "close_maintenance",
+  toogle_maintenance_category ="toogle_maintenance_category"
 }
 
 
@@ -193,7 +147,7 @@ export enum UserChoiceActions {
 
 type Action = {
   type: UserChoiceActions |
-  LeadChoiceActions | TemplateChoiceActions | CheckListChoiceActions | VisitChoiceActions | GreetingChoiceActions | TodoChoiceActions | ProductionChoiceActions
+  LeadChoiceActions |  CheckListChoiceActions |  ProductionChoiceActions | MaintenanceChoiceActions
 }
 
 // reducer
@@ -284,8 +238,6 @@ function reducer(state: ChoiceState | null, action: Action) {
     case ProductionChoiceActions.view_shoe_photo: return type
     case ProductionChoiceActions.create_or_edit_machine_category: return type
     case ProductionChoiceActions.view_shoe_photo2: return type
-
-
     case ProductionChoiceActions.view_shoe_photo3: return type
     case ProductionChoiceActions.create_or_edit_production: return type
     case ProductionChoiceActions.update_production: return type
@@ -298,48 +250,6 @@ function reducer(state: ChoiceState | null, action: Action) {
     case ProductionChoiceActions.create_or_edit_location: return type
     case ProductionChoiceActions.toogle_dye_location: return type
 
-    // template choice action
-    case TemplateChoiceActions.create_template: return type
-    case TemplateChoiceActions.update_template: return type
-    case TemplateChoiceActions.delete_template: return type
-    case TemplateChoiceActions.close_template: return type
-    case TemplateChoiceActions.view_template: return type
-
-    //greeeting
-    case GreetingChoiceActions.create_greeting: return type
-    case GreetingChoiceActions.update_greeting: return type
-    case GreetingChoiceActions.delete_greeting: return type
-    case GreetingChoiceActions.close_greeting: return type
-    case GreetingChoiceActions.bulk_start_greeting: return type
-    case GreetingChoiceActions.bulk_stop_greeting: return type
-    case GreetingChoiceActions.start_greeting: return type
-    case GreetingChoiceActions.stop_greeting: return type
-
-    //todos
-    case TodoChoiceActions.delete_bulk_todo: return type
-    case TodoChoiceActions.close_todo: return type
-    case TodoChoiceActions.bulk_start_todo: return type
-    case TodoChoiceActions.bulk_stop_todo: return type
-    case TodoChoiceActions.view_replies: return type
-    case TodoChoiceActions.add_reply: return type
-    case TodoChoiceActions.view_contacts: return type
-
-    // visit
-    case VisitChoiceActions.upload_samples: return type
-    case VisitChoiceActions.visit_in: return type
-    case VisitChoiceActions.visit_out: return type
-    case VisitChoiceActions.start_day: return type
-    case VisitChoiceActions.end_day: return type
-    case VisitChoiceActions.close_visit: return type
-    case VisitChoiceActions.view_visit: return type
-    case VisitChoiceActions.edit_summary: return type
-    case VisitChoiceActions.add_summary: return type
-    case VisitChoiceActions.add_ankit_input: return type
-    case VisitChoiceActions.view_comments: return type
-    case VisitChoiceActions.validate_visit: return type
-    case VisitChoiceActions.mark_attendence: return type
-    case VisitChoiceActions.view_visit_photo: return type
-
 
     // checklist actions
     case CheckListChoiceActions.create_or_edit_checklist: return type
@@ -349,6 +259,14 @@ function reducer(state: ChoiceState | null, action: Action) {
     case CheckListChoiceActions.edit_checklist: return type
     case CheckListChoiceActions.delete_checklist_category: return type
     case CheckListChoiceActions.toogle_checklist: return type
+
+
+    case MaintenanceChoiceActions.create_or_edit_maintenance: return type
+    case MaintenanceChoiceActions.create_or_edit_maintenance_category: return type
+    case MaintenanceChoiceActions.delete_maintenance: return type
+    case MaintenanceChoiceActions.close_maintenance: return type
+    case MaintenanceChoiceActions.toogle_maintenance_category: return type
+
     default: return state
   }
 }

@@ -46,6 +46,7 @@ import FeatureDashboard from './dashboards/FeatureDashboard.tsx'
 import ErpEmployeesPage from './pages/reports/ErpEmployeesPage.tsx'
 import VisitReportPage from './pages/reports/VisitReportPage.tsx'
 import MaintenancePage from './pages/features/MaintenancePage.tsx'
+import MaintenanceCategoriesPage from './pages/dropdowns/MaintenanceCategoriesPage.tsx'
 
 
 function AppRoutes() {
@@ -219,6 +220,10 @@ function AppRoutes() {
                 < SaleAnalysisReport />
               }
               />}
+              {user?.assigned_permissions.includes('maintenance_view') && <Route path="MaintenancePage" element={
+                < MaintenancePage />
+              }
+              />}
             </Route>}
 
 
@@ -234,6 +239,13 @@ function AppRoutes() {
                   <MachineCategoriesPage />
                 }
               />}
+
+              {user?.assigned_permissions.includes('maintenance_category_view') && <Route
+                path="MaintenanceCategoriesPage" element={
+                  <MaintenanceCategoriesPage />
+                }
+              />}
+
               {user?.assigned_permissions.includes('dye_location_view') &&<Route
                 path="DyeLocationsPage" element={
                   <DyeLocationPage />
