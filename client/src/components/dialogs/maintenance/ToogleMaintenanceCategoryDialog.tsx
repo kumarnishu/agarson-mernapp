@@ -1,20 +1,20 @@
 import { Dialog, DialogTitle, DialogContent, IconButton,  Stack, Button, CircularProgress, Typography } from '@mui/material';
 import { useContext, useEffect } from 'react';
-import { ChoiceContext, CheckListChoiceActions } from '../../../contexts/dialogContext';
+import { ChoiceContext, MaintenanceChoiceActions,  } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { AxiosResponse } from 'axios';
-import {  DeleteChecklistCategory } from '../../../services/CheckListServices';
 import { queryClient } from '../../../main';
 import { DropDownDto } from '../../../dtos/common/dropdown.dto';
+import { ToogleMaintenanceCategory } from '../../../services/MaintenanceServices';
 
 function ToogleMaintenanceCategoryDialog({ category }: { category: DropDownDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (DeleteChecklistCategory, {
+        (ToogleMaintenanceCategory, {
             onSuccess: () => {
                 queryClient.invalidateQueries('check_categories')
             }
@@ -22,20 +22,20 @@ function ToogleMaintenanceCategoryDialog({ category }: { category: DropDownDto }
 
     useEffect(() => {
         if (isSuccess)
-            setChoice({ type: CheckListChoiceActions.close_checklist })
+            setChoice({ type: MaintenanceChoiceActions.close_maintenance })
     }, [setChoice, isSuccess])
 
     return (
         <>
-            <Dialog fullWidth open={choice === CheckListChoiceActions.delete_checklist_category ? true : false}
-                onClose={() => setChoice({ type: CheckListChoiceActions.close_checklist })}
+            <Dialog fullWidth open={choice === MaintenanceChoiceActions.toogle_maintenance_category ? true : false}
+                onClose={() => setChoice({ type: MaintenanceChoiceActions.close_maintenance })}
             >
-                <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: CheckListChoiceActions.close_checklist })}>
+                <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: MaintenanceChoiceActions.close_maintenance })}>
                     <Cancel fontSize='large' />
                 </IconButton>
 
                 <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
-                    Delete Category
+                    Toogle Status Of Category
                 </DialogTitle>
                 {
                     isError ? (
@@ -44,13 +44,13 @@ function ToogleMaintenanceCategoryDialog({ category }: { category: DropDownDto }
                 }
                 {
                     isSuccess ? (
-                        <AlertBar message=" deleted checklist category" color="success" />
+                        <AlertBar message=" changed status of  category" color="success" />
                     ) : null
                 }
 
                 <DialogContent>
                     <Typography variant="body1" color="error">
-                        {`Warning ! This will delete  ${category.label}`}
+                        {`Warning ! This will toogle  ${category.label}`}
 
                     </Typography>
                 </DialogContent>
@@ -63,13 +63,13 @@ function ToogleMaintenanceCategoryDialog({ category }: { category: DropDownDto }
                 >
                     <Button fullWidth variant="outlined" color="error"
                         onClick={() => {
-                            setChoice({ type: CheckListChoiceActions.delete_checklist })
+                            setChoice({ type: MaintenanceChoiceActions.toogle_maintenance_category })
                             mutate(category.id)
                         }}
                         disabled={isLoading}
                     >
                         {isLoading ? <CircularProgress /> :
-                            "Delete Category"}
+                            "Toogle Category"}
                     </Button>
                 </Stack >
             </Dialog>

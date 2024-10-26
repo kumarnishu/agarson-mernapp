@@ -6,7 +6,7 @@ import moment from "moment";
 import xlsx from "xlsx";
 import SaveFileOnDisk from "../utils/ExportToExcel";
 import { MaintenanceCategory } from "../models/maintainence/maintainence.category.model";
-import { CreateMaintenanceFromExcelDto, CreateOrEditMaintenanceDto, GetMaintenanceDto, GetMaintenanceItemDto, GetMaintenanceItemRemarkDto, GetMaintenanceReportDto } from "../dtos/maintenance/maintenance.dto";
+import { CreateMaintenanceFromExcelDto, CreateOrEditMaintenanceDto, GetMaintenanceDto, GetMaintenanceItemDto, GetMaintenanceItemRemarkDto } from "../dtos/maintenance/maintenance.dto";
 import { IMaintenance, Maintenance } from "../models/maintainence/maintainence.model";
 import { IMaintenanceItem, MaintenanceItem } from "../models/maintainence/maintainence.item.model";
 import { Machine } from "../models/production/machine.model";
@@ -264,14 +264,15 @@ export const GetAllMaintenance = async (req: Request, res: Response, next: NextF
                 work: mt.work,
                 active: mt.active,
                 category: { id: mt.category._id, label: mt.category.category, value: mt.category.category },
+                item:mt.item,
                 frequency: mt.frequency,
                 user: { id: mt.user._id, label: mt.user.username, value: mt.user.username },
-                items: mt.items.map((mt) => {
+                items: mt.items.map((item) => {
                     return {
-                        _id: mt._id,
-                        item: mt.machine ? mt.machine.name : mt.other,
-                        stage: mt.stage,
-                        is_required: mt.is_required
+                        _id: item._id,
+                        item: item.machine ? item.machine.name : item.other,
+                        stage: item.stage,
+                        is_required: item.is_required
                     }
                 }),
                 created_at: mt.created_at.toString(),
@@ -541,7 +542,7 @@ export const GetAllMaintenanceReport = async (req: Request, res: Response, next:
     dt2.setMinutes(0)
 
     let ids = req.user?.assigned_users.map((id) => { return id._id })
-    let result: GetMaintenanceReportDto[] = []
+    let result: GetMaintenanceDto[] = []
 
     if (!Number.isNaN(limit) && !Number.isNaN(page)) {
         if (req.user?.is_admin && !id) {
@@ -622,6 +623,7 @@ export const GetAllMaintenanceReport = async (req: Request, res: Response, next:
                 frequency: maintenance.frequency,
                 user: { id: maintenance.user._id, label: maintenance.user.username, value: maintenance.user.username },
                 items: items,
+                item:maintenance.item,
                 created_at: maintenance.created_at.toString(),
                 updated_at: maintenance.updated_at.toString(),
                 created_by: maintenance.created_by.username,
@@ -650,11 +652,9 @@ export const GetMaintenceItemBoxes = async (dt1: Date, dt2: Date, frequency: str
 
     if (frequency == "daily") {
         let current_date = new Date(dt1)
-
+        let tmpDate = current_date;
         while (current_date <= new Date(dt2)) {
-            let tmpDate = current_date;
             tmpDate.setDate(new Date(current_date).getDate() + 1)
-
             let remark = await Remark.findOne({ maintainable_item: item._id, created_at: { $gte: current_date, $lt: tmpDate } });
             result.push({
                 dt1: current_date.toString(),
@@ -666,9 +666,9 @@ export const GetMaintenceItemBoxes = async (dt1: Date, dt2: Date, frequency: str
     }
     if (frequency == "weekly") {
         let current_date = new Date()
+        let tmpDate = current_date;
         current_date.setDate(1)
         while (current_date <= new Date(dt2)) {
-            let tmpDate = current_date;
             tmpDate.setDate(new Date(current_date).getDate() + 6)
             if (current_date >= dt1 && current_date <= dt2) {
                 let remark = await Remark.findOne({ maintainable_item: item._id, created_at: { $gte: current_date, $lt: tmpDate } });

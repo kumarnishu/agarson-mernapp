@@ -43,10 +43,11 @@ import SpareDyesPage from './pages/features/SpareDyesPage.tsx'
 import SoleThicknessPage from './pages/features/SoleThicknessPage.tsx'
 import DyeLocationPage from './pages/dropdowns/DyeLocationPage.tsx'
 import FeatureDashboard from './dashboards/FeatureDashboard.tsx'
-import ErpEmployeesPage from './pages/reports/ErpEmployeesPage.tsx'
+import ErpEmployeesPage from './pages/dropdowns/ErpEmployeesPage.tsx'
 import VisitReportPage from './pages/reports/VisitReportPage.tsx'
 import MaintenancePage from './pages/features/MaintenancePage.tsx'
 import MaintenanceCategoriesPage from './pages/dropdowns/MaintenanceCategoriesPage.tsx'
+import MaintenanceReportPage from './pages/reports/MaintenanceReportPage.tsx'
 
 
 function AppRoutes() {
@@ -138,8 +139,12 @@ function AppRoutes() {
                   <ReportDashboard />
                 }
               />
-
               
+              {user?.assigned_permissions.includes('maintenance_report_view') && <Route
+                path="MaintenanceReport" element={
+                  <MaintenanceReportPage />
+                }
+              />}
               {user?.assigned_permissions.includes('visit_report_view') && <Route
                 path="VisitReportPage" element={
                   <VisitReportPage />

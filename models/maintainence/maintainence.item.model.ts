@@ -16,8 +16,7 @@ export type IMaintenanceItem = {
 const MaintenanceItemSchema = new mongoose.Schema<IMaintenanceItem, mongoose.Model<IMaintenanceItem, {}, {}>, {}>({
     machine: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Machine',
-        required: true
+        ref: 'Machine'
     },
     other: String,
     stage: String,

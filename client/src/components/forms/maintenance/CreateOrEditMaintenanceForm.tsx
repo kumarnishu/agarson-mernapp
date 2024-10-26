@@ -4,92 +4,62 @@ import { useFormik } from 'formik';
 import { useEffect, useContext, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
-import { ChoiceContext, CheckListChoiceActions } from '../../../contexts/dialogContext';
-import { BackendError, Target } from '../../..';
+import { ChoiceContext, MaintenanceChoiceActions, } from '../../../contexts/dialogContext';
+import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
-import { CreateOrEditCheckList, GetAllCheckCategories } from '../../../services/CheckListServices';
 import { GetUserDto } from '../../../dtos/users/user.dto';
 import { GetUsers } from '../../../services/UserServices';
-import { CreateOrEditChecklistDto, GetChecklistDto } from '../../../dtos/checklist/checklist.dto';
 import { DropDownDto } from '../../../dtos/common/dropdown.dto';
-import moment from 'moment';
 
-function CreateOrEditMaintenanceForm({ checklist }: { checklist?: GetChecklistDto }) {
+import { CreateOrEditMaintenanceDto, GetMaintenanceDto } from '../../../dtos/maintenance/maintenance.dto';
+import { CreateOrEditMaintenance, GetAllMaintenanceCategory } from '../../../services/MaintenanceServices';
+
+function CreateOrEditMaintenanceForm({ maintenance }: { maintenance?: GetMaintenanceDto }) {
     const [categories, setCategories] = useState<DropDownDto[]>([])
     const [users, setUsers] = useState<GetUserDto[]>([])
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, { body: FormData, id?: string }>
-        (CreateOrEditCheckList, {
+        (CreateOrEditMaintenance, {
             onSuccess: () => {
-                queryClient.invalidateQueries('checklists')
+                queryClient.invalidateQueries('maintenances')
             }
         })
 
 
     const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', show_assigned_only: true, permission: 'feature_menu' }))
-    const { data: categoriesData, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("check_categories", GetAllCheckCategories)
+    const { data: categoriesData, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("m_categories", GetAllMaintenanceCategory)
     const { setChoice } = useContext(ChoiceContext)
 
-    const formik = useFormik<CreateOrEditChecklistDto>({
+    const formik = useFormik<CreateOrEditMaintenanceDto>({
         initialValues: {
-            category: checklist ? checklist.category.id : "",
-            work_title: checklist ? checklist.work_title : "",
-            link: checklist ? checklist.link : "",
-            end_date: checklist ? moment(checklist.end_date).format("YYYY-MM-DD") : "",
-            next_date: checklist ? moment(checklist.next_date).format("YYYY-MM-DD") : "",
-            user_id: checklist ? checklist.user.id : "",
-            frequency: checklist ? checklist.frequency : "daily",
-            photo: checklist && checklist.photo && checklist.photo || ""
+            category: maintenance ? maintenance.category.id : "",
+            work: maintenance ? maintenance.work : "",
+            maintainable_item: maintenance ? maintenance.item : "",
+            user: maintenance ? maintenance.user.id : "",
+            frequency: maintenance ? maintenance.frequency : "daily",
         },
         validationSchema: Yup.object({
-            work_title: Yup.string().required("required field")
+            work: Yup.string().required("required field")
                 .min(5, 'Must be 5 characters or more')
                 .max(200, 'Must be 200 characters or less'),
             category: Yup.string().required("required field"),
+            maintainable_item: Yup.string().required("required field"),
             frequency: Yup.string().required("required"),
-            user_id: Yup.string().required("required"),
-            end_date: Yup.date().required("required"),
-            next_date: Yup.date().required("required"),
-            photo: Yup.mixed<File>()
-                .test("size", "size is allowed only less than 20mb",
-                    file => {
-                        if (file)
-                            if (!file.size) //file not provided
-                                return true
-                            else
-                                return Boolean(file.size <= 20 * 1024 * 1024)
-                        return true
-                    }
-                )
-                .test("type", " allowed only .jpg, .jpeg, .png, .gif .pdf .csv .xlsx .docs",
-                    file => {
-                        const Allowed = ["image/png", "image/jpeg", "image/gif", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv", "application/pdf"]
-                        if (file)
-                            if (!file.size) //file not provided
-                                return true
-                            else
-                                return Boolean(Allowed.includes(file.type))
-                        return true
-                    }
-                )
+            user: Yup.string().required("required"),
         }),
-        onSubmit: (values: CreateOrEditChecklistDto) => {
-            if (checklist) {
+        onSubmit: (values: CreateOrEditMaintenanceDto) => {
+            if (maintenance) {
                 let formdata = new FormData()
                 formdata.append("body", JSON.stringify(values))
-                if (values.photo)
-                    formdata.append("photo", values.photo)
                 mutate({
-                    id: checklist._id,
+                    id: maintenance._id,
                     body: formdata
                 })
             }
             else {
                 let formdata = new FormData()
                 formdata.append("body", JSON.stringify(values))
-                if (values.photo)
-                    formdata.append("photo", values.photo)
                 mutate({
                     id: undefined,
                     body: formdata
@@ -113,7 +83,7 @@ function CreateOrEditMaintenanceForm({ checklist }: { checklist?: GetChecklistDt
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: CheckListChoiceActions.close_checklist })
+            setChoice({ type: MaintenanceChoiceActions.close_maintenance })
         }
     }, [isSuccess, setChoice])
 
@@ -128,82 +98,19 @@ function CreateOrEditMaintenanceForm({ checklist }: { checklist?: GetChecklistDt
                 <TextField
                     required
                     error={
-                        formik.touched.work_title && formik.errors.work_title ? true : false
+                        formik.touched.work && formik.errors.work ? true : false
                     }
-                    id="work_title"
+                    id="work"
                     label="Work Title"
                     fullWidth
                     helperText={
-                        formik.touched.work_title && formik.errors.work_title ? formik.errors.work_title : ""
+                        formik.touched.work && formik.errors.work ? formik.errors.work : ""
                     }
-                    {...formik.getFieldProps('work_title')}
+                    {...formik.getFieldProps('work')}
                 />
-                <TextField
 
-                    multiline
-                    minRows={2}
-                    error={
-                        formik.touched.link && formik.errors.link ? true : false
-                    }
-                    id="link"
-                    label="Link"
-                    fullWidth
-                    helperText={
-                        formik.touched.link && formik.errors.link ? formik.errors.link : ""
-                    }
-                    {...formik.getFieldProps('link')}
-                />
-                <TextField
-                    fullWidth
-                    error={
-                        formik.touched.photo && formik.errors.photo ? true : false
-                    }
-                    helperText={
-                        formik.touched.photo && formik.errors.photo ? (formik.errors.photo) : ""
-                    }
-                    label="Photo"
-                    focused
 
-                    type="file"
-                    name="photo"
-                    onBlur={formik.handleBlur}
-                    onChange={(e) => {
-                        e.preventDefault()
-                        const target: Target = e.currentTarget
-                        let files = target.files
-                        if (files) {
-                            let file = files[0]
-                            formik.setFieldValue("photo", file)
-                        }
-                    }}
-                />
-                < TextField
-                    select
-                    SelectProps={{
-                        native: true
-                    }}
-                    focused
-                    error={
-                        formik.touched.frequency && formik.errors.frequency ? true : false
-                    }
-                    id="frequency"
-                    disabled={checklist ? true : false}
-                    label="Frequency"
-                    fullWidth
-                    helperText={
-                        formik.touched.frequency && formik.errors.frequency ? formik.errors.frequency : ""
-                    }
-                    {...formik.getFieldProps('frequency')}
-                >
-                    <option key={1} value="daily">
-                        Daily
-                    </option>
 
-                    <option key={2} value='weekly'>
-                        Weekly
-                    </option>
-
-                </TextField>
                 < TextField
                     select
                     SelectProps={{
@@ -214,7 +121,7 @@ function CreateOrEditMaintenanceForm({ checklist }: { checklist?: GetChecklistDt
                         formik.touched.category && formik.errors.category ? true : false
                     }
                     id="category"
-                    disabled={checklist ? true : false}
+                    disabled={maintenance ? true : false}
                     label="Category"
                     fullWidth
                     helperText={
@@ -234,6 +141,42 @@ function CreateOrEditMaintenanceForm({ checklist }: { checklist?: GetChecklistDt
                         })
                     }
                 </TextField>
+                < TextField
+                    select
+                    SelectProps={{
+                        native: true
+                    }}
+                    focused
+                    error={
+                        formik.touched.frequency && formik.errors.frequency ? true : false
+                    }
+                    id="frequency"
+                    disabled={maintenance ? true : false}
+                    label="Frequency"
+                    fullWidth
+                    helperText={
+                        formik.touched.frequency && formik.errors.frequency ? formik.errors.frequency : ""
+                    }
+                    {...formik.getFieldProps('frequency')}
+                >
+                    <option key={1} value="daily">
+                        Daily
+                    </option>
+
+                    <option key={2} value='weekly'>
+                        Weekly
+                    </option>
+
+                    <option key={1} value="monthly">
+                        Monthly
+                    </option>
+
+                    <option key={2} value='yearly'>
+                        Yearly
+                    </option>
+
+                </TextField>
+
 
                 < TextField
                     select
@@ -242,15 +185,15 @@ function CreateOrEditMaintenanceForm({ checklist }: { checklist?: GetChecklistDt
                     }}
                     focused
                     error={
-                        formik.touched.user_id && formik.errors.user_id ? true : false
+                        formik.touched.user && formik.errors.user ? true : false
                     }
-                    id="user_id"
-                    label="Person"
+                    id="user"
+                    label="Assign To"
                     fullWidth
                     helperText={
-                        formik.touched.user_id && formik.errors.user_id ? formik.errors.user_id : ""
+                        formik.touched.user && formik.errors.user ? formik.errors.user : ""
                     }
-                    {...formik.getFieldProps('user_id')}
+                    {...formik.getFieldProps('user')}
                 >
                     <option key={0} value={undefined}>
                         Select Person
@@ -264,40 +207,25 @@ function CreateOrEditMaintenanceForm({ checklist }: { checklist?: GetChecklistDt
                         })
                     }
                 </TextField>
-                < TextField
-                    type="date"
+                <TextField
+                    required
                     error={
-                        formik.touched.next_date && formik.errors.next_date ? true : false
+                        formik.touched.maintainable_item && formik.errors.maintainable_item ? true : false
                     }
-                    focused
-                    id="next_date"
-                    label="Next Check In Date"
+                    disabled={maintenance ? true : false}
+                    id="maintainable_item"
+                    label="Maintainable Item"
                     fullWidth
                     helperText={
-                        formik.touched.next_date && formik.errors.next_date ? formik.errors.next_date : ""
+                        formik.touched.maintainable_item && formik.errors.maintainable_item ? formik.errors.maintainable_item : "type machine if wants to add machines list ?"
                     }
-                    {...formik.getFieldProps('next_date')}
-                />
-                < TextField
-                    type="date"
-                    error={
-                        formik.touched.end_date && formik.errors.end_date ? true : false
-                    }
-                    focused
-                    disabled={checklist ? true : false}
-                    id="end_date"
-                    label="End Date"
-                    fullWidth
-                    helperText={
-                        formik.touched.end_date && formik.errors.end_date ? formik.errors.end_date : ""
-                    }
-                    {...formik.getFieldProps('end_date')}
+                    {...formik.getFieldProps('maintainable_item')}
                 />
 
 
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
-                    fullWidth>{Boolean(isLoading) ? <CircularProgress /> : checklist ? 'Update' : 'Create'}
+                    fullWidth>{Boolean(isLoading) ? <CircularProgress /> : maintenance ? 'Update' : 'Create'}
                 </Button>
             </Stack>
             {
@@ -307,7 +235,7 @@ function CreateOrEditMaintenanceForm({ checklist }: { checklist?: GetChecklistDt
             }
             {
                 isSuccess ? (
-                    <AlertBar message="new checklist added" color="success" />
+                    <AlertBar message="new maintenance added" color="success" />
                 ) : null
             }
 

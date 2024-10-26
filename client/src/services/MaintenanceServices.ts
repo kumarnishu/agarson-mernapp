@@ -7,7 +7,7 @@ export const GetAllMaintenanceCategory = async () => {
 
 
 export const CreateOrEditMaintenanceCategory = async ({ body, id }: {
-    body: { category: string }
+    body: { key: string }
     id?: string
 }) => {
     if (id) {
@@ -40,9 +40,9 @@ export const GetAllMaintenance = async ({ limit, page, id }: { limit: number | u
 
 export const GetAllMaintenanceReport = async ({ limit, page, start_date, end_date, id }: { limit: number | undefined, page: number | undefined, start_date?: string, end_date?: string, id?: string }) => {
     if (id)
-        return await apiClient.get(`maintenances/?id=${id}&start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}`)
+        return await apiClient.get(`maintenances/report/?id=${id}&start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}`)
     else
-        return await apiClient.get(`maintenances/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}`)
+        return await apiClient.get(`maintenances/report/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}`)
 }
 
 export const ToogleMaintenanceItem = async ({ id }: { id: string }) => {

@@ -1,202 +1,239 @@
-import { Search } from '@mui/icons-material'
-import { Fade, IconButton, InputAdornment, LinearProgress, Menu, MenuItem, TextField, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
-import { AxiosResponse } from 'axios'
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
-import { BackendError } from '../..'
-import FuzzySearch from "fuzzy-search";
-import ExportToExcel from '../../utils/ExportToExcel'
-import { CheckListChoiceActions, ChoiceContext, } from '../../contexts/dialogContext'
-import { Menu as MenuIcon } from '@mui/icons-material';
-import AlertBar from '../../components/snacks/AlertBar'
-import TableSkeleton from '../../components/skeleton/TableSkeleton'
+import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { Cyclone,  Edit } from '@mui/icons-material'
+import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
+import { ChoiceContext, MaintenanceChoiceActions,  } from '../../contexts/dialogContext'
+import { onlyUnique } from '../../utils/UniqueArray'
+import { Menu as MenuIcon } from '@mui/icons-material';
+import PopUp from '../../components/popup/PopUp'
+import { AxiosResponse } from "axios"
+import { BackendError } from "../.."
+import ExportToExcel from "../../utils/ExportToExcel"
 import { DropDownDto } from '../../dtos/common/dropdown.dto'
-import CheckCategoryTable from '../../components/tables/checklists/CheckCategoryTable'
-import { GetAllCheckCategories } from '../../services/CheckListServices'
-import CreateOrEditChecklistCategoryDialog from '../../components/dialogs/checklists/CreateOrEditChecklistCategoryDialog'
+import { GetAllMaintenanceCategory } from '../../services/MaintenanceServices'
+import CreateOrEditMaintenanceCategoryDialog from '../../components/dialogs/maintenance/CreateOrEditMaintenanceCategoryDialog'
+import ToogleMaintenanceCategoryDialog from '../../components/dialogs/maintenance/ToogleMaintenanceCategoryDialog'
 
-type ITemplate = {
-  _id: string,
-  category: string
-}
-
-let template: ITemplate[] = [
-  {
-    _id: "qeqq6g54",
-    category: "internet"
-  }
-]
 
 export default function MaintenanceCategoriesPage() {
-  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("check_categories", GetAllCheckCategories)
-  const [category, setCategory] = useState<DropDownDto>()
-  const [categories, setCategories] = useState<DropDownDto[]>([])
-  const [selectAll, setSelectAll] = useState(false)
-  const MemoData = React.useMemo(() => categories, [categories])
-  const [preFilteredData, setPreFilteredData] = useState<DropDownDto[]>([])
-  const [selectedCategories, setSelectedCategories] = useState<DropDownDto[]>([])
-  const [filter, setFilter] = useState<string | undefined>()
-  const [selectedData, setSelectedData] = useState<ITemplate[]>(template)
-  const [sent, setSent] = useState(false)
+  const [categories, setcategories] = useState<DropDownDto>()
+  const [categoriess, setcategoriess] = useState<DropDownDto[]>([])
+  const { user: LoggedInUser } = useContext(UserContext)
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["maintenance_categoriess"], async () => GetAllMaintenanceCategory())
+
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+
   const { setChoice } = useContext(ChoiceContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const { user: LoggedInUser } = useContext(UserContext)
 
-  function handleExcel() {
-    setAnchorEl(null)
-    try {
-      ExportToExcel(selectedData, "checklist_categories_data")
-      setSent(true)
-      setSelectAll(false)
-      setSelectedData([])
-      setSelectedCategories([])
-    }
-    catch (err) {
-      console.log(err)
-      setSent(false)
-    }
-  }
+  const columns = useMemo<MRT_ColumnDef<DropDownDto>[]>(
+    //column definitions...
+    () => categoriess && [
+      {
+        accessorKey: 'actions',
+        header: '',
+        maxSize: 50,
+        Footer: <b></b>,
+        size: 120,
+        Cell: ({ cell }) => <PopUp
+          element={
+            <Stack direction="row">
+              <>
 
-  // refine data
-  useEffect(() => {
-    let data: ITemplate[] = []
-    selectedCategories.map((category) => {
-      return data.push({
-        _id: category.id,
-        category: category.value,
-      })
-    })
-    if (data.length > 0)
-      setSelectedData(data)
-  }, [selectedCategories])
+                {LoggedInUser?.is_admin && LoggedInUser.assigned_permissions.includes('maintenance_category_edit') &&
+                  <Tooltip title="Toogle">
+                    <IconButton color="success"
+
+                      onClick={() => {
+                        setChoice({ type: MaintenanceChoiceActions.toogle_maintenance_category })
+                        setcategories(cell.row.original)
+
+                      }}
+                    >
+                      <Cyclone />
+                    </IconButton>
+                  </Tooltip>
+                }
+                {LoggedInUser?.assigned_permissions.includes('maintenance_category_edit') && <Tooltip title="edit">
+                  <IconButton
+
+                    onClick={() => {
+                      setcategories(cell.row.original)
+                      setChoice({ type: MaintenanceChoiceActions.create_or_edit_maintenance_category })
+                    }}
+
+                  >
+                    <Edit />
+                  </IconButton>
+                </Tooltip>}
+
+              </>
+
+            </Stack>}
+        />
+      },
+      
+      {
+        accessorKey: 'value',
+        header: 'Category',
+        size: 350,
+        filterVariant: 'multi-select',
+        Cell: (cell) => <>{cell.row.original.value ? cell.row.original.value : ""}</>,
+        filterSelectOptions: categoriess && categoriess.map((i) => {
+          return i.value;
+        }).filter(onlyUnique)
+      },
+      {
+        accessorKey: 'label',
+        header: 'Display Name',
+        size: 350,
+        filterVariant: 'multi-select',
+        Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
+        filterSelectOptions: categoriess && categoriess.map((i) => {
+          return i.label;
+        }).filter(onlyUnique)
+      }
+    ],
+    [categoriess, data],
+    //end
+  );
+
+
+  const table = useMaterialReactTable({
+    columns, columnFilterDisplayMode: 'popover',
+    data: categoriess, //10,000 rows     
+    enableColumnResizing: true,
+    enableColumnVirtualization: true, enableStickyFooter: true,
+    muiTableFooterRowProps: () => ({
+      sx: {
+        backgroundColor: 'whitesmoke',
+        color: 'white',
+        fontSize: '14px'
+      }
+    }),
+    muiTableContainerProps: (table) => ({
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '68vh' }
+    }),
+    muiTableHeadRowProps: () => ({
+      sx: {
+        backgroundColor: 'whitesmoke',
+        color: 'white'
+      },
+    }),
+    muiTableBodyCellProps: () => ({
+      sx: {
+        border: '1px solid #c2beba;',
+        fontSize: '13px'
+      },
+    }),
+    muiPaginationProps: {
+      rowsPerPageOptions: [100, 200, 500, 1000, 2000],
+      shape: 'rounded',
+      variant: 'outlined',
+    },
+    initialState: {
+      density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
+    },
+    enableGrouping: true,
+    enableRowSelection: true,
+    manualPagination: false,
+    enablePagination: true,
+    enableRowNumbers: true,
+    enableColumnPinning: true,
+    enableTableFooter: true,
+    enableRowVirtualization: true,
+    onSortingChange: setSorting,
+    state: { isLoading, sorting }
+  });
+
 
   useEffect(() => {
     if (isSuccess) {
-      setCategories(data.data)
-      setPreFilteredData(data.data)
+      setcategoriess(data.data);
     }
-  }, [isSuccess, categories, data])
+  }, [isSuccess, data]);
 
 
-  useEffect(() => {
-    if (filter) {
-      if (categories) {
-        const searcher = new FuzzySearch(categories, ["label", "value"], {
-          caseSensitive: false,
-        });
-        const result = searcher.search(filter);
-        setCategories(result)
-      }
-    }
-    if (!filter)
-      setCategories(preFilteredData)
-
-  }, [filter, categories])
   return (
     <>
-      {
-        isLoading && <LinearProgress />
-      }
-      {/*heading, search bar and table menu */}
+
+
       <Stack
         spacing={2}
         padding={1}
         direction="row"
         justifyContent="space-between"
-
+        alignItems={'center'}
       >
-
         <Typography
           variant={'h6'}
           component={'h1'}
           sx={{ pl: 1 }}
         >
-          Categories
+          Categoriess 
         </Typography>
 
-        <TextField
-          sx={{ width: '50vw' }}
-          size="small"
-          onChange={(e) => {
-            setFilter(e.currentTarget.value)
-          }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <Search sx={{ cursor: 'pointer' }} />
-              </InputAdornment>
-            ),
-          }}
-          placeholder={`Search Categories `}
-          style={{
-            fontSize: '1.1rem',
-            border: '0',
-          }}
-        />
-        <Stack
-          direction="row"
-        >
-          {/* search bar */}
-          < Stack direction="row" spacing={2}>
-            {/* {LoggedInUser?.crm_access_fields.is_editable && <UploadCRMCategoriesFromExcelButton disabled={!LoggedInUser?.crm_access_fields.is_editable} />} */}
-          </Stack >
-          <>
+        <>
+          <IconButton size="small" color="primary"
+            onClick={(e) => setAnchorEl(e.currentTarget)
+            }
+            sx={{ border: 2, borderRadius: 3, marginLeft: 1 }}
+          >
+            <MenuIcon />
+          </IconButton>
 
-            {sent && <AlertBar message="File Exported Successfuly" color="success" />}
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={() => setAnchorEl(null)
+            }
+            TransitionComponent={Fade}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button',
+            }}
+            sx={{ borderRadius: 2 }}
+          >
+            {LoggedInUser?.assigned_permissions.includes('maintenance_category_create') && <MenuItem
 
-
-            <IconButton size="small" color="primary"
-              onClick={(e) => setAnchorEl(e.currentTarget)
-              }
-              sx={{ border: 2, borderRadius: 3, marginLeft: 1 }}
-            >
-              <MenuIcon />
-            </IconButton>
-
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={() => setAnchorEl(null)
-              }
-              TransitionComponent={Fade}
-              MenuListProps={{
-                'aria-labelledby': 'basic-button',
+              onClick={() => {
+                setChoice({ type: MaintenanceChoiceActions.create_or_edit_maintenance_category })
+                setcategories(undefined)
+                setAnchorEl(null)
               }}
-              sx={{ borderRadius: 2 }}
-            >
-              {LoggedInUser?.assigned_permissions.includes('checklist_category_create') && <MenuItem
-                onClick={() => {
-                  setChoice({ type: CheckListChoiceActions.create_or_edit_checklist_category })
-                  setCategory(undefined)
-                  setAnchorEl(null)
-                }}
+            > Add New</MenuItem>}
+           
 
-              > Add New</MenuItem>}
+            {LoggedInUser?.assigned_permissions.includes('maintenance_category_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
-              {LoggedInUser?.assigned_permissions.includes('checklist_category_export') && < MenuItem onClick={handleExcel}
+            >Export All</MenuItem>}
+            {LoggedInUser?.assigned_permissions.includes('maintenance_category_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
-              >Export To Excel</MenuItem>}
+            >Export Selected</MenuItem>}
 
-            </Menu >
-            <CreateOrEditChecklistCategoryDialog />
+          </Menu >
+          <CreateOrEditMaintenanceCategoryDialog />
+        
+          <>
+            {
+              categories ?
+                <>
+
+                  <ToogleMaintenanceCategoryDialog category={categories} />
+                  <CreateOrEditMaintenanceCategoryDialog category={categories} />
+                </>
+                : null
+            }
           </>
-        </Stack >
-      </Stack >
-      {/*  table */}
-      {isLoading && <TableSkeleton />}
-      {!isLoading && MemoData &&
-        <CheckCategoryTable
-          category={category}
-          selectAll={selectAll}
-          selectedCategories={selectedCategories}
-          setSelectedCategories={setSelectedCategories}
-          setSelectAll={setSelectAll}
-          categories={MemoData}
-          setCategory={setCategory}
-        />}
+        </>
 
+
+      </Stack >
+
+      {/* table */}
+      <MaterialReactTable table={table} />
     </>
 
   )

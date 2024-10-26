@@ -12,19 +12,7 @@ export type GetMaintenanceDto = {
     frequency: string,
     user: DropDownDto,
     items: GetMaintenanceItemDto[],
-    created_at: string,
-    updated_at: string,
-    created_by: string,
-    updated_by: string
-}
-export type GetMaintenanceReportDto = {
-    _id: string,
-    work: string,
-    active: boolean,
-    category: DropDownDto,
-    frequency: string,
-    user: DropDownDto,
-    items: GetMaintenanceItemDto[],
+    item: string,
     created_at: string,
     updated_at: string,
     created_by: string,
@@ -43,7 +31,7 @@ export type CreateOrEditMaintenanceDto = {
 export type GetMaintenanceItemDto = {
     _id: string,
     item: string,
-    stage: string,
+    stage?: string,
     boxes?: {
         dt1: string,
         dt2: string,

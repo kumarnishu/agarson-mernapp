@@ -9,7 +9,7 @@ import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
 import { DropDownDto } from '../../../dtos/common/dropdown.dto';
-import { CreateOrEditCheckCategory } from '../../../services/CheckListServices';
+import { CreateOrEditMaintenanceCategory } from '../../../services/MaintenanceServices';
 
 function CreateOrEditMaintenanceCategoryForm({ category }: { category?: DropDownDto}) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
@@ -19,9 +19,9 @@ function CreateOrEditMaintenanceCategoryForm({ category }: { category?: DropDown
             },
             id?: string
         }>
-        (CreateOrEditCheckCategory, {
+        (CreateOrEditMaintenanceCategory, {
             onSuccess: () => {
-                queryClient.invalidateQueries('check_categories')
+                queryClient.invalidateQueries('maintenance_categoriess')
             }
         })
   

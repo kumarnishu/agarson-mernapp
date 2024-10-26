@@ -670,6 +670,31 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
+            {
+                label: 'Maintenance Report',
+                permissions: [
+                    {
+                        value: 'maintenance_report_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'maintenance_report_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'maintenance_report_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'maintenance_report_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'maintenance_report_export',
+                        label: 'export'
+                    }
+                ]
+            },
         ]
     }
 

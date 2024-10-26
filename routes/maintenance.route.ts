@@ -8,7 +8,7 @@ const router = express.Router()
 
 router.route("/maintenances/categories").get(isAuthenticatedUser, GetAllMaintenanceCategory).post(isAuthenticatedUser, CreateMaintenanceCategory)
 router.route("/maintenances/categories/:id").put(isAuthenticatedUser, UpdateMaintenanceCategory).patch(isAuthenticatedUser,ToogleMaintenanceCategory)
-router.route("/maintenances").get(isAuthenticatedUser, GetAllMaintenance).post(isAuthenticatedUser, CreateMaintenance)
+router.route("/maintenances").get(isAuthenticatedUser, GetAllMaintenance).post(isAuthenticatedUser, upload.single("none"), CreateMaintenance)
 router.route("/maintenances/:id").put(isAuthenticatedUser, UpdateMaintenance).delete(isAuthenticatedUser, DeleteMaintenance)
 router.route("/maintenances/item/toogle/:id").patch(isAuthenticatedUser, ToogleMaintenanceItem)
 router.route("/maintenances/item/remarks/:id").get(isAuthenticatedUser, ViewMaintenanceItemRemarkHistory).post(AddMaintenanceItemRemark)

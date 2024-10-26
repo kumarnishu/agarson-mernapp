@@ -1,32 +1,32 @@
 import { Dialog, DialogTitle, DialogContent, IconButton } from '@mui/material';
 import { useContext } from 'react';
-import { ChoiceContext, CheckListChoiceActions } from '../../../contexts/dialogContext';
+import { ChoiceContext, MaintenanceChoiceActions,  } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
+import { GetMaintenanceDto } from '../../../dtos/maintenance/maintenance.dto';
+import CreateOrEditMaintenanceForm from '../../forms/maintenance/CreateOrEditMaintenanceForm';
 
-import { GetChecklistDto } from '../../../dtos/checklist/checklist.dto';
-import CreateorEditCheckListForm from '../../forms/checklists/CreateorEditCheckListForm';
 
-function CreateOrEditMaintenanceDialog({ checklist, setChecklist }: { checklist?: GetChecklistDto, setChecklist: React.Dispatch<React.SetStateAction<GetChecklistDto | undefined>> }) {
+function CreateOrEditMaintenanceDialog({ maintenance, setMaintenance }: { maintenance?: GetMaintenanceDto, setMaintenance: React.Dispatch<React.SetStateAction<GetMaintenanceDto | undefined>> }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (
         <>
-            <Dialog fullScreen={Boolean(window.screen.width < 500)} open={choice === CheckListChoiceActions.create_or_edit_checklist ? true : false}
+            <Dialog fullScreen={Boolean(window.screen.width < 500)} open={choice === MaintenanceChoiceActions.create_or_edit_maintenance ? true : false}
                 onClose={() => {
-                    setChoice({ type: CheckListChoiceActions.close_checklist })
-                    setChecklist(undefined)
+                    setChoice({ type: MaintenanceChoiceActions.close_maintenance })
+                    setMaintenance(undefined)
                 }}
             >
                 <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                    setChoice({ type: CheckListChoiceActions.close_checklist })
-                    setChecklist(undefined)
+                    setChoice({ type: MaintenanceChoiceActions.close_maintenance })
+                    setMaintenance(undefined)
                 }}>
                     <Cancel fontSize='large' />
                 </IconButton>
 
-                <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}> {!checklist ? "New Checklist" : "Edit Checklist"}
+                <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}> {!maintenance ? "New Checklist" : "Edit Checklist"}
                 </DialogTitle>
                 <DialogContent>
-                    <CreateorEditCheckListForm checklist={checklist} />
+                    <CreateOrEditMaintenanceForm maintenance={maintenance} />
                 </DialogContent>
             </Dialog>
         </>

@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Button, ButtonGroup, Fade, IconButton, LinearProgress, Menu, MenuItem, Select, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Button, Fade, IconButton, LinearProgress, Menu, MenuItem, Select, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import { GetUsers } from '../../services/UserServices'
 import { toTitleCase } from '../../utils/TitleCase'
@@ -11,47 +11,47 @@ import { DropDownDto } from '../../dtos/common/dropdown.dto'
 import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { ChoiceContext, MaintenanceChoiceActions } from '../../contexts/dialogContext'
 import PopUp from '../../components/popup/PopUp'
-import { AcUnit, Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, RemoveRedEye } from '@mui/icons-material'
+import { Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, RemoveRedEye } from '@mui/icons-material'
 import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
-import { GetMaintenanceDto, GetMaintenanceItemDto } from '../../dtos/maintenance/maintenance.dto'
-import { GetAllMaintenance, GetAllMaintenanceCategory } from '../../services/MaintenanceServices'
+import { GetMaintenanceItemDto, GetMaintenanceDto } from '../../dtos/maintenance/maintenance.dto'
+import { GetAllMaintenanceCategory, GetAllMaintenanceReport } from '../../services/MaintenanceServices'
 import DeleteMaintenanceDialog from '../../components/dialogs/maintenance/DeleteMaintenanceDialog'
 import CreateOrEditMaintenanceDialog from '../../components/dialogs/maintenance/CreateOrEditMaintenanceDialog'
+import moment from 'moment'
 
 
-
-
-function MaintenanceItem({ item }: { item: GetMaintenanceItemDto }) {
-    const [localItem, setLocalitem] = useState(item)
-    const { user } = useContext(UserContext)
+function MaintenanceItem({ item }: {
+    item: GetMaintenanceItemDto
+}) {
+    const [localItem, setLocalitem] = useState<{
+        dt1: string;
+        dt2: string;
+        checked: boolean;
+    }>()
     return (
         <>
-            {localItem && <Stack direction={'row'} sx={{ border: 1, gap: 1, pl: 1, pr: 0.2, cursor: 'pointer', scrollbarWidth: 0, borderRadius: 2, backgroundColor: localItem.is_required && localItem.stage !== "done" ? 'red' : "green" }}
+            <Stack direction={'row'} gap={1} sx={{ overflowX: 'scroll' }}>
+                <p>{item.boxes?.length}</p>
+                {item.boxes && item.boxes.map((item) => {
+                    return (
+                        <Stack sx={{ border: 1, gap: 1, pl: 1, pr: 0.2, cursor: 'pointer', scrollbarWidth: 0, borderRadius: 2, backgroundColor: item.checked ? 'green' : "red" }}
 
-            >
-                <ButtonGroup
-                    variant="text" aria-label="Basic button group">
-                    {user?.assigned_permissions.includes('maintenance_create') && <Button>
-                        <AcUnit sx={{ height: 15 }} color="action" onClick={() => {
-                            setLocalitem({ ...localItem, is_required: !localItem.is_required })
-                        }} />
-                    </Button>}
-                    <Button>
-                        <RemoveRedEye onClick={() => { alert("view remarks") }} color="action" />
-                    </Button>
-                    <Button>
-                        <Typography onDoubleClick={() => { localItem.is_required && alert("add remarks") }} sx={{ color: "white" }}>{localItem.item}</Typography>
-                    </Button>
-                </ButtonGroup>
-            </Stack>}
+                        >
+                            <RemoveRedEye color="action" onClick={() => {
+                                setLocalitem(item)
+                                alert("view remarks" + item.dt1.toString() + item.dt2.toString());
+                            }} />
+
+                        </Stack>
+                    )
+                })}
+            </Stack>
         </>
     )
-
-
 }
-function MaintenancePage() {
+function MaintenanceReportPage() {
     const { user: LoggedInUser } = useContext(UserContext)
     const [users, setUsers] = useState<GetUserDto[]>([])
     const [maintenance, setMaintenance] = useState<GetMaintenanceDto>()
@@ -60,7 +60,10 @@ function MaintenancePage() {
     const [category, setCategory] = useState<string>('undefined');
     const [categories, setCategories] = useState<DropDownDto[]>([])
     const [userId, setUserId] = useState<string>()
-
+    const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
+        start_date: moment(new Date().setDate(new Date().getDate() - 6)).format("YYYY-MM-DD")
+        , end_date: moment(new Date().setDate(new Date().getDate() + 4)).format("YYYY-MM-DD")
+    })
     const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("maintenance_categories", GetAllMaintenanceCategory)
     const { choice, setChoice } = useContext(ChoiceContext)
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
@@ -68,7 +71,7 @@ function MaintenancePage() {
     let day = previous_date.getDate() - 1
     previous_date.setDate(day)
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'feature_menu', show_assigned_only: true }))
-    const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{ result: GetMaintenanceDto[], page: number, total: number, limit: number }>, BackendError>(["maintenances", userId], async () => GetAllMaintenance({ limit: paginationData?.limit, page: paginationData?.page, id: userId }))
+    const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{ result: GetMaintenanceDto[], page: number, total: number, limit: number }>, BackendError>(["maintenance_reports", userId, dates?.start_date, dates?.end_date], async () => GetAllMaintenanceReport({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     const columns = useMemo<MRT_ColumnDef<GetMaintenanceDto>[]>(
@@ -319,6 +322,40 @@ function MaintenancePage() {
 
                 <Typography variant="h6">Maintainance</Typography>
                 <Stack sx={{ px: 2 }} direction='row' alignItems={'center'}>
+                    < TextField
+                        size="small"
+                        type="date"
+                        id="start_date"
+                        label="Start Date"
+                        fullWidth
+                        focused
+                        value={dates.start_date}
+                        onChange={(e) => {
+                            if (e.currentTarget.value) {
+                                setDates({
+                                    ...dates,
+                                    start_date: moment(e.target.value).format("YYYY-MM-DD")
+                                })
+                            }
+                        }}
+                    />
+                    < TextField
+                        type="date"
+                        id="end_date"
+                        size="small"
+                        label="End Date"
+                        value={dates.end_date}
+                        focused
+                        fullWidth
+                        onChange={(e) => {
+                            if (e.currentTarget.value) {
+                                setDates({
+                                    ...dates,
+                                    end_date: moment(e.target.value).format("YYYY-MM-DD")
+                                })
+                            }
+                        }}
+                    />
                     {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 && <Select
                         sx={{ m: 1, width: 300 }}
                         labelId="demo-multiple-name-label"
@@ -385,4 +422,4 @@ function MaintenancePage() {
     )
 }
 
-export default MaintenancePage
+export default MaintenanceReportPage
