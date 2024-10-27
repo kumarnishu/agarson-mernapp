@@ -126,10 +126,11 @@ function AppRoutes() {
                   <SoleThicknessPage />
                 }
               />}
-              {user?.is_admin && <Route path="MaintenancePage" element={
-                <MaintenancePage />
+              {user?.assigned_permissions.includes('maintenance_view') && <Route path="MaintenancePage" element={
+                < MaintenancePage />
               }
               />}
+             
             </Route>}
 
           {user && user?.assigned_permissions.includes('report_menu') &&
@@ -225,8 +226,8 @@ function AppRoutes() {
                 < SaleAnalysisReport />
               }
               />}
-              {user?.assigned_permissions.includes('maintenance_view') && <Route path="MaintenancePage" element={
-                < MaintenancePage />
+              {user?.is_admin && <Route path="MaintenanceReport" element={
+                <MaintenanceReportPage />
               }
               />}
             </Route>}

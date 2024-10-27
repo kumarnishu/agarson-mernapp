@@ -11,7 +11,7 @@ import { DropDownDto } from '../../dtos/common/dropdown.dto'
 import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { ChoiceContext, MaintenanceChoiceActions } from '../../contexts/dialogContext'
 import PopUp from '../../components/popup/PopUp'
-import { AcUnit, Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, RemoveRedEye } from '@mui/icons-material'
+import {  Check, Close, Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, RemoveRedEye } from '@mui/icons-material'
 import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
@@ -19,33 +19,38 @@ import { GetMaintenanceDto, GetMaintenanceItemDto } from '../../dtos/maintenance
 import { GetAllMaintenance, GetAllMaintenanceCategory } from '../../services/MaintenanceServices'
 import DeleteMaintenanceDialog from '../../components/dialogs/maintenance/DeleteMaintenanceDialog'
 import CreateOrEditMaintenanceDialog from '../../components/dialogs/maintenance/CreateOrEditMaintenanceDialog'
-
+import CreateOrEditMaintenanceItemRemarkDialog from '../../components/dialogs/maintenance/AddMaintenanceItemRemarkDialog'
+import ViewMaintenaceRemarkHistoryDialog from '../../components/dialogs/maintenance/ViewMaintenaceRemarkHistoryDialog'
 
 
 
 function MaintenanceItem({ item }: { item: GetMaintenanceItemDto }) {
     const [localItem, setLocalitem] = useState(item)
     const { user } = useContext(UserContext)
+    const {  setChoice } = useContext(ChoiceContext)
+
     return (
         <>
-            {localItem && <Stack direction={'row'} sx={{ border: 1, gap: 1, pl: 1, pr: 0.2, cursor: 'pointer', scrollbarWidth: 0, borderRadius: 2, backgroundColor: localItem.is_required && localItem.stage !== "done" ? 'red' : "green" }}
+            {item &&<ViewMaintenaceRemarkHistoryDialog id={item._id} />}
+            <CreateOrEditMaintenanceItemRemarkDialog item={item} />
+        { localItem.is_required&&localItem.stage!=='done'||user?.is_admin ?
+                <Stack direction={'row'} sx={{ border: 1, gap: 1, pl: 1, pr: 0.2, cursor: 'pointer', scrollbarWidth: 0, borderRadius: 2, backgroundColor: localItem.is_required && localItem.stage !== "done" ? 'red' : "green" }}
 
-            >
-                <ButtonGroup
-                    variant="text" aria-label="Basic button group">
-                    {user?.assigned_permissions.includes('maintenance_create') && <Button>
-                        <AcUnit sx={{ height: 15 }} color="action" onClick={() => {
+                >
+                
+                    {user?.assigned_permissions.includes('maintenance_create') && <IconButton onClick={() => {
                             setLocalitem({ ...localItem, is_required: !localItem.is_required })
-                        }} />
-                    </Button>}
-                    <Button>
-                        <RemoveRedEye onClick={() => { alert("view remarks") }} color="action" />
-                    </Button>
-                    <Button>
-                        <Typography onDoubleClick={() => { localItem.is_required && alert("add remarks") }} sx={{ color: "white" }}>{localItem.item}</Typography>
-                    </Button>
-                </ButtonGroup>
-            </Stack>}
+                        }} title="toogle required" sx={{ color: 'white' }}>
+                            {localItem.is_required ? <Close sx={{ height: 15 }} /> : <Check sx={{ height: 15 }} />}
+                        </IconButton>}
+                        <IconButton onClick={() => { setChoice({ type: MaintenanceChoiceActions.view_maintance_remarks }) }} title="view remarks" sx={{ color: 'white' }}>
+                            <RemoveRedEye />
+                        </IconButton>
+                        <IconButton onClick={() => { localItem.is_required && setChoice({ type: MaintenanceChoiceActions.create_or_edit_maintenance_remarks }) }}>
+                            <Typography title="add remark" sx={{ color: "white" }}>{localItem.item}</Typography>
+                        </IconButton>
+                </Stack>:null
+            }
         </>
     )
 
@@ -120,10 +125,10 @@ function MaintenancePage() {
                 Cell: (cell) => <>{cell.row.original.work ? cell.row.original.work : ""}</>
             },
             {
-                accessorKey: 'category',
-                header: ' Category',
+                accessorKey: 'frequency',
+                header: ' Frequency',
                 size: 150,
-                Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.value : ""}</>
+                Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
             },
             {
                 accessorKey: 'user',
@@ -131,25 +136,18 @@ function MaintenancePage() {
                 size: 150,
                 Cell: (cell) => <>{cell.row.original.user.label ? cell.row.original.user.label : ""}</>
             },
-
             {
-                accessorKey: 'frequency',
-                header: ' Frequency',
+                accessorKey: 'category',
+                header: ' Category',
                 size: 150,
-                Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
-            },
-            {
-                accessorKey: 'item',
-                header: ' Maintainable Item',
-                size: 150,
-                Cell: (cell) => <>{cell.row.original.item ? cell.row.original.item : ""}</>
+                Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.value : ""}</>
             },
             {
                 accessorKey: 'items',
                 header: ' Items',
                 grow: true,
-                size: 400,
-                Cell: (cell) => <>{cell.row.original.items.length > 0 ? <Stack direction={'row'} gap={1} maxWidth={600} sx={{ overflowX: 'scroll' }}>
+                size: 600,
+                Cell: (cell) => <>{cell.row.original.items.length > 0 ? <Stack direction={'row'} gap={1} minWidth={600} sx={{ overflowX: 'scroll' }}>
                     {cell.row.original.items && cell.row.original.items.map((item) => {
                         return (
                             <MaintenanceItem item={item} />
@@ -157,6 +155,16 @@ function MaintenancePage() {
                     })}
                 </Stack>
                     : ""}</>
+            },
+           
+            
+
+
+            {
+                accessorKey: 'item',
+                header: ' Maintainable Item',
+                size: 150,
+                Cell: (cell) => <>{cell.row.original.item ? cell.row.original.item : ""}</>
             },
 
         ],

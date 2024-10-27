@@ -2,33 +2,33 @@ import React, { useReducer } from "react"
 
 
 type UserChoices = "signup" | "reset_password_mail" | "close_user" | "new_user" | "update_user" | "update_profile" | "view_profile" | "update_password" | "reset_password" | "verify_email" | "control_access" | "delete_user" | "toogle_flow_status" | "create_or_edit_erpstate" | "update_state" | "delete_erp_state" |
-  "block_user" | "unblock_user" | "make_admin" | "remove_admin" | "refresh_whatsapp" | "update_user_password" | "block_multi_login" | "reset_multi_login" | "assign_users" | "bulk_assign_erp_states" | "toogle_show_visitingcard" | "assign_permissions" | "bulk_assign_permissions" | "delete_role" | "bulk_assign_erp_employees" |"create_or_edit_erpemployee"|"delete_erp_employee"
+  "block_user" | "unblock_user" | "make_admin" | "remove_admin" | "refresh_whatsapp" | "update_user_password" | "block_multi_login" | "reset_multi_login" | "assign_users" | "bulk_assign_erp_states" | "toogle_show_visitingcard" | "assign_permissions" | "bulk_assign_permissions" | "delete_role" | "bulk_assign_erp_employees" | "create_or_edit_erpemployee" | "delete_erp_employee"
 
 
 
-type CheckListChoices = "create_or_edit_checklist" | "create_or_edit_checklist_category" | "delete_checklist" | "close_checklist" | "edit_checklist" | "delete_checklist_category" | "toogle_checklist"
+type CheckListChoices = "create_or_edit_checklist" | "create_or_edit_checklist_category" | "delete_checklist" | "close_checklist" | "edit_checklist" | "delete_checklist_category" | "toogle_checklist" | "create_or_edit_maintenance_remarks" | "view_maintance_remarks" | "toogle_maintenace_item"
 
-type MaintenanceChoices = "create_or_edit_maintenance" | "create_or_edit_maintenance_category" | "delete_maintenance" | "close_maintenance"  | "toogle_maintenance_category"
-
-
-type LeadChoices = "create_or_edit_refer" |"create_or_edit_leadtype"| "create_or_edit_source" | "delete_crm_item" | "view_remarks" | "close_lead" | "create_or_edit_city" | "bulk_assign_crm_cities" | "find_unknown_stages" | "create_or_edit_bill" | "convert_lead_to_refer" | "bulk_delete_useless_leads" | "view_referrals" | "delete_crm_state" |"find_unknown_cities"|
-  "refer_lead" | "remove_referral" | "assign_refer" | "bulk_assign_leads" | "bulk_assign_refers" | "delete_remark" | "create_or_edt_remark" | "create_or_edit_lead" | "create_or_edit_state" | "create_or_edit_stage" | "bulk_assign_crm_states" | "find_unknown_states" | "merge_leads" | "view_refer_remarks" | "delete_bill" | "view_bills" | "merge_refers" |"view_bills_photo"
+type MaintenanceChoices = "create_or_edit_maintenance" | "create_or_edit_maintenance_category" | "delete_maintenance" | "close_maintenance" | "toogle_maintenance_category"
 
 
-type ProductionChoices = "create_or_edit_machine" | "close_production" | "create_or_edit_spareDye" | "create_or_edit_article" | "create_or_edit_thickness" | "create_or_edit_dye" | "update_dye" | "validate_weight" | "toogle_machine" | "toogle_article" | "toogle_dye" | "view_shoe_photo" | "view_shoe_photo2" | "view_shoe_photo3" | "create_or_edit_shoe_weight" | "validate_spareDye" | "view_spare_dye_photo" | "create_or_edit_production" | "update_production" | "delete_production_item" | "create_or_edit_location" | "toogle_dye_location" | "update_shoe_weight2" | "update_shoe_weight3" |"create_or_edit_machine_category"
+type LeadChoices = "create_or_edit_refer" | "create_or_edit_leadtype" | "create_or_edit_source" | "delete_crm_item" | "view_remarks" | "close_lead" | "create_or_edit_city" | "bulk_assign_crm_cities" | "find_unknown_stages" | "create_or_edit_bill" | "convert_lead_to_refer" | "bulk_delete_useless_leads" | "view_referrals" | "delete_crm_state" | "find_unknown_cities" |
+  "refer_lead" | "remove_referral" | "assign_refer" | "bulk_assign_leads" | "bulk_assign_refers" | "delete_remark" | "create_or_edt_remark" | "create_or_edit_lead" | "create_or_edit_state" | "create_or_edit_stage" | "bulk_assign_crm_states" | "find_unknown_states" | "merge_leads" | "view_refer_remarks" | "delete_bill" | "view_bills" | "merge_refers" | "view_bills_photo"
 
 
-type ChoiceState = UserChoices | LeadChoices   | CheckListChoices  | ProductionChoices  | MaintenanceChoices
+type ProductionChoices = "create_or_edit_machine" | "close_production" | "create_or_edit_spareDye" | "create_or_edit_article" | "create_or_edit_thickness" | "create_or_edit_dye" | "update_dye" | "validate_weight" | "toogle_machine" | "toogle_article" | "toogle_dye" | "view_shoe_photo" | "view_shoe_photo2" | "view_shoe_photo3" | "create_or_edit_shoe_weight" | "validate_spareDye" | "view_spare_dye_photo" | "create_or_edit_production" | "update_production" | "delete_production_item" | "create_or_edit_location" | "toogle_dye_location" | "update_shoe_weight2" | "update_shoe_weight3" | "create_or_edit_machine_category"
+
+
+type ChoiceState = UserChoices | LeadChoices | CheckListChoices | ProductionChoices | MaintenanceChoices
 
 const initialState: ChoiceState | null = null
 
 
 export enum ProductionChoiceActions {
   validate_weight = "validate_weight",
-  delete_production_item ="delete_production_item",
-  create_or_edit_machine_category ="create_or_edit_machine_category",
-  create_or_edit_location="create_or_edit_location",
-  toogle_dye_location ="toogle_dye_location",
+  delete_production_item = "delete_production_item",
+  create_or_edit_machine_category = "create_or_edit_machine_category",
+  create_or_edit_location = "create_or_edit_location",
+  toogle_dye_location = "toogle_dye_location",
   create_or_edit_machine = "create_or_edit_machine",
   view_shoe_photo = "view_shoe_photo",
   view_shoe_photo2 = "view_shoe_photo2",
@@ -65,10 +65,14 @@ export enum CheckListChoiceActions {
 
 export enum MaintenanceChoiceActions {
   create_or_edit_maintenance = "create_or_edit_maintenance",
+  create_or_edit_maintenance_remarks = "create_or_edit_maintenance_remarks",
   create_or_edit_maintenance_category = "create_or_edit_maintenance_category",
   delete_maintenance = "delete_maintenance",
   close_maintenance = "close_maintenance",
-  toogle_maintenance_category ="toogle_maintenance_category"
+  toogle_maintenance_category = "toogle_maintenance_category",
+  view_maintance_remarks = "view_maintance_remarks",
+  toogle_maintenace_item = "toogle_maintenace_item"
+
 }
 
 
@@ -76,10 +80,10 @@ export enum MaintenanceChoiceActions {
 export enum LeadChoiceActions {
   create_or_edit_lead = "create_or_edit_lead",
   view_bills_photo = "view_bills_photo",
-  view_bills ="view_bills",
-  merge_refers ="merge_refers",
+  view_bills = "view_bills",
+  merge_refers = "merge_refers",
   create_or_edit_state = "create_or_edit_state",
-  delete_crm_state ="delete_crm_state",
+  delete_crm_state = "delete_crm_state",
   create_or_edit_stage = "create_or_edit_stage",
   create_or_edit_refer = "create_or_edit_refer",
   create_or_edit_source = "create_or_edit_source",
@@ -93,7 +97,7 @@ export enum LeadChoiceActions {
   find_unknown_stages = "find_unknown_stages",
   find_unknown_cities = "find_unknown_cities",
   create_or_edit_bill = "create_or_edit_bill",
-  create_or_edit_leadtype ="create_or_edit_leadtype",
+  create_or_edit_leadtype = "create_or_edit_leadtype",
   convert_lead_to_refer = "convert_lead_to_refer",
   bulk_delete_useless_leads = "bulk_delete_useless_leads",
   view_referrals = "view_referrals",
@@ -104,22 +108,22 @@ export enum LeadChoiceActions {
   bulk_assign_refers = "bulk_assign_refers",
   bulk_assign_crm_states = "bulk_assign_crm_states",
   find_unknown_states = "find_unknown_states",
-  merge_leads ="merge_leads",
-  view_refer_remarks="view_refer_remarks",
-  delete_bill ="delete_bill"
+  merge_leads = "merge_leads",
+  view_refer_remarks = "view_refer_remarks",
+  delete_bill = "delete_bill"
 }
 
 export enum UserChoiceActions {
   bulk_assign_erp_states = "bulk_assign_erp_states",
-  create_or_edit_erpemployee="create_or_edit_erpemployee",
-  delete_erp_employee="delete_erp_employee",
-  bulk_assign_erp_employees ="bulk_assign_erp_employees",
+  create_or_edit_erpemployee = "create_or_edit_erpemployee",
+  delete_erp_employee = "delete_erp_employee",
+  bulk_assign_erp_employees = "bulk_assign_erp_employees",
   assign_users = "assign_users",
-  assign_permissions="assign_permissions",
-  bulk_assign_permissions= "bulk_assign_permissions",
-  delete_role ="delete_role",
+  assign_permissions = "assign_permissions",
+  bulk_assign_permissions = "bulk_assign_permissions",
+  delete_role = "delete_role",
   signup = "signup",
-  toogle_show_visitingcard ="toogle_show_visitingcard",
+  toogle_show_visitingcard = "toogle_show_visitingcard",
   reset_password_mail = "reset_password_mail",
   close_user = "close_user",
   new_user = "new_user",
@@ -147,7 +151,7 @@ export enum UserChoiceActions {
 
 type Action = {
   type: UserChoiceActions |
-  LeadChoiceActions |  CheckListChoiceActions |  ProductionChoiceActions | MaintenanceChoiceActions
+  LeadChoiceActions | CheckListChoiceActions | ProductionChoiceActions | MaintenanceChoiceActions
 }
 
 // reducer
@@ -198,7 +202,7 @@ function reducer(state: ChoiceState | null, action: Action) {
     case LeadChoiceActions.find_unknown_stages: return type
     case LeadChoiceActions.close_lead: return type
     case LeadChoiceActions.create_or_edit_bill: return type
-    case LeadChoiceActions.find_unknown_cities:return type
+    case LeadChoiceActions.find_unknown_cities: return type
     case LeadChoiceActions.convert_lead_to_refer: return type
     case LeadChoiceActions.bulk_delete_useless_leads: return type
     case LeadChoiceActions.create_or_edit_leadtype: return type
@@ -266,6 +270,9 @@ function reducer(state: ChoiceState | null, action: Action) {
     case MaintenanceChoiceActions.delete_maintenance: return type
     case MaintenanceChoiceActions.close_maintenance: return type
     case MaintenanceChoiceActions.toogle_maintenance_category: return type
+    case MaintenanceChoiceActions.create_or_edit_maintenance_remarks: return type
+    case MaintenanceChoiceActions.view_maintance_remarks: return type
+    case MaintenanceChoiceActions.toogle_maintenace_item: return type
 
     default: return state
   }

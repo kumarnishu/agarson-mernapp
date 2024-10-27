@@ -214,6 +214,7 @@ export type GetRemarksDto = {
     lead_name?: string,
     lead_mobile?: string,
     refer_id?: string,
+    maintainable_item?:string,
     refer_name?: string,
     refer_mobile?: string,
     remind_date: string,

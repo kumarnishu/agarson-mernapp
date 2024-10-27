@@ -3,62 +3,63 @@ import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useContext } from 'react';
 import { useMutation } from 'react-query';
-import { CheckListChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import { ChoiceContext, MaintenanceChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
-import { GetChecklistBoxDto } from '../../../dtos/checklist/checklist.dto';
-import { ToogleMyCheckLists } from '../../../services/CheckListServices';
 import { Cancel } from '@mui/icons-material';
+import { GetMaintenanceItemDto } from '../../../dtos/maintenance/maintenance.dto';
+import { AddMaintenanceItemRemark } from '../../../services/MaintenanceServices';
 
-function CreateOrEditMaintenanceItemRemarkDialog({ box }: { box: GetChecklistBoxDto }) {
+function AddMaintenanceItemRemarkDialog({ item }: { item: GetMaintenanceItemDto }) {
     const { mutate, isLoading, isError, error, isSuccess } = useMutation
-        <AxiosResponse<any>, BackendError, { id: string, remarks: string }>
-        (ToogleMyCheckLists, {
+        <AxiosResponse<any>, BackendError, { id: string, remarks: string, stage: string }>
+        (AddMaintenanceItemRemark, {
             onSuccess: () => {
-                queryClient.invalidateQueries('checklists')
+                queryClient.invalidateQueries('maintenances')
             }
         })
 
     const { choice, setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<{
-        remarks: string
+        remarks: string,
+        stage: string
     }>({
         initialValues: {
-            remarks: box ? box.remarks : ""
+            remarks:  "",
+            stage:item.stage||""
         },
         validationSchema: yup.object({
-            remarks: yup.string().required()
+            remarks: yup.string().required(),
+            stage: yup.string().required()
         }),
-        onSubmit: (values: {
-            remarks: string,
-        }) => {
-            mutate({
-                id: box._id,
-                remarks: values.remarks
-            })
+        onSubmit: (values) => {
+                mutate({
+                    id: item._id,
+                    remarks: values.remarks,
+                    stage: values.stage
+                })
         }
     });
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: CheckListChoiceActions.close_checklist })
-
+            setChoice({ type: MaintenanceChoiceActions.close_maintenance })
         }
     }, [isSuccess, setChoice])
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
-            open={choice === CheckListChoiceActions.toogle_checklist ? true : false}
+            open={choice === MaintenanceChoiceActions.create_or_edit_maintenance_remarks ? true : false}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                setChoice({ type: CheckListChoiceActions.close_checklist })
+                setChoice({ type: MaintenanceChoiceActions.close_maintenance })
             }
             }>
                 <Cancel fontSize='large' />
             </IconButton>
-            <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>Remarks</DialogTitle>
+            <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>Add Remarks</DialogTitle>
             <DialogContent>
                 <form onSubmit={formik.handleSubmit}>
                     <Stack
@@ -80,12 +81,36 @@ function CreateOrEditMaintenanceItemRemarkDialog({ box }: { box: GetChecklistBox
                             }
                             {...formik.getFieldProps('remarks')}
                         />
+                        < TextField
+                            select
+                            SelectProps={{
+                                native: true
+                            }}
+                            focused
+
+                            error={
+                                formik.touched.stage && formik.errors.stage ? true : false
+                            }
+                            id="stage"
+                            label="Stage"
+                            fullWidth
+                            helperText={
+                                formik.touched.stage && formik.errors.stage ? formik.errors.stage : ""
+                            }
+                            {...formik.getFieldProps('stage')}
+                        >
+                            <option key={0} value={'pending'}>
+                               Pending
+                            </option>
+                            <option key={1} value={"done"}>
+                                Done
+                            </option>
+                        </TextField>
 
 
-
-                        <Button variant="contained" color={!box?.checked ? "success" : "error"} type="submit"
+                        <Button variant="contained"  type="submit"
                             disabled={Boolean(isLoading)}
-                            fullWidth>{Boolean(isLoading) ? <CircularProgress /> : !box?.checked ? "Check" : "Uncheck"}
+                            fullWidth>{Boolean(isLoading) ? <CircularProgress /> :"Submit"}
                         </Button>
                     </Stack>
 
@@ -99,7 +124,7 @@ function CreateOrEditMaintenanceItemRemarkDialog({ box }: { box: GetChecklistBox
                     {
                         isSuccess ? (
                             <>
-                                {<AlertBar message="checklist updated" color="success" />}
+                                {<AlertBar message="success" color="success" />}
                             </>
                         ) : null
                     }
@@ -114,4 +139,4 @@ function CreateOrEditMaintenanceItemRemarkDialog({ box }: { box: GetChecklistBox
     )
 }
 
-export default CreateOrEditMaintenanceItemRemarkDialog
+export default AddMaintenanceItemRemarkDialog

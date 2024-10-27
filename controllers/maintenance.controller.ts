@@ -114,6 +114,7 @@ export const CreateMaintenance = async (req: Request, res: Response, next: NextF
             let item = new MaintenanceItem({
                 machine: machines[i],
                 is_required: true,
+                stage: "pending",
                 created_at: new Date(),
                 updated_at: new Date(),
                 created_by: req.user,
@@ -128,6 +129,7 @@ export const CreateMaintenance = async (req: Request, res: Response, next: NextF
         let item = new MaintenanceItem({
             other: maintainable_item.trim().toLowerCase(),
             is_required: true,
+            stage:"pending",
             created_at: new Date(),
             updated_at: new Date(),
             created_by: req.user,
@@ -384,6 +386,7 @@ export const CreateMaintenanceFromExcel = async (req: Request, res: Response, ne
                         let item = new MaintenanceItem({
                             machine: machines[i],
                             is_required: true,
+                            stage: "pending",
                             created_at: new Date(),
                             updated_at: new Date(),
                             created_by: req.user,
@@ -398,6 +401,7 @@ export const CreateMaintenanceFromExcel = async (req: Request, res: Response, ne
                     let item = new MaintenanceItem({
                         other: maintainable_item.trim().toLowerCase(),
                         is_required: true,
+                        stage:"pending",
                         created_at: new Date(),
                         updated_at: new Date(),
                         created_by: req.user,

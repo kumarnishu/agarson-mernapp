@@ -49,7 +49,7 @@ export const ToogleMaintenanceItem = async ({ id }: { id: string }) => {
     return await apiClient.patch(`maintenances/item/toogle/${id}`)
 }
 export const AddMaintenanceItemRemark = async ({ id, remarks, stage }: { id: string, remarks: string, stage: string }) => {
-    return await apiClient.patch(`maintenances/item/remarks/${id}`, { remark: remarks, stage: stage })
+    return await apiClient.post(`maintenances/item/remarks/${id}`, { remark: remarks, stage: stage })
 }
 
 export const ViewMaintenanceItemRemarkHistory = async ({ id }: { id: string }) => {
