@@ -4,14 +4,14 @@ import { createServer } from "http"
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from "cors";
-import { MulterError } from 'multer';
+import multer, { MulterError } from 'multer';
 import { connectDatabase } from './config/db';
 import path from 'path';
 import { Server } from "socket.io";
-import { getCurrentUser, userJoin, userLeave } from "./utils/handleSocketUsers";
 import { Storage } from '@google-cloud/storage';
 import morgan from 'morgan';
-import { ActivateMaintenanceWork } from './utils/activateMaintenanceWork';
+import { getCurrentUser, userJoin, userLeave } from './utils/socket.util';
+import { ActivateMaintenanceWork } from './utils/app.util';
 
 const app = express()
 const server = createServer(app)
@@ -96,9 +96,10 @@ const storage = new Storage({
 
 export const bucketName = String(process.env.bucketName)
 export const bucket = storage.bucket(bucketName)
+export const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 * 50 } })
 
 
-
+app.use("/api/v1",router)
 
 ActivateMaintenanceWork();
 

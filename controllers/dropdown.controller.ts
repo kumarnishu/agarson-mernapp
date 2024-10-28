@@ -1,30 +1,14 @@
 import { NextFunction, Request, Response } from "express"
-import { CreateOrEditDropDownDto, DropDownDto } from "../dtos/dropdown.dto"
-import { LeadType } from "../models/dropdown/crm.leadtype.model"
-import Lead from "../models/features/lead.model"
-import { ReferredParty } from "../models/features/referred.model"
-import isMongoId from "validator/lib/isMongoId"
-import { Stage } from "../models/dropdown/crm.stage.model"
-import { LeadSource } from "../models/dropdown/crm.source.model"
-import { AssignOrRemoveCrmCityDto, AssignOrRemoveCrmStateDto, CreateAndUpdatesCityFromExcelDto, CreateAndUpdatesStateFromExcelDto, CreateOrEditCrmCity, GetCrmCityDto, GetCrmStateDto } from "../dtos/crm.dto"
-import { CRMState, ICRMState } from "../models/dropdown/crm.state.model"
-import { User } from "../models/features/user.model"
-import { HandleCRMCitiesAssignment } from "../utils/AssignCitiesToUsers"
-import { CRMCity, ICRMCity } from "../models/dropdown/crm.city.model"
+import { AssignOrRemoveCrmCityDto, AssignOrRemoveCrmStateDto, CreateAndUpdatesCityFromExcelDto, CreateAndUpdatesStateFromExcelDto, CreateOrEditCrmCity,  CreateOrEditDyeDTo,  CreateOrEditDyeDtoFromExcel,  CreateOrEditErpStateDto, CreateOrEditMachineDto, DropDownDto, GetArticleDto, GetCrmCityDto, GetCrmStateDto, GetDyeDto, GetDyeLocationDto, GetErpEmployeeDto, GetErpStateDto, GetMachineDto } from "../dtos/dropdown.dto"
 import xlsx from "xlsx"
-import { ChecklistCategory } from "../models/features/checklist.model"
-import { ErpEmployee } from "../models/dropdown/erp.employee.model"
-import { CreateOrEditErpEmployeeDto, CreateOrEditErpStateDto, GetErpEmployeeDto, GetErpStateDto } from "../dtos/erp.reports.dto"
 import moment from "moment"
-import { State } from "../models/dropdown/state.model"
+import { Article, ChecklistCategory, CRMCity, CRMState, Dye, DyeLocation, ErpEmployee, LeadSource, LeadType, Machine, MachineCategory, MaintenanceCategory, Stage, State } from "../models/dropdown.model"
+import Lead, { ReferredParty, User } from "../models/feature.model"
+import isMongoId from "validator/lib/isMongoId"
+import { HandleCRMCitiesAssignment } from "../utils/app.util"
+import { IArticle, ICRMCity, ICRMState, IDye, IDyeLocation, IMachine } from "../interfaces/dropdown.interface"
 import mongoose from "mongoose"
-import { CreateOrEditArticleDto, CreateOrEditDyeDTo, CreateOrEditDyeDtoFromExcel, CreateOrEditDyeLocationDto, CreateOrEditMachineDto, GetArticleDto, GetDyeDto, GetDyeLocationDto, GetMachineDto } from "../dtos/production.dto"
-import { DyeLocation, IDyeLocation } from "../models/dropdown/dye.location.model"
-import { Dye, IDye } from "../models/dropdown/dye.model"
-import { Article, IArticle } from "../models/dropdown/article.model"
-import { IMachine, Machine } from "../models/dropdown/machine.model"
-import { MachineCategory } from "../models/dropdown/category.machine.model"
-import { MaintenanceCategory } from "../models/dropdown/maintainence.category.model"
+
 
 export const GetAllCRMLeadTypes = async (req: Request, res: Response, next: NextFunction) => {
     let result: DropDownDto[] = []
@@ -35,14 +19,14 @@ export const GetAllCRMLeadTypes = async (req: Request, res: Response, next: Next
     return res.status(200).json(result)
 }
 export const CreateCRMLeadTypes = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
-    if (!key) {
+    const { type } = req.body as {type:string}
+    if (!type) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
-    if (await LeadType.findOne({ type: key.toLowerCase() }))
+    if (await LeadType.findOne({ type: type.toLowerCase() }))
         return res.status(400).json({ message: "already exists this type" })
     let result = await new LeadType({
-        type: key,
+        type: type,
         updated_at: new Date(),
         created_by: req.user,
         updated_by: req.user
@@ -50,26 +34,25 @@ export const CreateCRMLeadTypes = async (req: Request, res: Response, next: Next
     return res.status(201).json({ message: "success" })
 
 }
-
 export const UpdateCRMLeadTypes = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
-    if (!key) {
+    const { type } = req.body as { type: string }
+    if (!type) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
     const id = req.params.id
     let oldtype = await LeadType.findById(id)
     if (!oldtype)
         return res.status(404).json({ message: "type not found" })
-    if (key !== oldtype.type)
-        if (await LeadType.findOne({ type: key.toLowerCase() }))
+    if (type !== oldtype.type)
+        if (await LeadType.findOne({ type: type.toLowerCase() }))
             return res.status(400).json({ message: "already exists this type" })
     let prevtype = oldtype.type
-    oldtype.type = key
+    oldtype.type = type
     oldtype.updated_at = new Date()
     if (req.user)
         oldtype.updated_by = req.user
-    await Lead.updateMany({ type: prevtype }, { type: key })
-    await ReferredParty.updateMany({ type: prevtype }, { type: key })
+    await Lead.updateMany({ type: prevtype }, { type: type })
+    await ReferredParty.updateMany({ type: prevtype }, { type: type })
     await oldtype.save()
     return res.status(200).json({ message: "updated" })
 
@@ -84,7 +67,6 @@ export const DeleteCRMLeadType = async (req: Request, res: Response, next: NextF
     await type.remove();
     return res.status(200).json({ message: "lead type deleted successfully" })
 }
-
 export const GetAllCRMLeadSources = async (req: Request, res: Response, next: NextFunction) => {
     let result: DropDownDto[] = []
     let sources = await LeadSource.find()
@@ -93,17 +75,15 @@ export const GetAllCRMLeadSources = async (req: Request, res: Response, next: Ne
     })
     return res.status(200).json(result)
 }
-
-
 export const CreateCRMLeadSource = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
-    if (!key) {
+    const { source } = req.body as {source:string}
+    if (!source) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
-    if (await LeadSource.findOne({ source: key.toLowerCase() }))
+    if (await LeadSource.findOne({ source: source.toLowerCase() }))
         return res.status(400).json({ message: "already exists this source" })
     let result = await new LeadSource({
-        source: key,
+        source: source,
         updated_at: new Date(),
         created_by: req.user,
         updated_by: req.user
@@ -111,26 +91,25 @@ export const CreateCRMLeadSource = async (req: Request, res: Response, next: Nex
     return res.status(201).json(result)
 
 }
-
 export const UpdateCRMLeadSource = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
-    if (!key) {
+    const { source } = req.body as {source:string}
+    if (!source) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
     const id = req.params.id
     let oldsource = await LeadSource.findById(id)
     if (!oldsource)
         return res.status(404).json({ message: "source not found" })
-    if (key !== oldsource.source)
-        if (await LeadSource.findOne({ source: key.toLowerCase() }))
+    if (source !== oldsource.source)
+        if (await LeadSource.findOne({ source: source.toLowerCase() }))
             return res.status(400).json({ message: "already exists this source" })
     let prevsource = oldsource.source
-    oldsource.source = key
+    oldsource.source = source
     oldsource.updated_at = new Date()
     if (req.user)
         oldsource.updated_by = req.user
-    await Lead.updateMany({ source: prevsource }, { source: key })
-    await ReferredParty.updateMany({ source: prevsource }, { source: key })
+    await Lead.updateMany({ source: prevsource }, { source: source })
+    await ReferredParty.updateMany({ source: prevsource }, { source: source })
     await oldsource.save()
     return res.status(200).json(oldsource)
 
@@ -145,25 +124,21 @@ export const DeleteCRMLeadSource = async (req: Request, res: Response, next: Nex
     await source.remove();
     return res.status(200).json({ message: "lead source deleted successfully" })
 }
-
-
 //lead stages
 export const GetAllCRMLeadStages = async (req: Request, res: Response, next: NextFunction) => {
     let stages: DropDownDto[] = []
     stages = await (await Stage.find()).map((i) => { return { id: i._id, label: i.stage, value: i.stage } });
     return res.status(200).json(stages)
 }
-
-
 export const CreateCRMLeadStages = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
-    if (!key) {
+    const { stage } = req.body as {stage:string}
+    if (!stage) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
-    if (await Stage.findOne({ stage: key.toLowerCase() }))
+    if (await Stage.findOne({ stage: stage.toLowerCase() }))
         return res.status(400).json({ message: "already exists this stage" })
     let result = await new Stage({
-        stage: key,
+        stage: stage,
         updated_at: new Date(),
         created_by: req.user,
         updated_by: req.user
@@ -171,27 +146,26 @@ export const CreateCRMLeadStages = async (req: Request, res: Response, next: Nex
     return res.status(201).json(result)
 
 }
-
 export const UpdateCRMLeadStages = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
+    const { stage } = req.body as {stage:string}
 
-    if (!key) {
+    if (!stage) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
     const id = req.params.id
     let oldstage = await Stage.findById(id)
     if (!oldstage)
         return res.status(404).json({ message: "stage not found" })
-    if (key !== oldstage.stage)
-        if (await Stage.findOne({ stage: key.toLowerCase() }))
+    if (stage !== oldstage.stage)
+        if (await Stage.findOne({ stage: stage.toLowerCase() }))
             return res.status(400).json({ message: "already exists this stage" })
     let prevstage = oldstage.stage
-    oldstage.stage = key
+    oldstage.stage = stage
     oldstage.updated_at = new Date()
     if (req.user)
         oldstage.updated_by = req.user
-    await Lead.updateMany({ stage: prevstage }, { stage: key })
-    await ReferredParty.updateMany({ stage: prevstage }, { stage: key })
+    await Lead.updateMany({ stage: prevstage }, { stage: stage })
+    await ReferredParty.updateMany({ stage: prevstage }, { stage: stage })
     await oldstage.save()
     return res.status(200).json(oldstage)
 
@@ -216,17 +190,15 @@ export const GetAllCRMStates = async (req: Request, res: Response, next: NextFun
     }
     return res.status(200).json(result)
 }
-
-
 export const CreateCRMState = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
-    if (!key) {
+    const { state } = req.body as {state:string}
+    if (!state) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
-    if (await CRMState.findOne({ state: key.toLowerCase() }))
+    if (await CRMState.findOne({ state: state.toLowerCase() }))
         return res.status(400).json({ message: "already exists this state" })
     let result = await new CRMState({
-        state: key,
+        state: state,
         updated_at: new Date(),
         created_by: req.user,
         updated_by: req.user
@@ -234,7 +206,42 @@ export const CreateCRMState = async (req: Request, res: Response, next: NextFunc
     return res.status(201).json(result)
 
 }
+export const UpdateCRMState = async (req: Request, res: Response, next: NextFunction) => {
+    const { state } = req.body as { state: string }
+    if (!state) {
+        return res.status(400).json({ message: "please fill all reqired fields" })
+    }
+    const id = req.params.id
+    let oldstate = await CRMState.findById(id)
+    if (!oldstate)
+        return res.status(404).json({ message: "state not found" })
+    if (state !== oldstate.state)
+        if (await CRMState.findOne({ state: state.toLowerCase() }))
+            return res.status(400).json({ message: "already exists this state" })
+    let prevstate = oldstate.state
+    oldstate.state = state
+    oldstate.updated_at = new Date()
+    if (req.user)
+        oldstate.updated_by = req.user
 
+    await Lead.updateMany({ state: prevstate }, { state: state })
+    await ReferredParty.updateMany({ state: prevstate }, { state: state })
+
+    await oldstate.save()
+    return res.status(200).json(oldstate)
+
+}
+export const DeleteCRMState = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    if (!isMongoId(id)) return res.status(403).json({ message: "state id not valid" })
+    let state = await CRMState.findById(id);
+    if (!state) {
+        return res.status(404).json({ message: "state not found" })
+    }
+
+    await state.remove();
+    return res.status(200).json({ message: "state deleted successfully" })
+}
 export const AssignCRMCitiesToUsers = async (req: Request, res: Response, next: NextFunction) => {
     const { city_ids, user_ids, flag } = req.body as AssignOrRemoveCrmCityDto
 
@@ -245,7 +252,6 @@ export const AssignCRMCitiesToUsers = async (req: Request, res: Response, next: 
     await HandleCRMCitiesAssignment(user_ids, city_ids, flag);
     return res.status(200).json({ message: "successfull" })
 }
-
 export const AssignCRMStatesToUsers = async (req: Request, res: Response, next: NextFunction) => {
     const { state_ids, user_ids, flag } = req.body as AssignOrRemoveCrmStateDto
     if (state_ids && state_ids.length === 0)
@@ -303,43 +309,6 @@ export const AssignCRMStatesToUsers = async (req: Request, res: Response, next: 
     return res.status(200).json({ message: "successfull" })
 }
 
-
-export const UpdateCRMState = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
-    if (!key) {
-        return res.status(400).json({ message: "please fill all reqired fields" })
-    }
-    const id = req.params.id
-    let oldstate = await CRMState.findById(id)
-    if (!oldstate)
-        return res.status(404).json({ message: "state not found" })
-    if (key !== oldstate.state)
-        if (await CRMState.findOne({ state: key.toLowerCase() }))
-            return res.status(400).json({ message: "already exists this state" })
-    let prevstate = oldstate.state
-    oldstate.state = key
-    oldstate.updated_at = new Date()
-    if (req.user)
-        oldstate.updated_by = req.user
-
-    await Lead.updateMany({ state: prevstate }, { state: key })
-    await ReferredParty.updateMany({ state: prevstate }, { state: key })
-
-    await oldstate.save()
-    return res.status(200).json(oldstate)
-
-}
-export const DeleteCRMState = async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
-    if (!isMongoId(id)) return res.status(403).json({ message: "state id not valid" })
-    let state = await CRMState.findById(id);
-    if (!state) {
-        return res.status(404).json({ message: "state not found" })
-    }
-
-    await state.remove();
-    return res.status(200).json({ message: "state deleted successfully" })
-}
 export const BulkCreateAndUpdateCRMStatesFromExcel = async (req: Request, res: Response, next: NextFunction) => {
     let result: CreateAndUpdatesStateFromExcelDto[] = []
     let statusText: string = ""
@@ -403,7 +372,6 @@ export const BulkCreateAndUpdateCRMStatesFromExcel = async (req: Request, res: R
     }
     return res.status(200).json(result);
 }
-
 //cities
 export const GetAllCRMCities = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetCrmCityDto[] = []
@@ -426,8 +394,6 @@ export const GetAllCRMCities = async (req: Request, res: Response, next: NextFun
     }
     return res.status(200).json(result)
 }
-
-
 export const CreateCRMCity = async (req: Request, res: Response, next: NextFunction) => {
     const { state, city } = req.body as CreateOrEditCrmCity
     if (!state || !city) {
@@ -451,7 +417,6 @@ export const CreateCRMCity = async (req: Request, res: Response, next: NextFunct
     return res.status(201).json(result)
 
 }
-
 export const UpdateCRMCity = async (req: Request, res: Response, next: NextFunction) => {
     const { state, city } = req.body as CreateOrEditCrmCity
     if (!state || !city) {
@@ -587,7 +552,6 @@ export const FindUnknownCrmStages = async (req: Request, res: Response, next: Ne
     await Lead.updateMany({ stage: { $nin: stagevalues } }, { stage: 'unknown' });
     return res.status(200).json({ message: "successfull" })
 }
-
 export const FindUnknownCrmCities = async (req: Request, res: Response, next: NextFunction) => {
     let cities = await CRMCity.find({ city: { $ne: "" } });
     let cityvalues = cities.map(i => { return i.city });
@@ -597,24 +561,21 @@ export const FindUnknownCrmCities = async (req: Request, res: Response, next: Ne
     await ReferredParty.updateMany({ city: { $nin: cityvalues } }, { city: 'unknown', state: 'unknown' });
     return res.status(200).json({ message: "successfull" })
 }
-
-
 export const GetAllChecklistCategory = async (req: Request, res: Response, next: NextFunction) => {
     let result = await ChecklistCategory.find();
     let data: DropDownDto[];
     data = result.map((r) => { return { id: r._id, label: r.category, value: r.category } });
     return res.status(200).json(data)
 }
-
 export const CreateChecklistCategory = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
-    if (!key) {
+    const { category } = req.body as {category:string}
+    if (!category) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
-    if (await ChecklistCategory.findOne({ category: key.toLowerCase() }))
+    if (await ChecklistCategory.findOne({ category: category.toLowerCase() }))
         return res.status(400).json({ message: "already exists this category" })
     let result = await new ChecklistCategory({
-        category: key,
+        category: category,
         updated_at: new Date(),
         created_by: req.user,
         updated_by: req.user
@@ -622,23 +583,22 @@ export const CreateChecklistCategory = async (req: Request, res: Response, next:
     return res.status(201).json(result)
 
 }
-
 export const UpdateChecklistCategory = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as {
-        key: string,
+    const { category } = req.body as {
+        category: string,
     }
-    if (!key) {
+    if (!category) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
     const id = req.params.id
     let oldlocation = await ChecklistCategory.findById(id)
     if (!oldlocation)
         return res.status(404).json({ message: "category not found" })
-    console.log(key, oldlocation.category)
-    if (key !== oldlocation.category)
-        if (await ChecklistCategory.findOne({ category: key.toLowerCase() }))
+    console.log(category, oldlocation.category)
+    if (category !== oldlocation.category)
+        if (await ChecklistCategory.findOne({ category: category.toLowerCase() }))
             return res.status(400).json({ message: "already exists this category" })
-    oldlocation.category = key
+    oldlocation.category = category
     oldlocation.updated_at = new Date()
     if (req.user)
         oldlocation.updated_by = req.user
@@ -656,7 +616,6 @@ export const DeleteChecklistCategory = async (req: Request, res: Response, next:
     await category.remove();
     return res.status(200).json({ message: "category deleted successfully" })
 }
-
 export const GetAllStates = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetErpStateDto[] = []
     let states = await State.find()
@@ -686,7 +645,6 @@ export const GetAllStates = async (req: Request, res: Response, next: NextFuncti
     }
     return res.status(200).json(result)
 }
-
 export const CreateState = async (req: Request, res: Response, next: NextFunction) => {
     const body = req.body as CreateOrEditErpStateDto;
     if (!body.state) {
@@ -704,7 +662,6 @@ export const CreateState = async (req: Request, res: Response, next: NextFunctio
     return res.status(201).json(result)
 
 }
-
 export const UpdateState = async (req: Request, res: Response, next: NextFunction) => {
     const body = req.body as CreateOrEditErpStateDto;
     if (!body.state) {
@@ -721,7 +678,6 @@ export const UpdateState = async (req: Request, res: Response, next: NextFunctio
     return res.status(200).json(oldstate)
 
 }
-
 export const DeleteErpState = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "state id not valid" })
@@ -732,7 +688,6 @@ export const DeleteErpState = async (req: Request, res: Response, next: NextFunc
     await state.remove();
     return res.status(200).json({ message: "state deleted successfully" })
 }
-
 export const GetAllErpEmployees = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetErpEmployeeDto[] = []
     let employees = await ErpEmployee.find()
@@ -741,7 +696,6 @@ export const GetAllErpEmployees = async (req: Request, res: Response, next: Next
         result.push({
             _id: employees[i]._id,
             name: employees[i].name,
-            display_name: employees[i].display_name,
             created_at: moment(employees[i].created_at).format("DD/MM/YYYY"),
             updated_at: moment(employees[i].updated_at).format("DD/MM/YYYY"),
             created_by: employees[i].created_by.username,
@@ -751,9 +705,8 @@ export const GetAllErpEmployees = async (req: Request, res: Response, next: Next
     }
     return res.status(200).json(result)
 }
-
 export const CreateErpEmployee = async (req: Request, res: Response, next: NextFunction) => {
-    const { name, display_name } = req.body as CreateOrEditErpEmployeeDto;
+    const { name } = req.body as {name:string};
     if (!name) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
@@ -761,7 +714,6 @@ export const CreateErpEmployee = async (req: Request, res: Response, next: NextF
         return res.status(400).json({ message: "already exists this employee" })
     let result = await new ErpEmployee({
         name,
-        display_name,
         updated_at: new Date(),
         created_by: req.user,
         updated_by: req.user
@@ -769,9 +721,8 @@ export const CreateErpEmployee = async (req: Request, res: Response, next: NextF
     return res.status(201).json(result)
 
 }
-
 export const UpdateErpEmployee = async (req: Request, res: Response, next: NextFunction) => {
-    const { name, display_name } = req.body as CreateOrEditErpEmployeeDto;
+    const { name } = req.body as {name:string};
     if (!name) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
@@ -782,11 +733,10 @@ export const UpdateErpEmployee = async (req: Request, res: Response, next: NextF
     if (name !== emp.name)
         if (await ErpEmployee.findOne({ name: name }))
             return res.status(400).json({ message: "already exists this state" })
-    await ErpEmployee.findByIdAndUpdate(emp._id, { name, display_name, updated_by: req.user, updated_at: new Date() })
+    await ErpEmployee.findByIdAndUpdate(emp._id, { name,  updated_by: req.user, updated_at: new Date() })
     return res.status(200).json(emp)
 
 }
-
 export const DeleteErpEmployee = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "employee id not valid" })
@@ -797,25 +747,21 @@ export const DeleteErpEmployee = async (req: Request, res: Response, next: NextF
     await employee.remove();
     return res.status(200).json({ message: "employee deleted successfully" })
 }
-
-
-
 export const GetAllMaintenanceCategory = async (req: Request, res: Response, next: NextFunction) => {
     let result = await MaintenanceCategory.find();
     let data: DropDownDto[];
     data = result.map((r) => { return { id: r._id, label: r.category, value: r.category } });
     return res.status(200).json(data)
 }
-
 export const CreateMaintenanceCategory = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
-    if (!key) {
+    const { category } = req.body as {category:string}
+    if (!category) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
-    if (await MaintenanceCategory.findOne({ category: key.toLowerCase() }))
+    if (await MaintenanceCategory.findOne({ category: category.toLowerCase() }))
         return res.status(400).json({ message: "already exists this category" })
     let result = await new MaintenanceCategory({
-        category: key,
+        category: category,
         updated_at: new Date(),
         created_by: req.user,
         updated_by: req.user
@@ -823,23 +769,22 @@ export const CreateMaintenanceCategory = async (req: Request, res: Response, nex
     return res.status(201).json(result)
 
 }
-
 export const UpdateMaintenanceCategory = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as {
-        key: string,
+    const { category } = req.body as {
+        category: string,
     }
-    if (!key) {
+    if (!category) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
     const id = req.params.id
     let oldlocation = await MaintenanceCategory.findById(id)
     if (!oldlocation)
         return res.status(404).json({ message: "category not found" })
-    console.log(key, oldlocation.category)
-    if (key !== oldlocation.category)
-        if (await MaintenanceCategory.findOne({ category: key.toLowerCase() }))
+    console.log(category, oldlocation.category)
+    if (category !== oldlocation.category)
+        if (await MaintenanceCategory.findOne({ category: category.toLowerCase() }))
             return res.status(400).json({ message: "already exists this category" })
-    oldlocation.category = key
+    oldlocation.category = category
     oldlocation.updated_at = new Date()
     if (req.user)
         oldlocation.updated_by = req.user
@@ -847,8 +792,6 @@ export const UpdateMaintenanceCategory = async (req: Request, res: Response, nex
     return res.status(200).json(oldlocation)
 
 }
-
-
 export const ToogleMaintenanceCategory = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "category id not valid" })
@@ -860,8 +803,6 @@ export const ToogleMaintenanceCategory = async (req: Request, res: Response, nex
     await category.save();
     return res.status(200).json({ message: "category status changed successfully" })
 }
-
-
 export const GetMachineCategories = async (req: Request, res: Response, next: NextFunction) => {
     let result = (await MachineCategory.find()).map((c) => {
         return { id: c._id, label: c.category, value: c.category }
@@ -869,14 +810,14 @@ export const GetMachineCategories = async (req: Request, res: Response, next: Ne
     return res.status(200).json(result)
 }
 export const CreateMachineCategory = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
-    if (!key) {
+    const { category } = req.body as {category:string}
+    if (!category) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
-    if (await MachineCategory.findOne({ category: key.toLowerCase() }))
+    if (await MachineCategory.findOne({ category: category.toLowerCase() }))
         return res.status(400).json({ message: "already exists this category" })
     let result = await new MachineCategory({
-        category: key,
+        category: category,
         updated_at: new Date(),
         created_by: req.user,
         updated_by: req.user
@@ -884,25 +825,24 @@ export const CreateMachineCategory = async (req: Request, res: Response, next: N
     return res.status(201).json({ message: "success" })
 
 }
-
 export const UpdateMachineCategory = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
-    if (!key) {
+    const { category } = req.body as { category :string}
+    if (!category) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
     const id = req.params.id
     let oldtype = await MachineCategory.findById(id)
     if (!oldtype)
         return res.status(404).json({ message: "category not found" })
-    if (key !== oldtype.category)
-        if (await MachineCategory.findOne({ category: key.toLowerCase() }))
+    if (category !== oldtype.category)
+        if (await MachineCategory.findOne({ category: category.toLowerCase() }))
             return res.status(400).json({ message: "already exists this category" })
     let prevtype = oldtype.category
-    oldtype.category = key
+    oldtype.category = category
     oldtype.updated_at = new Date()
     if (req.user)
         oldtype.updated_by = req.user
-    await Machine.updateMany({ category: prevtype }, { category: key })
+    await Machine.updateMany({ category: prevtype }, { category: category })
     await oldtype.save()
     return res.status(200).json({ message: "updated" })
 
@@ -932,7 +872,6 @@ export const GetMachines = async (req: Request, res: Response, next: NextFunctio
             active: m.active,
             category: m.category,
             serial_no: m.serial_no,
-            display_name: m.display_name,
             created_at: m.created_at && moment(m.created_at).format("DD/MM/YYYY"),
             updated_at: m.updated_at && moment(m.updated_at).format("DD/MM/YYYY"),
             created_by: { id: m.created_by._id, value: m.created_by.username, label: m.created_by.username },
@@ -942,14 +881,14 @@ export const GetMachines = async (req: Request, res: Response, next: NextFunctio
     return res.status(200).json(result)
 }
 export const CreateMachine = async (req: Request, res: Response, next: NextFunction) => {
-    const { name, display_name, category, serial_no } = req.body as CreateOrEditMachineDto
-    if (!name || !display_name || !category || !serial_no) {
+    const { name,  category, serial_no } = req.body as CreateOrEditMachineDto
+    if (!name  || !category || !serial_no) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
     if (await Machine.findOne({ name: name }))
         return res.status(400).json({ message: "already exists this machine" })
     let machine = await new Machine({
-        name: name, display_name: display_name, category: category,
+        name: name, category: category,
         serial_no: serial_no,
         created_at: new Date(),
         updated_by: req.user,
@@ -960,8 +899,8 @@ export const CreateMachine = async (req: Request, res: Response, next: NextFunct
     return res.status(201).json(machine)
 }
 export const UpdateMachine = async (req: Request, res: Response, next: NextFunction) => {
-    const { name, display_name, category, serial_no } = req.body as CreateOrEditMachineDto
-    if (!name || !display_name || !category || !serial_no) {
+    const { name,  category, serial_no } = req.body as CreateOrEditMachineDto
+    if (!name || !category || !serial_no) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
     const id = req.params.id
@@ -972,7 +911,6 @@ export const UpdateMachine = async (req: Request, res: Response, next: NextFunct
         if (await Machine.findOne({ name: name }))
             return res.status(400).json({ message: "already exists this machine" })
     machine.name = name
-    machine.display_name = display_name
     machine.serial_no = serial_no
     machine.category = category
     machine.updated_at = new Date()
@@ -998,25 +936,21 @@ export const BulkUploadMachine = async (req: Request, res: Response, next: NextF
             workbook.Sheets[workbook_sheet[0]]
         );
         console.log(workbook_response)
-        let newMachines: { name: string, display_name: string, category: string, serial_no: number, }[] = []
+        let newMachines: { name: string, category: string, serial_no: number, }[] = []
         workbook_response.forEach(async (machine) => {
             let name: string | null = machine.name
-            let display_name: string | null = machine.display_name
             let category: string | null = machine.category
             let serial_no: number | null = machine.serial_no
-            console.log(display_name, name)
-            newMachines.push({ name: name, display_name: display_name, category: category, serial_no: machine.serial_no, })
+            newMachines.push({ name: name, category: category, serial_no: machine.serial_no, })
         })
-        console.log(newMachines)
         newMachines.forEach(async (mac) => {
             let machine = await Machine.findOne({ name: mac.name })
             if (!machine)
-                await new Machine({ name: mac.name, display_name: mac.display_name, category: mac.category, serial_no: mac.serial_no, created_by: req.user, updated_by: req.user }).save()
+                await new Machine({ name: mac.name, category: mac.category, serial_no: mac.serial_no, created_by: req.user, updated_by: req.user }).save()
         })
     }
     return res.status(200).json({ message: "machines updated" });
 }   
-
 export const ToogleMachine = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let machine = await Machine.findById(id)
@@ -1042,7 +976,6 @@ export const GetArticles = async (req: Request, res: Response, next: NextFunctio
         return {
             _id: m._id,
             name: m.name,
-            display_name: m.display_name,
             active: m.active,
             created_at: m.created_at && moment(m.created_at).format("DD/MM/YYYY"),
             updated_at: m.updated_at && moment(m.updated_at).format("DD/MM/YYYY"),
@@ -1065,36 +998,32 @@ export const BulkUploadArticle = async (req: Request, res: Response, next: NextF
             return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
         const workbook = xlsx.read(req.file.buffer);
         let workbook_sheet = workbook.SheetNames;
-        let workbook_response: CreateOrEditArticleDto[] = xlsx.utils.sheet_to_json(
+        let workbook_response: {name:string}[] = xlsx.utils.sheet_to_json(
             workbook.Sheets[workbook_sheet[0]]
         );
         console.log(workbook_response)
-        let newArticles: CreateOrEditArticleDto[] = []
+        let newArticles: {name:string}[] = []
         workbook_response.forEach(async (article) => {
             let name: string | null = article.name
-            let display_name: string | null = article.display_name
-            console.log(display_name, name)
-            newArticles.push({ name: name, display_name: display_name })
+            newArticles.push({ name: name })
         })
-        console.log(newArticles)
         newArticles.forEach(async (mac) => {
-            let article = await Article.findOne({ display_name: mac.display_name })
+            let article = await Article.findOne({ name: mac.name })
             if (!article)
-                await new Article({ name: mac.name, display_name: mac.display_name, created_by: req.user, updated_by: req.user }).save()
+                await new Article({ name: mac.name, created_by: req.user, updated_by: req.user }).save()
         })
     }
     return res.status(200).json({ message: "articles updated" });
 }
-
 export const CreateArticle = async (req: Request, res: Response, next: NextFunction) => {
-    const { name, display_name } = req.body as CreateOrEditArticleDto
+    const { name } = req.body as {name:string}
     if (!name) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
     if (await Article.findOne({ name: name }))
         return res.status(400).json({ message: "already exists this article" })
     let machine = await new Article({
-        name: name, display_name: display_name,
+        name: name, 
         created_at: new Date(),
         updated_at: new Date(),
         created_by: req.user,
@@ -1104,9 +1033,8 @@ export const CreateArticle = async (req: Request, res: Response, next: NextFunct
     return res.status(201).json(machine)
 
 }
-
 export const UpdateArticle = async (req: Request, res: Response, next: NextFunction) => {
-    const { name, display_name } = req.body as CreateOrEditArticleDto
+    const { name } = req.body as {name:string}
     if (!name) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
@@ -1118,7 +1046,6 @@ export const UpdateArticle = async (req: Request, res: Response, next: NextFunct
         if (await Article.findOne({ name: name }))
             return res.status(400).json({ message: "already exists this article" })
     article.name = name
-    article.display_name = display_name
     article.updated_at = new Date()
     if (req.user)
         article.updated_by = req.user
@@ -1139,7 +1066,6 @@ export const ToogleArticle = async (req: Request, res: Response, next: NextFunct
     return res.status(200).json(article)
 
 }
-
 export const GetDyeById = async (req: Request, res: Response, next: NextFunction) => {
     let id = req.params.id;
 
@@ -1160,7 +1086,6 @@ export const GetDyeById = async (req: Request, res: Response, next: NextFunction
     }
     return res.status(200).json(result)
 }
-
 export const GetDyes = async (req: Request, res: Response, next: NextFunction) => {
     let hidden = String(req.query.hidden)
     let dyes: IDye[] = []
@@ -1283,7 +1208,6 @@ export const UpdateDye = async (req: Request, res: Response, next: NextFunction)
     await dye.save()
     return res.status(200).json(dye)
 }
-
 export const ToogleDye = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let dye = await Dye.findById(id)
@@ -1296,8 +1220,6 @@ export const ToogleDye = async (req: Request, res: Response, next: NextFunction)
     await dye.save()
     return res.status(200).json(dye)
 }
-
-
 export const GetAllDyeLocations = async (req: Request, res: Response, next: NextFunction) => {
     let hidden = String(req.query.hidden)
     let result: GetDyeLocationDto[] = []
@@ -1313,7 +1235,6 @@ export const GetAllDyeLocations = async (req: Request, res: Response, next: Next
             _id: l._id,
             name: l.name,
             active: l.active,
-            display_name: l.display_name,
             created_at: l.created_at && moment(l.created_at).format("DD/MM/YYYY"),
             updated_at: l.updated_at && moment(l.updated_at).format("DD/MM/YYYY"),
             created_by: { id: l.created_by._id, value: l.created_by.username, label: l.created_by.username },
@@ -1322,10 +1243,8 @@ export const GetAllDyeLocations = async (req: Request, res: Response, next: Next
     })
     return res.status(200).json(result)
 }
-
-
 export const CreateDyeLocation = async (req: Request, res: Response, next: NextFunction) => {
-    const { name, display_name } = req.body as CreateOrEditDyeLocationDto
+    const { name } = req.body as {name:string}
     if (!name) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
@@ -1333,7 +1252,6 @@ export const CreateDyeLocation = async (req: Request, res: Response, next: NextF
         return res.status(400).json({ message: "already exists this dye location" })
     let result = await new DyeLocation({
         name: name,
-        display_name: display_name,
         updated_at: new Date(),
         created_by: req.user,
         updated_by: req.user
@@ -1341,9 +1259,8 @@ export const CreateDyeLocation = async (req: Request, res: Response, next: NextF
     return res.status(201).json(result)
 
 }
-
 export const UpdateDyeLocation = async (req: Request, res: Response, next: NextFunction) => {
-    const { name, display_name } = req.body as CreateOrEditDyeLocationDto
+    const { name } = req.body as {name:string}
     if (!name) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
@@ -1355,7 +1272,6 @@ export const UpdateDyeLocation = async (req: Request, res: Response, next: NextF
         if (await DyeLocation.findOne({ name: name.toLowerCase() }))
             return res.status(400).json({ message: "already exists this location" })
     oldlocation.name = name
-    oldlocation.display_name = display_name
     oldlocation.updated_at = new Date()
     if (req.user)
         oldlocation.updated_by = req.user
@@ -1363,7 +1279,6 @@ export const UpdateDyeLocation = async (req: Request, res: Response, next: NextF
     return res.status(200).json(oldlocation)
 
 }
-
 export const ToogleDyeLocation = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "location id not valid" })

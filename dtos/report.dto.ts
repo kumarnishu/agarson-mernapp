@@ -1,73 +1,33 @@
 import { DropDownDto } from "./dropdown.dto"
 
-
-export type GetErpEmployeeDto = {
-    _id: string,
-    name: string,
-    display_name: string,
-    assigned_employees:string,
-    created_at:string,
-    updated_at:string,
-    created_by:string,
-    updated_by:string
+export type GetCategoryWiseProductionReportDto = {
+    date: string,
+    total: number,
+    verticalpluslympha: number,
+    pu: number,
+    gumboot: number
+}
+export type GetShoeWeightDiffReportDto = {
+    date: string,
+    dye_no: number,
+    article: string,
+    size: string,
+    st_weight: number,
+    machine: string,
+    w1: number,
+    w2: number,
+    w3: number,
+    u1: number,
+    u2: number,
+    u3: number,
+    d1: number,
+    d2: number,
+    d3: number,
+    person: string
 }
 
-export type GetVisitReportDto = {
-    _id: string,
-    employee: string
-    visit_date: string,
-    customer: string,
-    intime: string,
-    outtime: string,
-    visitInLocation: string,
-    visitOutLocation: string,
-    remarks: string,
-    created_at: string,
-    updated_at: string,
-    created_by: string,
-    updated_by: string,
-}
 
-export type GetErpStateDto = {
-    _id: string,
-    state: string,
-    apr: number,
-    may: number,
-    jun: number,
-    jul: number,
-    aug: number,
-    sep: number,
-    oct: number,
-    nov: number,
-    dec: number,
-    jan: number,
-    feb: number,
-    mar: number,
-    created_at: string,
-    updated_at: string,
-    created_by: DropDownDto,
-    updated_by: DropDownDto,
-    assigned_users: string
-}
-export type CreateOrEditErpEmployeeDto = {
-    name: string,
-    display_name: string,
-}
-export type CreateOrEditErpStateDto = {
-    state: string,
-    apr: number,
-    may: number,
-    jun: number,
-    jul: number,
-    aug: number,
-    sep: number,
-    oct: number,
-    nov: number,
-    dec: number,
-    jan: number,
-    feb: number,
-    mar: number
-}
+
 export type GetPendingOrdersReportDto = {
     _id: string,
     report_owner: DropDownDto
@@ -206,9 +166,6 @@ export type GetErpStateFromExcelDto = {
     mar: number,
     status?: any
 }
-
-
-
 export type GetSaleAnalysisReportDto = {
     state: string,
     monthly_target: number,
@@ -261,9 +218,6 @@ export type GetPartyTargetReportFromExcelDto = {
     status?: string,
     created_at?: string,
 }
-
-
-
 export type GetBillsAgingReportFromExcelDto = {
     report_owner: string
     account: string,
@@ -307,7 +261,6 @@ export type GetPendingOrdersReportFromExcelDto = {
     size3to8: number,
     status?: string, created_at?: string,
 }
-
 export type GetClientSaleReportFromExcelDto = {
     report_owner: string,
     account: string,
@@ -330,7 +283,6 @@ export type GetClientSaleReportFromExcelDto = {
     status?: string,
     created_at?: string,
 }
-
 export type GetVisitReportFromExcelDto = {
     _id: string,
     employee: string
@@ -342,4 +294,20 @@ export type GetVisitReportFromExcelDto = {
     visitOutLocation: string,
     remarks: string,
     status?: string
+}
+
+export type GetVisitReportDto = {
+    _id: string,
+    employee: string
+    visit_date: string,
+    customer: string,
+    intime: string,
+    outtime: string,
+    visitInLocation: string,
+    visitOutLocation: string,
+    remarks: string,
+    created_at: string,
+    updated_at: string,
+    created_by: string,
+    updated_by: string,
 }

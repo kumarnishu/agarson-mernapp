@@ -1,47 +1,20 @@
 import { NextFunction, Request, Response } from 'express';
 import isEmail from "validator/lib/isEmail";
-import { uploadFileToCloud } from '../utils/uploadFile.util';
-import { deleteToken, sendUserToken } from '../middlewares/auth.middleware';
+import { deleteToken, isAuthenticatedUser, sendUserToken } from '../middlewares/auth.middleware';
 import isMongoId from "validator/lib/isMongoId";
-import { destroyFile } from "../utils/destroyFile.util";
-import { sendEmail } from '../utils/sendEmail.util';
-import { FetchAllPermissions } from '../utils/fillAllPermissions';
 import moment from 'moment';
-import { AssignPermissionForMultipleUserDto, AssignPermissionForOneUserDto, AssignUsersDto, createOrEditUserDto, GetUserDto, IMenu, LoginDto, ResetPasswordDto, UpdatePasswordDto, UpdateProfileDto, VerifyEmailDto } from '../dtos/user.dto';
-import { Asset, IUser, User } from '../models/features/user.model';
-import { CreateOrEditDropDownDto, DropDownDto } from '../dtos/dropdown.dto';
-import { LeadType } from '../models/dropdown/crm.leadtype.model';
-import Lead, { ILead } from '../models/features/lead.model';
-import { IReferredParty, ReferredParty } from '../models/features/referred.model';
-import { Bill, IBill } from '../models/features/bill.model';
-import { IRemark, Remark } from '../models/features/remark.model';
-import { CreateAndUpdatesLeadFromExcelDto, CreateOrEditBillDto, CreateOrEditLeadDto, CreateOrEditMergeLeadsDto, CreateOrEditMergeRefersDto, CreateOrEditReferDto, CreateOrEditReferFromExcelDto, CreateOrEditRemarkDto, CreateOrRemoveReferForLeadDto, GetActivitiesOrRemindersDto, GetActivitiesTopBarDetailsDto, GetBillDto, GetLeadDto, GetReferDto, GetRemarksDto } from '../dtos/crm.dto';
-import { BillItem } from '../models/features/bill.item';
-import mongoose, { Types } from 'mongoose';
+import { Types } from 'mongoose';
 import xlsx from "xlsx"
-import { Stage } from '../models/dropdown/crm.stage.model';
-import SaveExcelTemplateToDisk from '../utils/HandleExcel';
-import { Checklist, ChecklistBox, IChecklist } from '../models/features/checklist.model';
-import { CreateOrEditChecklistDto, GetChecklistDto, GetChecklistFromExcelDto } from '../dtos/checklist.dto';
-import { isvalidDate } from '../utils/isValidDate';
-import { ISpareDye, SpareDye } from '../models/features/SpareDye.model';
-import { IShoeWeight, ShoeWeight } from '../models/features/shoe.weight.model';
-import { DyeLocation } from '../models/dropdown/dye.location.model';
-import { Dye } from '../models/dropdown/dye.model';
-import { CreateOrEditProductionDto, CreateOrEditShoeWeightDto, CreateOrEditSoleThicknessDto, CreateOrEditSpareDyeDto, GetProductionDto, GetShoeWeightDto, GetSoleThicknessDto, GetSpareDyeDto } from '../dtos/production.dto';
-import { Article } from '../models/dropdown/article.model';
-import { ISoleThickness, SoleThickness } from '../models/features/sole.thickness.model';
-import { IProduction, Production } from '../models/features/production.model';
-import { IMaintenance, Maintenance } from '../models/features/maintainence.model';
-import { CreateMaintenanceFromExcelDto, CreateOrEditMaintenanceDto, GetMaintenanceDto, GetMaintenanceItemDto, GetMaintenanceItemRemarkDto } from '../dtos/maintenance.dto';
-import { IMaintenanceItem, MaintenanceItem } from '../models/features/maintainence.item.model';
-import { MaintenanceCategory } from '../models/dropdown/maintainence.category.model';
-import { Machine } from '../models/dropdown/machine.model';
+import { router, upload } from '../app';
+import { AssignPermissionForMultipleUserDto, AssignPermissionForOneUserDto, AssignUsersDto, CreateAndUpdatesLeadFromExcelDto, CreateOrEditBillDto, CreateOrEditChecklistDto, CreateOrEditLeadDto, CreateOrEditMergeLeadsDto, CreateOrEditMergeRefersDto, CreateOrEditProductionDto, CreateOrEditReferDto, CreateOrEditReferFromExcelDto, CreateOrEditRemarkDto, CreateOrEditShoeWeightDto, CreateOrEditSpareDyeDto, createOrEditUserDto, CreateOrRemoveReferForLeadDto, GetActivitiesOrRemindersDto, GetActivitiesTopBarDetailsDto, GetBillDto, GetChecklistDto, GetChecklistFromExcelDto, GetLeadDto, GetReferDto, GetRemarksDto, GetUserDto, IMenu, LoginDto, ResetPasswordDto, UpdatePasswordDto, UpdateProfileDto, VerifyEmailDto } from '../dtos/feature.dto';
+import { Asset, IBill, IChecklist, ILead, IMaintenance, IMaintenanceItem, IProduction, IReferredParty, IRemark, IShoeWeight, ISoleThickness, ISpareDye, IUser } from '../interfaces/feature.interface';
+import Lead, { Bill, BillItem, Checklist, ChecklistBox, Maintenance, MaintenanceItem, Production, ReferredParty, Remark, ShoeWeight, SoleThickness, SpareDye, User } from '../models/feature.model';
+import SaveExcelTemplateToDisk, { destroyFile, isvalidDate, sendEmail, uploadFileToCloud } from '../utils/app.util';
+import { FetchAllPermissions } from '../utils/permissions.util';
+import { Article, Dye, DyeLocation, Machine, MaintenanceCategory, Stage } from '../models/dropdown.model';
+import { CreateMaintenanceFromExcelDto, CreateOrEditMaintenanceDto, CreateOrEditSoleThicknessDto, GetMaintenanceDto, GetMaintenanceItemDto, GetMaintenanceItemRemarkDto, GetProductionDto, GetShoeWeightDto, GetSoleThicknessDto, GetSpareDyeDto } from '../dtos/dropdown.dto';
 
-/*users----------------------------
--------------------------------------
--------------------------------------*/
-export const GetUsers = async (req: Request, res: Response, next: NextFunction) => {
+router.get("users", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let showhidden = req.query.hidden
     let perm = req.query.permission
     let show_assigned_only = req.query.show_assigned_only
@@ -91,10 +64,8 @@ export const GetUsers = async (req: Request, res: Response, next: NextFunction) 
         }
     })
     return res.status(200).json(result)
-}
-
-
-export const GetProfile = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("profile", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let result: GetUserDto | null = null;
     const user = await User.findById(req.user?._id).populate("created_by").populate("updated_by").populate('assigned_users')
     if (user)
@@ -127,11 +98,8 @@ export const GetProfile = async (req: Request, res: Response, next: NextFunction
             updated_by: { id: user.updated_by._id, label: user.updated_by.username, value: user.updated_by.username },
         }
     res.status(200).json({ user: result, token: req.cookies.accessToken })
-}
-
-
-//post/put/patch/delete
-export const SignUp = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.post("signup", isAuthenticatedUser, upload.single("dp"), async (req: Request, res: Response, next: NextFunction) => {
     let result: GetUserDto | null = null;
     let users = await User.find()
     if (users.length > 0)
@@ -150,7 +118,7 @@ export const SignUp = async (req: Request, res: Response, next: NextFunction) =>
     if (await User.findOne({ mobile: mobile }))
         return res.status(403).json({ message: `${mobile} already exists` });
 
-    let dp: Asset = undefined
+    let dp: Asset | undefined = undefined
     if (req.file) {
         const allowedFiles = ["image/png", "image/jpeg", "image/gif"];
         const storageLocation = `users/media`;
@@ -217,8 +185,8 @@ export const SignUp = async (req: Request, res: Response, next: NextFunction) =>
     }
     res.status(201).json({ user: result, token: token })
 }
-
-export const NewUser = async (req: Request, res: Response, next: NextFunction) => {
+)
+router.post("users/new", isAuthenticatedUser, upload.single("dp"), async (req: Request, res: Response, next: NextFunction) => {
     let { username, email, password, mobile } = req.body as createOrEditUserDto;
     // validations
     if (!username || !email || !password || !mobile)
@@ -232,7 +200,7 @@ export const NewUser = async (req: Request, res: Response, next: NextFunction) =
     if (await User.findOne({ mobile: mobile }))
         return res.status(403).json({ message: `${mobile} already exists` });
 
-    let dp: Asset = undefined
+    let dp: Asset | undefined = undefined
     if (req.file) {
         const allowedFiles = ["image/png", "image/jpeg", "image/gif"];
         const storageLocation = `users/media`;
@@ -270,10 +238,8 @@ export const NewUser = async (req: Request, res: Response, next: NextFunction) =
 
     await user.save()
     res.status(201).json({ message: "success" })
-}
-
-
-export const Login = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.post("login", async (req: Request, res: Response, next: NextFunction) => {
     const { username, password, multi_login_token } = req.body as LoginDto
     if (!username)
         return res.status(400).json({ message: "please enter username or email" })
@@ -346,9 +312,8 @@ export const Login = async (req: Request, res: Response, next: NextFunction) => 
         updated_by: { id: user.updated_by._id, label: user.updated_by.username, value: user.updated_by.username },
     }
     res.status(200).json({ user: result, token: token })
-}
-
-export const Logout = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.post("logout", async (req: Request, res: Response, next: NextFunction) => {
     let coToken = req.cookies.accessToken
     let AuthToken = req.headers.authorization && req.headers.authorization.split(" ")[1]
     if (coToken)
@@ -356,9 +321,8 @@ export const Logout = async (req: Request, res: Response, next: NextFunction) =>
     if (AuthToken)
         await deleteToken(res, AuthToken);
     res.status(200).json({ message: "logged out" })
-}
-
-export const AssignUsers = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.post("assigne/users/manager", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const { ids } = req.body as AssignUsersDto
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
@@ -379,10 +343,8 @@ export const AssignUsers = async (req: Request, res: Response, next: NextFunctio
     }
     await user.save();
     res.status(200).json({ message: "assigned users successfully" });
-}
-
-
-export const UpdateUser = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.put("users/:id", upload.single("dp"), isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
     let user = await User.findById(id).populate('created_by')
@@ -445,9 +407,8 @@ export const UpdateUser = async (req: Request, res: Response, next: NextFunction
         updated_by: user
     })
     return res.status(200).json({ message: "user updated" })
-}
-
-export const UpdateProfile = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.post("profile/:id", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let user = await User.findById(req.user?._id);
     if (!user) {
         return res.status(404).json({ message: "user not found" })
@@ -503,9 +464,8 @@ export const UpdateProfile = async (req: Request, res: Response, next: NextFunct
         updated_by: user
     })
     return res.status(200).json({ message: "profile updated" })
-}
-
-export const updatePassword = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.post("passwords/update", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { oldPassword, newPassword, confirmPassword } = req.body as UpdatePasswordDto
     if (!oldPassword || !newPassword || !confirmPassword)
         return res.status(400).json({ message: "please fill required fields" })
@@ -524,9 +484,8 @@ export const updatePassword = async (req: Request, res: Response, next: NextFunc
     user.updated_by = user
     await user.save();
     res.status(200).json({ message: "password updated" });
-}
-
-export const resetUserPassword = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.post("passwords/reset/:id", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { newPassword, confirmPassword } = req.body as ResetPasswordDto
     if (!newPassword || !confirmPassword)
         return res.status(400).json({ message: "please fill required fields" })
@@ -544,26 +503,59 @@ export const resetUserPassword = async (req: Request, res: Response, next: NextF
     user.updated_by = user
     await user.save();
     res.status(200).json({ message: "password updated" });
-}
-
-export const MakeAdmin = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.post("toogle-admin/:id", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
     let user = await User.findById(id)
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
-    if (user.is_admin)
-        return res.status(404).json({ message: "already a admin" })
-    user.is_admin = true
+    if (user.created_by._id.valueOf() === id)
+        return res.status(403).json({ message: "not allowed contact developer" })
+    user.is_admin = !user.is_admin
     if (req.user) {
         user.updated_by = user
     }
     await user.save();
-    res.status(200).json({ message: "admin role provided successfully" });
-}
+    res.status(200).json({ message: "success" });
+})
+router.post("toogle-multi-device-login/:id", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
+    let user = await User.findById(id)
+    if (!user) {
+        return res.status(404).json({ message: "user not found" })
+    }
+    user.is_multi_login = !user.is_multi_login
+    if (user.is_multi_login)
+        user.multi_login_token = null
+    if (req.user)
+        user.updated_by = req.user
+    await user.save();
+    res.status(200).json({ message: "success" });
+})
+router.post("toogle-block-user/:id", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+    //update role of user
+    const id = req.params.id;
+    if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
+    let user = await User.findById(id).populate('created_by')
+    if (!user) {
+        return res.status(404).json({ message: "user not found" })
+    }
 
-export const ToogleShowvisitingcard = async (req: Request, res: Response, next: NextFunction) => {
+    if (user.created_by._id.valueOf() === id)
+        return res.status(403).json({ message: "not allowed contact developer" })
+    if (String(user._id) === String(req.user?._id))
+        return res.status(403).json({ message: "not allowed this operation here, because you may block yourself" })
+    user.is_active = !user.is_active
+    if (req.user) {
+        user.updated_by = user
+    }
+    await user.save();
+    res.status(200).json({ message: "success" });
+})
+router.post("toogle-leads-visiting-card-user/:id", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
     let user = await User.findById(id)
@@ -576,100 +568,8 @@ export const ToogleShowvisitingcard = async (req: Request, res: Response, next: 
     }
     await user.save();
     res.status(200).json({ message: "changed successfully" });
-}
-
-export const AllowMultiLogin = async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
-    if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
-    let user = await User.findById(id)
-    if (!user) {
-        return res.status(404).json({ message: "user not found" })
-    }
-    user.is_multi_login = true
-    user.multi_login_token = null
-    if (req.user)
-        user.updated_by = req.user
-    await user.save();
-    res.status(200).json({ message: "multi login allowed " });
-}
-export const BlockMultiLogin = async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
-    if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
-    let user = await User.findById(id)
-    if (!user) {
-        return res.status(404).json({ message: "user not found" })
-    }
-    user.is_multi_login = false
-    user.multi_login_token = null
-    if (req.user)
-        user.updated_by = req.user
-    await user.save();
-    res.status(200).json({ message: "multi login blocked " });
-}
-export const BlockUser = async (req: Request, res: Response, next: NextFunction) => {
-    //update role of user
-    const id = req.params.id;
-    if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
-    let user = await User.findById(id).populate('created_by')
-    if (!user) {
-        return res.status(404).json({ message: "user not found" })
-    }
-    if (!user.is_active)
-        return res.status(404).json({ message: "user already blocked" })
-
-    if (String(user.created_by._id) === String(user._id))
-        return res.status(403).json({ message: "not allowed contact crm administrator" })
-    if (String(user._id) === String(req.user?._id))
-        return res.status(403).json({ message: "not allowed this operation here, because you may block yourself" })
-    user.is_active = false
-    if (req.user) {
-        user.updated_by = user
-    }
-    await user.save();
-    res.status(200).json({ message: "user blocked successfully" });
-}
-
-export const UnBlockUser = async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
-    if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
-    let user = await User.findById(id)
-    if (!user) {
-        return res.status(404).json({ message: "user not found" })
-    }
-    if (user.is_active)
-        return res.status(404).json({ message: "user is already active" })
-    user.is_active = true
-    if (req.user) {
-        user.updated_by = user
-    }
-    await user.save();
-    res.status(200).json({ message: "user unblocked successfully" });
-}
-
-
-export const RemoveAdmin = async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
-    if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
-    let user = await User.findById(id).populate('created_by')
-    if (!user) {
-        return res.status(404).json({ message: "user not found" })
-    }
-    if (String(user.created_by._id) === String(user._id))
-        return res.status(403).json({ message: "not allowed contact administrator" })
-    if (String(user._id) === String(req.user?._id))
-        return res.status(403).json({ message: "not allowed this operation here, because you may harm yourself" })
-    user = await User.findById(id)
-    if (!user?.is_admin)
-        res.status(400).json({ message: "you are not an admin" });
-    await User.findByIdAndUpdate(id, {
-        is_admin: false,
-        updated_by_username: req.user?.username,
-        updated_by: req.user
-    })
-    res.status(200).json({ message: "admin role removed successfully" });
-}
-
-export const SendPasswordResetMail = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.post("send-forgot-password-link", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body as VerifyEmailDto
     if (!email) return res.status(400).json({ message: "please provide email id" })
     const userEmail = String(email).toLowerCase().trim();
@@ -704,8 +604,8 @@ export const SendPasswordResetMail = async (req: Request, res: Response, next: N
         await user.save();
         return res.status(500).json({ message: "email could not be sent, something went wrong" })
     }
-}
-export const ResetPassword = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.post("reset-password/:token", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let resetPasswordToken = req.params.token;
     const { newPassword, confirmPassword } = req.body as ResetPasswordDto;
     if (!newPassword || !confirmPassword)
@@ -724,8 +624,8 @@ export const ResetPassword = async (req: Request, res: Response, next: NextFunct
     user.resetPasswordExpire = null;
     await user.save();
     res.status(200).json({ message: "password updated" });
-}
-export const SendVerifyEmail = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.post("send-email-verification-link", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body as VerifyEmailDto
     if (!email)
         return res.status(400).json({ message: "please provide your email id" })
@@ -759,8 +659,8 @@ export const SendVerifyEmail = async (req: Request, res: Response, next: NextFun
         await user.save();
         return res.status(500).json({ message: "email could not be sent, something went wrong" })
     }
-}
-export const VerifyEmail = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.post("email-verify/:token", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const emailVerifyToken = req.params.token;
     let user = await User.findOne({
         emailVerifyToken,
@@ -775,8 +675,8 @@ export const VerifyEmail = async (req: Request, res: Response, next: NextFunctio
     res.status(200).json({
         message: `congrats ${user.email} verification successful`
     });
-}
-export const AssignPermissionsToOneUser = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.post("assign-permission-one", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { permissions, user_id } = req.body as AssignPermissionForOneUserDto
 
     if (permissions && permissions.length === 0)
@@ -791,9 +691,8 @@ export const AssignPermissionsToOneUser = async (req: Request, res: Response, ne
     }
 
     return res.status(200).json({ message: "successfull" })
-}
-
-export const AssignPermissionsToUsers = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.post("assign-permission-bulk", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { permissions, user_ids, flag } = req.body as AssignPermissionForMultipleUserDto
 
     if (permissions && permissions.length === 0)
@@ -827,71 +726,13 @@ export const AssignPermissionsToUsers = async (req: Request, res: Response, next
 
 
     return res.status(200).json({ message: "successfull" })
-}
-
-
-export const GetAllPermissions = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("permissions", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let permissions: IMenu[] = [];
     permissions = FetchAllPermissions();
     return res.status(200).json(permissions)
-}
-
-
-/*crm-------------------------------*/
-
-export const GetAssignedReferrals = async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id
-    if (!isMongoId(id))
-        return res.status(400).json({ message: "bad mongo id" })
-    let party = await ReferredParty.findById(id)
-
-    if (!party)
-        return res.status(404).json({ message: "party not found" })
-    let leads: ILead[]
-    let result: GetLeadDto[] = []
-    leads = await Lead.find({ referred_party: party._id }).populate('updated_by').populate('created_by').populate('referred_party').sort('-updated_at')
-
-
-    result = leads.map((lead) => {
-        return {
-            _id: lead._id,
-            name: lead.name,
-            customer_name: lead.customer_name,
-            uploaded_bills: lead.uploaded_bills,
-            customer_designation: lead.customer_designation,
-            mobile: lead.mobile,
-            gst: lead.gst,
-            has_card: lead.has_card,
-            email: lead.email,
-            city: lead.city,
-            state: lead.state,
-            country: lead.country,
-            address: lead.address,
-            work_description: lead.work_description,
-            turnover: lead.turnover,
-            alternate_mobile1: lead.alternate_mobile1,
-            alternate_mobile2: lead.alternate_mobile2,
-            alternate_email: lead.alternate_email,
-            lead_type: lead.lead_type,
-            stage: lead.stage,
-            lead_source: lead.lead_source,
-            visiting_card: lead.visiting_card?.public_url || "",
-            referred_party_name: lead.referred_party && lead.referred_party.name,
-            referred_party_mobile: lead.referred_party && lead.referred_party.mobile,
-            referred_date: lead.referred_party && moment(lead.referred_date).format("DD/MM/YYYY"),
-            last_remark: lead?.last_remark || "",
-            created_at: moment(lead.created_at).format("DD/MM/YYYY"),
-            updated_at: moment(lead.updated_at).format("DD/MM/YYYY"),
-            created_by: { id: lead.created_by._id, value: lead.created_by.username, label: lead.created_by.username },
-            updated_by: { id: lead.updated_by._id, value: lead.updated_by.username, label: lead.updated_by.username },
-        }
-    })
-
-    return res.status(200).json(result);
-}
-
-// leads apis
-export const GetLeads = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("leads", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let stage = req.query.stage
@@ -977,7 +818,59 @@ export const GetLeads = async (req: Request, res: Response, next: NextFunction) 
     }
     else
         return res.status(400).json({ message: "bad request" })
+})
+export const GetAssignedReferrals = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id
+    if (!isMongoId(id))
+        return res.status(400).json({ message: "bad mongo id" })
+    let party = await ReferredParty.findById(id)
+
+    if (!party)
+        return res.status(404).json({ message: "party not found" })
+    let leads: ILead[]
+    let result: GetLeadDto[] = []
+    leads = await Lead.find({ referred_party: party._id }).populate('updated_by').populate('created_by').populate('referred_party').sort('-updated_at')
+
+
+    result = leads.map((lead) => {
+        return {
+            _id: lead._id,
+            name: lead.name,
+            customer_name: lead.customer_name,
+            uploaded_bills: lead.uploaded_bills,
+            customer_designation: lead.customer_designation,
+            mobile: lead.mobile,
+            gst: lead.gst,
+            has_card: lead.has_card,
+            email: lead.email,
+            city: lead.city,
+            state: lead.state,
+            country: lead.country,
+            address: lead.address,
+            work_description: lead.work_description,
+            turnover: lead.turnover,
+            alternate_mobile1: lead.alternate_mobile1,
+            alternate_mobile2: lead.alternate_mobile2,
+            alternate_email: lead.alternate_email,
+            lead_type: lead.lead_type,
+            stage: lead.stage,
+            lead_source: lead.lead_source,
+            visiting_card: lead.visiting_card?.public_url || "",
+            referred_party_name: lead.referred_party && lead.referred_party.name,
+            referred_party_mobile: lead.referred_party && lead.referred_party.mobile,
+            referred_date: lead.referred_party && moment(lead.referred_date).format("DD/MM/YYYY"),
+            last_remark: lead?.last_remark || "",
+            created_at: moment(lead.created_at).format("DD/MM/YYYY"),
+            updated_at: moment(lead.updated_at).format("DD/MM/YYYY"),
+            created_by: { id: lead.created_by._id, value: lead.created_by.username, label: lead.created_by.username },
+            updated_by: { id: lead.updated_by._id, value: lead.updated_by.username, label: lead.updated_by.username },
+        }
+    })
+
+    return res.status(200).json(result);
 }
+
+// leads apis
 export const ReferLead = async (req: Request, res: Response, next: NextFunction) => {
     const { party_id, remark, remind_date } = req.body as CreateOrRemoveReferForLeadDto
     if (!party_id)
@@ -1016,7 +909,6 @@ export const ReferLead = async (req: Request, res: Response, next: NextFunction)
     await lead.save()
     return res.status(200).json({ message: "party referred successfully" })
 }
-
 export const RemoveLeadReferral = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     const { remark } = req.body as CreateOrRemoveReferForLeadDto
@@ -1046,8 +938,6 @@ export const RemoveLeadReferral = async (req: Request, res: Response, next: Next
     await lead.save()
     return res.status(200).json({ message: "referrals removed successfully" })
 }
-
-
 export const ConvertLeadToRefer = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
@@ -1089,8 +979,6 @@ export const ConvertLeadToRefer = async (req: Request, res: Response, next: Next
         }).save()
     return res.status(200).json({ message: "new refer created" })
 }
-
-
 export const FuzzySearchLeads = async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
@@ -1919,43 +1807,7 @@ export const FuzzySearchLeads = async (req: Request, res: Response, next: NextFu
                 updated_by: { id: lead.updated_by._id, value: lead.updated_by.username, label: lead.updated_by.username },
             }
         })
-        // for (let i = 0; i < leads.length; i++) {
-        //     let lead = leads[i];
-        //     let remark = await Remark.findOne({ lead: lead._id }).sort('-created_at');
-        //     let bills = await Bill.find({ lead: lead._id }).countDocuments()
-        //     result.push({
-        //         _id: lead._id,
-        //         name: lead.name,
-        //         customer_name: lead.customer_name,
-        //         customer_designation: lead.customer_designation,
-        //         mobile: lead.mobile,
-        //         gst: lead.gst,
-        //         has_card: lead.has_card,
-        //         email: lead.email,
-        //         city: lead.city,
-        //         state: lead.state,
-        //         uploaded_bills: bills,
-        //         country: lead.country,
-        //         address: lead.address,
-        //         work_description: lead.work_description,
-        //         turnover: lead.turnover,
-        //         alternate_mobile1: lead.alternate_mobile1,
-        //         alternate_mobile2: lead.alternate_mobile2,
-        //         alternate_email: lead.alternate_email,
-        //         lead_type: lead.lead_type,
-        //         stage: lead.stage,
-        //         lead_source: lead.lead_source,
-        //         visiting_card: lead.visiting_card?.public_url || "",
-        //         referred_party_name: lead.referred_party && lead.referred_party.name,
-        //         referred_party_mobile: lead.referred_party && lead.referred_party.mobile,
-        //         referred_date: lead.referred_party && moment(lead.referred_date).format("DD/MM/YYYY"),
-        //         remark: remark?.remark || "",
-        //         created_at: moment(lead.referred_date).format("DD/MM/YYYY"),
-        //         updated_at: moment(lead.referred_date).format("DD/MM/YYYY"),
-        //         created_by: { id: lead.created_by._id, value: lead.created_by.username, label: lead.created_by.username },
-        //         updated_by: { id: lead.updated_by._id, value: lead.updated_by.username, label: lead.updated_by.username },
-        //     })
-        // }
+
         return res.status(200).json({
             result,
             total: Math.ceil(count / limit),
@@ -1967,7 +1819,6 @@ export const FuzzySearchLeads = async (req: Request, res: Response, next: NextFu
         return res.status(400).json({ message: "bad request" })
 
 }
-
 export const CreateLead = async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     let { mobile, remark, alternate_mobile1, alternate_mobile2 } = body as CreateOrEditLeadDto
@@ -1998,7 +1849,7 @@ export const CreateLead = async (req: Request, res: Response, next: NextFunction
     if (uniqueNumbers[2] && await Lead.findOne({ $or: [{ mobile: uniqueNumbers[2] }, { alternate_mobile1: uniqueNumbers[2] }, { alternate_mobile2: uniqueNumbers[2] }] }))
         return res.status(400).json({ message: `${uniqueNumbers[2]} already exists ` })
 
-    let visiting_card: Asset = undefined
+    let visiting_card: Asset | undefined = undefined
     if (req.file) {
         const allowedFiles = ["image/png", "image/jpeg", "image/gif", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv", "application/pdf"];
         const storageLocation = `crm/media`;
@@ -2048,7 +1899,6 @@ export const CreateLead = async (req: Request, res: Response, next: NextFunction
 
     return res.status(200).json("lead created")
 }
-
 export const UpdateLead = async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     const { mobile, remark, alternate_mobile1, alternate_mobile2 } = body as CreateOrEditLeadDto
@@ -2149,7 +1999,6 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
 
     return res.status(200).json({ message: "lead updated" })
 }
-
 export const DeleteLead = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
@@ -2167,7 +2016,6 @@ export const DeleteLead = async (req: Request, res: Response, next: NextFunction
 
     return res.status(200).json({ message: "lead and related remarks are deleted" })
 }
-
 export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next: NextFunction) => {
     let result: CreateAndUpdatesLeadFromExcelDto[] = []
     let statusText: string = ""
@@ -2391,8 +2239,6 @@ export const GetRefers = async (req: Request, res: Response, next: NextFunction)
 
     return res.status(200).json(refers);
 }
-
-
 export const GetPaginatedRefers = async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
@@ -2437,8 +2283,6 @@ export const GetPaginatedRefers = async (req: Request, res: Response, next: Next
     else return res.status(400).json({ message: 'bad request' })
 
 }
-
-
 export const FuzzySearchRefers = async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
@@ -2652,8 +2496,6 @@ export const FuzzySearchRefers = async (req: Request, res: Response, next: NextF
         return res.status(400).json({ message: "bad request" })
 
 }
-
-
 export const CreateReferParty = async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     const { name, customer_name, city, state, gst, mobile, mobile2, mobile3 } = body as CreateOrEditReferDto
@@ -2701,7 +2543,6 @@ export const CreateReferParty = async (req: Request, res: Response, next: NextFu
     }).save()
     return res.status(201).json(party)
 }
-
 export const UpdateReferParty = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     if (!isMongoId(id))
@@ -2773,8 +2614,6 @@ export const UpdateReferParty = async (req: Request, res: Response, next: NextFu
     })
     return res.status(200).json({ message: "updated" })
 }
-
-
 export const DeleteReferParty = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     if (!isMongoId(id))
@@ -2785,8 +2624,6 @@ export const DeleteReferParty = async (req: Request, res: Response, next: NextFu
     await ReferredParty.findByIdAndDelete(id)
     return res.status(200).json({ message: "deleted" })
 }
-
-
 export const BulkDeleteUselessLeads = async (req: Request, res: Response, next: NextFunction) => {
     const { leads_ids } = req.body as { leads_ids: string[] }
     for (let i = 0; i <= leads_ids.length; i++) {
@@ -2803,7 +2640,6 @@ export const BulkDeleteUselessLeads = async (req: Request, res: Response, next: 
     }
     return res.status(200).json({ message: "lead and related remarks are deleted" })
 }
-
 export const BulkReferUpdateFromExcel = async (req: Request, res: Response, next: NextFunction) => {
     let result: CreateOrEditReferFromExcelDto[] = []
     let statusText: string = ""
@@ -2940,9 +2776,6 @@ export const BulkReferUpdateFromExcel = async (req: Request, res: Response, next
     }
     return res.status(200).json(result);
 }
-
-
-//remarks apis
 export const UpdateRemark = async (req: Request, res: Response, next: NextFunction) => {
     const { remark, remind_date } = req.body as CreateOrEditRemarkDto
     if (!remark) return res.status(403).json({ message: "please fill required fields" })
@@ -2963,7 +2796,6 @@ export const UpdateRemark = async (req: Request, res: Response, next: NextFuncti
     await Lead.findByIdAndUpdate(rremark.lead, { last_remark: remark })
     return res.status(200).json({ message: "remark updated successfully" })
 }
-
 export const DeleteRemark = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
@@ -2974,7 +2806,6 @@ export const DeleteRemark = async (req: Request, res: Response, next: NextFuncti
     await rremark.remove()
     return res.status(200).json({ message: " remark deleted successfully" })
 }
-
 export const GetMyReminders = async (req: Request, res: Response, next: NextFunction) => {
     let previous_date = new Date()
     let day = previous_date.getDate() - 100
@@ -3115,7 +2946,6 @@ export const GetRemarkHistory = async (req: Request, res: Response, next: NextFu
     })
     return res.json(result)
 }
-
 export const GetActivitiesTopBarDetails = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetActivitiesTopBarDetailsDto[] = []
     let start_date = req.query.start_date
@@ -3127,6 +2957,7 @@ export const GetActivitiesTopBarDetails = async (req: Request, res: Response, ne
     dt1.setMinutes(0)
     dt2.setHours(0)
     dt2.setMinutes(0)
+    //@ts-ignore
     let ids = req.user?.assigned_users.map((id) => { return id._id })
     let stages = await Stage.find();
     let remarks: IRemark[] = []
@@ -3177,6 +3008,7 @@ export const GetActivities = async (req: Request, res: Response, next: NextFunct
     dt1.setMinutes(0)
     dt2.setHours(0)
     dt2.setMinutes(0)
+    //@ts-ignore
     let ids = req.user?.assigned_users.map((id) => { return id._id })
     let result: GetActivitiesOrRemindersDto[] = []
 
@@ -3317,7 +3149,6 @@ export const GetActivities = async (req: Request, res: Response, next: NextFunct
     else
         return res.status(400).json({ message: "bad request" })
 }
-
 export const NewRemark = async (req: Request, res: Response, next: NextFunction) => {
     const { remark, remind_date, has_card, stage } = req.body as CreateOrEditRemarkDto
     if (!remark) return res.status(403).json({ message: "please fill required fields" })
@@ -3358,7 +3189,6 @@ export const NewRemark = async (req: Request, res: Response, next: NextFunction)
     await lead.save()
     return res.status(200).json({ message: "new remark added successfully" })
 }
-
 export const GetNewRefers = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetReferDto[] = [];
     let start_date = req.query.start_date
@@ -3393,7 +3223,6 @@ export const GetNewRefers = async (req: Request, res: Response, next: NextFuncti
     })
     return res.status(200).json(result)
 }
-
 export const GetAssignedRefers = async (req: Request, res: Response, next: NextFunction) => {
     let start_date = req.query.start_date
     let end_date = req.query.end_date
@@ -3439,7 +3268,6 @@ export const GetAssignedRefers = async (req: Request, res: Response, next: NextF
     })
     return res.status(200).json(result)
 }
-
 export const CreateBill = async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     const {
@@ -3478,7 +3306,7 @@ export const CreateBill = async (req: Request, res: Response, next: NextFunction
             updated_by: req.user
         })
     }
-    let document: Asset = undefined
+    let document: Asset | undefined = undefined
     if (req.file) {
         const allowedFiles = ["image/png", "image/jpeg", "image/gif", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv", "application/pdf"];
         const storageLocation = `bills/media`;
@@ -3489,7 +3317,8 @@ export const CreateBill = async (req: Request, res: Response, next: NextFunction
         const doc = await uploadFileToCloud(req.file.buffer, storageLocation, req.file.originalname)
         if (doc) {
             document = doc
-            bill.billphoto = document;
+            if (document)
+                bill.billphoto = document;
         }
         else {
             return res.status(500).json({ message: "file uploading error" })
@@ -3521,7 +3350,6 @@ export const CreateBill = async (req: Request, res: Response, next: NextFunction
     return res.status(201).json({ message: "success" })
 
 }
-
 export const UpdateBill = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let bill = await Bill.findById(id)
@@ -3537,7 +3365,7 @@ export const UpdateBill = async (req: Request, res: Response, next: NextFunction
     if (bill.bill_no !== bill_no.toLowerCase())
         if (await Bill.findOne({ bill_no: bill_no.toLowerCase() }))
             return res.status(400).json({ message: "already exists this bill no" })
-    let document: Asset = undefined
+    let document: Asset | undefined = undefined
     if (req.file) {
         const allowedFiles = ["image/png", "image/jpeg", "image/gif", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv", "application/pdf"];
         const storageLocation = `bills/media`;
@@ -3550,7 +3378,8 @@ export const UpdateBill = async (req: Request, res: Response, next: NextFunction
             document = doc
             if (bill.billphoto)
                 await destroyFile(bill.billphoto._id)
-            bill.billphoto = document;
+            if (document)
+                bill.billphoto = document;
         }
         else {
             return res.status(500).json({ message: "file uploading error" })
@@ -3617,7 +3446,6 @@ export const DeleteBill = async (req: Request, res: Response, next: NextFunction
     }
     return res.status(200).json({ message: "bill deleted successfully" })
 }
-
 export const GetReferPartyBillsHistory = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "lead id not valid" })
@@ -3655,7 +3483,6 @@ export const GetReferPartyBillsHistory = async (req: Request, res: Response, nex
     }
     return res.json(result)
 }
-
 export const GetLeadPartyBillsHistory = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "lead id not valid" })
@@ -3693,7 +3520,6 @@ export const GetLeadPartyBillsHistory = async (req: Request, res: Response, next
     }
     return res.json(result)
 }
-
 export const MergeTwoLeads = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const { name, mobiles, city, stage, state, email, alternate_email, address, merge_refer, merge_bills, merge_remarks, source_lead_id } = req.body as CreateOrEditMergeLeadsDto
@@ -3765,7 +3591,6 @@ export const MergeTwoRefers = async (req: Request, res: Response, next: NextFunc
     return res.status(200).json({ message: "merge refers successfully" })
 }
 
-//get
 export const GetChecklists = async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
@@ -3776,6 +3601,7 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
     let count = 0
     let dt1 = new Date(String(start_date))
     let dt2 = new Date(String(end_date))
+    //@ts-ignore
     let ids = req.user?.assigned_users.map((id) => { return id._id })
     let result: GetChecklistDto[] = []
 
@@ -3841,9 +3667,6 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
     else
         return res.status(400).json({ message: "bad request" })
 }
-
-
-
 //post/put/delete/patch
 export const CreateChecklist = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -3882,7 +3705,7 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
         updated_by: req.user
     })
 
-    let document: Asset = undefined
+    let document: Asset | undefined = undefined
     if (req.file) {
         const allowedFiles = ["image/png", "image/jpeg", "image/gif", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv", "application/pdf"];
         const storageLocation = `checklist/media`;
@@ -3897,7 +3720,8 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
             return res.status(500).json({ message: "file uploading error" })
         }
     }
-    checklist.photo = document;
+    if (document)
+        checklist.photo = document;
     await checklist.save();
 
     if (end_date && frequency == "daily") {
@@ -3934,7 +3758,6 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
     }
     return res.status(201).json({ message: `new Checklist added` });
 }
-
 export const EditChecklist = async (req: Request, res: Response, next: NextFunction) => {
 
     let body = JSON.parse(req.body.body)
@@ -3958,7 +3781,7 @@ export const EditChecklist = async (req: Request, res: Response, next: NextFunct
     }
     checklist.work_title = work_title
     checklist.link = link
-    let document: Asset = undefined
+    let document: Asset | undefined = undefined
     if (req.file) {
         const allowedFiles = ["image/png", "image/jpeg", "image/gif", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv", "application/pdf"];
         const storageLocation = `checklist/media`;
@@ -3976,14 +3799,13 @@ export const EditChecklist = async (req: Request, res: Response, next: NextFunct
             return res.status(500).json({ message: "file uploading error" })
         }
     }
-    checklist.photo = document;
+    if (document)
+        checklist.photo = document;
     if (next_date)
         checklist.next_date = new Date(next_date);
     await checklist.save()
     return res.status(200).json({ message: `Checklist updated` });
 }
-
-
 export const DeleteChecklist = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: " id not valid" })
@@ -4000,8 +3822,6 @@ export const DeleteChecklist = async (req: Request, res: Response, next: NextFun
 
     return res.status(200).json({ message: `Checklist deleted` });
 }
-
-
 export const ToogleChecklist = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const { remarks } = req.body
@@ -4014,7 +3834,6 @@ export const ToogleChecklist = async (req: Request, res: Response, next: NextFun
     await ChecklistBox.findByIdAndUpdate(id, { checked: !checklist.checked, remarks: remarks })
     return res.status(200).json("successfully marked")
 }
-
 export const CreateChecklistFromExcel = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetChecklistFromExcelDto[] = []
     let statusText: string = ""
@@ -4086,7 +3905,6 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
     }
     return res.status(200).json(result);
 }
-
 export const DownloadExcelTemplateForCreatechecklists = async (req: Request, res: Response, next: NextFunction) => {
     let checklist: any = {
         work_title: "check the work given ",
@@ -4166,7 +3984,6 @@ export const CreateMaintenance = async (req: Request, res: Response, next: NextF
     await maintenance.save()
     return res.status(201).json({ message: `new maintenance added` });
 }
-
 export const UpdateMaintenance = async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     const {
@@ -4200,7 +4017,6 @@ export const UpdateMaintenance = async (req: Request, res: Response, next: NextF
     await maintenance.save()
     return res.status(200).json({ message: ` maintenance updated` });
 }
-
 export const DeleteMaintenance = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: " id not valid" })
@@ -4217,13 +4033,13 @@ export const DeleteMaintenance = async (req: Request, res: Response, next: NextF
     await maintenance.remove()
     return res.status(200).json({ message: `Maintenance deleted` });
 }
-
 export const GetAllMaintenance = async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
     let maintenances: IMaintenance[] = []
     let count = 0
+    //@ts-ignore
     let ids = req.user?.assigned_users.map((id) => { return id._id })
     let result: GetMaintenanceDto[] = []
 
@@ -4319,7 +4135,6 @@ export const GetAllMaintenance = async (req: Request, res: Response, next: NextF
     else
         return res.status(400).json({ message: "bad request" })
 }
-
 export const CreateMaintenanceFromExcel = async (req: Request, res: Response, next: NextFunction) => {
     let result: CreateMaintenanceFromExcelDto[] = []
     let statusText: string = ""
@@ -4446,7 +4261,6 @@ export const CreateMaintenanceFromExcel = async (req: Request, res: Response, ne
     }
     return res.status(200).json(result);
 }
-
 export const DownloadExcelTemplateForMaintenance = async (req: Request, res: Response, next: NextFunction) => {
     let checklist: any = {
         work: "check the work given ",
@@ -4459,7 +4273,6 @@ export const DownloadExcelTemplateForMaintenance = async (req: Request, res: Res
     let fileName = "CreateMaintenanceTemplate.xlsx"
     return res.download("./file", fileName)
 }
-
 export const ToogleMaintenanceItem = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: " id not valid" })
@@ -4471,7 +4284,6 @@ export const ToogleMaintenanceItem = async (req: Request, res: Response, next: N
     await MaintenanceItem.findByIdAndUpdate(id, { is_required: !item.is_required })
     return res.status(200).json("successfully changed")
 }
-
 export const ViewMaintenanceItemRemarkHistory = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetMaintenanceItemRemarkDto[] = []
     const id = req.params.id;
@@ -4518,7 +4330,6 @@ export const ViewMaintenanceItemRemarkHistoryByDates = async (req: Request, res:
     })
     return res.status(200).json(result)
 }
-
 export const AddMaintenanceItemRemark = async (req: Request, res: Response, next: NextFunction) => {
     const { remark, stage } = req.body as CreateOrEditRemarkDto
     if (!remark) return res.status(403).json({ message: "please fill required fields" })
@@ -4553,7 +4364,6 @@ export const AddMaintenanceItemRemark = async (req: Request, res: Response, next
     await item.save()
     return res.status(200).json({ message: "new remark added successfully" })
 }
-
 export const GetAllMaintenanceReport = async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
@@ -4568,7 +4378,7 @@ export const GetAllMaintenanceReport = async (req: Request, res: Response, next:
     let dt2 = new Date(String(end_date))
     dt2.setHours(0)
     dt2.setMinutes(0)
-
+    //@ts-ignore
     let ids = req.user?.assigned_users.map((id) => { return id._id })
     let result: GetMaintenanceDto[] = []
 
@@ -4670,7 +4480,6 @@ export const GetAllMaintenanceReport = async (req: Request, res: Response, next:
     else
         return res.status(400).json({ message: "bad request" })
 }
-
 export const GetMaintenceItemBoxes = async (dt1: Date, dt2: Date, frequency: string, item: IMaintenanceItem) => {
     let result: {
         dt1: string,
@@ -4841,7 +4650,6 @@ export const CreateProduction = async (req: Request, res: Response, next: NextFu
     await new_prouction.save()
     return res.status(201).json(new_prouction)
 }
-
 export const UpdateProduction = async (req: Request, res: Response, next: NextFunction) => {
     let {
         machine,
@@ -4908,8 +4716,6 @@ export const DeleteProduction = async (req: Request, res: Response, next: NextFu
     await Production.findByIdAndDelete(remote_production._id)
     return res.status(200).json({ message: "production removed" })
 }
-
-
 export const GetMyTodayShoeWeights = async (req: Request, res: Response, next: NextFunction) => {
     let dt1 = new Date()
     dt1.setDate(new Date().getDate())
@@ -4955,8 +4761,6 @@ export const GetMyTodayShoeWeights = async (req: Request, res: Response, next: N
     })
     return res.status(200).json(result)
 }
-
-
 export const GetShoeWeights = async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
@@ -5031,7 +4835,6 @@ export const GetShoeWeights = async (req: Request, res: Response, next: NextFunc
     else
         return res.status(200).json({ message: "bad request" })
 }
-
 export const CreateShoeWeight = async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body) as CreateOrEditShoeWeightDto
 
@@ -5288,7 +5091,6 @@ export const UpdateShoeWeight3 = async (req: Request, res: Response, next: NextF
     await shoe_weight.save()
     return res.status(200).json(shoe_weight)
 }
-
 export const ValidateShoeWeight = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let shoe_weight = await ShoeWeight.findById(id)
@@ -5331,9 +5133,6 @@ export const DeleteShoeWeight = async (req: Request, res: Response, next: NextFu
     await shoe_weight.remove()
     return res.status(200).json(shoe_weight)
 }
-
-
-
 export const GetProductions = async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
@@ -5394,8 +5193,6 @@ export const GetProductions = async (req: Request, res: Response, next: NextFunc
     else
         return res.status(400).json({ message: "bad request" })
 }
-
-
 export const GetMyTodayProductions = async (req: Request, res: Response, next: NextFunction) => {
     let machine = req.query.machine
     let date = String(req.query.date)
@@ -5431,16 +5228,6 @@ export const GetMyTodayProductions = async (req: Request, res: Response, next: N
     })
     return res.status(200).json(productions)
 }
-//post/put/patch/delete
-
-
-
-
-
-
-
-
-
 export const GetMyTodaySoleThickness = async (req: Request, res: Response, next: NextFunction) => {
     console.log("enterd")
     let dt1 = new Date()
@@ -5473,7 +5260,6 @@ export const GetMyTodaySoleThickness = async (req: Request, res: Response, next:
     })
     return res.status(200).json(result)
 }
-
 export const GetSoleThickness = async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
@@ -5639,7 +5425,6 @@ export const GetMyTodaySpareDye = async (req: Request, res: Response, next: Next
     })
     return res.status(200).json(result)
 }
-
 export const GetSpareDyes = async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
@@ -5701,8 +5486,6 @@ export const GetSpareDyes = async (req: Request, res: Response, next: NextFuncti
     else
         return res.status(200).json({ message: "bad request" })
 }
-
-
 export const CreateSpareDye = async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body) as CreateOrEditSpareDyeDto
     let { dye, location, repair_required, remarks } = body
@@ -5763,7 +5546,6 @@ export const CreateSpareDye = async (req: Request, res: Response, next: NextFunc
     await dyeObj.save()
     return res.status(201).json(dyeObj)
 }
-
 export const UpdateSpareDye = async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body) as CreateOrEditSpareDyeDto
     let { dye, location, repair_required, remarks } = body

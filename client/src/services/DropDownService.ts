@@ -38,7 +38,7 @@ export const GetChecklists = async ({ limit, page, start_date, end_date, id }: {
 
 
 
-export const ToogleMyCheckLists = async ({id,remarks}:{id: string, remarks: string}) => {
+export const ToogleMyCheckLists = async ({ id, remarks }: { id: string, remarks: string }) => {
     return await apiClient.patch(`checklists/toogle/${id}`, { remarks: remarks })
 }
 
@@ -48,7 +48,7 @@ export const DeleteCheckList = async (id: string) => {
 }
 
 
-export const CreateChecklistFromExcel = async (  body: FormData ) => {
+export const CreateChecklistFromExcel = async (body: FormData) => {
     return await apiClient.put(`create-from-excel/checklists`, body)
 }
 

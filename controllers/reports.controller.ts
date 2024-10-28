@@ -1,24 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
-import { ErpEmployee, IErpEmployee } from '../models/dropdown/erp.employee.model';
-import { VisitReport } from '../models/reports/visit.report.model';
-import { decimalToTime } from '../utils/decimalToTime';
-import { GetBillsAgingReportFromExcelDto, GetClientSaleReportFromExcelDto, GetErpStateFromExcelDto, GetPartyTargetReportFromExcelDto, GetPendingOrdersReportFromExcelDto, GetSaleAnalysisReportDto, GetVisitReportDto, GetVisitReportFromExcelDto } from '../dtos/erp.reports.dto';
-import { PartyTargetReport } from '../models/features/partytarget.model';
-import { IState, State } from '../models/dropdown/state.model';
-import { ClientSaleLastYearReport, ClientSaleReport } from '../models/reports/client_sale.model';
-import { BillsAgingReport } from '../models/reports/bills_aging_model';
-import { PendingOrdersReport } from '../models/reports/pending_orders.model';
-import { GetLastYearlyachievementBystate, GetMonthlyachievementBystate, GetMonthlytargetBystate, GetYearlyachievementBystate } from '../utils/ErpUtils';
 import moment from 'moment';
-import { IShoeWeight, ShoeWeight } from '../models/features/shoe.weight.model';
-import { SpareDye } from '../models/features/SpareDye.model';
-import { GetCategoryWiseProductionReportDto, GetDyeStatusReportDto, GetShoeWeightDiffReportDto, IColumnRowData, IRowData } from '../dtos/production.dto';
-import { Production } from '../models/features/production.model';
-import { User } from '../models/features/user.model';
 import xlsx from 'xlsx';
 import isMongoId from 'validator/lib/isMongoId';
 import mongoose from 'mongoose';
-import { Machine } from '../models/dropdown/machine.model';
+import { GetBillsAgingReportFromExcelDto, GetCategoryWiseProductionReportDto, GetClientSaleReportFromExcelDto, GetErpStateFromExcelDto, GetPartyTargetReportFromExcelDto, GetPendingOrdersReportFromExcelDto, GetSaleAnalysisReportDto, GetShoeWeightDiffReportDto, GetVisitReportDto, GetVisitReportFromExcelDto } from '../dtos/report.dto';
+import { IErpEmployee, IState } from '../interfaces/dropdown.interface';
+import { BillsAgingReport, ClientSaleLastYearReport, ClientSaleReport, PartyTargetReport, PendingOrdersReport, VisitReport } from '../models/report.model';
+import { Production, ShoeWeight, SpareDye, User } from '../models/feature.model';
+import { decimalToTime, GetLastYearlyachievementBystate, GetMonthlyachievementBystate, GetMonthlytargetBystate, GetYearlyachievementBystate } from '../utils/app.util';
+import { ErpEmployee, Machine, State } from '../models/dropdown.model';
+import { GetDyeStatusReportDto, IColumnRowData, IRowData } from '../dtos/dropdown.dto';
+import { IShoeWeight } from '../interfaces/feature.interface';
 
 export const GetBillsAgingReports = async (req: Request, res: Response, next: NextFunction) => {
     let state_ids = req.user?.assigned_states.map((state: IState) => { return state }) || []
@@ -36,8 +28,6 @@ export const GetBillsAgingReports = async (req: Request, res: Response, next: Ne
     })
     return res.status(200).json(reports);
 }
-
-
 export const GetPendingOrderReports = async (req: Request, res: Response, next: NextFunction) => {
     let state_ids = req.user?.assigned_states.map((state: IState) => { return state }) || []
     let reports: GetPendingOrdersReportFromExcelDto[] = (await PendingOrdersReport.find({ report_owner: { $in: state_ids } }).populate("report_owner")).map((i) => {
@@ -99,8 +89,6 @@ export const GetPendingOrderReports = async (req: Request, res: Response, next: 
     })
     return res.status(200).json(reports);
 }
-
-
 export const GetClientSaleReportsForLastYear = async (req: Request, res: Response, next: NextFunction) => {
     let state_ids = req.user?.assigned_states.map((state: IState) => { return state }) || []
     let data: GetClientSaleReportFromExcelDto[] = (await ClientSaleLastYearReport.find({ report_owner: { $in: state_ids } }).populate('report_owner')).map((i) => {
@@ -256,8 +244,6 @@ export const GetSaleAnalysisReport = async (req: Request, res: Response, next: N
         return res.status(403).json({ message: "not authorized" })
 
 }
-
-
 export const AssignErpStatesToUsers = async (req: Request, res: Response, next: NextFunction) => {
     const { state_ids, user_ids, flag } = req.body as {
         user_ids: string[],
@@ -303,7 +289,6 @@ export const AssignErpStatesToUsers = async (req: Request, res: Response, next: 
 
     return res.status(200).json({ message: "successfull" })
 }
-
 export const AssignErpEmployeesToUsers = async (req: Request, res: Response, next: NextFunction) => {
     const { emp_ids, user_ids, flag } = req.body as {
         user_ids: string[],
@@ -442,7 +427,6 @@ export const BulkCreateAndUpdateErpStatesFromExcel = async (req: Request, res: R
     }
     return res.status(200).json(result);
 }
-
 export const BulkPendingOrderReportFromExcel = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetPendingOrdersReportFromExcelDto[] = []
     if (!req.file)
@@ -699,7 +683,6 @@ export const BulkCreateClientSaleReportFromExcel = async (req: Request, res: Res
     }
     return res.status(200).json(result);
 }
-
 export const BulkCreateClientSaleReportFromExcelForLastYear = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetClientSaleReportFromExcelDto[] = []
     if (!req.file)
@@ -783,8 +766,6 @@ export const BulkCreateClientSaleReportFromExcelForLastYear = async (req: Reques
     }
     return res.status(200).json(result);
 }
-
-
 export const BulkCreatePartyTargetReportFromExcel = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetPartyTargetReportFromExcelDto[] = []
     if (!req.file)
@@ -909,8 +890,6 @@ export const BulkCreatePartyTargetReportFromExcel = async (req: Request, res: Re
     }
     return res.status(200).json(result);
 }
-
-
 export const GetVisitReports = async (req: Request, res: Response, next: NextFunction) => {
     let employee_ids = req.user?.assigned_erpEmployees.map((employee: IErpEmployee) => { return employee }) || []
     let reports: GetVisitReportDto[] = (await VisitReport.find({ employee: { $in: employee_ids } }).populate('employee').populate('created_by').populate('updated_by')).map((i) => {
@@ -932,7 +911,6 @@ export const GetVisitReports = async (req: Request, res: Response, next: NextFun
     })
     return res.status(200).json(reports);
 }
-
 export const BulkCreateVisitReportFromExcel = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetVisitReportFromExcelDto[] = []
     if (!req.file)
@@ -1008,8 +986,6 @@ export const BulkCreateVisitReportFromExcel = async (req: Request, res: Response
     }
     return res.status(200).json(result);
 }
-
-
 export const GetShoeWeightDifferenceReports = async (req: Request, res: Response, next: NextFunction) => {
     let start_date = req.query.start_date
     let end_date = req.query.end_date
@@ -1026,10 +1002,10 @@ export const GetShoeWeightDifferenceReports = async (req: Request, res: Response
         return {
             date: moment(weight.created_at).format("DD/MM/YYYY"),
             dye_no: weight.dye.dye_number,
-            article: weight.article.display_name,
+            article: weight.article.name,
             size: weight.dye.size,
             st_weight: weight.dye.stdshoe_weight || 0,
-            machine: weight.machine.display_name,
+            machine: weight.machine.name,
             w1: weight.shoe_weight1 || 0,
             w2: weight.shoe_weight2 || 0,
             w3: weight.shoe_weight3 || 0,
@@ -1044,7 +1020,6 @@ export const GetShoeWeightDifferenceReports = async (req: Request, res: Response
     })
     return res.status(200).json(reports)
 }
-
 export const GetThekedarWiseProductionReports = async (req: Request, res: Response, next: NextFunction) => {
     let start_date = req.query.start_date
     let end_date = req.query.end_date
@@ -1091,7 +1066,6 @@ export const GetThekedarWiseProductionReports = async (req: Request, res: Respon
 
     return res.status(200).json(production)
 }
-
 export const GetMachineWiseProductionReports = async (req: Request, res: Response, next: NextFunction) => {
     let start_date = req.query.start_date
     let end_date = req.query.end_date
@@ -1110,7 +1084,7 @@ export const GetMachineWiseProductionReports = async (req: Request, res: Respons
     //columns
     production.columns.push({ key: 'date', header: 'Date', type: 'date' });
     for (let k = 0; k < machines.length; k++) {
-        production.columns.push({ key: machines[k].name, header: String(machines[k].display_name).toUpperCase(), type: 'number' })
+        production.columns.push({ key: machines[k].name, header: String(machines[k].name).toUpperCase(), type: 'number' })
     }
     production.columns.push({ key: 'total', header: 'Total', type: 'number' });
 
@@ -1135,8 +1109,6 @@ export const GetMachineWiseProductionReports = async (req: Request, res: Respons
 
     return res.status(200).json(production)
 }
-
-
 export const GetCategoryWiseProductionReports = async (req: Request, res: Response, next: NextFunction) => {
     let start_date = req.query.start_date
     let end_date = req.query.end_date
@@ -1169,7 +1141,6 @@ export const GetCategoryWiseProductionReports = async (req: Request, res: Respon
     }
     return res.status(200).json(productions)
 }
-
 export const GetDyeStatusReport = async (req: Request, res: Response, next: NextFunction) => {
     let start_date = req.query.start_date
     let end_date = req.query.end_date

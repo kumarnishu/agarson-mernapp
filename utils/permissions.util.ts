@@ -1,4 +1,4 @@
-import { IMenu } from "../dtos/user.dto";
+import { IMenu } from "../dtos/feature.dto";
 
 export function FetchAllPermissions() {
     let permissions: IMenu[] = [];
@@ -8,286 +8,286 @@ export function FetchAllPermissions() {
         label: 'Feature',
         permissions: [
             {
-            value: 'feature_menu',
-            label: 'Feature Button'
-        },
-    ],
-    menues:[
-        {
-            label: 'Production',
-            permissions: [
-                {
-                    value: 'production_view',
-                    label: 'view'
-                },
-                {
-                    value: 'production_create',
-                    label: 'create'
-                },
-                {
-                    value: 'production_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'production_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'production_export',
-                    label: 'export'
-                }
-            ]
-        },
-        {
-            label: 'Sole Thickness',
-            permissions: [
-                {
-                    value: 'sole_thickness_view',
-                    label: 'view'
-                },
-                {
-                    value: 'sole_thickness_create',
-                    label: 'create'
-                },
-                {
-                    value: 'sole_thickness_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'sole_thickness_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'sole_thickness_export',
-                    label: 'export'
-                }
-            ]
-        },
-        {
-            label: 'Shoe Weight',
-            permissions: [
-                {
-                    value: 'shoe_weight_view',
-                    label: 'view'
-                },
-                {
-                    value: 'shoe_weight_create',
-                    label: 'create'
-                },
-                {
-                    value: 'shoe_weight_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'shoe_weight_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'shoe_weight_export',
-                    label: 'export'
-                }
-            ]
-        },
-        {
-            label: 'Spare Dye',
-            permissions: [
-                {
-                    value: 'spare_dye_view',
-                    label: 'view'
-                },
-                {
-                    value: 'spare_dye_create',
-                    label: 'create'
-                },
-                {
-                    value: 'spare_dye_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'spare_dye_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'spare_dye_export',
-                    label: 'export'
-                }
-            ]
-        }, {
-            label: 'Leads',
-            permissions: [
-                {
-                    value: 'leads_view',
-                    label: 'view'
-                },
-                {
-                    value: 'leads_create',
-                    label: 'create'
-                },
+                value: 'feature_menu',
+                label: 'Feature Button'
+            },
+        ],
+        menues: [
+            {
+                label: 'Production',
+                permissions: [
+                    {
+                        value: 'production_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'production_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'production_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'production_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'production_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Sole Thickness',
+                permissions: [
+                    {
+                        value: 'sole_thickness_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'sole_thickness_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'sole_thickness_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'sole_thickness_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'sole_thickness_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Shoe Weight',
+                permissions: [
+                    {
+                        value: 'shoe_weight_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'shoe_weight_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'shoe_weight_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'shoe_weight_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'shoe_weight_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Spare Dye',
+                permissions: [
+                    {
+                        value: 'spare_dye_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'spare_dye_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'spare_dye_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'spare_dye_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'spare_dye_export',
+                        label: 'export'
+                    }
+                ]
+            }, {
+                label: 'Leads',
+                permissions: [
+                    {
+                        value: 'leads_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'leads_create',
+                        label: 'create'
+                    },
 
-                {
-                    value: 'leads_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'leads_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'show_leads_useless',
-                    label: 'Show Useless Leads'
-                },
-                {
-                    value: 'show_refer_leads',
-                    label: 'Show Referred Leads'
-                },
-                {
-                    value: 'leads_merge',
-                    label: 'Merge Leads'
-                },
-                {
-                    value: 'create_lead_bills',
-                    label: 'Upload Bill'
-                },
-                {
-                    value: 'edit_lead_bills',
-                    label: 'Edit Bill'
-                },
-                {
-                    value: 'delete_lead_bills',
-                    label: 'Delete Bill'
-                },
-                {
-                    value: 'view_lead_bills',
-                    label: 'View Bills'
-                },
-                {
-                    value: 'leads_export',
-                    label: 'export'
-                }
-            ]
-        },
-        {
-            label: 'Refers',
-            permissions: [
-                {
-                    value: 'refer_view',
-                    label: 'view'
-                },
-                {
-                    value: 'refer_create',
-                    label: 'create'
-                },
-                {
-                    value: 'refer_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'refers_merge',
-                    label: 'Merge Refers'
-                },
-                {
-                    value: 'refer_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'refer_export',
-                    label: 'export'
-                },
-                {
-                    value: 'create_refer_bills',
-                    label: 'Upload Bill'
-                },
-                {
-                    value: 'edit_refer_bills',
-                    label: 'Edit Bill'
-                },
-                {
-                    value: 'delete_refer_bills',
-                    label: 'Delete Bill'
-                },
-                {
-                    value: 'view_refer_bills',
-                    label: 'View Bills'
-                },
-            ]
-        },
-        {
-            label: 'Reminders',
-            permissions: [
-                {
-                    value: 'reminders_view',
-                    label: 'view'
-                },
-                {
-                    value: 'reminders_create',
-                    label: 'create'
-                },
-                {
-                    value: 'reminders_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'reminders_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'reminders_export',
-                    label: 'export'
-                }
-            ]
-        },
-        {
-            label: 'Checklists',
-            permissions: [
-                {
-                    value: 'checklist_view',
-                    label: 'view'
-                },
-                {
-                    value: 'checklist_create',
-                    label: 'create'
-                },
-                {
-                    value: 'checklist_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'checklist_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'checklist_export',
-                    label: 'export'
-                }
-            ]
-        },
-        {
-            label: 'Maintenance',
-            permissions: [
-                {
-                    value: 'maintenance_view',
-                    label: 'view'
-                },
-                {
-                    value: 'maintenance_create',
-                    label: 'create'
-                },
-                {
-                    value: 'maintenance_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'maintenance_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'maintenance_export',
-                    label: 'export'
-                }
-            ]
-        },
+                    {
+                        value: 'leads_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'leads_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'show_leads_useless',
+                        label: 'Show Useless Leads'
+                    },
+                    {
+                        value: 'show_refer_leads',
+                        label: 'Show Referred Leads'
+                    },
+                    {
+                        value: 'leads_merge',
+                        label: 'Merge Leads'
+                    },
+                    {
+                        value: 'create_lead_bills',
+                        label: 'Upload Bill'
+                    },
+                    {
+                        value: 'edit_lead_bills',
+                        label: 'Edit Bill'
+                    },
+                    {
+                        value: 'delete_lead_bills',
+                        label: 'Delete Bill'
+                    },
+                    {
+                        value: 'view_lead_bills',
+                        label: 'View Bills'
+                    },
+                    {
+                        value: 'leads_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Refers',
+                permissions: [
+                    {
+                        value: 'refer_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'refer_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'refer_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'refers_merge',
+                        label: 'Merge Refers'
+                    },
+                    {
+                        value: 'refer_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'refer_export',
+                        label: 'export'
+                    },
+                    {
+                        value: 'create_refer_bills',
+                        label: 'Upload Bill'
+                    },
+                    {
+                        value: 'edit_refer_bills',
+                        label: 'Edit Bill'
+                    },
+                    {
+                        value: 'delete_refer_bills',
+                        label: 'Delete Bill'
+                    },
+                    {
+                        value: 'view_refer_bills',
+                        label: 'View Bills'
+                    },
+                ]
+            },
+            {
+                label: 'Reminders',
+                permissions: [
+                    {
+                        value: 'reminders_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'reminders_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'reminders_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'reminders_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'reminders_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Checklists',
+                permissions: [
+                    {
+                        value: 'checklist_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'checklist_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'checklist_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'checklist_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'checklist_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Maintenance',
+                permissions: [
+                    {
+                        value: 'maintenance_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'maintenance_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'maintenance_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'maintenance_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'maintenance_export',
+                        label: 'export'
+                    }
+                ]
+            },
 
-    ]
+        ]
     }
     let reportsMenu: IMenu = {
         label: 'Reports',
@@ -703,7 +703,7 @@ export function FetchAllPermissions() {
         permissions: [{
             value: 'dropdown_menu',
             label: 'DropDown Button'
-        }], 
+        }],
         menues: [
             {
                 label: 'Article',
