@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { User } from "../models/users/user.model.js";
+import { User } from "../models/features/user.model";
 
 let UserTokens: string[] = []//for storing access tokens in memory
 

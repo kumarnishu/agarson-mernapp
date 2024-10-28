@@ -524,7 +524,7 @@ export default function LeadsPage() {
       },
     }),
     muiTableContainerProps: (table) => ({
-      sx: { maxHeight: table.table.getState().isFullScreen ? 'auto' : '76vh' }
+      sx: { maxHeight: table.table.getState().isFullScreen ? 'auto' : '75vh' }
     }),
     positionToolbarAlertBanner: 'none',
     renderTopToolbarCustomActions: ({ table }) => (

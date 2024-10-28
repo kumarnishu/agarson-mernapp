@@ -1,5 +1,5 @@
-import { IPartyTargetReport } from "../models/erp_reports/partytarget.model";
-import { IState } from "../models/erp_reports/state.model";
+import { IState } from "../models/dropdown/state.model";
+import { IPartyTargetReport } from "../models/features/partytarget.model";
 
 export function GetMonthlyachievementBystate(reports: IPartyTargetReport[], mont: number) {
     let result = 0;

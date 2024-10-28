@@ -1,6 +1,7 @@
 import { CronJob } from "cron";
-import { MaintenanceItem } from "../models/maintainence/maintainence.item.model";
-import { Maintenance } from "../models/maintainence/maintainence.model";
+import { Maintenance } from "../models/features/maintainence.model";
+import { MaintenanceItem } from "../models/features/maintainence.item.model";
+
 
 export async function ActivateMaintenanceWork() {
 

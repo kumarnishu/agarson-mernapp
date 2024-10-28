@@ -1,5 +1,5 @@
 import { bucket, bucketName } from "../app";
-import { Asset } from "../models/users/user.model";
+import { Asset } from "../models/features/user.model";
 
 
 export const uploadFileToCloud = async (file: string | Buffer, storageFolder: string, filename: string) => {

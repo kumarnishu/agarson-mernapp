@@ -6,12 +6,6 @@ import cookieParser from 'cookie-parser';
 import cors from "cors";
 import { MulterError } from 'multer';
 import { connectDatabase } from './config/db';
-import UserRoutes from "./routes/user.routes";
-import LeadRoutes from "./routes/lead.routes";
-import CheckListkRoutes from "./routes/checklist.routes";
-import MaintenanceRoutes from "./routes/maintenance.route";
-import ErpRoutes from "./routes/erp.routes";
-import ProductionRoutes from "./routes/production.routes";
 import path from 'path';
 import { Server } from "socket.io";
 import { getCurrentUser, userJoin, userLeave } from "./utils/handleSocketUsers";
@@ -28,7 +22,7 @@ dotenv.config();
 const PORT = Number(process.env.PORT) || 5000
 const HOST = process.env.HOST || "http://localhost"
 const ENV = process.env.NODE_ENV || "development"
-
+const router = express.Router()
 app.use(express.json({ limit: '30mb' }))
 app.use(cookieParser());
 app.use(compression())
@@ -105,13 +99,7 @@ export const bucket = storage.bucket(bucketName)
 
 
 
-//server routes
-app.use("/api/v1", UserRoutes)
-app.use("/api/v1", LeadRoutes)
-app.use("/api/v1", CheckListkRoutes)
-app.use("/api/v1", MaintenanceRoutes)
-app.use("/api/v1", ErpRoutes)
-app.use("/api/v1", ProductionRoutes)
+
 ActivateMaintenanceWork();
 
 
@@ -147,5 +135,5 @@ server.listen(PORT, () => {
 });
 
 export {
-    io
+    io, router
 }
