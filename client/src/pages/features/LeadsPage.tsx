@@ -98,7 +98,6 @@ function UploadLeadsExcelButton() {
           :
           <>
             <Button
-              size="small"
               variant="contained"
               component="label"
               color="inherit"
@@ -590,7 +589,7 @@ export default function LeadsPage() {
             ))}
           </Select> 
           {LoggedInUser?._id === LoggedInUser?.created_by.id && LoggedInUser?.assigned_permissions.includes('leads_delete') && <Tooltip title="Delete Selected Leads">
-            <Button size="small" variant='contained' color='error'
+            <Button  variant='contained' color='error'
 
               onClick={() => {
                 let data: any[] = [];
@@ -606,7 +605,7 @@ export default function LeadsPage() {
           </Tooltip>}
           {LoggedInUser?.assigned_permissions.includes('leads_create') && <UploadLeadsExcelButton />}
           <Tooltip title="Toogle Filter">
-            <Button size="small" color="inherit" variant='contained'
+            <Button  color="inherit" variant='contained'
               onClick={() => {
                 if (table.getState().showColumnFilters)
                   table.resetColumnFilters(true)
@@ -618,7 +617,7 @@ export default function LeadsPage() {
             </Button>
           </Tooltip>
           <Tooltip title="Toogle FullScreen">
-            <Button size="small" color="inherit" variant='contained'
+            <Button  color="inherit" variant='contained'
               onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
               }
             >
@@ -626,7 +625,7 @@ export default function LeadsPage() {
             </Button>
           </Tooltip>
           <Tooltip title="Menu">
-            <Button size="small" color="inherit" variant='contained'
+            <Button  color="inherit" variant='contained'
               onClick={(e) => setAnchorEl(e.currentTarget)
               }
             >
