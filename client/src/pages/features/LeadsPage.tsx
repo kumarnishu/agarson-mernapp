@@ -524,7 +524,7 @@ export default function LeadsPage() {
       },
     }),
     muiTableContainerProps: (table) => ({
-      sx: { maxHeight: table.table.getState().isFullScreen ? 'auto' : '78vh' }
+      sx: { maxHeight: table.table.getState().isFullScreen ? 'auto' : '76vh' }
     }),
     positionToolbarAlertBanner: 'none',
     renderTopToolbarCustomActions: ({ table }) => (
@@ -547,14 +547,16 @@ export default function LeadsPage() {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <Search sx={{ cursor: 'pointer' }} onClick={() => {
+                  <Search sx={{
+                    cursor: 'pointer'
+                  }} onClick={() => {
                     if (filter)
                       refetchFuzzy()
                   }} />
                 </InputAdornment>
               ),
             }}
-            placeholder={`Search  `}
+            placeholder={`Search `}
             onKeyUp={(e) => {
               if (e.key === "Enter") {
                 refetchFuzzy()
@@ -587,9 +589,9 @@ export default function LeadsPage() {
                 {toTitleCase(stage.label)}
               </MenuItem>
             ))}
-          </Select> 
+          </Select>
           {LoggedInUser?._id === LoggedInUser?.created_by.id && LoggedInUser?.assigned_permissions.includes('leads_delete') && <Tooltip title="Delete Selected Leads">
-            <Button  variant='contained' color='error'
+            <Button variant='contained' color='error'
 
               onClick={() => {
                 let data: any[] = [];
@@ -605,7 +607,7 @@ export default function LeadsPage() {
           </Tooltip>}
           {LoggedInUser?.assigned_permissions.includes('leads_create') && <UploadLeadsExcelButton />}
           <Tooltip title="Toogle Filter">
-            <Button  color="inherit" variant='contained'
+            <Button color="inherit" variant='contained'
               onClick={() => {
                 if (table.getState().showColumnFilters)
                   table.resetColumnFilters(true)
@@ -617,7 +619,7 @@ export default function LeadsPage() {
             </Button>
           </Tooltip>
           <Tooltip title="Toogle FullScreen">
-            <Button  color="inherit" variant='contained'
+            <Button color="inherit" variant='contained'
               onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
               }
             >
@@ -625,12 +627,11 @@ export default function LeadsPage() {
             </Button>
           </Tooltip>
           <Tooltip title="Menu">
-            <Button  color="inherit" variant='contained'
+            <Button color="inherit" variant='contained'
               onClick={(e) => setAnchorEl(e.currentTarget)
               }
             >
               <MenuIcon />
-              <Typography pl={1}> Menu</Typography>
             </Button>
           </Tooltip>
         </Stack>
