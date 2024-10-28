@@ -81,95 +81,100 @@ function MainDashBoardPage() {
   return (
     <>
 
-      <Box sx={{ bgcolor: 'rgba(0,0,255,0.8)', width: '100%' }}>
-        {/* parent stack */}
-        <Stack direction="row" sx={{
-          justifyContent: "space-between", alignItems: "center"
-        }}
-        >
-          {/* child stack1 */}
-          <Stack direction="row" gap={2} pl={2} justifyContent={'center'} alignItems={'center'}>
+      {/* parent stack */}
+      <Stack direction="row" sx={{
+        bgcolor: 'rgba(0,0,255,0.8)',
+        height: "10vh",
+        overflowY:'hidden',
+        justifyContent: "space-between", alignItems: "center"
+      }}
+      >
+        {/* child stack1 */}
+        <Stack direction="row" gap={2} pl={2} justifyContent={'center'} alignItems={'center'}>
 
-            <ProfileLogo />
+          <ProfileLogo />
 
-          </Stack>
-          {/* child stack2 */}
-
-          {/* child stack3 */}
-          <Stack
-            direction="row"
-            justifyContent={"center"}
-            alignItems="center"
-            gap={2}
-          >
-            <Link to={feature ? feature.url : "/"} onDoubleClick={() => {
-              {
-                setFeature({ feature: "Dashboard", url: "/" })
-                navigate("/")
-              }
-            }} replace={true} style={{ textDecoration: 'none' }}>
-              <Paper sx={{ ml: 2, p: 1, bgcolor: 'white', boxShadow: 1, borderRadius: 1, borderColor: 'white' }}>
-                <Stack flexDirection={"row"} gap={2} sx={{ alignItems: 'center' }}>
-                  <ButtonLogo title="" height={20} width={20} />
-                  <Typography variant="button" sx={{ fontSize: 12 }} component="div">
-                    {feature?.feature || "Dashboard"}
-                  </Typography>
-                </Stack>
-              </Paper>
-            </Link>
-
-            <IconButton onClick={toggleDrawer(true)} size='large'>
-              < MenuIcon sx={{ width: 35, height: 35, color: 'white' }} />
-            </IconButton>
-          </Stack>
         </Stack>
-      </Box >
+        {/* child stack2 */}
 
+        {/* child stack3 */}
+        <Stack
+          direction="row"
+          justifyContent={"center"}
+          alignItems="center"
+          gap={2}
+        >
+          <Link to={feature ? feature.url : "/"} onDoubleClick={() => {
+            {
+              setFeature({ feature: "Dashboard", url: "/" })
+              navigate("/")
+            }
+          }} replace={true} style={{ textDecoration: 'none' }}>
+            <Paper sx={{ ml: 2, p: 1, bgcolor: 'white', boxShadow: 1, borderRadius: 1, borderColor: 'white' }}>
+              <Stack flexDirection={"row"} gap={2} sx={{ alignItems: 'center' }}>
+                <ButtonLogo title="" height={23} width={23} />
+                <Typography component="div" sx={{
+                  fontWeight: 'medium',
+                }}>
+                  {feature?.feature || "Dashboard"}
+                </Typography>
+              </Stack>
+            </Paper>
+          </Link>
 
+          <IconButton onClick={toggleDrawer(true)} size='large'>
+            < MenuIcon sx={{ width: 35, height: 35, color: 'white' }} />
+          </IconButton>
+        </Stack>
+      </Stack>
+      <Box sx={{
+        bgcolor: 'whitesmoke',
+        height: "90vh",
+        overflowY: 'hidden',
+      }}>
+        {feature?.feature == "Dashboard" ?
 
-      {feature?.feature == "Dashboard" ?
-
-        <>
-          <Stack direction={'row'} gap={2} alignItems={'center'}>
-            <LineChart
-              xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
-              series={[
-                {
-                  data: [2, 5.5, 2, 8.5, 1.5, 5],
-                },
-              ]}
-              width={500}
-              height={300}
-            />
-            <PieChart
-              series={[
-                {
-                  data: [
-                    { id: 0, value: 10, label: 'series A' },
-                    { id: 1, value: 15, label: 'series B' },
-                    { id: 2, value: 20, label: 'series C' },
-                  ],
-                },
-              ]}
-              width={400}
-              height={200}
-            />
-            <LineChart
-              xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
-              series={[
-                {
-                  data: [2, 5.5, 2, 8.5, 1.5, 5],
-                  area: true,
-                },
-              ]}
-              width={500}
-              height={300}
-            />
-          </Stack> :
-        </>
-        :
-        <Outlet />}
-
+          <>
+            <Stack direction={'row'} gap={2} alignItems={'center'}>
+              <LineChart
+                xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
+                series={[
+                  {
+                    data: [2, 5.5, 2, 8.5, 1.5, 5],
+                  },
+                ]}
+                width={500}
+                height={300}
+              />
+              <PieChart
+                series={[
+                  {
+                    data: [
+                      { id: 0, value: 10, label: 'series A' },
+                      { id: 1, value: 15, label: 'series B' },
+                      { id: 2, value: 20, label: 'series C' },
+                    ],
+                  },
+                ]}
+                width={400}
+                height={200}
+              />
+              <LineChart
+                xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
+                series={[
+                  {
+                    data: [2, 5.5, 2, 8.5, 1.5, 5],
+                    area: true,
+                  },
+                ]}
+                width={500}
+                height={300}
+              />
+            </Stack> :
+          </>
+          :
+          <Outlet />}
+        </Box>          
       <Drawer open={open} onClose={toggleDrawer(false)} anchor='right'>
         {DrawerList}
       </Drawer>

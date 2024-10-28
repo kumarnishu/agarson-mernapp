@@ -18,10 +18,9 @@ type Props = {
 function DBPagination({ paginationData, setPaginationData,refetch }: Props) {
     return (
         <>
-            <Stack sx={{ bottom: 0, width: '100vw', bgcolor: 'white', right: 0 }} direction={'row'} justifyContent={'space-evenly'} p={1}>
+            <Stack sx={{ bottom: 0, width: '100vw', bgcolor: 'white', right: 0}} direction={'row'} justifyContent={'space-evenly'} alignItems={'center'}>
                 <Stack direction={'row'}
                     spacing={2}
-                    px={2}
                     justifyContent="center" alignItems={"center"}
                 >
                     <label htmlFor="records">Show</label>

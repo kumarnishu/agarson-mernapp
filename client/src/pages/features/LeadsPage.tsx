@@ -1,5 +1,5 @@
 import { BuildOutlined, Comment, Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Search, Share, Visibility } from '@mui/icons-material'
-import {  Fade, IconButton, InputAdornment, LinearProgress, Menu, MenuItem, Select, TextField,  Typography } from '@mui/material'
+import { Box, Fade, IconButton, InputAdornment, LinearProgress, Menu, MenuItem, Select, TextField, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
@@ -514,7 +514,7 @@ export default function LeadsPage() {
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white',
-        fontSize: '14px'
+        fontSize: '1rem'
       }
     }),
     muiTableHeadRowProps: () => ({
@@ -525,72 +525,70 @@ export default function LeadsPage() {
       },
     }),
     muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '72vh' }
+      sx: { maxHeight: table.table.getState().isFullScreen ? 'auto' : '78vh' }
     }),
     positionToolbarAlertBanner: 'none',
     renderTopToolbarCustomActions: ({ table }) => (
 
       <Stack
-        sx={{ width: '100%' }}
+        sx={{ width: '100vw', height: '6vh', overflow: 'hidden', px: 1, gap: 2 }}
         direction="row"
         alignItems={'center'}
         justifyContent="space-between">
 
         <Typography variant="h6">Leads</Typography>
-        <TextField
-          sx={{ width: '40vw' }}
-          size="small"
-          onChange={(e) => {
-            setFilter(e.currentTarget.value)
-          }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <Search sx={{ cursor: 'pointer' }} onClick={() => {
-                  if (filter)
-                    refetchFuzzy()
-                }} />
-              </InputAdornment>
-            ),
-          }}
-          placeholder={`Search  `}
-          style={{
-            fontSize: '1.1rem',
-            border: '0',
-          }}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") {
-              refetchFuzzy()
-            }
-          }}
-        />
 
-        <Select
-          sx={{ m: 1, width: 300 }}
-          labelId="demo-multiple-name-label"
-          id="demo-multiple-name"
-          value={stage}
-          onChange={(e) => {
-            setStage(e.target.value);
-          }}
-          size='small'
-        >
-          <MenuItem
-            key={'00'}
-            value={'all'}
+        <Stack justifyContent={'right'} alignItems={'center'} direction={'row'} gap={1} p={2}>
+          <TextField
+            fullWidth
+            size="small"
+            onChange={(e) => {
+              setFilter(e.currentTarget.value)
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Search sx={{ cursor: 'pointer' }} onClick={() => {
+                    if (filter)
+                      refetchFuzzy()
+                  }} />
+                </InputAdornment>
+              ),
+            }}
+            placeholder={`Search  `}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                refetchFuzzy()
+              }
+            }}
+          />
+
+          <Select
+            fullWidth
+            sx={{ m: 1 }}
+            labelId="demo-multiple-name-label"
+            id="demo-multiple-name"
+            value={stage}
+            onChange={(e) => {
+              setStage(e.target.value);
+            }}
+            size='small'
           >
-            All
-          </MenuItem>
-          {stages.map((stage, index) => (
             <MenuItem
-              key={index}
-              value={stage.value}
+              key={'00'}
+              value={'all'}
             >
-              {toTitleCase(stage.label)}
+              All
             </MenuItem>
-          ))}
-        </Select>
-        <Stack justifyContent={'right'} direction={'row'} gap={1}>
+            {stages.map((stage, index) => (
+              <MenuItem
+                key={index}
+                value={stage.value}
+              >
+                {toTitleCase(stage.label)}
+              </MenuItem>
+            ))}
+          </Select> 
           {LoggedInUser?._id === LoggedInUser?.created_by.id && LoggedInUser?.assigned_permissions.includes('leads_delete') && <Tooltip title="Delete Selected Leads">
             <Button size="small" variant='contained' color='error'
 
@@ -650,7 +648,7 @@ export default function LeadsPage() {
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid lightgrey;',
-        fontSize: '13px'
+        fontSize: '1rem'
       },
     }),
     initialState: { density: 'compact' },
@@ -677,7 +675,7 @@ export default function LeadsPage() {
     }
   }, [sorting]);
 
-  
+
   return (
     <>
       {

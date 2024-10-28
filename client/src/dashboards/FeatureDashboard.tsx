@@ -45,7 +45,6 @@ function FeatureDashboard() {
                                     sx={{
                                         p: 2,
                                         m: 0,
-                                        height: 80,
                                         boxShadow: 3,
                                         borderRadius: 4,
                                         position: 'relative',
@@ -67,7 +66,6 @@ function FeatureDashboard() {
                                     >
                                         <ButtonLogo title="" height={40} width={40} />
                                         <Typography
-                                            variant="h6"
                                             component="div"
                                             sx={{
                                                 fontWeight: 'medium',

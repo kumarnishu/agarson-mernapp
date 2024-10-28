@@ -67,7 +67,6 @@ function ReportDashboard() {
                                     >
                                         <ButtonLogo title="" height={40} width={40} />
                                         <Typography
-                                            variant="h6"
                                             component="div"
                                             sx={{
                                                 fontWeight: 'medium',
