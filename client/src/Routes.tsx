@@ -130,7 +130,11 @@ function AppRoutes() {
                 < MaintenancePage />
               }
               />}
-             
+
+              {user?.is_admin && <Route path="MaintenanceAdmin" element={
+                <MaintenanceReportPage />
+              }
+              />}
             </Route>}
 
           {user && user?.assigned_permissions.includes('report_menu') &&
@@ -226,10 +230,8 @@ function AppRoutes() {
                 < SaleAnalysisReport />
               }
               />}
-              {user?.is_admin && <Route path="MaintenanceReport" element={
-                <MaintenanceReportPage />
-              }
-              />}
+
+
             </Route>}
 
 

@@ -286,7 +286,31 @@ export function FetchAllPermissions() {
                 }
             ]
         },
-
+        {
+            label: 'Maintenance Admin',
+            permissions: [
+                {
+                    value: 'maintenance_admin_view',
+                    label: 'view'
+                },
+                {
+                    value: 'maintenance_admin_create',
+                    label: 'create'
+                },
+                {
+                    value: 'maintenance_admin_edit',
+                    label: 'edit'
+                },
+                {
+                    value: 'maintenance_admin_delete',
+                    label: 'delete'
+                },
+                {
+                    value: 'maintenance_admin_export',
+                    label: 'export'
+                }
+            ]
+        },
     ]
     }
     let reportsMenu: IMenu = {
@@ -669,32 +693,7 @@ export function FetchAllPermissions() {
                         label: 'export'
                     }
                 ]
-            },
-            {
-                label: 'Maintenance Report',
-                permissions: [
-                    {
-                        value: 'maintenance_report_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'maintenance_report_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'maintenance_report_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'maintenance_report_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'maintenance_report_export',
-                        label: 'export'
-                    }
-                ]
-            },
+            }
         ]
     }
 

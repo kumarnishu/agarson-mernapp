@@ -122,7 +122,6 @@ function CreateOrEditMaintenanceForm({ maintenance }: { maintenance?: GetMainten
                         formik.touched.category && formik.errors.category ? true : false
                     }
                     id="category"
-                    disabled={maintenance ? true : false}
                     label="Category"
                     fullWidth
                     helperText={
@@ -152,7 +151,6 @@ function CreateOrEditMaintenanceForm({ maintenance }: { maintenance?: GetMainten
                         formik.touched.frequency && formik.errors.frequency ? true : false
                     }
                     id="frequency"
-                    disabled={maintenance ? true : false}
                     label="Frequency"
                     fullWidth
                     helperText={

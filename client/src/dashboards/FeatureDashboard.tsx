@@ -21,6 +21,7 @@ function FeatureDashboard() {
         user?.assigned_permissions.includes('checklist_view') && tmpfeatures.push({ feature: 'CheckLists ', is_visible: false, url: "CheckListPage" })
         user?.is_admin && tmpfeatures.push({ feature: 'driver app system, ', is_visible: false, url: "ShoeWeightPage" })
         user?.assigned_permissions.includes('maintenance_view') && tmpfeatures.push({ feature: 'maintenance ', is_visible: false, url: "MaintenancePage" })
+        user?.assigned_permissions.includes('maintenance_admin_view') && tmpfeatures.push({ feature: 'Maintenance Admin ', is_visible: false, url: "MaintenanceAdmin" })
         user?.is_admin && tmpfeatures.push({ feature: 'bill payments ', is_visible: false, url: "ShoeWeightPage" })
         user?.is_admin && tmpfeatures.push({ feature: 'MISC EXPENSES LIST ', is_visible: false, url: "ShoeWeightPage" })
         user?.is_admin && tmpfeatures.push({ feature: 'SALESMEN LEAVES ', is_visible: false, url: "ShoeWeightPage" })

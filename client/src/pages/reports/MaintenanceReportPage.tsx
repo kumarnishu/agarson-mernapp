@@ -314,9 +314,6 @@ function MaintenanceReportPage() {
     return (
         <>
 
-            {
-                isLoading || isRefetching && <LinearProgress color='secondary' />
-            }
             <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}

@@ -1,8 +1,8 @@
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { AxiosResponse } from 'axios'
-import {  useQuery } from 'react-query'
+import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Button, Fade, IconButton, LinearProgress, Menu, MenuItem, Select, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Button, Fade, IconButton,  Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import { GetUsers } from '../../services/UserServices'
 import { toTitleCase } from '../../utils/TitleCase'
@@ -11,7 +11,7 @@ import { DropDownDto } from '../../dtos/common/dropdown.dto'
 import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { ChoiceContext, MaintenanceChoiceActions } from '../../contexts/dialogContext'
 import PopUp from '../../components/popup/PopUp'
-import {  Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, RemoveRedEye } from '@mui/icons-material'
+import { Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, RemoveRedEye } from '@mui/icons-material'
 import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
@@ -31,7 +31,7 @@ function MaintenanceItem({ item, setItem, maintenance, setMaintenance }: { item:
     }, [item])
 
     return (
-        <>  
+        <>
             {localItem && localItem.is_required && localItem.stage !== 'done' && <Stack direction={'row'} sx={{ border: 1, gap: 1, pl: 1, pr: 0.2, cursor: 'pointer', scrollbarWidth: 0, borderRadius: 2, backgroundColor: localItem.is_required ? (localItem.stage == "done" ? "green" : "red") : "grey" }}
             >
                 <IconButton size="small" onClick={() => {
@@ -61,7 +61,6 @@ function MaintenancePage() {
     const [maintenance, setMaintenance] = useState<GetMaintenanceDto>()
     const [maintenances, setMaintenances] = useState<GetMaintenanceDto[]>([])
     const [paginationData, setPaginationData] = useState({ limit: 500, page: 1, total: 1 });
-    const [category, setCategory] = useState<string>('undefined');
     const [categories, setCategories] = useState<DropDownDto[]>([])
     const [userId, setUserId] = useState<string>()
     const [item, setItem] = useState<GetMaintenanceItemDto>()
@@ -72,7 +71,7 @@ function MaintenancePage() {
     let day = previous_date.getDate() - 1
     previous_date.setDate(day)
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'feature_menu', show_assigned_only: true }))
-    const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{ result: GetMaintenanceDto[], page: number, total: number, limit: number }>, BackendError>(["maintenances", userId], async () => GetAllMaintenance({ limit: paginationData?.limit, page: paginationData?.page, id: userId }))
+    const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetMaintenanceDto[], page: number, total: number, limit: number }>, BackendError>(["maintenances", userId], async () => GetAllMaintenance({ limit: paginationData?.limit, page: paginationData?.page, id: userId }))
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     const columns = useMemo<MRT_ColumnDef<GetMaintenanceDto>[]>(
@@ -135,7 +134,7 @@ function MaintenancePage() {
                 size: 150,
                 Cell: (cell) => <>{cell.row.original.user.label ? cell.row.original.user.label : ""}</>
             },
-           
+
             {
                 accessorKey: 'items',
                 header: ' Items',
@@ -257,6 +256,7 @@ function MaintenancePage() {
         enableRowNumbers: true,
         enableColumnPinning: true,
         onSortingChange: setSorting,
+        enableGrouping: true,
         enableTableFooter: true,
         enableRowVirtualization: true,
         state: { sorting, isLoading: isLoading },
@@ -290,10 +290,6 @@ function MaintenancePage() {
     }, [data])
     return (
         <>
-
-            {
-                isLoading || isRefetching && <LinearProgress color='secondary' />
-            }
             <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
@@ -324,38 +320,10 @@ function MaintenancePage() {
             <Stack sx={{ px: 2 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
 
                 <Typography variant="h6">Maintainance</Typography>
-                <Stack sx={{ px: 2 }} direction='row' alignItems={'center'}>
-                    {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 && <Select
-                        sx={{ m: 1, width: 300 }}
-                        labelId="demo-multiple-name-label"
-                        id="demo-multiple-name"
-                        value={category}
-                        onChange={(e) => {
-                            setCategory(e.target.value);
-                        }}
-                        size='small'
-                    >
-                        <MenuItem
-                            key={'00'}
-                            value={'undefined'}
-                            onChange={() => setCategory('undefined')}
-                        >
-                            All
-                        </MenuItem>
-                        {categories.map((category, index) => (
-                            <MenuItem
-                                key={index}
-                                value={category.value}
-                            >
-                                {toTitleCase(category.label)}
-                            </MenuItem>
-                        ))}
-                    </Select>}
-
+                <Stack pt={1} direction='row' alignItems={'center'}>
                     {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
                         < TextField
                             select
-
                             size="small"
                             SelectProps={{
                                 native: true,

@@ -12,7 +12,7 @@ export async function ActivateMaintenanceWork() {
             await Maintenance.findByIdAndUpdate(work._id, { active: true })
             let items = work.items;
             items.forEach(async (item) => {
-                await MaintenanceItem.findByIdAndUpdate(item._id, { stage: 'pending' })
+                await MaintenanceItem.findByIdAndUpdate(item._id, { stage: 'open' })
             });
         }
     }).start()
@@ -25,7 +25,7 @@ export async function ActivateMaintenanceWork() {
             await Maintenance.findByIdAndUpdate(work._id, { active: true })
             let items = work.items;
             items.forEach(async (item) => {
-                await MaintenanceItem.findByIdAndUpdate(item._id, { stage: 'pending' })
+                await MaintenanceItem.findByIdAndUpdate(item._id, { stage: 'open' })
             });
         }
     }).start()
@@ -38,7 +38,7 @@ export async function ActivateMaintenanceWork() {
             await Maintenance.findByIdAndUpdate(work._id, { active: true })
             let items = work.items;
             items.forEach(async (item) => {
-                await MaintenanceItem.findByIdAndUpdate(item._id, { stage: 'pending' })
+                await MaintenanceItem.findByIdAndUpdate(item._id, { stage: 'open' })
             });
         }
     }).start()
@@ -51,7 +51,7 @@ export async function ActivateMaintenanceWork() {
             await Maintenance.findByIdAndUpdate(work._id, { active: true })
             let items = work.items;
             items.forEach(async (item) => {
-                await MaintenanceItem.findByIdAndUpdate(item._id, { stage: 'pending' })
+                await MaintenanceItem.findByIdAndUpdate(item._id, { stage: 'open' })
             });
         }
     }).start()
