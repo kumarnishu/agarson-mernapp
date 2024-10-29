@@ -23,6 +23,7 @@ function CreateOrEditMaintenanceForm({ maintenance }: { maintenance?: GetMainten
         (CreateOrEditMaintenance, {
             onSuccess: () => {
                 queryClient.invalidateQueries('maintenances')
+                queryClient.invalidateQueries('maintenances_report')
             }
         })
 

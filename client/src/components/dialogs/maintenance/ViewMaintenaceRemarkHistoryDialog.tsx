@@ -1,30 +1,20 @@
 import { Dialog, DialogContent, IconButton, DialogTitle, Stack } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
-import {  ChoiceContext, MaintenanceChoiceActions } from '../../../contexts/dialogContext'
+import { ChoiceContext, MaintenanceChoiceActions } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
-import { UserContext } from '../../../contexts/userContext'
-import { GetRemarksDto } from '../../../dtos/crm/crm.dto'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
 import { ViewMaintenanceItemRemarkHistory } from '../../../services/MaintenanceServices'
-import DeleteRemarkDialog from '../crm/DeleteRemarkDialog'
+import { GetMaintenanceItemRemarkDto } from '../../../dtos/maintenance/maintenance.dto'
+import { toTitleCase } from '../../../utils/TitleCase'
 
 
 
 function ViewMaintenaceRemarkHistoryDialog({ id }: { id: string }) {
-    const [display, setDisplay] = useState<boolean>(false)
     const { choice, setChoice } = useContext(ChoiceContext)
-    const [remark, setRemark] = useState<GetRemarksDto>()
-    const [remarks, setRemarks] = useState<GetRemarksDto[]>()
-
+    const [remarks, setRemarks] = useState<GetMaintenanceItemRemarkDto[]>()
     const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", id], async () => ViewMaintenanceItemRemarkHistory({ id: id }))
-
-
-    const { user } = useContext(UserContext)
-    let previous_date = new Date()
-    let day = previous_date.getDate() - 1
-    previous_date.setDate(day)
 
     useEffect(() => {
         if (isSuccess && data)
@@ -40,8 +30,7 @@ function ViewMaintenaceRemarkHistoryDialog({ id }: { id: string }) {
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>
-                <p>{remarks && remarks[0] && remarks[0]?.lead_name && remarks[0]?.lead_name.slice(0, 25).toString() || "Remarks History"}</p>
-                <span style={{ fontSize: '14px' }}>{remarks && remarks[0] && remarks[0]?.lead_mobile}</span>
+                <p>Remarks</p>
             </DialogTitle>
             <DialogContent>
                 <Stack direction="column" gap={2} >
@@ -49,26 +38,14 @@ function ViewMaintenaceRemarkHistoryDialog({ id }: { id: string }) {
                         return (
 
                             <div key={index} style={{ borderRadius: '1px 10px', padding: '10px', background: 'lightblue', paddingLeft: '20px', border: '1px solid grey' }}>
-                                <p>{item.remark} </p>
-                                <p>{item.remind_date && `Remind Date : ${item.remind_date}`} </p>
+                                <p>{toTitleCase(item.created_by)} : {item.remark} </p>
                                 <br></br>
-                                <p>{item.created_date}</p>
-                                {
-                                    <Stack justifyContent={'end'} direction="row" gap={0} pt={2}>
-                                        {user?.assigned_permissions.includes('activities_delete') && <IconButton size="small" color="error" onClick={() => {
-                                            setRemark(item)
-                                            setDisplay(true)
-                                        }}>
-                                            Delete</IconButton>}
-                                       
-                                    </Stack>
-                                }
+                                <p>{item.created_at}</p>
                             </div>
 
                         )
                     })}
                 </Stack>
-                {remark && <DeleteRemarkDialog display={display} setDisplay={setDisplay} remark={remark} />}
             </DialogContent>
 
         </Dialog>

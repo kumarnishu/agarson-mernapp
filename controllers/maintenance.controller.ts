@@ -547,12 +547,12 @@ export const ViewMaintenanceItemRemarkHistory = async (req: Request, res: Respon
     if (!item) {
         return res.status(404).json({ message: "item not found" })
     }
-    let remarks = await MaintenanceRemark.find({ item: item })
+    let remarks = await MaintenanceRemark.find({ item: item }).populate('created_by').sort('-created_at')
     result = remarks.map((rem) => {
         return {
             _id: rem._id,
             remark: rem.remark,
-            created_at: rem.created_at && moment(rem.created_at).format("DD/MM/YYYY"),
+            created_at: rem.created_at && moment(rem.created_at).calendar(),
             created_by: rem.created_by.username
         }
     })
@@ -592,7 +592,7 @@ export const AddMaintenanceItemRemark = async (req: Request, res: Response, next
     await item.save()
 
     if (!await MaintenanceItem.findOne({ maintenance: maintenance_id, is_required: true, stage: { $ne: 'done' } }))
-        await Maintenance.findByIdAndUpdate(maintenance_id, { is_active: false })
+        await Maintenance.findByIdAndUpdate(maintenance_id, { active: false })
     return res.status(200).json({ message: "new remark added successfully" })
 }
 

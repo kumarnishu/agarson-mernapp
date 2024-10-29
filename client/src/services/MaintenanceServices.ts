@@ -48,14 +48,14 @@ export const GetAllMaintenanceReport = async ({ limit, page, start_date, end_dat
 export const ToogleMaintenanceItem = async ({ id }: { id: string }) => {
     return await apiClient.patch(`maintenances/item/toogle/${id}`)
 }
-export const AddMaintenanceItemRemark = async ({ id, remarks, stage }: { id: string, remarks: string, stage: string }) => {
-    return await apiClient.post(`maintenances/item/remarks/${id}`, { remark: remarks, stage: stage })
+export const AddMaintenanceItemRemark = async ({ id, remarks, stage, maintenance_id }: { id: string, remarks: string, stage: string, maintenance_id: string }) => {
+    return await apiClient.post(`maintenances/item/remarks/${id}`, { remark: remarks, stage: stage, maintenance_id: maintenance_id })
 }
 
 export const ViewMaintenanceItemRemarkHistory = async ({ id }: { id: string }) => {
     return await apiClient.get(`maintenances/item/remarks/${id}`)
 }
-export const ViewMaintenanceItemRemarkHistoryByDates = async ({ id, start_date ,end_date}: { id: string, start_date: string, end_date: string, }) => {
+export const ViewMaintenanceItemRemarkHistoryByDates = async ({ id, start_date, end_date }: { id: string, start_date: string, end_date: string, }) => {
     return await apiClient.get(`maintenances/item/remarks/dates/${id}/?start_date=${start_date}&end_date=${end_date}`)
 }
 

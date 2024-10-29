@@ -1,8 +1,8 @@
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { AxiosResponse } from 'axios'
-import { useQuery } from 'react-query'
+import {  useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Button, ButtonGroup, Fade, IconButton, LinearProgress, Menu, MenuItem, Select, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Button, Fade, IconButton, LinearProgress, Menu, MenuItem, Select, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import { GetUsers } from '../../services/UserServices'
 import { toTitleCase } from '../../utils/TitleCase'
@@ -11,7 +11,7 @@ import { DropDownDto } from '../../dtos/common/dropdown.dto'
 import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { ChoiceContext, MaintenanceChoiceActions } from '../../contexts/dialogContext'
 import PopUp from '../../components/popup/PopUp'
-import {  Check, Close, Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, RemoveRedEye } from '@mui/icons-material'
+import {  Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, RemoveRedEye } from '@mui/icons-material'
 import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
@@ -23,39 +23,38 @@ import CreateOrEditMaintenanceItemRemarkDialog from '../../components/dialogs/ma
 import ViewMaintenaceRemarkHistoryDialog from '../../components/dialogs/maintenance/ViewMaintenaceRemarkHistoryDialog'
 
 
-
-function MaintenanceItem({ item }: { item: GetMaintenanceItemDto }) {
+function MaintenanceItem({ item, setItem, maintenance, setMaintenance }: { item: GetMaintenanceItemDto | undefined, setItem: React.Dispatch<React.SetStateAction<GetMaintenanceItemDto | undefined>>, maintenance: GetMaintenanceDto, setMaintenance: React.Dispatch<React.SetStateAction<GetMaintenanceDto | undefined>> }) {
     const [localItem, setLocalitem] = useState(item)
-    const { user } = useContext(UserContext)
-    const {  setChoice } = useContext(ChoiceContext)
+    const { setChoice } = useContext(ChoiceContext)
+    useEffect(() => {
+        setLocalitem(item)
+    }, [item])
 
     return (
-        <>
-            {item &&<ViewMaintenaceRemarkHistoryDialog id={item._id} />}
-            <CreateOrEditMaintenanceItemRemarkDialog item={item} />
-        { localItem.is_required&&localItem.stage!=='done'||user?.is_admin ?
-                <Stack direction={'row'} sx={{ border: 1, gap: 1, pl: 1, pr: 0.2, cursor: 'pointer', scrollbarWidth: 0, borderRadius: 2, backgroundColor: localItem.is_required && localItem.stage !== "done" ? 'red' : "green" }}
+        <>  
+            {localItem && localItem.is_required && localItem.stage !== 'done' && <Stack direction={'row'} sx={{ border: 1, gap: 1, pl: 1, pr: 0.2, cursor: 'pointer', scrollbarWidth: 0, borderRadius: 2, backgroundColor: localItem.is_required ? (localItem.stage == "done" ? "green" : "red") : "grey" }}
+            >
+                <IconButton size="small" onClick={() => {
+                    setChoice({ type: MaintenanceChoiceActions.view_maintance_remarks })
+                    setItem(localItem)
+                    setMaintenance(maintenance)
+                }} title="view remarks" sx={{ color: 'white' }}>
+                    <RemoveRedEye />
+                </IconButton>
 
-                >
-                
-                    {user?.assigned_permissions.includes('maintenance_create') && <IconButton onClick={() => {
-                            setLocalitem({ ...localItem, is_required: !localItem.is_required })
-                        }} title="toogle required" sx={{ color: 'white' }}>
-                            {localItem.is_required ? <Close sx={{ height: 15 }} /> : <Check sx={{ height: 15 }} />}
-                        </IconButton>}
-                        <IconButton onClick={() => { setChoice({ type: MaintenanceChoiceActions.view_maintance_remarks }) }} title="view remarks" sx={{ color: 'white' }}>
-                            <RemoveRedEye />
-                        </IconButton>
-                        <IconButton onClick={() => { localItem.is_required && setChoice({ type: MaintenanceChoiceActions.create_or_edit_maintenance_remarks }) }}>
-                            <Typography title="add remark" sx={{ color: "white" }}>{localItem.item}</Typography>
-                        </IconButton>
-                </Stack>:null
-            }
+
+                <IconButton size="small" disabled={!localItem?.is_required || localItem.stage == 'done'} onClick={() => {
+                    setItem(localItem)
+                    setMaintenance(maintenance)
+                    setChoice({ type: MaintenanceChoiceActions.create_or_edit_maintenance_remarks })
+                }}>
+                    <Typography title="add remark" sx={{ color: "white" }}>{localItem.item}</Typography>
+                </IconButton>
+            </Stack>}
         </>
     )
-
-
 }
+
 function MaintenancePage() {
     const { user: LoggedInUser } = useContext(UserContext)
     const [users, setUsers] = useState<GetUserDto[]>([])
@@ -65,7 +64,7 @@ function MaintenancePage() {
     const [category, setCategory] = useState<string>('undefined');
     const [categories, setCategories] = useState<DropDownDto[]>([])
     const [userId, setUserId] = useState<string>()
-
+    const [item, setItem] = useState<GetMaintenanceItemDto>()
     const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("maintenance_categories", GetAllMaintenanceCategory)
     const { choice, setChoice } = useContext(ChoiceContext)
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
@@ -136,30 +135,29 @@ function MaintenancePage() {
                 size: 150,
                 Cell: (cell) => <>{cell.row.original.user.label ? cell.row.original.user.label : ""}</>
             },
-            {
-                accessorKey: 'category',
-                header: ' Category',
-                size: 150,
-                Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.value : ""}</>
-            },
+           
             {
                 accessorKey: 'items',
                 header: ' Items',
                 grow: true,
                 size: 600,
                 Cell: (cell) => <>{cell.row.original.items.length > 0 ? <Stack direction={'row'} gap={1} minWidth={600} sx={{ overflowX: 'scroll' }}>
-                    {cell.row.original.items && cell.row.original.items.map((item) => {
+                    {cell.row.original.items && cell.row.original.items.map((it) => {
                         return (
-                            <MaintenanceItem item={item} />
+                            <>
+                                <MaintenanceItem item={it} setItem={setItem} maintenance={cell.row.original} setMaintenance={setMaintenance} />
+                            </>
                         )
                     })}
                 </Stack>
                     : ""}</>
             },
-           
-            
-
-
+            {
+                accessorKey: 'category',
+                header: ' Category',
+                size: 150,
+                Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.value : ""}</>
+            },
             {
                 accessorKey: 'item',
                 header: ' Maintainable Item',
@@ -385,10 +383,11 @@ function MaintenancePage() {
                         </TextField>}
                 </Stack>
             </Stack>
-            {maintenance && <DeleteMaintenanceDialog maintenance={maintenance} />}
             <CreateOrEditMaintenanceDialog maintenance={maintenance} setMaintenance={setMaintenance} />
             {choice === MaintenanceChoiceActions.delete_maintenance && maintenance && <DeleteMaintenanceDialog maintenance={maintenance} />}
             <MaterialReactTable table={table} />
+            {item && maintenance && <CreateOrEditMaintenanceItemRemarkDialog item={item} maintenance_id={maintenance._id} />}
+            {item && choice == MaintenanceChoiceActions.view_maintance_remarks && <ViewMaintenaceRemarkHistoryDialog id={item._id} />}
         </>
     )
 }

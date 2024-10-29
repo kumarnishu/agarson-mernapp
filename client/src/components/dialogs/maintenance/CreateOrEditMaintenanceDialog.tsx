@@ -23,7 +23,7 @@ function CreateOrEditMaintenanceDialog({ maintenance, setMaintenance }: { mainte
                     <Cancel fontSize='large' />
                 </IconButton>
 
-                <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}> {!maintenance ? "New Checklist" : "Edit Checklist"}
+                <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}> {!maintenance ? "New Maintenance" : "Edit Maintenance"}
                 </DialogTitle>
                 <DialogContent>
                     <CreateOrEditMaintenanceForm maintenance={maintenance} />

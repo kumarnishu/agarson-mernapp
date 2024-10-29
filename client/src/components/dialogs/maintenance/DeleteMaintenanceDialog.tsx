@@ -17,7 +17,7 @@ function DeleteMaintenanceDialog({ maintenance }: { maintenance: GetMaintenanceD
         (DeleteMaintenance, {
             onSuccess: () => {
                 queryClient.invalidateQueries('maintenances')
-            }
+                queryClient.invalidateQueries('maintenances_report')            }
         })
 
     useEffect(() => {

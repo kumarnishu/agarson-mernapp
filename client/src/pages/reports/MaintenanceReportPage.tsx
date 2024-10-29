@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { AxiosResponse } from 'axios'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { Button, Fade, IconButton, LinearProgress, Menu, MenuItem, Select, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
@@ -11,43 +11,74 @@ import { DropDownDto } from '../../dtos/common/dropdown.dto'
 import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { ChoiceContext, MaintenanceChoiceActions } from '../../contexts/dialogContext'
 import PopUp from '../../components/popup/PopUp'
-import { Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
+import { Check, Close, Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, RemoveRedEye } from '@mui/icons-material'
 import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
-import { GetMaintenanceItemDto, GetMaintenanceDto } from '../../dtos/maintenance/maintenance.dto'
-import { GetAllMaintenanceCategory, GetAllMaintenanceReport } from '../../services/MaintenanceServices'
+import { GetMaintenanceDto, GetMaintenanceItemDto } from '../../dtos/maintenance/maintenance.dto'
+import { GetAllMaintenance, GetAllMaintenanceCategory, GetAllMaintenanceReport, ToogleMaintenanceItem } from '../../services/MaintenanceServices'
 import DeleteMaintenanceDialog from '../../components/dialogs/maintenance/DeleteMaintenanceDialog'
 import CreateOrEditMaintenanceDialog from '../../components/dialogs/maintenance/CreateOrEditMaintenanceDialog'
-import moment from 'moment'
+import CreateOrEditMaintenanceItemRemarkDialog from '../../components/dialogs/maintenance/AddMaintenanceItemRemarkDialog'
+import ViewMaintenaceRemarkHistoryDialog from '../../components/dialogs/maintenance/ViewMaintenaceRemarkHistoryDialog'
+import AlertBar from '../../components/snacks/AlertBar'
+import { queryClient } from '../../main'
 
 
-function MaintenanceItem({ item }: {
-    item: GetMaintenanceItemDto
-}) {
-    const [localItem, setLocalitem] = useState<{
-        dt1: string;
-        dt2: string;
-        checked: boolean;
-    }>()
+function MaintenanceItem({ item, setItem, maintenance, setMaintenance }: { item: GetMaintenanceItemDto | undefined, setItem: React.Dispatch<React.SetStateAction<GetMaintenanceItemDto | undefined>>, maintenance: GetMaintenanceDto, setMaintenance: React.Dispatch<React.SetStateAction<GetMaintenanceDto | undefined>> }) {
+    const [localItem, setLocalitem] = useState(item)
+    const { setChoice } = useContext(ChoiceContext)
+    const { mutate, error } = useMutation
+        <AxiosResponse<any>, BackendError, { id: string; }>
+        (ToogleMaintenanceItem, {
+            onSuccess: () => {
+                queryClient.invalidateQueries('maintenances')
+                queryClient.invalidateQueries('maintenances_report')
+            }
+        })
+
+    useEffect(() => {
+        setLocalitem(item)
+    }, [item])
+
     return (
-        <>
-            <Stack  gap={1} sx={{ overflow: 'scroll' }}>
-                <p>{item.boxes?.length}</p>
-                {item.boxes && item.boxes.map((item) => {
-                    return (
-                        <Stack sx={{ border: 1, gap: 1, pl: 1, pr: 0.2, cursor: 'pointer', scrollbarWidth: 0, borderRadius: 2, backgroundColor: item.checked ? 'green' : "red" }}
+        <>  {error && <AlertBar message='error occurred' color='error' />}
+            {localItem  && 
+            <Stack direction={'row'} sx={{ border: 1, gap: 1, pl: 1, pr: 0.2, cursor: 'pointer', scrollbarWidth: 0, borderRadius: 2, backgroundColor: localItem.is_required ? (localItem.stage == "done" ? "green" : "red") : "grey" }}
+            >
+                <IconButton size="small" onClick={() => {
+                    setLocalitem({ ...localItem, is_required: !localItem.is_required })
+                    mutate({ id: localItem._id });
+                    setChoice({ type: MaintenanceChoiceActions.toogle_maintenace_item })
+                    setItem(localItem)
+                    setMaintenance(maintenance)
+                }}
+                    title="toogle required" sx={{ color: 'white' }}>
+                    {localItem.is_required ? <Close sx={{ height: 15 }} /> : <Check sx={{ height: 15 }} />}
+                </IconButton>
 
-                        >
-                            <Button>{new Date(item.dt1).getDate()}</Button>
 
-                        </Stack>
-                    )
-                })}
-            </Stack>
+                <IconButton size="small" onClick={() => {
+                    setChoice({ type: MaintenanceChoiceActions.view_maintance_remarks })
+                    setItem(localItem)
+                    setMaintenance(maintenance)
+                }} title="view remarks" sx={{ color: 'white' }}>
+                    <RemoveRedEye />
+                </IconButton>
+
+
+                <IconButton size="small" disabled={!localItem?.is_required || localItem.stage == 'done'} onClick={() => {
+                    setItem(localItem)
+                    setMaintenance(maintenance)
+                    setChoice({ type: MaintenanceChoiceActions.create_or_edit_maintenance_remarks })
+                }}>
+                    <Typography title="add remark" sx={{ color: "white" }}>{localItem.item}</Typography>
+                </IconButton>
+            </Stack>}
         </>
     )
 }
+
 function MaintenanceReportPage() {
     const { user: LoggedInUser } = useContext(UserContext)
     const [users, setUsers] = useState<GetUserDto[]>([])
@@ -57,10 +88,7 @@ function MaintenanceReportPage() {
     const [category, setCategory] = useState<string>('undefined');
     const [categories, setCategories] = useState<DropDownDto[]>([])
     const [userId, setUserId] = useState<string>()
-    const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
-        start_date: moment(new Date().setDate(new Date().getDate() - 30)).format("YYYY-MM-DD")
-        , end_date: moment(new Date().setDate(new Date().getDate())).format("YYYY-MM-DD")
-    })
+    const [item, setItem] = useState<GetMaintenanceItemDto>()
     const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("maintenance_categories", GetAllMaintenanceCategory)
     const { choice, setChoice } = useContext(ChoiceContext)
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
@@ -68,7 +96,7 @@ function MaintenanceReportPage() {
     let day = previous_date.getDate() - 1
     previous_date.setDate(day)
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'feature_menu', show_assigned_only: true }))
-    const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{ result: GetMaintenanceDto[], page: number, total: number, limit: number }>, BackendError>(["maintenance_reports", userId, dates?.start_date, dates?.end_date], async () => GetAllMaintenanceReport({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
+    const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{ result: GetMaintenanceDto[], page: number, total: number, limit: number }>, BackendError>(["maintenances_report", userId], async () => GetAllMaintenanceReport({ limit: paginationData?.limit, page: paginationData?.page, id: userId }))
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     const columns = useMemo<MRT_ColumnDef<GetMaintenanceDto>[]>(
@@ -120,10 +148,10 @@ function MaintenanceReportPage() {
                 Cell: (cell) => <>{cell.row.original.work ? cell.row.original.work : ""}</>
             },
             {
-                accessorKey: 'category',
-                header: ' Category',
+                accessorKey: 'frequency',
+                header: ' Frequency',
                 size: 150,
-                Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.value : ""}</>
+                Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
             },
             {
                 accessorKey: 'user',
@@ -131,32 +159,33 @@ function MaintenanceReportPage() {
                 size: 150,
                 Cell: (cell) => <>{cell.row.original.user.label ? cell.row.original.user.label : ""}</>
             },
-
             {
-                accessorKey: 'frequency',
-                header: ' Frequency',
+                accessorKey: 'category',
+                header: ' Category',
                 size: 150,
-                Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
+                Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.value : ""}</>
+            },
+            {
+                accessorKey: 'items',
+                header: ' Items',
+                grow: true,
+                size: 600,
+                Cell: (cell) => <>{cell.row.original.items.length > 0 ? <Stack direction={'row'} gap={1} minWidth={600} sx={{ overflowX: 'scroll' }}>
+                    {cell.row.original.items && cell.row.original.items.map((it) => {
+                        return (
+                            <>
+                                <MaintenanceItem item={it} setItem={setItem} maintenance={cell.row.original} setMaintenance={setMaintenance} />
+                            </>
+                        )
+                    })}
+                </Stack>
+                    : ""}</>
             },
             {
                 accessorKey: 'item',
                 header: ' Maintainable Item',
                 size: 150,
                 Cell: (cell) => <>{cell.row.original.item ? cell.row.original.item : ""}</>
-            },
-            {
-                accessorKey: 'items',
-                header: ' Items',
-                grow: true,
-                size: 400,
-                Cell: (cell) => <>{cell.row.original.items.length > 0 ? <Stack direction={'row'} gap={1} maxWidth={600} sx={{ overflowX: 'scroll' }}>
-                    {cell.row.original.items && cell.row.original.items.map((item) => {
-                        return (
-                            <MaintenanceItem item={item} />
-                        )
-                    })}
-                </Stack>
-                    : ""}</>
             },
 
         ],
@@ -317,42 +346,8 @@ function MaintenanceReportPage() {
             </Menu>
             <Stack sx={{ px: 2 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
 
-                <Typography variant="h6">Maintainance</Typography>
+                <Typography variant="h6">Maintainance Admin</Typography>
                 <Stack sx={{ px: 2 }} direction='row' alignItems={'center'}>
-                    < TextField
-                        size="small"
-                        type="date"
-                        id="start_date"
-                        label="Start Date"
-                        fullWidth
-                        focused
-                        value={dates.start_date}
-                        onChange={(e) => {
-                            if (e.currentTarget.value) {
-                                setDates({
-                                    ...dates,
-                                    start_date: moment(e.target.value).format("YYYY-MM-DD")
-                                })
-                            }
-                        }}
-                    />
-                    < TextField
-                        type="date"
-                        id="end_date"
-                        size="small"
-                        label="End Date"
-                        value={dates.end_date}
-                        focused
-                        fullWidth
-                        onChange={(e) => {
-                            if (e.currentTarget.value) {
-                                setDates({
-                                    ...dates,
-                                    end_date: moment(e.target.value).format("YYYY-MM-DD")
-                                })
-                            }
-                        }}
-                    />
                     {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 && <Select
                         sx={{ m: 1, width: 300 }}
                         labelId="demo-multiple-name-label"
@@ -411,10 +406,11 @@ function MaintenanceReportPage() {
                         </TextField>}
                 </Stack>
             </Stack>
-            {maintenance && <DeleteMaintenanceDialog maintenance={maintenance} />}
             <CreateOrEditMaintenanceDialog maintenance={maintenance} setMaintenance={setMaintenance} />
             {choice === MaintenanceChoiceActions.delete_maintenance && maintenance && <DeleteMaintenanceDialog maintenance={maintenance} />}
             <MaterialReactTable table={table} />
+            {item && maintenance && <CreateOrEditMaintenanceItemRemarkDialog item={item} maintenance_id={maintenance._id} />}
+            {item && choice == MaintenanceChoiceActions.view_maintance_remarks && <ViewMaintenaceRemarkHistoryDialog id={item._id} />}
         </>
     )
 }
