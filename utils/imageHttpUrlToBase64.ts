@@ -1,4 +1,4 @@
-export async function imageUrlToBase64(url: string) {
+export async function imageHttpUrlToBase64(url: string) {
     try {
         const response = await fetch(url);
 

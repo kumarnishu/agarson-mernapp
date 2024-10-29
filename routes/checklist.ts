@@ -1,7 +1,7 @@
 import express from "express";
-import { isAuthenticatedUser } from "../../middlewares/auth.middleware";
-import { upload } from "../user.routes";
-import { CreateChecklist, CreateChecklistFromExcel, DeleteChecklist, DownloadExcelTemplateForCreatechecklists, EditChecklist, GetChecklists, ToogleChecklist } from "../../controllers/checklist.controller";
+import { isAuthenticatedUser } from "../middlewares/auth.middleware";
+import { CreateChecklist, CreateChecklistFromExcel, DeleteChecklist, DownloadExcelTemplateForCreatechecklists, EditChecklist, GetChecklists, ToogleChecklist } from "../controllers/checklist.controller";
+import { upload } from ".";
 
 const router = express.Router()
 

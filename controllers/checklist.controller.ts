@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from "express"
 import { Asset, User } from "../models/users/user.model";
 import isMongoId from "validator/lib/isMongoId";
-import { isvalidDate } from "../utils/isValidDate";
+import { isvalidDate } from "../client/src/utils/isValidDate";
 import { Checklist, ChecklistBox, ChecklistCategory, IChecklist } from "../models/checklist/checklist.model";
 import { CreateOrEditDropDownDto, DropDownDto } from "../dtos/common/dropdown.dto";
 import { CreateOrEditChecklistDto, GetChecklistDto, GetChecklistFromExcelDto } from "../dtos/checklist/checklist.dto";
-import { uploadFileToCloud } from "../utils/uploadFile.util";
+import { uploadFileToCloud } from "../utils/uploadFileToCloud";
 import moment from "moment";
-import { destroyFile } from "../utils/destroyFile.util";
+import { destroyFile } from "../utils/destroyCloudFile";
 import xlsx from "xlsx";
-import SaveFileOnDisk from "../utils/ExportToExcel";
+import SaveFileOnDisk from "../utils/ConvertJsonToExcel";
 
 export const GetAllChecklistCategory = async (req: Request, res: Response, next: NextFunction) => {
     let result = await ChecklistCategory.find();

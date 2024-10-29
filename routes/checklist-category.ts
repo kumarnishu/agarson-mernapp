@@ -1,6 +1,6 @@
 import express from "express";
-import { isAuthenticatedUser } from "../../middlewares/auth.middleware";
-import { CreateChecklistCategory, DeleteChecklistCategory, GetAllChecklistCategory, UpdateChecklistCategory } from "../../controllers/checklist.controller";
+import { isAuthenticatedUser } from "../middlewares/auth.middleware";
+import { CreateChecklistCategory, DeleteChecklistCategory, GetAllChecklistCategory, UpdateChecklistCategory } from "../controllers/checklist.controller";
 
 const router = express.Router()
 

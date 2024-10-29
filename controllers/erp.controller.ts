@@ -9,13 +9,13 @@ import { IPartyTargetReport, PartyTargetReport } from "../models/erp_reports/par
 import isMongoId from "validator/lib/isMongoId";
 import isDate from "validator/lib/isDate";
 import mongoose from "mongoose";
-import { GetLastYearlyachievementBystate, GetMonthlyachievementBystate, GetMonthlytargetBystate, GetYearlyachievementBystate } from "../utils/ErpUtils";
+import { GetLastYearlyachievementBystate, GetMonthlyachievementBystate, GetMonthlytargetBystate, GetYearlyachievementBystate } from "../utils/erpReportHelpers";
 import moment from "moment";
 import { CreateOrEditErpEmployeeDto, CreateOrEditErpStateDto, GetBillsAgingReportFromExcelDto, GetClientSaleReportFromExcelDto, GetErpEmployeeDto, GetErpStateDto, GetErpStateFromExcelDto, GetPartyTargetReportFromExcelDto, GetPendingOrdersReportFromExcelDto, GetSaleAnalysisReportDto, GetVisitReportDto, GetVisitReportFromExcelDto } from "../dtos/erp reports/erp.reports.dto";
 import { ErpEmployee, IErpEmployee } from "../models/erp_reports/erp.employee.model";
 import { VisitReport } from "../models/erp_reports/visit.report.model";
-import { isvalidDate } from "../utils/isValidDate";
-import { decimalToTime } from "../utils/decimalToTime";
+import { isvalidDate } from "../client/src/utils/isValidDate";
+import { decimalToTime } from "../utils/decimalToTimeForXlsx";
 
 //get
 export const GetAllStates = async (req: Request, res: Response, next: NextFunction) => {

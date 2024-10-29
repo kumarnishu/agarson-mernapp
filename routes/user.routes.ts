@@ -5,7 +5,6 @@ import { BlockUser, GetProfile, GetUsers, Login, Logout, MakeAdmin, NewUser, Rem
 import { isAdmin, isAuthenticatedUser, isProfileAuthenticated, } from "../middlewares/auth.middleware";
 import { test } from "../controllers/lead.controller";
 
-export const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 * 50 } })
 
 const router = express.Router()
 router.post("/signup", upload.single("dp"), SignUp)

@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import isEmail from "validator/lib/isEmail";
-import { uploadFileToCloud } from '../utils/uploadFile.util';
+import { uploadFileToCloud } from '../utils/uploadFileToCloud';
 import { deleteToken, sendUserToken } from '../middlewares/auth.middleware';
 import { Asset, IUser, User } from '../models/users/user.model';
 import isMongoId from "validator/lib/isMongoId";
-import { destroyFile } from "../utils/destroyFile.util";
-import { sendEmail } from '../utils/sendEmail.util';
+import { destroyFile } from "../utils/destroyCloudFile";
+import { sendEmail } from '../utils/sendEmail';
 import { FetchAllPermissions } from '../utils/fillAllPermissions';
 import { AssignPermissionForMultipleUserDto, AssignPermissionForOneUserDto, AssignUsersDto, createOrEditUserDto, GetUserDto, IMenu, LoginDto, ResetPasswordDto, UpdatePasswordDto, UpdateProfileDto, VerifyEmailDto } from '../dtos/users/user.dto';
 import moment from 'moment';

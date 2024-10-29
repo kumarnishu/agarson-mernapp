@@ -1,6 +1,6 @@
 import { bucket } from "../app";
 
-export const destroyFile = async (id: string) => {
+export const destroyCloudFile = async (id: string) => {
   try {
     let bucketFile = bucket.file(id)
     await bucketFile.delete()

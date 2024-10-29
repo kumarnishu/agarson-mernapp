@@ -1,6 +1,6 @@
 import { User } from "../models/users/user.model";
 
-export async function HandleCRMCitiesAssignment(user_ids: string[],
+export async function assignCRMCities(user_ids: string[],
     city_ids: string[],
     flag: number) {
     let owners = user_ids

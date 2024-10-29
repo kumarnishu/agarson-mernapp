@@ -1,4 +1,4 @@
-export function decimalToTime(decimal:any) {
+export function decimalToTimeForXlsx(decimal:any) {
     // Convert decimal to total hours
     const totalHours = decimal * 24;
 

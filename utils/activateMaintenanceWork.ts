@@ -2,7 +2,7 @@ import { CronJob } from "cron";
 import { MaintenanceItem } from "../models/maintainence/maintainence.item.model";
 import { Maintenance } from "../models/maintainence/maintainence.model";
 
-export async function ActivateMaintenanceWork() {
+export async function activateMaintenanceWork() {
 
     // daily trigger
     new CronJob("00 00 1/1 * *", async () => {
@@ -55,5 +55,4 @@ export async function ActivateMaintenanceWork() {
             });
         }
     }).start()
-    console.log('started maintainence jobs')
 }
