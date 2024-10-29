@@ -100,17 +100,18 @@ const storage = new Storage({
     }
 })
 
+
+
 export const bucketName = String(process.env.bucketName)
 export const bucket = storage.bucket(bucketName)
-export const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 * 50 } })
 
 
 
-app.use("/api/v1/dropdown", DropDownRoutes)
-app.use("/api/v1/feature", FeatureRoutes)
-app.use("/api/v1/reports", ReportRoutes)
 
 
+app.use("/api/v1/feature/", FeatureRoutes)
+app.use("/api/v1/dropdown/", DropDownRoutes)
+app.use("/api/v1/reports/", ReportRoutes)
 
 ActivateMaintenanceWork();
 

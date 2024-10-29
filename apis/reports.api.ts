@@ -14,10 +14,11 @@ import { ErpEmployee, Machine, State } from '../models/dropdown.model';
 import { GetDyeStatusReportDto, IColumnRowData, IRowData } from '../dtos/dropdown.dto';
 import { IShoeWeight } from '../interfaces/feature.interface';
 import { isAuthenticatedUser } from '../middlewares/auth.middleware';
+import multer from "multer";
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 * 50 } })
 
 
-
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let state_ids = req.user?.assigned_states.map((state: IState) => { return state }) || []
     let reports: GetBillsAgingReportFromExcelDto[] = (await BillsAgingReport.find({ report_owner: { $in: state_ids } }).populate('report_owner')).map((i) => {
         return {
@@ -33,7 +34,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     })
     return res.status(200).json(reports);
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let state_ids = req.user?.assigned_states.map((state: IState) => { return state }) || []
     let reports: GetPendingOrdersReportFromExcelDto[] = (await PendingOrdersReport.find({ report_owner: { $in: state_ids } }).populate("report_owner")).map((i) => {
         return {
@@ -94,7 +95,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     })
     return res.status(200).json(reports);
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let state_ids = req.user?.assigned_states.map((state: IState) => { return state }) || []
     let data: GetClientSaleReportFromExcelDto[] = (await ClientSaleLastYearReport.find({ report_owner: { $in: state_ids } }).populate('report_owner')).map((i) => {
         return {
@@ -132,7 +133,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
 
     return res.status(200).json(data)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let state_ids = req.user?.assigned_states.map((state: IState) => { return state }) || []
     let data: GetClientSaleReportFromExcelDto[] = (await ClientSaleReport.find({ report_owner: { $in: state_ids } }).populate('report_owner')).map((i) => {
         return {
@@ -169,7 +170,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     });
     return res.status(200).json(data)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
 
     let state_ids = req.user?.assigned_states.map((state: IState) => { return state }) || []
 
@@ -218,7 +219,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
 
     return res.status(200).json(reports)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let month = Number(req.params.month)
     if (req.user) {
         let result: GetSaleAnalysisReportDto[] = []
@@ -249,7 +250,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
         return res.status(403).json({ message: "not authorized" })
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { state_ids, user_ids, flag } = req.body as {
         user_ids: string[],
         state_ids: string[],
@@ -294,7 +295,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
 
     return res.status(200).json({ message: "successfull" })
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { emp_ids, user_ids, flag } = req.body as {
         user_ids: string[],
         emp_ids: string[],
@@ -339,7 +340,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
 
     return res.status(200).json({ message: "successfull" })
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: GetErpStateFromExcelDto[] = []
     let statusText: string = ""
     if (!req.file)
@@ -432,7 +433,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     }
     return res.status(200).json(result);
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: GetPendingOrdersReportFromExcelDto[] = []
     if (!req.file)
         return res.status(400).json({
@@ -541,7 +542,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     }
     return res.status(200).json(result);
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: GetBillsAgingReportFromExcelDto[] = []
     if (!req.file)
         return res.status(400).json({
@@ -604,7 +605,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     }
     return res.status(200).json(result);
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: GetClientSaleReportFromExcelDto[] = []
     if (!req.file)
         return res.status(400).json({
@@ -688,7 +689,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     }
     return res.status(200).json(result);
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: GetClientSaleReportFromExcelDto[] = []
     if (!req.file)
         return res.status(400).json({
@@ -771,7 +772,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     }
     return res.status(200).json(result);
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: GetPartyTargetReportFromExcelDto[] = []
     if (!req.file)
         return res.status(400).json({
@@ -895,7 +896,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     }
     return res.status(200).json(result);
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let employee_ids = req.user?.assigned_erpEmployees.map((employee: IErpEmployee) => { return employee }) || []
     let reports: GetVisitReportDto[] = (await VisitReport.find({ employee: { $in: employee_ids } }).populate('employee').populate('created_by').populate('updated_by')).map((i) => {
         return {
@@ -916,7 +917,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     })
     return res.status(200).json(reports);
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: GetVisitReportFromExcelDto[] = []
     if (!req.file)
         return res.status(400).json({
@@ -991,7 +992,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     }
     return res.status(200).json(result);
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let start_date = req.query.start_date
     let end_date = req.query.end_date
     let weights: IShoeWeight[] = []
@@ -1025,7 +1026,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     })
     return res.status(200).json(reports)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let start_date = req.query.start_date
     let end_date = req.query.end_date
     let production: IColumnRowData = {
@@ -1071,7 +1072,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
 
     return res.status(200).json(production)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let start_date = req.query.start_date
     let end_date = req.query.end_date
     let production: IColumnRowData = {
@@ -1114,7 +1115,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
 
     return res.status(200).json(production)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let start_date = req.query.start_date
     let end_date = req.query.end_date
     let productions: GetCategoryWiseProductionReportDto[] = [];
@@ -1146,7 +1147,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     }
     return res.status(200).json(productions)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let start_date = req.query.start_date
     let end_date = req.query.end_date
     let reports: GetDyeStatusReportDto[] = [];

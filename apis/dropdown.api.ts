@@ -13,7 +13,7 @@ import { isAuthenticatedUser } from "../middlewares/auth.middleware"
 import express from "express";
 const router = express.Router()
 
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: DropDownDto[] = []
     let types = await LeadType.find()
     result = types.map((t) => {
@@ -21,7 +21,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     })
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { type } = req.body as {type:string}
     if (!type) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -37,7 +37,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(201).json({ message: "success" })
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { type } = req.body as { type: string }
     if (!type) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -60,7 +60,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(200).json({ message: "updated" })
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "type id not valid" })
     let type = await LeadType.findById(id);
@@ -70,7 +70,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     await type.remove();
     return res.status(200).json({ message: "lead type deleted successfully" })
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: DropDownDto[] = []
     let sources = await LeadSource.find()
     result = sources.map((i) => {
@@ -78,7 +78,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     })
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { source } = req.body as {source:string}
     if (!source) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -94,7 +94,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(201).json(result)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { source } = req.body as {source:string}
     if (!source) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -117,7 +117,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(200).json(oldsource)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "source id not valid" })
     let source = await LeadSource.findById(id);
@@ -128,12 +128,12 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(200).json({ message: "lead source deleted successfully" })
 })
 //lead stages
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let stages: DropDownDto[] = []
     stages = await (await Stage.find()).map((i) => { return { id: i._id, label: i.stage, value: i.stage } });
     return res.status(200).json(stages)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { stage } = req.body as {stage:string}
     if (!stage) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -149,7 +149,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(201).json(result)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { stage } = req.body as {stage:string}
 
     if (!stage) {
@@ -173,7 +173,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(200).json(oldstage)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "stage id not valid" })
     let stage = await Stage.findById(id);
@@ -183,7 +183,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     await stage.remove();
     return res.status(200).json({ message: "lead stage deleted successfully" })
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: GetCrmStateDto[] = []
     let states = await CRMState.find()
 
@@ -193,7 +193,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     }
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { state } = req.body as {state:string}
     if (!state) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -209,7 +209,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(201).json(result)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { state } = req.body as { state: string }
     if (!state) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -234,7 +234,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(200).json(oldstate)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "state id not valid" })
     let state = await CRMState.findById(id);
@@ -245,7 +245,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     await state.remove();
     return res.status(200).json({ message: "state deleted successfully" })
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { city_ids, user_ids, flag } = req.body as AssignOrRemoveCrmCityDto
 
     if (city_ids && city_ids.length === 0)
@@ -255,7 +255,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     await HandleCRMCitiesAssignment(user_ids, city_ids, flag);
     return res.status(200).json({ message: "successfull" })
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { state_ids, user_ids, flag } = req.body as AssignOrRemoveCrmStateDto
     if (state_ids && state_ids.length === 0)
         return res.status(400).json({ message: "please select one state " })
@@ -312,7 +312,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(200).json({ message: "successfull" })
 }
 )
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: CreateAndUpdatesStateFromExcelDto[] = []
     let statusText: string = ""
     if (!req.file)
@@ -376,7 +376,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(200).json(result);
 })
 //cities)
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: GetCrmCityDto[] = []
     let state = req.query.state;
     let cities: ICRMCity[] = []
@@ -397,7 +397,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     }
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { state, city } = req.body as CreateOrEditCrmCity
     if (!state || !city) {
         return res.status(400).json({ message: "please provide required fields" })
@@ -420,7 +420,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(201).json(result)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { state, city } = req.body as CreateOrEditCrmCity
     if (!state || !city) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -447,7 +447,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(200).json(oldcity)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "city id not valid" })
     let city = await CRMCity.findById(id);
@@ -463,7 +463,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     await city.remove();
     return res.status(200).json({ message: "city deleted successfully" })
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let state = req.params.state
     let result: CreateAndUpdatesCityFromExcelDto[] = []
     let statusText: string = ""
@@ -542,20 +542,20 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     }
     return res.status(200).json(result);
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let states = await CRMState.find({ state: { $ne: "" } });
     let statevalues = states.map(i => { return i.state });
     await Lead.updateMany({ state: { $nin: statevalues } }, { state: 'unknown' });
     await ReferredParty.updateMany({ state: { $nin: statevalues } }, { state: 'unknown' });
     return res.status(200).json({ message: "successfull" })
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let stages = await Stage.find({ stage: { $ne: "" } });
     let stagevalues = stages.map(i => { return i.stage });
     await Lead.updateMany({ stage: { $nin: stagevalues } }, { stage: 'unknown' });
     return res.status(200).json({ message: "successfull" })
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let cities = await CRMCity.find({ city: { $ne: "" } });
     let cityvalues = cities.map(i => { return i.city });
 
@@ -564,13 +564,13 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     await ReferredParty.updateMany({ city: { $nin: cityvalues } }, { city: 'unknown', state: 'unknown' });
     return res.status(200).json({ message: "successfull" })
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result = await ChecklistCategory.find();
     let data: DropDownDto[];
     data = result.map((r) => { return { id: r._id, label: r.category, value: r.category } });
     return res.status(200).json(data)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { category } = req.body as {category:string}
     if (!category) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -586,7 +586,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(201).json(result)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { category } = req.body as {
         category: string,
     }
@@ -609,7 +609,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(200).json(oldlocation)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "category id not valid" })
     let category = await ChecklistCategory.findById(id);
@@ -619,7 +619,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     await category.remove();
     return res.status(200).json({ message: "category deleted successfully" })
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: GetErpStateDto[] = []
     let states = await State.find()
     for (let i = 0; i < states.length; i++) {
@@ -648,7 +648,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     }
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const body = req.body as CreateOrEditErpStateDto;
     if (!body.state) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -665,7 +665,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(201).json(result)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const body = req.body as CreateOrEditErpStateDto;
     if (!body.state) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -681,7 +681,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(200).json(oldstate)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "state id not valid" })
     let state = await State.findById(id);
@@ -691,7 +691,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     await state.remove();
     return res.status(200).json({ message: "state deleted successfully" })
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: GetErpEmployeeDto[] = []
     let employees = await ErpEmployee.find()
     for (let i = 0; i < employees.length; i++) {
@@ -708,7 +708,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     }
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { name } = req.body as {name:string};
     if (!name) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -724,7 +724,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(201).json(result)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { name } = req.body as {name:string};
     if (!name) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -740,7 +740,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(200).json(emp)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "employee id not valid" })
     let employee = await ErpEmployee.findById(id);
@@ -750,13 +750,13 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     await employee.remove();
     return res.status(200).json({ message: "employee deleted successfully" })
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result = await MaintenanceCategory.find();
     let data: DropDownDto[];
     data = result.map((r) => { return { id: r._id, label: r.category, value: r.category } });
     return res.status(200).json(data)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { category } = req.body as {category:string}
     if (!category) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -772,7 +772,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(201).json(result)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { category } = req.body as {
         category: string,
     }
@@ -795,7 +795,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(200).json(oldlocation)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "category id not valid" })
     let category = await MaintenanceCategory.findById(id);
@@ -806,13 +806,13 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     await category.save();
     return res.status(200).json({ message: "category status changed successfully" })
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result = (await MachineCategory.find()).map((c) => {
         return { id: c._id, label: c.category, value: c.category }
     })
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { category } = req.body as {category:string}
     if (!category) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -828,7 +828,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(201).json({ message: "success" })
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { category } = req.body as { category :string}
     if (!category) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -850,7 +850,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(200).json({ message: "updated" })
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "category id not valid" })
     let category = await MachineCategory.findById(id);
@@ -860,7 +860,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     await category.remove();
     return res.status(200).json({ message: "category deleted successfully" })
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let hidden = String(req.query.hidden)
     let machines: IMachine[] = []
     let result: GetMachineDto[] = []
@@ -883,7 +883,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     })
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { name,  category, serial_no } = req.body as CreateOrEditMachineDto
     if (!name  || !category || !serial_no) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -901,7 +901,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
 
     return res.status(201).json(machine)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { name,  category, serial_no } = req.body as CreateOrEditMachineDto
     if (!name || !category || !serial_no) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -922,7 +922,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     await machine.save()
     return res.status(200).json(machine)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     if (!req.file)
         return res.status(400).json({
             message: "please provide an Excel file",
@@ -954,7 +954,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     }
     return res.status(200).json({ message: "machines updated" });
 }   )
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let machine = await Machine.findById(id)
     if (!machine)
@@ -967,7 +967,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(200).json(machine)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let hidden = String(req.query.hidden)
     let result: GetArticleDto[] = []
     let articles: IArticle[] = []
@@ -988,7 +988,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     })
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     if (!req.file)
         return res.status(400).json({
             message: "please provide an Excel file",
@@ -1018,7 +1018,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     }
     return res.status(200).json({ message: "articles updated" });
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { name } = req.body as {name:string}
     if (!name) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -1036,7 +1036,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(201).json(machine)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { name } = req.body as {name:string}
     if (!name) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -1056,7 +1056,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(200).json(article)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let article = await Article.findById(id)
     if (!article)
@@ -1069,7 +1069,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(200).json(article)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let id = req.params.id;
 
     let dye = await Dye.findById(id).populate('articles');
@@ -1089,7 +1089,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     }
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let hidden = String(req.query.hidden)
     let dyes: IDye[] = []
     let result: GetDyeDto[] = []
@@ -1113,7 +1113,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     })
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     if (!req.file)
         return res.status(400).json({
             message: "please provide an Excel file",
@@ -1166,7 +1166,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     }
     return res.status(200).json({ message: "dyes updated" });
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { dye_number, size, articles, st_weight } = req.body as CreateOrEditDyeDTo
     if (!dye_number || !size) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -1185,7 +1185,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     }).save()
     return res.status(201).json(dye)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { dye_number, size, articles, st_weight } = req.body as CreateOrEditDyeDTo
     if (!dye_number || !size) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -1211,7 +1211,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     await dye.save()
     return res.status(200).json(dye)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let dye = await Dye.findById(id)
     if (!dye)
@@ -1223,7 +1223,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     await dye.save()
     return res.status(200).json(dye)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let hidden = String(req.query.hidden)
     let result: GetDyeLocationDto[] = []
     let locations: IDyeLocation[] = []
@@ -1246,7 +1246,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     })
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { name } = req.body as {name:string}
     if (!name) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -1262,7 +1262,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(201).json(result)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { name } = req.body as {name:string}
     if (!name) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -1282,7 +1282,7 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     return res.status(200).json(oldlocation)
 
 })
-router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "location id not valid" })
     let location = await DyeLocation.findById(id);

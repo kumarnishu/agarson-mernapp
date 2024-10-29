@@ -7,7 +7,6 @@ import isMongoId from "validator/lib/isMongoId";
 import moment from 'moment';
 import { Types } from 'mongoose';
 import xlsx from "xlsx"
-import {  upload } from '../app';
 import { AssignPermissionForMultipleUserDto, AssignPermissionForOneUserDto, AssignUsersDto, CreateAndUpdatesLeadFromExcelDto, CreateOrEditBillDto, CreateOrEditChecklistDto, CreateOrEditLeadDto, CreateOrEditMergeLeadsDto, CreateOrEditMergeRefersDto, CreateOrEditProductionDto, CreateOrEditReferDto, CreateOrEditReferFromExcelDto, CreateOrEditRemarkDto, CreateOrEditShoeWeightDto, CreateOrEditSpareDyeDto, createOrEditUserDto, CreateOrRemoveReferForLeadDto, GetActivitiesOrRemindersDto, GetActivitiesTopBarDetailsDto, GetBillDto, GetChecklistDto, GetChecklistFromExcelDto, GetLeadDto, GetReferDto, GetRemarksDto, GetUserDto, IMenu, LoginDto, ResetPasswordDto, UpdatePasswordDto, UpdateProfileDto, VerifyEmailDto } from '../dtos/feature.dto';
 import { Asset, IBill, IChecklist, ILead, IMaintenance, IMaintenanceItem, IProduction, IReferredParty, IRemark, IShoeWeight, ISoleThickness, ISpareDye, IUser } from '../interfaces/feature.interface';
 import Lead, { Bill, BillItem, Checklist, ChecklistBox, Maintenance, MaintenanceItem, Production, ReferredParty, Remark, ShoeWeight, SoleThickness, SpareDye, User } from '../models/feature.model';
@@ -15,8 +14,11 @@ import SaveExcelTemplateToDisk, { destroyFile, GetMaintenceItemBoxes, isvalidDat
 import { FetchAllPermissions } from '../utils/permissions.util';
 import { Article, Dye, DyeLocation, Machine, MaintenanceCategory, Stage } from '../models/dropdown.model';
 import { CreateMaintenanceFromExcelDto, CreateOrEditMaintenanceDto, CreateOrEditSoleThicknessDto, GetMaintenanceDto, GetMaintenanceItemDto, GetMaintenanceItemRemarkDto, GetProductionDto, GetShoeWeightDto, GetSoleThicknessDto, GetSpareDyeDto } from '../dtos/dropdown.dto';
+import multer from "multer";
 
-router.get("users", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 * 50 } })
+
+router.get("/users", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let showhidden = req.query.hidden
     let perm = req.query.permission
     let show_assigned_only = req.query.show_assigned_only
@@ -67,7 +69,7 @@ router.get("users", isAuthenticatedUser, async (req: Request, res: Response, nex
     })
     return res.status(200).json(result)
 })
-router.get("profile", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/profile", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let result: GetUserDto | null = null;
     const user = await User.findById(req.user?._id).populate("created_by").populate("updated_by").populate('assigned_users')
     if (user)
@@ -101,7 +103,7 @@ router.get("profile", isAuthenticatedUser, async (req: Request, res: Response, n
         }
     res.status(200).json({ user: result, token: req.cookies.accessToken })
 })
-router.post("signup", isAuthenticatedUser, upload.single("dp"), async (req: Request, res: Response, next: NextFunction) => {
+router.post("/signup", upload.single("dp"), isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let result: GetUserDto | null = null;
     let users = await User.find()
     if (users.length > 0)
@@ -188,7 +190,7 @@ router.post("signup", isAuthenticatedUser, upload.single("dp"), async (req: Requ
     res.status(201).json({ user: result, token: token })
 }
 )
-router.post("users/new", isAuthenticatedUser, upload.single("dp"), async (req: Request, res: Response, next: NextFunction) => {
+router.post("/users/new", upload.single("dp"), isAuthenticatedUser,  async (req: Request, res: Response, next: NextFunction) => {
     let { username, email, password, mobile } = req.body as createOrEditUserDto;
     // validations
     if (!username || !email || !password || !mobile)
@@ -241,7 +243,7 @@ router.post("users/new", isAuthenticatedUser, upload.single("dp"), async (req: R
     await user.save()
     res.status(201).json({ message: "success" })
 })
-router.post("login", async (req: Request, res: Response, next: NextFunction) => {
+router.post("/login", async (req: Request, res: Response, next: NextFunction) => {
     const { username, password, multi_login_token } = req.body as LoginDto
     if (!username)
         return res.status(400).json({ message: "please enter username or email" })
@@ -315,7 +317,7 @@ router.post("login", async (req: Request, res: Response, next: NextFunction) => 
     }
     res.status(200).json({ user: result, token: token })
 })
-router.post("logout", async (req: Request, res: Response, next: NextFunction) => {
+router.post("/logout", async (req: Request, res: Response, next: NextFunction) => {
     let coToken = req.cookies.accessToken
     let AuthToken = req.headers.authorization && req.headers.authorization.split(" ")[1]
     if (coToken)
@@ -324,7 +326,7 @@ router.post("logout", async (req: Request, res: Response, next: NextFunction) =>
         await deleteToken(res, AuthToken);
     res.status(200).json({ message: "logged out" })
 })
-router.post("assigne/users/manager", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.post("/assigne/users/manager", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const { ids } = req.body as AssignUsersDto
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
@@ -346,7 +348,7 @@ router.post("assigne/users/manager", isAuthenticatedUser, async (req: Request, r
     await user.save();
     res.status(200).json({ message: "assigned users successfully" });
 })
-router.put("users/:id", upload.single("dp"), isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.put("/users/:id", upload.single("dp"), isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
     let user = await User.findById(id).populate('created_by')
@@ -410,7 +412,7 @@ router.put("users/:id", upload.single("dp"), isAuthenticatedUser, async (req: Re
     })
     return res.status(200).json({ message: "user updated" })
 })
-router.post("profile/:id", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.post("/profile/:id", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let user = await User.findById(req.user?._id);
     if (!user) {
         return res.status(404).json({ message: "user not found" })
@@ -467,7 +469,7 @@ router.post("profile/:id", isAuthenticatedUser, async (req: Request, res: Respon
     })
     return res.status(200).json({ message: "profile updated" })
 })
-router.post("passwords/update", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.post("/passwords/update", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { oldPassword, newPassword, confirmPassword } = req.body as UpdatePasswordDto
     if (!oldPassword || !newPassword || !confirmPassword)
         return res.status(400).json({ message: "please fill required fields" })
@@ -487,7 +489,7 @@ router.post("passwords/update", isAuthenticatedUser, async (req: Request, res: R
     await user.save();
     res.status(200).json({ message: "password updated" });
 })
-router.post("passwords/reset/:id", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.post("/passwords/reset/:id", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { newPassword, confirmPassword } = req.body as ResetPasswordDto
     if (!newPassword || !confirmPassword)
         return res.status(400).json({ message: "please fill required fields" })
@@ -506,7 +508,7 @@ router.post("passwords/reset/:id", isAuthenticatedUser, async (req: Request, res
     await user.save();
     res.status(200).json({ message: "password updated" });
 })
-router.post("toogle-admin/:id", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.post("/toogle-admin/:id", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
     let user = await User.findById(id)
@@ -522,7 +524,7 @@ router.post("toogle-admin/:id", isAuthenticatedUser, async (req: Request, res: R
     await user.save();
     res.status(200).json({ message: "success" });
 })
-router.post("toogle-multi-device-login/:id", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.post("/toogle-multi-device-login/:id", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
     let user = await User.findById(id)
@@ -537,7 +539,7 @@ router.post("toogle-multi-device-login/:id", isAuthenticatedUser, async (req: Re
     await user.save();
     res.status(200).json({ message: "success" });
 })
-router.post("toogle-block-user/:id", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.post("/toogle-block-user/:id", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     //update role of user
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
@@ -557,7 +559,7 @@ router.post("toogle-block-user/:id", isAuthenticatedUser, async (req: Request, r
     await user.save();
     res.status(200).json({ message: "success" });
 })
-router.post("toogle-leads-visiting-card-user/:id", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.post("/toogle-leads-visiting-card-user/:id", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
     let user = await User.findById(id)
@@ -571,7 +573,7 @@ router.post("toogle-leads-visiting-card-user/:id", isAuthenticatedUser, async (r
     await user.save();
     res.status(200).json({ message: "changed successfully" });
 })
-router.post("send-forgot-password-link", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.post("/send-forgot-password-link", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body as VerifyEmailDto
     if (!email) return res.status(400).json({ message: "please provide email id" })
     const userEmail = String(email).toLowerCase().trim();
@@ -607,7 +609,7 @@ router.post("send-forgot-password-link", isAuthenticatedUser, async (req: Reques
         return res.status(500).json({ message: "email could not be sent, something went wrong" })
     }
 })
-router.post("reset-password/:token", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.post("/reset-password/:token", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let resetPasswordToken = req.params.token;
     const { newPassword, confirmPassword } = req.body as ResetPasswordDto;
     if (!newPassword || !confirmPassword)
@@ -627,7 +629,7 @@ router.post("reset-password/:token", isAuthenticatedUser, async (req: Request, r
     await user.save();
     res.status(200).json({ message: "password updated" });
 })
-router.post("send-email-verification-link", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.post("/send-email-verification-link", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body as VerifyEmailDto
     if (!email)
         return res.status(400).json({ message: "please provide your email id" })
@@ -662,7 +664,7 @@ router.post("send-email-verification-link", isAuthenticatedUser, async (req: Req
         return res.status(500).json({ message: "email could not be sent, something went wrong" })
     }
 })
-router.post("email-verify/:token", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.post("/email-verify/:token", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const emailVerifyToken = req.params.token;
     let user = await User.findOne({
         emailVerifyToken,
@@ -678,7 +680,7 @@ router.post("email-verify/:token", isAuthenticatedUser, async (req: Request, res
         message: `congrats ${user.email} verification successful`
     });
 })
-router.post("assign-permission-one", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.post("/assign-permission-one", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { permissions, user_id } = req.body as AssignPermissionForOneUserDto
 
     if (permissions && permissions.length === 0)
@@ -694,7 +696,7 @@ router.post("assign-permission-one", isAuthenticatedUser, async (req: Request, r
 
     return res.status(200).json({ message: "successfull" })
 })
-router.post("assign-permission-bulk", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.post("/assign-permission-bulk", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { permissions, user_ids, flag } = req.body as AssignPermissionForMultipleUserDto
 
     if (permissions && permissions.length === 0)
@@ -729,12 +731,12 @@ router.post("assign-permission-bulk", isAuthenticatedUser, async (req: Request, 
 
     return res.status(200).json({ message: "successfull" })
 })
-router.get("permissions", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/permissions", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let permissions: IMenu[] = [];
     permissions = FetchAllPermissions();
     return res.status(200).json(permissions)
 })
-router.get("leads", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/leads", isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let stage = req.query.stage
@@ -821,7 +823,7 @@ router.get("leads", isAuthenticatedUser, async (req: Request, res: Response, nex
     else
         return res.status(400).json({ message: "bad request" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     if (!isMongoId(id))
         return res.status(400).json({ message: "bad mongo id" })
@@ -873,7 +875,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
 })
 
 // leads apis
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { party_id, remark, remind_date } = req.body as CreateOrRemoveReferForLeadDto
     if (!party_id)
         return res.status(400).json({ message: "fill required field" })
@@ -911,7 +913,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await lead.save()
     return res.status(200).json({ message: "party referred successfully" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     const { remark } = req.body as CreateOrRemoveReferForLeadDto
     if (!isMongoId(id))
@@ -940,7 +942,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await lead.save()
     return res.status(200).json({ message: "referrals removed successfully" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
     let lead = await Lead.findById(id);
@@ -981,7 +983,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
         }).save()
     return res.status(200).json({ message: "new refer created" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let result: GetLeadDto[] = []
@@ -1821,7 +1823,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
         return res.status(400).json({ message: "bad request" })
 
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     let { mobile, remark, alternate_mobile1, alternate_mobile2 } = body as CreateOrEditLeadDto
 
@@ -1901,7 +1903,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
 
     return res.status(200).json("lead created")
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     const { mobile, remark, alternate_mobile1, alternate_mobile2 } = body as CreateOrEditLeadDto
 
@@ -2001,7 +2003,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
 
     return res.status(200).json({ message: "lead updated" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
     let lead = await Lead.findById(id);
@@ -2018,7 +2020,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
 
     return res.status(200).json({ message: "lead and related remarks are deleted" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let result: CreateAndUpdatesLeadFromExcelDto[] = []
     let statusText: string = ""
     if (!req.file)
@@ -2208,7 +2210,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     }
     return res.status(200).json(result);
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let refers: IReferredParty[] = []
     let result: GetReferDto[] = []
     let user = await User.findById(req.user).populate('assigned_crm_states').populate('assigned_crm_cities');
@@ -2241,7 +2243,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
 
     return res.status(200).json(refers);
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let result: GetReferDto[] = []
@@ -2285,7 +2287,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     else return res.status(400).json({ message: 'bad request' })
 
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let key = String(req.query.key).split(",")
@@ -2498,7 +2500,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
         return res.status(400).json({ message: "bad request" })
 
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     const { name, customer_name, city, state, gst, mobile, mobile2, mobile3 } = body as CreateOrEditReferDto
     if (!name || !city || !state || !mobile || !gst) {
@@ -2545,7 +2547,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     }).save()
     return res.status(201).json(party)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     if (!isMongoId(id))
         return res.status(400).json({ message: "bad mongo id" })
@@ -2616,7 +2618,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     })
     return res.status(200).json({ message: "updated" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     if (!isMongoId(id))
         return res.status(400).json({ message: "bad mongo id" })
@@ -2626,7 +2628,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await ReferredParty.findByIdAndDelete(id)
     return res.status(200).json({ message: "deleted" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { leads_ids } = req.body as { leads_ids: string[] }
     for (let i = 0; i <= leads_ids.length; i++) {
         let lead = await Lead.findById(leads_ids[i])
@@ -2642,7 +2644,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     }
     return res.status(200).json({ message: "lead and related remarks are deleted" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let result: CreateOrEditReferFromExcelDto[] = []
     let statusText: string = ""
     if (!req.file)
@@ -2778,7 +2780,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     }
     return res.status(200).json(result);
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { remark, remind_date } = req.body as CreateOrEditRemarkDto
     if (!remark) return res.status(403).json({ message: "please fill required fields" })
 
@@ -2798,7 +2800,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await Lead.findByIdAndUpdate(rremark.lead, { last_remark: remark })
     return res.status(200).json({ message: "remark updated successfully" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
     let rremark = await Remark.findById(id)
@@ -2808,7 +2810,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await rremark.remove()
     return res.status(200).json({ message: " remark deleted successfully" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let previous_date = new Date()
     let day = previous_date.getDate() - 100
     previous_date.setDate(day)
@@ -2884,7 +2886,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
 
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "refer id not valid" })
     let refer = await ReferredParty.findById(id);
@@ -2908,7 +2910,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     })
     return res.json(result)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "lead id not valid" })
     let lead = await Lead.findById(id);
@@ -2948,7 +2950,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     })
     return res.json(result)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let result: GetActivitiesTopBarDetailsDto[] = []
     let start_date = req.query.start_date
     let id = req.query.id
@@ -2995,7 +2997,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     return res.status(200).json(result)
 
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
@@ -3151,7 +3153,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     else
         return res.status(400).json({ message: "bad request" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { remark, remind_date, has_card, stage } = req.body as CreateOrEditRemarkDto
     if (!remark) return res.status(403).json({ message: "please fill required fields" })
 
@@ -3191,7 +3193,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await lead.save()
     return res.status(200).json({ message: "new remark added successfully" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let result: GetReferDto[] = [];
     let start_date = req.query.start_date
     let end_date = req.query.end_date
@@ -3225,7 +3227,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     })
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let start_date = req.query.start_date
     let end_date = req.query.end_date
     let dt1 = new Date(String(start_date))
@@ -3270,7 +3272,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     })
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     const {
         items,
@@ -3352,7 +3354,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     return res.status(201).json({ message: "success" })
 
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let bill = await Bill.findById(id)
     if (!bill)
@@ -3428,7 +3430,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     return res.status(200).json({ message: "updated" })
 
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "bill id not valid" })
     let bill = await Bill.findById(id);
@@ -3448,7 +3450,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     }
     return res.status(200).json({ message: "bill deleted successfully" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "lead id not valid" })
     let refer = await ReferredParty.findById(id);
@@ -3485,7 +3487,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     }
     return res.json(result)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "lead id not valid" })
     let lead = await Lead.findById(id);
@@ -3522,7 +3524,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     }
     return res.json(result)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const { name, mobiles, city, stage, state, email, alternate_email, address, merge_refer, merge_bills, merge_remarks, source_lead_id } = req.body as CreateOrEditMergeLeadsDto
     let lead = await Lead.findById(id);
@@ -3561,7 +3563,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await Lead.findByIdAndDelete(source_lead_id);
     return res.status(200).json({ message: "merge leads successfully" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const { name, mobiles, city, state, address, merge_assigned_refers, merge_bills, merge_remarks, source_refer_id } = req.body as CreateOrEditMergeRefersDto
     let refer = await ReferredParty.findById(id);
@@ -3593,7 +3595,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     return res.status(200).json({ message: "merge refers successfully" })
 }
 )
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
@@ -3670,7 +3672,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
         return res.status(400).json({ message: "bad request" })
 })
 //post/put/delete/patch
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
 
     let body = JSON.parse(req.body.body)
     const { category,
@@ -3760,7 +3762,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     }
     return res.status(201).json({ message: `new Checklist added` });
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
 
     let body = JSON.parse(req.body.body)
     const {
@@ -3808,7 +3810,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await checklist.save()
     return res.status(200).json({ message: `Checklist updated` });
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: " id not valid" })
 
@@ -3824,7 +3826,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
 
     return res.status(200).json({ message: `Checklist deleted` });
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const { remarks } = req.body
     if (!isMongoId(id)) return res.status(400).json({ message: " id not valid" })
@@ -3836,7 +3838,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await ChecklistBox.findByIdAndUpdate(id, { checked: !checklist.checked, remarks: remarks })
     return res.status(200).json("successfully marked")
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let result: GetChecklistFromExcelDto[] = []
     let statusText: string = ""
     if (!req.file)
@@ -3907,7 +3909,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     }
     return res.status(200).json(result);
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let checklist: any = {
         work_title: "check the work given ",
         category: "payment",
@@ -3919,7 +3921,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
 }
 
 )
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
 
     let body = JSON.parse(req.body.body)
     const {
@@ -3986,7 +3988,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await maintenance.save()
     return res.status(201).json({ message: `new maintenance added` });
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     const {
         work,
@@ -4019,7 +4021,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await maintenance.save()
     return res.status(200).json({ message: ` maintenance updated` });
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: " id not valid" })
 
@@ -4035,7 +4037,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await maintenance.remove()
     return res.status(200).json({ message: `Maintenance deleted` });
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
@@ -4137,7 +4139,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     else
         return res.status(400).json({ message: "bad request" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let result: CreateMaintenanceFromExcelDto[] = []
     let statusText: string = ""
     if (!req.file)
@@ -4263,7 +4265,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     }
     return res.status(200).json(result);
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let checklist: any = {
         work: "check the work given ",
         category: "ver-1",
@@ -4275,7 +4277,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     let fileName = "CreateMaintenanceTemplate.xlsx"
     return res.download("./file", fileName)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: " id not valid" })
 
@@ -4286,7 +4288,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await MaintenanceItem.findByIdAndUpdate(id, { is_required: !item.is_required })
     return res.status(200).json("successfully changed")
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let result: GetMaintenanceItemRemarkDto[] = []
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "item id not valid" })
@@ -4306,7 +4308,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     })
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
 
     let dt1 = new Date()
     let dt2 = new Date()
@@ -4332,7 +4334,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     })
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { remark, stage } = req.body as CreateOrEditRemarkDto
     if (!remark) return res.status(403).json({ message: "please fill required fields" })
 
@@ -4366,7 +4368,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await item.save()
     return res.status(200).json({ message: "new remark added successfully" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
@@ -4484,7 +4486,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
 })
 
 
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let {
         machine,
         thekedar,
@@ -4553,7 +4555,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await new_prouction.save()
     return res.status(201).json(new_prouction)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let {
         machine,
         thekedar,
@@ -4608,7 +4610,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
         })
     return res.status(200).json({ message: "production updated" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     if (!id)
         return res.status(400).json({ message: "not a valid request" })
@@ -4619,7 +4621,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await Production.findByIdAndDelete(remote_production._id)
     return res.status(200).json({ message: "production removed" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let dt1 = new Date()
     dt1.setDate(new Date().getDate())
     dt1.setHours(0)
@@ -4664,7 +4666,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     })
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
@@ -4738,7 +4740,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     else
         return res.status(200).json({ message: "bad request" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body) as CreateOrEditShoeWeightDto
 
     let dt1 = new Date()
@@ -4793,7 +4795,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await shoe_weight.save()
     return res.status(201).json(shoe_weight)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body) as CreateOrEditShoeWeightDto
     let { machine, dye, article, weight, month, upper_weight } = body
 
@@ -4862,7 +4864,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await shoe_weight.save()
     return res.status(200).json(shoe_weight)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body) as CreateOrEditShoeWeightDto
     console.log(body)
     let { machine, dye, article, weight, month, upper_weight } = body
@@ -4929,7 +4931,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await shoe_weight.save()
     return res.status(200).json(shoe_weight)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body) as CreateOrEditShoeWeightDto
     let { machine, dye, article, weight, month, upper_weight } = body
 
@@ -4994,7 +4996,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await shoe_weight.save()
     return res.status(200).json(shoe_weight)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let shoe_weight = await ShoeWeight.findById(id)
     if (!shoe_weight)
@@ -5006,7 +5008,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await shoe_weight.save()
     return res.status(200).json(shoe_weight)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let sparedye = await SpareDye.findById(id)
     if (!sparedye)
@@ -5018,7 +5020,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await sparedye.save()
     return res.status(200).json(sparedye)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let shoe_weight = await ShoeWeight.findById(id)
     if (!shoe_weight)
@@ -5036,7 +5038,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await shoe_weight.remove()
     return res.status(200).json(shoe_weight)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
@@ -5096,7 +5098,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     else
         return res.status(400).json({ message: "bad request" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let machine = req.query.machine
     let date = String(req.query.date)
     let dt1 = new Date(date)
@@ -5131,7 +5133,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     })
     return res.status(200).json(productions)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     console.log("enterd")
     let dt1 = new Date()
     dt1.setDate(new Date().getDate())
@@ -5163,7 +5165,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     })
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
@@ -5224,7 +5226,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     else
         return res.status(200).json({ message: "bad request" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
 
     let dt1 = new Date()
     let dt2 = new Date()
@@ -5255,7 +5257,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
 
     return res.status(201).json(thickness)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let dt1 = new Date()
     let dt2 = new Date()
     dt2.setDate(new Date(dt2).getDate() + 1)
@@ -5288,7 +5290,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     })
     return res.status(200).json(thickness)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let thickness = await SoleThickness.findById(id)
     if (!thickness)
@@ -5296,7 +5298,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await thickness.remove()
     return res.status(200).json(thickness)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let dt1 = new Date()
     dt1.setDate(new Date().getDate())
     dt1.setHours(0)
@@ -5328,7 +5330,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     })
     return res.status(200).json(result)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
@@ -5389,7 +5391,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     else
         return res.status(200).json({ message: "bad request" })
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body) as CreateOrEditSpareDyeDto
     let { dye, location, repair_required, remarks } = body
 
@@ -5449,7 +5451,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await dyeObj.save()
     return res.status(201).json(dyeObj)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body) as CreateOrEditSpareDyeDto
     let { dye, location, repair_required, remarks } = body
     const id = req.params.id
@@ -5511,7 +5513,7 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     await dyeObj.save()
     return res.status(201).json(dyeObj)
 })
-router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let dye = await SpareDye.findById(id)
     if (!dye)
