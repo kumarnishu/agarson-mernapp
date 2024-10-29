@@ -1,0 +1,10 @@
+import express from "express";
+import { CreateSoleThickness, DeleteSoleThickness, GetMyTodaySoleThickness, GetSoleThickness, UpdateSoleThickness } from "../controllers/production.controller";
+import { isAuthenticatedUser } from "../middlewares/auth.middleware";
+const router = express.Router()
+
+router.route("/solethickness").get(isAuthenticatedUser, GetSoleThickness).post(isAuthenticatedUser, CreateSoleThickness)
+router.route("/solethickness/me").get(isAuthenticatedUser, GetMyTodaySoleThickness)
+router.route("/solethickness/:id").get(isAuthenticatedUser, DeleteSoleThickness).put(isAuthenticatedUser, UpdateSoleThickness).delete(isAuthenticatedUser, DeleteSoleThickness)
+
+export default router

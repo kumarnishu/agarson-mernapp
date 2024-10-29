@@ -15,7 +15,7 @@ import { CreateOrEditErpEmployeeDto, CreateOrEditErpStateDto, GetBillsAgingRepor
 import { ErpEmployee, IErpEmployee } from "../models/erp_reports/erp.employee.model";
 import { VisitReport } from "../models/erp_reports/visit.report.model";
 import { isvalidDate } from "../client/src/utils/isValidDate";
-import { decimalToTime } from "../utils/decimalToTimeForXlsx";
+import { decimalToTimeForXlsx } from "../utils/decimalToTimeForXlsx";
 
 //get
 export const GetAllStates = async (req: Request, res: Response, next: NextFunction) => {
@@ -1132,8 +1132,8 @@ export const BulkCreateVisitReportFromExcel = async (req: Request, res: Response
                         employee:owner,
                         visit_date: new Date(new Date(Date.UTC(1900, 0, 1)).getTime() + (Number(visit_date) - 2) * 86400000),
                         customer,
-                        intime: intime?decimalToTime(intime):"",
-                        outtime: outtime?decimalToTime(outtime):"",
+                        intime: intime?decimalToTimeForXlsx(intime):"",
+                        outtime: outtime?decimalToTimeForXlsx(outtime):"",
                         visitInLocation,
                         visitOutLocation,
                         remarks,

@@ -6,15 +6,14 @@ import { Asset, IUser, User } from "../models/users/user.model.js"
 import { IRemark, Remark } from "../models/leads/remark.model.js"
 import { uploadFileToCloud } from "../utils/uploadFileToCloud.js"
 import { Types } from "mongoose"
-import { destroyFile } from "../utils/destroyCloudFile.js"
+import { destroyCloudFile } from "../utils/destroyCloudFile.js"
 import { IReferredParty, ReferredParty } from "../models/leads/referred.model.js"
 import { CRMState, ICRMState } from "../models/leads/crm.state.model.js"
-import { SaveLeadMobilesToExcel, SaveLeadsToExcel } from "../utils/ConvertJsonToExcel.js"
 import { CRMCity, ICRMCity } from "../models/leads/crm.city.model.js"
 import { LeadType } from "../models/leads/crm.leadtype.model.js"
 import { LeadSource } from "../models/leads/crm.source.model.js"
 import { IStage, Stage } from "../models/leads/crm.stage.model.js"
-import { HandleCRMCitiesAssignment } from "../utils/assignCRMCities.js"
+import { assignCRMCities } from "../utils/assignCRMCities.js"
 import { AssignOrRemoveCrmCityDto, AssignOrRemoveCrmStateDto, CreateAndUpdatesCityFromExcelDto, CreateAndUpdatesLeadFromExcelDto, CreateAndUpdatesStateFromExcelDto, CreateOrEditBillDto, CreateOrEditCrmCity, CreateOrEditLeadDto, CreateOrEditMergeLeadsDto, CreateOrEditMergeRefersDto, CreateOrEditReferDto, CreateOrEditReferFromExcelDto, CreateOrEditRemarkDto, CreateOrRemoveReferForLeadDto, GetActivitiesOrRemindersDto, GetActivitiesTopBarDetailsDto, GetBillDto, GetCrmCityDto, GetCrmStateDto, GetLeadDto, GetReferDto, GetRemarksDto } from "../dtos/crm/crm.dto.js"
 import moment from "moment"
 import { CreateOrEditDropDownDto, DropDownDto } from "../dtos/common/dropdown.dto.js"
@@ -318,7 +317,7 @@ export const AssignCRMCitiesToUsers = async (req: Request, res: Response, next: 
         return res.status(400).json({ message: "please select one city " })
     if (user_ids && user_ids.length === 0)
         return res.status(400).json({ message: "please select one city owner" })
-    await HandleCRMCitiesAssignment(user_ids, city_ids, flag);
+    await assignCRMCities(user_ids, city_ids, flag);
     return res.status(200).json({ message: "successfull" })
 }
 
@@ -523,7 +522,7 @@ export const CreateCRMCity = async (req: Request, res: Response, next: NextFunct
         updated_by: req.user
     }).save()
     let users = await User.find({ assigned_crm_states: STate });
-    await HandleCRMCitiesAssignment(users.map((i) => { return i._id.valueOf() }), [result._id.valueOf()], 1);
+    await assignCRMCities(users.map((i) => { return i._id.valueOf() }), [result._id.valueOf()], 1);
     return res.status(201).json(result)
 
 }
@@ -566,7 +565,7 @@ export const DeleteCRMCity = async (req: Request, res: Response, next: NextFunct
     let STate = await CRMState.findOne({ state: city.state });
     if (STate) {
         let users = await User.find({ assigned_crm_states: STate });
-        await HandleCRMCitiesAssignment(users.map((i) => { return i._id.valueOf() }), [city._id.valueOf()], 1);
+        await assignCRMCities(users.map((i) => { return i._id.valueOf() }), [city._id.valueOf()], 1);
     }
     await city.remove();
     return res.status(200).json({ message: "city deleted successfully" })
@@ -1781,27 +1780,6 @@ export const FuzzySearchLeads = async (req: Request, res: Response, next: NextFu
 }
 
 
-export const BackUpAllLeads = async (req: Request, res: Response, next: NextFunction) => {
-    const value = String(req.query.value)
-    let fileName = "blank.xlsx"
-    let leads = await Lead.find().populate('created_by').populate('updated_by')
-    if (value === "leads" || value === "mobiles") {
-        if (leads.length > 0) {
-            if (value === "leads") {
-                SaveLeadsToExcel(leads)
-                fileName = "leads_backup.xlsx"
-            }
-            if (value === "mobiles") {
-                SaveLeadMobilesToExcel(leads)
-                fileName = "lead_mobiles_backup.xlsx"
-            }
-            return res.download("./file", fileName)
-        }
-    }
-
-    res.status(200).json({ message: "no leads found" })
-}
-
 export const CreateLead = async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     let { mobile, remark, alternate_mobile1, alternate_mobile2 } = body as CreateOrEditLeadDto
@@ -1949,7 +1927,7 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
         const doc = await uploadFileToCloud(req.file.buffer, storageLocation, req.file.originalname)
         if (doc) {
             if (lead.visiting_card?._id)
-                await destroyFile(lead.visiting_card._id)
+                await destroyCloudFile(lead.visiting_card._id)
             visiting_card = doc
         }
         else {
@@ -1999,7 +1977,7 @@ export const DeleteLead = async (req: Request, res: Response, next: NextFunction
     })
     await lead.remove()
     if (lead.visiting_card && lead.visiting_card._id)
-        await destroyFile(lead.visiting_card?._id)
+        await destroyCloudFile(lead.visiting_card?._id)
 
     return res.status(200).json({ message: "lead and related remarks are deleted" })
 }
@@ -2636,7 +2614,7 @@ export const BulkDeleteUselessLeads = async (req: Request, res: Response, next: 
             })
             await lead.remove()
             if (lead.visiting_card && lead.visiting_card._id)
-                await destroyFile(lead.visiting_card?._id)
+                await destroyCloudFile(lead.visiting_card?._id)
         }
     }
     return res.status(200).json({ message: "lead and related remarks are deleted" })
@@ -3409,7 +3387,7 @@ export const UpdateBill = async (req: Request, res: Response, next: NextFunction
         if (doc) {
             document = doc
             if (bill.billphoto)
-                await destroyFile(bill.billphoto._id)
+                await destroyCloudFile(bill.billphoto._id)
             bill.billphoto = document;
         }
         else {
@@ -3465,7 +3443,7 @@ export const DeleteBill = async (req: Request, res: Response, next: NextFunction
         return res.status(404).json({ message: "bill not found" })
     }
     if (bill.billphoto)
-        await destroyFile(bill.billphoto._id)
+        await destroyCloudFile(bill.billphoto._id)
     await bill.remove();
     if (bill.lead) {
         let count = await Bill.find({ lead: bill.lead }).countDocuments()

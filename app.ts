@@ -6,18 +6,14 @@ import cookieParser from 'cookie-parser';
 import cors from "cors";
 import { MulterError } from 'multer';
 import { connectDatabase } from './config/db';
-import UserRoutes from "./routes/user.routes";
-import LeadRoutes from "./routes/lead.routes";
-import ConstantRoutes from "./routes/constant.route";
-import MaintenanceRoutes from "./routes/maintenance.route";
-import ErpRoutes from "./routes/erp.routes";
-import ProductionRoutes from "./routes/production.routes";
+import AppRoutes from "./routes/index";
+
 import path from 'path';
 import { Server } from "socket.io";
 import { getCurrentUser, userJoin, userLeave } from "./utils/handleSocketUsers";
 import { Storage } from '@google-cloud/storage';
 import morgan from 'morgan';
-import { ActivateMaintenanceWork } from './utils/activateMaintenanceWork';
+import { activateMaintenanceWork } from './utils/activateMaintenanceWork';
 
 const app = express()
 const server = createServer(app)
@@ -106,13 +102,8 @@ export const bucket = storage.bucket(bucketName)
 
 
 //server routes
-app.use("/api/v1", UserRoutes)
-app.use("/api/v1", LeadRoutes)
-app.use("/api/v1", ConstantRoutes)
-app.use("/api/v1", MaintenanceRoutes)
-app.use("/api/v1", ErpRoutes)
-app.use("/api/v1", ProductionRoutes)
-ActivateMaintenanceWork();
+app.use("/api/v1", AppRoutes)
+activateMaintenanceWork();
 
 
 //react app handler

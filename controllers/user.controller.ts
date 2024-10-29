@@ -4,11 +4,11 @@ import { uploadFileToCloud } from '../utils/uploadFileToCloud';
 import { deleteToken, sendUserToken } from '../middlewares/auth.middleware';
 import { Asset, IUser, User } from '../models/users/user.model';
 import isMongoId from "validator/lib/isMongoId";
-import { destroyFile } from "../utils/destroyCloudFile";
 import { sendEmail } from '../utils/sendEmail';
 import { FetchAllPermissions } from '../utils/fillAllPermissions';
 import { AssignPermissionForMultipleUserDto, AssignPermissionForOneUserDto, AssignUsersDto, createOrEditUserDto, GetUserDto, IMenu, LoginDto, ResetPasswordDto, UpdatePasswordDto, UpdateProfileDto, VerifyEmailDto } from '../dtos/users/user.dto';
 import moment from 'moment';
+import { destroyCloudFile } from '../utils/destroyCloudFile';
 
 
 export const GetUsers = async (req: Request, res: Response, next: NextFunction) => {
@@ -390,7 +390,7 @@ export const UpdateUser = async (req: Request, res: Response, next: NextFunction
         const doc = await uploadFileToCloud(req.file.buffer, storageLocation, req.file.originalname)
         if (doc) {
             if (user.dp?._id)
-                await destroyFile(user.dp._id)
+                await destroyCloudFile(user.dp._id)
             dp = doc
         }
         else {
@@ -449,7 +449,7 @@ export const UpdateProfile = async (req: Request, res: Response, next: NextFunct
         const doc = await uploadFileToCloud(req.file.buffer, storageLocation, req.file.originalname)
         if (doc) {
             if (user.dp?._id)
-                await destroyFile(user.dp?._id)
+                await destroyCloudFile(user.dp?._id)
             dp = doc
         }
         else {

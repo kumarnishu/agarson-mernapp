@@ -8,7 +8,7 @@ import { IUser, User } from "../models/users/user.model"
 import { MachineCategory } from "../models/production/category.machine.model"
 import { IShoeWeight, ShoeWeight } from "../models/production/shoe.weight.model"
 import { uploadFileToCloud } from "../utils/uploadFileToCloud"
-import { destroyFile } from "../utils/destroyCloudFile"
+import { destroyCloudFile } from "../utils/destroyCloudFile"
 import { DyeLocation, IDyeLocation } from "../models/production/dye.location.model"
 import isMongoId from "validator/lib/isMongoId"
 import moment from "moment"
@@ -906,7 +906,7 @@ export const UpdateShoeWeight1 = async (req: Request, res: Response, next: NextF
 
 
     if (shoe_weight.shoe_photo1 && shoe_weight.shoe_photo1._id)
-        await destroyFile(shoe_weight.shoe_photo1._id)
+        await destroyCloudFile(shoe_weight.shoe_photo1._id)
     if (req.file) {
         console.log(req.file.mimetype)
         const allowedFiles = ["image/png", "image/jpeg", "image/gif"];
@@ -974,7 +974,7 @@ export const UpdateShoeWeight2 = async (req: Request, res: Response, next: NextF
     if (!m1 || !d1 || !art1)
         return res.status(400).json({ message: "please fill  reqired fields" })
     if (shoe_weight.shoe_photo2 && shoe_weight.shoe_photo2._id)
-        await destroyFile(shoe_weight.shoe_photo2._id)
+        await destroyCloudFile(shoe_weight.shoe_photo2._id)
     if (req.file) {
         console.log(req.file.mimetype)
         const allowedFiles = ["image/png", "image/jpeg", "image/gif"];
@@ -1039,7 +1039,7 @@ export const UpdateShoeWeight3 = async (req: Request, res: Response, next: NextF
     if (!m1 || !d1 || !art1)
         return res.status(400).json({ message: "please fill all reqired fields" })
     if (shoe_weight.shoe_photo3 && shoe_weight.shoe_photo3._id)
-        await destroyFile(shoe_weight.shoe_photo3._id)
+        await destroyCloudFile(shoe_weight.shoe_photo3._id)
     if (req.file) {
         console.log(req.file.mimetype)
         const allowedFiles = ["image/png", "image/jpeg", "image/gif"];
@@ -1107,11 +1107,11 @@ export const DeleteShoeWeight = async (req: Request, res: Response, next: NextFu
     if (req.user)
         shoe_weight.updated_by = req.user
     if (shoe_weight.shoe_photo1 && shoe_weight.shoe_photo1._id)
-        await destroyFile(shoe_weight.shoe_photo1._id)
+        await destroyCloudFile(shoe_weight.shoe_photo1._id)
     if (shoe_weight.shoe_photo2 && shoe_weight.shoe_photo2._id)
-        await destroyFile(shoe_weight.shoe_photo2._id)
+        await destroyCloudFile(shoe_weight.shoe_photo2._id)
     if (shoe_weight.shoe_photo3 && shoe_weight.shoe_photo3._id)
-        await destroyFile(shoe_weight.shoe_photo3._id)
+        await destroyCloudFile(shoe_weight.shoe_photo3._id)
     await shoe_weight.remove()
     return res.status(200).json(shoe_weight)
 }
@@ -1751,7 +1751,7 @@ export const DeleteSpareDye = async (req: Request, res: Response, next: NextFunc
     if (req.user)
         dye.updated_by = req.user
     if (dye.dye_photo && dye.dye_photo._id)
-        await destroyFile(dye.dye_photo._id)
+        await destroyCloudFile(dye.dye_photo._id)
     await dye.remove()
     return res.status(200).json(dye)
 }

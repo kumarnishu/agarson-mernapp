@@ -7,7 +7,7 @@ import { CreateOrEditDropDownDto, DropDownDto } from "../dtos/common/dropdown.dt
 import { CreateOrEditChecklistDto, GetChecklistDto, GetChecklistFromExcelDto } from "../dtos/checklist/checklist.dto";
 import { uploadFileToCloud } from "../utils/uploadFileToCloud";
 import moment from "moment";
-import { destroyFile } from "../utils/destroyCloudFile";
+import { destroyCloudFile } from "../utils/destroyCloudFile";
 import xlsx from "xlsx";
 import SaveFileOnDisk from "../utils/ConvertJsonToExcel";
 
@@ -273,7 +273,7 @@ export const EditChecklist = async (req: Request, res: Response, next: NextFunct
         if (doc) {
             document = doc
             if (checklist.photo && checklist.photo?._id)
-                await destroyFile(checklist.photo._id)
+                await destroyCloudFile(checklist.photo._id)
         }
         else {
             return res.status(500).json({ message: "file uploading error" })
@@ -299,7 +299,7 @@ export const DeleteChecklist = async (req: Request, res: Response, next: NextFun
     await checklist.remove()
 
     if (checklist.photo && checklist.photo?._id)
-        await destroyFile(checklist.photo._id)
+        await destroyCloudFile(checklist.photo._id)
 
     return res.status(200).json({ message: `Checklist deleted` });
 }
