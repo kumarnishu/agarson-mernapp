@@ -4578,9 +4578,6 @@ export const GetMaintenceItemBoxes = async (dt1: Date, dt2: Date, frequency: str
 
     return result;
 }
-
-
-
 export const CreateProduction = async (req: Request, res: Response, next: NextFunction) => {
     let {
         machine,
