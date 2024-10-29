@@ -32,11 +32,6 @@ export type GetMaintenanceItemDto = {
     _id: string,
     item: string,
     stage?: string,
-    boxes?: {
-        dt1: string,
-        dt2: string,
-        checked: boolean
-    }[],
     is_required: boolean
 }
 

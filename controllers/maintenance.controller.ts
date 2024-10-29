@@ -1,18 +1,17 @@
 import { NextFunction, Request, Response } from "express"
-import {  User } from "../models/users/user.model";
+import { User } from "../models/users/user.model";
 import isMongoId from "validator/lib/isMongoId";
 import { CreateOrEditDropDownDto, DropDownDto } from "../dtos/common/dropdown.dto";
 import moment from "moment";
 import xlsx from "xlsx";
 import SaveFileOnDisk from "../utils/ExportToExcel";
 import { MaintenanceCategory } from "../models/maintainence/maintainence.category.model";
-import { CreateMaintenanceFromExcelDto, CreateOrEditMaintenanceDto, GetMaintenanceDto, GetMaintenanceItemDto, GetMaintenanceItemRemarkDto } from "../dtos/maintenance/maintenance.dto";
+import { CreateMaintenanceFromExcelDto, CreateOrEditMaintenanceDto, GetMaintenanceDto,  GetMaintenanceItemRemarkDto } from "../dtos/maintenance/maintenance.dto";
 import { IMaintenance, Maintenance } from "../models/maintainence/maintainence.model";
 import { IMaintenanceItem, MaintenanceItem } from "../models/maintainence/maintainence.item.model";
 import { Machine } from "../models/production/machine.model";
-import { Remark } from "../models/leads/remark.model";
 import { CreateOrEditRemarkDto } from "../dtos/crm/crm.dto";
-
+import { MaintenanceRemark } from "../models/maintainence/maintenance.remark.model";
 
 export const GetAllMaintenanceCategory = async (req: Request, res: Response, next: NextFunction) => {
     let result = await MaintenanceCategory.find();
@@ -20,7 +19,6 @@ export const GetAllMaintenanceCategory = async (req: Request, res: Response, nex
     data = result.map((r) => { return { id: r._id, label: r.category, value: r.category } });
     return res.status(200).json(data)
 }
-
 export const CreateMaintenanceCategory = async (req: Request, res: Response, next: NextFunction) => {
     const { key } = req.body as CreateOrEditDropDownDto
     if (!key) {
@@ -37,7 +35,6 @@ export const CreateMaintenanceCategory = async (req: Request, res: Response, nex
     return res.status(201).json(result)
 
 }
-
 export const UpdateMaintenanceCategory = async (req: Request, res: Response, next: NextFunction) => {
     const { key } = req.body as {
         key: string,
@@ -61,8 +58,6 @@ export const UpdateMaintenanceCategory = async (req: Request, res: Response, nex
     return res.status(200).json(oldlocation)
 
 }
-
-
 export const ToogleMaintenanceCategory = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "category id not valid" })
@@ -70,11 +65,10 @@ export const ToogleMaintenanceCategory = async (req: Request, res: Response, nex
     if (!category) {
         return res.status(404).json({ message: "category not found" })
     }
-    category.active=!category.active;
+    category.active = !category.active;
     await category.save();
     return res.status(200).json({ message: "category status changed successfully" })
 }
-
 export const CreateMaintenance = async (req: Request, res: Response, next: NextFunction) => {
 
     let body = JSON.parse(req.body.body)
@@ -113,8 +107,9 @@ export const CreateMaintenance = async (req: Request, res: Response, next: NextF
         for (let i = 0; i < machines.length; i++) {
             let item = new MaintenanceItem({
                 machine: machines[i],
+                maintenance: maintenance,
                 is_required: true,
-                stage: "pending",
+                stage: "open",
                 created_at: new Date(),
                 updated_at: new Date(),
                 created_by: req.user,
@@ -129,7 +124,8 @@ export const CreateMaintenance = async (req: Request, res: Response, next: NextF
         let item = new MaintenanceItem({
             other: maintainable_item.trim().toLowerCase(),
             is_required: true,
-            stage:"pending",
+            maintenance: maintenance,
+            stage: "open",
             created_at: new Date(),
             updated_at: new Date(),
             created_by: req.user,
@@ -142,7 +138,6 @@ export const CreateMaintenance = async (req: Request, res: Response, next: NextF
     await maintenance.save()
     return res.status(201).json({ message: `new maintenance added` });
 }
-
 export const UpdateMaintenance = async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     const {
@@ -176,7 +171,6 @@ export const UpdateMaintenance = async (req: Request, res: Response, next: NextF
     await maintenance.save()
     return res.status(200).json({ message: ` maintenance updated` });
 }
-
 export const DeleteMaintenance = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: " id not valid" })
@@ -188,12 +182,11 @@ export const DeleteMaintenance = async (req: Request, res: Response, next: NextF
     for (let i = 0; i < maintenance.items.length; i++) {
         let item = maintenance.items[i]
         await MaintenanceItem.findByIdAndDelete(item._id)
-        await Remark.deleteMany({ maintainable_item: item._id })
+        await MaintenanceRemark.deleteMany({ item: item._id })
     }
     await maintenance.remove()
     return res.status(200).json({ message: `Maintenance deleted` });
 }
-
 export const GetAllMaintenance = async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
@@ -206,7 +199,7 @@ export const GetAllMaintenance = async (req: Request, res: Response, next: NextF
     if (!Number.isNaN(limit) && !Number.isNaN(page)) {
         if (req.user?.is_admin && !id) {
             {
-                maintenances = await Maintenance.find({active:true}).populate('created_by').populate('updated_by').populate('category')
+                maintenances = await Maintenance.find({ active: true }).populate('created_by').populate('updated_by').populate('category')
                     .populate({
                         path: 'items',
                         populate: [
@@ -266,7 +259,7 @@ export const GetAllMaintenance = async (req: Request, res: Response, next: NextF
                 work: mt.work,
                 active: mt.active,
                 category: { id: mt.category._id, label: mt.category.category, value: mt.category.category },
-                item:mt.item,
+                item: mt.item,
                 frequency: mt.frequency,
                 user: { id: mt.user._id, label: mt.user.username, value: mt.user.username },
                 items: mt.items.map((item) => {
@@ -295,7 +288,107 @@ export const GetAllMaintenance = async (req: Request, res: Response, next: NextF
     else
         return res.status(400).json({ message: "bad request" })
 }
+export const GetAllMaintenanceReport = async (req: Request, res: Response, next: NextFunction) => {
+    let limit = Number(req.query.limit)
+    let page = Number(req.query.page)
+    let id = req.query.id
+    let maintenances: IMaintenance[] = []
+    let count = 0
+    let ids = req.user?.assigned_users.map((id) => { return id._id })
+    let result: GetMaintenanceDto[] = []
 
+    if (!Number.isNaN(limit) && !Number.isNaN(page)) {
+        if (req.user?.is_admin && !id) {
+            {
+                maintenances = await Maintenance.find().populate('created_by').populate('updated_by').populate('category')
+                    .populate({
+                        path: 'items',
+                        populate: [
+                            {
+                                path: 'machine',
+                                model: 'Machine'
+                            }
+                        ]
+                    })
+                    .populate('user').sort('updated_at').skip((page - 1) * limit).limit(limit)
+                count = await Maintenance.find().countDocuments()
+            }
+        }
+        else if (ids && ids.length > 0 && !id) {
+            {
+                maintenances = await Maintenance.find({ user: { $in: ids } }).populate('created_by').populate('updated_by').populate('category').populate({
+                    path: 'items',
+                    populate: [
+                        {
+                            path: 'machine',
+                            model: 'Machine'
+                        }
+                    ]
+                }).populate('user').sort('updated_at').skip((page - 1) * limit).limit(limit)
+                count = await Maintenance.find({ user: { $in: ids } }).countDocuments()
+            }
+        }
+        else if (!id) {
+            maintenances = await Maintenance.find({ user: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate({
+                path: 'items',
+                populate: [
+                    {
+                        path: 'machine',
+                        model: 'Machine'
+                    }
+                ]
+            }).populate('user').sort('updated_at').skip((page - 1) * limit).limit(limit)
+            count = await Maintenance.find({ user: req.user?._id }).countDocuments()
+        }
+
+        else {
+            maintenances = await Maintenance.find({ user: id }).populate('created_by').populate('updated_by').populate('category').populate({
+                path: 'items',
+                populate: [
+                    {
+                        path: 'machine',
+                        model: 'Machine'
+                    }
+                ]
+            }).populate('user').sort('updated_at').skip((page - 1) * limit).limit(limit)
+            count = await Maintenance.find({ user: id }).countDocuments()
+        }
+
+        result = maintenances.map((mt) => {
+            return {
+                _id: mt._id,
+                work: mt.work,
+                active: mt.active,
+                category: { id: mt.category._id, label: mt.category.category, value: mt.category.category },
+                item: mt.item,
+                frequency: mt.frequency,
+                user: { id: mt.user._id, label: mt.user.username, value: mt.user.username },
+                items: mt.items.map((item) => {
+                    return {
+                        _id: item._id,
+                        item: item.machine ? item.machine.name : item.other,
+                        stage: item.stage,
+                        is_required: item.is_required
+                    }
+                }),
+                created_at: mt.created_at.toString(),
+                updated_at: mt.updated_at.toString(),
+                created_by: mt.created_by.username,
+                updated_by: mt.updated_by.username
+            }
+        })
+
+
+        return res.status(200).json({
+            result,
+            total: Math.ceil(count / limit),
+            page: page,
+            limit: limit
+        })
+    }
+    else
+        return res.status(400).json({ message: "bad request" })
+}
 export const CreateMaintenanceFromExcel = async (req: Request, res: Response, next: NextFunction) => {
     let result: CreateMaintenanceFromExcelDto[] = []
     let statusText: string = ""
@@ -401,7 +494,7 @@ export const CreateMaintenanceFromExcel = async (req: Request, res: Response, ne
                     let item = new MaintenanceItem({
                         other: maintainable_item.trim().toLowerCase(),
                         is_required: true,
-                        stage:"pending",
+                        stage: "pending",
                         created_at: new Date(),
                         updated_at: new Date(),
                         created_by: req.user,
@@ -422,7 +515,6 @@ export const CreateMaintenanceFromExcel = async (req: Request, res: Response, ne
     }
     return res.status(200).json(result);
 }
-
 export const DownloadExcelTemplateForMaintenance = async (req: Request, res: Response, next: NextFunction) => {
     let checklist: any = {
         work: "check the work given ",
@@ -435,7 +527,6 @@ export const DownloadExcelTemplateForMaintenance = async (req: Request, res: Res
     let fileName = "CreateMaintenanceTemplate.xlsx"
     return res.download("./file", fileName)
 }
-
 export const ToogleMaintenanceItem = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: " id not valid" })
@@ -447,7 +538,6 @@ export const ToogleMaintenanceItem = async (req: Request, res: Response, next: N
     await MaintenanceItem.findByIdAndUpdate(id, { is_required: !item.is_required })
     return res.status(200).json("successfully changed")
 }
-
 export const ViewMaintenanceItemRemarkHistory = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetMaintenanceItemRemarkDto[] = []
     const id = req.params.id;
@@ -457,7 +547,7 @@ export const ViewMaintenanceItemRemarkHistory = async (req: Request, res: Respon
     if (!item) {
         return res.status(404).json({ message: "item not found" })
     }
-    let remarks = await Remark.find({ maintainable_item: item })
+    let remarks = await MaintenanceRemark.find({ item: item })
     result = remarks.map((rem) => {
         return {
             _id: rem._id,
@@ -468,35 +558,8 @@ export const ViewMaintenanceItemRemarkHistory = async (req: Request, res: Respon
     })
     return res.status(200).json(result)
 }
-export const ViewMaintenanceItemRemarkHistoryByDates = async (req: Request, res: Response, next: NextFunction) => {
-
-    let dt1 = new Date()
-    let dt2 = new Date()
-    dt2.setDate(new Date(dt2).getDate() + 1)
-    dt1.setHours(0)
-    dt1.setMinutes(0)
-    let result: GetMaintenanceItemRemarkDto[] = []
-    const id = req.params.id;
-    if (!isMongoId(id)) return res.status(403).json({ message: "item id not valid" })
-
-    let item = await MaintenanceItem.findById(id)
-    if (!item) {
-        return res.status(404).json({ message: "item not found" })
-    }
-    let remarks = await Remark.find({ maintainable_item: item, created_at: { $gte: dt1, $lt: dt2 } })
-    result = remarks.map((rem) => {
-        return {
-            _id: rem._id,
-            remark: rem.remark,
-            created_at: rem.created_at && moment(rem.created_at).format("DD/MM/YYYY"),
-            created_by: rem.created_by.username
-        }
-    })
-    return res.status(200).json(result)
-}
-
 export const AddMaintenanceItemRemark = async (req: Request, res: Response, next: NextFunction) => {
-    const { remark, stage } = req.body as CreateOrEditRemarkDto
+    const { remark, stage, maintenance_id } = req.body as CreateOrEditRemarkDto
     if (!remark) return res.status(403).json({ message: "please fill required fields" })
 
     const user = await User.findById(req.user?._id)
@@ -510,9 +573,9 @@ export const AddMaintenanceItemRemark = async (req: Request, res: Response, next
         return res.status(404).json({ message: "item not found" })
     }
 
-    let new_remark = new Remark({
+    let new_remark = new MaintenanceRemark({
         remark,
-        maintainable_item: item,
+        item: item,
         created_at: new Date(Date.now()),
         created_by: req.user,
         updated_at: new Date(Date.now()),
@@ -527,222 +590,10 @@ export const AddMaintenanceItemRemark = async (req: Request, res: Response, next
         item.updated_at = new Date(Date.now())
     }
     await item.save()
+
+    if (!await MaintenanceItem.findOne({ maintenance: maintenance_id, is_required: true, stage: { $ne: 'done' } }))
+        await Maintenance.findByIdAndUpdate(maintenance_id, { is_active: false })
     return res.status(200).json({ message: "new remark added successfully" })
 }
 
-export const GetAllMaintenanceReport = async (req: Request, res: Response, next: NextFunction) => {
-    let limit = Number(req.query.limit)
-    let page = Number(req.query.page)
-    let id = req.query.id
-    let maintenances: IMaintenance[] = []
-    let count = 0
-    let start_date = req.query.start_date
-    let end_date = req.query.end_date
-    let dt1 = new Date(String(start_date))
-    dt1.setHours(0)
-    dt1.setMinutes(0)
-    let dt2 = new Date(String(end_date))
-    dt2.setHours(0)
-    dt2.setMinutes(0)
-
-    let ids = req.user?.assigned_users.map((id) => { return id._id })
-    let result: GetMaintenanceDto[] = []
-
-    if (!Number.isNaN(limit) && !Number.isNaN(page)) {
-        if (req.user?.is_admin && !id) {
-            {
-                maintenances = await Maintenance.find().populate('created_by').populate('updated_by').populate('category')
-                    .populate({
-                        path: 'items',
-                        populate: [
-                            {
-                                path: 'machine',
-                                model: 'Machine'
-                            }
-                        ]
-                    })
-                    .populate('user').sort('updated_at').skip((page - 1) * limit).limit(limit)
-                count = await Maintenance.find().countDocuments()
-            }
-        }
-        else if (ids && ids.length > 0 && !id) {
-            {
-                maintenances = await Maintenance.find({ user: { $in: ids } }).populate('created_by').populate('updated_by').populate('category').populate({
-                    path: 'items',
-                    populate: [
-                        {
-                            path: 'machine',
-                            model: 'Machine'
-                        }
-                    ]
-                }).populate('user').sort('updated_at').skip((page - 1) * limit).limit(limit)
-                count = await Maintenance.find({ user: { $in: ids } }).countDocuments()
-            }
-        }
-        else if (!id) {
-            maintenances = await Maintenance.find({ user: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate({
-                path: 'items',
-                populate: [
-                    {
-                        path: 'machine',
-                        model: 'Machine'
-                    }
-                ]
-            }).populate('user').sort('updated_at').skip((page - 1) * limit).limit(limit)
-            count = await Maintenance.find({ user: req.user?._id }).countDocuments()
-        }
-
-        else {
-            maintenances = await Maintenance.find({ user: id }).populate('created_by').populate('updated_by').populate('category').populate({
-                path: 'items',
-                populate: [
-                    {
-                        path: 'machine',
-                        model: 'Machine'
-                    }
-                ]
-            }).populate('user').sort('updated_at').skip((page - 1) * limit).limit(limit)
-            count = await Maintenance.find({ user: id }).countDocuments()
-        }
-
-        for (let i = 0; i < maintenances.length; i++) {
-            let maintenance = maintenances[i]
-            let items: GetMaintenanceItemDto[] = []
-            for (let j = 0; j < maintenance.items.length; j++) {
-                let item = maintenance.items[i];
-                let itemboxes = await GetMaintenceItemBoxes(dt1, dt2, maintenance.frequency, item);
-                items.push({
-                    _id: item._id,
-                    item: item.machine ? item.machine.name : item.other,
-                    stage: item.stage,
-                    boxes: itemboxes,
-                    is_required: item.is_required
-                })
-            }
-            result.push({
-                _id: maintenance._id,
-                work: maintenance.work,
-                active: maintenance.active,
-                category: { id: maintenance.category._id, label: maintenance.category.category, value: maintenance.category.category },
-                frequency: maintenance.frequency,
-                user: { id: maintenance.user._id, label: maintenance.user.username, value: maintenance.user.username },
-                items: items,
-                item:maintenance.item,
-                created_at: maintenance.created_at.toString(),
-                updated_at: maintenance.updated_at.toString(),
-                created_by: maintenance.created_by.username,
-                updated_by: maintenance.updated_by.username
-            })
-
-        }
-
-        return res.status(200).json({
-            result,
-            total: Math.ceil(count / limit),
-            page: page,
-            limit: limit
-        })
-    }
-    else
-        return res.status(400).json({ message: "bad request" })
-}
-
-export const GetMaintenceItemBoxes = async (dt1: Date, dt2: Date, frequency: string, item: IMaintenanceItem) => {
-    let result: {
-        dt1: string,
-        dt2: string,
-        checked: boolean
-    }[] = []
-
-    if (frequency == "daily") {
-        let current_date = new Date(dt1)
-        while (current_date <= new Date(dt2)) {
-            let tmpDate =new Date(new Date().setDate(new Date(current_date).getDate() + 1)).toString()
-            let remark = await Remark.findOne({ maintainable_item: item._id, created_at: { $gte: current_date, $lt: tmpDate } });
-            result.push({
-                dt1: current_date.toString(),
-                dt2: tmpDate,
-                checked: remark && item.stage == 'done' ? true : false
-            })
-            current_date.setDate(new Date(current_date).getDate() + 1)
-        }
-    }
-    if (frequency == "weekly") {
-        let current_date = new Date()
-        current_date.setDate(1)
-        while (current_date <= new Date(dt2)) {
-            let tmpDate = new Date(new Date().setDate(new Date(current_date).getDate() + 6)).toString()
-            if (current_date >= dt1 && current_date <= dt2) {
-                let remark = await Remark.findOne({ maintainable_item: item._id, created_at: { $gte: current_date, $lt: tmpDate } });
-                result.push({
-                    dt1: current_date.toString(),
-                    dt2: tmpDate,
-                    checked: remark && item.stage == 'done' ? true : false
-                })
-            }
-
-            current_date.setDate(new Date(current_date).getDate() + 6)
-        }
-    }
-    if (frequency === "monthly") {
-        let current_date = new Date(dt1); // Start from the first date of the range
-        current_date.setDate(1); // Set to the first day of the month
-
-        // Iterate while current_date is less than or equal to dt2
-        while (current_date <= new Date(dt2)) {
-            // Calculate the next month's date
-            let nextMonthDate = new Date(current_date);
-            nextMonthDate.setMonth(current_date.getMonth() + 1);
-
-            // Check if the current month is within the specified date range
-            if (current_date >= dt1 && current_date < dt2) {
-                let remark = await Remark.findOne({
-                    maintainable_item: item._id,
-                    created_at: { $gte: current_date, $lt: nextMonthDate }
-                });
-
-                result.push({
-                    dt1: current_date.toString(),
-                    dt2: nextMonthDate.toString(),
-                    checked: remark && item.stage === 'done' ? true : false
-                });
-            }
-
-            // Move to the next month
-            current_date.setMonth(current_date.getMonth() + 1);
-        }
-    }
-
-    if (frequency === "yearly") {
-        let current_date = new Date(dt1); // Start from the first date of the range
-        current_date.setMonth(0); // Set to January (month 0)
-        current_date.setDate(1); // Set to the first day of the month
-
-        // Iterate while current_date is less than or equal to dt2
-        while (current_date <= new Date(dt2)) {
-            // Calculate the next year's date
-            let nextYearDate = new Date(current_date);
-            nextYearDate.setFullYear(current_date.getFullYear() + 1);
-
-            // Check if the current year is within the specified date range
-            if (current_date >= dt1 && current_date < dt2) {
-                let remark = await Remark.findOne({
-                    maintainable_item: item._id,
-                    created_at: { $gte: current_date, $lt: nextYearDate }
-                });
-
-                result.push({
-                    dt1: current_date.toString(),
-                    dt2: nextYearDate.toString(),
-                    checked: remark && item.stage === 'done' ? true : false
-                });
-            }
-
-            // Move to the next year
-            current_date.setFullYear(current_date.getFullYear() + 1);
-        }
-    }
-
-    return result;
-}
 

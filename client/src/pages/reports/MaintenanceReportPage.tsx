@@ -11,7 +11,7 @@ import { DropDownDto } from '../../dtos/common/dropdown.dto'
 import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { ChoiceContext, MaintenanceChoiceActions } from '../../contexts/dialogContext'
 import PopUp from '../../components/popup/PopUp'
-import { Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, RemoveRedEye } from '@mui/icons-material'
+import { Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
 import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'

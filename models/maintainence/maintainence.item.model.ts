@@ -1,22 +1,30 @@
 import mongoose from "mongoose"
 import { IUser } from "../users/user.model"
 import { IMachine } from "../production/machine.model"
+import { IMaintenance } from "./maintainence.model"
 
 export type IMaintenanceItem = {
     _id: string,
     machine: IMachine,
-    other:string,
-    is_required:boolean,
-    stage:string,
+    other: string,
+    is_required: boolean,
+    maintenance: IMaintenance,
+    stage: string,
     created_at: Date,
     updated_at: Date,
     created_by: IUser,
     updated_by: IUser
 }
 const MaintenanceItemSchema = new mongoose.Schema<IMaintenanceItem, mongoose.Model<IMaintenanceItem, {}, {}>, {}>({
+
     machine: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Machine'
+    },
+    maintenance: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Maintenance',
+        required: true
     },
     other: String,
     stage: String,

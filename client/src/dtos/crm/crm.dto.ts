@@ -213,7 +213,6 @@ export type GetRemarksDto = {
     lead_id?: string,
     lead_name?: string,
     lead_mobile?: string,
-    maintainable_item?:string,
     refer_id?: string,
     refer_name?: string,
     refer_mobile?: string,
@@ -304,6 +303,7 @@ export type CreateOrEditBillDto = {
 
 export type CreateOrEditRemarkDto = {
     remark: string,
+    maintenance_id: string,
     remind_date: string,
     stage: string,
     has_card: boolean

@@ -1,22 +1,19 @@
 import mongoose from "mongoose"
 import { IUser } from "../users/user.model"
-import { ILead } from "./lead.model"
-import { IReferredParty } from "./referred.model"
+import { IMaintenanceItem } from "./maintainence.item.model"
 
-    
-export type IRemark = {
+
+export type IMaintenanceRemark = {
     _id: string,
     remark: string,
-    lead: ILead,
-    refer:IReferredParty,
+    item: IMaintenanceItem,
     created_at: Date,
-    remind_date: Date,
     updated_at: Date,
     created_by: IUser,
     updated_by: IUser
 }
 
-const RemarkSchema = new mongoose.Schema<IRemark, mongoose.Model<IRemark, {}, {}>, {}>({
+const MaintenanceRemarkSchema = new mongoose.Schema<IMaintenanceRemark, mongoose.Model<IMaintenanceRemark, {}, {}>, {}>({
     remark: {
         type: String,
         required: true,
@@ -24,8 +21,9 @@ const RemarkSchema = new mongoose.Schema<IRemark, mongoose.Model<IRemark, {}, {}
         index: true,
         lowercase: true,
     },
-    remind_date: {
-        type: Date,
+    item: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'MaintenanceItem'
     },
     created_at: {
         type: Date,
@@ -48,15 +46,7 @@ const RemarkSchema = new mongoose.Schema<IRemark, mongoose.Model<IRemark, {}, {}
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
-    },
-    lead: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Lead'
-    },
-    refer: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'ReferredParty'
     }
 })
 
-export const Remark = mongoose.model<IRemark, mongoose.Model<IRemark, {}, {}>>("Remark", RemarkSchema)
+export const MaintenanceRemark = mongoose.model<IMaintenanceRemark, mongoose.Model<IMaintenanceRemark, {}, {}>>("MaintenanceRemark", MaintenanceRemarkSchema)
