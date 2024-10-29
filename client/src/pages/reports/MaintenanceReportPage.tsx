@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Button, Fade, IconButton, LinearProgress, Menu, MenuItem, Select, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Button, Fade, IconButton,  Menu, MenuItem, Select, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import { GetUsers } from '../../services/UserServices'
 import { toTitleCase } from '../../utils/TitleCase'
@@ -16,7 +16,7 @@ import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import { GetMaintenanceDto, GetMaintenanceItemDto } from '../../dtos/maintenance/maintenance.dto'
-import { GetAllMaintenance, GetAllMaintenanceCategory, GetAllMaintenanceReport, ToogleMaintenanceItem } from '../../services/MaintenanceServices'
+import {  GetAllMaintenanceCategory, GetAllMaintenanceReport, ToogleMaintenanceItem } from '../../services/MaintenanceServices'
 import DeleteMaintenanceDialog from '../../components/dialogs/maintenance/DeleteMaintenanceDialog'
 import CreateOrEditMaintenanceDialog from '../../components/dialogs/maintenance/CreateOrEditMaintenanceDialog'
 import CreateOrEditMaintenanceItemRemarkDialog from '../../components/dialogs/maintenance/AddMaintenanceItemRemarkDialog'
@@ -96,7 +96,7 @@ function MaintenanceReportPage() {
     let day = previous_date.getDate() - 1
     previous_date.setDate(day)
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'feature_menu', show_assigned_only: true }))
-    const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{ result: GetMaintenanceDto[], page: number, total: number, limit: number }>, BackendError>(["maintenances_report", userId], async () => GetAllMaintenanceReport({ limit: paginationData?.limit, page: paginationData?.page, id: userId }))
+    const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetMaintenanceDto[], page: number, total: number, limit: number }>, BackendError>(["maintenances_report", userId], async () => GetAllMaintenanceReport({ limit: paginationData?.limit, page: paginationData?.page, id: userId }))
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     const columns = useMemo<MRT_ColumnDef<GetMaintenanceDto>[]>(
