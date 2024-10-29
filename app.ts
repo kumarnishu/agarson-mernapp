@@ -8,7 +8,7 @@ import { MulterError } from 'multer';
 import { connectDatabase } from './config/db';
 import UserRoutes from "./routes/user.routes";
 import LeadRoutes from "./routes/lead.routes";
-import CheckListkRoutes from "./routes/checklist.routes";
+import ConstantRoutes from "./routes/constant.route";
 import MaintenanceRoutes from "./routes/maintenance.route";
 import ErpRoutes from "./routes/erp.routes";
 import ProductionRoutes from "./routes/production.routes";
@@ -108,7 +108,7 @@ export const bucket = storage.bucket(bucketName)
 //server routes
 app.use("/api/v1", UserRoutes)
 app.use("/api/v1", LeadRoutes)
-app.use("/api/v1", CheckListkRoutes)
+app.use("/api/v1", ConstantRoutes)
 app.use("/api/v1", MaintenanceRoutes)
 app.use("/api/v1", ErpRoutes)
 app.use("/api/v1", ProductionRoutes)
