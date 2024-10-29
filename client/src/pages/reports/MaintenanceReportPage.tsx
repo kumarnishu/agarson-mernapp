@@ -110,7 +110,7 @@ function MaintenanceReportPage() {
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row" spacing={1}>
-                            {LoggedInUser?.assigned_permissions.includes('maintenance_delete') && <Tooltip title="delete">
+                            {LoggedInUser?.assigned_permissions.includes('maintenance_admin_delete') && <Tooltip title="delete">
                                 <IconButton color="error"
 
                                     onClick={() => {
@@ -124,7 +124,7 @@ function MaintenanceReportPage() {
                                     <Delete />
                                 </IconButton>
                             </Tooltip>}
-                            {LoggedInUser?.assigned_permissions.includes('maintenance_edit') &&
+                            {LoggedInUser?.assigned_permissions.includes('maintenance_admin_edit') &&
                                 <Tooltip title="Edit">
                                     <IconButton
                                         onClick={() => {
@@ -326,7 +326,7 @@ function MaintenanceReportPage() {
                 sx={{ borderRadius: 2 }}
             >
 
-                {LoggedInUser?.assigned_permissions.includes('maintenance_create') && <MenuItem
+                {LoggedInUser?.assigned_permissions.includes('maintenance_admin_create') && <MenuItem
 
                     onClick={() => {
                         setChoice({ type: MaintenanceChoiceActions.create_or_edit_maintenance })
@@ -334,10 +334,10 @@ function MaintenanceReportPage() {
                         setAnchorEl(null)
                     }}
                 > Add New</MenuItem>}
-                {LoggedInUser?.assigned_permissions.includes('maintenance_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+                {LoggedInUser?.assigned_permissions.includes('maintenance_admin_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
                 >Export All</MenuItem>}
-                {LoggedInUser?.assigned_permissions.includes('maintenance_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+                {LoggedInUser?.assigned_permissions.includes('maintenance_admin_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
                 >Export Selected</MenuItem>}
             </Menu>
