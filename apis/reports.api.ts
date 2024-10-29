@@ -1,3 +1,5 @@
+import express from "express";
+const router = express.Router()
 import { NextFunction, Request, Response } from 'express';
 import moment from 'moment';
 import xlsx from 'xlsx';
@@ -12,7 +14,9 @@ import { ErpEmployee, Machine, State } from '../models/dropdown.model';
 import { GetDyeStatusReportDto, IColumnRowData, IRowData } from '../dtos/dropdown.dto';
 import { IShoeWeight } from '../interfaces/feature.interface';
 import { isAuthenticatedUser } from '../middlewares/auth.middleware';
-import { router } from '../app';
+
+
+
 router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let state_ids = req.user?.assigned_states.map((state: IState) => { return state }) || []
     let reports: GetBillsAgingReportFromExcelDto[] = (await BillsAgingReport.find({ report_owner: { $in: state_ids } }).populate('report_owner')).map((i) => {
@@ -1195,3 +1199,5 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
 
     return res.status(200).json(reports)
 })
+
+export default router;

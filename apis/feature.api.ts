@@ -1,3 +1,5 @@
+import express from "express";
+const router = express.Router()
 import { NextFunction, Request, Response } from 'express';
 import isEmail from "validator/lib/isEmail";
 import { deleteToken, isAuthenticatedUser, sendUserToken } from '../middlewares/auth.middleware';
@@ -5,7 +7,7 @@ import isMongoId from "validator/lib/isMongoId";
 import moment from 'moment';
 import { Types } from 'mongoose';
 import xlsx from "xlsx"
-import { router, upload } from '../app';
+import {  upload } from '../app';
 import { AssignPermissionForMultipleUserDto, AssignPermissionForOneUserDto, AssignUsersDto, CreateAndUpdatesLeadFromExcelDto, CreateOrEditBillDto, CreateOrEditChecklistDto, CreateOrEditLeadDto, CreateOrEditMergeLeadsDto, CreateOrEditMergeRefersDto, CreateOrEditProductionDto, CreateOrEditReferDto, CreateOrEditReferFromExcelDto, CreateOrEditRemarkDto, CreateOrEditShoeWeightDto, CreateOrEditSpareDyeDto, createOrEditUserDto, CreateOrRemoveReferForLeadDto, GetActivitiesOrRemindersDto, GetActivitiesTopBarDetailsDto, GetBillDto, GetChecklistDto, GetChecklistFromExcelDto, GetLeadDto, GetReferDto, GetRemarksDto, GetUserDto, IMenu, LoginDto, ResetPasswordDto, UpdatePasswordDto, UpdateProfileDto, VerifyEmailDto } from '../dtos/feature.dto';
 import { Asset, IBill, IChecklist, ILead, IMaintenance, IMaintenanceItem, IProduction, IReferredParty, IRemark, IShoeWeight, ISoleThickness, ISpareDye, IUser } from '../interfaces/feature.interface';
 import Lead, { Bill, BillItem, Checklist, ChecklistBox, Maintenance, MaintenanceItem, Production, ReferredParty, Remark, ShoeWeight, SoleThickness, SpareDye, User } from '../models/feature.model';
@@ -5523,3 +5525,4 @@ router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: Nex
     return res.status(200).json(dye)
 })
 
+export default router;

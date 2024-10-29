@@ -8,9 +8,10 @@ import isMongoId from "validator/lib/isMongoId"
 import { HandleCRMCitiesAssignment } from "../utils/app.util"
 import { IArticle, ICRMCity, ICRMState, IDye, IDyeLocation, IMachine } from "../interfaces/dropdown.interface"
 import mongoose from "mongoose"
-import { router } from "../app"
 import { isAuthenticatedUser } from "../middlewares/auth.middleware"
 
+import express from "express";
+const router = express.Router()
 
 router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: DropDownDto[] = []
@@ -1295,3 +1296,5 @@ router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: Next
     await location.save()
     return res.status(200).json({ message: "success" })
 })
+
+export default router;

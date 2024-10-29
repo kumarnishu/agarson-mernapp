@@ -12,6 +12,9 @@ import { Storage } from '@google-cloud/storage';
 import morgan from 'morgan';
 import { getCurrentUser, userJoin, userLeave } from './utils/socket.util';
 import { ActivateMaintenanceWork } from './utils/app.util';
+import DropDownRoutes from "./apis/dropdown.api"
+import FeatureRoutes from "./apis/feature.api"
+import ReportRoutes from "./apis/reports.api"
 
 const app = express()
 const server = createServer(app)
@@ -22,7 +25,6 @@ dotenv.config();
 const PORT = Number(process.env.PORT) || 5000
 const HOST = process.env.HOST || "http://localhost"
 const ENV = process.env.NODE_ENV || "development"
-const router = express.Router()
 app.use(express.json({ limit: '30mb' }))
 app.use(cookieParser());
 app.use(compression())
@@ -33,6 +35,10 @@ app.use(morgan('common'))
 
 //mongodb database
 connectDatabase();
+
+
+
+
 
 let origin = ""
 if (ENV === "development") {
@@ -99,7 +105,12 @@ export const bucket = storage.bucket(bucketName)
 export const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 * 50 } })
 
 
-app.use("/api/v1",router)
+
+app.use("/api/v1/dropdown", DropDownRoutes)
+app.use("/api/v1/feature", FeatureRoutes)
+app.use("/api/v1/reports", ReportRoutes)
+
+
 
 ActivateMaintenanceWork();
 
@@ -136,5 +147,5 @@ server.listen(PORT, () => {
 });
 
 export {
-    io, router
+    io
 }
