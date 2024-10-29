@@ -2846,8 +2846,6 @@ export const GetMyReminders = async (req: Request, res: Response, next: NextFunc
         }
     })
     filteredRemarks.sort(function (a, b) {
-        // Turn your strings into dates, and then subtract them
-        // to get a value that is either negative, positive, or zero.
         //@ts-ignore
         return new Date(b.remind_date) - new Date(a.remind_date);
     });

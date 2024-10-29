@@ -22,6 +22,8 @@ import { GetChecklistBoxDto, GetChecklistDto } from '../../dtos/checklist/checkl
 import DeleteCheckListDialog from '../../components/dialogs/checklists/DeleteCheckListDialog'
 import CreateOrEditCheckListDialog from '../../components/dialogs/checklists/CreateOrEditCheckListDialog'
 import ToogleMyCheckListDialog from '../../components/forms/checklists/ToogleMyCheckListDialog'
+import Slide from '@mui/material/Slide';
+
 
 function ChecklistPage() {
   const { user: LoggedInUser } = useContext(UserContext)
@@ -41,7 +43,7 @@ function ChecklistPage() {
   const { choice, setChoice } = useContext(ChoiceContext)
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   let previous_date = new Date()
-  let day = previous_date.getDate() - 1
+  let day = previous_date.getDate() - 6
   previous_date.setDate(day)
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'feature_menu', show_assigned_only: true }))
   const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date], async () => GetChecklists({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
@@ -75,6 +77,7 @@ function ChecklistPage() {
               {LoggedInUser?.assigned_permissions.includes('checklist_edit') &&
                 <Tooltip title="Edit">
                   <IconButton
+
                     onClick={() => {
 
                       setChoice({ type: CheckListChoiceActions.create_or_edit_checklist })
@@ -93,7 +96,7 @@ function ChecklistPage() {
         accessorKey: 'work_title',
         header: ' Work Title',
         size: 320,
-        Cell: (cell) => <>{cell.row.original.work_title ? cell.row.original.work_title : ""}</>
+        Cell: (cell) => <><Tooltip title={cell.row.original.work_title}><span>{cell.row.original.work_title ? cell.row.original.work_title : ""}</span></Tooltip></>
       },
       {
         accessorKey: 'created_by',
@@ -117,23 +120,27 @@ function ChecklistPage() {
         accessorKey: 'boxes',
         header: 'Dates',
         size: 350,
-        Cell: (cell) => <>{
-          cell.row.original && cell.row.original.boxes.map((b) => {
-            return <Tooltip title={b.remarks}>
-              <Button sx={{ borderRadius: 5, minWidth: '25px', m: 0.3, pl: 0.3 }} onClick={() => {
-                if (b) {
-                  setChecklistBox(b)
-                  setChoice({ type: CheckListChoiceActions.toogle_checklist })
-                }
-
-              }} size="small" disabled={new Date(b.date).getDate() > new Date().getDate()} variant={'contained'} color={b.checked ? 'success' : 'error'}>
-
-
-                {new Date(b.date).getDate().toString()}
+        Cell: (cell) => <Stack direction="row" className="scrollable-stack">
+          {cell.row.original && cell.row.original.boxes.map((b) => (
+            <Tooltip title={b.remarks} key={b.date}>
+              <Button
+                sx={{ borderRadius: 5, minWidth: '25px', m: 0.3, pl: 0.3 }}
+                onClick={() => {
+                  if (b) {
+                    setChecklistBox(b);
+                    setChoice({ type: CheckListChoiceActions.toogle_checklist });
+                  }
+                }}
+                size="small"
+                disabled={new Date(b.date) > new Date()}
+                variant="contained"
+                color={b.checked ? 'success' : 'error'}
+              >
+                {new Date(b.date).getDate()}
               </Button>
             </Tooltip>
-          })
-        }</>
+          ))}
+        </Stack>
       },
       {
         accessorKey: 'done_date',
@@ -163,6 +170,7 @@ function ChecklistPage() {
     ],
     [checklists],
   );
+
   const table = useMaterialReactTable({
     columns, columnFilterDisplayMode: 'popover',
     data: checklists, //10,000 rows       
@@ -289,6 +297,7 @@ function ChecklistPage() {
       {
         isLoading || isRefetching && <LinearProgress color='secondary' />
       }
+
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -300,6 +309,15 @@ function ChecklistPage() {
         }}
         sx={{ borderRadius: 2 }}
       >
+
+        {LoggedInUser?.assigned_permissions.includes('maintenance_create') && <MenuItem
+
+          onClick={() => {
+            setChoice({ type: CheckListChoiceActions.create_or_edit_checklist })
+            setChecklist(undefined)
+            setAnchorEl(null)
+          }}
+        > Add New</MenuItem>}
 
         {LoggedInUser?.assigned_permissions.includes('activities_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
@@ -400,6 +418,7 @@ function ChecklistPage() {
             }
           </TextField>}
       </Stack>
+      <CreateOrEditCheckListDialog checklist={checklist} setChecklist={setChecklist} />
       {checklist && <DeleteCheckListDialog checklist={checklist} />}
       {checklist && <CreateOrEditCheckListDialog checklist={checklist} setChecklist={setChecklist} />}
       {choice === CheckListChoiceActions.toogle_checklist && checklistBox && <ToogleMyCheckListDialog box={checklistBox} />}

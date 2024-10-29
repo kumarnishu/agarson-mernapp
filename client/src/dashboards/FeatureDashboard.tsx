@@ -13,23 +13,14 @@ function FeatureDashboard() {
         let tmpfeatures: { feature: string, is_visible: boolean, url: string }[] = []
         user?.assigned_permissions.includes('leads_view') && tmpfeatures.push({ feature: 'leads ', is_visible: false, url: "LeadsPage" })
         user?.assigned_permissions.includes('refer_view') && tmpfeatures.push({ feature: 'customers', is_visible: false, url: "RefersPage" })
-        user?.assigned_permissions.includes('reminders_view') && tmpfeatures.push({ feature: 'Crm reminders', is_visible: false, url: "RemindersPage" })
+        user?.assigned_permissions.includes('reminders_view') && tmpfeatures.push({ feature: 'reminders', is_visible: false, url: "RemindersPage" })
         user?.assigned_permissions.includes('production_view') && tmpfeatures.push({ feature: 'production ', is_visible: false, url: "ProductionPage" })
         user?.assigned_permissions.includes('spare_dye_view') && tmpfeatures.push({ feature: 'Spare Dyes ', is_visible: false, url: "SpareDyesPage" })
         user?.assigned_permissions.includes('sole_thickness_view') && tmpfeatures.push({ feature: 'Sole Thickness ', is_visible: false, url: "SoleThicknessPage" })
         user?.assigned_permissions.includes('shoe_weight_view') && tmpfeatures.push({ feature: 'shoe weights ', is_visible: false, url: "ShoeWeightPage" })
         user?.assigned_permissions.includes('checklist_view') && tmpfeatures.push({ feature: 'CheckLists ', is_visible: false, url: "CheckListPage" })
-        user?.is_admin && tmpfeatures.push({ feature: 'driver app system, ', is_visible: false, url: "ShoeWeightPage" })
-        user?.assigned_permissions.includes('maintenance_view') && tmpfeatures.push({ feature: 'maintenance ', is_visible: false, url: "MaintenancePage" })
-        user?.assigned_permissions.includes('maintenance_admin_view') && tmpfeatures.push({ feature: 'Maintenance Admin ', is_visible: false, url: "MaintenanceAdmin" })
-        user?.is_admin && tmpfeatures.push({ feature: 'bill payments ', is_visible: false, url: "ShoeWeightPage" })
-        user?.is_admin && tmpfeatures.push({ feature: 'MISC EXPENSES LIST ', is_visible: false, url: "ShoeWeightPage" })
-        user?.is_admin && tmpfeatures.push({ feature: 'SALESMEN LEAVES ', is_visible: false, url: "ShoeWeightPage" })
-        user?.is_admin && tmpfeatures.push({ feature: 'cartoon file number ', is_visible: false, url: "ShoeWeightPage" })
-        user?.is_admin && tmpfeatures.push({ feature: 'documents upload ', is_visible: false, url: "ShoeWeightPage" })
-        user?.is_admin && tmpfeatures.push({ feature: 'MACHINE CONDITION ', is_visible: false, url: "ShoeWeightPage" })
-
-
+       
+     
         tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
         setFeatures(tmpfeatures)
 
