@@ -9,7 +9,7 @@ import { router, upload } from '../app';
 import { AssignPermissionForMultipleUserDto, AssignPermissionForOneUserDto, AssignUsersDto, CreateAndUpdatesLeadFromExcelDto, CreateOrEditBillDto, CreateOrEditChecklistDto, CreateOrEditLeadDto, CreateOrEditMergeLeadsDto, CreateOrEditMergeRefersDto, CreateOrEditProductionDto, CreateOrEditReferDto, CreateOrEditReferFromExcelDto, CreateOrEditRemarkDto, CreateOrEditShoeWeightDto, CreateOrEditSpareDyeDto, createOrEditUserDto, CreateOrRemoveReferForLeadDto, GetActivitiesOrRemindersDto, GetActivitiesTopBarDetailsDto, GetBillDto, GetChecklistDto, GetChecklistFromExcelDto, GetLeadDto, GetReferDto, GetRemarksDto, GetUserDto, IMenu, LoginDto, ResetPasswordDto, UpdatePasswordDto, UpdateProfileDto, VerifyEmailDto } from '../dtos/feature.dto';
 import { Asset, IBill, IChecklist, ILead, IMaintenance, IMaintenanceItem, IProduction, IReferredParty, IRemark, IShoeWeight, ISoleThickness, ISpareDye, IUser } from '../interfaces/feature.interface';
 import Lead, { Bill, BillItem, Checklist, ChecklistBox, Maintenance, MaintenanceItem, Production, ReferredParty, Remark, ShoeWeight, SoleThickness, SpareDye, User } from '../models/feature.model';
-import SaveExcelTemplateToDisk, { destroyFile, isvalidDate, sendEmail, uploadFileToCloud } from '../utils/app.util';
+import SaveExcelTemplateToDisk, { destroyFile, GetMaintenceItemBoxes, isvalidDate, sendEmail, uploadFileToCloud } from '../utils/app.util';
 import { FetchAllPermissions } from '../utils/permissions.util';
 import { Article, Dye, DyeLocation, Machine, MaintenanceCategory, Stage } from '../models/dropdown.model';
 import { CreateMaintenanceFromExcelDto, CreateOrEditMaintenanceDto, CreateOrEditSoleThicknessDto, GetMaintenanceDto, GetMaintenanceItemDto, GetMaintenanceItemRemarkDto, GetProductionDto, GetShoeWeightDto, GetSoleThicknessDto, GetSpareDyeDto } from '../dtos/dropdown.dto';
@@ -819,7 +819,7 @@ router.get("leads", isAuthenticatedUser, async (req: Request, res: Response, nex
     else
         return res.status(400).json({ message: "bad request" })
 })
-export const GetAssignedReferrals = async (req: Request, res: Response, next: NextFunction) => {
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     if (!isMongoId(id))
         return res.status(400).json({ message: "bad mongo id" })
@@ -868,10 +868,10 @@ export const GetAssignedReferrals = async (req: Request, res: Response, next: Ne
     })
 
     return res.status(200).json(result);
-}
+})
 
 // leads apis
-export const ReferLead = async (req: Request, res: Response, next: NextFunction) => {
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { party_id, remark, remind_date } = req.body as CreateOrRemoveReferForLeadDto
     if (!party_id)
         return res.status(400).json({ message: "fill required field" })
@@ -908,8 +908,8 @@ export const ReferLead = async (req: Request, res: Response, next: NextFunction)
         lead.updated_by = req.user
     await lead.save()
     return res.status(200).json({ message: "party referred successfully" })
-}
-export const RemoveLeadReferral = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     const { remark } = req.body as CreateOrRemoveReferForLeadDto
     if (!isMongoId(id))
@@ -937,8 +937,8 @@ export const RemoveLeadReferral = async (req: Request, res: Response, next: Next
         lead.updated_by = req.user
     await lead.save()
     return res.status(200).json({ message: "referrals removed successfully" })
-}
-export const ConvertLeadToRefer = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
     let lead = await Lead.findById(id);
@@ -978,8 +978,8 @@ export const ConvertLeadToRefer = async (req: Request, res: Response, next: Next
             updated_by: req.user
         }).save()
     return res.status(200).json({ message: "new refer created" })
-}
-export const FuzzySearchLeads = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let result: GetLeadDto[] = []
@@ -1818,8 +1818,8 @@ export const FuzzySearchLeads = async (req: Request, res: Response, next: NextFu
     else
         return res.status(400).json({ message: "bad request" })
 
-}
-export const CreateLead = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     let { mobile, remark, alternate_mobile1, alternate_mobile2 } = body as CreateOrEditLeadDto
 
@@ -1898,8 +1898,8 @@ export const CreateLead = async (req: Request, res: Response, next: NextFunction
     await lead.save()
 
     return res.status(200).json("lead created")
-}
-export const UpdateLead = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     const { mobile, remark, alternate_mobile1, alternate_mobile2 } = body as CreateOrEditLeadDto
 
@@ -1998,8 +1998,8 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
     })
 
     return res.status(200).json({ message: "lead updated" })
-}
-export const DeleteLead = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
     let lead = await Lead.findById(id);
@@ -2015,8 +2015,8 @@ export const DeleteLead = async (req: Request, res: Response, next: NextFunction
         await destroyFile(lead.visiting_card?._id)
 
     return res.status(200).json({ message: "lead and related remarks are deleted" })
-}
-export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let result: CreateAndUpdatesLeadFromExcelDto[] = []
     let statusText: string = ""
     if (!req.file)
@@ -2205,8 +2205,8 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
         }
     }
     return res.status(200).json(result);
-}
-export const GetRefers = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let refers: IReferredParty[] = []
     let result: GetReferDto[] = []
     let user = await User.findById(req.user).populate('assigned_crm_states').populate('assigned_crm_cities');
@@ -2238,8 +2238,8 @@ export const GetRefers = async (req: Request, res: Response, next: NextFunction)
     })
 
     return res.status(200).json(refers);
-}
-export const GetPaginatedRefers = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let result: GetReferDto[] = []
@@ -2282,8 +2282,8 @@ export const GetPaginatedRefers = async (req: Request, res: Response, next: Next
     }
     else return res.status(400).json({ message: 'bad request' })
 
-}
-export const FuzzySearchRefers = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let key = String(req.query.key).split(",")
@@ -2495,8 +2495,8 @@ export const FuzzySearchRefers = async (req: Request, res: Response, next: NextF
     else
         return res.status(400).json({ message: "bad request" })
 
-}
-export const CreateReferParty = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     const { name, customer_name, city, state, gst, mobile, mobile2, mobile3 } = body as CreateOrEditReferDto
     if (!name || !city || !state || !mobile || !gst) {
@@ -2542,8 +2542,8 @@ export const CreateReferParty = async (req: Request, res: Response, next: NextFu
         updated_by: req.user
     }).save()
     return res.status(201).json(party)
-}
-export const UpdateReferParty = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     if (!isMongoId(id))
         return res.status(400).json({ message: "bad mongo id" })
@@ -2613,8 +2613,8 @@ export const UpdateReferParty = async (req: Request, res: Response, next: NextFu
         updated_by: req.user
     })
     return res.status(200).json({ message: "updated" })
-}
-export const DeleteReferParty = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     if (!isMongoId(id))
         return res.status(400).json({ message: "bad mongo id" })
@@ -2623,8 +2623,8 @@ export const DeleteReferParty = async (req: Request, res: Response, next: NextFu
         return res.status(404).json({ message: "party not found" })
     await ReferredParty.findByIdAndDelete(id)
     return res.status(200).json({ message: "deleted" })
-}
-export const BulkDeleteUselessLeads = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { leads_ids } = req.body as { leads_ids: string[] }
     for (let i = 0; i <= leads_ids.length; i++) {
         let lead = await Lead.findById(leads_ids[i])
@@ -2639,8 +2639,8 @@ export const BulkDeleteUselessLeads = async (req: Request, res: Response, next: 
         }
     }
     return res.status(200).json({ message: "lead and related remarks are deleted" })
-}
-export const BulkReferUpdateFromExcel = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let result: CreateOrEditReferFromExcelDto[] = []
     let statusText: string = ""
     if (!req.file)
@@ -2775,8 +2775,8 @@ export const BulkReferUpdateFromExcel = async (req: Request, res: Response, next
         }
     }
     return res.status(200).json(result);
-}
-export const UpdateRemark = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { remark, remind_date } = req.body as CreateOrEditRemarkDto
     if (!remark) return res.status(403).json({ message: "please fill required fields" })
 
@@ -2795,8 +2795,8 @@ export const UpdateRemark = async (req: Request, res: Response, next: NextFuncti
     await rremark.save()
     await Lead.findByIdAndUpdate(rremark.lead, { last_remark: remark })
     return res.status(200).json({ message: "remark updated successfully" })
-}
-export const DeleteRemark = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "lead id not valid" })
     let rremark = await Remark.findById(id)
@@ -2805,8 +2805,8 @@ export const DeleteRemark = async (req: Request, res: Response, next: NextFuncti
     }
     await rremark.remove()
     return res.status(200).json({ message: " remark deleted successfully" })
-}
-export const GetMyReminders = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let previous_date = new Date()
     let day = previous_date.getDate() - 100
     previous_date.setDate(day)
@@ -2881,8 +2881,8 @@ export const GetMyReminders = async (req: Request, res: Response, next: NextFunc
 
 
     return res.status(200).json(result)
-}
-export const GetReferRemarkHistory = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "refer id not valid" })
     let refer = await ReferredParty.findById(id);
@@ -2905,8 +2905,8 @@ export const GetReferRemarkHistory = async (req: Request, res: Response, next: N
         }
     })
     return res.json(result)
-}
-export const GetRemarkHistory = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "lead id not valid" })
     let lead = await Lead.findById(id);
@@ -2945,8 +2945,8 @@ export const GetRemarkHistory = async (req: Request, res: Response, next: NextFu
         }
     })
     return res.json(result)
-}
-export const GetActivitiesTopBarDetails = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let result: GetActivitiesTopBarDetailsDto[] = []
     let start_date = req.query.start_date
     let id = req.query.id
@@ -2992,8 +2992,8 @@ export const GetActivitiesTopBarDetails = async (req: Request, res: Response, ne
     }
     return res.status(200).json(result)
 
-}
-export const GetActivities = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
@@ -3148,8 +3148,8 @@ export const GetActivities = async (req: Request, res: Response, next: NextFunct
     }
     else
         return res.status(400).json({ message: "bad request" })
-}
-export const NewRemark = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { remark, remind_date, has_card, stage } = req.body as CreateOrEditRemarkDto
     if (!remark) return res.status(403).json({ message: "please fill required fields" })
 
@@ -3188,8 +3188,8 @@ export const NewRemark = async (req: Request, res: Response, next: NextFunction)
     }
     await lead.save()
     return res.status(200).json({ message: "new remark added successfully" })
-}
-export const GetNewRefers = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let result: GetReferDto[] = [];
     let start_date = req.query.start_date
     let end_date = req.query.end_date
@@ -3222,8 +3222,8 @@ export const GetNewRefers = async (req: Request, res: Response, next: NextFuncti
         }
     })
     return res.status(200).json(result)
-}
-export const GetAssignedRefers = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let start_date = req.query.start_date
     let end_date = req.query.end_date
     let dt1 = new Date(String(start_date))
@@ -3267,8 +3267,8 @@ export const GetAssignedRefers = async (req: Request, res: Response, next: NextF
         }
     })
     return res.status(200).json(result)
-}
-export const CreateBill = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     const {
         items,
@@ -3349,8 +3349,8 @@ export const CreateBill = async (req: Request, res: Response, next: NextFunction
     }
     return res.status(201).json({ message: "success" })
 
-}
-export const UpdateBill = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let bill = await Bill.findById(id)
     if (!bill)
@@ -3425,8 +3425,8 @@ export const UpdateBill = async (req: Request, res: Response, next: NextFunction
     await bill.save()
     return res.status(200).json({ message: "updated" })
 
-}
-export const DeleteBill = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "bill id not valid" })
     let bill = await Bill.findById(id);
@@ -3445,8 +3445,8 @@ export const DeleteBill = async (req: Request, res: Response, next: NextFunction
         await ReferredParty.findByIdAndUpdate(bill.refer, { uploaded_bills: count })
     }
     return res.status(200).json({ message: "bill deleted successfully" })
-}
-export const GetReferPartyBillsHistory = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "lead id not valid" })
     let refer = await ReferredParty.findById(id);
@@ -3482,8 +3482,8 @@ export const GetReferPartyBillsHistory = async (req: Request, res: Response, nex
         })
     }
     return res.json(result)
-}
-export const GetLeadPartyBillsHistory = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "lead id not valid" })
     let lead = await Lead.findById(id);
@@ -3519,8 +3519,8 @@ export const GetLeadPartyBillsHistory = async (req: Request, res: Response, next
         })
     }
     return res.json(result)
-}
-export const MergeTwoLeads = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const { name, mobiles, city, stage, state, email, alternate_email, address, merge_refer, merge_bills, merge_remarks, source_lead_id } = req.body as CreateOrEditMergeLeadsDto
     let lead = await Lead.findById(id);
@@ -3558,8 +3558,8 @@ export const MergeTwoLeads = async (req: Request, res: Response, next: NextFunct
     }
     await Lead.findByIdAndDelete(source_lead_id);
     return res.status(200).json({ message: "merge leads successfully" })
-}
-export const MergeTwoRefers = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const { name, mobiles, city, state, address, merge_assigned_refers, merge_bills, merge_remarks, source_refer_id } = req.body as CreateOrEditMergeRefersDto
     let refer = await ReferredParty.findById(id);
@@ -3590,8 +3590,8 @@ export const MergeTwoRefers = async (req: Request, res: Response, next: NextFunc
     await ReferredParty.findByIdAndDelete(source_refer_id);
     return res.status(200).json({ message: "merge refers successfully" })
 }
-
-export const GetChecklists = async (req: Request, res: Response, next: NextFunction) => {
+)
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
@@ -3666,9 +3666,9 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
     }
     else
         return res.status(400).json({ message: "bad request" })
-}
+})
 //post/put/delete/patch
-export const CreateChecklist = async (req: Request, res: Response, next: NextFunction) => {
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
 
     let body = JSON.parse(req.body.body)
     const { category,
@@ -3757,8 +3757,8 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
         }
     }
     return res.status(201).json({ message: `new Checklist added` });
-}
-export const EditChecklist = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
 
     let body = JSON.parse(req.body.body)
     const {
@@ -3805,8 +3805,8 @@ export const EditChecklist = async (req: Request, res: Response, next: NextFunct
         checklist.next_date = new Date(next_date);
     await checklist.save()
     return res.status(200).json({ message: `Checklist updated` });
-}
-export const DeleteChecklist = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: " id not valid" })
 
@@ -3821,8 +3821,8 @@ export const DeleteChecklist = async (req: Request, res: Response, next: NextFun
         await destroyFile(checklist.photo._id)
 
     return res.status(200).json({ message: `Checklist deleted` });
-}
-export const ToogleChecklist = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const { remarks } = req.body
     if (!isMongoId(id)) return res.status(400).json({ message: " id not valid" })
@@ -3833,8 +3833,8 @@ export const ToogleChecklist = async (req: Request, res: Response, next: NextFun
     }
     await ChecklistBox.findByIdAndUpdate(id, { checked: !checklist.checked, remarks: remarks })
     return res.status(200).json("successfully marked")
-}
-export const CreateChecklistFromExcel = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let result: GetChecklistFromExcelDto[] = []
     let statusText: string = ""
     if (!req.file)
@@ -3904,8 +3904,8 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
         }
     }
     return res.status(200).json(result);
-}
-export const DownloadExcelTemplateForCreatechecklists = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let checklist: any = {
         work_title: "check the work given ",
         category: "payment",
@@ -3916,8 +3916,8 @@ export const DownloadExcelTemplateForCreatechecklists = async (req: Request, res
     return res.download("./file", fileName)
 }
 
-
-export const CreateMaintenance = async (req: Request, res: Response, next: NextFunction) => {
+)
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
 
     let body = JSON.parse(req.body.body)
     const {
@@ -3983,8 +3983,8 @@ export const CreateMaintenance = async (req: Request, res: Response, next: NextF
     }
     await maintenance.save()
     return res.status(201).json({ message: `new maintenance added` });
-}
-export const UpdateMaintenance = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     const {
         work,
@@ -4016,8 +4016,8 @@ export const UpdateMaintenance = async (req: Request, res: Response, next: NextF
     })
     await maintenance.save()
     return res.status(200).json({ message: ` maintenance updated` });
-}
-export const DeleteMaintenance = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: " id not valid" })
 
@@ -4032,8 +4032,8 @@ export const DeleteMaintenance = async (req: Request, res: Response, next: NextF
     }
     await maintenance.remove()
     return res.status(200).json({ message: `Maintenance deleted` });
-}
-export const GetAllMaintenance = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
@@ -4134,8 +4134,8 @@ export const GetAllMaintenance = async (req: Request, res: Response, next: NextF
     }
     else
         return res.status(400).json({ message: "bad request" })
-}
-export const CreateMaintenanceFromExcel = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let result: CreateMaintenanceFromExcelDto[] = []
     let statusText: string = ""
     if (!req.file)
@@ -4260,8 +4260,8 @@ export const CreateMaintenanceFromExcel = async (req: Request, res: Response, ne
         }
     }
     return res.status(200).json(result);
-}
-export const DownloadExcelTemplateForMaintenance = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let checklist: any = {
         work: "check the work given ",
         category: "ver-1",
@@ -4272,8 +4272,8 @@ export const DownloadExcelTemplateForMaintenance = async (req: Request, res: Res
     SaveExcelTemplateToDisk([checklist])
     let fileName = "CreateMaintenanceTemplate.xlsx"
     return res.download("./file", fileName)
-}
-export const ToogleMaintenanceItem = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: " id not valid" })
 
@@ -4283,8 +4283,8 @@ export const ToogleMaintenanceItem = async (req: Request, res: Response, next: N
     }
     await MaintenanceItem.findByIdAndUpdate(id, { is_required: !item.is_required })
     return res.status(200).json("successfully changed")
-}
-export const ViewMaintenanceItemRemarkHistory = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let result: GetMaintenanceItemRemarkDto[] = []
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "item id not valid" })
@@ -4303,8 +4303,8 @@ export const ViewMaintenanceItemRemarkHistory = async (req: Request, res: Respon
         }
     })
     return res.status(200).json(result)
-}
-export const ViewMaintenanceItemRemarkHistoryByDates = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
 
     let dt1 = new Date()
     let dt2 = new Date()
@@ -4329,8 +4329,8 @@ export const ViewMaintenanceItemRemarkHistoryByDates = async (req: Request, res:
         }
     })
     return res.status(200).json(result)
-}
-export const AddMaintenanceItemRemark = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const { remark, stage } = req.body as CreateOrEditRemarkDto
     if (!remark) return res.status(403).json({ message: "please fill required fields" })
 
@@ -4363,8 +4363,8 @@ export const AddMaintenanceItemRemark = async (req: Request, res: Response, next
     }
     await item.save()
     return res.status(200).json({ message: "new remark added successfully" })
-}
-export const GetAllMaintenanceReport = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
@@ -4479,106 +4479,10 @@ export const GetAllMaintenanceReport = async (req: Request, res: Response, next:
     }
     else
         return res.status(400).json({ message: "bad request" })
-}
-export const GetMaintenceItemBoxes = async (dt1: Date, dt2: Date, frequency: string, item: IMaintenanceItem) => {
-    let result: {
-        dt1: string,
-        dt2: string,
-        checked: boolean
-    }[] = []
+})
 
-    if (frequency == "daily") {
-        let current_date = new Date(dt1)
-        while (current_date <= new Date(dt2)) {
-            let tmpDate = new Date(new Date().setDate(new Date(current_date).getDate() + 1)).toString()
-            let remark = await Remark.findOne({ maintainable_item: item._id, created_at: { $gte: current_date, $lt: tmpDate } });
-            result.push({
-                dt1: current_date.toString(),
-                dt2: tmpDate,
-                checked: remark && item.stage == 'done' ? true : false
-            })
-            current_date.setDate(new Date(current_date).getDate() + 1)
-        }
-    }
-    if (frequency == "weekly") {
-        let current_date = new Date()
-        current_date.setDate(1)
-        while (current_date <= new Date(dt2)) {
-            let tmpDate = new Date(new Date().setDate(new Date(current_date).getDate() + 6)).toString()
-            if (current_date >= dt1 && current_date <= dt2) {
-                let remark = await Remark.findOne({ maintainable_item: item._id, created_at: { $gte: current_date, $lt: tmpDate } });
-                result.push({
-                    dt1: current_date.toString(),
-                    dt2: tmpDate,
-                    checked: remark && item.stage == 'done' ? true : false
-                })
-            }
 
-            current_date.setDate(new Date(current_date).getDate() + 6)
-        }
-    }
-    if (frequency === "monthly") {
-        let current_date = new Date(dt1); // Start from the first date of the range
-        current_date.setDate(1); // Set to the first day of the month
-
-        // Iterate while current_date is less than or equal to dt2
-        while (current_date <= new Date(dt2)) {
-            // Calculate the next month's date
-            let nextMonthDate = new Date(current_date);
-            nextMonthDate.setMonth(current_date.getMonth() + 1);
-
-            // Check if the current month is within the specified date range
-            if (current_date >= dt1 && current_date < dt2) {
-                let remark = await Remark.findOne({
-                    maintainable_item: item._id,
-                    created_at: { $gte: current_date, $lt: nextMonthDate }
-                });
-
-                result.push({
-                    dt1: current_date.toString(),
-                    dt2: nextMonthDate.toString(),
-                    checked: remark && item.stage === 'done' ? true : false
-                });
-            }
-
-            // Move to the next month
-            current_date.setMonth(current_date.getMonth() + 1);
-        }
-    }
-
-    if (frequency === "yearly") {
-        let current_date = new Date(dt1); // Start from the first date of the range
-        current_date.setMonth(0); // Set to January (month 0)
-        current_date.setDate(1); // Set to the first day of the month
-
-        // Iterate while current_date is less than or equal to dt2
-        while (current_date <= new Date(dt2)) {
-            // Calculate the next year's date
-            let nextYearDate = new Date(current_date);
-            nextYearDate.setFullYear(current_date.getFullYear() + 1);
-
-            // Check if the current year is within the specified date range
-            if (current_date >= dt1 && current_date < dt2) {
-                let remark = await Remark.findOne({
-                    maintainable_item: item._id,
-                    created_at: { $gte: current_date, $lt: nextYearDate }
-                });
-
-                result.push({
-                    dt1: current_date.toString(),
-                    dt2: nextYearDate.toString(),
-                    checked: remark && item.stage === 'done' ? true : false
-                });
-            }
-
-            // Move to the next year
-            current_date.setFullYear(current_date.getFullYear() + 1);
-        }
-    }
-
-    return result;
-}
-export const CreateProduction = async (req: Request, res: Response, next: NextFunction) => {
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let {
         machine,
         thekedar,
@@ -4646,8 +4550,8 @@ export const CreateProduction = async (req: Request, res: Response, next: NextFu
     }
     await new_prouction.save()
     return res.status(201).json(new_prouction)
-}
-export const UpdateProduction = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let {
         machine,
         thekedar,
@@ -4701,8 +4605,8 @@ export const UpdateProduction = async (req: Request, res: Response, next: NextFu
             updated_by: req.user
         })
     return res.status(200).json({ message: "production updated" })
-}
-export const DeleteProduction = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     if (!id)
         return res.status(400).json({ message: "not a valid request" })
@@ -4712,8 +4616,8 @@ export const DeleteProduction = async (req: Request, res: Response, next: NextFu
 
     await Production.findByIdAndDelete(remote_production._id)
     return res.status(200).json({ message: "production removed" })
-}
-export const GetMyTodayShoeWeights = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let dt1 = new Date()
     dt1.setDate(new Date().getDate())
     dt1.setHours(0)
@@ -4757,8 +4661,8 @@ export const GetMyTodayShoeWeights = async (req: Request, res: Response, next: N
         }
     })
     return res.status(200).json(result)
-}
-export const GetShoeWeights = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
@@ -4831,8 +4735,8 @@ export const GetShoeWeights = async (req: Request, res: Response, next: NextFunc
     }
     else
         return res.status(200).json({ message: "bad request" })
-}
-export const CreateShoeWeight = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body) as CreateOrEditShoeWeightDto
 
     let dt1 = new Date()
@@ -4886,8 +4790,8 @@ export const CreateShoeWeight = async (req: Request, res: Response, next: NextFu
     shoe_weight.weighttime1 = new Date()
     await shoe_weight.save()
     return res.status(201).json(shoe_weight)
-}
-export const UpdateShoeWeight1 = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body) as CreateOrEditShoeWeightDto
     let { machine, dye, article, weight, month, upper_weight } = body
 
@@ -4955,8 +4859,8 @@ export const UpdateShoeWeight1 = async (req: Request, res: Response, next: NextF
     }
     await shoe_weight.save()
     return res.status(200).json(shoe_weight)
-}
-export const UpdateShoeWeight2 = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body) as CreateOrEditShoeWeightDto
     console.log(body)
     let { machine, dye, article, weight, month, upper_weight } = body
@@ -5022,8 +4926,8 @@ export const UpdateShoeWeight2 = async (req: Request, res: Response, next: NextF
     }
     await shoe_weight.save()
     return res.status(200).json(shoe_weight)
-}
-export const UpdateShoeWeight3 = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body) as CreateOrEditShoeWeightDto
     let { machine, dye, article, weight, month, upper_weight } = body
 
@@ -5087,8 +4991,8 @@ export const UpdateShoeWeight3 = async (req: Request, res: Response, next: NextF
     }
     await shoe_weight.save()
     return res.status(200).json(shoe_weight)
-}
-export const ValidateShoeWeight = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let shoe_weight = await ShoeWeight.findById(id)
     if (!shoe_weight)
@@ -5099,8 +5003,8 @@ export const ValidateShoeWeight = async (req: Request, res: Response, next: Next
         shoe_weight.updated_by = req.user
     await shoe_weight.save()
     return res.status(200).json(shoe_weight)
-}
-export const ValidateSpareDye = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let sparedye = await SpareDye.findById(id)
     if (!sparedye)
@@ -5111,8 +5015,8 @@ export const ValidateSpareDye = async (req: Request, res: Response, next: NextFu
         sparedye.updated_by = req.user
     await sparedye.save()
     return res.status(200).json(sparedye)
-}
-export const DeleteShoeWeight = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let shoe_weight = await ShoeWeight.findById(id)
     if (!shoe_weight)
@@ -5129,8 +5033,8 @@ export const DeleteShoeWeight = async (req: Request, res: Response, next: NextFu
         await destroyFile(shoe_weight.shoe_photo3._id)
     await shoe_weight.remove()
     return res.status(200).json(shoe_weight)
-}
-export const GetProductions = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
@@ -5189,8 +5093,8 @@ export const GetProductions = async (req: Request, res: Response, next: NextFunc
     }
     else
         return res.status(400).json({ message: "bad request" })
-}
-export const GetMyTodayProductions = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let machine = req.query.machine
     let date = String(req.query.date)
     let dt1 = new Date(date)
@@ -5224,8 +5128,8 @@ export const GetMyTodayProductions = async (req: Request, res: Response, next: N
         }
     })
     return res.status(200).json(productions)
-}
-export const GetMyTodaySoleThickness = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     console.log("enterd")
     let dt1 = new Date()
     dt1.setDate(new Date().getDate())
@@ -5256,8 +5160,8 @@ export const GetMyTodaySoleThickness = async (req: Request, res: Response, next:
         }
     })
     return res.status(200).json(result)
-}
-export const GetSoleThickness = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
@@ -5317,8 +5221,8 @@ export const GetSoleThickness = async (req: Request, res: Response, next: NextFu
     }
     else
         return res.status(200).json({ message: "bad request" })
-}
-export const CreateSoleThickness = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
 
     let dt1 = new Date()
     let dt2 = new Date()
@@ -5348,8 +5252,8 @@ export const CreateSoleThickness = async (req: Request, res: Response, next: Nex
     }).save()
 
     return res.status(201).json(thickness)
-}
-export const UpdateSoleThickness = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let dt1 = new Date()
     let dt2 = new Date()
     dt2.setDate(new Date(dt2).getDate() + 1)
@@ -5381,16 +5285,16 @@ export const UpdateSoleThickness = async (req: Request, res: Response, next: Nex
         updated_by: req.user
     })
     return res.status(200).json(thickness)
-}
-export const DeleteSoleThickness = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let thickness = await SoleThickness.findById(id)
     if (!thickness)
         return res.status(404).json({ message: " not found" })
     await thickness.remove()
     return res.status(200).json(thickness)
-}
-export const GetMyTodaySpareDye = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let dt1 = new Date()
     dt1.setDate(new Date().getDate())
     dt1.setHours(0)
@@ -5421,8 +5325,8 @@ export const GetMyTodaySpareDye = async (req: Request, res: Response, next: Next
         }
     })
     return res.status(200).json(result)
-}
-export const GetSpareDyes = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
@@ -5482,8 +5386,8 @@ export const GetSpareDyes = async (req: Request, res: Response, next: NextFuncti
     }
     else
         return res.status(200).json({ message: "bad request" })
-}
-export const CreateSpareDye = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body) as CreateOrEditSpareDyeDto
     let { dye, location, repair_required, remarks } = body
 
@@ -5542,8 +5446,8 @@ export const CreateSpareDye = async (req: Request, res: Response, next: NextFunc
     dyeObj.photo_time = new Date()
     await dyeObj.save()
     return res.status(201).json(dyeObj)
-}
-export const UpdateSpareDye = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body) as CreateOrEditSpareDyeDto
     let { dye, location, repair_required, remarks } = body
     const id = req.params.id
@@ -5604,8 +5508,8 @@ export const UpdateSpareDye = async (req: Request, res: Response, next: NextFunc
     dyeObj.photo_time = new Date()
     await dyeObj.save()
     return res.status(201).json(dyeObj)
-}
-export const DeleteSpareDye = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser, async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let dye = await SpareDye.findById(id)
     if (!dye)
@@ -5617,5 +5521,5 @@ export const DeleteSpareDye = async (req: Request, res: Response, next: NextFunc
         await destroyFile(dye.dye_photo._id)
     await dye.remove()
     return res.status(200).json(dye)
-}
+})
 

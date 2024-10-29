@@ -8,17 +8,19 @@ import isMongoId from "validator/lib/isMongoId"
 import { HandleCRMCitiesAssignment } from "../utils/app.util"
 import { IArticle, ICRMCity, ICRMState, IDye, IDyeLocation, IMachine } from "../interfaces/dropdown.interface"
 import mongoose from "mongoose"
+import { router } from "../app"
+import { isAuthenticatedUser } from "../middlewares/auth.middleware"
 
 
-export const GetAllCRMLeadTypes = async (req: Request, res: Response, next: NextFunction) => {
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: DropDownDto[] = []
     let types = await LeadType.find()
     result = types.map((t) => {
         return { id: t._id, value: t.type, label: t.type }
     })
     return res.status(200).json(result)
-}
-export const CreateCRMLeadTypes = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { type } = req.body as {type:string}
     if (!type) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -33,8 +35,8 @@ export const CreateCRMLeadTypes = async (req: Request, res: Response, next: Next
     }).save()
     return res.status(201).json({ message: "success" })
 
-}
-export const UpdateCRMLeadTypes = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { type } = req.body as { type: string }
     if (!type) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -56,8 +58,8 @@ export const UpdateCRMLeadTypes = async (req: Request, res: Response, next: Next
     await oldtype.save()
     return res.status(200).json({ message: "updated" })
 
-}
-export const DeleteCRMLeadType = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "type id not valid" })
     let type = await LeadType.findById(id);
@@ -66,16 +68,16 @@ export const DeleteCRMLeadType = async (req: Request, res: Response, next: NextF
     }
     await type.remove();
     return res.status(200).json({ message: "lead type deleted successfully" })
-}
-export const GetAllCRMLeadSources = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: DropDownDto[] = []
     let sources = await LeadSource.find()
     result = sources.map((i) => {
         return { id: i._id, value: i.source, label: i.source }
     })
     return res.status(200).json(result)
-}
-export const CreateCRMLeadSource = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { source } = req.body as {source:string}
     if (!source) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -90,8 +92,8 @@ export const CreateCRMLeadSource = async (req: Request, res: Response, next: Nex
     }).save()
     return res.status(201).json(result)
 
-}
-export const UpdateCRMLeadSource = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { source } = req.body as {source:string}
     if (!source) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -113,8 +115,8 @@ export const UpdateCRMLeadSource = async (req: Request, res: Response, next: Nex
     await oldsource.save()
     return res.status(200).json(oldsource)
 
-}
-export const DeleteCRMLeadSource = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "source id not valid" })
     let source = await LeadSource.findById(id);
@@ -123,14 +125,14 @@ export const DeleteCRMLeadSource = async (req: Request, res: Response, next: Nex
     }
     await source.remove();
     return res.status(200).json({ message: "lead source deleted successfully" })
-}
+})
 //lead stages
-export const GetAllCRMLeadStages = async (req: Request, res: Response, next: NextFunction) => {
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let stages: DropDownDto[] = []
     stages = await (await Stage.find()).map((i) => { return { id: i._id, label: i.stage, value: i.stage } });
     return res.status(200).json(stages)
-}
-export const CreateCRMLeadStages = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { stage } = req.body as {stage:string}
     if (!stage) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -145,8 +147,8 @@ export const CreateCRMLeadStages = async (req: Request, res: Response, next: Nex
     }).save()
     return res.status(201).json(result)
 
-}
-export const UpdateCRMLeadStages = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { stage } = req.body as {stage:string}
 
     if (!stage) {
@@ -169,8 +171,8 @@ export const UpdateCRMLeadStages = async (req: Request, res: Response, next: Nex
     await oldstage.save()
     return res.status(200).json(oldstage)
 
-}
-export const DeleteCRMLeadStage = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "stage id not valid" })
     let stage = await Stage.findById(id);
@@ -179,8 +181,8 @@ export const DeleteCRMLeadStage = async (req: Request, res: Response, next: Next
     }
     await stage.remove();
     return res.status(200).json({ message: "lead stage deleted successfully" })
-}
-export const GetAllCRMStates = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: GetCrmStateDto[] = []
     let states = await CRMState.find()
 
@@ -189,8 +191,8 @@ export const GetAllCRMStates = async (req: Request, res: Response, next: NextFun
         result.push({ _id: states[i]._id, state: states[i].state, assigned_users: String(users.map((u) => { return u.username })) });
     }
     return res.status(200).json(result)
-}
-export const CreateCRMState = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { state } = req.body as {state:string}
     if (!state) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -205,8 +207,8 @@ export const CreateCRMState = async (req: Request, res: Response, next: NextFunc
     }).save()
     return res.status(201).json(result)
 
-}
-export const UpdateCRMState = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { state } = req.body as { state: string }
     if (!state) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -230,8 +232,8 @@ export const UpdateCRMState = async (req: Request, res: Response, next: NextFunc
     await oldstate.save()
     return res.status(200).json(oldstate)
 
-}
-export const DeleteCRMState = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "state id not valid" })
     let state = await CRMState.findById(id);
@@ -241,8 +243,8 @@ export const DeleteCRMState = async (req: Request, res: Response, next: NextFunc
 
     await state.remove();
     return res.status(200).json({ message: "state deleted successfully" })
-}
-export const AssignCRMCitiesToUsers = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { city_ids, user_ids, flag } = req.body as AssignOrRemoveCrmCityDto
 
     if (city_ids && city_ids.length === 0)
@@ -251,8 +253,8 @@ export const AssignCRMCitiesToUsers = async (req: Request, res: Response, next: 
         return res.status(400).json({ message: "please select one city owner" })
     await HandleCRMCitiesAssignment(user_ids, city_ids, flag);
     return res.status(200).json({ message: "successfull" })
-}
-export const AssignCRMStatesToUsers = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { state_ids, user_ids, flag } = req.body as AssignOrRemoveCrmStateDto
     if (state_ids && state_ids.length === 0)
         return res.status(400).json({ message: "please select one state " })
@@ -308,8 +310,8 @@ export const AssignCRMStatesToUsers = async (req: Request, res: Response, next: 
 
     return res.status(200).json({ message: "successfull" })
 }
-
-export const BulkCreateAndUpdateCRMStatesFromExcel = async (req: Request, res: Response, next: NextFunction) => {
+)
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: CreateAndUpdatesStateFromExcelDto[] = []
     let statusText: string = ""
     if (!req.file)
@@ -371,9 +373,9 @@ export const BulkCreateAndUpdateCRMStatesFromExcel = async (req: Request, res: R
 
     }
     return res.status(200).json(result);
-}
-//cities
-export const GetAllCRMCities = async (req: Request, res: Response, next: NextFunction) => {
+})
+//cities)
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: GetCrmCityDto[] = []
     let state = req.query.state;
     let cities: ICRMCity[] = []
@@ -393,8 +395,8 @@ export const GetAllCRMCities = async (req: Request, res: Response, next: NextFun
             });
     }
     return res.status(200).json(result)
-}
-export const CreateCRMCity = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { state, city } = req.body as CreateOrEditCrmCity
     if (!state || !city) {
         return res.status(400).json({ message: "please provide required fields" })
@@ -416,8 +418,8 @@ export const CreateCRMCity = async (req: Request, res: Response, next: NextFunct
     await HandleCRMCitiesAssignment(users.map((i) => { return i._id.valueOf() }), [result._id.valueOf()], 1);
     return res.status(201).json(result)
 
-}
-export const UpdateCRMCity = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { state, city } = req.body as CreateOrEditCrmCity
     if (!state || !city) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -443,8 +445,8 @@ export const UpdateCRMCity = async (req: Request, res: Response, next: NextFunct
     await ReferredParty.updateMany({ city: prevcity }, { city: city })
     return res.status(200).json(oldcity)
 
-}
-export const DeleteCRMCity = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "city id not valid" })
     let city = await CRMCity.findById(id);
@@ -459,8 +461,8 @@ export const DeleteCRMCity = async (req: Request, res: Response, next: NextFunct
     }
     await city.remove();
     return res.status(200).json({ message: "city deleted successfully" })
-}
-export const BulkCreateAndUpdateCRMCityFromExcel = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let state = req.params.state
     let result: CreateAndUpdatesCityFromExcelDto[] = []
     let statusText: string = ""
@@ -538,21 +540,21 @@ export const BulkCreateAndUpdateCRMCityFromExcel = async (req: Request, res: Res
 
     }
     return res.status(200).json(result);
-}
-export const FindUnknownCrmSates = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let states = await CRMState.find({ state: { $ne: "" } });
     let statevalues = states.map(i => { return i.state });
     await Lead.updateMany({ state: { $nin: statevalues } }, { state: 'unknown' });
     await ReferredParty.updateMany({ state: { $nin: statevalues } }, { state: 'unknown' });
     return res.status(200).json({ message: "successfull" })
-}
-export const FindUnknownCrmStages = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let stages = await Stage.find({ stage: { $ne: "" } });
     let stagevalues = stages.map(i => { return i.stage });
     await Lead.updateMany({ stage: { $nin: stagevalues } }, { stage: 'unknown' });
     return res.status(200).json({ message: "successfull" })
-}
-export const FindUnknownCrmCities = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let cities = await CRMCity.find({ city: { $ne: "" } });
     let cityvalues = cities.map(i => { return i.city });
 
@@ -560,14 +562,14 @@ export const FindUnknownCrmCities = async (req: Request, res: Response, next: Ne
     await Lead.updateMany({ city: { $nin: cityvalues } }, { city: 'unknown', state: 'unknown' });
     await ReferredParty.updateMany({ city: { $nin: cityvalues } }, { city: 'unknown', state: 'unknown' });
     return res.status(200).json({ message: "successfull" })
-}
-export const GetAllChecklistCategory = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result = await ChecklistCategory.find();
     let data: DropDownDto[];
     data = result.map((r) => { return { id: r._id, label: r.category, value: r.category } });
     return res.status(200).json(data)
-}
-export const CreateChecklistCategory = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { category } = req.body as {category:string}
     if (!category) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -582,8 +584,8 @@ export const CreateChecklistCategory = async (req: Request, res: Response, next:
     }).save()
     return res.status(201).json(result)
 
-}
-export const UpdateChecklistCategory = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { category } = req.body as {
         category: string,
     }
@@ -605,8 +607,8 @@ export const UpdateChecklistCategory = async (req: Request, res: Response, next:
     await oldlocation.save()
     return res.status(200).json(oldlocation)
 
-}
-export const DeleteChecklistCategory = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "category id not valid" })
     let category = await ChecklistCategory.findById(id);
@@ -615,8 +617,8 @@ export const DeleteChecklistCategory = async (req: Request, res: Response, next:
     }
     await category.remove();
     return res.status(200).json({ message: "category deleted successfully" })
-}
-export const GetAllStates = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: GetErpStateDto[] = []
     let states = await State.find()
     for (let i = 0; i < states.length; i++) {
@@ -644,8 +646,8 @@ export const GetAllStates = async (req: Request, res: Response, next: NextFuncti
         })
     }
     return res.status(200).json(result)
-}
-export const CreateState = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const body = req.body as CreateOrEditErpStateDto;
     if (!body.state) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -661,8 +663,8 @@ export const CreateState = async (req: Request, res: Response, next: NextFunctio
     }).save()
     return res.status(201).json(result)
 
-}
-export const UpdateState = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const body = req.body as CreateOrEditErpStateDto;
     if (!body.state) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -677,8 +679,8 @@ export const UpdateState = async (req: Request, res: Response, next: NextFunctio
     await State.findByIdAndUpdate(oldstate._id, { ...body, updated_by: req.user, updated_at: new Date() })
     return res.status(200).json(oldstate)
 
-}
-export const DeleteErpState = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "state id not valid" })
     let state = await State.findById(id);
@@ -687,8 +689,8 @@ export const DeleteErpState = async (req: Request, res: Response, next: NextFunc
     }
     await state.remove();
     return res.status(200).json({ message: "state deleted successfully" })
-}
-export const GetAllErpEmployees = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result: GetErpEmployeeDto[] = []
     let employees = await ErpEmployee.find()
     for (let i = 0; i < employees.length; i++) {
@@ -704,8 +706,8 @@ export const GetAllErpEmployees = async (req: Request, res: Response, next: Next
         })
     }
     return res.status(200).json(result)
-}
-export const CreateErpEmployee = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { name } = req.body as {name:string};
     if (!name) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -720,8 +722,8 @@ export const CreateErpEmployee = async (req: Request, res: Response, next: NextF
     }).save()
     return res.status(201).json(result)
 
-}
-export const UpdateErpEmployee = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { name } = req.body as {name:string};
     if (!name) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -736,8 +738,8 @@ export const UpdateErpEmployee = async (req: Request, res: Response, next: NextF
     await ErpEmployee.findByIdAndUpdate(emp._id, { name,  updated_by: req.user, updated_at: new Date() })
     return res.status(200).json(emp)
 
-}
-export const DeleteErpEmployee = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "employee id not valid" })
     let employee = await ErpEmployee.findById(id);
@@ -746,14 +748,14 @@ export const DeleteErpEmployee = async (req: Request, res: Response, next: NextF
     }
     await employee.remove();
     return res.status(200).json({ message: "employee deleted successfully" })
-}
-export const GetAllMaintenanceCategory = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result = await MaintenanceCategory.find();
     let data: DropDownDto[];
     data = result.map((r) => { return { id: r._id, label: r.category, value: r.category } });
     return res.status(200).json(data)
-}
-export const CreateMaintenanceCategory = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { category } = req.body as {category:string}
     if (!category) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -768,8 +770,8 @@ export const CreateMaintenanceCategory = async (req: Request, res: Response, nex
     }).save()
     return res.status(201).json(result)
 
-}
-export const UpdateMaintenanceCategory = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { category } = req.body as {
         category: string,
     }
@@ -791,8 +793,8 @@ export const UpdateMaintenanceCategory = async (req: Request, res: Response, nex
     await oldlocation.save()
     return res.status(200).json(oldlocation)
 
-}
-export const ToogleMaintenanceCategory = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "category id not valid" })
     let category = await MaintenanceCategory.findById(id);
@@ -802,14 +804,14 @@ export const ToogleMaintenanceCategory = async (req: Request, res: Response, nex
     category.active = !category.active;
     await category.save();
     return res.status(200).json({ message: "category status changed successfully" })
-}
-export const GetMachineCategories = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let result = (await MachineCategory.find()).map((c) => {
         return { id: c._id, label: c.category, value: c.category }
     })
     return res.status(200).json(result)
-}
-export const CreateMachineCategory = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { category } = req.body as {category:string}
     if (!category) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -824,8 +826,8 @@ export const CreateMachineCategory = async (req: Request, res: Response, next: N
     }).save()
     return res.status(201).json({ message: "success" })
 
-}
-export const UpdateMachineCategory = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { category } = req.body as { category :string}
     if (!category) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -846,8 +848,8 @@ export const UpdateMachineCategory = async (req: Request, res: Response, next: N
     await oldtype.save()
     return res.status(200).json({ message: "updated" })
 
-}
-export const DeleteMachineCategory = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "category id not valid" })
     let category = await MachineCategory.findById(id);
@@ -856,8 +858,8 @@ export const DeleteMachineCategory = async (req: Request, res: Response, next: N
     }
     await category.remove();
     return res.status(200).json({ message: "category deleted successfully" })
-}
-export const GetMachines = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let hidden = String(req.query.hidden)
     let machines: IMachine[] = []
     let result: GetMachineDto[] = []
@@ -879,8 +881,8 @@ export const GetMachines = async (req: Request, res: Response, next: NextFunctio
         }
     })
     return res.status(200).json(result)
-}
-export const CreateMachine = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { name,  category, serial_no } = req.body as CreateOrEditMachineDto
     if (!name  || !category || !serial_no) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -897,8 +899,8 @@ export const CreateMachine = async (req: Request, res: Response, next: NextFunct
     }).save()
 
     return res.status(201).json(machine)
-}
-export const UpdateMachine = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { name,  category, serial_no } = req.body as CreateOrEditMachineDto
     if (!name || !category || !serial_no) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -918,8 +920,8 @@ export const UpdateMachine = async (req: Request, res: Response, next: NextFunct
         machine.updated_by = req.user
     await machine.save()
     return res.status(200).json(machine)
-}
-export const BulkUploadMachine = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     if (!req.file)
         return res.status(400).json({
             message: "please provide an Excel file",
@@ -950,8 +952,8 @@ export const BulkUploadMachine = async (req: Request, res: Response, next: NextF
         })
     }
     return res.status(200).json({ message: "machines updated" });
-}   
-export const ToogleMachine = async (req: Request, res: Response, next: NextFunction) => {
+}   )
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let machine = await Machine.findById(id)
     if (!machine)
@@ -963,8 +965,8 @@ export const ToogleMachine = async (req: Request, res: Response, next: NextFunct
     await machine.save()
     return res.status(200).json(machine)
 
-}
-export const GetArticles = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let hidden = String(req.query.hidden)
     let result: GetArticleDto[] = []
     let articles: IArticle[] = []
@@ -984,8 +986,8 @@ export const GetArticles = async (req: Request, res: Response, next: NextFunctio
         }
     })
     return res.status(200).json(result)
-}
-export const BulkUploadArticle = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     if (!req.file)
         return res.status(400).json({
             message: "please provide an Excel file",
@@ -1014,8 +1016,8 @@ export const BulkUploadArticle = async (req: Request, res: Response, next: NextF
         })
     }
     return res.status(200).json({ message: "articles updated" });
-}
-export const CreateArticle = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { name } = req.body as {name:string}
     if (!name) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -1032,8 +1034,8 @@ export const CreateArticle = async (req: Request, res: Response, next: NextFunct
 
     return res.status(201).json(machine)
 
-}
-export const UpdateArticle = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { name } = req.body as {name:string}
     if (!name) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -1052,8 +1054,8 @@ export const UpdateArticle = async (req: Request, res: Response, next: NextFunct
     await article.save()
     return res.status(200).json(article)
 
-}
-export const ToogleArticle = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let article = await Article.findById(id)
     if (!article)
@@ -1065,8 +1067,8 @@ export const ToogleArticle = async (req: Request, res: Response, next: NextFunct
     await article.save()
     return res.status(200).json(article)
 
-}
-export const GetDyeById = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let id = req.params.id;
 
     let dye = await Dye.findById(id).populate('articles');
@@ -1085,8 +1087,8 @@ export const GetDyeById = async (req: Request, res: Response, next: NextFunction
         updated_by: { id: dye.updated_by._id, value: dye.updated_by.username, label: dye.updated_by.username }
     }
     return res.status(200).json(result)
-}
-export const GetDyes = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let hidden = String(req.query.hidden)
     let dyes: IDye[] = []
     let result: GetDyeDto[] = []
@@ -1109,8 +1111,8 @@ export const GetDyes = async (req: Request, res: Response, next: NextFunction) =
         }
     })
     return res.status(200).json(result)
-}
-export const BulkUploadDye = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     if (!req.file)
         return res.status(400).json({
             message: "please provide an Excel file",
@@ -1162,8 +1164,8 @@ export const BulkUploadDye = async (req: Request, res: Response, next: NextFunct
 
     }
     return res.status(200).json({ message: "dyes updated" });
-}
-export const CreateDye = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { dye_number, size, articles, st_weight } = req.body as CreateOrEditDyeDTo
     if (!dye_number || !size) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -1181,8 +1183,8 @@ export const CreateDye = async (req: Request, res: Response, next: NextFunction)
         updated_by: req.user
     }).save()
     return res.status(201).json(dye)
-}
-export const UpdateDye = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { dye_number, size, articles, st_weight } = req.body as CreateOrEditDyeDTo
     if (!dye_number || !size) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -1207,8 +1209,8 @@ export const UpdateDye = async (req: Request, res: Response, next: NextFunction)
         dye.updated_by = req.user
     await dye.save()
     return res.status(200).json(dye)
-}
-export const ToogleDye = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id
     let dye = await Dye.findById(id)
     if (!dye)
@@ -1219,8 +1221,8 @@ export const ToogleDye = async (req: Request, res: Response, next: NextFunction)
         dye.updated_by = req.user
     await dye.save()
     return res.status(200).json(dye)
-}
-export const GetAllDyeLocations = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     let hidden = String(req.query.hidden)
     let result: GetDyeLocationDto[] = []
     let locations: IDyeLocation[] = []
@@ -1242,8 +1244,8 @@ export const GetAllDyeLocations = async (req: Request, res: Response, next: Next
         }
     })
     return res.status(200).json(result)
-}
-export const CreateDyeLocation = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { name } = req.body as {name:string}
     if (!name) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -1258,8 +1260,8 @@ export const CreateDyeLocation = async (req: Request, res: Response, next: NextF
     }).save()
     return res.status(201).json(result)
 
-}
-export const UpdateDyeLocation = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const { name } = req.body as {name:string}
     if (!name) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -1278,8 +1280,8 @@ export const UpdateDyeLocation = async (req: Request, res: Response, next: NextF
     await oldlocation.save()
     return res.status(200).json(oldlocation)
 
-}
-export const ToogleDyeLocation = async (req: Request, res: Response, next: NextFunction) => {
+})
+router.get("",isAuthenticatedUser,async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(403).json({ message: "location id not valid" })
     let location = await DyeLocation.findById(id);
@@ -1292,4 +1294,4 @@ export const ToogleDyeLocation = async (req: Request, res: Response, next: NextF
         location.updated_by = req.user
     await location.save()
     return res.status(200).json({ message: "success" })
-}
+})
