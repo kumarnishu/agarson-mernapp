@@ -1,74 +1,15 @@
-import { NextFunction, Request, Response } from "express"
-import { Asset, User } from "../models/users/user.model";
-import isMongoId from "validator/lib/isMongoId";
-import { isvalidDate } from "../client/src/utils/isValidDate";
-import { Checklist, ChecklistBox, ChecklistCategory, IChecklist } from "../models/checklist";
-import { CreateOrEditDropDownDto, DropDownDto } from "../dtos/common/dropdown.dto";
-import { CreateOrEditChecklistDto, GetChecklistDto, GetChecklistFromExcelDto } from "../dtos/checklist/checklist.dto";
+import xlsx from "xlsx"
+import { NextFunction, Request, Response } from 'express';
+import { Checklist, IChecklist } from "../models/checklist";
+import { CreateOrEditChecklistDto, GetChecklistDto, GetChecklistFromExcelDto } from "../dtos";
+import { ChecklistBox } from "../models/checklist-box";
+import moment, { isDate } from "moment";
+import { Asset, User } from "../models/user";
 import { uploadFileToCloud } from "../utils/uploadFileToCloud";
-import moment from "moment";
 import { destroyCloudFile } from "../utils/destroyCloudFile";
-import xlsx from "xlsx";
-import SaveFileOnDisk from "../utils/ConvertJsonToExcel";
+import isMongoId from "validator/lib/isMongoId";
+import ConvertJsonToExcel from "../utils/ConvertJsonToExcel";
 
-export const GetAllChecklistCategory = async (req: Request, res: Response, next: NextFunction) => {
-    let result = await ChecklistCategory.find();
-    let data: DropDownDto[];
-    data = result.map((r) => { return { id: r._id, label: r.category, value: r.category } });
-    return res.status(200).json(data)
-}
-
-export const CreateChecklistCategory = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
-    if (!key) {
-        return res.status(400).json({ message: "please fill all reqired fields" })
-    }
-    if (await ChecklistCategory.findOne({ category: key.toLowerCase() }))
-        return res.status(400).json({ message: "already exists this category" })
-    let result = await new ChecklistCategory({
-        category: key,
-        updated_at: new Date(),
-        created_by: req.user,
-        updated_by: req.user
-    }).save()
-    return res.status(201).json(result)
-
-}
-
-export const UpdateChecklistCategory = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as {
-        key: string,
-    }
-    if (!key) {
-        return res.status(400).json({ message: "please fill all reqired fields" })
-    }
-    const id = req.params.id
-    let oldlocation = await ChecklistCategory.findById(id)
-    if (!oldlocation)
-        return res.status(404).json({ message: "category not found" })
-    console.log(key, oldlocation.category)
-    if (key !== oldlocation.category)
-        if (await ChecklistCategory.findOne({ category: key.toLowerCase() }))
-            return res.status(400).json({ message: "already exists this category" })
-    oldlocation.category = key
-    oldlocation.updated_at = new Date()
-    if (req.user)
-        oldlocation.updated_by = req.user
-    await oldlocation.save()
-    return res.status(200).json(oldlocation)
-
-}
-export const DeleteChecklistCategory = async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
-    if (!isMongoId(id)) return res.status(403).json({ message: "category id not valid" })
-    let category = await ChecklistCategory.findById(id);
-    if (!category) {
-        return res.status(404).json({ message: "category not found" })
-    }
-    await category.remove();
-    return res.status(200).json({ message: "category deleted successfully" })
-}
-//get
 export const GetChecklists = async (req: Request, res: Response, next: NextFunction) => {
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
@@ -79,7 +20,7 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
     let count = 0
     let dt1 = new Date(String(start_date))
     let dt2 = new Date(String(end_date))
-    let ids = req.user?.assigned_users.map((id) => { return id._id })
+    let ids = req.user?.assigned_users.map((id:{_id:string}) => { return id._id })
     let result: GetChecklistDto[] = []
 
     if (!Number.isNaN(limit) && !Number.isNaN(page)) {
@@ -145,9 +86,6 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
         return res.status(400).json({ message: "bad request" })
 }
 
-
-
-//post/put/delete/patch
 export const CreateChecklist = async (req: Request, res: Response, next: NextFunction) => {
 
     let body = JSON.parse(req.body.body)
@@ -162,7 +100,7 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
     if (!category || !work_title || !user_id || !frequency || !end_date || !next_date)
         return res.status(400).json({ message: "please provide all required fields" })
 
-    if (!isvalidDate(new Date(end_date)) || new Date(end_date) <= new Date())
+    if (!isDate(new Date(end_date)) || new Date(end_date) <= new Date())
         return res.status(400).json({
             message: "please provide valid end date"
         })
@@ -365,7 +303,7 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
                 validated = false
                 statusText = "checklist already exists"
             }
-           
+
 
             if (validated) {
                 await new Checklist({
@@ -394,9 +332,9 @@ export const DownloadExcelTemplateForCreatechecklists = async (req: Request, res
     let checklist: any = {
         work_title: "check the work given ",
         category: "payment",
-        frequency:'daily'
+        frequency: 'daily'
     }
-    SaveFileOnDisk([checklist])
+    ConvertJsonToExcel([checklist])
     let fileName = "CreateChecklistTemplate.xlsx"
     return res.download("./file", fileName)
 }

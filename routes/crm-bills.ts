@@ -1,7 +1,7 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { CreateBill, DeleteBill, GetLeadPartyBillsHistory, GetReferPartyBillsHistory, UpdateBill } from "../controllers/lead.controller";
 import { upload } from ".";
+import { CreateBill, UpdateBill, DeleteBill, GetLeadPartyBillsHistory, GetReferPartyBillsHistory } from "../controllers/crm-bills";
 const router = express.Router()
 
 router.route("/bills").post(isAuthenticatedUser, upload.single('billphoto'), CreateBill)

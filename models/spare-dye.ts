@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
-import { Asset, IUser } from "../users/user.model"
 import { IDye } from "./dye"
 import { IDyeLocation } from "./dye-location"
+import { Asset, IUser } from "./user"
 
 export type ISpareDye = {
     _id: string,

@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { CreateCRMLeadStages, DeleteCRMLeadStage, FindUnknownCrmStages, GetAllCRMLeadStages, UpdateCRMLeadStages } from "../controllers/lead.controller";
+import { GetAllCRMLeadStages, CreateCRMLeadStages, UpdateCRMLeadStages, DeleteCRMLeadStage, FindUnknownCrmStages } from "../controllers/lead-stage";
 const router = express.Router()
 
 router.route("/crm/stages").get(isAuthenticatedUser, GetAllCRMLeadStages).post(isAuthenticatedUser, CreateCRMLeadStages),

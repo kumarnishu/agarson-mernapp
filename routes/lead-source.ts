@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { CreateCRMLeadSource, DeleteCRMLeadSource, GetAllCRMLeadSources, UpdateCRMLeadSource } from "../controllers/lead.controller";
+import { GetAllCRMLeadSources, CreateCRMLeadSource, UpdateCRMLeadSource, DeleteCRMLeadSource } from "../controllers/lead-source";
 const router = express.Router()
 
 router.route("/crm/sources").get(isAuthenticatedUser, GetAllCRMLeadSources).post(isAuthenticatedUser, CreateCRMLeadSource),

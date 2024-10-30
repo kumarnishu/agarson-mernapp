@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
-import { IUser } from "../users/user.model"
 import { ILead } from "./lead"
 import { IReferredParty } from "./refer"
+import { IUser } from "./user"
 
     
 export type IRemark = {

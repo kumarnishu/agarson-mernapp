@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
-import { IUser } from "../users/user.model"
-import { IArticle } from "../production/article.model"
+import { IUser } from "./user"
 import { IBill } from "./crm-bill"
+import { IArticle } from "./article"
 
 
 export type IBillItem = {

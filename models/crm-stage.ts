@@ -1,5 +1,6 @@
 import mongoose from "mongoose"
-import { IUser } from "../users/user.model"
+import { IUser } from "./user"
+
 export type IStage = {
     _id: string,
     stage: string,

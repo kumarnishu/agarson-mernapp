@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { AssignErpEmployeesToUsers, CreateErpEmployee, DeleteErpEmployee, GetAllErpEmployees, UpdateErpEmployee } from "../controllers/erp.controller";
+import { GetAllErpEmployees, CreateErpEmployee, UpdateErpEmployee, DeleteErpEmployee, AssignErpEmployeesToUsers } from "../controllers/erp-employee";
 
 const router = express.Router()
 

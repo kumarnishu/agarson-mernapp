@@ -1,6 +1,7 @@
 import mongoose from "mongoose"
 import { IState } from "./erp-state"
-import { IUser } from "../users/user.model"
+import { IUser } from "./user"
+
 export type IPendingOrdersReport = {
     _id: string,
     report_owner: IState

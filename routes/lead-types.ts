@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { CreateCRMLeadTypes, DeleteCRMLeadType, GetAllCRMLeadTypes, UpdateCRMLeadTypes } from "../controllers/lead.controller";
+import { GetAllCRMLeadTypes, CreateCRMLeadTypes, UpdateCRMLeadTypes, DeleteCRMLeadType } from "../controllers/lead-types";
 const router = express.Router()
 
 router.route("/crm/leadtypes").get(isAuthenticatedUser, GetAllCRMLeadTypes).post(isAuthenticatedUser, CreateCRMLeadTypes),

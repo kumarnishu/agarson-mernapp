@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 import { IState } from "./erp-state"
-import { IUser } from "../users/user.model"
+import { IUser } from "./user"
 
 export type IClientSaleLastYearReport = {
     _id: string,

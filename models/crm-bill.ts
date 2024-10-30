@@ -1,8 +1,7 @@
 import mongoose from "mongoose"
-import { Asset, IUser } from "../users/user.model"
 import { ILead } from "./lead"
 import { IReferredParty } from "./refer"
-
+import { Asset, IUser } from "./user"
 
 export type IBill = {
     _id: string,

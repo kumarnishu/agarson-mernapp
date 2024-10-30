@@ -1,7 +1,8 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { CreateSpareDye, DeleteSpareDye, GetMyTodaySpareDye, GetSpareDyes, UpdateSpareDye, ValidateSpareDye } from "../controllers/production.controller";
 import { upload } from ".";
+import { ValidateSpareDye } from "../controllers/shoe-weight";
+import { CreateSpareDye, DeleteSpareDye, GetMyTodaySpareDye, GetSpareDyes, UpdateSpareDye } from "../controllers/spare-dye";
 const router = express.Router()
 
 router.patch("/sparedyes/validate/:id", isAuthenticatedUser, ValidateSpareDye)

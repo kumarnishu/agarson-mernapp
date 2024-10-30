@@ -1,6 +1,6 @@
 import express from "express";
 import { isAdmin, isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { AllowMultiLogin, AssignPermissionsToOneUser, AssignPermissionsToUsers, BlockMultiLogin, BlockUser, GetAllPermissions, Login, Logout, MakeAdmin, RemoveAdmin, ResetPassword, resetUserPassword, ToogleShowvisitingcard, UnBlockUser, updatePassword, VerifyEmail } from "../controllers/user.controller";
+import { MakeAdmin, AllowMultiLogin, BlockMultiLogin, BlockUser, UnBlockUser, RemoveAdmin, ToogleShowvisitingcard, Login, Logout, updatePassword, resetUserPassword, ResetPassword, VerifyEmail, GetAllPermissions, AssignPermissionsToUsers, AssignPermissionsToOneUser } from "../controllers/auth";
 const router = express.Router() 
 
 

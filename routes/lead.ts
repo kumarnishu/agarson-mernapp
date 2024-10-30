@@ -1,7 +1,7 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { BulkDeleteUselessLeads, BulkLeadUpdateFromExcel, ConvertLeadToRefer, CreateLead, DeleteLead, FuzzySearchLeads, GetAssignedReferrals, GetLeads, MergeTwoLeads, ReferLead, RemoveLeadReferral, UpdateLead } from "../controllers/lead.controller";
 import { upload } from ".";
+import { GetLeads, CreateLead, UpdateLead, DeleteLead, BulkLeadUpdateFromExcel, FuzzySearchLeads, ConvertLeadToRefer, BulkDeleteUselessLeads, GetAssignedReferrals, ReferLead, RemoveLeadReferral, MergeTwoLeads } from "../controllers/lead";
 const router = express.Router()
 
 router.route("/leads").get(isAuthenticatedUser, GetLeads).post(isAuthenticatedUser, upload.single('visiting_card'), CreateLead)

@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
-import { IUser } from "../users/user.model"
 import { IDye } from "./dye"
 import { IArticle } from "./article"
+import { IUser } from "./user"
 
 export type ISoleThickness = {
     _id: string,

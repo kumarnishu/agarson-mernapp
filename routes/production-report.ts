@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { GetCategoryWiseProductionReports, GetMachineWiseProductionReports, GetThekedarWiseProductionReports } from "../controllers/production.controller";
+import { GetCategoryWiseProductionReports, GetMachineWiseProductionReports, GetThekedarWiseProductionReports } from "../controllers/production-report";
 const router = express.Router()
 
 router.route("/production/categorywise").get(isAuthenticatedUser, GetCategoryWiseProductionReports)

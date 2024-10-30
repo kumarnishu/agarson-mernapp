@@ -1,7 +1,7 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { BulkUploadArticle, CreateArticle, GetArticles, ToogleArticle, UpdateArticle } from "../controllers/production.controller";
 import { upload } from ".";
+import { GetArticles, CreateArticle, UpdateArticle, ToogleArticle, BulkUploadArticle } from "../controllers/articles";
 const router = express.Router()
 
 router.route("/articles").get(isAuthenticatedUser, GetArticles)

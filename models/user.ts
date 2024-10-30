@@ -2,10 +2,11 @@ import mongoose from "mongoose"
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import { ICRMCity } from "../leads/crm.city.model";
-import { IState } from "../erp_reports/state.model";
-import { ICRMState } from "../leads/crm.state.model";
-import { IErpEmployee } from "../erp_reports/erp.employee.model";
+import { IState } from "./erp-state";
+import { IErpEmployee } from "./erp-employee";
+import { ICRMState } from "./crm-state";
+import { ICRMCity } from "./crm-city";
+
 
 export type Asset = {
   _id: string,

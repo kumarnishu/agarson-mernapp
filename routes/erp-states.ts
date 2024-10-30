@@ -1,7 +1,7 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { AssignErpStatesToUsers, BulkCreateAndUpdateErpStatesFromExcel, CreateState, DeleteErpState, GetAllStates, UpdateState } from "../controllers/erp.controller";
 import { upload } from ".";
+import { GetAllStates, CreateState, UpdateState, DeleteErpState, BulkCreateAndUpdateErpStatesFromExcel, AssignErpStatesToUsers } from "../controllers/erp-states";
 
 
 const router = express.Router()

@@ -1,6 +1,7 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { GetActivitiesTopBarDetails, GetAssignedRefers, GetMyReminders, GetNewRefers } from "../controllers/lead.controller";
+import { GetActivitiesTopBarDetails } from "../controllers/crm-remarks";
+import { GetAssignedRefers, GetNewRefers, GetMyReminders } from "../controllers/crm.reports";
 const router = express.Router()
 
 router.route("/assigned/refers/report").get(isAuthenticatedUser, GetAssignedRefers)

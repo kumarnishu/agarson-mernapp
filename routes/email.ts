@@ -1,6 +1,6 @@
 import express from "express";
-import { SendPasswordResetMail, SendVerifyEmail } from "../controllers/user.controller";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
+import { SendVerifyEmail, SendPasswordResetMail } from "../controllers/email";
 const router = express.Router()
 
 router.post("/email/verify", isAuthenticatedUser, SendVerifyEmail)

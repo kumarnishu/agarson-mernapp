@@ -1,6 +1,6 @@
 import express from "express";
-import { CreateProduction, DeleteProduction, GetMyTodayProductions, GetProductions, UpdateProduction } from "../controllers/production.controller";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
+import { GetMyTodayProductions, GetProductions, CreateProduction, UpdateProduction, DeleteProduction } from "../controllers/production";
 const router = express.Router()
 
 router.route("/productions/me").get(isAuthenticatedUser, GetMyTodayProductions)

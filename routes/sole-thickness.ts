@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateSoleThickness, DeleteSoleThickness, GetMyTodaySoleThickness, GetSoleThickness, UpdateSoleThickness } from "../controllers/production.controller";
+import { GetSoleThickness, CreateSoleThickness, GetMyTodaySoleThickness, DeleteSoleThickness, UpdateSoleThickness } from "../controllers/sole-thickness";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
 const router = express.Router()
 

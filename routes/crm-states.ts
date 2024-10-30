@@ -1,7 +1,7 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { AssignCRMStatesToUsers, BulkCreateAndUpdateCRMStatesFromExcel, CreateCRMState, DeleteCRMState, FindUnknownCrmSates, GetAllCRMStates, UpdateCRMState } from "../controllers/lead.controller";
 import { upload } from ".";
+import { GetAllCRMStates, CreateCRMState, UpdateCRMState, DeleteCRMState, BulkCreateAndUpdateCRMStatesFromExcel, AssignCRMStatesToUsers, FindUnknownCrmSates } from "../controllers/crm-states";
 const router = express.Router()
 
 router.route("/crm/states").get(isAuthenticatedUser, GetAllCRMStates).post(isAuthenticatedUser, CreateCRMState),

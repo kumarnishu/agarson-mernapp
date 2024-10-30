@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 import { IMachine } from "./machine"
-import { IUser } from "../users/user.model"
 import { IArticle } from "./article"
+import { IUser } from "./user"
 
 export type IProduction = {
     _id: string,

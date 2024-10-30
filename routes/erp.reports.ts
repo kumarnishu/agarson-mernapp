@@ -1,7 +1,7 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { BulkCreateBillsAgingReportFromExcel, BulkCreateClientSaleReportFromExcel, BulkCreateClientSaleReportFromExcelForLastYear, BulkCreatePartyTargetReportFromExcel,  BulkCreateVisitReportFromExcel,  BulkPendingOrderReportFromExcel, GetBillsAgingReports, GetClientSaleReports, GetClientSaleReportsForLastYear, GetPartyTargetReports, GetPendingOrderReports, GetSaleAnalysisReport, GetVisitReports } from "../controllers/erp.controller";
 import { upload } from ".";
+import { GetPendingOrderReports, BulkPendingOrderReportFromExcel, GetPartyTargetReports, GetSaleAnalysisReport, BulkCreatePartyTargetReportFromExcel, GetBillsAgingReports, BulkCreateBillsAgingReportFromExcel, GetClientSaleReports, GetClientSaleReportsForLastYear, BulkCreateClientSaleReportFromExcel, BulkCreateClientSaleReportFromExcelForLastYear, GetVisitReports, BulkCreateVisitReportFromExcel } from "../controllers/erp.reports";
 
 const router = express.Router()
 

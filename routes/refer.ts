@@ -1,7 +1,7 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { BulkReferUpdateFromExcel, CreateReferParty, DeleteReferParty, FuzzySearchRefers, GetPaginatedRefers, GetRefers, MergeTwoRefers, UpdateReferParty } from "../controllers/lead.controller";
 import { upload } from ".";
+import { GetRefers, GetPaginatedRefers, FuzzySearchRefers, CreateReferParty, UpdateReferParty, DeleteReferParty, BulkReferUpdateFromExcel, MergeTwoRefers } from "../controllers/refer";
 const router = express.Router()
 
 router.route("/refers").get(isAuthenticatedUser, GetRefers)

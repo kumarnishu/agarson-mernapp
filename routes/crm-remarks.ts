@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { DeleteRemark, GetActivities, GetReferRemarkHistory, GetRemarkHistory, NewRemark, UpdateRemark } from "../controllers/lead.controller";
+import { GetRemarkHistory, GetReferRemarkHistory, GetActivities, NewRemark, UpdateRemark, DeleteRemark } from "../controllers/crm-remarks";
 const router = express.Router()
 
 router.route("/remarks/:id").get(isAuthenticatedUser, GetRemarkHistory)

@@ -1,7 +1,7 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { CreateShoeWeight, DeleteShoeWeight, GetMyTodayShoeWeights, GetShoeWeights, UpdateShoeWeight1, UpdateShoeWeight2, UpdateShoeWeight3, ValidateShoeWeight } from "../controllers/production.controller";
 import { upload } from ".";
+import { GetMyTodayShoeWeights, GetShoeWeights, CreateShoeWeight, UpdateShoeWeight1, DeleteShoeWeight, UpdateShoeWeight2, UpdateShoeWeight3, ValidateShoeWeight } from "../controllers/shoe-weight";
 const router = express.Router()
 
 router.route("/weights/me").get(isAuthenticatedUser, GetMyTodayShoeWeights),
