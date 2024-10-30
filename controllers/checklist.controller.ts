@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express"
 import { Asset, User } from "../models/users/user.model";
 import isMongoId from "validator/lib/isMongoId";
 import { isvalidDate } from "../client/src/utils/isValidDate";
-import { Checklist, ChecklistBox, ChecklistCategory, IChecklist } from "../models/checklist/checklist.model";
+import { Checklist, ChecklistBox, ChecklistCategory, IChecklist } from "../models/checklist";
 import { CreateOrEditDropDownDto, DropDownDto } from "../dtos/common/dropdown.dto";
 import { CreateOrEditChecklistDto, GetChecklistDto, GetChecklistFromExcelDto } from "../dtos/checklist/checklist.dto";
 import { uploadFileToCloud } from "../utils/uploadFileToCloud";

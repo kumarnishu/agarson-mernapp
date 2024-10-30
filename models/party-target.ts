@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import { IState } from "./state.model"
+import { IState } from "./erp-state"
 import { IUser } from "../users/user.model"
 
 export type IPartyTargetReport = {

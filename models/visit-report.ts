@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 import { IUser } from "../users/user.model"
-import { IErpEmployee } from "./erp.employee.model"
+import { IErpEmployee } from "./erp-employee"
 
 export type IVisitReport = {
     _id: string,

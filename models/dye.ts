@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 import { IUser } from "../users/user.model"
-import { IArticle } from "./article.model"
+import { IArticle } from "./article"
 
 export type IDye = {
     _id: string,

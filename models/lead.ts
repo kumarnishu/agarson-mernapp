@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { Asset, IUser } from "../users/user.model";
-import { IReferredParty } from "./referred.model";
+import { IReferredParty } from "./refer";
 
 export type ILead = {
     _id: string,
