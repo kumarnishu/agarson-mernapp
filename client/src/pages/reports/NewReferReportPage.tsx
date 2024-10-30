@@ -7,7 +7,7 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTa
 import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
 import { GetNewRefers } from '../../services/LeadsServices'
-import { GetReferDto } from '../../dtos/crm/crm.dto'
+import { GetReferDto } from '../../dtos'
 import CreateOrEditReferDialog from '../../components/dialogs/crm/CreateOrEditReferDialog'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
 import AllReferralPageDialog from '../../components/dialogs/crm/AllReferralPageDialog'

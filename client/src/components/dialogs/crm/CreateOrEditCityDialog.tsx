@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditCityForm from '../../forms/crm/CreateOrEditCityForm'
-import { CreateOrEditCrmCity } from '../../../dtos/crm/crm.dto'
+import { CreateOrEditCrmCity } from '../../../dtos'
 
 function CreateOrEditCityDialog({ city }: { city?: CreateOrEditCrmCity }) {
     const { choice, setChoice } = useContext(ChoiceContext)

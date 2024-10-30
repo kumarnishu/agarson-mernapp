@@ -14,6 +14,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { LineChart, PieChart } from '@mui/x-charts';
 import ProfileLogo from '../components/logo/ProfileLogo';
 import LogoutButton from '../components/buttons/LogoutButton';
+import { toTitleCase } from '../utils/TitleCase';
 
 function MainDashBoardPage() {
   const navigate = useNavigate()
@@ -74,14 +75,13 @@ function MainDashBoardPage() {
     user?.assigned_permissions.includes('report_menu') && tmpfeatures.push({ feature: 'Reports', is_visible: true, url: "/Reports" })
     user?.assigned_permissions.includes('dropdown_menu') && tmpfeatures.push({ feature: 'DropDown', is_visible: true, url: "/DropDown" })
 
-    // tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
     setFeatures(tmpfeatures)
 
   }, [user])
   return (
     <>
 
-      <Box sx={{ bgcolor: 'rgba(0,0,255,0.8)', width: '100%' }}>
+      <Box sx={{ bgcolor: '#059ff7', width: '100%' }}>
         {/* parent stack */}
         <Stack direction="row" sx={{
           justifyContent: "space-between", alignItems: "center"
@@ -112,7 +112,7 @@ function MainDashBoardPage() {
                 <Stack flexDirection={"row"} gap={2} sx={{ alignItems: 'center' }}>
                   <ButtonLogo title="" height={20} width={20} />
                   <Typography variant="button" sx={{ fontSize: 12 }} component="div">
-                    {feature?.feature || "Dashboard"}
+                    {toTitleCase(feature?.feature || "Dashboard")}
                   </Typography>
                 </Stack>
               </Paper>

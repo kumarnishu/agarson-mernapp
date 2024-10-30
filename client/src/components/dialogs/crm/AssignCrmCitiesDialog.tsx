@@ -11,8 +11,8 @@ import { useFormik } from 'formik';
 import * as Yup from "yup"
 import { GetUsers } from '../../../services/UserServices';
 import { AssignCRMCitiesToUsers } from '../../../services/LeadsServices';
-import { DropDownDto } from '../../../dtos/common/dropdown.dto';
-import { GetUserDto } from '../../../dtos/users/user.dto';
+import { DropDownDto } from '../../../dtos';
+import { GetUserDto } from '../../../dtos';
 
 
 function AssignCrmCitiesDialog({ cities, flag }: { cities: DropDownDto[], flag: number }) {

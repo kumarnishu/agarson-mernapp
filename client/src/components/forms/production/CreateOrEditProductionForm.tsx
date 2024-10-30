@@ -12,8 +12,8 @@ import { CreateOrEditProduction, GetArticles, GetMachines } from '../../../servi
 import { GetUsers } from '../../../services/UserServices';
 import { UserContext } from '../../../contexts/userContext';
 import moment from 'moment';
-import { GetUserDto } from '../../../dtos/users/user.dto';
-import { CreateOrEditProductionDto, GetArticleDto, GetMachineDto, GetProductionDto } from '../../../dtos/production/production.dto';
+import { GetUserDto } from '../../../dtos';
+import { CreateOrEditProductionDto, GetArticleDto, GetMachineDto, GetProductionDto } from '../../../dtos';
 
 function CreateOrEditProductionForm({ production }: { production?: GetProductionDto }) {
     const { user } = useContext(UserContext)

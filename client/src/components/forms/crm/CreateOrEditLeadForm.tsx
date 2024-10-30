@@ -11,8 +11,8 @@ import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { toTitleCase } from '../../../utils/TitleCase';
-import { GetCrmCityDto, GetCrmStateDto, GetLeadDto } from '../../../dtos/crm/crm.dto';
-import { DropDownDto } from '../../../dtos/common/dropdown.dto';
+import { GetCrmCityDto, GetCrmStateDto, GetLeadDto } from '../../../dtos';
+import { DropDownDto } from '../../../dtos';
 
 
 function CreateOrEditLeadForm({ lead }: { lead?: GetLeadDto }) {

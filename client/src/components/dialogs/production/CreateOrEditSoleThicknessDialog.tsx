@@ -2,8 +2,8 @@ import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
 import { useContext } from 'react';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext.tsx';
 import { Cancel } from '@mui/icons-material';
-import { GetSoleThicknessDto } from '../../../dtos/production/production.dto.ts';
 import CreateOrEditSoleThicknessForm from '../../forms/production/CreateOrEditSoleThicknessForm.tsx';
+import { GetSoleThicknessDto } from '../../../dtos/index.ts';
 
 
 function CreateOrEditSoleThicknessDialog({ thickness }: { thickness?: GetSoleThicknessDto }) {

@@ -14,7 +14,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { GetAllCities, GetAllStates } from '../../services/LeadsServices'
 import FindUknownCrmCitiesDialog from '../../components/dialogs/crm/FindUknownCrmCitiesDialog'
-import { GetCrmCityDto, GetCrmStateDto } from '../../dtos/crm/crm.dto'
+import { GetCrmCityDto, GetCrmStateDto } from '../../dtos'
 import AssignCrmCitiesDialog from '../../components/dialogs/crm/AssignCrmCitiesDialog'
 import { toTitleCase } from '../../utils/TitleCase'
 // import { jsPDF } from 'jspdf'; //or use your library of choice here

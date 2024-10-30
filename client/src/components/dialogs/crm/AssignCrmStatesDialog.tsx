@@ -11,8 +11,8 @@ import { useFormik } from 'formik';
 import * as Yup from "yup"
 import { GetUsers } from '../../../services/UserServices';
 import { AssignCRMStatesToUsers } from '../../../services/LeadsServices';
-import { GetUserDto } from '../../../dtos/users/user.dto';
-import { GetCrmStateDto } from '../../../dtos/crm/crm.dto';
+import { GetUserDto } from '../../../dtos';
+import { GetCrmStateDto } from '../../../dtos';
 
 
 function AssignCrmStatesDialog({ states, flag }: { states: GetCrmStateDto[], flag:number }) {

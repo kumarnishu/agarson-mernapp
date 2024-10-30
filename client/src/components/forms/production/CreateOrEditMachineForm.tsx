@@ -9,8 +9,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { GetMachineCategories, CreateOrEditMachine } from '../../../services/ProductionServices';
-import { CreateOrEditMachineDto, GetMachineDto } from '../../../dtos/production/production.dto';
-import { DropDownDto } from '../../../dtos/common/dropdown.dto';
+import { CreateOrEditMachineDto, GetMachineDto } from '../../../dtos';
+import { DropDownDto } from '../../../dtos';
 
 
 function CreateOrEditMachineForm({ machine }: { machine?: GetMachineDto }) {

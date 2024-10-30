@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { deleteToken, sendUserToken } from '../middlewares/auth.middleware';
 import isMongoId from "validator/lib/isMongoId";
-import { FetchAllPermissions, IMenu } from '../utils/fillAllPermissions';
-import { AssignPermissionForMultipleUserDto, AssignPermissionForOneUserDto, GetUserDto,  LoginDto, ResetPasswordDto, UpdatePasswordDto } from '../dtos';
+import { FetchAllPermissions } from '../utils/fillAllPermissions';
+import { AssignPermissionForMultipleUserDto, AssignPermissionForOneUserDto, GetUserDto,  IMenu,  LoginDto, ResetPasswordDto, UpdatePasswordDto } from '../dtos';
 import { User } from '../models/user';
 import moment from 'moment';
 

@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { ProductionChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditDyeLocationForm from '../../forms/production/CreateOrEditDyeLocationForm'
-import { GetDyeLocationDto } from '../../../dtos/production/production.dto'
+import { GetDyeLocationDto } from '../../../dtos'
 
 function CreateOrEditDyeLocationDialog({ location }: { location?: GetDyeLocationDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

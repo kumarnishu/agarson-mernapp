@@ -11,9 +11,9 @@ import AlertBar from '../../snacks/AlertBar';
 import { CreateOrEditShoeWeight, GetDyeById, GetDyes, GetMachines } from '../../../services/ProductionServices';
 import { months } from '../../../utils/months';
 import UploadFileButton from '../../buttons/UploadFileButton';
-import { GetUserDto } from '../../../dtos/users/user.dto';
-import { GetDyeDto, GetMachineDto, GetShoeWeightDto } from '../../../dtos/production/production.dto';
-import { DropDownDto } from '../../../dtos/common/dropdown.dto';
+import { GetUserDto } from '../../../dtos';
+import { GetDyeDto, GetMachineDto, GetShoeWeightDto } from '../../../dtos';
+import { DropDownDto } from '../../../dtos';
 
 
 function CreateOrEditShoeWeightForm({ shoe_weight }: { shoe_weight?: GetShoeWeightDto }) {

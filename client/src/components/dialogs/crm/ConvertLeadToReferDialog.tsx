@@ -8,7 +8,7 @@ import { ConvertLeadToRefer } from '../../../services/LeadsServices';
 import { queryClient } from '../../../main';
 import { useMutation } from 'react-query';
 import AlertBar from '../../snacks/AlertBar';
-import { GetLeadDto, GetReferDto } from '../../../dtos/crm/crm.dto';
+import { GetLeadDto, GetReferDto } from '../../../dtos';
 
 
 function ConvertLeadToReferDialog({ lead }: { lead: GetLeadDto }) {

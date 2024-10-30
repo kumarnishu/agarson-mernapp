@@ -8,7 +8,7 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
-import { CreateOrEditErpEmployeeDto, GetErpEmployeeDto } from '../../../dtos/erp reports/erp.reports.dto';
+import { CreateOrEditErpEmployeeDto, GetErpEmployeeDto } from '../../../dtos';
 import { CreateOreditErpErpEmployee } from '../../../services/ErpServices';
 
 function CreateOrEditErpEmployeeForm({ employee }: { employee?: GetErpEmployeeDto }) {

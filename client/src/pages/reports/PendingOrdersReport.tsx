@@ -9,7 +9,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import AlertBar from '../../components/snacks/AlertBar'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
-import { GetPendingOrdersReportFromExcelDto } from '../../dtos/erp reports/erp.reports.dto'
+import { GetPendingOrdersReportFromExcelDto } from '../../dtos'
 
 import { AxiosResponse } from "axios"
 import React from "react"

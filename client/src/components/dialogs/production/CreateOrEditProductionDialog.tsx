@@ -2,8 +2,8 @@ import { Dialog, DialogContent, DialogTitle, Stack, IconButton } from '@mui/mate
 import { useContext } from 'react';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext.tsx';
 import { Cancel } from '@mui/icons-material';
-import { GetProductionDto } from '../../../dtos/production/production.dto.ts';
 import CreateOrEditProductionForm from '../../forms/production/CreateOrEditProductionForm.tsx';
+import { GetProductionDto } from '../../../dtos/index.ts';
 
 
 function CreateOrEditProductionDialog({ production }: { production?: GetProductionDto }) {

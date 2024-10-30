@@ -10,7 +10,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import AlertBar from '../../components/snacks/AlertBar'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
-import { GetPartyTargetReportDto, GetPartyTargetReportFromExcelDto } from '../../dtos/erp reports/erp.reports.dto'
+import { GetPartyTargetReportDto, GetPartyTargetReportFromExcelDto } from '../../dtos'
 import React from "react"
 import { useMutation } from "react-query"
 import { styled } from "styled-components"

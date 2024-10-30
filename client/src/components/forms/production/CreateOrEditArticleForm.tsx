@@ -9,7 +9,7 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { CreateOrEditArticle } from '../../../services/ProductionServices';
-import { CreateOrEditArticleDto, GetArticleDto } from '../../../dtos/production/production.dto';
+import { CreateOrEditArticleDto, GetArticleDto } from '../../../dtos';
 
 
 

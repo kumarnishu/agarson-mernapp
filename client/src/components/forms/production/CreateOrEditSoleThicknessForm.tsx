@@ -9,8 +9,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { CreateOrEditSoleThickness, GetDyeById, GetDyes } from '../../../services/ProductionServices';
-import { CreateOrEditSoleThicknessDto, GetDyeDto, GetSoleThicknessDto } from '../../../dtos/production/production.dto';
-import { DropDownDto } from '../../../dtos/common/dropdown.dto';
+import { CreateOrEditSoleThicknessDto, GetDyeDto, GetSoleThicknessDto } from '../../../dtos';
+import { DropDownDto } from '../../../dtos';
 
 function CreateOrEditSoleThicknessForm({ thickness }: { thickness?: GetSoleThicknessDto }) {
     const { data: dyes } = useQuery<AxiosResponse<GetDyeDto[]>, BackendError>("dyes", async () => GetDyes())

@@ -9,7 +9,7 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
-import { DropDownDto } from '../../../dtos/common/dropdown.dto';
+import { DropDownDto } from '../../../dtos';
 
 function CreateOrEditLeadStageForm({ stage }: { stage?: DropDownDto}) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation

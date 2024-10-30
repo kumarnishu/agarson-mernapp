@@ -11,8 +11,8 @@ import AlertBar from '../../snacks/AlertBar';
 import { useFormik } from 'formik';
 import * as Yup from "yup"
 import { toTitleCase } from '../../../utils/TitleCase';
-import { GetUserDto } from '../../../dtos/users/user.dto';
-import { DropDownDto } from '../../../dtos/common/dropdown.dto';
+import { GetUserDto } from '../../../dtos';
+import { DropDownDto } from '../../../dtos';
 
 
 function AssignUsersDialog({ user, setUser }: { user: GetUserDto, setUser: React.Dispatch<React.SetStateAction<GetUserDto | undefined>> }) {

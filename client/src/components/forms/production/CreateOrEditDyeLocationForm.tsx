@@ -9,7 +9,7 @@ import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
 import { CreateOrEditDyeLocation } from '../../../services/ProductionServices';
-import { GetDyeLocationDto } from '../../../dtos/production/production.dto';
+import { GetDyeLocationDto } from '../../../dtos';
 
 function CreateOrEditDyeLocationForm({ location }: { location?: GetDyeLocationDto }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation

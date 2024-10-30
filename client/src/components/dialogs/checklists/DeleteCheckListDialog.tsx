@@ -8,7 +8,7 @@ import { BackendError } from '../../..';
 import { AxiosResponse } from 'axios';
 import { DeleteCheckList } from '../../../services/CheckListServices';
 import { queryClient } from '../../../main';
-import { GetChecklistDto } from '../../../dtos/checklist/checklist.dto';
+import { GetChecklistDto } from '../../../dtos';
 
 function DeleteCheckListDialog({ checklist }: { checklist: GetChecklistDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

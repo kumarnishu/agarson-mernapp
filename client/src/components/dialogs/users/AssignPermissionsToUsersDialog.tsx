@@ -8,7 +8,7 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { AssignPermissionsToUsers, GetPermissions } from '../../../services/UserServices';
-import { IMenu, IPermission } from '../../../dtos/users/user.dto';
+import { IMenu, IPermission } from '../../../dtos';
 
 
 function AssignPermissionsToUsersDialog({ user_ids, flag }: { user_ids: string[], flag: number }) {

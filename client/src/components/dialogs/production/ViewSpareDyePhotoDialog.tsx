@@ -2,7 +2,7 @@ import { Dialog, DialogContent,  IconButton, Stack } from '@mui/material';
 import { useContext } from 'react';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
-import { GetSpareDyeDto } from '../../../dtos/production/production.dto';
+import { GetSpareDyeDto } from '../../../dtos';
 
 function ViewSpareDyePhotoDialog({ spare_dye }: { spare_dye: GetSpareDyeDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

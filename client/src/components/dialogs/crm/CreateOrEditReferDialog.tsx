@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
 import CreateOrEditReferForm from '../../forms/crm/CreateOrEditReferForm';
-import { GetReferDto } from '../../../dtos/crm/crm.dto';
+import { GetReferDto } from '../../../dtos';
 
 function CreateOrEditReferDialog({refer}:{refer?:GetReferDto}) {
   const { choice, setChoice } = useContext(ChoiceContext);

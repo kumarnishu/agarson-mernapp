@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditStateForm from '../../forms/crm/CreateOrEditStateForm'
-import { GetCrmStateDto } from '../../../dtos/crm/crm.dto'
+import { GetCrmStateDto } from '../../../dtos'
 
 function CreateOrEditCrmStateDialog({ state }: { state?: GetCrmStateDto}) {
     const { choice, setChoice } = useContext(ChoiceContext)

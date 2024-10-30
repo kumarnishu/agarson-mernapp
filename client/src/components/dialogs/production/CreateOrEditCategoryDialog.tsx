@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { ProductionChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditMachinecategoryForm from '../../forms/production/CreateOrEditMachinecategoryForm'
-import { DropDownDto } from '../../../dtos/common/dropdown.dto'
+import { DropDownDto } from '../../../dtos'
 
 function CreateOrEditMachineCategoryDialog({ machine_category }: { machine_category?: DropDownDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

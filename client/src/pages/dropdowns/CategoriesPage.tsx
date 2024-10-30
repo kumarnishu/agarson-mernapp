@@ -12,7 +12,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import AlertBar from '../../components/snacks/AlertBar'
 import TableSkeleton from '../../components/skeleton/TableSkeleton'
 import { UserContext } from '../../contexts/userContext'
-import { DropDownDto } from '../../dtos/common/dropdown.dto'
+import { DropDownDto } from '../../dtos'
 import CheckCategoryTable from '../../components/tables/checklists/CheckCategoryTable'
 import { GetAllCheckCategories } from '../../services/CheckListServices'
 import CreateOrEditChecklistCategoryDialog from '../../components/dialogs/checklists/CreateOrEditChecklistCategoryDialog'

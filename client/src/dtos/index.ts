@@ -7,7 +7,6 @@ export type CreateOrEditDropDownDto = {
     id: string,
     key: string
 }
-
 export type IPermission = {
     value: string,
     label: string
@@ -17,6 +16,7 @@ export type IMenu = {
     menues?: IMenu[],
     permissions: IPermission[]
 }
+
 export type CreateOrEditChecklistCategoryDto = {
     category: string
 }
@@ -370,7 +370,6 @@ export type CreateOrEditBillDto = {
 
 export type CreateOrEditRemarkDto = {
     remark: string,
-    maintenance_id: string,
     remind_date: string,
     stage: string,
     has_card: boolean

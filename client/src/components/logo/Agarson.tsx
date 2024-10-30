@@ -1,5 +1,5 @@
 import { Avatar } from "@mui/material"
-import logo2 from "../../assets/OIP.jpeg"
+import check from "../../assets/check.png"
 import logo from "../../assets/favicon.png"
 
 
@@ -14,7 +14,7 @@ export function ButtonLogo({ width, height, title }: Props) {
 
         <Avatar title={title}
             sx={{ width: width, height: height, borderRadius: 10 }}
-            alt="img1" src={logo2}
+            alt="img1" src={check}
         />
     )
 }

@@ -11,7 +11,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import AlertBar from '../../components/snacks/AlertBar'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
-import { GetVisitReportDto, GetVisitReportFromExcelDto } from '../../dtos/erp reports/erp.reports.dto'
+import { GetVisitReportDto, GetVisitReportFromExcelDto } from '../../dtos'
 import React from "react"
 import { useMutation } from "react-query"
 import { styled } from "styled-components"
@@ -162,7 +162,7 @@ export default function VisitReportPage() {
     function handleExcel() {
         try {
             let data: GetVisitReportFromExcelDto[] = [
-                {
+                {   _id:"",
                     employee: "nishu",
                     visit_date: '1 jan 2024',
                     customer: "india footwear",

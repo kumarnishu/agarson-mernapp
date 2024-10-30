@@ -8,7 +8,7 @@ import { useMutation } from 'react-query'
 import { BackendError } from '../../..'
 import { queryClient } from '../../../main'
 import AlertBar from '../../snacks/AlertBar'
-import { CreateOrEditMergeRefersDto, GetReferDto } from '../../../dtos/crm/crm.dto'
+import { CreateOrEditMergeRefersDto, GetReferDto } from '../../../dtos'
 import { MergeTwoRefers } from '../../../services/LeadsServices'
 
 

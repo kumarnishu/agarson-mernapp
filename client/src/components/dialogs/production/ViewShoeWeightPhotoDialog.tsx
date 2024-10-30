@@ -2,7 +2,7 @@ import { Dialog, DialogContent, IconButton, Stack } from '@mui/material';
 import { useContext } from 'react';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
-import { GetShoeWeightDto } from '../../../dtos/production/production.dto';
+import { GetShoeWeightDto } from '../../../dtos';
 
 function ViewShoeWeightPhotoDialog({ weight }: { weight: GetShoeWeightDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

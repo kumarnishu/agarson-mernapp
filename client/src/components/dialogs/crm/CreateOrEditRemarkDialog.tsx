@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditRemarkForm from '../../forms/crm/CreateOrEditRemarkForm'
-import { GetRemarksDto } from '../../../dtos/crm/crm.dto'
+import { GetRemarksDto } from '../../../dtos'
 
 function CreateOrEditRemarkDialog({ lead, remark, display, setDisplay }: {
     lead?: {

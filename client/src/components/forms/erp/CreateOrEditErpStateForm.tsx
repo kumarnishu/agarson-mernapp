@@ -9,7 +9,7 @@ import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
 import { CreateOreditErpState } from '../../../services/ErpServices';
-import { CreateOrEditErpStateDto, GetErpStateDto } from '../../../dtos/erp reports/erp.reports.dto';
+import { CreateOrEditErpStateDto, GetErpStateDto } from '../../../dtos';
 
 function CreateOrEditErpStateForm({ state }: { state?: GetErpStateDto }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation

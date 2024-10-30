@@ -6,8 +6,8 @@ import { useQuery } from 'react-query'
 import { FuzzySearchLeads, GetAllStages, GetLeads } from '../../services/LeadsServices'
 import { UserContext } from '../../contexts/userContext'
 import { toTitleCase } from '../../utils/TitleCase'
-import { GetLeadDto } from '../../dtos/crm/crm.dto'
-import { DropDownDto } from '../../dtos/common/dropdown.dto'
+import { GetLeadDto } from '../../dtos'
+import { DropDownDto } from '../../dtos'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import CreateOrEditLeadDialog from '../../components/dialogs/crm/CreateOrEditLeadDialog'
@@ -34,7 +34,7 @@ import { BulkLeadUpdateFromExcel } from "../../services/LeadsServices"
 import { Button, Snackbar, Tooltip } from "@mui/material"
 import ExportToExcel from "../../utils/ExportToExcel"
 import { Upload } from "@mui/icons-material"
-import { CreateAndUpdatesLeadFromExcelDto } from "../../dtos/crm/crm.dto"
+import { CreateAndUpdatesLeadFromExcelDto } from "../../dtos"
 
 const FileInput = styled.input`
 background:none;

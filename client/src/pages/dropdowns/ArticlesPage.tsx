@@ -12,7 +12,7 @@ import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Tooltip, Ty
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { GetArticleDto } from '../../dtos/production/production.dto'
+import { GetArticleDto } from '../../dtos'
 import { GetArticles } from '../../services/ProductionServices'
 import CreateOrEditArticleDialog from '../../components/dialogs/production/CreateOrEditArticleDialog'
 import ToogleArticleDialog from '../../components/dialogs/production/ToogleArticleDialog'

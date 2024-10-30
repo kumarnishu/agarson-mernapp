@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import UpdateUserPasswordForm from '../../forms/user/UpdateUserPasswordForm';
 import { Cancel } from '@mui/icons-material';
-import { GetUserDto } from '../../../dtos/users/user.dto';
+import { GetUserDto } from '../../../dtos';
 
 
 function UpdateUsePasswordDialog({ user }: { user: GetUserDto }) {

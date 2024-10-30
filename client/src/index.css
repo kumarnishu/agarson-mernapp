@@ -14,9 +14,13 @@ input[type=file]::file-selector-button {
   display: none;
   cursor: pointer;
 }
-
+th {
+  text-transform: capitalize;
+  font-size: 13px;
+}
 td {
   text-transform: capitalize;
+  font-size: 12px;
 }
 
 .scrollable-stack {

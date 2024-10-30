@@ -9,7 +9,7 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
 import { GetLeadBillHistory } from '../../../services/LeadsServices'
 import DeleteBillDialog from './DeleteBillDialog'
-import { GetBillDto } from '../../../dtos/crm/crm.dto'
+import { GetBillDto } from '../../../dtos'
 import CreateOrEditBillDialog from './CreateOrEditBillDialog'
 import ViewBillPhotoDialog from './ViewBillPhotoDialog'
 

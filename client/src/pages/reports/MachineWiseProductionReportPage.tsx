@@ -8,7 +8,7 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState
 import moment from 'moment'
 import { GetproductionMachineWise } from '../../services/ProductionServices'
 import { onlyUnique } from '../../utils/UniqueArray'
-import { IColumnRowData } from '../../dtos/production/production.dto'
+import { IColumnRowData } from '../../dtos'
 import { UserContext } from '../../contexts/userContext'
 import ExportToExcel from '../../utils/ExportToExcel'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';

@@ -8,7 +8,7 @@ import { useMutation } from 'react-query';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { ToogleArticle } from '../../../services/ProductionServices';
-import { GetArticleDto } from '../../../dtos/production/production.dto';
+import { GetArticleDto } from '../../../dtos';
 
 function ToogleArticleDialog({ article }: { article: GetArticleDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

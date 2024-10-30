@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { ChoiceContext, UserChoiceActions, } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditErpStateForm from '../../forms/erp/CreateOrEditErpStateForm'
-import { GetErpStateDto } from '../../../dtos/erp reports/erp.reports.dto'
+import { GetErpStateDto } from '../../../dtos'
 
 function CreateOrEditErpStateDialog({ state }: { state?: GetErpStateDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

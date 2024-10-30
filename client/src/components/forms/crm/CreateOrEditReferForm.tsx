@@ -11,7 +11,7 @@ import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { UserContext } from '../../../contexts/userContext';
 import { toTitleCase } from '../../../utils/TitleCase';
-import { GetCrmCityDto, GetCrmStateDto, GetReferDto } from '../../../dtos/crm/crm.dto';
+import { GetCrmCityDto, GetCrmStateDto, GetReferDto } from '../../../dtos';
 
 function CreateOrEditReferForm({ refer }: { refer?: GetReferDto }) {
     const { user } = useContext(UserContext);

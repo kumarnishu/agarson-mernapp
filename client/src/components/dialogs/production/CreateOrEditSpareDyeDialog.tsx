@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
 import { useContext } from 'react';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
-import { GetSpareDyeDto } from '../../../dtos/production/production.dto';
+import { GetSpareDyeDto } from '../../../dtos';
 import CreateOrEditSpareDyeForm from '../../forms/production/CreateOrEditSpareDyeForm';
 
 

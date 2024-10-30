@@ -8,7 +8,7 @@ import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { DeleteErpEmployee } from '../../../services/ErpServices';
-import { GetErpEmployeeDto } from '../../../dtos/erp reports/erp.reports.dto';
+import { GetErpEmployeeDto } from '../../../dtos';
 
 
 function DeleteErpEmployeeDialog({ employee }: { employee: GetErpEmployeeDto}) {

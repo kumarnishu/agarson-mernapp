@@ -2,7 +2,7 @@ import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { useContext } from 'react'
 import { ChoiceContext, UserChoiceActions, } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
-import { GetErpEmployeeDto } from '../../../dtos/erp reports/erp.reports.dto'
+import { GetErpEmployeeDto } from '../../../dtos'
 import CreateOrEditErpEmployeeForm from '../../forms/erp/CreateOrEditErpEmployeeForm'
 
 function CreateOrEditErpEmployeeDialog({ employee }: { employee?: GetErpEmployeeDto }) {

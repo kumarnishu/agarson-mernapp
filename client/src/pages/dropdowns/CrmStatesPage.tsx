@@ -15,7 +15,7 @@ import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { GetAllStates } from '../../services/LeadsServices'
 import FindUknownCrmStatesDialog from '../../components/dialogs/crm/FindUknownCrmStatesDialog'
-import { GetCrmStateDto } from '../../dtos/crm/crm.dto'
+import { GetCrmStateDto } from '../../dtos'
 import AssignCrmStatesDialog from '../../components/dialogs/crm/AssignCrmStatesDialog'
 import React from "react"
 import { useMutation } from "react-query"

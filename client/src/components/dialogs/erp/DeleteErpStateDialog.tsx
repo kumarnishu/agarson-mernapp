@@ -8,7 +8,7 @@ import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { DeleteErpState } from '../../../services/ErpServices';
-import { GetErpStateDto } from '../../../dtos/erp reports/erp.reports.dto';
+import { GetErpStateDto } from '../../../dtos';
 
 
 function DeleteErpStateDialog({ state }: { state: GetErpStateDto}) {

@@ -11,8 +11,8 @@ import { useFormik } from 'formik';
 import * as Yup from "yup"
 import { GetUsers } from '../../../services/UserServices';
 import { AssignErpEmployeesToUsers } from '../../../services/ErpServices';
-import { GetUserDto } from '../../../dtos/users/user.dto';
-import { GetErpEmployeeDto } from '../../../dtos/erp reports/erp.reports.dto';
+import { GetUserDto } from '../../../dtos';
+import { GetErpEmployeeDto } from '../../../dtos';
 
 
 function AssignErpEmployeesDialog({ employees, flag }: { employees: GetErpEmployeeDto[], flag: number }) {

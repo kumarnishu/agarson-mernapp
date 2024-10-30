@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditLeadTypeForm from '../../forms/crm/CreateOrEditLeadTypeForm'
-import { DropDownDto } from '../../../dtos/common/dropdown.dto'
+import { DropDownDto } from '../../../dtos'
 
 function CreateOrEditLeadTypeDialog({ type }: { type?: DropDownDto
 }) {

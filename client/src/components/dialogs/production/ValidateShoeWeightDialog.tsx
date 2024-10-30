@@ -8,8 +8,8 @@ import { useMutation } from 'react-query';
 import AlertBar from '../../snacks/AlertBar';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { ValidateShoeWeight } from '../../../services/ProductionServices';
-import { GetUserDto } from '../../../dtos/users/user.dto';
-import { GetShoeWeightDto } from '../../../dtos/production/production.dto';
+import { GetUserDto } from '../../../dtos';
+import { GetShoeWeightDto } from '../../../dtos';
 
 function ValidateShoeWeightDialog({ weight }: { weight: GetShoeWeightDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

@@ -9,7 +9,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
-import { GetShoeWeightDiffReportDto } from '../../dtos/production/production.dto'
+import { GetShoeWeightDiffReportDto } from '../../dtos'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { GetShoeWeightDiffReports } from '../../services/ProductionServices'
 

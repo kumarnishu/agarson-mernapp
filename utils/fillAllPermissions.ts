@@ -1,12 +1,5 @@
-export type IPermission = {
-    value: string,
-    label: string
-}
-export type IMenu = {
-    label: string,
-    menues?: IMenu[],
-    permissions: IPermission[]
-}
+import { IMenu } from "../dtos";
+
 export function FetchAllPermissions() {
     let permissions: IMenu[] = [];
 

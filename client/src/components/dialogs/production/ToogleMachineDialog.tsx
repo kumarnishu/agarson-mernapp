@@ -8,7 +8,7 @@ import { useMutation } from 'react-query';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { ToogleMachine } from '../../../services/ProductionServices';
-import { GetMachineDto } from '../../../dtos/production/production.dto';
+import { GetMachineDto } from '../../../dtos';
 
 function ToogleMachineDialog({ machine }: { machine: GetMachineDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

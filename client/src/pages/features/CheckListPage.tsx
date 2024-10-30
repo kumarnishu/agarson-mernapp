@@ -7,8 +7,8 @@ import { UserContext } from '../../contexts/userContext'
 import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
-import { GetUserDto } from '../../dtos/users/user.dto'
-import { DropDownDto } from '../../dtos/common/dropdown.dto'
+import { GetUserDto } from '../../dtos'
+import { DropDownDto } from '../../dtos'
 import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { CheckListChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import PopUp from '../../components/popup/PopUp'
@@ -18,11 +18,10 @@ import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import { GetAllCheckCategories, GetChecklists } from '../../services/CheckListServices'
-import { GetChecklistBoxDto, GetChecklistDto } from '../../dtos/checklist/checklist.dto'
+import { GetChecklistBoxDto, GetChecklistDto } from '../../dtos'
 import DeleteCheckListDialog from '../../components/dialogs/checklists/DeleteCheckListDialog'
 import CreateOrEditCheckListDialog from '../../components/dialogs/checklists/CreateOrEditCheckListDialog'
 import ToogleMyCheckListDialog from '../../components/forms/checklists/ToogleMyCheckListDialog'
-import Slide from '@mui/material/Slide';
 
 
 function ChecklistPage() {

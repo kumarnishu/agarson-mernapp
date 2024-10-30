@@ -2,7 +2,7 @@ import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { useContext } from 'react'
 import {  ChoiceContext, CheckListChoiceActions } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
-import { DropDownDto } from '../../../dtos/common/dropdown.dto'
+import { DropDownDto } from '../../../dtos'
 import CreateOrEditCategoryForm from '../../forms/checklists/CreateOrEditCategoryForm'
 
 function CreateOrEditChecklistCategoryDialog({ category }: { category?: DropDownDto}) {

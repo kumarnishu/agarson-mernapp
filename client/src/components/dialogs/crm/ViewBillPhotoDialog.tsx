@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, IconButton, Stack, Typography } from '@mui/material';
 import { Cancel } from '@mui/icons-material';
 import { DownloadFile } from '../../../utils/DownloadFile';
-import { GetBillDto } from '../../../dtos/crm/crm.dto';
+import { GetBillDto } from '../../../dtos';
 
 function ViewBillPhotoDialog({ bill, display, setDisplay }: { bill: GetBillDto, display: boolean, setDisplay: React.Dispatch<React.SetStateAction<boolean>> }) {
     return (

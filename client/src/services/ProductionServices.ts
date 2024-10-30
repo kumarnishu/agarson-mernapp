@@ -1,5 +1,5 @@
-import { DropDownDto } from "../dtos/common/dropdown.dto";
-import { CreateOrEditArticleDto, CreateOrEditDyeDTo, CreateOrEditMachineDto, CreateOrEditProductionDto, CreateOrEditSoleThicknessDto, GetProductionDto, GetShoeWeightDto, GetSoleThicknessDto, GetSpareDyeDto } from "../dtos/production/production.dto";
+import { DropDownDto } from "../dtos";
+import { CreateOrEditArticleDto, CreateOrEditDyeDTo, CreateOrEditMachineDto, CreateOrEditProductionDto, CreateOrEditSoleThicknessDto, GetProductionDto, GetShoeWeightDto, GetSoleThicknessDto, GetSpareDyeDto } from "../dtos";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 

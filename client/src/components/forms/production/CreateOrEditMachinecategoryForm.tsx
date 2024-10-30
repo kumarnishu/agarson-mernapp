@@ -9,7 +9,7 @@ import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
 import { CreateOrEditMachineCategory } from '../../../services/ProductionServices';
-import { DropDownDto } from '../../../dtos/common/dropdown.dto';
+import { DropDownDto } from '../../../dtos';
 
 function CreateOrEditMachinecategoryForm({ machine_category }: { machine_category?: DropDownDto }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation

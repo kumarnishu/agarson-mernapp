@@ -45,9 +45,6 @@ import DyeLocationPage from './pages/dropdowns/DyeLocationPage.tsx'
 import FeatureDashboard from './dashboards/FeatureDashboard.tsx'
 import ErpEmployeesPage from './pages/dropdowns/ErpEmployeesPage.tsx'
 import VisitReportPage from './pages/reports/VisitReportPage.tsx'
-import MaintenancePage from './pages/features/MaintenancePage.tsx'
-import MaintenanceCategoriesPage from './pages/dropdowns/MaintenanceCategoriesPage.tsx'
-import MaintenanceReportPage from './pages/reports/MaintenanceReportPage.tsx'
 
 
 function AppRoutes() {
@@ -126,15 +123,6 @@ function AppRoutes() {
                   <SoleThicknessPage />
                 }
               />}
-              {user?.assigned_permissions.includes('maintenance_view') && <Route path="MaintenancePage" element={
-                < MaintenancePage />
-              }
-              />}
-
-              {user?.is_admin && <Route path="MaintenanceAdmin" element={
-                <MaintenanceReportPage />
-              }
-              />}
             </Route>}
 
           {user && user?.assigned_permissions.includes('report_menu') &&
@@ -145,11 +133,6 @@ function AppRoutes() {
                 }
               />
               
-              {user?.assigned_permissions.includes('maintenance_report_view') && <Route
-                path="MaintenanceReport" element={
-                  <MaintenanceReportPage />
-                }
-              />}
               {user?.assigned_permissions.includes('visit_report_view') && <Route
                 path="VisitReportPage" element={
                   <VisitReportPage />
@@ -247,13 +230,6 @@ function AppRoutes() {
                   <MachineCategoriesPage />
                 }
               />}
-
-              {user?.assigned_permissions.includes('maintenance_category_view') && <Route
-                path="MaintenanceCategoriesPage" element={
-                  <MaintenanceCategoriesPage />
-                }
-              />}
-
               {user?.assigned_permissions.includes('dye_location_view') &&<Route
                 path="DyeLocationsPage" element={
                   <DyeLocationPage />

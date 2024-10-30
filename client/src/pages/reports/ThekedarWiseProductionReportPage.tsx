@@ -10,7 +10,7 @@ import { GetproductionThekedarWise } from '../../services/ProductionServices'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import { IColumnRowData } from '../../dtos/production/production.dto'
+import { IColumnRowData } from '../../dtos'
 import ExportToExcel from '../../utils/ExportToExcel'
 
 export default function ThekedarWiseProductionReportPage() {

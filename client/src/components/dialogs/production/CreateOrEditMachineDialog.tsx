@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
 import CreateOrEditMachineForm from '../../forms/production/CreateOrEditMachineForm';
-import { GetMachineDto } from '../../../dtos/production/production.dto';
+import { GetMachineDto } from '../../../dtos';
 
 
 function CreateOrEditMachineDialog({ machine }: { machine?: GetMachineDto }) {

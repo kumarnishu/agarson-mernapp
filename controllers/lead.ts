@@ -1337,7 +1337,7 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
     }
     if (remark)
         await new Remark({
-            remark,
+            remark:'lead updated',
             lead: lead,
             created_at: new Date(),
             created_by: req.user,

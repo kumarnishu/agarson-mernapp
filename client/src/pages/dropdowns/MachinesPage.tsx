@@ -12,7 +12,7 @@ import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Tooltip, Ty
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { GetMachineDto } from '../../dtos/production/production.dto'
+import { GetMachineDto } from '../../dtos'
 import { GetMachines } from '../../services/ProductionServices'
 import CreateOrEditMachineDialog from '../../components/dialogs/production/CreateOrEditMachineDialog'
 import ToogleMachineDialog from '../../components/dialogs/production/ToogleMachineDialog'

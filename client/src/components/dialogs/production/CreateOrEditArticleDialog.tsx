@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
 import { useContext } from 'react';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
-import { GetArticleDto } from '../../../dtos/production/production.dto';
+import { GetArticleDto } from '../../../dtos';
 import CreateOrEditArticleForm from '../../forms/production/CreateOrEditArticleForm';
 
 

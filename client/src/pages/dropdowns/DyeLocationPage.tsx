@@ -13,7 +13,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import { GetAllDyeLocations } from '../../services/ProductionServices'
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { GetDyeLocationDto } from '../../dtos/production/production.dto'
+import { GetDyeLocationDto } from '../../dtos'
 import CreateOrEditDyeLocationDialog from '../../components/dialogs/production/CreateOrEditDyeLocationDialog'
 import ToogleDyeLocationDialog from '../../components/dialogs/production/ToogleDyeLocationDialog'
 

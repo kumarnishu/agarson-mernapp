@@ -9,7 +9,7 @@ import { useMutation } from 'react-query'
 import { BackendError } from '../../..'
 import { queryClient } from '../../../main'
 import AlertBar from '../../snacks/AlertBar'
-import { CreateOrEditMergeLeadsDto, GetLeadDto } from '../../../dtos/crm/crm.dto'
+import { CreateOrEditMergeLeadsDto, GetLeadDto } from '../../../dtos'
 
 
 function MergeTwoLeadsDialog({ leads, removeSelectedLeads }: { leads: GetLeadDto[], removeSelectedLeads: () => void }) {

@@ -9,10 +9,10 @@ import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { CreateOrEditCheckList, GetAllCheckCategories } from '../../../services/CheckListServices';
-import { GetUserDto } from '../../../dtos/users/user.dto';
+import { GetUserDto } from '../../../dtos';
 import { GetUsers } from '../../../services/UserServices';
-import { CreateOrEditChecklistDto, GetChecklistDto } from '../../../dtos/checklist/checklist.dto';
-import { DropDownDto } from '../../../dtos/common/dropdown.dto';
+import { CreateOrEditChecklistDto, GetChecklistDto } from '../../../dtos';
+import { DropDownDto } from '../../../dtos';
 import moment from 'moment';
 
 function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto }) {

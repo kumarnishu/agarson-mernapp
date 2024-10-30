@@ -8,7 +8,7 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
-import { GetChecklistBoxDto } from '../../../dtos/checklist/checklist.dto';
+import { GetChecklistBoxDto } from '../../../dtos';
 import { ToogleMyCheckLists } from '../../../services/CheckListServices';
 import { Cancel } from '@mui/icons-material';
 

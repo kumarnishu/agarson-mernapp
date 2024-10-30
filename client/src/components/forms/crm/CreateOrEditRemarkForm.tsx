@@ -10,8 +10,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { toTitleCase } from '../../../utils/TitleCase';
-import { GetRemarksDto } from '../../../dtos/crm/crm.dto';
-import { DropDownDto } from '../../../dtos/common/dropdown.dto';
+import { GetRemarksDto } from '../../../dtos';
+import { DropDownDto } from '../../../dtos';
 import moment from 'moment';
 
 

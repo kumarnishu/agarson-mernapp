@@ -1,4 +1,4 @@
-import { CreateOrEditErpEmployeeDto, CreateOrEditErpStateDto, GetErpEmployeeDto, GetErpStateDto } from "../dtos/erp reports/erp.reports.dto";
+import { CreateOrEditErpEmployeeDto, CreateOrEditErpStateDto, GetErpEmployeeDto, GetErpStateDto } from "../dtos";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 

@@ -3,7 +3,7 @@ import { Stack } from '@mui/system'
 import { useContext } from 'react'
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
-import { GetUserDto } from '../../../dtos/users/user.dto'
+import { GetUserDto } from '../../../dtos'
 
 function ProfileDialog({ profile }: { profile: GetUserDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

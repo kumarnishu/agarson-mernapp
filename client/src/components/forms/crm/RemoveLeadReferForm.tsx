@@ -9,7 +9,7 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { RemoveReferLead } from '../../../services/LeadsServices';
-import { GetLeadDto, GetReferDto } from '../../../dtos/crm/crm.dto';
+import { GetLeadDto, GetReferDto } from '../../../dtos';
 
 
 function RemoveLeadReferForm({ lead }: { lead: GetLeadDto }) {

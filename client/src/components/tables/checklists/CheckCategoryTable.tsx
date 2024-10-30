@@ -5,7 +5,7 @@ import PopUp from '../../popup/PopUp'
 import { Delete, Edit } from '@mui/icons-material'
 import { UserContext } from '../../../contexts/userContext'
 import { STable, STableBody, STableCell, STableHead, STableHeadCell, STableRow } from '../../styled/STyledTable'
-import { DropDownDto } from '../../../dtos/common/dropdown.dto'
+import { DropDownDto } from '../../../dtos'
 import CreateOrEditChecklistCategoryDialog from '../../dialogs/checklists/CreateOrEditChecklistCategoryDialog'
 import DeleteCheckListCategoryDialog from '../../dialogs/checklists/DeleteCheckListCategoryDialog'
 

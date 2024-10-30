@@ -7,7 +7,7 @@ import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { Assignment, Block, DeviceHubOutlined, Edit, GroupAdd, GroupRemove, Key, KeyOffOutlined, RemoveCircle, RemoveRedEye, Restore } from '@mui/icons-material'
-import { GetUserDto } from '../../dtos/users/user.dto'
+import { GetUserDto } from '../../dtos'
 import { UserContext } from '../../contexts/userContext'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { DownloadFile } from '../../utils/DownloadFile'
@@ -353,7 +353,6 @@ export default function UsersPage() {
     );
 
 
-
     const table = useMaterialReactTable({
         columns, columnFilterDisplayMode: 'popover', 
         data: users, //10,000 rows       
@@ -363,7 +362,6 @@ export default function UsersPage() {
             sx: {
                 backgroundColor: 'whitesmoke',
                 color: 'white',
-                fontSize: '14px'
             }
         }),
         muiTableContainerProps: (table) => ({
@@ -374,13 +372,11 @@ export default function UsersPage() {
                 backgroundColor: 'whitesmoke',
                 color: 'white',
                 border: '1px solid lightgrey;',
-                fontSize: '13px'
             },
         }),
         muiTableBodyCellProps: () => ({
             sx: {
                 border: '1px solid lightgrey;',
-                fontSize: '13px'
             },
         }),
         muiPaginationProps: {

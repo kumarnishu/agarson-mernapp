@@ -1,7 +1,7 @@
 import express from "express";
-import { upload } from ".";
 import { isAuthenticatedUser, isProfileAuthenticated } from "../middlewares/auth.middleware";
 import { AssignUsers, GetProfile, GetUsers, NewUser, SignUp, UpdateProfile, UpdateUser } from "../controllers/user";
+import { upload } from ".";
 const router = express.Router()
 
 router.post("/signup", upload.single("dp"), SignUp)

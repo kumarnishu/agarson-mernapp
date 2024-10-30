@@ -1,5 +1,5 @@
-import { DropDownDto } from "../dtos/common/dropdown.dto"
-import { CreateOrEditMergeLeadsDto, CreateOrEditMergeRefersDto, GetCrmCityDto, GetCrmStateDto, GetReferDto } from "../dtos/crm/crm.dto"
+import { DropDownDto } from "../dtos"
+import { CreateOrEditMergeLeadsDto, CreateOrEditMergeRefersDto, GetCrmCityDto, GetCrmStateDto, GetReferDto } from "../dtos"
 import { apiClient } from "./utils/AxiosInterceptor"
 
 //leads

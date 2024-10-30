@@ -10,7 +10,7 @@ import { BackendError } from '../..'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
 import CreateOrEditReferDialog from '../../components/dialogs/crm/CreateOrEditReferDialog'
-import { GetReferDto } from '../../dtos/crm/crm.dto'
+import { GetReferDto } from '../../dtos'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import PopUp from '../../components/popup/PopUp'
 import { onlyUnique } from '../../utils/UniqueArray'
@@ -28,7 +28,7 @@ import { useMutation } from "react-query"
 import { styled } from "styled-components"
 import { BulkReferUpdateFromExcel } from "../../services/LeadsServices"
 import {  Snackbar } from "@mui/material"
-import { CreateOrEditReferFromExcelDto } from "../../dtos/crm/crm.dto"
+import { CreateOrEditReferFromExcelDto } from "../../dtos"
 
 const FileInput = styled.input`
 background:none;

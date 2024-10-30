@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditLeadSourceForm from '../../forms/crm/CreateOrEditLeadSourceForm'
-import { DropDownDto } from '../../../dtos/common/dropdown.dto'
+import { DropDownDto } from '../../../dtos'
 
 function CreateOrEditLeadSourceDialog({ source }: { source?: DropDownDto}) {
     const { choice, setChoice } = useContext(ChoiceContext)

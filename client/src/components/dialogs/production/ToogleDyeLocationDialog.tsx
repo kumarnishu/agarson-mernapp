@@ -7,7 +7,7 @@ import { BackendError } from '../../..';
 import { useMutation } from 'react-query';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
-import { GetDyeLocationDto } from '../../../dtos/production/production.dto';
+import { GetDyeLocationDto } from '../../../dtos';
 import { ToogleDyeLocation } from '../../../services/ProductionServices';
 
 function ToogleDyeLocationDialog({ location }: { location: GetDyeLocationDto }) {

@@ -9,7 +9,7 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState
 import { onlyUnique } from '../../utils/UniqueArray'
 import { toTitleCase } from '../../utils/TitleCase'
 import { months } from '../../utils/months'
-import { GetSaleAnalysisReportDto } from '../../dtos/erp reports/erp.reports.dto'
+import { GetSaleAnalysisReportDto } from '../../dtos'
 
 
 
