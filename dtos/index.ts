@@ -24,15 +24,15 @@ export type CreateOrEditChecklistCategoryDto = {
 
 export type GetChecklistDto = {
     _id: string,
-    category: DropDownDto,
+    active: boolean
     work_title: string,
-    link: string,
-    user: DropDownDto,
-    end_date: string,
-    done_date: string,
-    next_date: string,
-    frequency: string,
+    work_description: string,
     photo: string,
+    assigned_users: DropDownDto[],
+    link: string,
+    category: string,
+    frequency: string,
+    next_date: string,
     boxes: GetChecklistBoxDto[],
     created_at: string,
     updated_at: string,
@@ -40,21 +40,19 @@ export type GetChecklistDto = {
     updated_by: DropDownDto
 }
 export type CreateOrEditChecklistDto = {
-    category: string,
     work_title: string,
-    photo: string,
+    work_description: string,
+    category: string,
     link: string,
-    end_date: string,
-    next_date: string,
-    user_id: string,
-    frequency: string,
+    assigned_users:string[]
+    frequency: string
 }
 
 export type GetChecklistBoxDto = {
     _id: string,
+    stage: string,
+    checklist: DropDownDto,
     date: string,
-    checked: boolean,
-    remarks: string,
 }
 
 export type GetChecklistFromExcelDto = {
@@ -288,7 +286,14 @@ export type GetRemarksDto = {
     created_by: DropDownDto
 
 }
+export type GetChecklistRemarksDto = {
+    _id: string,
+    remark: string,
+    checklist_box: DropDownDto,
+    created_date: string,
+    created_by: DropDownDto
 
+}
 
 export type GetActivitiesTopBarDetailsDto = { stage: string, value: number }
 export type GetActivitiesOrRemindersDto = {
@@ -370,12 +375,17 @@ export type CreateOrEditBillDto = {
 
 export type CreateOrEditRemarkDto = {
     remark: string,
-    maintenance_id: string,
     remind_date: string,
     stage: string,
     has_card: boolean
 }
 
+export type CreateOrEditChecklistRemarkDto = {
+    remark: string,
+    stage: string,
+    checklist_box:string,
+    checklist:string
+}
 
 export type GetErpEmployeeDto = {
     _id: string,

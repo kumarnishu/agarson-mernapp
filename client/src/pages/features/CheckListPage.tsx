@@ -121,7 +121,7 @@ function ChecklistPage() {
         size: 350,
         Cell: (cell) => <Stack direction="row" className="scrollable-stack">
           {cell.row.original && cell.row.original.boxes.map((b) => (
-            <Tooltip title={b.remarks} key={b.date}>
+            <Tooltip title={moment(new Date(b.date)).format('dd/mm/yyyy')} key={b.date}>
               <Button
                 sx={{ borderRadius: 10, maxHeight: '22px',minWidth: '20px', m: 0.3, pl: 1 }}
                 onClick={() => {

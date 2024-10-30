@@ -5,16 +5,15 @@ import { Asset, IUser } from "./user";
 
 export type IChecklist = {
     _id: string,
+    active: boolean
+    work_title: string,
+    work_description: string,
+    photo: Asset,
+    assigned_users: IUser[],
     link: string,
     category: IChecklistCategory,
-    work_title: string,
-    details1: string,
-    details2: string,
-    photo: Asset,
-    user: IUser,
     frequency: string,
-    end_date: Date,
-    next_date:Date,
+    next_date: Date,
     created_at: Date,
     updated_at: Date,
     created_by: IUser,
@@ -23,10 +22,18 @@ export type IChecklist = {
 
 
 const ChecklistSchema = new mongoose.Schema<IChecklist, mongoose.Model<IChecklist, {}, {}>, {}>({
+    active: {
+        type:Boolean,
+        default: true,
+    },
     work_title: {
         type: String,
         lowercase: true,
         required: true
+    },
+    work_description: {
+        type: String,
+        lowercase: true,
     },
     link: {
         type: String,
@@ -34,11 +41,6 @@ const ChecklistSchema = new mongoose.Schema<IChecklist, mongoose.Model<IChecklis
     frequency: {
         type: String,
         lowercase: true,
-        required: true
-    },
-    end_date: {
-        type: Date,
-        default: new Date(),
         required: true
     },
     next_date: {
@@ -59,12 +61,11 @@ const ChecklistSchema = new mongoose.Schema<IChecklist, mongoose.Model<IChecklis
         ref: 'ChecklistCategory',
         required: true
     },
-    user:
-    {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    }
+    assigned_users:
+        [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }]
     ,
     created_at: {
         type: Date,

@@ -1,25 +1,21 @@
 import mongoose from "mongoose";
-import { IChecklist } from "./checklist";
 import { IUser } from "./user";
+import { IChecklistBox } from "./checklist-box";
 
-export type IChecklistBox = {
+export type IChecklistRemark = {
     _id: string,
-    date: Date,
-    stage:string,
-    checklist: IChecklist,
+    remark: string,
+    checklist_box:IChecklistBox,
     created_at: Date,
     updated_at: Date,
     created_by: IUser,
     updated_by: IUser
 }
 
-
-const ChecklistBoxSchema = new mongoose.Schema<IChecklistBox, mongoose.Model<IChecklistBox, {}, {}>, {}>({
-    date: { type: Date, required: true },
-    stage: { type: String ,default:'open'},
-    checklist: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Checklist',
+const ChecklistRemarkSchema = new mongoose.Schema<IChecklistRemark, mongoose.Model<IChecklistRemark, {}, {}>, {}>({
+    remark: {
+        type: String,
+        lowercase: true,
         required: true
     },
     created_at: {
@@ -28,7 +24,11 @@ const ChecklistBoxSchema = new mongoose.Schema<IChecklistBox, mongoose.Model<ICh
         required: true,
 
     },
-
+    checklist_box: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ChecklistBox',
+        required: true
+    },
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -48,4 +48,4 @@ const ChecklistBoxSchema = new mongoose.Schema<IChecklistBox, mongoose.Model<ICh
 })
 
 
-export const ChecklistBox = mongoose.model<IChecklistBox, mongoose.Model<IChecklistBox, {}, {}>>("ChecklistBox", ChecklistBoxSchema)
+export const ChecklistRemark = mongoose.model<IChecklistRemark, mongoose.Model<IChecklistRemark, {}, {}>>("ChecklistRemark", ChecklistRemarkSchema)
