@@ -28,9 +28,10 @@ export type GetChecklistDto = {
     work_title: string,
     work_description: string,
     photo: string,
+    last_checked_date:string,
     assigned_users: DropDownDto[],
     link: string,
-    category: string,
+    category: DropDownDto,
     frequency: string,
     next_date: string,
     boxes: GetChecklistBoxDto[],
@@ -45,7 +46,8 @@ export type CreateOrEditChecklistDto = {
     category: string,
     link: string,
     assigned_users:string[]
-    frequency: string
+    frequency: string,
+    photo: string
 }
 
 export type GetChecklistBoxDto = {

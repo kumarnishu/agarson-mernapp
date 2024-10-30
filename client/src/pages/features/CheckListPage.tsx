@@ -42,7 +42,7 @@ function ChecklistPage() {
   const { choice, setChoice } = useContext(ChoiceContext)
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   let previous_date = new Date()
-  let day = previous_date.getDate() - 6
+  let day = previous_date.getDate() - 3
   previous_date.setDate(day)
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'feature_menu', show_assigned_only: true }))
   const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date], async () => GetChecklists({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
@@ -98,16 +98,16 @@ function ChecklistPage() {
         Cell: (cell) => <><Tooltip title={cell.row.original.work_title}><span>{cell.row.original.work_title ? cell.row.original.work_title : ""}</span></Tooltip></>
       },
       {
-        accessorKey: 'created_by',
+        accessorKey: 'assigned_users',
         header: 'Responsible',
         size: 100,
-        Cell: (cell) => <>{cell.row.original.user.label ? cell.row.original.user.label : ""}</>
+        Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.value }).toString() || ""}</>
       },
       {
         accessorKey: 'category',
         header: ' Category',
         size: 120,
-        Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.value : ""}</>
+        Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
       },
       {
         accessorKey: 'frequency',
@@ -121,11 +121,11 @@ function ChecklistPage() {
         size: 350,
         Cell: (cell) => <Stack direction="row" className="scrollable-stack">
           {cell.row.original && cell.row.original.boxes.map((b) => (
-            <Tooltip title={moment(new Date(b.date)).format('dd/mm/yyyy')} key={b.date}>
+            <Tooltip title={moment(new Date(b.date)).format('DD/MM/YYYY')} key={b.date}>
               <Button
-                sx={{ borderRadius: 10, maxHeight: '22px',minWidth: '20px', m: 0.3, pl: 1 }}
+                sx={{ borderRadius: 10, maxHeight: '22px', minWidth: '20px', m: 0.3, pl: 1 }}
                 onClick={() => {
-                  if (b) {
+                  if (b && new Date(b.date) > new Date(previous_date)) {
                     setChecklistBox(b);
                     setChoice({ type: CheckListChoiceActions.toogle_checklist });
                   }
@@ -133,7 +133,7 @@ function ChecklistPage() {
                 size="small"
                 disabled={new Date(b.date) > new Date()}
                 variant="contained"
-                color={b.checked ? 'success' : 'error'}
+                color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
               >
                 {new Date(b.date).getDate()}
               </Button>
@@ -142,10 +142,10 @@ function ChecklistPage() {
         </Stack>
       },
       {
-        accessorKey: 'done_date',
+        accessorKey: 'last_checked_date',
         header: 'Last Checked Date',
         size: 140,
-        Cell: (cell) => <>{cell.row.original.done_date ? cell.row.original.done_date : ""}</>
+        Cell: (cell) => <>{cell.row.original.last_checked_date ? cell.row.original.last_checked_date : ""}</>
       },
       {
         accessorKey: 'next_date',
@@ -204,7 +204,7 @@ function ChecklistPage() {
             <span
               key={index}
             >
-              <span key={category.id} style={{ paddingLeft: '5px',fontSize:'13px' }}>{toTitleCase(category.label)} : {checklists.filter((r) => r.category.id == category.id.toLowerCase()).length || 0}</span>
+              <span key={category.id} style={{ paddingLeft: '5px', fontSize: '13px' }}>{toTitleCase(category.label)} : {checklists.filter((r) => r.category.id == category.id.toLowerCase()).length || 0}</span>
             </span>
           ))}
         </Stack>

@@ -53,7 +53,7 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
             let ch = checklists[i];
             if (ch && ch.category) {
                 let boxes = await ChecklistBox.find({ checklist: ch._id, date: { $gte: dt1, $lt: dt2 } }).sort('date').populate('checklist');
-
+                let lastcheckedbox = await ChecklistBox.findOne({ checklist: ch._id, stage: 'done' }).sort('-date')
                 let dtoboxes = boxes.map((b) => {
                     return {
                         _id: b._id,
@@ -69,7 +69,8 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
                     work_title: ch.work_title,
                     work_description: ch.work_description,
                     link: ch.link,
-                    category: ch.category.category,
+                    last_checked_date: lastcheckedbox ? moment(lastcheckedbox.date).format('DD/MM/YYYY') : "",
+                    category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
                     frequency: ch.frequency,
                     assigned_users: users,
                     created_at: ch.created_at.toString(),
@@ -245,15 +246,15 @@ export const EditChecklist = async (req: Request, res: Response, next: NextFunct
         }
     }
 
-    await Checklist.findByIdAndUpdate(checklist._id,{
-        work_title:work_title,
+    await Checklist.findByIdAndUpdate(checklist._id, {
+        work_title: work_title,
         work_description: work_description,
         category: category,
         link: link,
         assigned_users: assigned_users,
         updated_at: new Date(),
         updated_by: req.user,
-        photo:document
+        photo: document
     })
     return res.status(200).json({ message: `Checklist updated` });
 }
@@ -267,8 +268,8 @@ export const DeleteChecklist = async (req: Request, res: Response, next: NextFun
         return res.status(404).json({ message: "Checklist not found" })
     }
     let boxes = await ChecklistBox.find({ checklist: checklist._id })
-    for(let i=0;i<boxes.length;i++){
-        await ChecklistRemark.deleteMany({checklist_box:boxes[i]._id})
+    for (let i = 0; i < boxes.length; i++) {
+        await ChecklistRemark.deleteMany({ checklist_box: boxes[i]._id })
     }
     await ChecklistBox.deleteMany({ checklist: checklist._id })
     if (checklist.photo && checklist.photo?._id)

@@ -13,7 +13,6 @@ import { GetUserDto } from '../../../dtos';
 import { GetUsers } from '../../../services/UserServices';
 import { CreateOrEditChecklistDto, GetChecklistDto } from '../../../dtos';
 import { DropDownDto } from '../../../dtos';
-import moment from 'moment';
 
 function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto }) {
     const [categories, setCategories] = useState<DropDownDto[]>([])
@@ -35,10 +34,9 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
         initialValues: {
             category: checklist ? checklist.category.id : "",
             work_title: checklist ? checklist.work_title : "",
+            work_description: checklist ? checklist.work_description : "",
             link: checklist ? checklist.link : "",
-            end_date: checklist ? moment(checklist.end_date).format("YYYY-MM-DD") : "",
-            next_date: checklist ? moment(checklist.next_date).format("YYYY-MM-DD") : "",
-            user_id: checklist ? checklist.user.id : "",
+            assigned_users: checklist ? checklist.assigned_users.map((user)=>{return user.id}) : [],
             frequency: checklist ? checklist.frequency : "daily",
             photo: checklist && checklist.photo && checklist.photo || ""
         },
@@ -46,11 +44,11 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
             work_title: Yup.string().required("required field")
                 .min(5, 'Must be 5 characters or more')
                 .max(200, 'Must be 200 characters or less'),
+            work_description: Yup.string(),
+            link: Yup.string(),
             category: Yup.string().required("required field"),
             frequency: Yup.string().required("required"),
-            user_id: Yup.string().required("required"),
-            end_date: Yup.date().required("required"),
-            next_date: Yup.date().required("required"),
+            assigned_users: Yup.array(),
             photo: Yup.mixed<File>()
                 .test("size", "size is allowed only less than 20mb",
                     file => {
@@ -139,6 +137,19 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
                     {...formik.getFieldProps('work_title')}
                 />
                 <TextField
+                    required
+                    error={
+                        formik.touched.work_description && formik.errors.work_description ? true : false
+                    }
+                    id="work_description"
+                    label="Work Description"
+                    fullWidth
+                    helperText={
+                        formik.touched.work_description && formik.errors.work_description ? formik.errors.work_description : ""
+                    }
+                    {...formik.getFieldProps('work_description')}
+                />
+                <TextField
 
                     multiline
                     minRows={2}
@@ -152,30 +163,6 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
                         formik.touched.link && formik.errors.link ? formik.errors.link : ""
                     }
                     {...formik.getFieldProps('link')}
-                />
-                <TextField
-                    fullWidth
-                    error={
-                        formik.touched.photo && formik.errors.photo ? true : false
-                    }
-                    helperText={
-                        formik.touched.photo && formik.errors.photo ? (formik.errors.photo) : ""
-                    }
-                    label="Photo"
-                    focused
-
-                    type="file"
-                    name="photo"
-                    onBlur={formik.handleBlur}
-                    onChange={(e) => {
-                        e.preventDefault()
-                        const target: Target = e.currentTarget
-                        let files = target.files
-                        if (files) {
-                            let file = files[0]
-                            formik.setFieldValue("photo", file)
-                        }
-                    }}
                 />
                 < TextField
                     select
@@ -201,6 +188,13 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
 
                     <option key={2} value='weekly'>
                         Weekly
+                    </option>
+                    <option key={1} value="monthly">
+                        Monthly
+                    </option>
+
+                    <option key={2} value='yearly'>
+                        Yearly
                     </option>
 
                 </TextField>
@@ -238,19 +232,20 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
                 < TextField
                     select
                     SelectProps={{
-                        native: true
+                        native: true,
+                        multiple:true
                     }}
                     focused
                     error={
-                        formik.touched.user_id && formik.errors.user_id ? true : false
+                        formik.touched.assigned_users && formik.errors.assigned_users ? true : false
                     }
-                    id="user_id"
-                    label="Person"
+                    id="assigned_users"
+                    label="Responsible Persons"
                     fullWidth
                     helperText={
-                        formik.touched.user_id && formik.errors.user_id ? formik.errors.user_id : ""
+                        formik.touched.assigned_users && formik.errors.assigned_users ? formik.errors.assigned_users : ""
                     }
-                    {...formik.getFieldProps('user_id')}
+                    {...formik.getFieldProps('assigned_users')}
                 >
                     <option key={0} value={undefined}>
                         Select Person
@@ -264,34 +259,30 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
                         })
                     }
                 </TextField>
-                < TextField
-                    type="date"
-                    error={
-                        formik.touched.next_date && formik.errors.next_date ? true : false
-                    }
-                    focused
-                    id="next_date"
-                    label="Next Check In Date"
+                
+                <TextField
                     fullWidth
-                    helperText={
-                        formik.touched.next_date && formik.errors.next_date ? formik.errors.next_date : ""
-                    }
-                    {...formik.getFieldProps('next_date')}
-                />
-                < TextField
-                    type="date"
                     error={
-                        formik.touched.end_date && formik.errors.end_date ? true : false
+                        formik.touched.photo && formik.errors.photo ? true : false
                     }
-                    focused
-                    disabled={checklist ? true : false}
-                    id="end_date"
-                    label="End Date"
-                    fullWidth
                     helperText={
-                        formik.touched.end_date && formik.errors.end_date ? formik.errors.end_date : ""
+                        formik.touched.photo && formik.errors.photo ? (formik.errors.photo) : ""
                     }
-                    {...formik.getFieldProps('end_date')}
+                    label="Photo"
+                    focused
+
+                    type="file"
+                    name="photo"
+                    onBlur={formik.handleBlur}
+                    onChange={(e) => {
+                        e.preventDefault()
+                        const target: Target = e.currentTarget
+                        let files = target.files
+                        if (files) {
+                            let file = files[0]
+                            formik.setFieldValue("photo", file)
+                        }
+                    }}
                 />
 
 
