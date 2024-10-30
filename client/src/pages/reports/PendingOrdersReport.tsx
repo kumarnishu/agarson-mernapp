@@ -418,7 +418,6 @@ export default function PendingOrdersReport() {
             sx: {
                 backgroundColor: 'whitesmoke',
                 color: 'white',
-                fontSize: '14px'
             }
         }),
         muiTableContainerProps: (table) => ({
@@ -433,7 +432,6 @@ export default function PendingOrdersReport() {
         muiTableBodyCellProps: () => ({
             sx: {
                 border: '1px solid #c2beba;',
-                fontSize: '13px'
             },
         }),
         muiPaginationProps: {

@@ -121,7 +121,6 @@ export default function ErpEmployeesPage() {
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white',
-        fontSize: '14px'
       }
     }),
     muiTableContainerProps: (table) => ({
@@ -136,7 +135,6 @@ export default function ErpEmployeesPage() {
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid #c2beba;',
-        fontSize: '13px'
       },
     }),
     muiPaginationProps: {

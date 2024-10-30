@@ -208,7 +208,6 @@ export default function ProductionPage() {
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white',
-        fontSize: '14px'
       }
     }),
     muiTableHeadRowProps: () => ({
@@ -348,7 +347,6 @@ export default function ProductionPage() {
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid lightgrey;',
-        fontSize: '13px'
       },
     }),
     initialState: { density: 'compact' },

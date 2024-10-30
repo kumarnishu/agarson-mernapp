@@ -198,7 +198,6 @@ console.log(article)
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white',
-        fontSize: '14px'
       }
     }),
     muiTableContainerProps: (table) => ({
@@ -213,7 +212,6 @@ console.log(article)
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid #c2beba;',
-        fontSize: '13px'
       },
     }),
     muiPaginationProps: {

@@ -514,7 +514,6 @@ export default function LeadsPage() {
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white',
-        fontSize: '14px'
       }
     }),
     muiTableHeadRowProps: () => ({
@@ -555,7 +554,6 @@ export default function LeadsPage() {
           }}
           placeholder={`Search  `}
           style={{
-            fontSize: '1.1rem',
             border: '0',
           }}
           onKeyUp={(e) => {
@@ -650,7 +648,6 @@ export default function LeadsPage() {
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid lightgrey;',
-        fontSize: '13px'
       },
     }),
     initialState: { density: 'compact' },

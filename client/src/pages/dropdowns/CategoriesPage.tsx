@@ -130,7 +130,6 @@ export default function ChecklistCategoriesPage() {
           }}
           placeholder={`Search Categories `}
           style={{
-            fontSize: '1.1rem',
             border: '0',
           }}
         />

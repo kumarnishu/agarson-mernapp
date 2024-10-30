@@ -30,12 +30,13 @@ export default function MachineWiseProductionReportPage() {
   const columns = useMemo<MRT_ColumnDef<IColumnRowData['rows']>[]>(
     () => reportcolumns && reportcolumns.map((item) => {
       if (item.type == "string")
-        return { accessorKey: item.key, header: item.header, Footer: "" }
+        return { accessorKey: item.key, size: 120, header: item.header, Footer: "" }
       if (item.type == "date")
-        return { accessorKey: item.key, header: item.header, Footer: <b>Total</b>,
+        return {
+          accessorKey: item.key, size: 120, header: item.header, Footer: <b>Total</b>,
           filterVariant: 'multi-select', filterSelectOptions: reports && reports.map((i) => {return i['date'].toString() }).filter(onlyUnique) }
       return {
-        accessorKey: item.key, header: item.header,
+        accessorKey: item.key, size: 120, header: item.header,
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
         //@ts-ignore
@@ -56,7 +57,6 @@ export default function MachineWiseProductionReportPage() {
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white',
-        fontSize: '14px'
       }
     }),
     muiTableContainerProps: (table) => ({
@@ -103,7 +103,6 @@ export default function MachineWiseProductionReportPage() {
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid #c2beba;',
-        fontSize: '13px'
       },
     }),
     muiPaginationProps: {

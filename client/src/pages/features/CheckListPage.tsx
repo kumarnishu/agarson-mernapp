@@ -123,7 +123,7 @@ function ChecklistPage() {
           {cell.row.original && cell.row.original.boxes.map((b) => (
             <Tooltip title={b.remarks} key={b.date}>
               <Button
-                sx={{ borderRadius: 5, minWidth: '25px', m: 0.3, pl: 0.3 }}
+                sx={{ borderRadius: 10, maxHeight: '22px',minWidth: '20px', m: 0.3, pl: 1 }}
                 onClick={() => {
                   if (b) {
                     setChecklistBox(b);
@@ -179,7 +179,6 @@ function ChecklistPage() {
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white',
-        fontSize: '14px'
       }
     }),
     muiTableContainerProps: (table) => ({
@@ -205,7 +204,7 @@ function ChecklistPage() {
             <span
               key={index}
             >
-              <span key={category.id} style={{ paddingLeft: '25px' }}>{toTitleCase(category.label)} : {checklists.filter((r) => r.category.id == category.id.toLowerCase()).length || 0}</span>
+              <span key={category.id} style={{ paddingLeft: '5px',fontSize:'13px' }}>{toTitleCase(category.label)} : {checklists.filter((r) => r.category.id == category.id.toLowerCase()).length || 0}</span>
             </span>
           ))}
         </Stack>
@@ -250,7 +249,6 @@ function ChecklistPage() {
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid lightgrey;',
-        fontSize: '13px'
       },
     }),
     enableToolbarInternalActions: false,

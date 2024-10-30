@@ -406,7 +406,6 @@ export default function RefersPage() {
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white',
-        fontSize: '14px'
       }
     }),
     muiTableHeadRowProps: () => ({
@@ -443,7 +442,6 @@ export default function RefersPage() {
           }}
           placeholder={`Search  `}
           style={{
-            fontSize: '1.1rem',
             border: '0',
           }}
           onKeyUp={(e) => {
@@ -501,7 +499,6 @@ export default function RefersPage() {
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid lightgrey;',
-        fontSize: '13px'
       },
     }),
     initialState: { density: 'compact' },

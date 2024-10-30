@@ -273,7 +273,6 @@ function CrmActivitiesReportPage() {
             sx: {
                 backgroundColor: 'whitesmoke',
                 color: 'white',
-                fontSize: '14px'
             }
         }),
         muiTableContainerProps: (table) => ({
@@ -294,9 +293,9 @@ function CrmActivitiesReportPage() {
                 direction="row"
                 alignItems={'center'}
                 justifyContent="space-between">
-                <Stack direction={'row'} gap={1}>
+                <Stack direction={'row'} gap={1} p={1} sx={{background:'whitesmoke'}}>
                     {activitiesTopBarData && activitiesTopBarData.data && activitiesTopBarData.data.map((stage, index) => (
-                        <span key={index} style={{ paddingLeft: '25px', fontWeight: 'bold' }}>{toTitleCase(stage.stage)} - {stage.value}</span>
+                        <span key={index} style={{ paddingLeft: '25px'}}>{toTitleCase(stage.stage)} - {stage.value}</span>
                     ))}
                 </Stack>
 
@@ -340,7 +339,6 @@ function CrmActivitiesReportPage() {
         muiTableBodyCellProps: () => ({
             sx: {
                 border: '1px solid lightgrey;',
-                fontSize: '13px'
             },
         }),
         enableToolbarInternalActions: false,

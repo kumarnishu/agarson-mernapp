@@ -300,7 +300,6 @@ export default function ShoeWeightPage() {
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white',
-        fontSize: '14px'
       }
     }),
     muiTableHeadRowProps: () => ({
@@ -440,7 +439,6 @@ export default function ShoeWeightPage() {
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid lightgrey;',
-        fontSize: '13px'
       },
     }),
     initialState: { density: 'compact' },

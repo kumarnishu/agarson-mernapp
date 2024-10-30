@@ -46,7 +46,7 @@ export default function UsersPage() {
             {
                 accessorKey: 'actions',
                 header: '',
-                maxSize: 50,
+                size: 50,
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row">
