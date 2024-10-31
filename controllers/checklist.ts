@@ -188,7 +188,7 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
     if (frequency == "yearly") {
         let current_date = new Date()
         current_date.setDate(1)
-        current_date.setMonth(1)
+        current_date.setMonth(0)
         while (current_date <= new Date(end_date)) {
             await new ChecklistBox({
                 date: new Date(current_date),

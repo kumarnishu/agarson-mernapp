@@ -60,7 +60,7 @@ export const GetChecklistRemarkHistory = async (req: Request, res: Response, nex
 export const NewChecklistRemark = async (req: Request, res: Response, next: NextFunction) => {
     const { remark, stage, checklist, checklist_box } = req.body as CreateOrEditChecklistRemarkDto
     if (!remark || !checklist_box || !checklist) return res.status(403).json({ message: "please fill required fields" })
-  
+
     let box = await ChecklistBox.findById(checklist_box).populate('checklist')
     if (!box) {
         return res.status(404).json({ message: "box not found" })
@@ -92,11 +92,10 @@ export const NewChecklistRemark = async (req: Request, res: Response, next: Next
                     checklist.active = false;
                 }
             }
-            if (checklist.frequency == "weekly") {
-                if (areDatesEqual(box.date, new Date())) {
-                    checklist.active = false;
-                }
+            else {
+                checklist.active = false;
             }
+
             checklist.active = false
             await checklist.save()
         }

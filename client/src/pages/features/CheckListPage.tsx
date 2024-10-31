@@ -56,6 +56,9 @@ function ChecklistPage() {
         queryClient.invalidateQueries('checklists')
       }
     })
+
+
+
   const columns = useMemo<MRT_ColumnDef<GetChecklistDto>[]>(
     //column definitions...
     () => checklists && [
@@ -182,8 +185,6 @@ function ChecklistPage() {
 
         </>
       },
-
-
       {
         accessorKey: 'photo',
         header: 'Photo',
