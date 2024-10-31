@@ -30,6 +30,8 @@ import ProductionRoutes from "./production";
 import ReferRoutes from "./refer";
 import ShoeWeightReportRoutes from "./shoe-weight-report";
 import ShoeWeightRoutes from "./shoe-weight";
+import SoleThicknessRoutes from "./sole-thickness";
+import SpareDyeRoute from "./spare-dye";
 import UserRoutes from "./user";
 
 
@@ -60,6 +62,8 @@ router.use(ProductionRoutes);
 router.use(ReferRoutes);
 router.use(ShoeWeightReportRoutes);
 router.use(ShoeWeightRoutes);
+router.use(SoleThicknessRoutes);
+router.use(SpareDyeRoute);
 router.use(UserRoutes);
 
 export default router;
