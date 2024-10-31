@@ -103,18 +103,10 @@ function ChecklistPage() {
         accessorKey: 'work_title',
         header: ' Work Title',
         size: 250,
-        Cell: (cell) => <>{!cell.row.original.link ? <Tooltip title={cell.row.original.work_title}><span>{cell.row.original.work_title ? cell.row.original.work_title : ""}</span></Tooltip> :
-          <Tooltip title={cell.row.original.work_title}>
+        Cell: (cell) => <>{!cell.row.original.link ? <Tooltip title={cell.row.original.work_description}><span>{cell.row.original.work_title ? cell.row.original.work_title : ""}</span></Tooltip> :
+          <Tooltip title={cell.row.original.work_description}>
             <a style={{ fontSize: 11, fontWeight: 'bold', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
           </Tooltip>}
-        </>
-      },
-      {
-        accessorKey: 'work_description',
-        header: ' Work Detail',
-        size: 250,
-        Cell: (cell) => <><Tooltip title={cell.row.original.work_description}><span>{cell.row.original.work_description ? cell.row.original.work_description : ""}</span></Tooltip> 
-         
         </>
       },
       {

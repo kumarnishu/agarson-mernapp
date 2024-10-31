@@ -151,7 +151,7 @@ export const GetLeads = async (req: Request, res: Response, next: NextFunction) 
                 name: lead.name,
                 customer_name: lead.customer_name,
                 customer_designation: lead.customer_designation,
-                mobile: lead.mobile,
+                mobile: lead.lead_type == "company" ? "" : lead.mobile,
                 gst: lead.gst,
                 has_card: lead.has_card,
                 email: lead.email,
@@ -162,8 +162,8 @@ export const GetLeads = async (req: Request, res: Response, next: NextFunction) 
                 address: lead.address,
                 work_description: lead.work_description,
                 turnover: lead.turnover,
-                alternate_mobile1: lead.alternate_mobile1,
-                alternate_mobile2: lead.alternate_mobile2,
+                alternate_mobile1: lead.lead_type == "company" ? "" : lead.alternate_mobile1,
+                alternate_mobile2: lead.lead_type == "company" ? "" : lead.alternate_mobile2,
                 alternate_email: lead.alternate_email,
                 lead_type: lead.lead_type,
                 stage: lead.stage,
@@ -1103,7 +1103,7 @@ export const FuzzySearchLeads = async (req: Request, res: Response, next: NextFu
                 name: lead.name,
                 customer_name: lead.customer_name,
                 customer_designation: lead.customer_designation,
-                mobile: lead.mobile,
+                mobile: lead.lead_type == "company" ? "" : lead.mobile,
                 gst: lead.gst,
                 has_card: lead.has_card,
                 email: lead.email,
@@ -1115,8 +1115,8 @@ export const FuzzySearchLeads = async (req: Request, res: Response, next: NextFu
                 address: lead.address,
                 work_description: lead.work_description,
                 turnover: lead.turnover,
-                alternate_mobile1: lead.alternate_mobile1,
-                alternate_mobile2: lead.alternate_mobile2,
+                alternate_mobile1:lead.lead_type == "company" ? "" : lead.alternate_mobile1,
+                alternate_mobile2:lead.lead_type == "company" ? "" : lead.alternate_mobile2,
                 alternate_email: lead.alternate_email,
                 lead_type: lead.lead_type,
                 stage: lead.stage,
@@ -1131,43 +1131,7 @@ export const FuzzySearchLeads = async (req: Request, res: Response, next: NextFu
                 updated_by: { id: lead.updated_by._id, value: lead.updated_by.username, label: lead.updated_by.username },
             }
         })
-        // for (let i = 0; i < leads.length; i++) {
-        //     let lead = leads[i];
-        //     let remark = await Remark.findOne({ lead: lead._id }).sort('-created_at');
-        //     let bills = await Bill.find({ lead: lead._id }).countDocuments()
-        //     result.push({
-        //         _id: lead._id,
-        //         name: lead.name,
-        //         customer_name: lead.customer_name,
-        //         customer_designation: lead.customer_designation,
-        //         mobile: lead.mobile,
-        //         gst: lead.gst,
-        //         has_card: lead.has_card,
-        //         email: lead.email,
-        //         city: lead.city,
-        //         state: lead.state,
-        //         uploaded_bills: bills,
-        //         country: lead.country,
-        //         address: lead.address,
-        //         work_description: lead.work_description,
-        //         turnover: lead.turnover,
-        //         alternate_mobile1: lead.alternate_mobile1,
-        //         alternate_mobile2: lead.alternate_mobile2,
-        //         alternate_email: lead.alternate_email,
-        //         lead_type: lead.lead_type,
-        //         stage: lead.stage,
-        //         lead_source: lead.lead_source,
-        //         visiting_card: lead.visiting_card?.public_url || "",
-        //         referred_party_name: lead.referred_party && lead.referred_party.name,
-        //         referred_party_mobile: lead.referred_party && lead.referred_party.mobile,
-        //         referred_date: lead.referred_party && moment(lead.referred_date).format("DD/MM/YYYY"),
-        //         remark: remark?.remark || "",
-        //         created_at: moment(lead.referred_date).format("DD/MM/YYYY"),
-        //         updated_at: moment(lead.referred_date).format("DD/MM/YYYY"),
-        //         created_by: { id: lead.created_by._id, value: lead.created_by.username, label: lead.created_by.username },
-        //         updated_by: { id: lead.updated_by._id, value: lead.updated_by.username, label: lead.updated_by.username },
-        //     })
-        // }
+     
         return res.status(200).json({
             result,
             total: Math.ceil(count / limit),
@@ -1337,7 +1301,7 @@ export const UpdateLead = async (req: Request, res: Response, next: NextFunction
     }
     if (remark)
         await new Remark({
-            remark:'lead updated',
+            remark: 'lead updated',
             lead: lead,
             created_at: new Date(),
             created_by: req.user,

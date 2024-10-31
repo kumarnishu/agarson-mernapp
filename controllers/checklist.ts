@@ -28,17 +28,17 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
     if (!Number.isNaN(limit) && !Number.isNaN(page)) {
         if (req.user?.is_admin && !id) {
             {
-                checklists = await Checklist.find({ active: showhidden == 'false' }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('updated_at').skip((page - 1) * limit).limit(limit)
+                checklists = await Checklist.find({ active: showhidden == 'false' }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('created_at').skip((page - 1) * limit).limit(limit)
                 count = await Checklist.find().countDocuments()
             }
         }
         else if (!id) {
-            checklists = await Checklist.find({ active: showhidden == 'false',assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('updated_at').skip((page - 1) * limit).limit(limit)
+            checklists = await Checklist.find({ active: showhidden == 'false',assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('created_at').skip((page - 1) * limit).limit(limit)
             count = await Checklist.find({ user: req.user?._id }).countDocuments()
         }
 
         else {
-            checklists = await Checklist.find({ active: showhidden == 'false',assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('updated_at').skip((page - 1) * limit).limit(limit)
+            checklists = await Checklist.find({ active: showhidden == 'false', assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('created_at').skip((page - 1) * limit).limit(limit)
             count = await Checklist.find({ user: id }).countDocuments()
         }
 
@@ -188,6 +188,7 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
     if (frequency == "yearly") {
         let current_date = new Date()
         current_date.setDate(1)
+        current_date.setMonth(1)
         while (current_date <= new Date(end_date)) {
             await new ChecklistBox({
                 date: new Date(current_date),
