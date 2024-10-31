@@ -140,10 +140,16 @@ function ChecklistPage() {
               <Button
                 sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '15px', m: 0.3, pl: 1 }}
                 onClick={() => {
-                  if (b && new Date(b.date) > new Date(previous_date)) {
+                  if (['daily', 'weekly'].includes(cell.row.original.frequency) && b && new Date(b.date) > new Date(previous_date)) {
                     setChecklistBox(b);
                     setChecklist(cell.row.original)
                     setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
+                  }
+                  else if (cell.row.original.frequency == 'monthly' && b && new Date(b.date) > new Date(previous_date)) {
+                    alert()
+                  }
+                  else if (cell.row.original.frequency == 'yearly' && b && new Date(b.date) > new Date(previous_date)) {
+                    alert()
                   }
                 }}
                 size="small"
