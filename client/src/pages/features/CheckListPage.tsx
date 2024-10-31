@@ -21,7 +21,6 @@ import { GetAllCheckCategories, GetChecklists } from '../../services/CheckListSe
 import { GetChecklistBoxDto, GetChecklistDto } from '../../dtos'
 import DeleteCheckListDialog from '../../components/dialogs/checklists/DeleteCheckListDialog'
 import CreateOrEditCheckListDialog from '../../components/dialogs/checklists/CreateOrEditCheckListDialog'
-import ToogleMyCheckListDialog from '../../components/forms/checklists/ToogleMyCheckListDialog'
 
 
 function ChecklistPage() {
@@ -288,6 +287,8 @@ function ChecklistPage() {
       })
     }
   }, [data])
+
+  console.log(choice,checklistBox)
   return (
     <>
 
@@ -418,10 +419,7 @@ function ChecklistPage() {
       <CreateOrEditCheckListDialog checklist={checklist} setChecklist={setChecklist} />
       {checklist && <DeleteCheckListDialog checklist={checklist} />}
       {checklist && <CreateOrEditCheckListDialog checklist={checklist} setChecklist={setChecklist} />}
-      {choice === CheckListChoiceActions.toogle_checklist && checklistBox && <ToogleMyCheckListDialog box={checklistBox} />}
       <MaterialReactTable table={table} />
-
-
     </>
   )
 }
