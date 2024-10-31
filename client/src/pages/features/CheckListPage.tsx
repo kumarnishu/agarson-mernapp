@@ -41,7 +41,7 @@ function ChecklistPage() {
     , end_date: moment(new Date().setDate(new Date().getDate() + 4)).format("YYYY-MM-DD")
   })
   const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("checklist_categories", GetAllCheckCategories)
-  const { choice, setChoice } = useContext(ChoiceContext)
+  const { setChoice } = useContext(ChoiceContext)
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   let previous_date = new Date()
   let day = previous_date.getDate() - 3
@@ -103,7 +103,11 @@ function ChecklistPage() {
         accessorKey: 'work_title',
         header: ' Work Title',
         size: 320,
-        Cell: (cell) => <><Tooltip title={cell.row.original.work_title}><span>{cell.row.original.work_title ? cell.row.original.work_title : ""}</span></Tooltip></>
+        Cell: (cell) => <>{!cell.row.original.link ? <Tooltip title={cell.row.original.work_description}><span>{cell.row.original.work_title ? cell.row.original.work_title : ""}</span></Tooltip> :
+          <Tooltip title={cell.row.original.work_description}>
+            <a style={{ fontSize: 11, fontWeight: 'bold', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
+          </Tooltip>}
+        </>
       },
       {
         accessorKey: 'assigned_users',
@@ -161,17 +165,21 @@ function ChecklistPage() {
         header: 'Next Check Date',
         size: 120,
         Cell: (cell) => <>
-          < input
-            type="date"
-            id="remind_date"
-            value={moment(new Date(cell.row.original.next_date)).format("YYYY-MM-DD")}
-            onChange={(e) => {
-              if (e.target.value) {
-                setChecklist(cell.row.original)
-                setNextDate(moment(new Date(e.target.value)).format("YYYY-MM-DD"))
-              }
-            }}
-          />
+          {LoggedInUser?.assigned_permissions.includes('checklist_edit') ?
+            < input
+              type="date"
+              id="remind_date"
+              value={moment(new Date(cell.row.original.next_date)).format("YYYY-MM-DD")}
+              onChange={(e) => {
+                if (e.target.value) {
+                  setChecklist(cell.row.original)
+                  setNextDate(moment(new Date(e.target.value)).format("YYYY-MM-DD"))
+                }
+              }}
+            />
+            : cell.row.original.next_date
+          }
+
         </>
       },
 
@@ -188,7 +196,7 @@ function ChecklistPage() {
           {cell.row.original.photo && cell.row.original.photo ? < img height="20" width="55" src={cell.row.original.photo && cell.row.original.photo} alt="visiting card" /> : "na"}</span>
       },
     ],
-    [checklists],
+    [checklists, data],
   );
 
   const table = useMaterialReactTable({
@@ -315,7 +323,6 @@ function ChecklistPage() {
     }
   }, [data])
 
-  console.log(choice, checklistBox)
   return (
     <>
 
@@ -351,7 +358,7 @@ function ChecklistPage() {
 
         >Export Selected</MenuItem>}
       </Menu>
-      <Stack sx={{ px: 2 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'center'}>
+      <Stack sx={{ p: 2 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'center'}>
         < TextField
           size="small"
           type="date"

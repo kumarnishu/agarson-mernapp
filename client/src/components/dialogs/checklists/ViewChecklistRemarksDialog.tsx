@@ -11,6 +11,7 @@ import { BackendError } from '../../..'
 import { GetCheckListRemarksHistory } from '../../../services/CheckListServices'
 import DeleteChecklistRemarkDialog from './DeleteChecklistRemarkDialog'
 import CreateOrEditChecklistRemarkDialog from './CreateOrEditChecklistRemarkDialog'
+import moment from 'moment'
 
 
 function ViewChecklistRemarksDialog({ checklist_box, checklist }: { checklist: GetChecklistDto, checklist_box: GetChecklistBoxDto }) {
@@ -43,7 +44,7 @@ function ViewChecklistRemarksDialog({ checklist_box, checklist }: { checklist: G
                 setChoice({ type: CheckListChoiceActions.close_checklist })}>
                 <Cancel fontSize='large' />
             </IconButton>
-            <Typography sx={{ textAlign: 'center', p: 2,fontWeight:600 }}>Remarks History</Typography>
+            <Typography sx={{ textAlign: 'center', p: 2, fontWeight: 600 }}>Remarks History : {moment(new Date(checklist_box.date)).format("DD/MM/YYYY")}</Typography>
             <DialogContent>
                 <Stack direction="column" gap={2} >
                     {remarks && remarks.map((item, index) => {
@@ -73,17 +74,17 @@ function ViewChecklistRemarksDialog({ checklist_box, checklist }: { checklist: G
 
                         )
                     })}
-                    {remarks && remarks.length == 0 && <Typography textAlign={'center'}  color={'grey'}>No Remarks yet</Typography>}
+                    {remarks && remarks.length == 0 && <Typography textAlign={'center'} color={'grey'}>No Remarks yet</Typography>}
                 </Stack>
 
             </DialogContent>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>
-                <Button variant='contained'
+                {checklist_box.stage !== 'done' && <Button variant='contained'
                     fullWidth
                     onClick={() => {
                         setDisplay2(true)
                         setRemark(undefined)
-                    }}>Add Remark</Button>
+                    }}>Add Remark</Button>}
             </DialogTitle>
             {remark && display && <DeleteChecklistRemarkDialog display={display} setDisplay={setDisplay} remark={remark} />}
             {!remark && display2 && <CreateOrEditChecklistRemarkDialog

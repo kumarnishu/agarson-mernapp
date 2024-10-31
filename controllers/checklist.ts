@@ -21,7 +21,7 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
     let count = 0
     let dt1 = new Date(String(start_date))
     let dt2 = new Date(String(end_date))
-    let ids = req.user?.assigned_users.map((id: { _id: string }) => { return id._id })
+   
     let result: GetChecklistDto[] = []
 
     if (!Number.isNaN(limit) && !Number.isNaN(page)) {
@@ -31,19 +31,13 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
                 count = await Checklist.find().countDocuments()
             }
         }
-        else if (ids && ids.length > 0 && !id) {
-            {
-                checklists = await Checklist.find({ user: { $in: ids } }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('updated_at').skip((page - 1) * limit).limit(limit)
-                count = await Checklist.find({ user: { $in: ids } }).countDocuments()
-            }
-        }
         else if (!id) {
-            checklists = await Checklist.find({ user: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('updated_at').skip((page - 1) * limit).limit(limit)
+            checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('updated_at').skip((page - 1) * limit).limit(limit)
             count = await Checklist.find({ user: req.user?._id }).countDocuments()
         }
 
         else {
-            checklists = await Checklist.find({ user: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('updated_at').skip((page - 1) * limit).limit(limit)
+            checklists = await Checklist.find({ assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('updated_at').skip((page - 1) * limit).limit(limit)
             count = await Checklist.find({ user: id }).countDocuments()
         }
 
@@ -53,7 +47,7 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
             let ch = checklists[i];
             if (ch && ch.category) {
                 let boxes = await ChecklistBox.find({ checklist: ch._id, date: { $gte: dt1, $lt: dt2 } }).sort('date').populate('checklist');
-                let lastcheckedbox = await ChecklistBox.findOne({ checklist: ch._id, stage:{$ne: 'pending'} }).sort('-date')
+                let lastcheckedbox = await ChecklistBox.findOne({ checklist: ch._id, stage:{$ne: 'open'} }).sort('-date')
                 let dtoboxes = boxes.map((b) => {
                     return {
                         _id: b._id,
