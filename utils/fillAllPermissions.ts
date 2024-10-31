@@ -260,57 +260,7 @@ export function FetchAllPermissions() {
                     label: 'export'
                 }
             ]
-        },
-        {
-            label: 'Maintenance',
-            permissions: [
-                {
-                    value: 'maintenance_view',
-                    label: 'view'
-                },
-                {
-                    value: 'maintenance_create',
-                    label: 'create'
-                },
-                {
-                    value: 'maintenance_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'maintenance_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'maintenance_export',
-                    label: 'export'
-                }
-            ]
-        },
-        {
-            label: 'Maintenance Admin',
-            permissions: [
-                {
-                    value: 'maintenance_admin_view',
-                    label: 'view'
-                },
-                {
-                    value: 'maintenance_admin_create',
-                    label: 'create'
-                },
-                {
-                    value: 'maintenance_admin_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'maintenance_admin_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'maintenance_admin_export',
-                    label: 'export'
-                }
-            ]
-        },
+        }
     ]
     }
     let reportsMenu: IMenu = {

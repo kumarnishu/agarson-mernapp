@@ -1,3 +1,4 @@
+import { CreateOrEditChecklistRemarkDto, GetChecklistRemarksDto } from "../dtos";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 
@@ -37,18 +38,31 @@ export const GetChecklists = async ({ limit, page, start_date, end_date, id }: {
 }
 
 
+export const CreateOrEditChecklistRemark = async ({ body, remark }: {
+    body: CreateOrEditChecklistRemarkDto,
+    remark?: GetChecklistRemarksDto
 
-export const ToogleMyCheckLists = async ({id,remarks}:{id: string, remarks: string}) => {
-    return await apiClient.patch(`checklists/toogle/${id}`, { remarks: remarks })
+}) => {
+    if (!remark) {
+        return await apiClient.post(`checklist/remarks`, body)
+    }
+    return await apiClient.put(`checklist/remarks/${remark._id}`, body)
 }
 
+export const DeleteCheckListRemark = async (id: string) => {
+    return await apiClient.delete(`checklist/remarks/${id}`)
+}
+
+export const GetCheckListRemarksHistory = async (id: string) => {
+    return await apiClient.get(`checklist/remarks/${id}`)
+}
 
 export const DeleteCheckList = async (id: string) => {
     return await apiClient.delete(`checklists/${id}`)
 }
 
 
-export const CreateChecklistFromExcel = async (  body: FormData ) => {
+export const CreateChecklistFromExcel = async (body: FormData) => {
     return await apiClient.put(`create-from-excel/checklists`, body)
 }
 

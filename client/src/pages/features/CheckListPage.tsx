@@ -21,6 +21,7 @@ import { GetAllCheckCategories, GetChecklists } from '../../services/CheckListSe
 import { GetChecklistBoxDto, GetChecklistDto } from '../../dtos'
 import DeleteCheckListDialog from '../../components/dialogs/checklists/DeleteCheckListDialog'
 import CreateOrEditCheckListDialog from '../../components/dialogs/checklists/CreateOrEditCheckListDialog'
+import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
 
 
 function ChecklistPage() {
@@ -122,11 +123,12 @@ function ChecklistPage() {
           {cell.row.original && cell.row.original.boxes.map((b) => (
             <Tooltip title={moment(new Date(b.date)).format('DD/MM/YYYY')} key={b.date}>
               <Button
-                sx={{ borderRadius: 10, maxHeight: '22px', minWidth: '20px', m: 0.3, pl: 1 }}
+                sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '15px', m: 0.3, pl: 1 }}
                 onClick={() => {
                   if (b && new Date(b.date) > new Date(previous_date)) {
                     setChecklistBox(b);
-                    setChoice({ type: CheckListChoiceActions.toogle_checklist });
+                    setChecklist(cell.row.original)
+                    setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
                   }
                 }}
                 size="small"
@@ -288,7 +290,7 @@ function ChecklistPage() {
     }
   }, [data])
 
-  console.log(choice,checklistBox)
+  console.log(choice, checklistBox)
   return (
     <>
 
@@ -308,7 +310,7 @@ function ChecklistPage() {
         sx={{ borderRadius: 2 }}
       >
 
-        {LoggedInUser?.assigned_permissions.includes('maintenance_create') && <MenuItem
+        {LoggedInUser?.assigned_permissions.includes('checklist_create') && <MenuItem
 
           onClick={() => {
             setChoice({ type: CheckListChoiceActions.create_or_edit_checklist })
@@ -317,10 +319,10 @@ function ChecklistPage() {
           }}
         > Add New</MenuItem>}
 
-        {LoggedInUser?.assigned_permissions.includes('activities_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+        {LoggedInUser?.assigned_permissions.includes('checklist_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
         >Export All</MenuItem>}
-        {LoggedInUser?.assigned_permissions.includes('activities_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+        {LoggedInUser?.assigned_permissions.includes('checklist_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
         >Export Selected</MenuItem>}
       </Menu>
@@ -419,6 +421,7 @@ function ChecklistPage() {
       <CreateOrEditCheckListDialog checklist={checklist} setChecklist={setChecklist} />
       {checklist && <DeleteCheckListDialog checklist={checklist} />}
       {checklist && <CreateOrEditCheckListDialog checklist={checklist} setChecklist={setChecklist} />}
+      {checklist && checklistBox && <ViewChecklistRemarksDialog checklist={checklist} checklist_box={checklistBox} />}
       <MaterialReactTable table={table} />
     </>
   )

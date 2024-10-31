@@ -33,12 +33,13 @@ import ShoeWeightRoutes from "./shoe-weight";
 import SoleThicknessRoutes from "./sole-thickness";
 import SpareDyeRoute from "./spare-dye";
 import UserRoutes from "./user";
-
+import ChecklistRemarkRoutes from "./checklist-remarks"
 
 router.use(ArticlesRoutes);
 router.use(AuthRoutes);
 router.use(ChecklistCategoryRoutes);
 router.use(ChecklistRoutes);
+router.use(ChecklistRemarkRoutes);
 router.use(CrmBillsRoutes);
 router.use(CrmCityRoutes);
 router.use(CrmRemarksRoutes);

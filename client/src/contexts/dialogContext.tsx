@@ -6,9 +6,7 @@ type UserChoices = "signup" | "reset_password_mail" | "close_user" | "new_user" 
 
 
 
-type CheckListChoices = "create_or_edit_checklist" | "create_or_edit_checklist_category" | "delete_checklist" | "close_checklist" | "edit_checklist" | "delete_checklist_category" | "toogle_checklist" | "create_or_edit_maintenance_remarks" | "view_maintance_remarks" | "toogle_maintenace_item"
-
-type MaintenanceChoices = "create_or_edit_maintenance" | "create_or_edit_maintenance_category" | "delete_maintenance" | "close_maintenance" | "toogle_maintenance_category"
+type CheckListChoices = "create_or_edit_checklist" | "create_or_edit_checklist_category" | "delete_checklist" | "close_checklist" | "edit_checklist" | "delete_checklist_category" | "create_or_edit_checklist_remark" | "view_checklist_remarks" |"delete_checklist_remark"
 
 
 type LeadChoices = "create_or_edit_refer" | "create_or_edit_leadtype" | "create_or_edit_source" | "delete_crm_item" | "view_remarks" | "close_lead" | "create_or_edit_city" | "bulk_assign_crm_cities" | "find_unknown_stages" | "create_or_edit_bill" | "convert_lead_to_refer" | "bulk_delete_useless_leads" | "view_referrals" | "delete_crm_state" | "find_unknown_cities" |
@@ -18,7 +16,7 @@ type LeadChoices = "create_or_edit_refer" | "create_or_edit_leadtype" | "create_
 type ProductionChoices = "create_or_edit_machine" | "close_production" | "create_or_edit_spareDye" | "create_or_edit_article" | "create_or_edit_thickness" | "create_or_edit_dye" | "update_dye" | "validate_weight" | "toogle_machine" | "toogle_article" | "toogle_dye" | "view_shoe_photo" | "view_shoe_photo2" | "view_shoe_photo3" | "create_or_edit_shoe_weight" | "validate_spareDye" | "view_spare_dye_photo" | "create_or_edit_production" | "update_production" | "delete_production_item" | "create_or_edit_location" | "toogle_dye_location" | "update_shoe_weight2" | "update_shoe_weight3" | "create_or_edit_machine_category"
 
 
-type ChoiceState = UserChoices | LeadChoices | CheckListChoices | ProductionChoices | MaintenanceChoices
+type ChoiceState = UserChoices | LeadChoices | CheckListChoices | ProductionChoices 
 
 const initialState: ChoiceState | null = null
 
@@ -51,8 +49,6 @@ export enum ProductionChoiceActions {
   update_production = "update_production"
 }
 
-
-
 export enum CheckListChoiceActions {
   create_or_edit_checklist = "create_or_edit_checklist",
   create_or_edit_checklist_category = "create_or_edit_checklist_category",
@@ -60,22 +56,10 @@ export enum CheckListChoiceActions {
   close_checklist = "close_checklist",
   edit_checklist = "edit_checklist",
   delete_checklist_category = "delete_checklist_category",
-  toogle_checklist = "toogle_checklist"
+  delete_checklist_remark = "delete_checklist_remark",
+  create_or_edit_checklist_remark = "create_or_edit_checklist_remark",
+  view_checklist_remarks ="view_checklist_remarks"
 }
-
-export enum MaintenanceChoiceActions {
-  create_or_edit_maintenance = "create_or_edit_maintenance",
-  create_or_edit_maintenance_remarks = "create_or_edit_maintenance_remarks",
-  create_or_edit_maintenance_category = "create_or_edit_maintenance_category",
-  delete_maintenance = "delete_maintenance",
-  close_maintenance = "close_maintenance",
-  toogle_maintenance_category = "toogle_maintenance_category",
-  view_maintance_remarks = "view_maintance_remarks",
-  toogle_maintenace_item = "toogle_maintenace_item"
-
-}
-
-
 
 export enum LeadChoiceActions {
   create_or_edit_lead = "create_or_edit_lead",
@@ -151,7 +135,7 @@ export enum UserChoiceActions {
 
 type Action = {
   type: UserChoiceActions |
-  LeadChoiceActions | CheckListChoiceActions | ProductionChoiceActions | MaintenanceChoiceActions
+  LeadChoiceActions | CheckListChoiceActions | ProductionChoiceActions 
 }
 
 // reducer
@@ -262,17 +246,9 @@ function reducer(state: ChoiceState | null, action: Action) {
     case CheckListChoiceActions.close_checklist: return type
     case CheckListChoiceActions.edit_checklist: return type
     case CheckListChoiceActions.delete_checklist_category: return type
-    case CheckListChoiceActions.toogle_checklist: return type
-
-
-    case MaintenanceChoiceActions.create_or_edit_maintenance: return type
-    case MaintenanceChoiceActions.create_or_edit_maintenance_category: return type
-    case MaintenanceChoiceActions.delete_maintenance: return type
-    case MaintenanceChoiceActions.close_maintenance: return type
-    case MaintenanceChoiceActions.toogle_maintenance_category: return type
-    case MaintenanceChoiceActions.create_or_edit_maintenance_remarks: return type
-    case MaintenanceChoiceActions.view_maintance_remarks: return type
-    case MaintenanceChoiceActions.toogle_maintenace_item: return type
+    case CheckListChoiceActions.delete_checklist_remark: return type
+    case CheckListChoiceActions.view_checklist_remarks: return type
+    case CheckListChoiceActions.create_or_edit_checklist_remark: return type
 
     default: return state
   }

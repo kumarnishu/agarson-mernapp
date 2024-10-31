@@ -58,18 +58,17 @@ export const GetChecklistRemarkHistory = async (req: Request, res: Response, nex
 }
 
 export const NewChecklistRemark = async (req: Request, res: Response, next: NextFunction) => {
-    const { remark, stage, checklist } = req.body as CreateOrEditChecklistRemarkDto
-    if (!remark) return res.status(403).json({ message: "please fill required fields" })
-    const id = req.params.id;
-    if (!isMongoId(id)) return res.status(403).json({ message: " id not valid" })
-
-    let box = await ChecklistBox.findById(id).populate('checklist')
+    const { remark, stage, checklist, checklist_box } = req.body as CreateOrEditChecklistRemarkDto
+    if (!remark || !checklist_box || !checklist) return res.status(403).json({ message: "please fill required fields" })
+  
+    let box = await ChecklistBox.findById(checklist_box).populate('checklist')
     if (!box) {
         return res.status(404).json({ message: "box not found" })
     }
 
     let new_remark = new ChecklistRemark({
         remark,
+        checklist_box,
         created_at: new Date(Date.now()),
         created_by: req.user,
         updated_at: new Date(Date.now()),
