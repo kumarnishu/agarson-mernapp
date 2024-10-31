@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { AxiosResponse } from 'axios'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { Button, Fade, IconButton, LinearProgress, Menu, MenuItem, Select, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
@@ -17,11 +17,12 @@ import { DownloadFile } from '../../utils/DownloadFile'
 import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
-import { GetAllCheckCategories, GetChecklists } from '../../services/CheckListServices'
+import { ChangeChecklistNextDate, GetAllCheckCategories, GetChecklists } from '../../services/CheckListServices'
 import { GetChecklistBoxDto, GetChecklistDto } from '../../dtos'
 import DeleteCheckListDialog from '../../components/dialogs/checklists/DeleteCheckListDialog'
 import CreateOrEditCheckListDialog from '../../components/dialogs/checklists/CreateOrEditCheckListDialog'
 import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
+import { queryClient } from '../../main'
 
 
 function ChecklistPage() {
@@ -30,6 +31,7 @@ function ChecklistPage() {
   const [checklist, setChecklist] = useState<GetChecklistDto>()
   const [checklists, setChecklists] = useState<GetChecklistDto[]>([])
   const [paginationData, setPaginationData] = useState({ limit: 500, page: 1, total: 1 });
+  const [nextdate, setNextDate] = useState<string>()
   const [checklistBox, setChecklistBox] = useState<GetChecklistBoxDto>()
   const [category, setCategory] = useState<string>('undefined');
   const [categories, setCategories] = useState<DropDownDto[]>([])
@@ -47,7 +49,13 @@ function ChecklistPage() {
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'feature_menu', show_assigned_only: true }))
   const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date], async () => GetChecklists({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
+  const { mutate: changedate } = useMutation
+    <AxiosResponse<any>, BackendError, { id: string, next_date: string }>
+    (ChangeChecklistNextDate, {
+      onSuccess: () => {
+        queryClient.invalidateQueries('checklists')
+      }
+    })
   const columns = useMemo<MRT_ColumnDef<GetChecklistDto>[]>(
     //column definitions...
     () => checklists && [
@@ -100,7 +108,7 @@ function ChecklistPage() {
       {
         accessorKey: 'assigned_users',
         header: 'Responsible',
-        size: 100,
+        size: 220,
         Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.value }).toString() || ""}</>
       },
       {
@@ -152,7 +160,19 @@ function ChecklistPage() {
         accessorKey: 'next_date',
         header: 'Next Check Date',
         size: 120,
-        Cell: (cell) => <>{cell.row.original.next_date}</>
+        Cell: (cell) => <>
+          < input
+            type="date"
+            id="remind_date"
+            value={moment(new Date(cell.row.original.next_date)).format("YYYY-MM-DD")}
+            onChange={(e) => {
+              if (e.target.value) {
+                setChecklist(cell.row.original)
+                setNextDate(moment(new Date(e.target.value)).format("YYYY-MM-DD"))
+              }
+            }}
+          />
+        </>
       },
 
 
@@ -277,6 +297,11 @@ function ChecklistPage() {
       setUsers(usersData?.data)
   }, [users, isUsersSuccess, usersData])
 
+  useEffect(() => {
+    if (checklist && nextdate) {
+      changedate({ id: checklist._id, next_date: nextdate })
+    }
+  }, [nextdate])
 
   useEffect(() => {
     if (data) {

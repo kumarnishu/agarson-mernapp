@@ -53,7 +53,7 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
             let ch = checklists[i];
             if (ch && ch.category) {
                 let boxes = await ChecklistBox.find({ checklist: ch._id, date: { $gte: dt1, $lt: dt2 } }).sort('date').populate('checklist');
-                let lastcheckedbox = await ChecklistBox.findOne({ checklist: ch._id, stage: 'done' }).sort('-date')
+                let lastcheckedbox = await ChecklistBox.findOne({ checklist: ch._id, stage:{$ne: 'pending'} }).sort('-date')
                 let dtoboxes = boxes.map((b) => {
                     return {
                         _id: b._id,
@@ -257,6 +257,24 @@ export const EditChecklist = async (req: Request, res: Response, next: NextFunct
         photo: document
     })
     return res.status(200).json({ message: `Checklist updated` });
+}
+export const ChangeNextDate = async (req: Request, res: Response, next: NextFunction) => {
+
+    const {
+        next_date } = req.body as {next_date:string}
+    if (!next_date)
+        return res.status(400).json({ message: "please provide all required fields" })
+
+    let id = req.params.id
+
+    let checklist = await Checklist.findById(id)
+    if (!checklist)
+        return res.status(404).json({ message: 'checklist not exists' })
+
+    await Checklist.findByIdAndUpdate(checklist._id, {
+        next_date: new Date(next_date),
+    })
+    return res.status(200).json({ message: `Checklist next date updated` });
 }
 
 export const DeleteChecklist = async (req: Request, res: Response, next: NextFunction) => {

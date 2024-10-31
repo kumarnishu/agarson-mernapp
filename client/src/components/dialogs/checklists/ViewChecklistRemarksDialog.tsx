@@ -43,7 +43,7 @@ function ViewChecklistRemarksDialog({ checklist_box, checklist }: { checklist: G
                 setChoice({ type: CheckListChoiceActions.close_checklist })}>
                 <Cancel fontSize='large' />
             </IconButton>
-            <Typography sx={{ textAlign: 'center', p: 2 }}>Remarks History</Typography>
+            <Typography sx={{ textAlign: 'center', p: 2,fontWeight:600 }}>Remarks History</Typography>
             <DialogContent>
                 <Stack direction="column" gap={2} >
                     {remarks && remarks.map((item, index) => {
@@ -80,7 +80,6 @@ function ViewChecklistRemarksDialog({ checklist_box, checklist }: { checklist: G
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>
                 <Button variant='contained'
                     fullWidth
-                    size="small"
                     onClick={() => {
                         setDisplay2(true)
                         setRemark(undefined)

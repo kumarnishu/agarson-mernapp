@@ -52,6 +52,9 @@ export const CreateOrEditChecklistRemark = async ({ body, remark }: {
 export const DeleteCheckListRemark = async (id: string) => {
     return await apiClient.delete(`checklist/remarks/${id}`)
 }
+export const ChangeChecklistNextDate = async ({ id, next_date }: { id: string, next_date: string }) => {
+    return await apiClient.patch(`checklists/nextdate/${id}`, { next_date: next_date })
+}
 
 export const GetCheckListRemarksHistory = async (id: string) => {
     return await apiClient.get(`checklist/remarks/${id}`)
