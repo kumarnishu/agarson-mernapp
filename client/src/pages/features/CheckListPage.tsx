@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Button, Fade, IconButton, LinearProgress, Menu, MenuItem, Select, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Button, Fade, IconButton, LinearProgress, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
@@ -31,9 +31,9 @@ function ChecklistPage() {
   const [checklist, setChecklist] = useState<GetChecklistDto>()
   const [checklists, setChecklists] = useState<GetChecklistDto[]>([])
   const [paginationData, setPaginationData] = useState({ limit: 500, page: 1, total: 1 });
+  const [hidden, setHidden] = useState('false')
   const [nextdate, setNextDate] = useState<string>()
   const [checklistBox, setChecklistBox] = useState<GetChecklistBoxDto>()
-  const [category, setCategory] = useState<string>('undefined');
   const [categories, setCategories] = useState<DropDownDto[]>([])
   const [userId, setUserId] = useState<string>()
   const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
@@ -47,7 +47,7 @@ function ChecklistPage() {
   let day = previous_date.getDate() - 3
   previous_date.setDate(day)
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'feature_menu', show_assigned_only: true }))
-  const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date], async () => GetChecklists({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
+  const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date, hidden], async () => GetChecklists({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date, hidden: String(hidden) }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { mutate: changedate } = useMutation
     <AxiosResponse<any>, BackendError, { id: string, next_date: string }>
@@ -102,21 +102,29 @@ function ChecklistPage() {
       {
         accessorKey: 'work_title',
         header: ' Work Title',
-        size: 320,
-        Cell: (cell) => <>{!cell.row.original.link ? <Tooltip title={cell.row.original.work_description}><span>{cell.row.original.work_title ? cell.row.original.work_title : ""}</span></Tooltip> :
-          <Tooltip title={cell.row.original.work_description}>
+        size: 250,
+        Cell: (cell) => <>{!cell.row.original.link ? <Tooltip title={cell.row.original.work_title}><span>{cell.row.original.work_title ? cell.row.original.work_title : ""}</span></Tooltip> :
+          <Tooltip title={cell.row.original.work_title}>
             <a style={{ fontSize: 11, fontWeight: 'bold', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
           </Tooltip>}
         </>
       },
       {
+        accessorKey: 'work_description',
+        header: ' Work Detail',
+        size: 250,
+        Cell: (cell) => <><Tooltip title={cell.row.original.work_description}><span>{cell.row.original.work_description ? cell.row.original.work_description : ""}</span></Tooltip> 
+         
+        </>
+      },
+      {
         accessorKey: 'assigned_users',
         header: 'Responsible',
-        size: 220,
+        size: 160,
         Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.value }).toString() || ""}</>
       },
       {
-        accessorKey: 'category',
+        accessorKey: 'category.value',
         header: ' Category',
         size: 120,
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
@@ -393,32 +401,22 @@ function ChecklistPage() {
             }
           }}
         />
-        {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 && <Select
-          sx={{ m: 1, width: 300 }}
-          labelId="demo-multiple-name-label"
-          id="demo-multiple-name"
-          value={category}
-          onChange={(e) => {
-            setCategory(e.target.value);
-          }}
-          size='small'
-        >
-          <MenuItem
-            key={'00'}
-            value={'undefined'}
-            onChange={() => setCategory('undefined')}
-          >
-            All
-          </MenuItem>
-          {categories.map((category, index) => (
-            <MenuItem
-              key={index}
-              value={category.value}
-            >
-              {toTitleCase(category.label)}
-            </MenuItem>
-          ))}
-        </Select>}
+        < Stack direction="row" spacing={2}>
+          {LoggedInUser?.is_admin && <Stack direction={'row'} alignItems={'center'} sx={{ backgroundColor: 'whitegrey' }}>
+            <Button variant='outlined' color="inherit" size='large'>
+              <input type='checkbox' onChange={(e) => {
+                if (e.target.checked) {
+                  setHidden('true')
+                }
+                else
+                  setHidden('false')
+              }} /> <span style={{ paddingLeft: '5px' }}>Hidden</span>
+            </Button>
+          </Stack >}
+
+        </Stack >
+
+
 
         {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
           < TextField

@@ -12,6 +12,7 @@ import ConvertJsonToExcel from "../utils/ConvertJsonToExcel";
 import { ChecklistRemark } from "../models/checklist-remark";
 
 export const GetChecklists = async (req: Request, res: Response, next: NextFunction) => {
+    let showhidden = req.query.hidden
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
@@ -21,23 +22,23 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
     let count = 0
     let dt1 = new Date(String(start_date))
     let dt2 = new Date(String(end_date))
-   
+    
     let result: GetChecklistDto[] = []
 
     if (!Number.isNaN(limit) && !Number.isNaN(page)) {
         if (req.user?.is_admin && !id) {
             {
-                checklists = await Checklist.find().populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('updated_at').skip((page - 1) * limit).limit(limit)
+                checklists = await Checklist.find({ active: showhidden == 'false' }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('updated_at').skip((page - 1) * limit).limit(limit)
                 count = await Checklist.find().countDocuments()
             }
         }
         else if (!id) {
-            checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('updated_at').skip((page - 1) * limit).limit(limit)
+            checklists = await Checklist.find({ active: showhidden == 'false',assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('updated_at').skip((page - 1) * limit).limit(limit)
             count = await Checklist.find({ user: req.user?._id }).countDocuments()
         }
 
         else {
-            checklists = await Checklist.find({ assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('updated_at').skip((page - 1) * limit).limit(limit)
+            checklists = await Checklist.find({ active: showhidden == 'false',assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('updated_at').skip((page - 1) * limit).limit(limit)
             count = await Checklist.find({ user: id }).countDocuments()
         }
 

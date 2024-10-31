@@ -30,11 +30,11 @@ export const CreateOrEditCheckList = async ({ body, id }: { body: FormData, id?:
 
 
 
-export const GetChecklists = async ({ limit, page, start_date, end_date, id }: { limit: number | undefined, page: number | undefined, start_date?: string, end_date?: string, id?: string }) => {
+export const GetChecklists = async ({ limit, page, start_date, end_date, id, hidden }: { limit: number | undefined, page: number | undefined, start_date?: string, end_date?: string, id?: string, hidden?:string }) => {
     if (id)
-        return await apiClient.get(`checklists/?id=${id}&start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}`)
+        return await apiClient.get(`checklists/?id=${id}&start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&hidden=${hidden}`)
     else
-        return await apiClient.get(`checklists/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}`)
+        return await apiClient.get(`checklists/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&hidden=${hidden}`)
 }
 
 
