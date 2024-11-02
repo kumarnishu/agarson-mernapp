@@ -208,7 +208,7 @@ function ChecklistPage() {
                     onClick={() => {
                       console.log(new Date(b.date))
                       console.log(new Date(previous_date))
-                      if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) > previousYear && new Date(new Date(b.date).setHours(0, 0, 0, 0)) <nextYear) {
+                      if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) > previousYear && new Date(new Date(b.date).setHours(0, 0, 0, 0)) < nextYear) {
                         setChecklistBox(b);
                         setChecklist(cell.row.original)
                         setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
@@ -447,7 +447,7 @@ function ChecklistPage() {
           focused
           fullWidth
           onChange={(e) => {
-            if (e.currentTarget.value) {
+            if (e.currentTarget.value && new Date(e.currentTarget.value) < nextYear) {
               setDates({
                 ...dates,
                 end_date: moment(e.target.value).format("YYYY-MM-DD")
