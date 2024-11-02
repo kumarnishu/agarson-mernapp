@@ -137,7 +137,7 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
                     {...formik.getFieldProps('work_title')}
                 />
                 <TextField
-                    required
+                    
                     error={
                         formik.touched.work_description && formik.errors.work_description ? true : false
                     }

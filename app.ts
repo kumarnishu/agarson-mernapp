@@ -13,7 +13,7 @@ import { Server } from "socket.io";
 import { getCurrentUser, userJoin, userLeave } from "./utils/handleSocketUsers";
 import { Storage } from '@google-cloud/storage';
 import morgan from 'morgan';
-import { activateMaintenanceWork } from './utils/activateMaintenanceWork';
+import { activateChecklist } from './utils/activateChecklist';
 
 const app = express()
 const server = createServer(app)
@@ -103,7 +103,7 @@ export const bucket = storage.bucket(bucketName)
 
 //server routes
 app.use("/api/v1", AppRoutes)
-activateMaintenanceWork();
+activateChecklist();
 
 
 //react app handler

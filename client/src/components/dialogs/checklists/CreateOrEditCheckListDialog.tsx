@@ -11,10 +11,7 @@ function CreateOrEditCheckListDialog({ checklist, setChecklist }: { checklist?: 
     return (
         <>
             <Dialog fullScreen={Boolean(window.screen.width < 500)} open={choice === CheckListChoiceActions.create_or_edit_checklist ? true : false}
-                onClose={() => {
-                    setChoice({ type: CheckListChoiceActions.close_checklist })
-                    setChecklist(undefined)
-                }}
+                
             >
                 <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
                     setChoice({ type: CheckListChoiceActions.close_checklist })

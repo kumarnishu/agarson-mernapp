@@ -23,6 +23,7 @@ import DeleteCheckListDialog from '../../components/dialogs/checklists/DeleteChe
 import CreateOrEditCheckListDialog from '../../components/dialogs/checklists/CreateOrEditCheckListDialog'
 import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
 import { queryClient } from '../../main'
+import { currentYear, getNextMonday, getPrevMonday, nextMonth, nextYear, previousMonth, previousYear } from '../../utils/datesHelper'
 
 
 function ChecklistPage() {
@@ -32,7 +33,6 @@ function ChecklistPage() {
   const [checklists, setChecklists] = useState<GetChecklistDto[]>([])
   const [paginationData, setPaginationData] = useState({ limit: 500, page: 1, total: 1 });
   const [hidden, setHidden] = useState('false')
-  const [nextdate, setNextDate] = useState<string>()
   const [checklistBox, setChecklistBox] = useState<GetChecklistBoxDto>()
   const [categories, setCategories] = useState<DropDownDto[]>([])
   const [userId, setUserId] = useState<string>()
@@ -105,7 +105,7 @@ function ChecklistPage() {
       {
         accessorKey: 'work_title',
         header: ' Work Title',
-        size: 250,
+        size: 180,
         Cell: (cell) => <>{!cell.row.original.link ? <Tooltip title={cell.row.original.work_description}><span>{cell.row.original.work_title ? cell.row.original.work_title : ""}</span></Tooltip> :
           <Tooltip title={cell.row.original.work_description}>
             <a style={{ fontSize: 11, fontWeight: 'bold', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
@@ -136,30 +136,94 @@ function ChecklistPage() {
         size: 350,
         Cell: (cell) => <Stack direction="row" className="scrollable-stack">
           {cell.row.original && cell.row.original.boxes.map((b) => (
-            <Tooltip title={moment(new Date(b.date)).format('DD/MM/YYYY')} key={b.date}>
-              <Button
-                sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '15px', m: 0.3, pl: 1 }}
-                onClick={() => {
-                  if (['daily', 'weekly'].includes(cell.row.original.frequency) && b && new Date(b.date) > new Date(previous_date)) {
-                    setChecklistBox(b);
-                    setChecklist(cell.row.original)
-                    setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
-                  }
-                  else if (cell.row.original.frequency == 'monthly' && b && new Date(b.date) > new Date(previous_date)) {
-                    alert()
-                  }
-                  else if (cell.row.original.frequency == 'yearly' && b && new Date(b.date) > new Date(previous_date)) {
-                    alert()
-                  }
-                }}
-                size="small"
-                disabled={new Date(b.date) > new Date()}
-                variant="contained"
-                color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
-              >
-                {new Date(b.date).getDate()}
-              </Button>
-            </Tooltip>
+            <>
+              {
+                cell.row.original.frequency == 'daily' && <Tooltip title={moment(new Date(b.date)).format('LL')} key={b.date}>
+                  <Button
+                    sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '15px', m: 0.3, pl: 1 }}
+                    onClick={() => {
+                      if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) > new Date(previous_date)) {
+                        setChecklistBox(b);
+                        setChecklist(cell.row.original)
+                        setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
+                      }
+                    }}
+                    size="small"
+                    disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) > new Date()}
+                    variant="contained"
+                    color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
+                  >
+                    {new Date(b.date).getDate()}
+                  </Button>
+                </Tooltip>
+              }
+              {
+                cell.row.original.frequency == 'weekly' && <Tooltip title={moment(new Date(b.date)).format('LL')} key={b.date}>
+                  <Button
+                    sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '15px', m: 0.3, pl: 1 }}
+                    onClick={() => {
+                      console.log(new Date(b.date))
+                      console.log(new Date(previous_date))
+                      if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) < new Date(getNextMonday()) && new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= new Date(getPrevMonday())) {
+                        setChecklistBox(b);
+                        setChecklist(cell.row.original)
+                        setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
+                      }
+                    }}
+                    size="small"
+                    disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= new Date(getNextMonday())}
+                    variant="contained"
+                    color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
+                  >
+                    {new Date(b.date).getDate()}
+                  </Button>
+                </Tooltip>
+              }
+              {
+                cell.row.original.frequency == 'monthly' && <Tooltip title={moment(new Date(b.date)).format('LL')} key={b.date}>
+                  <Button
+                    sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '15px', m: 0.3, pl: 1 }}
+                    onClick={() => {
+                      console.log(new Date(b.date))
+                      console.log(new Date(previous_date))
+                      if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) < nextMonth && new Date(new Date(b.date).setHours(0, 0, 0, 0)) > previousMonth) {
+                        setChecklistBox(b);
+                        setChecklist(cell.row.original)
+                        setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
+                      }
+                    }}
+                    size="small"
+                    disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= nextMonth}
+                    variant="contained"
+                    color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
+                  >
+                    {new Date(b.date).getDate()}
+                  </Button>
+                </Tooltip>
+              }
+              {
+                cell.row.original.frequency == 'yearly' && <Tooltip title={moment(new Date(b.date)).format('LL')} key={b.date}>
+                  <Button
+                    sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '15px', m: 0.3, pl: 1 }}
+                    onClick={() => {
+                      console.log(new Date(b.date))
+                      console.log(new Date(previous_date))
+                      if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) > previousYear && new Date(new Date(b.date).setHours(0, 0, 0, 0)) <nextYear) {
+                        setChecklistBox(b);
+                        setChecklist(cell.row.original)
+                        setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
+                      }
+                    }}
+                    size="small"
+                    disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) > currentYear}
+                    variant="contained"
+                    color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
+                  >
+                    {new Date(b.date).getDate()}
+                  </Button>
+                </Tooltip>
+              }
+            </>
           ))}
         </Stack>
       },
@@ -174,20 +238,17 @@ function ChecklistPage() {
         header: 'Next Check Date',
         size: 120,
         Cell: (cell) => <>
-          {LoggedInUser?.assigned_permissions.includes('checklist_edit') ?
-            < input
-              type="date"
-              id="remind_date"
-              value={moment(new Date(cell.row.original.next_date)).format("YYYY-MM-DD")}
-              onChange={(e) => {
-                if (e.target.value) {
-                  setChecklist(cell.row.original)
-                  setNextDate(moment(new Date(e.target.value)).format("YYYY-MM-DD"))
-                }
-              }}
-            />
-            : cell.row.original.next_date
-          }
+          < input
+            type="date"
+            id="remind_date"
+            disabled={!LoggedInUser?.assigned_permissions.includes('checklist_edit')}
+            value={moment(new Date(cell.row.original.next_date)).format("YYYY-MM-DD")}
+            onChange={(e) => {
+              if (e.target.value) {
+                changedate({ id: cell.row.original._id, next_date: e.target.value })
+              }
+            }}
+          />
 
         </>
       },
@@ -311,12 +372,6 @@ function ChecklistPage() {
     if (isUsersSuccess)
       setUsers(usersData?.data)
   }, [users, isUsersSuccess, usersData])
-
-  useEffect(() => {
-    if (checklist && nextdate) {
-      changedate({ id: checklist._id, next_date: nextdate })
-    }
-  }, [nextdate])
 
   useEffect(() => {
     if (data) {

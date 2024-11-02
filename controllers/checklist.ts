@@ -10,6 +10,7 @@ import { destroyCloudFile } from "../utils/destroyCloudFile";
 import isMongoId from "validator/lib/isMongoId";
 import ConvertJsonToExcel from "../utils/ConvertJsonToExcel";
 import { ChecklistRemark } from "../models/checklist-remark";
+import { getFirstMonday } from "../utils/getFirstMondayDate";
 
 export const GetChecklists = async (req: Request, res: Response, next: NextFunction) => {
     let showhidden = req.query.hidden
@@ -71,7 +72,7 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
                     created_at: ch.created_at.toString(),
                     updated_at: ch.updated_at.toString(),
                     boxes: dtoboxes,
-                    next_date: ch.next_date ? moment(ch.next_date).format('DD/MM/YYYY') : "",
+                    next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
                     photo: ch.photo?.public_url || "",
                     created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
                     updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
@@ -140,6 +141,7 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
     if (frequency == "daily") {
         let current_date = new Date()
         current_date.setDate(1)
+        current_date.setMonth(0)
         while (current_date <= new Date(end_date)) {
             await new ChecklistBox({
                 date: new Date(current_date),
@@ -154,8 +156,10 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
         }
     }
     if (frequency == "weekly") {
-        let current_date = new Date()
-        current_date.setDate(1)
+        let mon = getFirstMonday()
+        let current_date = mon;
+
+        console.log(mon)
         while (current_date <= new Date(end_date)) {
             await new ChecklistBox({
                 date: new Date(current_date),
@@ -172,6 +176,7 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
     if (frequency == "monthly") {
         let current_date = new Date()
         current_date.setDate(1)
+        current_date.setMonth(0)
         while (current_date <= new Date(end_date)) {
             await new ChecklistBox({
                 date: new Date(current_date),
@@ -189,6 +194,7 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
         let current_date = new Date()
         current_date.setDate(1)
         current_date.setMonth(0)
+        current_date.setFullYear(2020)
         while (current_date <= new Date(end_date)) {
             await new ChecklistBox({
                 date: new Date(current_date),
