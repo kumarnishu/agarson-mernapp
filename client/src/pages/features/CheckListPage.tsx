@@ -12,7 +12,7 @@ import { DropDownDto } from '../../dtos'
 import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { CheckListChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import PopUp from '../../components/popup/PopUp'
-import { Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
+import { Delete, Edit, FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
 import { DownloadFile } from '../../utils/DownloadFile'
 import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
@@ -23,7 +23,7 @@ import DeleteCheckListDialog from '../../components/dialogs/checklists/DeleteChe
 import CreateOrEditCheckListDialog from '../../components/dialogs/checklists/CreateOrEditCheckListDialog'
 import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
 import { queryClient } from '../../main'
-import { currentYear, getNextMonday, getPrevMonday, nextMonth, nextYear, previousMonth, previousYear } from '../../utils/datesHelper'
+import { currentYear, dateToExcelFormat, getNextMonday, getPrevMonday, nextMonth, nextYear, previousMonth, previousYear } from '../../utils/datesHelper'
 
 
 function ChecklistPage() {
@@ -113,10 +113,19 @@ function ChecklistPage() {
         </>
       },
       {
-        accessorKey: 'assigned_users',
+        accessorKey: 'assigned_users.value',
         header: 'Responsible',
         size: 160,
-        Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.value }).toString() || ""}</>
+        filter: 'custom',
+        enableColumnFilter: true,
+        Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.value }).toString() || ""}</>,
+        filterFn: (row, columnId, filterValue) => {
+          console.log(columnId)
+          if (!Array.isArray(row.original.assigned_users)) return false;
+          return row.original.assigned_users.some((user) =>
+            user.value.toLowerCase().includes(filterValue.toLowerCase())
+          );
+        },
       },
       {
         accessorKey: 'category.value',
@@ -133,8 +142,8 @@ function ChecklistPage() {
       {
         accessorKey: 'boxes',
         header: 'Dates',
-        size: 350,
-        Cell: (cell) => <Stack direction="row" className="scrollable-stack">
+        size: 300,
+        Cell: (cell) => <Stack direction="row" className="scrollable-stack" sx={{ height: '30px' }}>
           {cell.row.original && cell.row.original.boxes.map((b) => (
             <>
               {
@@ -191,6 +200,7 @@ function ChecklistPage() {
                         setChecklist(cell.row.original)
                         setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
                       }
+
                     }}
                     size="small"
                     disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= nextMonth}
@@ -230,7 +240,7 @@ function ChecklistPage() {
       {
         accessorKey: 'last_checked_date',
         header: 'Last Checked Date',
-        size: 140,
+        size: 100,
         Cell: (cell) => <>{cell.row.original.last_checked_date ? cell.row.original.last_checked_date : ""}</>
       },
       {
@@ -310,13 +320,11 @@ function ChecklistPage() {
           <Tooltip title="Toogle Filter">
             <Button size="small" color="inherit" variant='contained'
               onClick={() => {
-                if (table.getState().showColumnFilters)
-                  table.resetColumnFilters(true)
-                table.setShowColumnFilters(!table.getState().showColumnFilters)
+                table.resetColumnFilters(true)
               }
               }
             >
-              {table.getState().showColumnFilters ? <FilterAltOff /> : <FilterAlt />}
+              <FilterAltOff />
             </Button>
           </Tooltip>
           <Tooltip title="Toogle FullScreen">
@@ -348,6 +356,7 @@ function ChecklistPage() {
         border: '1px solid lightgrey;',
       },
     }),
+    positionToolbarAlertBanner: 'none',
     enableToolbarInternalActions: false,
     initialState: { density: 'compact' },
     enableRowSelection: true,
@@ -356,7 +365,7 @@ function ChecklistPage() {
     onSortingChange: setSorting,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    state: { sorting, isLoading: isLoading },
+    state: { sorting, isLoading: isLoading, showAlertBanner: false },
     enableBottomToolbar: true,
     enableGlobalFilter: false,
     enablePagination: false,
@@ -416,7 +425,20 @@ function ChecklistPage() {
         {LoggedInUser?.assigned_permissions.includes('checklist_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
         >Export All</MenuItem>}
-        {LoggedInUser?.assigned_permissions.includes('checklist_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+        {LoggedInUser?.assigned_permissions.includes('checklist_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => {
+          let data: any[] = []
+          data = table.getSelectedRowModel().rows.map((row) => {
+            return {
+              ...row.original,
+              last_checked_date: dateToExcelFormat(row.original.last_checked_date),
+              created_by:row.original.created_by.value,
+              updated_by:row.original.updated_by.value,
+              boxes:row.original.boxes.length
+            }
+          }
+          )
+          ExportToExcel(data, "Exported Data")
+        }}
 
         >Export Selected</MenuItem>}
       </Menu>

@@ -14,13 +14,16 @@ input[type=file]::file-selector-button {
   display: none;
   cursor: pointer;
 }
+
 th {
   text-transform: capitalize;
 }
 td {
   text-transform: capitalize;
 }
-
+input[type=date]{
+  border: none;
+}
 .scrollable-stack {
   overflow-x: hidden;
   /* Hide scrollbar by default */

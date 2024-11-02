@@ -1,3 +1,5 @@
+import moment from "moment";
+
 const currentDate = new Date();
 
 export const previousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
@@ -11,6 +13,13 @@ export const currentYear = new Date(currentDate.getFullYear(), currentDate.getMo
 // Get next year
 export const nextYear = new Date(currentDate.getFullYear() + 1, currentDate.getMonth(), currentDate.getDate());
 
+
+
+export function dateToExcelFormat(date:any) {
+    const excelEpoch = moment('1899-12-30'); // Excel epoch date
+    const diffInDays = moment(date).diff(excelEpoch, 'days', true); // Calculate difference in days
+    return diffInDays;
+}
 
 
 
