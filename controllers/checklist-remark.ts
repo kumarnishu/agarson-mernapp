@@ -93,10 +93,8 @@ export const NewChecklistRemark = async (req: Request, res: Response, next: Next
                 }
             }
             else {
-                checklist.active = false;
+                checklist.active = false
             }
-
-            checklist.active = false
             await checklist.save()
         }
 

@@ -40,6 +40,10 @@ function ChecklistPage() {
     start_date: moment(new Date().setDate(new Date().getDate() - 6)).format("YYYY-MM-DD")
     , end_date: moment(new Date().setDate(new Date().getDate() + 4)).format("YYYY-MM-DD")
   })
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
   const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("checklist_categories", GetAllCheckCategories)
   const { setChoice } = useContext(ChoiceContext)
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
@@ -149,7 +153,7 @@ function ChecklistPage() {
               {
                 cell.row.original.frequency == 'daily' && <Tooltip title={moment(new Date(b.date)).format('LL')} key={b.date}>
                   <Button
-                    sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '15px', m: 0.3, pl: 1 }}
+                    sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '20px', m: 0.3, pl: 1 }}
                     onClick={() => {
                       if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) > new Date(previous_date)) {
                         setChecklistBox(b);
@@ -171,8 +175,6 @@ function ChecklistPage() {
                   <Button
                     sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '15px', m: 0.3, pl: 1 }}
                     onClick={() => {
-                      console.log(new Date(b.date))
-                      console.log(new Date(previous_date))
                       if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) < new Date(getNextMonday()) && new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= new Date(getPrevMonday())) {
                         setChecklistBox(b);
                         setChecklist(cell.row.original)
@@ -191,7 +193,7 @@ function ChecklistPage() {
               {
                 cell.row.original.frequency == 'monthly' && <Tooltip title={moment(new Date(b.date)).format('LL')} key={b.date}>
                   <Button
-                    sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '15px', m: 0.3, pl: 1 }}
+                    sx={{ borderRadius: 20,  m: 0.3, pl: 1 }}
                     onClick={() => {
                       console.log(new Date(b.date))
                       console.log(new Date(previous_date))
@@ -207,14 +209,14 @@ function ChecklistPage() {
                     variant="contained"
                     color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
                   >
-                    {new Date(b.date).getDate()}
+                    {monthNames[new Date(b.date).getMonth()]}
                   </Button>
                 </Tooltip>
               }
               {
                 cell.row.original.frequency == 'yearly' && <Tooltip title={moment(new Date(b.date)).format('LL')} key={b.date}>
                   <Button
-                    sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '15px', m: 0.3, pl: 1 }}
+                    sx={{ borderRadius: 20, m: 0.3, pl: 1 }}
                     onClick={() => {
                       console.log(new Date(b.date))
                       console.log(new Date(previous_date))
@@ -229,7 +231,7 @@ function ChecklistPage() {
                     variant="contained"
                     color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
                   >
-                    {new Date(b.date).getDate()}
+                    {new Date(b.date).getFullYear()}
                   </Button>
                 </Tooltip>
               }
