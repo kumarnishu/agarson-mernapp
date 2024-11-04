@@ -1,11 +1,12 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
 import { upload } from ".";
-import { GetChecklists, CreateChecklist,  EditChecklist, DeleteChecklist, CreateChecklistFromExcel, DownloadExcelTemplateForCreatechecklists, ChangeNextDate, AssignChecklistToUsers } from "../controllers/checklist";
+import { GetChecklists, CreateChecklist,  EditChecklist, DeleteChecklist, CreateChecklistFromExcel, DownloadExcelTemplateForCreatechecklists, ChangeNextDate, AssignChecklistToUsers, GetMobileChecklists } from "../controllers/checklist";
 
 const router = express.Router()
 
 router.route("/checklists").get(isAuthenticatedUser, GetChecklists).post(isAuthenticatedUser, upload.single('photo'), CreateChecklist)
+router.route("/checklists/me").get(isAuthenticatedUser, GetMobileChecklists)
 router.route("/checklists/:id").put(isAuthenticatedUser, upload.single('photo'), EditChecklist)
 router.route("/checklists/:id").delete(isAuthenticatedUser, DeleteChecklist)
 router.route("/checklists/nextdate/:id").patch(isAuthenticatedUser, ChangeNextDate)

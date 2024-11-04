@@ -92,6 +92,71 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
         return res.status(400).json({ message: "bad request" })
 }
 
+export const GetMobileChecklists = async (req: Request, res: Response, next: NextFunction) => {
+    let id = req.query.id
+    let start_date = req.query.start_date
+    let end_date = req.query.end_date
+    let checklists: IChecklist[] = []
+    let count = 0
+    let dt1 = new Date(String(start_date))
+    let dt2 = new Date(String(end_date))
+
+    let result: GetChecklistDto[] = []
+
+    if (req.user?.is_admin && !id) {
+        {
+            checklists = await Checklist.find({ active: true }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('created_at')
+            count = await Checklist.find().countDocuments()
+        }
+    }
+    else if (!id) {
+        checklists = await Checklist.find({ active: true, assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users')
+        count = await Checklist.find({ user: req.user?._id }).countDocuments()
+    }
+
+    else {
+        checklists = await Checklist.find({ active: true, assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users')
+        count = await Checklist.find({ user: id }).countDocuments()
+    }
+
+
+
+    for (let i = 0; i < checklists.length; i++) {
+        let ch = checklists[i];
+        if (ch && ch.category) {
+            let boxes = await ChecklistBox.find({ checklist: ch._id, date: { $gte: dt1, $lt: dt2 } }).sort('date').populate('checklist');
+            let lastcheckedbox = await ChecklistBox.findOne({ checklist: ch._id, stage: { $ne: 'open' } }).sort('-date')
+            let dtoboxes = boxes.map((b) => {
+                return {
+                    _id: b._id,
+                    stage: b.stage,
+                    checklist: { id: b.checklist._id, label: b.checklist.work_title, value: b.checklist.work_title },
+                    date: b.date.toString()
+                }
+            });
+            let users = ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } })
+            result.push({
+                _id: ch._id,
+                active: ch.active,
+                work_title: ch.work_title,
+                work_description: ch.work_description,
+                link: ch.link,
+                last_checked_date: lastcheckedbox ? moment(lastcheckedbox.date).format('DD/MM/YYYY') : "",
+                category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
+                frequency: ch.frequency,
+                assigned_users: users,
+                created_at: ch.created_at.toString(),
+                updated_at: ch.updated_at.toString(),
+                boxes: dtoboxes,
+                next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
+                photo: ch.photo?.public_url || "",
+                created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
+                updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
+            })
+        }
+    }
+}
+
 
 export const CreateChecklist = async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
