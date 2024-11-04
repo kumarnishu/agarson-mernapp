@@ -359,10 +359,21 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
                 else
                     category = cat._id
             }
-            if (await Checklist.findOne({ work_title: work_title.trim().toLowerCase() })) {
-                validated = false
-                statusText = "checklist already exists"
+            if (_id && isMongoId(String(_id))) {
+                let ch = await Checklist.findById(_id)
+                if (ch?.work_title !== work_title)
+                    if (await Checklist.findOne({ work_title: work_title.trim().toLowerCase() })) {
+                        validated = false
+                        statusText = "checklist already exists"
+                    }
             }
+            else {
+                if (await Checklist.findOne({ work_title: work_title.trim().toLowerCase() })) {
+                    validated = false
+                    statusText = "checklist already exists"
+                }
+            }
+
             let users: string[] = []
             if (assigned_users) {
                 let names = assigned_users.split(",")
@@ -382,20 +393,19 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
                 statusText = `invalid frequency`
             }
             if (validated) {
-
-                if (_id && isMongoId(String(_id))){
+                if (_id && isMongoId(String(_id))) {
                     await Checklist.findByIdAndUpdate(checklist._id, {
                         work_title: work_title,
                         work_description: work_description,
                         category: category,
                         link: link,
-                        assigned_users: assigned_users,
+                        assigned_users: users,
                         updated_at: new Date(),
                         updated_by: req.user
                     })
                     statusText = "updated"
                 }
-                else{
+                else {
                     let checklist = new Checklist({
                         work_title,
                         work_description,
@@ -482,7 +492,7 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
                     statusText = "created"
                 }
 
-                
+
             }
             result.push({
                 ...checklist,
@@ -495,7 +505,7 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
 
 export const DownloadExcelTemplateForCreatechecklists = async (req: Request, res: Response, next: NextFunction) => {
     let checklist: GetChecklistFromExcelDto = {
-        _id:"umc3m9344343vn934",
+        _id: "umc3m9344343vn934",
         category: 'maintenance',
         work_title: 'machine work',
         work_description: 'please check all the parts',
@@ -527,7 +537,7 @@ export const AssignChecklistToUsers = async (req: Request, res: Response, next: 
         for (let k = 0; k < checklist_ids.length; k++) {
             let checklist = await Checklist.findById({ _id: checklist_ids[k] }).populate('assigned_users')
 
-            if (checklist) { 
+            if (checklist) {
                 let oldusers = checklist.assigned_users.map((item) => { return item._id.valueOf() });
                 oldusers = oldusers.filter((item) => { return !user_ids.includes(item) });
                 await Checklist.findByIdAndUpdate(checklist._id, {
@@ -543,11 +553,11 @@ export const AssignChecklistToUsers = async (req: Request, res: Response, next: 
             if (checklist) {
                 let oldusers = checklist.assigned_users.map((item) => { return item._id.valueOf() });
 
-                user_ids.forEach((id)=>{
+                user_ids.forEach((id) => {
                     if (!oldusers.includes(id))
                         oldusers.push(id)
                 })
-               
+
                 await Checklist.findByIdAndUpdate(checklist._id, {
                     assigned_users: oldusers
                 })
