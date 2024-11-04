@@ -7,7 +7,7 @@ import { BackendError } from "..";
 import { GetUserDto } from "../dtos";
 
 function useRemoteLoading() {
-    const { data, isLoading, isError } = useQuery<AxiosResponse<{ user: GetUserDto, token: string }>, BackendError>("profile", GetProfile, { retry: false, refetchOnWindowFocus: true })
+    const { data, isLoading, isError } = useQuery<AxiosResponse<{ user: GetUserDto, token: string }>, BackendError>("profile", GetProfile, { refetchOnWindowFocus: true, refetchOnMount: true })
     return { remoteUser: data?.data, remoteLoading: isLoading, isError: isError }
 }
 
