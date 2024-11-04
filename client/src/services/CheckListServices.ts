@@ -70,6 +70,15 @@ export const CreateChecklistFromExcel = async (body: FormData) => {
 }
 
 
+export const AssignChecklistsToUsers = async ({ body }: {
+    body: {
+        user_ids: string[],
+        checklist_ids: string[],
+        flag: number
+    }
+}) => {
+    return await apiClient.post(`assign/checklists`, body)
+}
 
 export const DownloadExcelTemplateForCreateChecklist = async () => {
     return await apiClient.get("download/template/checklists");

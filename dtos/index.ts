@@ -57,6 +57,9 @@ export type GetChecklistBoxDto = {
     date: string,
 }
 
+export type AssignOrRemoveChecklistDto={
+    checklist_ids:string[], user_ids:string[], flag:number
+}
 export type GetChecklistFromExcelDto = {
     _id?:string,
     work_title: string,

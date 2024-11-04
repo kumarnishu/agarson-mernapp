@@ -6,7 +6,7 @@ type UserChoices = "signup" | "reset_password_mail" | "close_user" | "new_user" 
 
 
 
-type CheckListChoices = "create_or_edit_checklist" | "create_or_edit_checklist_category" | "delete_checklist" | "close_checklist" | "edit_checklist" | "delete_checklist_category" | "create_or_edit_checklist_remark" | "view_checklist_remarks" |"delete_checklist_remark"
+type CheckListChoices = "create_or_edit_checklist" | "create_or_edit_checklist_category" | "delete_checklist" | "close_checklist" | "edit_checklist" | "delete_checklist_category" | "create_or_edit_checklist_remark" | "view_checklist_remarks" | "delete_checklist_remark" |"assign_checklist_to_users"
 
 
 type LeadChoices = "create_or_edit_refer" | "create_or_edit_leadtype" | "create_or_edit_source" | "delete_crm_item" | "view_remarks" | "close_lead" | "create_or_edit_city" | "bulk_assign_crm_cities" | "find_unknown_stages" | "create_or_edit_bill" | "convert_lead_to_refer" | "bulk_delete_useless_leads" | "view_referrals" | "delete_crm_state" | "find_unknown_cities" |
@@ -58,7 +58,8 @@ export enum CheckListChoiceActions {
   delete_checklist_category = "delete_checklist_category",
   delete_checklist_remark = "delete_checklist_remark",
   create_or_edit_checklist_remark = "create_or_edit_checklist_remark",
-  view_checklist_remarks ="view_checklist_remarks"
+  view_checklist_remarks = "view_checklist_remarks",
+  assign_checklist_to_users = "assign_checklist_to_users"
 }
 
 export enum LeadChoiceActions {
@@ -249,6 +250,7 @@ function reducer(state: ChoiceState | null, action: Action) {
     case CheckListChoiceActions.delete_checklist_remark: return type
     case CheckListChoiceActions.view_checklist_remarks: return type
     case CheckListChoiceActions.create_or_edit_checklist_remark: return type
+    case CheckListChoiceActions.assign_checklist_to_users: return type
 
     default: return state
   }

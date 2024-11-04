@@ -1,7 +1,7 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
 import { Checklist, IChecklist } from "../models/checklist";
-import { CreateOrEditChecklistDto, GetChecklistDto, GetChecklistFromExcelDto } from "../dtos";
+import { AssignOrRemoveChecklistDto, CreateOrEditChecklistDto, GetChecklistDto, GetChecklistFromExcelDto } from "../dtos";
 import { ChecklistBox } from "../models/checklist-box";
 import moment from "moment";
 import { Asset, User } from "../models/user";
@@ -332,6 +332,7 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
             let link: string | null = checklist.link
             let frequency: string | null = checklist.frequency
             let assigned_users: string | null = checklist.assigned_users
+            let _id: string | undefined = checklist._id
 
             let validated = true
 
@@ -382,90 +383,106 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
             }
             if (validated) {
 
-                let checklist = new Checklist({
-                    work_title,
-                    work_description,
-                    assigned_users: users,
-                    frequency,
-                    link,
-                    category,
-                    created_by: req.user,
-                    updated_by: req.user,
-                    updated_at: new Date(Date.now()),
-                    created_at: new Date(Date.now())
-                })
-                if (frequency == "daily") {
-                    let current_date = new Date()
-                    current_date.setDate(1)
-                    current_date.setMonth(0)
-                    while (current_date <= new Date(end_date)) {
-                        await new ChecklistBox({
-                            date: new Date(current_date),
-                            stage: 'open',
-                            checklist: checklist._id,
-                            created_at: new Date(),
-                            updated_at: new Date(),
-                            created_by: req.user,
-                            updated_by: req.user
-                        }).save()
-                        current_date.setDate(new Date(current_date).getDate() + 1)
-                    }
+                if (_id && isMongoId(String(_id))){
+                    await Checklist.findByIdAndUpdate(checklist._id, {
+                        work_title: work_title,
+                        work_description: work_description,
+                        category: category,
+                        link: link,
+                        assigned_users: assigned_users,
+                        updated_at: new Date(),
+                        updated_by: req.user
+                    })
+                    statusText = "updated"
                 }
-                if (frequency == "weekly") {
-                    let mon = getFirstMonday()
-                    let current_date = mon;
+                else{
+                    let checklist = new Checklist({
+                        work_title,
+                        work_description,
+                        assigned_users: users,
+                        frequency,
+                        link,
+                        category,
+                        created_by: req.user,
+                        updated_by: req.user,
+                        updated_at: new Date(Date.now()),
+                        created_at: new Date(Date.now())
+                    })
+                    if (frequency == "daily") {
+                        let current_date = new Date()
+                        current_date.setDate(1)
+                        current_date.setMonth(0)
+                        while (current_date <= new Date(end_date)) {
+                            await new ChecklistBox({
+                                date: new Date(current_date),
+                                stage: 'open',
+                                checklist: checklist._id,
+                                created_at: new Date(),
+                                updated_at: new Date(),
+                                created_by: req.user,
+                                updated_by: req.user
+                            }).save()
+                            current_date.setDate(new Date(current_date).getDate() + 1)
+                        }
+                    }
+                    if (frequency == "weekly") {
+                        let mon = getFirstMonday()
+                        let current_date = mon;
 
-                    console.log(mon)
-                    while (current_date <= new Date(end_date)) {
-                        await new ChecklistBox({
-                            date: new Date(current_date),
-                            stage: 'open',
-                            checklist: checklist._id,
-                            created_at: new Date(),
-                            updated_at: new Date(),
-                            created_by: req.user,
-                            updated_by: req.user
-                        }).save()
-                        current_date.setDate(new Date(current_date).getDate() + 7)
+                        console.log(mon)
+                        while (current_date <= new Date(end_date)) {
+                            await new ChecklistBox({
+                                date: new Date(current_date),
+                                stage: 'open',
+                                checklist: checklist._id,
+                                created_at: new Date(),
+                                updated_at: new Date(),
+                                created_by: req.user,
+                                updated_by: req.user
+                            }).save()
+                            current_date.setDate(new Date(current_date).getDate() + 7)
+                        }
                     }
-                }
-                if (frequency == "monthly") {
-                    let current_date = new Date()
-                    current_date.setDate(1)
-                    current_date.setMonth(0)
-                    while (current_date <= new Date(end_date)) {
-                        await new ChecklistBox({
-                            date: new Date(current_date),
-                            stage: 'open',
-                            checklist: checklist._id,
-                            created_at: new Date(),
-                            updated_at: new Date(),
-                            created_by: req.user,
-                            updated_by: req.user
-                        }).save()
-                        current_date.setMonth(new Date(current_date).getMonth() + 1)
+                    if (frequency == "monthly") {
+                        let current_date = new Date()
+                        current_date.setDate(1)
+                        current_date.setMonth(0)
+                        while (current_date <= new Date(end_date)) {
+                            await new ChecklistBox({
+                                date: new Date(current_date),
+                                stage: 'open',
+                                checklist: checklist._id,
+                                created_at: new Date(),
+                                updated_at: new Date(),
+                                created_by: req.user,
+                                updated_by: req.user
+                            }).save()
+                            current_date.setMonth(new Date(current_date).getMonth() + 1)
+                        }
                     }
-                }
-                if (frequency == "yearly") {
-                    let current_date = new Date()
-                    current_date.setDate(1)
-                    current_date.setMonth(0)
-                    current_date.setFullYear(2020)
-                    while (current_date <= new Date(end_date)) {
-                        await new ChecklistBox({
-                            date: new Date(current_date),
-                            stage: 'open',
-                            checklist: checklist._id,
-                            created_at: new Date(),
-                            updated_at: new Date(),
-                            created_by: req.user,
-                            updated_by: req.user
-                        }).save()
-                        current_date.setFullYear(new Date(current_date).getFullYear() + 1)
+                    if (frequency == "yearly") {
+                        let current_date = new Date()
+                        current_date.setDate(1)
+                        current_date.setMonth(0)
+                        current_date.setFullYear(2020)
+                        while (current_date <= new Date(end_date)) {
+                            await new ChecklistBox({
+                                date: new Date(current_date),
+                                stage: 'open',
+                                checklist: checklist._id,
+                                created_at: new Date(),
+                                updated_at: new Date(),
+                                created_by: req.user,
+                                updated_by: req.user
+                            }).save()
+                            current_date.setFullYear(new Date(current_date).getFullYear() + 1)
+                        }
                     }
+                    await checklist.save()
+                    statusText = "created"
                 }
-                await checklist.save()
-                statusText = "success"
+
+                
             }
             result.push({
                 ...checklist,
@@ -477,7 +494,8 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
 }
 
 export const DownloadExcelTemplateForCreatechecklists = async (req: Request, res: Response, next: NextFunction) => {
-    let checklist: any = {
+    let checklist: GetChecklistFromExcelDto = {
+        _id:"umc3m9344343vn934",
         category: 'maintenance',
         work_title: 'machine work',
         work_description: 'please check all the parts',
@@ -495,4 +513,47 @@ export const DownloadExcelTemplateForCreatechecklists = async (req: Request, res
     ConvertJsonToExcel(template)
     let fileName = "CreateChecklistTemplate.xlsx"
     return res.download("./file", fileName)
+}
+
+export const AssignChecklistToUsers = async (req: Request, res: Response, next: NextFunction) => {
+    const { checklist_ids, user_ids, flag } = req.body as AssignOrRemoveChecklistDto
+    if (checklist_ids && checklist_ids.length === 0)
+        return res.status(400).json({ message: "please select one checklist " })
+    if (user_ids && user_ids.length === 0)
+        return res.status(400).json({ message: "please select one user" })
+
+
+    if (flag == 0) {
+        for (let k = 0; k < checklist_ids.length; k++) {
+            let checklist = await Checklist.findById({ _id: checklist_ids[k] }).populate('assigned_users')
+
+            if (checklist) { 
+                let oldusers = checklist.assigned_users.map((item) => { return item._id.valueOf() });
+                oldusers = oldusers.filter((item) => { return !user_ids.includes(item) });
+                await Checklist.findByIdAndUpdate(checklist._id, {
+                    assigned_users: oldusers
+                })
+            }
+        }
+    }
+    else {
+        for (let k = 0; k < checklist_ids.length; k++) {
+            let checklist = await Checklist.findById({ _id: checklist_ids[k] }).populate('assigned_users')
+
+            if (checklist) {
+                let oldusers = checklist.assigned_users.map((item) => { return item._id.valueOf() });
+
+                user_ids.forEach((id)=>{
+                    if (!oldusers.includes(id))
+                        oldusers.push(id)
+                })
+               
+                await Checklist.findByIdAndUpdate(checklist._id, {
+                    assigned_users: oldusers
+                })
+            }
+        }
+    }
+
+    return res.status(200).json({ message: "successfull" })
 }
