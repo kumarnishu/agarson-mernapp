@@ -387,6 +387,7 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
                     work_description,
                     assigned_users: users,
                     frequency,
+                    link,
                     category,
                     created_by: req.user,
                     updated_by: req.user,
