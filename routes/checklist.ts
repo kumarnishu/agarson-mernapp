@@ -10,7 +10,7 @@ router.route("/checklists/:id").put(isAuthenticatedUser, upload.single('photo'),
 router.route("/checklists/:id").delete(isAuthenticatedUser, DeleteChecklist)
 router.route("/checklists/nextdate/:id").patch(isAuthenticatedUser, ChangeNextDate)
 router.route("/create-from-excel/checklists")
-    .post(isAuthenticatedUser, upload.single("excel"), CreateChecklistFromExcel)
+    .put(isAuthenticatedUser, upload.single("excel"), CreateChecklistFromExcel)
 router.get("/download/template/checklists", isAuthenticatedUser, DownloadExcelTemplateForCreatechecklists)
 
 export default router

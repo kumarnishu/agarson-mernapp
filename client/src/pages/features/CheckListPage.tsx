@@ -24,6 +24,7 @@ import CreateOrEditCheckListDialog from '../../components/dialogs/checklists/Cre
 import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
 import { queryClient } from '../../main'
 import { currentYear, dateToExcelFormat, getNextMonday, getPrevMonday, nextMonth, nextYear, previousMonth, previousYear } from '../../utils/datesHelper'
+import { ChecklistExcelButtons } from '../../components/buttons/ChecklistExcelButtons'
 
 
 function ChecklistPage() {
@@ -193,7 +194,7 @@ function ChecklistPage() {
               {
                 cell.row.original.frequency == 'monthly' && <Tooltip title={moment(new Date(b.date)).format('LL')} key={b.date}>
                   <Button
-                    sx={{ borderRadius: 20,  m: 0.3, pl: 1 }}
+                    sx={{ borderRadius: 20, m: 0.3, pl: 1 }}
                     onClick={() => {
                       console.log(new Date(b.date))
                       console.log(new Date(previous_date))
@@ -433,9 +434,9 @@ function ChecklistPage() {
             return {
               ...row.original,
               last_checked_date: dateToExcelFormat(row.original.last_checked_date),
-              created_by:row.original.created_by.value,
-              updated_by:row.original.updated_by.value,
-              boxes:row.original.boxes.length
+              created_by: row.original.created_by.value,
+              updated_by: row.original.updated_by.value,
+              boxes: row.original.boxes.length
             }
           }
           )
@@ -525,6 +526,8 @@ function ChecklistPage() {
               })
             }
           </TextField>}
+
+        {LoggedInUser?.assigned_permissions.includes('checklist_create') && <ChecklistExcelButtons />}
       </Stack>
       <CreateOrEditCheckListDialog checklist={checklist} setChecklist={setChecklist} />
       {checklist && <DeleteCheckListDialog checklist={checklist} />}

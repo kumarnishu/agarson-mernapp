@@ -4,13 +4,14 @@ import { Checklist, IChecklist } from "../models/checklist";
 import { CreateOrEditChecklistDto, GetChecklistDto, GetChecklistFromExcelDto } from "../dtos";
 import { ChecklistBox } from "../models/checklist-box";
 import moment from "moment";
-import { Asset } from "../models/user";
+import { Asset, User } from "../models/user";
 import { uploadFileToCloud } from "../utils/uploadFileToCloud";
 import { destroyCloudFile } from "../utils/destroyCloudFile";
 import isMongoId from "validator/lib/isMongoId";
 import ConvertJsonToExcel from "../utils/ConvertJsonToExcel";
 import { ChecklistRemark } from "../models/checklist-remark";
 import { getFirstMonday } from "../utils/getFirstMondayDate";
+import { ChecklistCategory } from "../models/checklist-category";
 
 export const GetChecklists = async (req: Request, res: Response, next: NextFunction) => {
     let showhidden = req.query.hidden
@@ -23,7 +24,7 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
     let count = 0
     let dt1 = new Date(String(start_date))
     let dt2 = new Date(String(end_date))
-    
+
     let result: GetChecklistDto[] = []
 
     if (!Number.isNaN(limit) && !Number.isNaN(page)) {
@@ -34,7 +35,7 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
             }
         }
         else if (!id) {
-            checklists = await Checklist.find({ active: showhidden == 'false',assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('created_at').skip((page - 1) * limit).limit(limit)
+            checklists = await Checklist.find({ active: showhidden == 'false', assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('created_at').skip((page - 1) * limit).limit(limit)
             count = await Checklist.find({ user: req.user?._id }).countDocuments()
         }
 
@@ -49,7 +50,7 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
             let ch = checklists[i];
             if (ch && ch.category) {
                 let boxes = await ChecklistBox.find({ checklist: ch._id, date: { $gte: dt1, $lt: dt2 } }).sort('date').populate('checklist');
-                let lastcheckedbox = await ChecklistBox.findOne({ checklist: ch._id, stage:{$ne: 'open'} }).sort('-date')
+                let lastcheckedbox = await ChecklistBox.findOne({ checklist: ch._id, stage: { $ne: 'open' } }).sort('-date')
                 let dtoboxes = boxes.map((b) => {
                     return {
                         _id: b._id,
@@ -263,7 +264,7 @@ export const EditChecklist = async (req: Request, res: Response, next: NextFunct
 export const ChangeNextDate = async (req: Request, res: Response, next: NextFunction) => {
 
     const {
-        next_date } = req.body as {next_date:string}
+        next_date } = req.body as { next_date: string }
     if (!next_date)
         return res.status(400).json({ message: "please provide all required fields" })
 
@@ -321,12 +322,17 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
         if (workbook_response.length > 3000) {
             return res.status(400).json({ message: "Maximum 3000 records allowed at one time" })
         }
+        let end_date = new Date();
+        end_date.setFullYear(end_date.getFullYear() + 30)
         for (let i = 0; i < workbook_response.length; i++) {
             let checklist = workbook_response[i]
             let work_title: string | null = checklist.work_title
-            let person: string | null = checklist.person
+            let work_description: string | null = checklist.work_description
             let category: string | null = checklist.category
+            let link: string | null = checklist.link
             let frequency: string | null = checklist.frequency
+            let assigned_users: string | null = checklist.assigned_users
+
             let validated = true
 
             //important
@@ -334,25 +340,52 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
                 validated = false
                 statusText = "required work title"
             }
-            if (!person) {
-                validated = false
-                statusText = "required person"
-            }
+
             if (!frequency) {
                 validated = false
                 statusText = "required frequency"
             }
-
+            if (!category) {
+                validated = false
+                statusText = "required category"
+            }
+            if (category) {
+                let cat = await ChecklistCategory.findOne({ category: category.trim().toLowerCase() })
+                if (!cat) {
+                    validated = false
+                    statusText = "category not found"
+                }
+                else
+                    category = cat._id
+            }
             if (await Checklist.findOne({ work_title: work_title.trim().toLowerCase() })) {
                 validated = false
                 statusText = "checklist already exists"
             }
+            let users: string[] = []
+            if (assigned_users) {
+                let names = assigned_users.split(",")
+                for (let i = 0; i < names.length; i++) {
+                    let u = await User.findOne({ username: names[i] });
+                    if (u)
+                        users.push(u._id)
+                    else {
+                        validated = false
+                        statusText = `${names[i]} not exists`
+                    }
+                }
 
-
+            }
+            if (!['daily', 'weekly', 'monthly', 'yearly'].includes(frequency)) {
+                validated = false
+                statusText = `invalid frequency`
+            }
             if (validated) {
-                await new Checklist({
+
+                let checklist = new Checklist({
                     work_title,
-                    person,
+                    work_description,
+                    assigned_users: users,
                     frequency,
                     category,
                     created_by: req.user,
@@ -360,7 +393,77 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
                     updated_at: new Date(Date.now()),
                     created_at: new Date(Date.now())
                 })
-                // .save()
+                if (frequency == "daily") {
+                    let current_date = new Date()
+                    current_date.setDate(1)
+                    current_date.setMonth(0)
+                    while (current_date <= new Date(end_date)) {
+                        await new ChecklistBox({
+                            date: new Date(current_date),
+                            stage: 'open',
+                            checklist: checklist._id,
+                            created_at: new Date(),
+                            updated_at: new Date(),
+                            created_by: req.user,
+                            updated_by: req.user
+                        }).save()
+                        current_date.setDate(new Date(current_date).getDate() + 1)
+                    }
+                }
+                if (frequency == "weekly") {
+                    let mon = getFirstMonday()
+                    let current_date = mon;
+
+                    console.log(mon)
+                    while (current_date <= new Date(end_date)) {
+                        await new ChecklistBox({
+                            date: new Date(current_date),
+                            stage: 'open',
+                            checklist: checklist._id,
+                            created_at: new Date(),
+                            updated_at: new Date(),
+                            created_by: req.user,
+                            updated_by: req.user
+                        }).save()
+                        current_date.setDate(new Date(current_date).getDate() + 7)
+                    }
+                }
+                if (frequency == "monthly") {
+                    let current_date = new Date()
+                    current_date.setDate(1)
+                    current_date.setMonth(0)
+                    while (current_date <= new Date(end_date)) {
+                        await new ChecklistBox({
+                            date: new Date(current_date),
+                            stage: 'open',
+                            checklist: checklist._id,
+                            created_at: new Date(),
+                            updated_at: new Date(),
+                            created_by: req.user,
+                            updated_by: req.user
+                        }).save()
+                        current_date.setMonth(new Date(current_date).getMonth() + 1)
+                    }
+                }
+                if (frequency == "yearly") {
+                    let current_date = new Date()
+                    current_date.setDate(1)
+                    current_date.setMonth(0)
+                    current_date.setFullYear(2020)
+                    while (current_date <= new Date(end_date)) {
+                        await new ChecklistBox({
+                            date: new Date(current_date),
+                            stage: 'open',
+                            checklist: checklist._id,
+                            created_at: new Date(),
+                            updated_at: new Date(),
+                            created_by: req.user,
+                            updated_by: req.user
+                        }).save()
+                        current_date.setFullYear(new Date(current_date).getFullYear() + 1)
+                    }
+                }
+                await checklist.save()
                 statusText = "success"
             }
             result.push({
@@ -374,11 +477,21 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
 
 export const DownloadExcelTemplateForCreatechecklists = async (req: Request, res: Response, next: NextFunction) => {
     let checklist: any = {
-        work_title: "check the work given ",
-        category: "payment",
-        frequency: 'daily'
+        category: 'maintenance',
+        work_title: 'machine work',
+        work_description: 'please check all the parts',
+        link: 'http://www.bo.agarson.in',
+        assigned_users: 'sujata,pawan',
+        frequency: "daily"
     }
-    ConvertJsonToExcel([checklist])
+    let users = (await User.find()).map((u) => { return { name: u.username } })
+    let categories = (await ChecklistCategory.find()).map((u) => { return { name: u.category } })
+    let template: { sheet_name: string, data: any[] }[] = []
+    template.push({ sheet_name: 'template', data: [checklist] })
+    template.push({ sheet_name: 'categories', data: categories })
+    template.push({ sheet_name: 'users', data: users })
+    template.push({ sheet_name: 'frequency', data: ['daily', 'weekly', 'monthly', 'yearly'] })
+    ConvertJsonToExcel(template)
     let fileName = "CreateChecklistTemplate.xlsx"
     return res.download("./file", fileName)
 }

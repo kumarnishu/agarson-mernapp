@@ -25,7 +25,7 @@ export function ChecklistExcelButtons() {
 
 
     function HandleExport() {
-        saveAs(`/api/v1/download/template/checklist`)
+        saveAs(`/api/v1/download/template/checklists`)
     }
 
 
