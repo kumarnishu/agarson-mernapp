@@ -92,6 +92,7 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
         return res.status(400).json({ message: "bad request" })
 }
 
+
 export const CreateChecklist = async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     const {
