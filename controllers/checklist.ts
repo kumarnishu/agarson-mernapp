@@ -155,6 +155,7 @@ export const GetMobileChecklists = async (req: Request, res: Response, next: Nex
             })
         }
     }
+    return res.status(200).json(result)
 }
 
 
