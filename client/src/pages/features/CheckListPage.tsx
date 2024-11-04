@@ -23,7 +23,7 @@ import DeleteCheckListDialog from '../../components/dialogs/checklists/DeleteChe
 import CreateOrEditCheckListDialog from '../../components/dialogs/checklists/CreateOrEditCheckListDialog'
 import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
 import { queryClient } from '../../main'
-import { currentYear, dateToExcelFormat, getNextMonday, getPrevMonday, nextMonth, nextYear, previousMonth, previousYear } from '../../utils/datesHelper'
+import { currentYear,  getNextMonday, getPrevMonday, nextMonth, nextYear, previousMonth, previousYear } from '../../utils/datesHelper'
 import { ChecklistExcelButtons } from '../../components/buttons/ChecklistExcelButtons'
 import AssignChecklistsDialog from '../../components/dialogs/checklists/AssignChecklistsDialog'
 
