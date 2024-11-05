@@ -3,9 +3,10 @@ import moment from "moment";
 const currentDate = new Date();
 
 export const previousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+export const currentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
 // Get next month
-export const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+export const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 2);
 
 export const previousYear = new Date(currentDate.getFullYear() - 1, currentDate.getMonth(), currentDate.getDate());
 export const currentYear = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
@@ -19,6 +20,10 @@ tomorrow.setHours(0, 0, 0, 0);
 export const hundredDaysAgo = new Date(today);
 hundredDaysAgo.setDate(today.getDate() - 100);
 hundredDaysAgo.setHours(0, 0, 0, 0);
+
+export const prevWeekDate = new Date(today);
+prevWeekDate.setDate(today.getDate() - 7);
+
 
 export function dateToExcelFormat(date:any) {
     const excelEpoch = moment('1899-12-30'); // Excel epoch date

@@ -1,6 +1,6 @@
 import { IChecklist } from "../models/checklist";
 import { IChecklistBox } from "../models/checklist-box";
-import { hundredDaysAgo, nextMonth, nextYear, previousMonth, previousYear } from "./datesHelper";
+import { currentMonth, nextMonth, nextYear, previousYear, prevWeekDate } from "./datesHelper";
 
 export function getBoxes(checklist: IChecklist, checklist_boxes: IChecklistBox[]) {
     if (checklist.frequency == "daily")
@@ -15,7 +15,6 @@ export function getBoxes(checklist: IChecklist, checklist_boxes: IChecklistBox[]
 
 function getDailyboxes(checklist: IChecklist, checklist_boxes: IChecklistBox[]) {
     let dt1 = new Date()
-    dt1.setDate(dt1.getDate() - 6)
     let dt2 = new Date()
     dt2.setDate(dt2.getDate() + 4)
     dt1.setHours(0, 0, 0, 0)
@@ -33,7 +32,7 @@ function getDailyboxes(checklist: IChecklist, checklist_boxes: IChecklistBox[]) 
     return result
 }
 function getWeeklyboxes(checklist: IChecklist, checklist_boxes: IChecklistBox[]) {
-    let dt1 = new Date(previousMonth)
+    let dt1 = new Date(prevWeekDate)
     let dt2 = new Date(nextMonth)
 
     let result = checklist_boxes.filter((b) => {
@@ -49,7 +48,7 @@ function getWeeklyboxes(checklist: IChecklist, checklist_boxes: IChecklistBox[])
     return result
 }
 function getMonthlyboxes(checklist: IChecklist, checklist_boxes: IChecklistBox[]) {
-    let dt1 = new Date(hundredDaysAgo)
+    let dt1 = new Date(currentMonth)
     let dt2 = new Date(nextMonth)
     let result = checklist_boxes.filter((b) => {
         return b.date >= dt1 && b.date < dt2
@@ -66,7 +65,7 @@ function getMonthlyboxes(checklist: IChecklist, checklist_boxes: IChecklistBox[]
 function getYearlyBoxes(checklist: IChecklist, checklist_boxes: IChecklistBox[]) {
     let dt1 = new Date(previousYear)
     let dt2 = new Date(nextYear)
-  
+
     let result = checklist_boxes.filter((b) => {
         return b.date >= dt1 && b.date < dt2
     }).map((bo) => {
