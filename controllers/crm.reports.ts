@@ -4,7 +4,7 @@ import { IReferredParty, ReferredParty } from '../models/refer';
 import moment from 'moment';
 import Lead, { ILead } from '../models/lead';
 import { IRemark, Remark } from '../models/crm-remarks';
-import {  hundredDaysAgo, today } from '../utils/datesHelper';
+import { hundredDaysAgo, today, tomorrow } from '../utils/datesHelper';
 
 export const GetNewRefers = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetReferDto[] = [];
@@ -91,7 +91,7 @@ export const GetMyReminders = async (req: Request, res: Response, next: NextFunc
     let previous_date = new Date()
     let day = previous_date.getDate() - 100
     previous_date.setDate(day)
-    let remarks = await Remark.find({ created_at: { $lte: new Date(), $gte: previous_date } }).populate('created_by').populate('updated_by').populate({
+    let remarks = await Remark.find({ created_at: { $gte: previous_date, $lt: new Date(tomorrow) } }).populate('created_by').populate('updated_by').populate({
         path: 'lead',
         populate: [
             {
