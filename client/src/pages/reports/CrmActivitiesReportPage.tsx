@@ -26,7 +26,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 function CrmActivitiesReportPage() {
     const { user } = useContext(UserContext)
     const [users, setUsers] = useState<GetUserDto[]>([])
-    const [paginationData, setPaginationData] = useState({ limit: 500, page: 1, total: 1 });
+    const [paginationData, setPaginationData] = useState({ limit: 5000, page: 1, total: 1 });
     const [stage, setStage] = useState<string>('undefined');
     const [stages, setStages] = useState<DropDownDto[]>([])
     const [remark, setRemark] = useState<GetActivitiesOrRemindersDto>()

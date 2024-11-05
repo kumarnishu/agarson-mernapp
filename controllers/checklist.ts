@@ -1,8 +1,8 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
 import { Checklist, IChecklist } from "../models/checklist";
-import { AssignOrRemoveChecklistDto, CreateOrEditChecklistDto, GetChecklistDto, GetChecklistFromExcelDto } from "../dtos";
-import { ChecklistBox } from "../models/checklist-box";
+import { AssignOrRemoveChecklistDto, CreateOrEditChecklistDto, GetChecklistBoxDto, GetChecklistDto, GetChecklistFromExcelDto } from "../dtos";
+import { ChecklistBox, IChecklistBox } from "../models/checklist-box";
 import moment from "moment";
 import { Asset, User } from "../models/user";
 import { uploadFileToCloud } from "../utils/uploadFileToCloud";
@@ -12,75 +12,54 @@ import ConvertJsonToExcel from "../utils/ConvertJsonToExcel";
 import { ChecklistRemark } from "../models/checklist-remark";
 import { getFirstMonday } from "../utils/getFirstMondayDate";
 import { ChecklistCategory } from "../models/checklist-category";
+import { getBoxes } from "../utils/checklistHelper";
 
 export const GetChecklists = async (req: Request, res: Response, next: NextFunction) => {
     let showhidden = req.query.hidden
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
-    let start_date = req.query.start_date
-    let end_date = req.query.end_date
     let checklists: IChecklist[] = []
     let count = 0
-    let dt1 = new Date(String(start_date))
-    let dt2 = new Date(String(end_date))
-
     let result: GetChecklistDto[] = []
 
     if (!Number.isNaN(limit) && !Number.isNaN(page)) {
         if (req.user?.is_admin && !id) {
             {
-                checklists = await Checklist.find({ active: showhidden == 'false' }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('created_at').skip((page - 1) * limit).limit(limit)
+                checklists = await Checklist.find({ active: showhidden == 'false' }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('checklist_boxes').sort('created_at').skip((page - 1) * limit).limit(limit)
                 count = await Checklist.find().countDocuments()
             }
         }
         else if (!id) {
-            checklists = await Checklist.find({ active: showhidden == 'false', assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('created_at').skip((page - 1) * limit).limit(limit)
-            count = await Checklist.find({ user: req.user?._id }).countDocuments()
+            checklists = await Checklist.find({ active: showhidden == 'false', assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('checklist_boxes').populate('assigned_users').sort('created_at').skip((page - 1) * limit).limit(limit)
+            count = await Checklist.find({ assigned_users: req.user?._id }).countDocuments()
         }
 
         else {
-            checklists = await Checklist.find({ active: showhidden == 'false', assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('created_at').skip((page - 1) * limit).limit(limit)
-            count = await Checklist.find({ user: id }).countDocuments()
+            checklists = await Checklist.find({ active: showhidden == 'false', assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('checklist_boxes').sort('created_at').skip((page - 1) * limit).limit(limit)
+            count = await Checklist.find({ assigned_users: id }).countDocuments()
         }
 
-
-
-        for (let i = 0; i < checklists.length; i++) {
-            let ch = checklists[i];
-            if (ch && ch.category) {
-                let boxes = await ChecklistBox.find({ checklist: ch._id, date: { $gte: dt1, $lt: dt2 } }).sort('date').populate('checklist');
-                let lastcheckedbox = await ChecklistBox.findOne({ checklist: ch._id, stage: { $ne: 'open' } }).sort('-date')
-                let dtoboxes = boxes.map((b) => {
-                    return {
-                        _id: b._id,
-                        stage: b.stage,
-                        checklist: { id: b.checklist._id, label: b.checklist.work_title, value: b.checklist.work_title },
-                        date: b.date.toString()
-                    }
-                });
-                let users = ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } })
-                result.push({
-                    _id: ch._id,
-                    active: ch.active,
-                    work_title: ch.work_title,
-                    work_description: ch.work_description,
-                    link: ch.link,
-                    last_checked_date: lastcheckedbox ? moment(lastcheckedbox.date).format('DD/MM/YYYY') : "",
-                    category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
-                    frequency: ch.frequency,
-                    assigned_users: users,
-                    created_at: ch.created_at.toString(),
-                    updated_at: ch.updated_at.toString(),
-                    boxes: dtoboxes,
-                    next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
-                    photo: ch.photo?.public_url || "",
-                    created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
-                    updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
-                })
+        result = checklists.map((ch) => {
+            return {
+                _id: ch._id,
+                active: ch.active,
+                work_title: ch.work_title,
+                work_description: ch.work_description,
+                link: ch.link,
+                last_checked_date: ch.lastcheckedbox ? moment(ch.lastcheckedbox.date).format('DD/MM/YYYY') : "",
+                category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
+                frequency: ch.frequency,
+                assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
+                created_at: ch.created_at.toString(),
+                updated_at: ch.updated_at.toString(),
+                boxes: getBoxes(ch, ch.checklist_boxes), 
+                next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
+                photo: ch.photo?.public_url || "",
+                created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
+                updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
             }
-        }
-
+        })
         return res.status(200).json({
             result,
             total: Math.ceil(count / limit),
@@ -93,68 +72,31 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
 }
 
 export const GetMobileChecklists = async (req: Request, res: Response, next: NextFunction) => {
-    let id = req.query.id
-    let start_date = req.query.start_date
-    let end_date = req.query.end_date
     let checklists: IChecklist[] = []
-    let count = 0
-    let dt1 = new Date(String(start_date))
-    let dt2 = new Date(String(end_date))
-
     let result: GetChecklistDto[] = []
 
-    if (req.user?.is_admin && !id) {
-        {
-            checklists = await Checklist.find({ active: true }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('created_at')
-            count = await Checklist.find().countDocuments()
+    checklists = await Checklist.find({ active: true, assigned_users: req.user?._id }).populate('created_by').populate('checklist_boxes').populate('updated_by').populate('category').populate('assigned_users')
+
+    result = checklists.map((ch) => {
+        return {
+            _id: ch._id,
+            active: ch.active,
+            work_title: ch.work_title,
+            work_description: ch.work_description,
+            link: ch.link,
+            last_checked_date: ch.lastcheckedbox ? moment(ch.lastcheckedbox.date).format('DD/MM/YYYY') : "",
+            category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
+            frequency: ch.frequency,
+            assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
+            created_at: ch.created_at.toString(),
+            updated_at: ch.updated_at.toString(),
+            boxes: getBoxes(ch, ch.checklist_boxes),
+            next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
+            photo: ch.photo?.public_url || "",
+            created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
+            updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
         }
-    }
-    else if (!id) {
-        checklists = await Checklist.find({ active: true, assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users')
-        count = await Checklist.find({ user: req.user?._id }).countDocuments()
-    }
-
-    else {
-        checklists = await Checklist.find({ active: true, assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users')
-        count = await Checklist.find({ user: id }).countDocuments()
-    }
-
-
-
-    for (let i = 0; i < checklists.length; i++) {
-        let ch = checklists[i];
-        if (ch && ch.category) {
-            let boxes = await ChecklistBox.find({ checklist: ch._id, date: { $gte: dt1, $lt: dt2 } }).sort('date').populate('checklist');
-            let lastcheckedbox = await ChecklistBox.findOne({ checklist: ch._id, stage: { $ne: 'open' } }).sort('-date')
-            let dtoboxes = boxes.map((b) => {
-                return {
-                    _id: b._id,
-                    stage: b.stage,
-                    checklist: { id: b.checklist._id, label: b.checklist.work_title, value: b.checklist.work_title },
-                    date: b.date.toString()
-                }
-            });
-            let users = ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } })
-            result.push({
-                _id: ch._id,
-                active: ch.active,
-                work_title: ch.work_title,
-                work_description: ch.work_description,
-                link: ch.link,
-                last_checked_date: lastcheckedbox ? moment(lastcheckedbox.date).format('DD/MM/YYYY') : "",
-                category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
-                frequency: ch.frequency,
-                assigned_users: users,
-                created_at: ch.created_at.toString(),
-                updated_at: ch.updated_at.toString(),
-                boxes: dtoboxes,
-                next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
-                photo: ch.photo?.public_url || "",
-                created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
-                updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
-            })
-        }
-    }
+    })
     return res.status(200).json(result)
 }
 
@@ -172,7 +114,7 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
     console.log(req.body)
     if (!category || !work_title || !frequency)
         return res.status(400).json({ message: "please provide all required fields" })
-
+    let checklistboxes: IChecklistBox[] = []
     let checklist = new Checklist({
         category: category,
         work_title: work_title,
@@ -202,7 +144,7 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
         }
     }
     checklist.photo = document;
-    await checklist.save();
+
     let end_date = new Date();
     end_date.setFullYear(end_date.getFullYear() + 30)
 
@@ -211,7 +153,7 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
         current_date.setDate(1)
         current_date.setMonth(0)
         while (current_date <= new Date(end_date)) {
-            await new ChecklistBox({
+            let checklistbox = await new ChecklistBox({
                 date: new Date(current_date),
                 stage: 'open',
                 checklist: checklist._id,
@@ -220,6 +162,7 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
                 created_by: req.user,
                 updated_by: req.user
             }).save()
+            checklistboxes.push(checklistbox)
             current_date.setDate(new Date(current_date).getDate() + 1)
         }
     }
@@ -229,7 +172,7 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
 
         console.log(mon)
         while (current_date <= new Date(end_date)) {
-            await new ChecklistBox({
+            let checklist_box = await new ChecklistBox({
                 date: new Date(current_date),
                 stage: 'open',
                 checklist: checklist._id,
@@ -238,6 +181,7 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
                 created_by: req.user,
                 updated_by: req.user
             }).save()
+            checklistboxes.push(checklist_box)
             current_date.setDate(new Date(current_date).getDate() + 7)
         }
     }
@@ -246,7 +190,7 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
         current_date.setDate(1)
         current_date.setMonth(0)
         while (current_date <= new Date(end_date)) {
-            await new ChecklistBox({
+            let box = await new ChecklistBox({
                 date: new Date(current_date),
                 stage: 'open',
                 checklist: checklist._id,
@@ -255,6 +199,7 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
                 created_by: req.user,
                 updated_by: req.user
             }).save()
+            checklistboxes.push(box)
             current_date.setMonth(new Date(current_date).getMonth() + 1)
         }
     }
@@ -264,7 +209,7 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
         current_date.setMonth(0)
         current_date.setFullYear(2020)
         while (current_date <= new Date(end_date)) {
-            await new ChecklistBox({
+            let box = await new ChecklistBox({
                 date: new Date(current_date),
                 stage: 'open',
                 checklist: checklist._id,
@@ -273,9 +218,13 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
                 created_by: req.user,
                 updated_by: req.user
             }).save()
+            checklistboxes.push(box)
             current_date.setFullYear(new Date(current_date).getFullYear() + 1)
         }
     }
+    console.log(checklistboxes.length)
+    checklist.checklist_boxes = checklistboxes;
+    await checklist.save();
     return res.status(201).json({ message: `new Checklist added` });
 }
 
@@ -367,7 +316,6 @@ export const DeleteChecklist = async (req: Request, res: Response, next: NextFun
     return res.status(200).json({ message: `Checklist deleted` });
 }
 
-
 export const CreateChecklistFromExcel = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetChecklistFromExcelDto[] = []
     let statusText: string = ""
@@ -393,6 +341,7 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
         end_date.setFullYear(end_date.getFullYear() + 30)
         for (let i = 0; i < workbook_response.length; i++) {
             let checklist = workbook_response[i]
+            let checklistboxes: IChecklistBox[] = []
             let work_title: string | null = checklist.work_title
             let work_description: string | null = checklist.work_description
             let category: string | null = checklist.category
@@ -426,18 +375,20 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
                 else
                     category = cat._id
             }
-            if (_id && isMongoId(String(_id))) {
-                let ch = await Checklist.findById(_id)
-                if (ch?.work_title !== work_title)
+            if (work_title) {
+                if (_id && isMongoId(String(_id))) {
+                    let ch = await Checklist.findById(_id)
+                    if (ch?.work_title !== work_title)
+                        if (await Checklist.findOne({ work_title: work_title.trim().toLowerCase() })) {
+                            validated = false
+                            statusText = "checklist already exists"
+                        }
+                }
+                else {
                     if (await Checklist.findOne({ work_title: work_title.trim().toLowerCase() })) {
                         validated = false
                         statusText = "checklist already exists"
                     }
-            }
-            else {
-                if (await Checklist.findOne({ work_title: work_title.trim().toLowerCase() })) {
-                    validated = false
-                    statusText = "checklist already exists"
                 }
             }
 
@@ -490,7 +441,7 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
                         current_date.setDate(1)
                         current_date.setMonth(0)
                         while (current_date <= new Date(end_date)) {
-                            await new ChecklistBox({
+                            let checklistbox = await new ChecklistBox({
                                 date: new Date(current_date),
                                 stage: 'open',
                                 checklist: checklist._id,
@@ -499,6 +450,7 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
                                 created_by: req.user,
                                 updated_by: req.user
                             }).save()
+                            checklistboxes.push(checklistbox)
                             current_date.setDate(new Date(current_date).getDate() + 1)
                         }
                     }
@@ -508,7 +460,7 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
 
                         console.log(mon)
                         while (current_date <= new Date(end_date)) {
-                            await new ChecklistBox({
+                            let checklist_box = await new ChecklistBox({
                                 date: new Date(current_date),
                                 stage: 'open',
                                 checklist: checklist._id,
@@ -517,6 +469,7 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
                                 created_by: req.user,
                                 updated_by: req.user
                             }).save()
+                            checklistboxes.push(checklist_box)
                             current_date.setDate(new Date(current_date).getDate() + 7)
                         }
                     }
@@ -525,7 +478,7 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
                         current_date.setDate(1)
                         current_date.setMonth(0)
                         while (current_date <= new Date(end_date)) {
-                            await new ChecklistBox({
+                            let box = await new ChecklistBox({
                                 date: new Date(current_date),
                                 stage: 'open',
                                 checklist: checklist._id,
@@ -534,6 +487,7 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
                                 created_by: req.user,
                                 updated_by: req.user
                             }).save()
+                            checklistboxes.push(box)
                             current_date.setMonth(new Date(current_date).getMonth() + 1)
                         }
                     }
@@ -543,7 +497,7 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
                         current_date.setMonth(0)
                         current_date.setFullYear(2020)
                         while (current_date <= new Date(end_date)) {
-                            await new ChecklistBox({
+                            let box = await new ChecklistBox({
                                 date: new Date(current_date),
                                 stage: 'open',
                                 checklist: checklist._id,
@@ -552,9 +506,12 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
                                 created_by: req.user,
                                 updated_by: req.user
                             }).save()
+                            checklistboxes.push(box)
                             current_date.setFullYear(new Date(current_date).getFullYear() + 1)
                         }
                     }
+                    console.log(checklistboxes.length)
+                    checklist.checklist_boxes = checklistboxes;
                     await checklist.save()
                     statusText = "created"
                 }

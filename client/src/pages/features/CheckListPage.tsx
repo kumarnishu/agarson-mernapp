@@ -23,7 +23,7 @@ import DeleteCheckListDialog from '../../components/dialogs/checklists/DeleteChe
 import CreateOrEditCheckListDialog from '../../components/dialogs/checklists/CreateOrEditCheckListDialog'
 import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
 import { queryClient } from '../../main'
-import { currentYear,  getNextMonday, getPrevMonday, nextMonth, nextYear, previousMonth, previousYear } from '../../utils/datesHelper'
+import { currentYear, getNextMonday, getPrevMonday, nextMonth, nextYear, previousMonth, previousYear } from '../../utils/datesHelper'
 import { ChecklistExcelButtons } from '../../components/buttons/ChecklistExcelButtons'
 import AssignChecklistsDialog from '../../components/dialogs/checklists/AssignChecklistsDialog'
 
@@ -39,10 +39,6 @@ function ChecklistPage() {
   const [checklistBox, setChecklistBox] = useState<GetChecklistBoxDto>()
   const [categories, setCategories] = useState<DropDownDto[]>([])
   const [userId, setUserId] = useState<string>()
-  const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
-    start_date: moment(new Date().setDate(new Date().getDate() - 6)).format("YYYY-MM-DD")
-    , end_date: moment(new Date().setDate(new Date().getDate() + 4)).format("YYYY-MM-DD")
-  })
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
@@ -54,7 +50,7 @@ function ChecklistPage() {
   let day = previous_date.getDate() - 3
   previous_date.setDate(day)
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'feature_menu', show_assigned_only: true }))
-  const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date, hidden], async () => GetChecklists({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date, hidden: String(hidden) }))
+  const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, hidden], async () => GetChecklists({ limit: paginationData?.limit, page: paginationData?.page, id: userId, hidden: String(hidden) }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { mutate: changedate } = useMutation
     <AxiosResponse<any>, BackendError, { id: string, next_date: string }>
@@ -493,89 +489,54 @@ function ChecklistPage() {
 
         >Export Selected</MenuItem>}
       </Menu>
-      <Stack sx={{ p: 2 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'center'}>
-        < TextField
-          size="small"
-          type="date"
-          id="start_date"
-          label="Start Date"
-          fullWidth
-          focused
-          value={dates.start_date}
-          onChange={(e) => {
-            if (e.currentTarget.value) {
-              setDates({
-                ...dates,
-                start_date: moment(e.target.value).format("YYYY-MM-DD")
-              })
-            }
-          }}
-        />
-        < TextField
-          type="date"
-          id="end_date"
-          size="small"
-          label="End Date"
-          value={dates.end_date}
-          focused
-          fullWidth
-          onChange={(e) => {
-            if (e.currentTarget.value && new Date(e.currentTarget.value) < nextYear) {
-              setDates({
-                ...dates,
-                end_date: moment(e.target.value).format("YYYY-MM-DD")
-              })
-            }
-          }}
-        />
-        < Stack direction="row" spacing={2}>
-          {LoggedInUser?.is_admin && <Stack direction={'row'} alignItems={'center'} sx={{ backgroundColor: 'whitegrey' }}>
-            <Button variant='outlined' color="inherit" size='large'>
+      <Stack sx={{ p: 2 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
+        < Typography variant='h6' >
+          Checklists
+        </Typography >
+        <Stack direction="row" spacing={2} >
+          {LoggedInUser?.is_admin &&
+            <Button variant='contained' size="small" color="inherit">
               <input type='checkbox' onChange={(e) => {
                 if (e.target.checked) {
                   setHidden('true')
                 }
                 else
                   setHidden('false')
-              }} /> <span style={{ paddingLeft: '5px' }}>Hidden</span>
-            </Button>
-          </Stack >}
+              }} />
+              <span style={{ paddingLeft: '5px' }}>Hidden</span>
+            </Button>}
+          {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
+            < TextField
+              select
 
-        </Stack >
+              size="small"
+              SelectProps={{
+                native: true,
+              }}
+              onChange={(e) => {
+                setUserId(e.target.value)
+              }}
+              required
+              id="checklist_owners"
+              label="Person"
+              fullWidth
+            >
+              <option key={'00'} value={undefined}>
 
+              </option>
+              {
+                users.map((user, index) => {
 
+                  return (<option key={index} value={user._id}>
+                    {user.username}
+                  </option>)
 
-        {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
-          < TextField
-            select
+                })
+              }
+            </TextField>}
 
-            size="small"
-            SelectProps={{
-              native: true,
-            }}
-            onChange={(e) => {
-              setUserId(e.target.value)
-            }}
-            required
-            id="checklist_owners"
-            label="Person"
-            fullWidth
-          >
-            <option key={'00'} value={undefined}>
-
-            </option>
-            {
-              users.map((user, index) => {
-
-                return (<option key={index} value={user._id}>
-                  {user.username}
-                </option>)
-
-              })
-            }
-          </TextField>}
-
-        {LoggedInUser?.assigned_permissions.includes('checklist_create') && <ChecklistExcelButtons />}
+          {LoggedInUser?.assigned_permissions.includes('checklist_create') && <ChecklistExcelButtons />}
+        </Stack>
       </Stack>
       <CreateOrEditCheckListDialog checklist={checklist} setChecklist={setChecklist} />
       {checklist && <DeleteCheckListDialog checklist={checklist} />}

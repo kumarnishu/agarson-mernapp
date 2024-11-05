@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { IChecklistCategory } from "./checklist-category";
 import { Asset, IUser } from "./user";
+import { IChecklistBox } from "./checklist-box";
 
 
 export type IChecklist = {
@@ -10,6 +11,8 @@ export type IChecklist = {
     work_description: string,
     photo: Asset,
     assigned_users: IUser[],
+    lastcheckedbox:IChecklistBox,
+    checklist_boxes:IChecklistBox[]
     link: string,
     category: IChecklistCategory,
     frequency: string,
@@ -31,6 +34,14 @@ const ChecklistSchema = new mongoose.Schema<IChecklist, mongoose.Model<IChecklis
         lowercase: true,
         required: true
     },
+    lastcheckedbox: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ChecklistBox'
+    },
+    checklist_boxes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ChecklistBox'
+    }],
     work_description: {
         type: String,
         lowercase: true,
