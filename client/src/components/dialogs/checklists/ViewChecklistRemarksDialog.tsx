@@ -53,7 +53,7 @@ function ViewChecklistRemarksDialog({ checklist_box, checklist }: { checklist: G
                             <div key={index} style={{ borderRadius: '1px 10px', padding: '10px', background: 'lightblue', paddingLeft: '20px', border: '1px solid grey' }}>
                                 <p>{toTitleCase(item.created_by.value)} : {item.remark} </p>
                                 <br></br>
-                                <p>{item.created_date}</p>
+                                <p>{moment(item.created_date).format('lll')}</p>
                                 {
                                     <Stack justifyContent={'end'} direction="row" gap={0} pt={2}>
                                         {user?.assigned_permissions.includes('checklist_delete') && <IconButton size="small" color="error" onClick={() => {

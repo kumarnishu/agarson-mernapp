@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { CreateOrEditChecklistRemarkDto, GetChecklistRemarksDto } from '../dtos';
 import isMongoId from 'validator/lib/isMongoId';
-import moment from 'moment';
 import { ChecklistRemark, IChecklistRemark } from '../models/checklist-remark';
 import { ChecklistBox } from '../models/checklist-box';
 import { Checklist } from '../models/checklist';
@@ -95,6 +94,7 @@ export const NewChecklistRemark = async (req: Request, res: Response, next: Next
             else {
                 checklist.active = false
             }
+            checklist.lastcheckedbox = box
             await checklist.save()
         }
 
