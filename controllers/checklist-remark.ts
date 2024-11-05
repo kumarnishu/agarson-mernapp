@@ -50,7 +50,7 @@ export const GetChecklistRemarkHistory = async (req: Request, res: Response, nex
             _id: r._id,
             remark: r.remark,
             checklist_box: { id: r.checklist_box._id, value: new Date(r.checklist_box.date).toString(), label: new Date(r.checklist_box.date).toString() },
-            created_date: moment(r.created_at).format("lll"),
+            created_date: r.created_at.toString(),
             created_by: { id: r.created_by._id, value: r.created_by.username, label: r.created_by.username }
         }
     })
