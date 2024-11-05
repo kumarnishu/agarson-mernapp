@@ -82,23 +82,23 @@ export const NewChecklistRemark = async (req: Request, res: Response, next: Next
         box.updated_at = new Date(Date.now())
     }
     await box.save()
-
+    let checklistTmp = await Checklist.findById(box.checklist._id)
     if (stage == 'done') {
-        let checklist = await Checklist.findById(box.checklist._id)
-        if (checklist) {
-            if (checklist.frequency == "daily") {
+        if (checklistTmp) {
+            if (checklistTmp.frequency == "daily") {
                 if (areDatesEqual(box.date, new Date())) {
-                    checklist.active = false;
+                    checklistTmp.active = false;
                 }
             }
             else {
-                checklist.active = false
+                checklistTmp.active = false
             }
-            checklist.lastcheckedbox = box
-            await checklist.save()
+            
         }
-
-
+    }
+    if (checklistTmp) {
+        checklistTmp.lastcheckedbox = box
+        await checklistTmp.save()
     }
     return res.status(200).json({ message: "remark added successfully" })
 }
