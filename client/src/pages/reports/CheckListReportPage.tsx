@@ -23,7 +23,7 @@ import DeleteCheckListDialog from '../../components/dialogs/checklists/DeleteChe
 import CreateOrEditCheckListDialog from '../../components/dialogs/checklists/CreateOrEditCheckListDialog'
 import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
 import { queryClient } from '../../main'
-import { currentYear, getNextMonday, getPrevMonday, nextMonth, nextYear, previousMonth, previousYear } from '../../utils/datesHelper'
+import { currentYear, getNextMonday, nextMonth } from '../../utils/datesHelper'
 import { ChecklistExcelButtons } from '../../components/buttons/ChecklistExcelButtons'
 import AssignChecklistsDialog from '../../components/dialogs/checklists/AssignChecklistsDialog'
 
@@ -522,12 +522,10 @@ function CheckListReportPage() {
           focused
           fullWidth
           onChange={(e) => {
-            if (e.currentTarget.value && new Date(e.currentTarget.value) < nextYear) {
-              setDates({
-                ...dates,
-                end_date: moment(e.target.value).format("YYYY-MM-DD")
-              })
-            }
+            setDates({
+              ...dates,
+              end_date: moment(e.target.value).format("YYYY-MM-DD")
+            })
           }}
         />
         < Stack direction="row" spacing={2}>
