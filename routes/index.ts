@@ -34,6 +34,8 @@ import SoleThicknessRoutes from "./sole-thickness";
 import SpareDyeRoute from "./spare-dye";
 import UserRoutes from "./user";
 import ChecklistRemarkRoutes from "./checklist-remarks"
+import TestRoutes from "./test"
+import SalesmanLeavesRoutes from "./salesman-leaves"
 
 router.use(ArticlesRoutes);
 router.use(AuthRoutes);
@@ -66,6 +68,9 @@ router.use(ShoeWeightRoutes);
 router.use(SoleThicknessRoutes);
 router.use(SpareDyeRoute);
 router.use(UserRoutes);
+router.use(TestRoutes)
+router.use(SalesmanLeavesRoutes)
+
 
 export default router;
 
