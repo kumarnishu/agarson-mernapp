@@ -158,11 +158,9 @@ function CheckListReportPage() {
                   <Button
                     sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '20px', m: 0.3, pl: 1 }}
                     onClick={() => {
-                      if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) > new Date(previous_date)) {
-                        setChecklistBox(b);
-                        setChecklist(cell.row.original)
-                        setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
-                      }
+                      setChecklistBox(b);
+                      setChecklist(cell.row.original)
+                      setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
                     }}
                     size="small"
                     disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) > new Date()}
@@ -178,11 +176,9 @@ function CheckListReportPage() {
                   <Button
                     sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '15px', m: 0.3, pl: 1 }}
                     onClick={() => {
-                      if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) < new Date(getNextMonday()) && new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= new Date(getPrevMonday())) {
-                        setChecklistBox(b);
-                        setChecklist(cell.row.original)
-                        setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
-                      }
+                      setChecklistBox(b);
+                      setChecklist(cell.row.original)
+                      setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
                     }}
                     size="small"
                     disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= new Date(getNextMonday())}
@@ -198,13 +194,9 @@ function CheckListReportPage() {
                   <Button
                     sx={{ borderRadius: 20, m: 0.3, pl: 1 }}
                     onClick={() => {
-                      console.log(new Date(b.date))
-                      console.log(new Date(previous_date))
-                      if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) < nextMonth && new Date(new Date(b.date).setHours(0, 0, 0, 0)) > previousMonth) {
-                        setChecklistBox(b);
-                        setChecklist(cell.row.original)
-                        setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
-                      }
+                      setChecklistBox(b);
+                      setChecklist(cell.row.original)
+                      setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
 
                     }}
                     size="small"
@@ -223,11 +215,9 @@ function CheckListReportPage() {
                     onClick={() => {
                       console.log(new Date(b.date))
                       console.log(new Date(previous_date))
-                      if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) > previousYear && new Date(new Date(b.date).setHours(0, 0, 0, 0)) < nextYear) {
-                        setChecklistBox(b);
-                        setChecklist(cell.row.original)
-                        setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
-                      }
+                      setChecklistBox(b);
+                      setChecklist(cell.row.original)
+                      setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
                     }}
                     size="small"
                     disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) > currentYear}
