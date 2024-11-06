@@ -36,6 +36,12 @@ export const GetChecklists = async ({ limit, page, start_date, end_date, id, hid
     else
         return await apiClient.get(`checklists/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&hidden=${hidden}`)
 }
+export const GetChecklistReports = async ({ limit, page, start_date, end_date, id, hidden }: { limit: number | undefined, page: number | undefined, start_date?: string, end_date?: string, id?: string, hidden?: string }) => {
+    if (id)
+        return await apiClient.get(`checklists/report/?id=${id}&start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&hidden=${hidden}`)
+    else
+        return await apiClient.get(`checklists/report/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&hidden=${hidden}`)
+}
 
 
 export const CreateOrEditChecklistRemark = async ({ body, remark }: {

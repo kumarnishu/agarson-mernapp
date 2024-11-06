@@ -98,6 +98,8 @@ export const NewChecklistRemark = async (req: Request, res: Response, next: Next
     }
     if (checklistTmp) {
         checklistTmp.lastcheckedbox = box
+        checklistTmp.updated_by = req.user
+        checklistTmp.updated_at = new Date(Date.now())
         await checklistTmp.save()
     }
     return res.status(200).json({ message: "remark added successfully" })

@@ -17,7 +17,7 @@ import { DownloadFile } from '../../utils/DownloadFile'
 import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
-import { ChangeChecklistNextDate, GetAllCheckCategories, GetChecklists } from '../../services/CheckListServices'
+import { ChangeChecklistNextDate, GetAllCheckCategories, GetChecklistReports } from '../../services/CheckListServices'
 import { GetChecklistBoxDto, GetChecklistDto } from '../../dtos'
 import DeleteCheckListDialog from '../../components/dialogs/checklists/DeleteCheckListDialog'
 import CreateOrEditCheckListDialog from '../../components/dialogs/checklists/CreateOrEditCheckListDialog'
@@ -54,7 +54,7 @@ function CheckListReportPage() {
   let day = previous_date.getDate() - 3
   previous_date.setDate(day)
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'feature_menu', show_assigned_only: true }))
-  const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date, hidden], async () => GetChecklists({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date, hidden: String(hidden) }))
+  const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date, hidden], async () => GetChecklistReports({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date, hidden: String(hidden) }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { mutate: changedate } = useMutation
     <AxiosResponse<any>, BackendError, { id: string, next_date: string }>
@@ -277,6 +277,18 @@ function CheckListReportPage() {
           }
         }}>
           {cell.row.original.photo && cell.row.original.photo ? < img height="20" width="55" src={cell.row.original.photo && cell.row.original.photo} alt="visiting card" /> : "na"}</span>
+      },
+      {
+        accessorKey: 'updated_at',
+        header: 'Last Updated At',
+        size: 100,
+        Cell: (cell) => <>{cell.row.original.updated_at ? moment(cell.row.original.updated_at).format("DD/MM/YYYY") : ""}</>
+      },
+      {
+        accessorKey: 'updated_by',
+        header: 'Last Updated By',
+        size: 100,
+        Cell: (cell) => <>{cell.row.original.updated_by ? cell.row.original.updated_by.value : ""}</>
       },
     ],
     [checklists, data],
