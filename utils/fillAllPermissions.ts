@@ -643,6 +643,31 @@ export function FetchAllPermissions() {
                         label: 'export'
                     }
                 ]
+            },
+            {
+                label: 'Checklist Admin',
+                permissions: [
+                    {
+                        value: 'checklist_admin_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'checklist_admin_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'checklist_admin_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'checklist_admin_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'checklist_admin_export',
+                        label: 'export'
+                    }
+                ]
             }
         ]
     }

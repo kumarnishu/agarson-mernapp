@@ -19,7 +19,7 @@ function FeatureDashboard() {
         user?.assigned_permissions.includes('sole_thickness_view') && tmpfeatures.push({ feature: 'Sole Thickness ', is_visible: false, url: "SoleThicknessPage" })
         user?.assigned_permissions.includes('shoe_weight_view') && tmpfeatures.push({ feature: 'shoe weights ', is_visible: false, url: "ShoeWeightPage" })
         user?.assigned_permissions.includes('checklist_view') && tmpfeatures.push({ feature: 'CheckLists ', is_visible: false, url: "CheckListPage" })
-       
+        user?.assigned_permissions.includes('checklist_admin_view') && tmpfeatures.push({ feature: 'CheckLists Admin ', is_visible: false, url: "CheckListAdminPage" })
      
         tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
         setFeatures(tmpfeatures)

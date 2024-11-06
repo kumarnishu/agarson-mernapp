@@ -2,30 +2,23 @@ import { useContext, useEffect, useMemo, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Button, Fade, IconButton, LinearProgress, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Button, LinearProgress,  Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
-import { GetChecklistFromExcelDto, GetUserDto } from '../../dtos'
+import {  GetUserDto } from '../../dtos'
 import { DropDownDto } from '../../dtos'
 import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { CheckListChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
-import PopUp from '../../components/popup/PopUp'
-import { Delete, Edit, FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
+import {  FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
 import { DownloadFile } from '../../utils/DownloadFile'
 import DBPagination from '../../components/pagination/DBpagination'
-import { Menu as MenuIcon } from '@mui/icons-material';
-import ExportToExcel from '../../utils/ExportToExcel'
 import { ChangeChecklistNextDate, GetAllCheckCategories, GetChecklists } from '../../services/CheckListServices'
 import { GetChecklistBoxDto, GetChecklistDto } from '../../dtos'
-import DeleteCheckListDialog from '../../components/dialogs/checklists/DeleteCheckListDialog'
-import CreateOrEditCheckListDialog from '../../components/dialogs/checklists/CreateOrEditCheckListDialog'
 import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
 import { queryClient } from '../../main'
 import { currentYear, getNextMonday, getPrevMonday, nextMonth, nextYear, previousMonth, previousYear } from '../../utils/datesHelper'
-import { ChecklistExcelButtons } from '../../components/buttons/ChecklistExcelButtons'
-import AssignChecklistsDialog from '../../components/dialogs/checklists/AssignChecklistsDialog'
 
 
 function ChecklistPage() {
@@ -33,8 +26,7 @@ function ChecklistPage() {
   const [users, setUsers] = useState<GetUserDto[]>([])
   const [checklist, setChecklist] = useState<GetChecklistDto>()
   const [checklists, setChecklists] = useState<GetChecklistDto[]>([])
-  const [paginationData, setPaginationData] = useState({ limit: 500, page: 1, total: 1 });
-  const [flag, setFlag] = useState(1);
+  const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
   const [hidden, setHidden] = useState('false')
   const [checklistBox, setChecklistBox] = useState<GetChecklistBoxDto>()
   const [categories, setCategories] = useState<DropDownDto[]>([])
@@ -51,7 +43,6 @@ function ChecklistPage() {
   previous_date.setDate(day)
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'feature_menu', show_assigned_only: true }))
   const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, hidden], async () => GetChecklists({ limit: paginationData?.limit, page: paginationData?.page, id: userId, hidden: String(hidden) }))
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { mutate: changedate } = useMutation
     <AxiosResponse<any>, BackendError, { id: string, next_date: string }>
     (ChangeChecklistNextDate, {
@@ -65,46 +56,7 @@ function ChecklistPage() {
   const columns = useMemo<MRT_ColumnDef<GetChecklistDto>[]>(
     //column definitions...
     () => checklists && [
-      {
-        accessorKey: 'actions',
-        header: '',
-        maxSize: 50,
-        size: 120,
-        Cell: ({ cell }) => <PopUp
-          element={
-            <Stack direction="row" spacing={1}>
-              {LoggedInUser?.assigned_permissions.includes('checklist_delete') && <Tooltip title="delete">
-                <IconButton color="error"
-
-                  onClick={() => {
-
-                    setChoice({ type: CheckListChoiceActions.delete_checklist })
-                    setChecklist(cell.row.original)
-
-
-                  }}
-                >
-                  <Delete />
-                </IconButton>
-              </Tooltip>}
-              {LoggedInUser?.assigned_permissions.includes('checklist_edit') &&
-                <Tooltip title="Edit">
-                  <IconButton
-
-                    onClick={() => {
-
-                      setChoice({ type: CheckListChoiceActions.create_or_edit_checklist })
-                      setChecklist(cell.row.original)
-
-                    }}
-                  >
-                    <Edit />
-                  </IconButton>
-                </Tooltip>}
-
-            </Stack>}
-        />
-      },
+     
       {
         accessorKey: 'work_title',
         header: ' Work Title',
@@ -145,7 +97,7 @@ function ChecklistPage() {
       {
         accessorKey: 'boxes',
         header: 'Dates',
-        size: 300,
+        size: 350,
         Cell: (cell) => <Stack direction="row" className="scrollable-stack" sx={{ height: '30px' }}>
           {cell.row.original && cell.row.original.boxes.map((b) => (
             <>
@@ -336,15 +288,7 @@ function ChecklistPage() {
               {table.getState().isFullScreen ? <FullscreenExit /> : <Fullscreen />}
             </Button>
           </Tooltip>
-          <Tooltip title="Menu">
-            <Button size="small" color="inherit" variant='contained'
-              onClick={(e) => setAnchorEl(e.currentTarget)
-              }
-            >
-              <MenuIcon />
-              <Typography pl={1}> Menu</Typography>
-            </Button>
-          </Tooltip>
+         
         </Stack>
       </Stack>
     ),
@@ -402,99 +346,13 @@ function ChecklistPage() {
         isLoading || isRefetching && <LinearProgress color='secondary' />
       }
 
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={() => setAnchorEl(null)
-        }
-        TransitionComponent={Fade}
-        MenuListProps={{
-          'aria-labelledby': 'basic-button',
-        }}
-        sx={{ borderRadius: 2 }}
-      >
-
-        {LoggedInUser?.assigned_permissions.includes('checklist_create') && <MenuItem
-
-          onClick={() => {
-            setChoice({ type: CheckListChoiceActions.create_or_edit_checklist })
-            setChecklist(undefined)
-            setAnchorEl(null)
-          }}
-        > Add New</MenuItem>}
-        {LoggedInUser?.assigned_permissions.includes('checklist_edit') && <MenuItem
-
-          onClick={() => {
-            if (!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()) {
-              alert("select some checklists")
-            }
-            else {
-              setChoice({ type: CheckListChoiceActions.assign_checklist_to_users })
-              setChecklist(undefined)
-              setFlag(1)
-            }
-            setAnchorEl(null)
-          }}
-        > Assign Users</MenuItem>}
-        {LoggedInUser?.assigned_permissions.includes('checklist_edit') && <MenuItem
-
-          onClick={() => {
-            if (!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()) {
-              alert("select some checklists")
-            }
-            else {
-              setChoice({ type: CheckListChoiceActions.assign_checklist_to_users })
-              setChecklist(undefined)
-              setFlag(0)
-            }
-            setAnchorEl(null)
-          }}
-        > Remove Users</MenuItem>}
-        {LoggedInUser?.assigned_permissions.includes('checklist_export') && < MenuItem onClick={() => {
-
-          let data: GetChecklistFromExcelDto[] = []
-          data = table.getRowModel().rows.map((row) => {
-            return {
-              _id: row.original._id,
-              work_title: row.original.work_title,
-              work_description: row.original.work_description,
-              category: row.original.category.value,
-              frequency: row.original.frequency,
-              link: row.original.link,
-              assigned_users: row.original.assigned_users.map((u) => { return u.value }).toString(),
-              status: ""
-            }
-          })
-          ExportToExcel(data, "Checklists Data")
-        }
-        }
-        >Export All</MenuItem>}
-        {LoggedInUser?.assigned_permissions.includes('checklist_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => {
-          let data: GetChecklistFromExcelDto[] = []
-          data = table.getSelectedRowModel().rows.map((row) => {
-            return {
-              _id: row.original._id,
-              work_title: row.original.work_title,
-              work_description: row.original.work_description,
-              category: row.original.category.value,
-              frequency: row.original.frequency,
-              link: row.original.link,
-              assigned_users: row.original.assigned_users.map((u) => { return u.value }).toString(),
-              status: ""
-            }
-          }
-          )
-          ExportToExcel(data, "Checklists Data")
-        }}
-
-        >Export Selected</MenuItem>}
-      </Menu>
+  
       <Stack sx={{ p: 2 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
         < Typography variant='h6' >
           Checklists
         </Typography >
         <Stack direction="row" spacing={2} >
-          {LoggedInUser?.is_admin &&
+          {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
             <Button variant='contained' size="small" color="inherit">
               <input type='checkbox' onChange={(e) => {
                 if (e.target.checked) {
@@ -535,15 +393,11 @@ function ChecklistPage() {
               }
             </TextField>}
 
-          {LoggedInUser?.assigned_permissions.includes('checklist_create') && <ChecklistExcelButtons />}
         </Stack>
       </Stack>
-      <CreateOrEditCheckListDialog checklist={checklist} setChecklist={setChecklist} />
-      {checklist && <DeleteCheckListDialog checklist={checklist} />}
-      {checklist && <CreateOrEditCheckListDialog checklist={checklist} setChecklist={setChecklist} />}
+     
       {checklist && checklistBox && <ViewChecklistRemarksDialog checklist={checklist} checklist_box={checklistBox} />}
       <MaterialReactTable table={table} />
-      {<AssignChecklistsDialog flag={flag} checklists={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
     </>
   )
 }

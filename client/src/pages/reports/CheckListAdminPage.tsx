@@ -28,12 +28,12 @@ import { ChecklistExcelButtons } from '../../components/buttons/ChecklistExcelBu
 import AssignChecklistsDialog from '../../components/dialogs/checklists/AssignChecklistsDialog'
 
 
-function CheckListReportPage() {
+function CheckListAdminPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const [users, setUsers] = useState<GetUserDto[]>([])
   const [checklist, setChecklist] = useState<GetChecklistDto>()
   const [checklists, setChecklists] = useState<GetChecklistDto[]>([])
-  const [paginationData, setPaginationData] = useState({ limit: 500, page: 1, total: 1 });
+  const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
   const [flag, setFlag] = useState(1);
   const [hidden, setHidden] = useState('false')
   const [checklistBox, setChecklistBox] = useState<GetChecklistBoxDto>()
@@ -587,4 +587,4 @@ function CheckListReportPage() {
   )
 }
 
-export default CheckListReportPage
+export default CheckListAdminPage

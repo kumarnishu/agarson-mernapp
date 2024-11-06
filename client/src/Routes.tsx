@@ -45,7 +45,7 @@ import DyeLocationPage from './pages/dropdowns/DyeLocationPage.tsx'
 import FeatureDashboard from './dashboards/FeatureDashboard.tsx'
 import ErpEmployeesPage from './pages/dropdowns/ErpEmployeesPage.tsx'
 import VisitReportPage from './pages/reports/VisitReportPage.tsx'
-import CheckListReportPage from './pages/reports/CheckListReportPage.tsx'
+import CheckListAdminPage from './pages/reports/CheckListAdminPage.tsx'
 
 
 function AppRoutes() {
@@ -119,6 +119,10 @@ function AppRoutes() {
                 < CheckListPage />
               }
               />}
+              {user?.assigned_permissions.includes('checklist_admin_view') && <Route path="CheckListAdminPage" element={
+                < CheckListAdminPage />
+              }
+              />}
               {user?.assigned_permissions.includes('sole_thickness_view') &&<Route
                 path="SoleThicknessPage" element={
                   <SoleThicknessPage />
@@ -139,11 +143,7 @@ function AppRoutes() {
                   <VisitReportPage />
                 }
               />}
-              {user?.assigned_permissions.includes('visit_report_view') && <Route
-                path="ChecklistReportPage" element={
-                  <CheckListReportPage />
-                }
-              />}
+              
               
 
               {user?.assigned_permissions.includes('thekedar_wise_production_report_view') && <Route
