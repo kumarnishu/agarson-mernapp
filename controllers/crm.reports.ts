@@ -113,9 +113,9 @@ export const GetMyReminders = async (req: Request, res: Response, next: NextFunc
     let filteredRemarks: IRemark[] = []
     for (let i = 0; i < remarks.length; i++) {
         let rem = remarks[i];
-        if (rem && rem.lead && !ids.includes(rem.lead._id)) {
+        if (rem && rem.remind_date && rem.lead && !ids.includes(rem.lead._id)) {
             ids.push(rem.lead._id);
-            if (rem.created_by._id.valueOf() == req.user?._id && rem.remind_date && rem.remind_date >= hundredDaysAgo && rem.remind_date <= tomorrow) {
+            if (rem.created_by._id.valueOf() == req.user?._id && rem.remind_date >= hundredDaysAgo && rem.remind_date <= tomorrow) {
                 filteredRemarks.push(rem);
             }
         }
