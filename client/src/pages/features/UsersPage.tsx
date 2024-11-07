@@ -34,7 +34,7 @@ export default function UsersPage() {
     const [hidden, setHidden] = useState('false')
     const [user, setUser] = useState<GetUserDto>()
     const [users, setUsers] = useState<GetUserDto[]>([])
-    const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>(["users", hidden], async () => GetUsers({ hidden: hidden, permission: 'feature_menu', show_assigned_only: false }))
+    const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>(["users", hidden], async () => GetUsers({ hidden: hidden, show_assigned_only: false }))
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const { user: LoggedInUser } = useContext(UserContext)
     const { setChoice } = useContext(ChoiceContext)

@@ -318,7 +318,7 @@ export const BulkPendingOrderReportFromExcel = async (req: Request, res: Respons
             }
 
             if (validated) {
-                let owner = await State.findOne({ state: report.report_owner })
+                let owner = await State.findOne({ state: report.report_owner.toLowerCase()})
                 if (owner) {
                     await new PendingOrdersReport({
                         report_owner: owner,
@@ -404,7 +404,7 @@ export const BulkCreateBillsAgingReportFromExcel = async (req: Request, res: Res
             }
 
             if (validated) {
-                let owner = await State.findOne({ state: report.report_owner })
+                let owner = await State.findOne({ state: report.report_owner.toLowerCase()})
                 if (owner) {
                     await new BillsAgingReport({
                         report_owner: owner,
@@ -477,7 +477,7 @@ export const BulkCreateClientSaleReportFromExcel = async (req: Request, res: Res
             }
 
             if (validated) {
-                let owner = await State.findOne({ state: report.report_owner })
+                let owner = await State.findOne({ state: report.report_owner.toLowerCase()})
                 if (owner) {
                     await new ClientSaleReport({
                         report_owner: owner,
@@ -561,7 +561,7 @@ export const BulkCreateClientSaleReportFromExcelForLastYear = async (req: Reques
             }
 
             if (validated) {
-                let owner = await State.findOne({ state: report.report_owner })
+                let owner = await State.findOne({ state: report.report_owner.toLowerCase()})
                 if (owner) {
                     await new ClientSaleLastYearReport({
                         report_owner: owner,
@@ -667,7 +667,7 @@ export const BulkCreatePartyTargetReportFromExcel = async (req: Request, res: Re
             }
 
             if (validated) {
-                let owner = await State.findOne({ state: report.report_owner })
+                let owner = await State.findOne({ state: report.report_owner.toLowerCase()})
                 if (owner) {
                     await new PartyTargetReport({
                         report_owner: owner,
