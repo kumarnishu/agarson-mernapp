@@ -25,6 +25,7 @@ function getDailyboxes(checklist: IChecklist, checklist_boxes: IChecklistBox[]) 
         return {
             _id: bo._id,
             stage: bo.stage,
+            last_remark: bo.last_remark,
             checklist: { id: checklist._id, label: checklist.work_title, value: checklist.work_title },
             date: bo.date.toString()
         }
@@ -41,6 +42,7 @@ function getWeeklyboxes(checklist: IChecklist, checklist_boxes: IChecklistBox[])
         return {
             _id: bo._id,
             stage: bo.stage,
+            last_remark: bo.last_remark,
             checklist: { id: checklist._id, label: checklist.work_title, value: checklist.work_title },
             date: bo.date.toString()
         }
@@ -56,6 +58,7 @@ function getMonthlyboxes(checklist: IChecklist, checklist_boxes: IChecklistBox[]
         return {
             _id: bo._id,
             stage: bo.stage,
+            last_remark: bo.last_remark,
             checklist: { id: checklist._id, label: checklist.work_title, value: checklist.work_title },
             date: bo.date.toString()
         }
@@ -72,6 +75,7 @@ function getYearlyBoxes(checklist: IChecklist, checklist_boxes: IChecklistBox[])
         return {
             _id: bo._id,
             stage: bo.stage,
+            last_remark: bo.last_remark,
             checklist: { id: checklist._id, label: checklist.work_title, value: checklist.work_title },
             date: bo.date.toString()
         }

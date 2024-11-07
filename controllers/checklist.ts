@@ -138,6 +138,7 @@ export const GetChecklistsReport = async (req: Request, res: Response, next: Nex
                 _id: ch._id,
                 active: ch.active,
                 work_title: ch.work_title,
+                
                 work_description: ch.work_description,
                 link: ch.link,
                 last_checked_date: ch.lastcheckedbox ? moment(ch.lastcheckedbox.date).format('DD/MM/YYYY') : "",
@@ -152,6 +153,7 @@ export const GetChecklistsReport = async (req: Request, res: Response, next: Nex
                     return {
                         _id: bo._id,
                         stage: bo.stage,
+                        last_remark: bo.last_remark,
                         checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
                         date: bo.date.toString()
                     }

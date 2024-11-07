@@ -53,6 +53,7 @@ export type CreateOrEditChecklistDto = {
 export type GetChecklistBoxDto = {
     _id: string,
     stage: string,
+    last_remark:string,
     checklist: DropDownDto,
     date: string,
 }

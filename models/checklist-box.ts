@@ -6,6 +6,7 @@ export type IChecklistBox = {
     _id: string,
     date: Date,
     stage:string,
+    last_remark:string,
     checklist: IChecklist,
     created_at: Date,
     updated_at: Date,
@@ -22,6 +23,7 @@ const ChecklistBoxSchema = new mongoose.Schema<IChecklistBox, mongoose.Model<ICh
         ref: 'Checklist',
         required: true
     },
+    last_remark:String,
     created_at: {
         type: Date,
         default: new Date(),

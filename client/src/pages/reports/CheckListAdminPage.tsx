@@ -154,7 +154,7 @@ function CheckListAdminPage() {
           {cell.row.original && cell.row.original.boxes.map((b) => (
             <>
               {
-                cell.row.original.frequency == 'daily' && <Tooltip title={moment(new Date(b.date)).format('LL')} key={b.date}>
+                cell.row.original.frequency == 'daily' && <Tooltip title={b.stage=="open"?moment(new Date(b.date)).format('LL'):b.last_remark} key={b.date}>
                   <Button
                     sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '20px', m: 0.3, pl: 1 }}
                     onClick={() => {
