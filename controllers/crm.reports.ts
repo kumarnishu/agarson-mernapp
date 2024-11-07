@@ -91,7 +91,7 @@ export const GetMyReminders = async (req: Request, res: Response, next: NextFunc
     let previous_date = new Date()
     let day = previous_date.getDate() - 100
     previous_date.setDate(day)
-    let remarks = await Remark.find({ created_at: { $gte: previous_date, $lt: new Date(tomorrow) } }).populate('created_by').populate('updated_by').populate({
+    let remarks = await Remark.find({ created_at: { $gte: previous_date, $lt: tomorrow } }).populate('created_by').populate('updated_by').populate({
         path: 'lead',
         populate: [
             {
