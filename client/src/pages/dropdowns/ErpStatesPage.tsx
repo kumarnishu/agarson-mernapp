@@ -24,6 +24,7 @@ import { Button, CircularProgress, Snackbar } from "@mui/material"
 import { Upload } from "@mui/icons-material"
 import { BulkCreateStateFromExcel } from "../../services/ErpServices"
 import ExportToExcel from "../../utils/ExportToExcel"
+import { toTitleCase } from '../../utils/TitleCase'
 
 const FileInput = styled.input`
 background:none;
@@ -162,7 +163,7 @@ export default function ErpStatesPage() {
         header: 'State',
         size: 350,
         filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
+        Cell: (cell) => <>{cell.row.original.state ? toTitleCase(cell.row.original.state): ""}</>,
         filterSelectOptions: states && states.map((i) => {
           return i.state;
         }).filter(onlyUnique)
