@@ -32,7 +32,7 @@ export default function AssignedReferReportPage() {
   const [lead, setLead] = useState<GetLeadDto>()
   const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
     start_date: moment(new Date(new Date().setDate(1)).setFullYear(2023)).format("YYYY-MM-DD")
-    , end_date: moment(new Date().setDate(31)).format("YYYY-MM-DD")
+    , end_date: moment(new Date().setDate(30)).format("YYYY-MM-DD")
   })
   const { setChoice } = useContext(ChoiceContext)
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetLeadDto[]>, BackendError>(["assign_refer_reports", dates.start_date, dates.end_date], async () => GetAssignedRefers({ start_date: dates.start_date, end_date: dates.end_date }))
