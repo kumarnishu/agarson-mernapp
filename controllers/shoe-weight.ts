@@ -13,7 +13,7 @@ import { destroyCloudFile } from '../utils/destroyCloudFile';
 export const GetMyTodayShoeWeights = async (req: Request, res: Response, next: NextFunction) => {
     let dt1 = new Date()
     dt1.setDate(new Date().getDate())
-    dt1.setHours(0)
+    dt1.setUTCHours(0)
     dt1.setMinutes(0)
     let result: GetShoeWeightDto[] = []
     let user_ids = req.user?.assigned_users.map((user: IUser) => { return user._id }) || []
@@ -67,10 +67,10 @@ export const GetShoeWeights = async (req: Request, res: Response, next: NextFunc
     let result: GetShoeWeightDto[] = []
     let count = 0
     let dt1 = new Date(String(start_date))
-    dt1.setHours(0)
+    dt1.setUTCHours(0)
     dt1.setMinutes(0)
     let dt2 = new Date(String(end_date))
-    dt2.setHours(0)
+    dt2.setUTCHours(0)
     dt2.setMinutes(0)
     let user_ids = req.user?.assigned_users.map((user: IUser) => { return user._id }) || []
     console.log(user_ids)
@@ -138,7 +138,7 @@ export const CreateShoeWeight = async (req: Request, res: Response, next: NextFu
     let dt1 = new Date()
     let dt2 = new Date()
     dt2.setDate(new Date(dt2).getDate() + 1)
-    dt1.setHours(0)
+    dt1.setUTCHours(0)
     dt1.setMinutes(0)
     let { machine, dye, article, weight, month, upper_weight } = body
 
@@ -207,7 +207,7 @@ export const UpdateShoeWeight1 = async (req: Request, res: Response, next: NextF
     let dt1 = new Date()
     let dt2 = new Date()
     dt2.setDate(new Date(dt2).getDate() + 1)
-    dt1.setHours(0)
+    dt1.setUTCHours(0)
     dt1.setMinutes(0)
     if (await SpareDye.findOne({ dye: dye, created_at: { $gte: dt1, $lt: dt2 } })) {
         return res.status(400).json({ message: "sorry ! this is a spare dye" })
@@ -271,7 +271,7 @@ export const UpdateShoeWeight2 = async (req: Request, res: Response, next: NextF
     let dt1 = new Date()
     let dt2 = new Date()
     dt2.setDate(new Date(dt2).getDate() + 1)
-    dt1.setHours(0)
+    dt1.setUTCHours(0)
     dt1.setMinutes(0)
     if (await SpareDye.findOne({ dye: dye, created_at: { $gte: dt1, $lt: dt2 } })) {
         return res.status(400).json({ message: "sorry ! this is a spare dye" })
@@ -337,7 +337,7 @@ export const UpdateShoeWeight3 = async (req: Request, res: Response, next: NextF
     let dt1 = new Date()
     let dt2 = new Date()
     dt2.setDate(new Date(dt2).getDate() + 1)
-    dt1.setHours(0)
+    dt1.setUTCHours(0)
     dt1.setMinutes(0)
     if (await SpareDye.findOne({ dye: dye, created_at: { $gte: dt1, $lt: dt2 } })) {
         return res.status(400).json({ message: "sorry ! this is a spare dye" })

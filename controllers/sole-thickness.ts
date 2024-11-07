@@ -9,7 +9,7 @@ export const GetMyTodaySoleThickness = async (req: Request, res: Response, next:
     console.log("enterd")
     let dt1 = new Date()
     dt1.setDate(new Date().getDate())
-    dt1.setHours(0)
+    dt1.setUTCHours(0)
     dt1.setMinutes(0)
     let user_ids = req.user?.assigned_users.map((user: IUser) => { return user._id }) || []
     let items: ISoleThickness[] = []
@@ -48,10 +48,10 @@ export const GetSoleThickness = async (req: Request, res: Response, next: NextFu
     let items: ISoleThickness[] = []
     let count = 0
     let dt1 = new Date(String(start_date))
-    dt1.setHours(0)
+    dt1.setUTCHours(0)
     dt1.setMinutes(0)
     let dt2 = new Date(String(end_date))
-    dt2.setHours(0)
+    dt2.setUTCHours(0)
     dt2.setMinutes(0)
     let user_ids = req.user?.assigned_users.map((user: IUser) => { return user._id }) || []
 
@@ -104,7 +104,7 @@ export const CreateSoleThickness = async (req: Request, res: Response, next: Nex
     let dt1 = new Date()
     let dt2 = new Date()
     dt2.setDate(new Date(dt2).getDate() + 1)
-    dt1.setHours(0)
+    dt1.setUTCHours(0)
     dt1.setMinutes(0)
     let { dye, article, size, left_thickness, right_thickness } = req.body as CreateOrEditSoleThicknessDto
 
@@ -134,7 +134,7 @@ export const UpdateSoleThickness = async (req: Request, res: Response, next: Nex
     let dt1 = new Date()
     let dt2 = new Date()
     dt2.setDate(new Date(dt2).getDate() + 1)
-    dt1.setHours(0)
+    dt1.setUTCHours(0)
     dt1.setMinutes(0)
     let { dye, article, size, left_thickness, right_thickness } = req.body as CreateOrEditSoleThicknessDto
 

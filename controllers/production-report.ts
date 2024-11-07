@@ -14,10 +14,10 @@ export const GetThekedarWiseProductionReports = async (req: Request, res: Respon
         rows: []
     };
     let dt1 = new Date(String(start_date))
-    dt1.setHours(0)
+    dt1.setUTCHours(0)
     dt1.setMinutes(0)
     let dt2 = new Date(String(end_date))
-    dt2.setHours(0)
+    dt2.setUTCHours(0)
     dt2.setMinutes(0)
     const oneDay = 24 * 60 * 60 * 1000;
     let users = await User.find().sort("username")
@@ -61,10 +61,10 @@ export const GetMachineWiseProductionReports = async (req: Request, res: Respons
         rows: []
     };
     let dt1 = new Date(String(start_date))
-    dt1.setHours(0)
+    dt1.setUTCHours(0)
     dt1.setMinutes(0)
     let dt2 = new Date(String(end_date))
-    dt2.setHours(0)
+    dt2.setUTCHours(0)
     dt2.setMinutes(0)
     const oneDay = 24 * 60 * 60 * 1000;
     let machines = await Machine.find({ active: true }).sort('serial_no')
@@ -103,10 +103,10 @@ export const GetCategoryWiseProductionReports = async (req: Request, res: Respon
     let end_date = req.query.end_date
     let productions: GetCategoryWiseProductionReportDto[] = [];
     let dt1 = new Date(String(start_date))
-    dt1.setHours(0)
+    dt1.setUTCHours(0)
     dt1.setMinutes(0)
     let dt2 = new Date(String(end_date))
-    dt2.setHours(0)
+    dt2.setUTCHours(0)
     dt2.setMinutes(0)
     const oneDay = 24 * 60 * 60 * 1000;
 

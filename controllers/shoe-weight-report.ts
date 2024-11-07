@@ -9,10 +9,10 @@ export const GetShoeWeightDifferenceReports = async (req: Request, res: Response
     let weights: IShoeWeight[] = []
     let reports: GetShoeWeightDiffReportDto[] = []
     let dt1 = new Date(String(start_date))
-    dt1.setHours(0)
+    dt1.setUTCHours(0)
     dt1.setMinutes(0)
     let dt2 = new Date(String(end_date))
-    dt2.setHours(0)
+    dt2.setUTCHours(0)
     dt2.setMinutes(0)
     weights = await ShoeWeight.find({ created_at: { $gte: dt1, $lt: dt2 } }).populate('dye').populate('machine').populate('article').populate('created_by').populate('updated_by').sort("dye.dye_number")
     reports = weights.map((weight) => {

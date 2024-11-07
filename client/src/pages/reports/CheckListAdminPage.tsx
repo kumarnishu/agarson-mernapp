@@ -163,7 +163,7 @@ function CheckListAdminPage() {
                       setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
                     }}
                     size="small"
-                    disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) > new Date()}
+                    disabled={new Date(new Date(b.date).setUTCHours(0, 0, 0, 0)) > new Date()}
                     variant="contained"
                     color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
                   >
@@ -181,7 +181,7 @@ function CheckListAdminPage() {
                       setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
                     }}
                     size="small"
-                    disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= new Date(getNextMonday())}
+                    disabled={new Date(new Date(b.date).setUTCHours(0, 0, 0, 0)) >= new Date(getNextMonday())}
                     variant="contained"
                     color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
                   >
@@ -200,7 +200,7 @@ function CheckListAdminPage() {
 
                     }}
                     size="small"
-                    disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= nextMonth}
+                    disabled={new Date(new Date(b.date).setUTCHours(0, 0, 0, 0)) >= nextMonth}
                     variant="contained"
                     color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
                   >
@@ -220,7 +220,7 @@ function CheckListAdminPage() {
                       setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
                     }}
                     size="small"
-                    disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) > currentYear}
+                    disabled={new Date(new Date(b.date).setUTCHours(0, 0, 0, 0)) > currentYear}
                     variant="contained"
                     color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
                   >

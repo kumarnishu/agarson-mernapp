@@ -106,14 +106,14 @@ function ChecklistPage() {
                   <Button
                     sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '20px', m: 0.3, pl: 1 }}
                     onClick={() => {
-                      if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) > new Date(previous_date)) {
+                      if (b && new Date(new Date(b.date).setUTCHours(0, 0, 0, 0)) > new Date(previous_date)) {
                         setChecklistBox(b);
                         setChecklist(cell.row.original)
                         setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
                       }
                     }}
                     size="small"
-                    disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) > new Date()}
+                    disabled={new Date(new Date(b.date).setUTCHours(0, 0, 0, 0)) > new Date()}
                     variant="contained"
                     color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
                   >
@@ -126,14 +126,14 @@ function ChecklistPage() {
                   <Button
                     sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '15px', m: 0.3, pl: 1 }}
                     onClick={() => {
-                      if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) < new Date(getNextMonday()) && new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= new Date(getPrevMonday())) {
+                      if (b && new Date(new Date(b.date).setUTCHours(0, 0, 0, 0)) < new Date(getNextMonday()) && new Date(new Date(b.date).setUTCHours(0, 0, 0, 0)) >= new Date(getPrevMonday())) {
                         setChecklistBox(b);
                         setChecklist(cell.row.original)
                         setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
                       }
                     }}
                     size="small"
-                    disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= new Date(getNextMonday())}
+                    disabled={new Date(new Date(b.date).setUTCHours(0, 0, 0, 0)) >= new Date(getNextMonday())}
                     variant="contained"
                     color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
                   >
@@ -148,7 +148,7 @@ function ChecklistPage() {
                     onClick={() => {
                       console.log(new Date(b.date))
                       console.log(new Date(previous_date))
-                      if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) < nextMonth && new Date(new Date(b.date).setHours(0, 0, 0, 0)) > previousMonth) {
+                      if (b && new Date(new Date(b.date).setUTCHours(0, 0, 0, 0)) < nextMonth && new Date(new Date(b.date).setUTCHours(0, 0, 0, 0)) > previousMonth) {
                         setChecklistBox(b);
                         setChecklist(cell.row.original)
                         setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
@@ -156,7 +156,7 @@ function ChecklistPage() {
 
                     }}
                     size="small"
-                    disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= nextMonth}
+                    disabled={new Date(new Date(b.date).setUTCHours(0, 0, 0, 0)) >= nextMonth}
                     variant="contained"
                     color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
                   >
@@ -171,14 +171,14 @@ function ChecklistPage() {
                     onClick={() => {
                       console.log(new Date(b.date))
                       console.log(new Date(previous_date))
-                      if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) > previousYear && new Date(new Date(b.date).setHours(0, 0, 0, 0)) < nextYear) {
+                      if (b && new Date(new Date(b.date).setUTCHours(0, 0, 0, 0)) > previousYear && new Date(new Date(b.date).setUTCHours(0, 0, 0, 0)) < nextYear) {
                         setChecklistBox(b);
                         setChecklist(cell.row.original)
                         setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
                       }
                     }}
                     size="small"
-                    disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) > currentYear}
+                    disabled={new Date(new Date(b.date).setUTCHours(0, 0, 0, 0)) > currentYear}
                     variant="contained"
                     color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
                   >

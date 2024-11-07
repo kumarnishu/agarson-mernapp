@@ -17,8 +17,8 @@ function getDailyboxes(checklist: IChecklist, checklist_boxes: IChecklistBox[]) 
     let dt1 = new Date()
     let dt2 = new Date()
     dt2.setDate(dt2.getDate() + 4)
-    dt1.setHours(0, 0, 0, 0)
-    dt2.setHours(0, 0, 0, 0)
+    dt1.setUTCHours(0, 0, 0, 0)
+    dt2.setUTCHours(0, 0, 0, 0)
     let result = checklist_boxes.filter((b) => {
         return b.date >= dt1 && b.date < dt2
     }).map((bo) => {
