@@ -91,7 +91,7 @@ export const GetMyReminders = async (req: Request, res: Response, next: NextFunc
     let previous_date = new Date()
     let day = previous_date.getDate() - 100
     previous_date.setDate(day)
-    let remarks = await Remark.find({ created_at: { $gte: previous_date, $lt: new Date(tomorrow) } }).populate('created_by').populate('updated_by').populate({
+    let remarks = await Remark.find({ created_at: { $gte: previous_date, $lte: new Date(today) } }).populate('created_by').populate('updated_by').populate({
         path: 'lead',
         populate: [
             {
@@ -115,7 +115,7 @@ export const GetMyReminders = async (req: Request, res: Response, next: NextFunc
     remarks.forEach((rem) => {
         if (rem && rem.lead && !ids.includes(rem.lead._id)) {
             ids.push(rem.lead._id);
-            if (rem.created_by._id.valueOf() == req.user?._id && rem.remind_date && rem.remind_date >= hundredDaysAgo && rem.remind_date <= tomorrow)
+            if (rem.created_by._id.valueOf() == req.user?._id && rem.remind_date && rem.remind_date >= hundredDaysAgo && rem.remind_date < today)
                 filteredRemarks.push(rem);
         }
     })
