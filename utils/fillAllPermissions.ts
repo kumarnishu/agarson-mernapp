@@ -260,7 +260,32 @@ export function FetchAllPermissions() {
                     label: 'export'
                 }
             ]
-        }
+        },
+        {
+            label: 'Checklist Admin',
+            permissions: [
+                {
+                    value: 'checklist_admin_view',
+                    label: 'view'
+                },
+                {
+                    value: 'checklist_admin_create',
+                    label: 'create'
+                },
+                {
+                    value: 'checklist_admin_edit',
+                    label: 'edit'
+                },
+                {
+                    value: 'checklist_admin_delete',
+                    label: 'delete'
+                },
+                {
+                    value: 'checklist_admin_export',
+                    label: 'export'
+                }
+            ]
+        },
     ]
     }
     let reportsMenu: IMenu = {
@@ -644,27 +669,28 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
+            
             {
-                label: 'Checklist Admin',
+                label: 'Salesman Leaves Report',
                 permissions: [
                     {
-                        value: 'checklist_admin_view',
+                        value: 'salesman_leaves_report_view',
                         label: 'view'
                     },
                     {
-                        value: 'checklist_admin_create',
+                        value: 'salesman_leaves_report_create',
                         label: 'create'
                     },
                     {
-                        value: 'checklist_admin_edit',
+                        value: 'salesman_leaves_report_edit',
                         label: 'edit'
                     },
                     {
-                        value: 'checklist_admin_delete',
+                        value: 'salesman_leaves_report_delete',
                         label: 'delete'
                     },
                     {
-                        value: 'checklist_admin_export',
+                        value: 'salesman_leaves_report_export',
                         label: 'export'
                     }
                 ]

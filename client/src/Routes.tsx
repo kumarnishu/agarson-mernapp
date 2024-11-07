@@ -46,6 +46,7 @@ import FeatureDashboard from './dashboards/FeatureDashboard.tsx'
 import ErpEmployeesPage from './pages/dropdowns/ErpEmployeesPage.tsx'
 import VisitReportPage from './pages/reports/VisitReportPage.tsx'
 import CheckListAdminPage from './pages/reports/CheckListAdminPage.tsx'
+import SalesmanLeavesReportPage from './pages/reports/SalesmanLeavesReportPage.tsx'
 
 
 function AppRoutes() {
@@ -143,7 +144,12 @@ function AppRoutes() {
                   <VisitReportPage />
                 }
               />}
-              
+              {user?.assigned_permissions.includes('salesman_leaves_report_view') && <Route
+                path="SalesmanLeavesReportPage" element={
+                  <SalesmanLeavesReportPage />
+                }
+              />}
+
               
 
               {user?.assigned_permissions.includes('thekedar_wise_production_report_view') && <Route

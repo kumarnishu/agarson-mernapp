@@ -3,7 +3,6 @@ import mongoose from "mongoose"
 const flexibleSchema = new mongoose.Schema({}, { strict: false });
 const columnSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    type: { type: String, default: "string" },
     created_at: {
         type: Date, default: new Date()
     }
