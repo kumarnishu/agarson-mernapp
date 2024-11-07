@@ -27,6 +27,7 @@ const StateSchema = new mongoose.Schema<IState, mongoose.Model<IState, {}, {}>, 
     state: {
         type: String,
         trim: true,
+        lowercase: true
     },
     apr: {
         type: Number, default: 0

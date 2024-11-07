@@ -42,7 +42,7 @@ export const CreateState = async (req: Request, res: Response, next: NextFunctio
     if (!body.state) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
-    if (await State.findOne({ state: body.state }))
+    if (await State.findOne({ state: body.state.toLowerCase() }))
         return res.status(400).json({ message: "already exists this state" })
     let result = await new State({
         ...body,
@@ -65,7 +65,7 @@ export const UpdateState = async (req: Request, res: Response, next: NextFunctio
     if (!oldstate)
         return res.status(404).json({ message: "state not found" })
     if (body.state !== oldstate.state)
-        if (await State.findOne({ state: body.state }))
+        if (await State.findOne({ state: body.state.toLowerCase() }))
             return res.status(400).json({ message: "already exists this state" })
     await State.findByIdAndUpdate(oldstate._id, { ...body, updated_by: req.user, updated_at: new Date() })
     return res.status(200).json(oldstate)
@@ -169,7 +169,7 @@ export const BulkCreateAndUpdateErpStatesFromExcel = async (req: Request, res: R
             if (state) {
                 if (item._id && isMongoId(item._id)) {
                     await State.findByIdAndUpdate(item._id, {
-                        state: state,
+                        state: state.toLowerCase(),
                         apr: apr || 0,
                         may: may || 0,
                         jun: jun || 0,
@@ -191,11 +191,10 @@ export const BulkCreateAndUpdateErpStatesFromExcel = async (req: Request, res: R
                 }
 
                 if (!item._id || !isMongoId(item._id)) {
-                    let oldstate = await State.findOne({ state: state })
+                    let oldstate = await State.findOne({ state: state.trim().toLowerCase() })
                     if (!oldstate) {
                         await new State({
-                            ...item,
-                            _id: new mongoose.Types.ObjectId(),
+                            state: state.toLowerCase(),
                             created_by: req.user,
                             updated_by: req.user,
                             created_at: new Date(),
