@@ -182,7 +182,7 @@ function CreateOrEditProductionForm({ production }: { production?: GetProduction
                         id="demo-multiple-checkbox"
                         multiple
                         input={<OutlinedInput label="Article" />}
-                        renderValue={() => `${formik.values.articles.length} users`}
+                        renderValue={() => `${formik.values.articles.length} articles`}
                         {...formik.getFieldProps('articles')}
                     >
                         {articles && articles.data && articles.data.map((article) =>  (

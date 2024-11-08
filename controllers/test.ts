@@ -1,15 +1,21 @@
 import { NextFunction, Request, Response } from 'express';
 import xlsx from "xlsx";
 import { State } from '../models/erp-state';
+import { ChecklistBox } from '../models/checklist-box';
+import { ChecklistRemark } from '../models/checklist-remark';
 
 export const test = async (req: Request, res: Response, next: NextFunction) => {
 
-    let states=await State.find()
-    for(let i=0;i<states.length;i++){
-        let state=states[i]
-        state.state=state.state.toLowerCase()
-        await state.save()
+
+
+    let boxes = await ChecklistBox.find({ stage: {$ne:'open'} });
+    for (let i = 0; i < boxes.length; i++) {
+        let remark = await ChecklistRemark.findOne({ checklist_box: boxes[i]._id }).sort("-created_at")
+        if (remark) {
+            await ChecklistBox.findByIdAndUpdate(boxes[i]._id, { last_remark: remark.remark })
+        }
     }
+
     // if (!req.file)
     //     return res.status(400).json({
     //         message: "please provide an Excel file",
@@ -31,7 +37,7 @@ export const test = async (req: Request, res: Response, next: NextFunction) => {
     //     }
     //     let end_date = new Date();
     //     end_date.setFullYear(end_date.getFullYear() + 30)
-       
+
     // }
 
 

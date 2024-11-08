@@ -81,7 +81,7 @@ export const NewChecklistRemark = async (req: Request, res: Response, next: Next
         box.updated_by = req.user
         box.updated_at = new Date(Date.now())
     }
-    box.last_remark = remark
+    //box.last_remark = remark
     await box.save()
     let checklistTmp = await Checklist.findById(box.checklist._id)
     if (stage == 'done') {

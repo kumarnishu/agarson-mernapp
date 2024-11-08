@@ -173,7 +173,7 @@ function CheckListAdminPage() {
                 </Tooltip>
               }
               {
-                cell.row.original.frequency == 'weekly' && <Tooltip title={moment(new Date(b.date)).format('LL')} key={b.date}>
+                cell.row.original.frequency == 'weekly' && <Tooltip title={b.stage == "open" ?moment(new Date(b.date)).format('LL'):b.last_remark} key={b.date}>
                   <Button
                     sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '15px', m: 0.3, pl: 1 }}
                     onClick={() => {
@@ -191,7 +191,7 @@ function CheckListAdminPage() {
                 </Tooltip>
               }
               {
-                cell.row.original.frequency == 'monthly' && <Tooltip title={moment(new Date(b.date)).format('LL')} key={b.date}>
+                cell.row.original.frequency == 'monthly' && <Tooltip title={b.stage == "open" ?moment(new Date(b.date)).format('LL'):b.last_remark} key={b.date}>
                   <Button
                     sx={{ borderRadius: 20, m: 0.3, pl: 1 }}
                     onClick={() => {
@@ -210,7 +210,7 @@ function CheckListAdminPage() {
                 </Tooltip>
               }
               {
-                cell.row.original.frequency == 'yearly' && <Tooltip title={moment(new Date(b.date)).format('LL')} key={b.date}>
+                cell.row.original.frequency == 'yearly' && <Tooltip title={b.stage == "open" ?moment(new Date(b.date)).format('LL'):b.last_remark} key={b.date}>
                   <Button
                     sx={{ borderRadius: 20, m: 0.3, pl: 1 }}
                     onClick={() => {
