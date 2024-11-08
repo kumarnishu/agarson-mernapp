@@ -260,13 +260,7 @@ function ChecklistPage() {
         alignItems={'center'}
         justifyContent="space-between">
         <Stack direction={'row'} gap={1}>
-          {categories.map((category, index) => (
-            <span
-              key={index}
-            >
-              <span key={category.id} style={{ paddingLeft: '5px', fontSize: '13px' }}>{toTitleCase(category.label)} : {checklists.filter((r) => r.category.id == category.id.toLowerCase()).length || 0}</span>
-            </span>
-          ))}
+          
         </Stack>
 
         <Stack justifyContent={'right'} direction={'row'} gap={1}>
