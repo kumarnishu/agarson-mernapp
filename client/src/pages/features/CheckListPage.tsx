@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Button, LinearProgress,  Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Button,   Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
@@ -260,13 +260,7 @@ function ChecklistPage() {
         alignItems={'center'}
         justifyContent="space-between">
         <Stack direction={'row'} gap={1}>
-          {categories.map((category, index) => (
-            <span
-              key={index}
-            >
-              <span key={category.id} style={{ paddingLeft: '5px', fontSize: '13px' }}>{toTitleCase(category.label)} : {checklists.filter((r) => r.category.id == category.id.toLowerCase()).length || 0}</span>
-            </span>
-          ))}
+          
         </Stack>
 
         <Stack justifyContent={'right'} direction={'row'} gap={1}>
@@ -342,9 +336,7 @@ function ChecklistPage() {
   return (
     <>
 
-      {
-        isLoading || isRefetching && <LinearProgress color='secondary' />
-      }
+    
 
   
       <Stack sx={{ p: 2 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>

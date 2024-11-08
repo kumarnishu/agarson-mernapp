@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Button, Fade, IconButton, LinearProgress, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Button, Fade, IconButton,  Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
@@ -405,9 +405,7 @@ function CheckListAdminPage() {
   return (
     <>
 
-      {
-        isLoading || isRefetching && <LinearProgress color='secondary' />
-      }
+    
 
       <Menu
         anchorEl={anchorEl}
