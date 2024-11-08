@@ -1,5 +1,3 @@
-import { IKeyCategory } from "../models/key-category"
-
 export type DropDownDto = {
     id: string,
     value: string,
@@ -53,15 +51,7 @@ export type CreateOrEditChecklistDto = {
 }
 
 
-export type GetKeyDto={
-    _id:string,
-    key:string,
-    category:DropDownDto,
-    created_at: string,
-    updated_at: string,
-    created_by: DropDownDto,
-    updated_by: DropDownDto
-}
+
 export type GetChecklistBoxDto = {
     _id: string,
     stage: string,
@@ -400,6 +390,7 @@ export type CreateOrEditRemarkDto = {
     stage: string,
     has_card: boolean
 }
+
 
 export type CreateOrEditChecklistRemarkDto = {
     remark: string,
@@ -1042,4 +1033,21 @@ export type AssignPermissionForMultipleUserDto = {
     permissions: string[],
     user_ids: string[],
     flag: number
+}
+
+export type GetKeyDto = {
+    _id: string,
+    key: string,
+    category: DropDownDto,
+    created_at: string,
+    updated_at: string,
+    created_by: DropDownDto,
+    updated_by: DropDownDto
+}
+
+
+export type CreateOrEditKeyDto={
+    _id:string,
+    key:string,
+    category:string
 }
