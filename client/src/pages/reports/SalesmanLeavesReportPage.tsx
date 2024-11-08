@@ -83,7 +83,6 @@ export default function SalesmanLeavesReportPage() {
     enableRowSelection: true,
     manualPagination: false,
     enablePagination: true,
-    enableRowNumbers: true,
     enableColumnPinning: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
