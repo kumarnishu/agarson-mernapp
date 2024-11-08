@@ -6,7 +6,7 @@ type UserChoices = "signup" | "reset_password_mail" | "close_user" | "new_user" 
 
 
 
-type CheckListChoices = "create_or_edit_checklist" | "create_or_edit_checklist_category" | "delete_checklist" | "close_checklist" | "edit_checklist" | "delete_checklist_category" | "create_or_edit_checklist_remark" | "view_checklist_remarks" | "delete_checklist_remark" |"assign_checklist_to_users"
+type CheckListChoices = "create_or_edit_checklist" | "create_or_edit_checklist_category" | "delete_checklist" | "close_checklist" | "bulk_delete_checklist" | "delete_checklist_category" | "create_or_edit_checklist_remark" | "view_checklist_remarks" | "delete_checklist_remark" |"assign_checklist_to_users"
 
 
 type LeadChoices = "create_or_edit_refer" | "create_or_edit_leadtype" | "create_or_edit_source" | "delete_crm_item" | "view_remarks" | "close_lead" | "create_or_edit_city" | "bulk_assign_crm_cities" | "find_unknown_stages" | "create_or_edit_bill" | "convert_lead_to_refer" | "bulk_delete_useless_leads" | "view_referrals" | "delete_crm_state" | "find_unknown_cities" |
@@ -54,7 +54,7 @@ export enum CheckListChoiceActions {
   create_or_edit_checklist_category = "create_or_edit_checklist_category",
   delete_checklist = "delete_checklist",
   close_checklist = "close_checklist",
-  edit_checklist = "edit_checklist",
+  bulk_delete_checklist = "bulk_delete_checklist",
   delete_checklist_category = "delete_checklist_category",
   delete_checklist_remark = "delete_checklist_remark",
   create_or_edit_checklist_remark = "create_or_edit_checklist_remark",
@@ -245,7 +245,7 @@ function reducer(state: ChoiceState | null, action: Action) {
     case CheckListChoiceActions.create_or_edit_checklist_category: return type
     case CheckListChoiceActions.delete_checklist: return type
     case CheckListChoiceActions.close_checklist: return type
-    case CheckListChoiceActions.edit_checklist: return type
+    case CheckListChoiceActions.bulk_delete_checklist: return type
     case CheckListChoiceActions.delete_checklist_category: return type
     case CheckListChoiceActions.delete_checklist_remark: return type
     case CheckListChoiceActions.view_checklist_remarks: return type

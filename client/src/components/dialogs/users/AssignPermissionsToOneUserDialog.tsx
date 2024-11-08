@@ -104,8 +104,10 @@ function AssignPermissionsToOneUserDialog({ user }: { user: GetUserDto }) {
             }}>
                 <Cancel fontSize='large' />
             </IconButton>
-            <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
-                Assign Permissions
+            <DialogTitle sx={{ minWidth: '350px',justifyContent:'space-around' }} textAlign="center">
+                Assign Permissions 
+            
+                <Button sx={{ml:4}} variant='text' onClick={()=>{setPermissions([])}}>Clear All</Button>
             </DialogTitle>
             <DialogContent>
                 <Stack

@@ -1,7 +1,7 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
 import { upload } from ".";
-import { GetChecklists, CreateChecklist,  EditChecklist, DeleteChecklist, CreateChecklistFromExcel, DownloadExcelTemplateForCreatechecklists, ChangeNextDate, AssignChecklistToUsers, GetMobileChecklists, GetChecklistsReport } from "../controllers/checklist";
+import { GetChecklists, CreateChecklist,  EditChecklist, DeleteChecklist, CreateChecklistFromExcel, DownloadExcelTemplateForCreatechecklists, ChangeNextDate, AssignChecklistToUsers, GetMobileChecklists, GetChecklistsReport, BulkDeleteChecklists } from "../controllers/checklist";
 
 const router = express.Router()
 
@@ -15,6 +15,6 @@ router.route("/create-from-excel/checklists")
     .put(isAuthenticatedUser, upload.single("excel"), CreateChecklistFromExcel)
 router.get("/download/template/checklists", isAuthenticatedUser, DownloadExcelTemplateForCreatechecklists)
 router.route("/assign/checklists/").post(isAuthenticatedUser, AssignChecklistToUsers)
-
+router.route("/bulk/delete/checklists").post(isAuthenticatedUser, BulkDeleteChecklists)
 
 export default router

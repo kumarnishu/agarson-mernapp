@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Stack, TextField } from '@mui/material';
+import { Button, Checkbox, CircularProgress, FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useContext, useState } from 'react';
@@ -13,6 +13,8 @@ import { GetUserDto } from '../../../dtos';
 import { GetUsers } from '../../../services/UserServices';
 import { CreateOrEditChecklistDto, GetChecklistDto } from '../../../dtos';
 import { DropDownDto } from '../../../dtos';
+import Select from '@mui/material/Select';
+
 
 function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto }) {
     const [categories, setCategories] = useState<DropDownDto[]>([])
@@ -26,7 +28,7 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
         })
 
 
-    const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', show_assigned_only: true, permission: 'feature_menu' }))
+    const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', show_assigned_only: false }))
     const { data: categoriesData, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("check_categories", GetAllCheckCategories)
     const { setChoice } = useContext(ChoiceContext)
 
@@ -36,7 +38,7 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
             work_title: checklist ? checklist.work_title : "",
             work_description: checklist ? checklist.work_description : "",
             link: checklist ? checklist.link : "",
-            assigned_users: checklist ? checklist.assigned_users.map((user)=>{return user.id}) : [],
+            assigned_users: checklist ? checklist.assigned_users.map((user) => { return user.id }) : [],
             frequency: checklist ? checklist.frequency : "daily",
             photo: checklist && checklist.photo && checklist.photo || ""
         },
@@ -137,7 +139,7 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
                     {...formik.getFieldProps('work_title')}
                 />
                 <TextField
-                    
+
                     error={
                         formik.touched.work_description && formik.errors.work_description ? true : false
                     }
@@ -229,36 +231,25 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
                     }
                 </TextField>
 
-                < TextField
-                    select
-                    SelectProps={{
-                        native: true,
-                        multiple:true
-                    }}
-                    focused
-                    error={
-                        formik.touched.assigned_users && formik.errors.assigned_users ? true : false
-                    }
-                    id="assigned_users"
-                    label="Responsible Persons"
-                    fullWidth
-                    helperText={
-                        formik.touched.assigned_users && formik.errors.assigned_users ? formik.errors.assigned_users : ""
-                    }
-                    {...formik.getFieldProps('assigned_users')}
-                >
-                    <option key={0} value={undefined}>
-                        Select Person
-                    </option>
-                    {
-                        users.map(user => {
+                <FormControl sx={{ minWidth: 300 }}>
+                    <InputLabel id="demo-multiple-checkbox-label">Users</InputLabel>
+                    <Select
+                        labelId="demo-multiple-checkbox-label"
+                        id="demo-multiple-checkbox"
+                        multiple
+                        input={<OutlinedInput label="User" />}
+                        renderValue={() => `${formik.values.assigned_users.length} users`}
+                        {...formik.getFieldProps('assigned_users')}
+                    >
+                        {users.map((user) => (
+                            <MenuItem key={user._id} value={user._id}>
+                                <Checkbox checked={formik.values.assigned_users.includes(user._id)} />
+                                <ListItemText primary={user.username} />
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
 
-                            return (<option key={user._id} value={user._id}>
-                                {user.username}
-                            </option>)
-                        })
-                    }
-                </TextField>
                 
                 <TextField
                     fullWidth

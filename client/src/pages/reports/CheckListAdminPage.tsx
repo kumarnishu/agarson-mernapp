@@ -26,6 +26,7 @@ import { queryClient } from '../../main'
 import { currentYear, getNextMonday, nextMonth } from '../../utils/datesHelper'
 import { ChecklistExcelButtons } from '../../components/buttons/ChecklistExcelButtons'
 import AssignChecklistsDialog from '../../components/dialogs/checklists/AssignChecklistsDialog'
+import BulkDeleteCheckListDialog from '../../components/dialogs/checklists/BulkDeleteCheckListDialog'
 
 
 function CheckListAdminPage() {
@@ -53,7 +54,7 @@ function CheckListAdminPage() {
   let previous_date = new Date()
   let day = previous_date.getDate() - 3
   previous_date.setDate(day)
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'feature_menu', show_assigned_only: true }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'feature_menu', show_assigned_only: false }))
   const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date, hidden], async () => GetChecklistReports({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date, hidden: String(hidden) }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { mutate: changedate } = useMutation
@@ -77,7 +78,7 @@ function CheckListAdminPage() {
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
-              {LoggedInUser?.assigned_permissions.includes('checklist_delete') && <Tooltip title="delete">
+              {LoggedInUser?.assigned_permissions.includes('checklist_admin_delete') && <Tooltip title="delete">
                 <IconButton color="error"
 
                   onClick={() => {
@@ -91,7 +92,7 @@ function CheckListAdminPage() {
                   <Delete />
                 </IconButton>
               </Tooltip>}
-              {LoggedInUser?.assigned_permissions.includes('checklist_edit') &&
+              {LoggedInUser?.assigned_permissions.includes('checklist_admin_edit') &&
                 <Tooltip title="Edit">
                   <IconButton
 
@@ -154,7 +155,7 @@ function CheckListAdminPage() {
           {cell.row.original && cell.row.original.boxes.map((b) => (
             <>
               {
-                cell.row.original.frequency == 'daily' && <Tooltip title={b.stage=="open"?moment(new Date(b.date)).format('LL'):b.last_remark} key={b.date}>
+                cell.row.original.frequency == 'daily' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                   <Button
                     sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '20px', m: 0.3, pl: 1 }}
                     onClick={() => {
@@ -420,7 +421,7 @@ function CheckListAdminPage() {
         sx={{ borderRadius: 2 }}
       >
 
-        {LoggedInUser?.assigned_permissions.includes('checklist_create') && <MenuItem
+        {LoggedInUser?.assigned_permissions.includes('checklist_admin_create') && <MenuItem
 
           onClick={() => {
             setChoice({ type: CheckListChoiceActions.create_or_edit_checklist })
@@ -428,7 +429,7 @@ function CheckListAdminPage() {
             setAnchorEl(null)
           }}
         > Add New</MenuItem>}
-        {LoggedInUser?.assigned_permissions.includes('checklist_edit') && <MenuItem
+        {LoggedInUser?.assigned_permissions.includes('checklist_admin_edit') && <MenuItem
 
           onClick={() => {
             if (!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()) {
@@ -442,7 +443,7 @@ function CheckListAdminPage() {
             setAnchorEl(null)
           }}
         > Assign Users</MenuItem>}
-        {LoggedInUser?.assigned_permissions.includes('checklist_edit') && <MenuItem
+        {LoggedInUser?.assigned_permissions.includes('checklist_admin_edit') && <MenuItem
 
           onClick={() => {
             if (!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()) {
@@ -456,7 +457,7 @@ function CheckListAdminPage() {
             setAnchorEl(null)
           }}
         > Remove Users</MenuItem>}
-        {LoggedInUser?.assigned_permissions.includes('checklist_export') && < MenuItem onClick={() => {
+        {LoggedInUser?.assigned_permissions.includes('checklist_admin_export') && < MenuItem onClick={() => {
 
           let data: GetChecklistFromExcelDto[] = []
           data = table.getRowModel().rows.map((row) => {
@@ -475,7 +476,7 @@ function CheckListAdminPage() {
         }
         }
         >Export All</MenuItem>}
-        {LoggedInUser?.assigned_permissions.includes('checklist_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => {
+        {LoggedInUser?.assigned_permissions.includes('checklist_admin_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => {
           let data: GetChecklistFromExcelDto[] = []
           data = table.getSelectedRowModel().rows.map((row) => {
             return {
@@ -528,6 +529,23 @@ function CheckListAdminPage() {
             })
           }}
         />
+
+        {LoggedInUser?._id === LoggedInUser?.created_by.id && LoggedInUser?.assigned_permissions.includes('checklist_admin_delete') && <Tooltip title="Delete Selected">
+          <Button  variant='contained' color='error'
+
+            onClick={() => {
+              let data: any[] = [];
+              data = table.getSelectedRowModel().rows
+              if (data.length == 0)
+                alert("select some checklists")
+              else
+                setChoice({ type: CheckListChoiceActions.bulk_delete_checklist })
+            }}
+          >
+            <Delete />
+          </Button>
+        </Tooltip>}
+
         < Stack direction="row" spacing={2}>
           {LoggedInUser?.is_admin && <Stack direction={'row'} alignItems={'center'} sx={{ backgroundColor: 'whitegrey' }}>
             <Button variant='outlined' color="inherit" size='large'>
@@ -583,6 +601,8 @@ function CheckListAdminPage() {
       {checklist && checklistBox && <ViewChecklistRemarksDialog checklist={checklist} checklist_box={checklistBox} />}
       <MaterialReactTable table={table} />
       {<AssignChecklistsDialog flag={flag} checklists={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
+      {table.getSelectedRowModel().rows && table.getSelectedRowModel().rows.length > 0 && <BulkDeleteCheckListDialog ids={table.getSelectedRowModel().rows.map((l) => { return l.original._id })} clearIds={() => { table.resetRowSelection() }} />}
+
     </>
   )
 }

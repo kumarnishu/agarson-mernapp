@@ -53,7 +53,7 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
                 assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
                 created_at: ch.created_at.toString(),
                 updated_at: ch.updated_at.toString(),
-                boxes: getBoxes(ch, ch.checklist_boxes), 
+                boxes: getBoxes(ch, ch.checklist_boxes),
                 next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
                 photo: ch.photo?.public_url || "",
                 created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
@@ -138,7 +138,7 @@ export const GetChecklistsReport = async (req: Request, res: Response, next: Nex
                 _id: ch._id,
                 active: ch.active,
                 work_title: ch.work_title,
-                
+
                 work_description: ch.work_description,
                 link: ch.link,
                 last_checked_date: ch.lastcheckedbox ? moment(ch.lastcheckedbox.date).format('DD/MM/YYYY') : "",
@@ -668,4 +668,24 @@ export const AssignChecklistToUsers = async (req: Request, res: Response, next: 
     }
 
     return res.status(200).json({ message: "successfull" })
+}
+
+export const BulkDeleteChecklists = async (req: Request, res: Response, next: NextFunction) => {
+    const { ids } = req.body as { ids: string[] }
+    for (let i = 0; i < ids.length; i++) {
+        let checklist = await Checklist.findById(ids[i])
+        if (!checklist) {
+            return res.status(404).json({ message: "Checklist not found" })
+        }
+        let boxes = await ChecklistBox.find({ checklist: checklist._id })
+        for (let i = 0; i < boxes.length; i++) {
+            await ChecklistRemark.deleteMany({ checklist_box: boxes[i]._id })
+        }
+        await ChecklistBox.deleteMany({ checklist: checklist._id })
+        if (checklist.photo && checklist.photo?._id)
+            await destroyCloudFile(checklist.photo._id)
+
+        await checklist.remove()
+    }
+    return res.status(200).json({ message: "checklists are deleted" })
 }

@@ -97,7 +97,7 @@ function AssignPermissionsToUsersDialog({ user_ids, flag }: { user_ids: string[]
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
-                {flag !== 0 ? "Assign Permissions" : "Remove Permissions"}
+                {flag !== 0 ? "Assign Selected Permissions" : "Remove Selected Permissions"}
             </DialogTitle>
             <DialogContent sx={{ alignItems: 'center' }}>
                 <Stack
@@ -105,7 +105,7 @@ function AssignPermissionsToUsersDialog({ user_ids, flag }: { user_ids: string[]
                 >
                     <Typography variant="body1" color="error">
 
-                        {`Warning ! This will ${flag == 0 ? "remove " : "add "}  permissions for ${user_ids.length} Users.`}
+                        {`Warning ! This will ${flag == 0 ? "remove " : "add "} selected  permissions for the selected  ${user_ids.length} Users.`}
 
                     </Typography>
 

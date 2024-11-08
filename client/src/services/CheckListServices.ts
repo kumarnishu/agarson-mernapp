@@ -42,6 +42,9 @@ export const GetChecklistReports = async ({ limit, page, start_date, end_date, i
     else
         return await apiClient.get(`checklists/report/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&hidden=${hidden}`)
 }
+export const BulkDeleteChecklists = async (body: { ids: string[] }) => {
+    return await apiClient.post(`bulk/delete/checklists`, body)
+}
 
 
 export const CreateOrEditChecklistRemark = async ({ body, remark }: {
