@@ -404,9 +404,7 @@ function CheckListAdminPage() {
   return (
     <>
 
-      {
-        isLoading || isRefetching && <LinearProgress color='secondary' />
-      }
+    
 
       <Menu
         anchorEl={anchorEl}

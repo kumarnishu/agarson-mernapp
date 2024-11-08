@@ -342,9 +342,7 @@ function ChecklistPage() {
   return (
     <>
 
-      {
-        isLoading || isRefetching && <LinearProgress color='secondary' />
-      }
+    
 
   
       <Stack sx={{ p: 2 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
