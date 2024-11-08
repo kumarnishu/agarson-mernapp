@@ -1,3 +1,5 @@
+import { IKeyCategory } from "../models/key-category"
+
 export type DropDownDto = {
     id: string,
     value: string,
@@ -50,6 +52,16 @@ export type CreateOrEditChecklistDto = {
     photo: string
 }
 
+
+export type GetKeyDto={
+    _id:string,
+    key:string,
+    category:DropDownDto,
+    created_at: string,
+    updated_at: string,
+    created_by: DropDownDto,
+    updated_by: DropDownDto
+}
 export type GetChecklistBoxDto = {
     _id: string,
     stage: string,
@@ -128,6 +140,7 @@ export type CreateOrEditCrmCity = {
     state: string,
     city: string
 }
+
 
 export type CreateAndUpdatesLeadFromExcelDto = {
     _id: string,
