@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button,  TextField } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, TextField,  InputLabel, Select, OutlinedInput, MenuItem, Checkbox, ListItemText } from '@mui/material'
 import { useContext, useEffect, useState } from 'react';
 import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
@@ -15,10 +15,10 @@ import { GetUserDto } from '../../../dtos';
 import { GetCrmStateDto } from '../../../dtos';
 
 
-function AssignCrmStatesDialog({ states, flag }: { states: GetCrmStateDto[], flag:number }) {
+function AssignCrmStatesDialog({ states, flag }: { states: GetCrmStateDto[], flag: number }) {
 
     const [users, setUsers] = useState<GetUserDto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'dropdown_menu', show_assigned_only: true }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', show_assigned_only: false }))
 
 
 
@@ -28,7 +28,7 @@ function AssignCrmStatesDialog({ states, flag }: { states: GetCrmStateDto[], fla
             body: {
                 user_ids: string[],
                 state_ids: string[],
-                flag:number
+                flag: number
             }
         }>
         (AssignCRMStatesToUsers, {
@@ -58,10 +58,10 @@ function AssignCrmStatesDialog({ states, flag }: { states: GetCrmStateDto[], fla
                 body: {
                     user_ids: values.user_ids,
                     state_ids: states.map((item) => { return item._id }),
-                    flag:flag
+                    flag: flag
                 }
             })
-            
+
         }
     });
 
@@ -74,7 +74,7 @@ function AssignCrmStatesDialog({ states, flag }: { states: GetCrmStateDto[], fla
     useEffect(() => {
         if (isSuccess) {
             setChoice({ type: LeadChoiceActions.close_lead });
-            formik.setValues({ user_ids: [], state_ids: [] }) ;
+            formik.setValues({ user_ids: [], state_ids: [] });
         }
     }, [isSuccess])
     return (
@@ -93,7 +93,7 @@ function AssignCrmStatesDialog({ states, flag }: { states: GetCrmStateDto[], fla
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
-                {flag === 0 ?'Remove States':'Assign States'}
+                {flag === 0 ? 'Remove States' : 'Assign States'}
             </DialogTitle>
             <DialogContent>
                 <Stack
@@ -101,53 +101,73 @@ function AssignCrmStatesDialog({ states, flag }: { states: GetCrmStateDto[], fla
                 >
                     <Typography variant="body1" color="error">
 
-                        {flag === 1&&`Warning ! This will assign ${states.length} States to the ${formik.values.user_ids.length} Users.`}
-                        {flag === 0&&`Warning ! This will remove  ${states.length} States from  ${formik.values.user_ids.length} Users.`}
+                        {flag === 1 && `Warning ! This will assign ${states.length} States to the ${formik.values.user_ids.length} Users.`}
+                        {flag === 0 && `Warning ! This will remove  ${states.length} States from  ${formik.values.user_ids.length} Users.`}
 
                     </Typography>
                     <Button onClick={() => formik.setValues({ user_ids: [], state_ids: states.map((item) => { return item._id }) })}>Remove Selection</Button>
                     <form onSubmit={formik.handleSubmit}>
-                        < TextField
-                            select
-                            SelectProps={{
-                                native: true,
-                                multiple: true
-                            }}
-                            focused
-                            id="Users"
-                            label="Select Users"
+
+                        <InputLabel id="demo-multiple-checkbox-label">Users</InputLabel>
+                        <Select
+                            label="Users"
                             fullWidth
+                            labelId="demo-multiple-checkbox-label"
+                            id="demo-multiple-checkbox"
+                            multiple
+                            input={<OutlinedInput label="User" />}
+                            renderValue={() => `${formik.values.user_ids.length} users`}
                             {...formik.getFieldProps('user_ids')}
                         >
-                            {
-                                users.map(user => {
-                                   if(user.is_active)
-                                       return (<option key={user._id} value={user._id}>
-                                           {user.username}
-                                       </option>)
-                                })
-                            }
-                        </TextField>
-                        <Button style={{ padding: 10, marginTop: 10 }} variant="contained" color={flag != 0 ? "primary":"error"} type="submit"
-                            disabled={Boolean(isLoading)}
-                            fullWidth>
-                            {flag==0 ? 'Remove ' : "Assign"}
-                        </Button>
-                    </form>
+                            {users.map((user) => (
+                                <MenuItem key={user._id} value={user._id}>
+                                    <Checkbox checked={formik.values.user_ids.includes(user._id)} />
+                                    <ListItemText primary={user.username} />
+                                </MenuItem>
+                            ))}
+                        </Select>
+
+                    < TextField
+                        select
+                        SelectProps={{
+                            native: true,
+                            multiple: true
+                        }}
+                        focused
+                        id="Users"
+                        label="Select Users"
+                        fullWidth
+                        {...formik.getFieldProps('user_ids')}
+                    >
+                        {
+                            users.map(user => {
+                                if (user.is_active)
+                                    return (<option key={user._id} value={user._id}>
+                                        {user.username}
+                                    </option>)
+                            })
+                        }
+                    </TextField>
+                    <Button style={{ padding: 10, marginTop: 10 }} variant="contained" color={flag != 0 ? "primary" : "error"} type="submit"
+                        disabled={Boolean(isLoading)}
+                        fullWidth>
+                        {flag == 0 ? 'Remove ' : "Assign"}
+                    </Button>
+                </form>
 
 
-                </Stack>
-                {
-                    isError ? (
-                        <AlertBar message={error?.response.data.message} color="error" />
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <AlertBar message="successfull" color="success" />
-                    ) : null
-                }
-            </DialogContent>
+            </Stack>
+            {
+                isError ? (
+                    <AlertBar message={error?.response.data.message} color="error" />
+                ) : null
+            }
+            {
+                isSuccess ? (
+                    <AlertBar message="successfull" color="success" />
+                ) : null
+            }
+        </DialogContent>
         </Dialog >
     )
 }

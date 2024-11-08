@@ -1,4 +1,4 @@
-import { Button, Checkbox, CircularProgress, FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Stack, TextField } from '@mui/material';
+import { Button, Checkbox, CircularProgress,  InputLabel, ListItemText, MenuItem, OutlinedInput, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useContext, useState } from 'react';
@@ -231,9 +231,10 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
                     }
                 </TextField>
 
-                <FormControl sx={{ minWidth: 300 }}>
-                    <InputLabel id="demo-multiple-checkbox-label">Users</InputLabel>
-                    <Select
+                <InputLabel id="demo-multiple-checkbox-label">Users</InputLabel>
+                <Select
+                    label="Users"
+                    fullWidth
                         labelId="demo-multiple-checkbox-label"
                         id="demo-multiple-checkbox"
                         multiple
@@ -248,7 +249,7 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
                             </MenuItem>
                         ))}
                     </Select>
-                </FormControl>
+              
 
                 
                 <TextField

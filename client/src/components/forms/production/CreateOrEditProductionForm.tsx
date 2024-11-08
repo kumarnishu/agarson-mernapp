@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Stack, TextField } from '@mui/material';
+import { Button, Checkbox, CircularProgress,  InputLabel, ListItemText, MenuItem, OutlinedInput, Select, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useContext } from 'react';
@@ -17,7 +17,7 @@ import { CreateOrEditProductionDto, GetArticleDto, GetMachineDto, GetProductionD
 
 function CreateOrEditProductionForm({ production }: { production?: GetProductionDto }) {
     const { user } = useContext(UserContext)
-    const { data: users } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'feature_menu', show_assigned_only: true }))
+    const { data: users } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'production_view', show_assigned_only: true }))
     const { data: machines } = useQuery<AxiosResponse<GetMachineDto[]>, BackendError>("machines", async () => GetMachines())
     const { data: articles } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>("articles", async () => GetArticles())
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
@@ -173,35 +173,27 @@ function CreateOrEditProductionForm({ production }: { production?: GetProduction
                     }
                 </TextField>}
                 {/* articles */}
-                < TextField
-                    select
-                    focused
-                    SelectProps={{
-                        native: true,
-                        multiple: true
-                    }}
-                    error={
-                        formik.touched.articles && formik.errors.articles ? true : false
-                    }
-                    id="articles"
 
-                    helperText={
-                        formik.touched.articles && formik.errors.articles ? formik.errors.articles : ""
-                    }
-                    {...formik.getFieldProps('articles')}
-                    required
-                    label="Select Articles"
+                <InputLabel id="demo-multiple-checkbox-label">Articles</InputLabel>
+                <Select
+                    label="Articles"
                     fullWidth
-                >
-
-                    {
-                        articles && articles.data && articles.data.map((article, index) => {
-                            return (<option key={index} value={article._id}>
-                                {article.display_name}
-                            </option>)
-                        })
-                    }
-                </TextField>
+                        labelId="demo-multiple-checkbox-label"
+                        id="demo-multiple-checkbox"
+                        multiple
+                        input={<OutlinedInput label="Article" />}
+                        renderValue={() => `${formik.values.articles.length} users`}
+                        {...formik.getFieldProps('articles')}
+                    >
+                        {articles && articles.data && articles.data.map((article) =>  (
+                            <MenuItem key={article._id} value={article._id}>
+                                <Checkbox checked={formik.values.articles.includes(article._id)} />
+                                <ListItemText primary={article.name} />
+                            </MenuItem>
+                        ))}
+                    </Select>
+               
+              
                 <TextField
                     required
                     fullWidth

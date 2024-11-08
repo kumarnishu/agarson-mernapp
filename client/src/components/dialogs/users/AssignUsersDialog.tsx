@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, CircularProgress, MenuItem, Select, FormControl, InputLabel, } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, CircularProgress, MenuItem, Select,  InputLabel, OutlinedInput, Checkbox, ListItemText, } from '@mui/material'
 import { useContext, useEffect, useState } from 'react';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
@@ -10,7 +10,6 @@ import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { useFormik } from 'formik';
 import * as Yup from "yup"
-import { toTitleCase } from '../../../utils/TitleCase';
 import { GetUserDto } from '../../../dtos';
 import { DropDownDto } from '../../../dtos';
 
@@ -56,7 +55,7 @@ function AssignUsersDialog({ user, setUser }: { user: GetUserDto, setUser: React
 
     useEffect(() => {
         if (isUserSuccess) {
-            setUsers(data?.data.map((u)=>{return{id:u._id,value:u.username,label:u.username}}))
+            setUsers(data?.data.map((u) => { return { id: u._id, value: u.username, label: u.username } }))
         }
     }, [isUserSuccess, data])
 
@@ -92,27 +91,24 @@ function AssignUsersDialog({ user, setUser }: { user: GetUserDto, setUser: React
                     </Typography>
                     <Button onClick={() => formik.setValues({ ids: [] })}>Remove Selection</Button>
                     <form onSubmit={formik.handleSubmit}>
-                        <FormControl fullWidth sx={{ pt: 2 }}>
-                            <InputLabel id="users" sx={{mt:1}}>Select Users</InputLabel>
-                            <Select
-                                multiple
-                                id="users"
-                                fullWidth
-                                size='small'
-                                {...formik.getFieldProps('ids')}
-                            >
-
-                                {users.map((user, index) => (
-                                    <MenuItem
-                                        
-                                        key={index}
-                                        value={user.id}
-                                    >
-                                        {toTitleCase(user.label)}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
+                        <InputLabel id="demo-multiple-checkbox-label">Users</InputLabel>
+                        <Select
+                            label="Users"
+                            fullWidth
+                            labelId="demo-multiple-checkbox-label"
+                            id="demo-multiple-checkbox"
+                            multiple
+                            input={<OutlinedInput label="User" />}
+                            renderValue={() => `${formik.values.ids.length} users`}
+                            {...formik.getFieldProps('ids')}
+                        >
+                            {users.map((user) => (
+                                <MenuItem key={user.id} value={user.id}>
+                                    <Checkbox checked={formik.values.ids.includes(user.id)} />
+                                    <ListItemText primary={user.value} />
+                                </MenuItem>
+                            ))}
+                        </Select>
                         <Button style={{ padding: 10, marginTop: 10 }} variant="contained" color="primary" type="submit"
                             disabled={Boolean(isLoading)}
                             fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Assign"}

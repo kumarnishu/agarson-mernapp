@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, CircularProgress, TextField } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, CircularProgress,  InputLabel, Select, OutlinedInput, MenuItem, Checkbox, ListItemText } from '@mui/material'
 import { useContext, useEffect, useState } from 'react';
 import { ChoiceContext, UserChoiceActions } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
@@ -18,7 +18,7 @@ import { GetErpStateDto } from '../../../dtos';
 function AssignErpStatesDialog({ states, flag }: { states: GetErpStateDto[], flag: number }) {
 
     const [users, setUsers] = useState<GetUserDto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'dropdown_menu', show_assigned_only: true }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false',  show_assigned_only: false }))
 
 
 
@@ -107,30 +107,29 @@ function AssignErpStatesDialog({ states, flag }: { states: GetErpStateDto[], fla
                     </Typography>
                     <Button onClick={() => formik.setValues({ user_ids: [], state_ids: states.map((item) => { return item._id }) })}>Remove Selection</Button>
                     <form onSubmit={formik.handleSubmit}>
-                        < TextField
-                            select
-                            SelectProps={{
-                                native: true,
-                                multiple: true
-                            }}
-                            focused
-                            id="Users"
-                            label="Select Users"
+                        <InputLabel id="demo-multiple-checkbox-label">Users</InputLabel>
+                        <Select
+                            label="Users"
                             fullWidth
-                            {...formik.getFieldProps('user_ids')}
-                        >
-                            {
-                                users.map(user => {
-                                    if (user.is_active)
-                                        return (<option key={user._id} value={user._id}>
-                                            {user.username}
-                                        </option>)
-                                })
-                            }
-                        </TextField>
+                           
+                                labelId="demo-multiple-checkbox-label"
+                                id="demo-multiple-checkbox"
+                                multiple
+                                input={<OutlinedInput label="User" />}
+                                renderValue={() => `${formik.values.user_ids.length} users`}
+                                {...formik.getFieldProps('user_ids')}
+                            >
+                                {users.map((user) => (
+                                    <MenuItem key={user._id} value={user._id}>
+                                        <Checkbox checked={formik.values.user_ids.includes(user._id)} />
+                                        <ListItemText primary={user.username} />
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                      
                         <Button style={{ padding: 10, marginTop: 10 }} variant="contained" color="primary" type="submit"
                             disabled={Boolean(isLoading)}
-                            fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Assign"}
+                            fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Submit"}
                         </Button>
                     </form>
 
