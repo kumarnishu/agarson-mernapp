@@ -1,7 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 import xlsx from "xlsx";
+import { CreateChecklistCategory } from './checklist-category';
+import { Checklist } from '../models/checklist';
+import { ChecklistCategory } from '../models/checklist-category';
 
 export const test = async (req: Request, res: Response, next: NextFunction) => {
+
+    let categories = await ChecklistCategory.find()
+    await Checklist.deleteMany({ category: { $nin: categories } })
+
+
     if (!req.file)
         return res.status(400).json({
             message: "please provide an Excel file",
