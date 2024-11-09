@@ -52,6 +52,11 @@ function ChecklistPage() {
     })
 
 
+  useEffect(() => {
+    if (LoggedInUser?.assigned_users && LoggedInUser.assigned_users.length == 0) {
+      setUserId(LoggedInUser._id)
+    }
+  }, [LoggedInUser])
   console.log(categories[0])
   const columns = useMemo<MRT_ColumnDef<GetChecklistDto>[]>(
     //column definitions...
