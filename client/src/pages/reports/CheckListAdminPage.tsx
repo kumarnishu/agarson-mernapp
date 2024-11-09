@@ -35,7 +35,7 @@ function CheckListAdminPage() {
   const [checklists, setChecklists] = useState<GetChecklistDto[]>([])
   const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
   const [flag, setFlag] = useState(1);
-  const [hidden, setHidden] = useState('false')
+  const [stage, setStage] = useState('all')
   const [checklistBox, setChecklistBox] = useState<GetChecklistBoxDto>()
   const [categoriesData, setCategoriesData] = useState<{ category: string, count: number }[]>([])
   const [userId, setUserId] = useState<string>()
@@ -54,7 +54,7 @@ function CheckListAdminPage() {
   let day = previous_date.getDate() - 3
   previous_date.setDate(day)
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'checklist_view', show_assigned_only: false }))
-  const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date, hidden], async () => GetChecklistReports({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date, hidden: String(hidden) }))
+  const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date, stage], async () => GetChecklistReports({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date, stage: stage }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { mutate: changedate } = useMutation
     <AxiosResponse<any>, BackendError, { id: string, next_date: string }>
@@ -231,7 +231,7 @@ function CheckListAdminPage() {
             </>
           ))}
         </Stack> : <Tooltip title={cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}>
-            <Button size="small" color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? new Date(cell.row.original.last_checked_box.date).getDate() : "Not Done"}</Button>
+            <Button size="small" color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? toTitleCase(cell.row.original.last_checked_box.stage) : "Open"}</Button>
         </Tooltip>
       },
       {
@@ -544,22 +544,31 @@ function CheckListAdminPage() {
           </Button>
         </Tooltip>}
 
-        < Stack direction="row" spacing={2}>
-          {LoggedInUser?.is_admin && <Stack direction={'row'} alignItems={'center'} sx={{ backgroundColor: 'whitegrey' }}>
-            <Button variant='outlined' color="inherit" size='large'>
-              <input type='checkbox' onChange={(e) => {
-                if (e.target.checked) {
-                  setHidden('true')
-                }
-                else
-                  setHidden('false')
-              }} /> <span style={{ paddingLeft: '5px' }}>Completed</span>
-            </Button>
-          </Stack >}
+        {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
+          < TextField
+            select
+            size="small"
+            SelectProps={{
+              native: true,
+            }}
+            onChange={(e) => {
+              setStage(e.target.value)
+            }}
+            focused
+            required
+            id="Stage"
+            label="Checklist Stage"
+            fullWidth
+          >
+            {
+              ['all', 'open', 'pending', 'done'].map((st, index) => {
 
-        </Stack >
-
-
+                return (<option key={index} value={st}>
+                  {toTitleCase(st)}
+                </option>)
+              })
+            }
+          </TextField>}
 
         {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
           < TextField
@@ -572,13 +581,13 @@ function CheckListAdminPage() {
             onChange={(e) => {
               setUserId(e.target.value)
             }}
+            focused
             required
             id="checklist_owners"
             label="Person"
             fullWidth
           >
             <option key={'00'} value={undefined}>
-
             </option>
             {
               users.map((user, index) => {

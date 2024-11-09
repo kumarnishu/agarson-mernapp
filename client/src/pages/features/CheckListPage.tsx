@@ -18,15 +18,16 @@ import { GetChecklistBoxDto, GetChecklistDto } from '../../dtos'
 import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
 import { queryClient } from '../../main'
 import { currentYear, getNextMonday, getPrevMonday, nextMonth, nextYear, previousMonth, previousYear } from '../../utils/datesHelper'
+import { toTitleCase } from '../../utils/TitleCase'
 
 
 function ChecklistPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const [users, setUsers] = useState<GetUserDto[]>([])
+  const [stage, setStage] = useState('all')
   const [checklist, setChecklist] = useState<GetChecklistDto>()
   const [checklists, setChecklists] = useState<GetChecklistDto[]>([])
   const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
-  const [hidden, setHidden] = useState('false')
   const [checklistBox, setChecklistBox] = useState<GetChecklistBoxDto>()
   const [categories, setCategories] = useState<DropDownDto[]>([])
   const [userId, setUserId] = useState<string>()
@@ -41,7 +42,7 @@ function ChecklistPage() {
   let day = previous_date.getDate() - 3
   previous_date.setDate(day)
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'checklist_view', show_assigned_only: true }))
-  const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, hidden], async () => GetChecklists({ limit: paginationData?.limit, page: paginationData?.page, id: userId, hidden: String(hidden) }))
+  const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, stage], async () => GetChecklists({ limit: paginationData?.limit, page: paginationData?.page, id: userId, stage: stage }))
   const { mutate: changedate } = useMutation
     <AxiosResponse<any>, BackendError, { id: string, next_date: string }>
     (ChangeChecklistNextDate, {
@@ -188,7 +189,7 @@ function ChecklistPage() {
             </>
           ))}
         </Stack> : <Tooltip title={cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}>
-          <Button size="small" color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? new Date(cell.row.original.last_checked_box.date).getDate() : "Not Done"}</Button>
+          <Button size="small" color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? toTitleCase(cell.row.original.last_checked_box.stage) : "Open"}</Button>
         </Tooltip>
       },
       {
@@ -346,16 +347,30 @@ function ChecklistPage() {
         </Typography >
         <Stack direction="row" spacing={2} >
           {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
-            <Button variant='contained' size="small" color="inherit">
-              <input type='checkbox' onChange={(e) => {
-                if (e.target.checked) {
-                  setHidden('true')
-                }
-                else
-                  setHidden('false')
-              }} />
-              <span style={{ paddingLeft: '5px' }}>Completed</span>
-            </Button>}
+            < TextField
+              select
+              size="small"
+              SelectProps={{
+                native: true,
+              }}
+              onChange={(e) => {
+                setStage(e.target.value)
+              }}
+              focused
+              required
+              id="Stage"
+              label="Checklist Stage"
+              fullWidth
+            >
+              {
+                ['all', 'open', 'pending', 'done'].map((st, index) => {
+
+                  return (<option key={index} value={st}>
+                    {toTitleCase(st)}
+                  </option>)
+                })
+              }
+            </TextField>}
           {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
             < TextField
               select

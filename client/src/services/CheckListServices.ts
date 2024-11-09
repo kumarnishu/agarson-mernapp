@@ -33,17 +33,17 @@ export const CreateOrEditCheckList = async ({ body, id }: { body: FormData, id?:
 
 
 
-export const GetChecklists = async ({ limit, page, start_date, end_date, id, hidden }: { limit: number | undefined, page: number | undefined, start_date?: string, end_date?: string, id?: string, hidden?:string }) => {
+export const GetChecklists = async ({ limit, page, start_date, end_date, id, stage }: { limit: number | undefined, page: number | undefined, start_date?: string, end_date?: string, id?: string, stage:string }) => {
     if (id)
-        return await apiClient.get(`checklists/?id=${id}&start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&hidden=${hidden}`)
+        return await apiClient.get(`checklists/?id=${id}&start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&stage=${stage}`)
     else
-        return await apiClient.get(`checklists/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&hidden=${hidden}`)
+        return await apiClient.get(`checklists/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&stage=${stage}`)
 }
-export const GetChecklistReports = async ({ limit, page, start_date, end_date, id, hidden }: { limit: number | undefined, page: number | undefined, start_date?: string, end_date?: string, id?: string, hidden?: string }) => {
+export const GetChecklistReports = async ({ limit, page, start_date, end_date, id, stage }: { limit: number | undefined, page: number | undefined, start_date?: string, end_date?: string, id?: string, stage: string }) => {
     if (id)
-        return await apiClient.get(`checklists/report/?id=${id}&start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&hidden=${hidden}`)
+        return await apiClient.get(`checklists/report/?id=${id}&start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&stage=${stage}`)
     else
-        return await apiClient.get(`checklists/report/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&hidden=${hidden}`)
+        return await apiClient.get(`checklists/report/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&stage=${stage}`)
 }
 export const BulkDeleteChecklists = async (body: { ids: string[] }) => {
     return await apiClient.post(`bulk/delete/checklists`, body)
