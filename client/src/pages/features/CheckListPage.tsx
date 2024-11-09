@@ -95,7 +95,7 @@ function ChecklistPage() {
       },
       {
         accessorKey: 'boxes',
-        header: 'Last Remark/Dates',
+        header: 'Dates',
         size: 350,
         Cell: (cell) => userId ? <Stack direction="row" className="scrollable-stack" sx={{ height: '30px' }}>
           {cell.row.original && cell.row.original.boxes.map((b) => (
@@ -187,7 +187,9 @@ function ChecklistPage() {
               }
             </>
           ))}
-        </Stack> : < p > {cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}</p >
+        </Stack> : <Tooltip title={cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}>
+          <Button size="small" color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? new Date(cell.row.original.last_checked_box.date).getDate() : "Not Done"}</Button>
+        </Tooltip>
       },
       {
         accessorKey: 'last_checked_date',

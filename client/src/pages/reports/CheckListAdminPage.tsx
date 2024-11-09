@@ -16,7 +16,7 @@ import { DownloadFile } from '../../utils/DownloadFile'
 import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
-import { ChangeChecklistNextDate,  GetChecklistReports, GetChecklistTopBarDetails } from '../../services/CheckListServices'
+import { ChangeChecklistNextDate, GetChecklistReports, GetChecklistTopBarDetails } from '../../services/CheckListServices'
 import { GetChecklistBoxDto, GetChecklistDto } from '../../dtos'
 import DeleteCheckListDialog from '../../components/dialogs/checklists/DeleteCheckListDialog'
 import CreateOrEditCheckListDialog from '../../components/dialogs/checklists/CreateOrEditCheckListDialog'
@@ -148,8 +148,8 @@ function CheckListAdminPage() {
       },
       {
         accessorKey: 'boxes',
-        header: 'Last Remark/Dates',
-        size: 300,
+        header: 'Dates',
+        size: 100,
         Cell: (cell) => userId ? <Stack direction="row" className="scrollable-stack" sx={{ height: '30px' }}>
           {cell.row.original && cell.row.original.boxes.map((b) => (
             <>
@@ -230,7 +230,9 @@ function CheckListAdminPage() {
               }
             </>
           ))}
-        </Stack> : <p>{cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}</p>
+        </Stack> : <Tooltip title={cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}>
+            <Button size="small" color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? new Date(cell.row.original.last_checked_box.date).getDate() : "Not Done"}</Button>
+        </Tooltip>
       },
       {
         accessorKey: 'last_checked_date',
@@ -313,9 +315,9 @@ function CheckListAdminPage() {
         direction="row"
         alignItems={'center'}
         justifyContent="space-between">
-        <Stack direction={'row'} gap={1} sx={{ maxWidth: '70vw',background:'whitesmoke',p:1,borderRadius:5 }} className='scrollable-stack'>
+        <Stack direction={'row'} gap={1} sx={{ maxWidth: '70vw', background: 'whitesmoke', p: 1, borderRadius: 5 }} className='scrollable-stack'>
           {categoriesData.map((category, index) => (
-            <Stack style={{ minWidth: '100px',overflowY:'hidden' }}
+            <Stack style={{ minWidth: '100px', overflowY: 'hidden' }}
               key={index}
             >
               <span key={category.category} style={{ paddingLeft: '5px', fontSize: '13px' }}> {category.count} : {toTitleCase(category.category)} </span>

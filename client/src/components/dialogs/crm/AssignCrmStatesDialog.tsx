@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, TextField,  InputLabel, Select, OutlinedInput, MenuItem, Checkbox, ListItemText } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button,   InputLabel, Select, OutlinedInput, MenuItem, Checkbox, ListItemText } from '@mui/material'
 import { useContext, useEffect, useState } from 'react';
 import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
@@ -127,27 +127,7 @@ function AssignCrmStatesDialog({ states, flag }: { states: GetCrmStateDto[], fla
                             ))}
                         </Select>
 
-                    < TextField
-                        select
-                        SelectProps={{
-                            native: true,
-                            multiple: true
-                        }}
-                        focused
-                        id="Users"
-                        label="Select Users"
-                        fullWidth
-                        {...formik.getFieldProps('user_ids')}
-                    >
-                        {
-                            users.map(user => {
-                                if (user.is_active)
-                                    return (<option key={user._id} value={user._id}>
-                                        {user.username}
-                                    </option>)
-                            })
-                        }
-                    </TextField>
+                   
                     <Button style={{ padding: 10, marginTop: 10 }} variant="contained" color={flag != 0 ? "primary" : "error"} type="submit"
                         disabled={Boolean(isLoading)}
                         fullWidth>

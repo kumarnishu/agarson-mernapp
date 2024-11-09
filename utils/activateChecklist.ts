@@ -9,7 +9,7 @@ export async function activateChecklist() {
         let works = await Checklist.find({ active: false, frequency: 'daily' });
         for (let i = 0; i < works.length; i++) {
             let work = works[i]
-            await Checklist.findByIdAndUpdate(work._id, { active: true })
+            await Checklist.findByIdAndUpdate(work._id, { active: true , lastcheckedbox:undefined})
         }
     }).start()
 
@@ -18,7 +18,7 @@ export async function activateChecklist() {
         let works = await Checklist.find({ active: false, frequency: 'weekly' })
         for (let i = 0; i < works.length; i++) {
             let work = works[i]
-            await Checklist.findByIdAndUpdate(work._id, { active: true })
+            await Checklist.findByIdAndUpdate(work._id, { active: true , lastcheckedbox:undefined})
         }
     }).start()
 
@@ -27,7 +27,7 @@ export async function activateChecklist() {
         let works = await Checklist.find({ active: false, frequency: 'monthly' })
         for (let i = 0; i < works.length; i++) {
              let work = works[i];
-            await Checklist.findByIdAndUpdate(work._id, { active: true })
+            await Checklist.findByIdAndUpdate(work._id, { active: true , lastcheckedbox:undefined})
         }
     }).start()
 
@@ -36,7 +36,7 @@ export async function activateChecklist() {
         let works = await Checklist.find({ active: false, frequency: 'yearly' })
         for (let i = 0; i < works.length; i++) {
              let work = works[i];
-            await Checklist.findByIdAndUpdate(work._id, { active: true })
+            await Checklist.findByIdAndUpdate(work._id, { active: true , lastcheckedbox:undefined})
         }
     }).start()
 }

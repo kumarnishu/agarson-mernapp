@@ -22,7 +22,7 @@ const KeySchema = new mongoose.Schema<IKey, mongoose.Model<IKey, {}, {}>, {}>({
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'KeyCategory',
         required: true
     },
     created_at: {
