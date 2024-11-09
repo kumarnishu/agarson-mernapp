@@ -1,4 +1,4 @@
-import { Button, Checkbox, CircularProgress,  InputLabel, ListItemText, MenuItem, OutlinedInput, Stack, TextField } from '@mui/material';
+import { Button, Checkbox, CircularProgress, InputLabel, ListItemText, MenuItem, OutlinedInput, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useContext, useState } from 'react';
@@ -222,7 +222,7 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
                         Select Category
                     </option>
                     {
-                        categories.map(cat => {
+                        categories && categories.map(cat => {
 
                             return (<option key={cat.id} value={cat.id}>
                                 {cat.label}
@@ -235,23 +235,23 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
                 <Select
                     label="Users"
                     fullWidth
-                        labelId="demo-multiple-checkbox-label"
-                        id="demo-multiple-checkbox"
-                        multiple
-                        input={<OutlinedInput label="User" />}
-                        renderValue={() => `${formik.values.assigned_users.length} users`}
-                        {...formik.getFieldProps('assigned_users')}
-                    >
-                        {users.map((user) => (
-                            <MenuItem key={user._id} value={user._id}>
-                                <Checkbox checked={formik.values.assigned_users.includes(user._id)} />
-                                <ListItemText primary={user.username} />
-                            </MenuItem>
-                        ))}
-                    </Select>
-              
+                    labelId="demo-multiple-checkbox-label"
+                    id="demo-multiple-checkbox"
+                    multiple
+                    input={<OutlinedInput label="User" />}
+                    renderValue={() => `${formik.values.assigned_users.length} users`}
+                    {...formik.getFieldProps('assigned_users')}
+                >
+                    {users.map((user) => (
+                        <MenuItem key={user._id} value={user._id}>
+                            <Checkbox checked={formik.values.assigned_users.includes(user._id)} />
+                            <ListItemText primary={user.username} />
+                        </MenuItem>
+                    ))}
+                </Select>
 
-                
+
+
                 <TextField
                     fullWidth
                     error={

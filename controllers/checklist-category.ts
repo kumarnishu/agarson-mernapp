@@ -5,10 +5,10 @@ import { CreateOrEditDropDownDto, DropDownDto } from "../dtos";
 import isMongoId from "validator/lib/isMongoId";
 
 export const GetAllChecklistCategory = async (req: Request, res: Response, next: NextFunction) => {
-    let result = await ChecklistCategory.find();
-    let data: DropDownDto[];
-    data = result.map((r) => { return { id: r._id, label: r.category, value: r.category } });
-    return res.status(200).json(data)
+    let data = await ChecklistCategory.find();
+    let result: DropDownDto[]=[];
+    result = data.map((r) => { return { id: r._id, label: r.category, value: r.category } });
+    return res.status(200).json(result)
 }
 
 export const CreateChecklistCategory = async (req: Request, res: Response, next: NextFunction) => {
