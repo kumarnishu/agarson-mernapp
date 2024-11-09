@@ -11,10 +11,10 @@ export const GetDyeStatusReport = async (req: Request, res: Response, next: Next
     let reports: GetDyeStatusReportDto[] = [];
 
     let dt1 = new Date(String(start_date))
-    dt1.setUTCHours(0)
+    dt1.setHours(0)
     dt1.setMinutes(0)
     let dt2 = new Date(String(end_date))
-    dt2.setUTCHours(0)
+    dt2.setHours(0)
     dt2.setMinutes(0)
 
     let sparedyes = await SpareDye.find({ created_at: { $gte: dt1, $lt: dt2 } }).populate('dye').populate('created_by').populate('location').sort('-created_at')

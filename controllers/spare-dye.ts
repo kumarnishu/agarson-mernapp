@@ -12,7 +12,7 @@ import { destroyCloudFile } from '../utils/destroyCloudFile';
 export const GetMyTodaySpareDye = async (req: Request, res: Response, next: NextFunction) => {
     let dt1 = new Date()
     dt1.setDate(new Date().getDate())
-    dt1.setUTCHours(0)
+    dt1.setHours(0)
     dt1.setMinutes(0)
     let sparedyes: ISpareDye[] = []
     let result: GetSpareDyeDto[] = []
@@ -52,10 +52,10 @@ export const GetSpareDyes = async (req: Request, res: Response, next: NextFuncti
     let result: GetSpareDyeDto[] = []
     let count = 0
     let dt1 = new Date(String(start_date))
-    dt1.setUTCHours(0)
+    dt1.setHours(0)
     dt1.setMinutes(0)
     let dt2 = new Date(String(end_date))
-    dt2.setUTCHours(0)
+    dt2.setHours(0)
     dt2.setMinutes(0)
     let user_ids = req.user?.assigned_users.map((user: IUser) => { return user._id }) || []
 
@@ -128,7 +128,7 @@ export const CreateSpareDye = async (req: Request, res: Response, next: NextFunc
     let dt1 = new Date()
     let dt2 = new Date()
     dt2.setDate(new Date(dt2).getDate() + 1)
-    dt1.setUTCHours(0)
+    dt1.setHours(0)
     dt1.setMinutes(0)
     if (await ShoeWeight.findOne({ dye: dye, created_at: { $gte: dt1, $lt: dt2 } }))
         return res.status(400).json({ message: "sorry ! this dye is in machine" })
@@ -180,7 +180,7 @@ export const UpdateSpareDye = async (req: Request, res: Response, next: NextFunc
     let dt1 = new Date()
     let dt2 = new Date()
     dt2.setDate(new Date(dt2).getDate() + 1)
-    dt1.setUTCHours(0)
+    dt1.setHours(0)
     dt1.setMinutes(0)
 
     if (await ShoeWeight.findOne({ dye: dye, created_at: { $gte: dt1, $lt: dt2 } }))

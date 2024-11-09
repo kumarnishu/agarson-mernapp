@@ -12,13 +12,13 @@ export const currentYear = new Date(currentDate.getFullYear(), currentDate.getMo
 export const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
 export const nextYear = new Date(currentDate.getFullYear() + 1, currentDate.getMonth(), currentDate.getDate());
 export const today = new Date();
-today.setUTCHours(0, 0, 0, 0);
+today.setHours(0, 0, 0, 0);
 export const tomorrow = new Date(today);
 tomorrow.setDate(today.getDate() + 1);
-tomorrow.setUTCHours(0, 0, 0, 0);
+tomorrow.setHours(0, 0, 0, 0);
 export const hundredDaysAgo = new Date(today);
 hundredDaysAgo.setDate(today.getDate() - 100);
-hundredDaysAgo.setUTCHours(0, 0, 0, 0);
+hundredDaysAgo.setHours(0, 0, 0, 0);
 
 export function dateToExcelFormat(date: any) {
     const excelEpoch = moment('1899-12-30'); // Excel epoch date
@@ -33,13 +33,13 @@ export function getNextMonday() {
     const nextMonday = new Date(today);
     const daysUntilMonday = (8 - today.getDay()) % 7 || 7;
     nextMonday.setDate(today.getDate() + daysUntilMonday);
-    nextMonday.setUTCHours(0, 0, 0, 0)
+    nextMonday.setHours(0, 0, 0, 0)
     return nextMonday;
 }
 export function getPrevMonday() {
     const nextMonday = new Date(getNextMonday());
     let preMon = new Date(nextMonday);
     preMon.setDate(preMon.getDate() - 7);
-    preMon.setUTCHours(0, 0, 0, 0)
+    preMon.setHours(0, 0, 0, 0)
     return preMon;
 }

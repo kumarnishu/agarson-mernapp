@@ -112,9 +112,9 @@ export const GetActivitiesTopBarDetails = async (req: Request, res: Response, ne
     let end_date = req.query.end_date
     let dt1 = new Date(String(start_date))
     let dt2 = new Date(String(end_date))
-    dt1.setUTCHours(0)
+    dt1.setHours(0)
     dt1.setMinutes(0)
-    dt2.setUTCHours(0)
+    dt2.setHours(0)
     dt2.setMinutes(0)
     let ids = req.user?.assigned_users.map((id:{_id:string}) => { return id._id })
     let stages = await Stage.find();
@@ -162,9 +162,9 @@ export const GetActivities = async (req: Request, res: Response, next: NextFunct
     let count = 0
     let dt1 = new Date(String(start_date))
     let dt2 = new Date(String(end_date))
-    dt1.setUTCHours(0)
+    dt1.setHours(0)
     dt1.setMinutes(0)
-    dt2.setUTCHours(0)
+    dt2.setHours(0)
     dt2.setMinutes(0)
     let ids = req.user?.assigned_users.map((id:{_id:string}) => { return id._id })
     let result: GetActivitiesOrRemindersDto[] = []
