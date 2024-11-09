@@ -28,7 +28,7 @@ export type GetChecklistDto = {
     work_title: string,
     work_description: string,
     photo: string,
-    last_checked_date:string,
+    last_checked_box?: GetChecklistBoxDto,
     assigned_users: DropDownDto[],
     link: string,
     category: DropDownDto,

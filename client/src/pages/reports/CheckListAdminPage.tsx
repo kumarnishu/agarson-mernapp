@@ -2,13 +2,12 @@ import { useContext, useEffect, useMemo, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Button, Fade, IconButton,  Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Button, Fade, IconButton, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
 import { GetChecklistFromExcelDto, GetUserDto } from '../../dtos'
-import { DropDownDto } from '../../dtos'
 import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { CheckListChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import PopUp from '../../components/popup/PopUp'
@@ -17,7 +16,7 @@ import { DownloadFile } from '../../utils/DownloadFile'
 import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
-import { ChangeChecklistNextDate, GetAllCheckCategories, GetChecklistReports } from '../../services/CheckListServices'
+import { ChangeChecklistNextDate,  GetChecklistReports, GetChecklistTopBarDetails } from '../../services/CheckListServices'
 import { GetChecklistBoxDto, GetChecklistDto } from '../../dtos'
 import DeleteCheckListDialog from '../../components/dialogs/checklists/DeleteCheckListDialog'
 import CreateOrEditCheckListDialog from '../../components/dialogs/checklists/CreateOrEditCheckListDialog'
@@ -38,7 +37,7 @@ function CheckListAdminPage() {
   const [flag, setFlag] = useState(1);
   const [hidden, setHidden] = useState('false')
   const [checklistBox, setChecklistBox] = useState<GetChecklistBoxDto>()
-  const [categories, setCategories] = useState<DropDownDto[]>([])
+  const [categoriesData, setCategoriesData] = useState<{ category: string, count: number }[]>([])
   const [userId, setUserId] = useState<string>()
   const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
     start_date: moment(new Date().setDate(new Date().getDate() - 6)).format("YYYY-MM-DD")
@@ -48,7 +47,7 @@ function CheckListAdminPage() {
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   ];
-  const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("checklist_categories", GetAllCheckCategories)
+  const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<{ category: string, count: number }[]>, BackendError>("checklists", GetChecklistTopBarDetails)
   const { setChoice } = useContext(ChoiceContext)
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   let previous_date = new Date()
@@ -149,9 +148,9 @@ function CheckListAdminPage() {
       },
       {
         accessorKey: 'boxes',
-        header: 'Dates',
+        header: 'Last Remark/Dates',
         size: 300,
-        Cell: (cell) => <Stack direction="row" className="scrollable-stack" sx={{ height: '30px' }}>
+        Cell: (cell) => userId ? <Stack direction="row" className="scrollable-stack" sx={{ height: '30px' }}>
           {cell.row.original && cell.row.original.boxes.map((b) => (
             <>
               {
@@ -173,7 +172,7 @@ function CheckListAdminPage() {
                 </Tooltip>
               }
               {
-                cell.row.original.frequency == 'weekly' && <Tooltip title={b.stage == "open" ?moment(new Date(b.date)).format('LL'):b.last_remark} key={b.date}>
+                cell.row.original.frequency == 'weekly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                   <Button
                     sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '15px', m: 0.3, pl: 1 }}
                     onClick={() => {
@@ -191,7 +190,7 @@ function CheckListAdminPage() {
                 </Tooltip>
               }
               {
-                cell.row.original.frequency == 'monthly' && <Tooltip title={b.stage == "open" ?moment(new Date(b.date)).format('LL'):b.last_remark} key={b.date}>
+                cell.row.original.frequency == 'monthly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                   <Button
                     sx={{ borderRadius: 20, m: 0.3, pl: 1 }}
                     onClick={() => {
@@ -210,7 +209,7 @@ function CheckListAdminPage() {
                 </Tooltip>
               }
               {
-                cell.row.original.frequency == 'yearly' && <Tooltip title={b.stage == "open" ?moment(new Date(b.date)).format('LL'):b.last_remark} key={b.date}>
+                cell.row.original.frequency == 'yearly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                   <Button
                     sx={{ borderRadius: 20, m: 0.3, pl: 1 }}
                     onClick={() => {
@@ -231,13 +230,13 @@ function CheckListAdminPage() {
               }
             </>
           ))}
-        </Stack>
+        </Stack> : <p>{cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}</p>
       },
       {
         accessorKey: 'last_checked_date',
         header: 'Last Checked Date',
         size: 100,
-        Cell: (cell) => <>{cell.row.original.last_checked_date ? cell.row.original.last_checked_date : ""}</>
+        Cell: (cell) => <>{cell.row.original.last_checked_box ? moment(cell.row.original.last_checked_box.date).format('DD/MM/YYYY') : ""}</>
       },
       {
         accessorKey: 'next_date',
@@ -314,16 +313,15 @@ function CheckListAdminPage() {
         direction="row"
         alignItems={'center'}
         justifyContent="space-between">
-        <Stack direction={'row'} gap={1}>
-          {categories.map((category, index) => (
-            <span
+        <Stack direction={'row'} gap={1} sx={{ maxWidth: '70vw',background:'whitesmoke',p:1,borderRadius:5 }} className='scrollable-stack'>
+          {categoriesData.map((category, index) => (
+            <Stack style={{ minWidth: '100px',overflowY:'hidden' }}
               key={index}
             >
-              <span key={category.id} style={{ paddingLeft: '5px', fontSize: '13px' }}>{toTitleCase(category.label)} : {checklists.filter((r) => r.category.id == category.id.toLowerCase()).length || 0}</span>
-            </span>
+              <span key={category.category} style={{ paddingLeft: '5px', fontSize: '13px' }}> {category.count} : {toTitleCase(category.category)} </span>
+            </Stack>
           ))}
         </Stack>
-
         <Stack justifyContent={'right'} direction={'row'} gap={1}>
           <Tooltip title="Toogle Filter">
             <Button size="small" color="inherit" variant='contained'
@@ -381,8 +379,8 @@ function CheckListAdminPage() {
   });
 
   useEffect(() => {
-    if (categorySuccess)
-      setCategories(categorydata?.data)
+    if (categorySuccess && categorydata)
+      setCategoriesData(categorydata.data)
   }, [categorySuccess])
 
   useEffect(() => {
@@ -405,7 +403,7 @@ function CheckListAdminPage() {
   return (
     <>
 
-    
+
 
       <Menu
         anchorEl={anchorEl}
@@ -529,7 +527,7 @@ function CheckListAdminPage() {
         />
 
         {LoggedInUser?._id === LoggedInUser?.created_by.id && LoggedInUser?.assigned_permissions.includes('checklist_admin_delete') && <Tooltip title="Delete Selected">
-          <Button  variant='contained' color='error'
+          <Button variant='contained' color='error'
 
             onClick={() => {
               let data: any[] = [];
@@ -553,7 +551,7 @@ function CheckListAdminPage() {
                 }
                 else
                   setHidden('false')
-              }} /> <span style={{ paddingLeft: '5px' }}>Hidden</span>
+              }} /> <span style={{ paddingLeft: '5px' }}>Completed</span>
             </Button>
           </Stack >}
 

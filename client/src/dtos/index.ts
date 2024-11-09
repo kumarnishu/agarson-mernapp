@@ -31,7 +31,7 @@ export type GetChecklistDto = {
     assigned_users: DropDownDto[],
     link: string,
     category: DropDownDto,
-    last_checked_date:string,
+    last_checked_box?: GetChecklistBoxDto,
     frequency: string,
     next_date: string,
     boxes: GetChecklistBoxDto[],

@@ -6,6 +6,9 @@ export const GetAllCheckCategories = async () => {
     return await apiClient.get(`checklists/categories`)
 }
 
+export const GetChecklistTopBarDetails = async () => {
+    return await apiClient.get(`checklists/topbar-details`)
+}
 
 export const CreateOrEditCheckCategory = async ({ body, id }: {
     body: { key: string }

@@ -2,15 +2,15 @@ import { useContext, useEffect, useMemo, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Button,   Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Button, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
-import {  GetUserDto } from '../../dtos'
+import { GetUserDto } from '../../dtos'
 import { DropDownDto } from '../../dtos'
 import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { CheckListChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
-import {  FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
+import { FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
 import { DownloadFile } from '../../utils/DownloadFile'
 import DBPagination from '../../components/pagination/DBpagination'
 import { ChangeChecklistNextDate, GetAllCheckCategories, GetChecklists } from '../../services/CheckListServices'
@@ -51,11 +51,11 @@ function ChecklistPage() {
     })
 
 
-console.log(categories[0])
+  console.log(categories[0])
   const columns = useMemo<MRT_ColumnDef<GetChecklistDto>[]>(
     //column definitions...
     () => checklists && [
-     
+
       {
         accessorKey: 'work_title',
         header: ' Work Title',
@@ -95,13 +95,13 @@ console.log(categories[0])
       },
       {
         accessorKey: 'boxes',
-        header: 'Dates',
+        header: 'Last Remark/Dates',
         size: 350,
-        Cell: (cell) => <Stack direction="row" className="scrollable-stack" sx={{ height: '30px' }}>
+        Cell: (cell) => userId ? <Stack direction="row" className="scrollable-stack" sx={{ height: '30px' }}>
           {cell.row.original && cell.row.original.boxes.map((b) => (
             <>
               {
-                cell.row.original.frequency == 'daily' && <Tooltip title={b.stage == "open" ?moment(new Date(b.date)).format('LL'):b.last_remark} key={b.date}>
+                cell.row.original.frequency == 'daily' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                   <Button
                     sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '20px', m: 0.3, pl: 1 }}
                     onClick={() => {
@@ -121,7 +121,7 @@ console.log(categories[0])
                 </Tooltip>
               }
               {
-                cell.row.original.frequency == 'weekly' && <Tooltip title={b.stage == "open" ?moment(new Date(b.date)).format('LL'):b.last_remark} key={b.date}>
+                cell.row.original.frequency == 'weekly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                   <Button
                     sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '15px', m: 0.3, pl: 1 }}
                     onClick={() => {
@@ -141,7 +141,7 @@ console.log(categories[0])
                 </Tooltip>
               }
               {
-                cell.row.original.frequency == 'monthly' && <Tooltip title={b.stage == "open" ?moment(new Date(b.date)).format('LL'):b.last_remark} key={b.date}>
+                cell.row.original.frequency == 'monthly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                   <Button
                     sx={{ borderRadius: 20, m: 0.3, pl: 1 }}
                     onClick={() => {
@@ -164,7 +164,7 @@ console.log(categories[0])
                 </Tooltip>
               }
               {
-                cell.row.original.frequency == 'yearly' && <Tooltip title={b.stage == "open" ?moment(new Date(b.date)).format('LL'):b.last_remark} key={b.date}>
+                cell.row.original.frequency == 'yearly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                   <Button
                     sx={{ borderRadius: 20, m: 0.3, pl: 1 }}
                     onClick={() => {
@@ -187,13 +187,13 @@ console.log(categories[0])
               }
             </>
           ))}
-        </Stack>
+        </Stack> : < p > {cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}</p >
       },
       {
         accessorKey: 'last_checked_date',
         header: 'Last Checked Date',
         size: 100,
-        Cell: (cell) => <>{cell.row.original.last_checked_date ? cell.row.original.last_checked_date : ""}</>
+        Cell: (cell) => <>{cell.row.original.last_checked_box ? moment(cell.row.original.last_checked_box.date).format('DD/MM/YYYY') : ""}</>
       },
       {
         accessorKey: 'next_date',
@@ -259,7 +259,7 @@ console.log(categories[0])
         alignItems={'center'}
         justifyContent="space-between">
         <Stack direction={'row'} gap={1}>
-          
+
         </Stack>
 
         <Stack justifyContent={'right'} direction={'row'} gap={1}>
@@ -281,7 +281,7 @@ console.log(categories[0])
               {table.getState().isFullScreen ? <FullscreenExit /> : <Fullscreen />}
             </Button>
           </Tooltip>
-         
+
         </Stack>
       </Stack>
     ),
@@ -335,12 +335,12 @@ console.log(categories[0])
   return (
     <>
 
-    
 
-  
+
+
       <Stack sx={{ p: 2 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
         < Typography variant='h6' >
-          Checklists
+          Checklists :  {checklists.length || 0}
         </Typography >
         <Stack direction="row" spacing={2} >
           {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
@@ -352,7 +352,7 @@ console.log(categories[0])
                 else
                   setHidden('false')
               }} />
-              <span style={{ paddingLeft: '5px' }}>Hidden</span>
+              <span style={{ paddingLeft: '5px' }}>Completed</span>
             </Button>}
           {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
             < TextField
@@ -386,7 +386,7 @@ console.log(categories[0])
 
         </Stack>
       </Stack>
-     
+
       {checklist && checklistBox && <ViewChecklistRemarksDialog checklist={checklist} checklist_box={checklistBox} />}
       <MaterialReactTable table={table} />
     </>
