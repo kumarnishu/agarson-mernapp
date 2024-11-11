@@ -1078,7 +1078,56 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
-
+            {
+                label: 'Key',
+                permissions: [
+                    {
+                        value: 'key_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'key_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'key_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'key_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'key_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Key Category',
+                permissions: [
+                    {
+                        value: 'key_category_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'key_category_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'key_category_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'key_category_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'key_category_export',
+                        label: 'export'
+                    }
+                ]
+            },
         ]
     }
 

@@ -12,16 +12,16 @@ export const GetAllKeyCategory = async (req: Request, res: Response, next: NextF
 }
 
 export const CreateKeyCategory = async (req: Request, res: Response, next: NextFunction) => {
-    let { category } = req.body as { category: string }
-    if (!category) {
+    let { key } = req.body as { key: string }
+    if (!key) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
-    category = trimToLowerText(category);
+    key = trimToLowerText(key);
 
-    if (await KeyCategory.findOne({ category: category }))
+    if (await KeyCategory.findOne({ category: key }))
         return res.status(400).json({ message: "already exists this category" })
     let result = await new KeyCategory({
-        category: category,
+        category: key,
         updated_at: new Date(),
         created_by: req.user,
         updated_by: req.user
@@ -31,13 +31,13 @@ export const CreateKeyCategory = async (req: Request, res: Response, next: NextF
 }
 
 export const UpdateKeyCategory = async (req: Request, res: Response, next: NextFunction) => {
-    let { category } = req.body as {
-        category: string,
+    let { key } = req.body as {
+        key: string,
     }
-    if (!category) {
+    if (!key) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
-    category = trimToLowerText(category);
+    key = trimToLowerText(key);
 
 
     const id = req.params.id
@@ -45,10 +45,10 @@ export const UpdateKeyCategory = async (req: Request, res: Response, next: NextF
     if (!oldcategory)
         return res.status(404).json({ message: "category not found" })
 
-    if (oldcategory.category !== category)
-        if (await KeyCategory.findOne({ category: category }))
+    if (oldcategory.category !== key)
+        if (await KeyCategory.findOne({ category: key }))
             return res.status(400).json({ message: "already exists this category" })
-    oldcategory.category = category
+    oldcategory.category = key
     oldcategory.updated_at = new Date()
     if (req.user)
         oldcategory.updated_by = req.user

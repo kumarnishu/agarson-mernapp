@@ -49,6 +49,8 @@ import CheckListAdminPage from './pages/features/CheckListAdminPage.tsx'
 import SalesmanLeavesReportPage from './pages/reports/SalesmanLeavesReportPage.tsx'
 import PaymentsPage from './pages/features/PaymentsPage.tsx'
 import PaymentCategoriesPage from './pages/dropdowns/PaymentCategoriesPage.tsx'
+import KeysCategoriesPage from './pages/dropdowns/KeysCategoriesPage.tsx'
+import KeysPage from './pages/dropdowns/KeysPage.tsx'
 
 
 function AppRoutes() {
@@ -308,6 +310,16 @@ function AppRoutes() {
               {user?.assigned_permissions.includes('payment_category_view') && <Route
                 path="PaymentCategoriesPage" element={
                   <PaymentCategoriesPage />
+                }
+              />}
+              {user?.assigned_permissions.includes('key_category_view') && <Route
+                path="KeysCategoriesPage" element={
+                  <KeysCategoriesPage />
+                }
+              />}
+              {user?.assigned_permissions.includes('key_view') && <Route
+                path="KeysPage" element={
+                  <KeysPage />
                 }
               />}
             </Route>}

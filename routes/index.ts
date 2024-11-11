@@ -38,6 +38,8 @@ import TestRoutes from "./test"
 import SalesmanLeavesRoutes from "./salesman-leaves"
 import PaymentRoutes from "./payments"
 import PaymentCategoryRoutes from "./payment-category"
+import KeyRoutes from "./key"
+import KeyCategoryRoutes from "./key-category"
 
 router.use(ArticlesRoutes);
 router.use(AuthRoutes);
@@ -74,6 +76,8 @@ router.use(TestRoutes)
 router.use(SalesmanLeavesRoutes)
 router.use(PaymentCategoryRoutes)
 router.use(PaymentRoutes)
+router.use(KeyRoutes)
+router.use(KeyCategoryRoutes)
 
 
 export default router;
