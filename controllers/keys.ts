@@ -30,7 +30,7 @@ export const CreateKey = async (req: Request, res: Response, next: NextFunction)
     }
     key = trimToLowerText(key);
 
-    if (await Key.findOne({ category: category }))
+    if (await Key.findOne({ key:key,category: category }))
         return res.status(400).json({ message: "already exists this key" })
 
 
@@ -62,7 +62,7 @@ export const UpdateKey = async (req: Request, res: Response, next: NextFunction)
         return res.status(404).json({ message: "key not found" })
 
     if (oldkey.key !== key)
-        if (await Key.findOne({ category: category }))
+        if (await Key.findOne({key:key, category: category }))
             return res.status(400).json({ message: "already exists this key" })
 
     await Key.findByIdAndUpdate(id, {
