@@ -201,7 +201,7 @@ function ChecklistPage() {
         accessorKey: 'last_checked_date',
         header: 'Last Checked Date',
         size: 100,
-        Cell: (cell) => <>{cell.row.original.last_checked_box ? moment(cell.row.original.last_checked_box.date).format('DD/MM/YYYY') : ""}</>
+        Cell: (cell) => <>{cell.row.original.updated_at ? moment(cell.row.original.updated_at).format('DD/MM/YYYY') : ""}</>
       },
       {
         accessorKey: 'next_date',

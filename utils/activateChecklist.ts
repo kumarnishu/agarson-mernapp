@@ -5,7 +5,7 @@ import { Checklist } from "../models/checklist";
 export async function activateChecklist() {
 
     // daily trigger
-    new CronJob("15 8 1/1 * *", async () => {
+    new CronJob("0 0 1/1 * *", async () => {
         let works = await Checklist.find({ active: false, frequency: 'daily' });
         for (let i = 0; i < works.length; i++) {
             let work = works[i]
@@ -16,7 +16,7 @@ export async function activateChecklist() {
     }).start()
 
     //weekly
-    new CronJob("15 8 * * 1", async () => {
+    new CronJob("0 0 * * 1", async () => {
         let works = await Checklist.find({ active: false, frequency: 'weekly' })
         for (let i = 0; i < works.length; i++) {
             let work = works[i]
@@ -26,7 +26,7 @@ export async function activateChecklist() {
     }).start()
 
     //monthly
-    new CronJob("15 8 1 * *", async () => {
+    new CronJob("0 0 1 * *", async () => {
         let works = await Checklist.find({ active: false, frequency: 'monthly' })
         for (let i = 0; i < works.length; i++) {
              let work = works[i];
@@ -36,7 +36,7 @@ export async function activateChecklist() {
     }).start()
 
     //yearly
-    new CronJob("15 8 1 1 *", async () => {
+    new CronJob("0 0 1 1 *", async () => {
         let works = await Checklist.find({ active: false, frequency: 'yearly' })
         for (let i = 0; i < works.length; i++) {
              let work = works[i];
