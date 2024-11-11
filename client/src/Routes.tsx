@@ -37,7 +37,7 @@ import MachineWiseProductionReportPage from './pages/reports/MachineWiseProducti
 import CategoryWiseProductionReportPage from './pages/reports/CategoryWiseProductionReportPage.tsx'
 import ThekedarWiseProductionReportPage from './pages/reports/ThekedarWiseProductionReportPage.tsx'
 import DyeStatusReportPage from './pages/reports/DyeStatusReportPage.tsx'
-import ChecklistCategoriesPage from './pages/dropdowns/CategoriesPage.tsx'
+import ChecklistCategoriesPage from './pages/dropdowns/ChecklistCategoriesPage.tsx'
 import CheckListPage from './pages/features/CheckListPage.tsx'
 import SpareDyesPage from './pages/features/SpareDyesPage.tsx'
 import SoleThicknessPage from './pages/features/SoleThicknessPage.tsx'
@@ -45,8 +45,10 @@ import DyeLocationPage from './pages/dropdowns/DyeLocationPage.tsx'
 import FeatureDashboard from './dashboards/FeatureDashboard.tsx'
 import ErpEmployeesPage from './pages/dropdowns/ErpEmployeesPage.tsx'
 import VisitReportPage from './pages/reports/VisitReportPage.tsx'
-import CheckListAdminPage from './pages/reports/CheckListAdminPage.tsx'
+import CheckListAdminPage from './pages/features/CheckListAdminPage.tsx'
 import SalesmanLeavesReportPage from './pages/reports/SalesmanLeavesReportPage.tsx'
+import PaymentsPage from './pages/features/PaymentsPage.tsx'
+import PaymentCategoriesPage from './pages/dropdowns/PaymentCategoriesPage.tsx'
 
 
 function AppRoutes() {
@@ -124,6 +126,11 @@ function AppRoutes() {
                 < CheckListAdminPage />
               }
               />}
+              {user?.assigned_permissions.includes('payments_view') && <Route path="PaymentsPage" element={
+                < PaymentsPage />
+              }
+              />}
+            
               {user?.assigned_permissions.includes('sole_thickness_view') &&<Route
                 path="SoleThicknessPage" element={
                   <SoleThicknessPage />
@@ -296,6 +303,11 @@ function AppRoutes() {
               {user?.assigned_permissions.includes('checklist_category_view') &&<Route
                 path="ChecklistCategoriesPage" element={
                   <ChecklistCategoriesPage />
+                }
+              />}
+              {user?.assigned_permissions.includes('payment_category_view') && <Route
+                path="PaymentCategoriesPage" element={
+                  <PaymentCategoriesPage />
                 }
               />}
             </Route>}

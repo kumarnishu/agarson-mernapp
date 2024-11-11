@@ -116,7 +116,7 @@ export default function ClientSaleReportsPage() {
                 width: '50',
                 aggregationFn: 'count',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 filterVariant: 'multi-select',
                 filterSelectOptions: reports.map((i) => { return i.report_owner }).filter(onlyUnique)
             },
@@ -125,7 +125,7 @@ export default function ClientSaleReportsPage() {
                 header: 'Account',
                 size: 300,
                 aggregationFn: 'count',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 filterVariant: 'multi-select',
                 filterSelectOptions: reports.map((i) => { return i.account }).filter(onlyUnique)
 
@@ -136,7 +136,7 @@ export default function ClientSaleReportsPage() {
                 Footer: <b>Total</b>,
                 size: 300,
                 aggregationFn: 'count',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 filterVariant: 'multi-select',
                 filterSelectOptions: reports.map((i) => { return i.article }).filter(onlyUnique)
             },
@@ -146,7 +146,7 @@ export default function ClientSaleReportsPage() {
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.oldqty) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'newqty',
@@ -154,14 +154,14 @@ export default function ClientSaleReportsPage() {
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.newqty) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             }, {
                 accessorKey: 'total',
                 header: 'Total',
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.total) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'apr',
@@ -169,7 +169,7 @@ export default function ClientSaleReportsPage() {
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.apr) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'may',
@@ -177,7 +177,7 @@ export default function ClientSaleReportsPage() {
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.may) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'jun',
@@ -185,7 +185,7 @@ export default function ClientSaleReportsPage() {
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.jun) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'jul',
@@ -193,7 +193,7 @@ export default function ClientSaleReportsPage() {
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.jul) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'aug',
@@ -201,7 +201,7 @@ export default function ClientSaleReportsPage() {
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.aug) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'sep',
@@ -209,7 +209,7 @@ export default function ClientSaleReportsPage() {
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.sep) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'oct',
@@ -217,7 +217,7 @@ export default function ClientSaleReportsPage() {
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.oct) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'nov',
@@ -225,7 +225,7 @@ export default function ClientSaleReportsPage() {
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.nov) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'dec',
@@ -233,7 +233,7 @@ export default function ClientSaleReportsPage() {
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.dec) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'jan',
@@ -241,7 +241,7 @@ export default function ClientSaleReportsPage() {
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.jan) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'feb',
@@ -249,14 +249,14 @@ export default function ClientSaleReportsPage() {
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.feb) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'mar',
                 header: 'MAR',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.mar) }, 0).toFixed()}</b>
             }
         ],

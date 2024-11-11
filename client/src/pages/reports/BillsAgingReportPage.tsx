@@ -132,7 +132,7 @@ export default function BillsAgingReportPage() {
                 header: '>70',
                 aggregationFn: 'sum',
                 size: 120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.plu70) }, 0).toFixed(2)}</b>
             },
             {
@@ -140,7 +140,7 @@ export default function BillsAgingReportPage() {
                 header: '70-90',
                 size: 120,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.in70to90) }, 0).toFixed(2)}</b>
             },
             {
@@ -148,7 +148,7 @@ export default function BillsAgingReportPage() {
                 header: '90-120',
                 size: 120,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.in90to120) }, 0).toFixed(2)}</b>
             },
             {
@@ -156,7 +156,7 @@ export default function BillsAgingReportPage() {
                 header: '>120',
                 aggregationFn: 'sum',
                 size: 120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.plus120) }, 0).toFixed(2)}</b>
             }
         ],

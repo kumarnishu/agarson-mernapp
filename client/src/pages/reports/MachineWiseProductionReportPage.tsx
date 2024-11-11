@@ -38,7 +38,7 @@ export default function MachineWiseProductionReportPage() {
       return {
         accessorKey: item.key, size: 120, header: item.header,
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         //@ts-ignore
         Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
       }

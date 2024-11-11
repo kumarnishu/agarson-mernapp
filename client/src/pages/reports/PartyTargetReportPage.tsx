@@ -108,7 +108,7 @@ export default function PartyTargetReportPage() {
                 filterSelectOptions: reports.map((i) => { return i.created_at || "" }).filter(onlyUnique),
                 aggregationFn: 'count',
                 size: 120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'PARTY',
@@ -117,7 +117,7 @@ export default function PartyTargetReportPage() {
                 filterVariant: 'multi-select',
                 filterSelectOptions: reports.map((i) => { return i.PARTY }).filter(onlyUnique),
                 aggregationFn: 'count',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
            
             {
@@ -126,7 +126,7 @@ export default function PartyTargetReportPage() {
                 filterVariant: 'multi-select',
                 aggregationFn: 'count',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 filterSelectOptions: reports.map((i) => { return i.STATION }).filter(onlyUnique)
             },
             {
@@ -135,7 +135,7 @@ export default function PartyTargetReportPage() {
                 filterVariant: 'multi-select',
                 aggregationFn: 'count',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 filterSelectOptions: reports.map((i) => { return i.SALES_OWNER }).filter(onlyUnique)
             },
             {
@@ -145,7 +145,7 @@ export default function PartyTargetReportPage() {
                 aggregationFn: 'count',
                 Footer: <b>Total</b>,
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 filterSelectOptions: reports.map((i) => { return i.report_owner }).filter(onlyUnique)
             },
             {
@@ -153,14 +153,14 @@ export default function PartyTargetReportPage() {
                 header: 'ALL TARGET',
                 aggregationFn: 'count',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'TARGET',
                 header: 'TARGET',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.TARGET) }, 0).toFixed()}</b>
             },
             {
@@ -168,7 +168,7 @@ export default function PartyTargetReportPage() {
                 header: 'Projection',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.PROJECTION) }, 0).toFixed()}</b>
             },
             {
@@ -176,7 +176,7 @@ export default function PartyTargetReportPage() {
                 header: 'Growth',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.GROWTH) }, 0).toFixed()}</b>
             },
             {
@@ -184,7 +184,7 @@ export default function PartyTargetReportPage() {
                 header: 'Target Achieved',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.TARGET_ACHIEVE) }, 0).toFixed()}</b>
             },
             {
@@ -192,7 +192,7 @@ export default function PartyTargetReportPage() {
                 header: 'Total Old Sale',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.TOTAL_SALE_OLD) }, 0).toFixed()}</b>
             },
             {
@@ -200,7 +200,7 @@ export default function PartyTargetReportPage() {
                 header: 'Total Sale New',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.TOTAL_SALE_NEW) }, 0).toFixed()}</b>
             },
             {
@@ -208,7 +208,7 @@ export default function PartyTargetReportPage() {
                 header: 'L-Apr',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Last_Apr) }, 0).toFixed()}</b>
             },
             {
@@ -216,7 +216,7 @@ export default function PartyTargetReportPage() {
                 header: 'C-APr',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Cur_Apr) }, 0).toFixed()}</b>
             },
             {
@@ -224,7 +224,7 @@ export default function PartyTargetReportPage() {
                 header: 'L-May',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Last_May) }, 0).toFixed()}</b>
             },
             {
@@ -232,7 +232,7 @@ export default function PartyTargetReportPage() {
                 header: 'C-MAY',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Cur_May) }, 0).toFixed()}</b>
             },
             {
@@ -240,7 +240,7 @@ export default function PartyTargetReportPage() {
                 header: 'L-JUN',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Last_Jun) }, 0).toFixed()}</b>
             },
             {
@@ -248,7 +248,7 @@ export default function PartyTargetReportPage() {
                 header: 'C-JUN',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Cur_Jun) }, 0).toFixed()}</b>
             },
             {
@@ -256,7 +256,7 @@ export default function PartyTargetReportPage() {
                 header: 'L-JUL',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Last_Jul) }, 0).toFixed()}</b>
             },
             {
@@ -264,7 +264,7 @@ export default function PartyTargetReportPage() {
                 header: 'C-JUL',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Cur_Jul) }, 0).toFixed()}</b>
             },
             {
@@ -272,7 +272,7 @@ export default function PartyTargetReportPage() {
                 header: 'L-AUG',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Last_Aug) }, 0).toFixed()}</b>
             },
             {
@@ -280,7 +280,7 @@ export default function PartyTargetReportPage() {
                 header: 'C-AUG',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Cur_Aug) }, 0).toFixed()}</b>
             },
             {
@@ -288,7 +288,7 @@ export default function PartyTargetReportPage() {
                 header: 'L-SEP',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Last_Sep) }, 0).toFixed()}</b>
             },
             {
@@ -296,7 +296,7 @@ export default function PartyTargetReportPage() {
                 header: 'C-SEP',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Cur_Sep) }, 0).toFixed()}</b>
             },
             {
@@ -304,7 +304,7 @@ export default function PartyTargetReportPage() {
                 header: 'L-OCT',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Last_Oct) }, 0).toFixed()}</b>
             },
             {
@@ -312,7 +312,7 @@ export default function PartyTargetReportPage() {
                 header: 'C-OCT',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Cur_Oct) }, 0).toFixed()}</b>
             },
             {
@@ -320,7 +320,7 @@ export default function PartyTargetReportPage() {
                 header: 'L-NOV',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Last_Nov) }, 0).toFixed()}</b>
             },
             {
@@ -328,7 +328,7 @@ export default function PartyTargetReportPage() {
                 header: 'C-NOV',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Cur_Nov) }, 0).toFixed()}</b>
             },
             {
@@ -336,7 +336,7 @@ export default function PartyTargetReportPage() {
                 header: 'L-DEC',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Last_Dec) }, 0).toFixed()}</b>
             },
             {
@@ -344,7 +344,7 @@ export default function PartyTargetReportPage() {
                 header: 'C-DEC',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Cur_Dec) }, 0).toFixed()}</b>
             },
             {
@@ -352,7 +352,7 @@ export default function PartyTargetReportPage() {
                 header: 'L-JAN',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Last_Jan) }, 0).toFixed()}</b>
             },
             {
@@ -360,7 +360,7 @@ export default function PartyTargetReportPage() {
                 header: 'C-JAN',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Cur_Jan) }, 0).toFixed()}</b>
             },
             {
@@ -368,7 +368,7 @@ export default function PartyTargetReportPage() {
                 header: 'L-FEB',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Last_Feb) }, 0).toFixed()}</b>
             },
             {
@@ -376,7 +376,7 @@ export default function PartyTargetReportPage() {
                 header: 'C-FEB',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Cur_Feb) }, 0).toFixed()}</b>
             },
             {
@@ -384,7 +384,7 @@ export default function PartyTargetReportPage() {
                 header: 'L-MAR',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Last_Mar) }, 0).toFixed()}</b>
             },
             {
@@ -392,7 +392,7 @@ export default function PartyTargetReportPage() {
                 header: 'C-,MAR',
                 aggregationFn: 'sum',
                 size:120,
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.Cur_Mar) }, 0).toFixed()}</b>
             },
         ],

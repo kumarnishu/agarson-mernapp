@@ -40,7 +40,7 @@ export default function DyeStatusReportPage() {
         size: 140,
         header: 'Dye',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.dye)
@@ -53,7 +53,7 @@ export default function DyeStatusReportPage() {
         size: 140,
         header: 'Article',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.article)
@@ -66,7 +66,7 @@ export default function DyeStatusReportPage() {
         size: 140,
         header: 'Size',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.size)
@@ -79,7 +79,7 @@ export default function DyeStatusReportPage() {
         size: 140,
         header: 'St Weight',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.std_weight)
@@ -92,7 +92,7 @@ export default function DyeStatusReportPage() {
         size: 140,
         header: 'Location',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.location)
@@ -105,7 +105,7 @@ export default function DyeStatusReportPage() {
         size: 140,
         header: 'Repair Required',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.repair_required)
@@ -118,7 +118,7 @@ export default function DyeStatusReportPage() {
         size: 180,
         header: 'Remarks',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.remarks)
@@ -132,7 +132,7 @@ export default function DyeStatusReportPage() {
         size: 120,
         aggregationFn: 'count',
         filterVariant: 'multi-select',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         Cell: (cell) => <>{cell.row.original.created_by.value.toString() || ""}</>,
         filterSelectOptions: reports && reports.map((i) => {
           return i.created_by.value.toString() || "";

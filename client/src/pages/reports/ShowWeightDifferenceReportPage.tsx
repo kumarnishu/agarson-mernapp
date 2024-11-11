@@ -40,7 +40,7 @@ export default function ShowWeightDifferenceReportPage() {
         size: 140,
         header: 'Dye',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.dye_no)
@@ -53,7 +53,7 @@ export default function ShowWeightDifferenceReportPage() {
         size: 140,
         header: 'Article',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.article)
@@ -66,7 +66,7 @@ export default function ShowWeightDifferenceReportPage() {
         size: 140,
         header: 'Size',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.size)
@@ -79,7 +79,7 @@ export default function ShowWeightDifferenceReportPage() {
         size: 140,
         header: 'St Weight',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.st_weight)
@@ -92,7 +92,7 @@ export default function ShowWeightDifferenceReportPage() {
         size: 140,
         header: 'Machine',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.machine)
@@ -105,70 +105,70 @@ export default function ShowWeightDifferenceReportPage() {
         size: 140,
         header: 'Weight1',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'u1',
         size: 140,
         header: 'Upper1',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'd1',
         size: 140,
         header: 'Diff-1',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'w2',
         size: 140,
         header: 'Weight2',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'u2',
         size: 140,
         header: 'Upper2',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'd2',
         size: 140,
         header: 'Diff-2',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'w3',
         size: 140,
         header: 'Weight3',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'u3',
         size: 140,
         header: 'Upper3',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'd3',
         size: 140,
         header: 'Diff-3',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'person',
         size: 140,
         header: 'Person',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.person)

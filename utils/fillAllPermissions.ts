@@ -286,6 +286,31 @@ export function FetchAllPermissions() {
                 }
             ]
         },
+        {
+            label: 'Payments',
+            permissions: [
+                {
+                    value: 'payments_view',
+                    label: 'view'
+                },
+                {
+                    value: 'payments_create',
+                    label: 'create'
+                },
+                {
+                    value: 'payments_edit',
+                    label: 'edit'
+                },
+                {
+                    value: 'payments_delete',
+                    label: 'delete'
+                },
+                {
+                    value: 'payments_export',
+                    label: 'export'
+                }
+            ]
+        }
     ]
     }
     let reportsMenu: IMenu = {
@@ -1029,26 +1054,26 @@ export function FetchAllPermissions() {
                 ]
             },
             {
-                label: 'Maintenance Category',
+                label: 'Payment Category',
                 permissions: [
                     {
-                        value: 'maintenance_category_view',
+                        value: 'payment_category_view',
                         label: 'view'
                     },
                     {
-                        value: 'maintenance_category_create',
+                        value: 'payment_category_create',
                         label: 'create'
                     },
                     {
-                        value: 'maintenance_category_edit',
+                        value: 'payment_category_edit',
                         label: 'edit'
                     },
                     {
-                        value: 'maintenance_category_delete',
+                        value: 'payment_category_delete',
                         label: 'delete'
                     },
                     {
-                        value: 'maintenance_category_export',
+                        value: 'payment_category_export',
                         label: 'export'
                     }
                 ]

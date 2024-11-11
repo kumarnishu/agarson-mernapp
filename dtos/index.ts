@@ -21,7 +21,23 @@ export type CreateOrEditChecklistCategoryDto = {
     category: string
 }
 
-
+export type GetPaymentDto = {
+    _id: string,
+    active: boolean
+    payment_title: string,
+    payment_description: string,
+    last_document?: GetPaymentDocumentDto,
+    assigned_users: DropDownDto[],
+    link: string,
+    category: DropDownDto,
+    frequency?: string,
+    due_date: string,
+    next_date: string,
+    created_at: string,
+    updated_at: string,
+    created_by: DropDownDto,
+    updated_by: DropDownDto
+}
 export type GetChecklistDto = {
     _id: string,
     active: boolean
@@ -45,13 +61,28 @@ export type CreateOrEditChecklistDto = {
     work_description: string,
     category: string,
     link: string,
-    assigned_users:string[]
-    frequency: string,
+    assigned_users: string[]
+    frequency?: string,
     photo: string
+}
+export type CreateOrEditPaymentDto = {
+    payment_title: string,
+    payment_description: string,
+    category: string,
+    link: string,
+    duedate: string,
+    assigned_users: string[]
+    frequency: string,
 }
 
 
-
+export type GetPaymentDocumentDto = {
+    _id: string,
+    document: string,
+    remark: string,
+    payment: DropDownDto,
+    date: string,
+}
 export type GetChecklistBoxDto = {
     _id: string,
     stage: string,
@@ -60,18 +91,33 @@ export type GetChecklistBoxDto = {
     date: string,
 }
 
-export type AssignOrRemoveChecklistDto={
-    checklist_ids:string[], user_ids:string[], flag:number
+export type AssignOrRemoveChecklistDto = {
+    checklist_ids: string[], user_ids: string[], flag: number
+}
+export type AssignOrRemovePaymentDto = {
+    payment_ids: string[], user_ids: string[], flag: number
 }
 export type GetChecklistFromExcelDto = {
-    _id?:string,
+    _id?: string,
     work_title: string,
     work_description: string,
     category: string,
     link: string,
     assigned_users: string
     frequency: string,
-    status?:string
+    status?: string
+}
+
+export type GetPaymentsFromExcelDto = {
+    _id?: string,
+    payment_title: string,
+    payment_description: string,
+    category: string,
+    link: string,
+    assigned_users: string
+    frequency?: string,
+    duedate: string,
+    status?: string
 }
 
 
@@ -395,10 +441,13 @@ export type CreateOrEditRemarkDto = {
 export type CreateOrEditChecklistRemarkDto = {
     remark: string,
     stage: string,
-    checklist_box:string,
-    checklist:string
+    checklist_box: string,
+    checklist: string
 }
 
+export type CreateOrEditPaymentDocumentDto = {
+    remark: string,
+}
 export type GetErpEmployeeDto = {
     _id: string,
     name: string,
@@ -1046,8 +1095,8 @@ export type GetKeyDto = {
 }
 
 
-export type CreateOrEditKeyDto={
-    _id:string,
-    key:string,
-    category:string
+export type CreateOrEditKeyDto = {
+    _id: string,
+    key: string,
+    category: string
 }

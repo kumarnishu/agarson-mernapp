@@ -36,6 +36,8 @@ import UserRoutes from "./user";
 import ChecklistRemarkRoutes from "./checklist-remarks"
 import TestRoutes from "./test"
 import SalesmanLeavesRoutes from "./salesman-leaves"
+import PaymentRoutes from "./payments"
+import PaymentCategoryRoutes from "./payment-category"
 
 router.use(ArticlesRoutes);
 router.use(AuthRoutes);
@@ -70,6 +72,8 @@ router.use(SpareDyeRoute);
 router.use(UserRoutes);
 router.use(TestRoutes)
 router.use(SalesmanLeavesRoutes)
+router.use(PaymentCategoryRoutes)
+router.use(PaymentRoutes)
 
 
 export default router;

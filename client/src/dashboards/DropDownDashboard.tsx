@@ -24,6 +24,7 @@ function DropDownDashboard() {
         user?.assigned_permissions.includes('machine_category_view') && tmpfeatures.push({ feature: 'machine categories ', is_visible: true, url: "MachineCategoriesPage" })
         user?.assigned_permissions.includes('dye_view') && tmpfeatures.push({ feature: 'dyes ', is_visible: true, url: "DyePage" })
         user?.assigned_permissions.includes('checklist_category_view') && tmpfeatures.push({ feature: 'Checklist Category ', is_visible: true, url: "ChecklistCategoriesPage" })
+        user?.assigned_permissions.includes('payment_category_view') && tmpfeatures.push({ feature: 'Payment Category ', is_visible: true, url: "PaymentCategoriesPage" })
         user?.assigned_permissions.includes('erp_employee_view') && tmpfeatures.push({ feature: 'Erp Employee ', is_visible: true, url: "ErpEmployeesPage" })
         
         

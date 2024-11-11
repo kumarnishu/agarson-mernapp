@@ -112,7 +112,7 @@ export default function PendingOrdersReport() {
                 header: 'State',
                 filterVariant: 'multi-select',
                 aggregationFn: 'count',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 filterSelectOptions: reports.map((i) => { return i.report_owner }).filter(onlyUnique)
             },
             {
@@ -120,7 +120,7 @@ export default function PendingOrdersReport() {
                 size: 200,
                 header: 'Account',
                 aggregationFn: 'count',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 filterVariant: 'multi-select',
                 filterSelectOptions: reports.map((i) => { return i.account }).filter(onlyUnique)
             },
@@ -129,7 +129,7 @@ export default function PendingOrdersReport() {
                 size: 200,
                 header: 'Product Family',
                 aggregationFn: 'count',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 filterVariant: 'multi-select',
                 filterSelectOptions: reports.map((i) => { return i.product_family }).filter(onlyUnique)
             },
@@ -140,7 +140,7 @@ export default function PendingOrdersReport() {
                 header: 'Article',
 
                 aggregationFn: 'count',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 filterVariant: 'multi-select',
                 filterSelectOptions: reports.map((i) => { return i.article }).filter(onlyUnique)
             },
@@ -150,7 +150,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.total) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
 
             {
@@ -159,7 +159,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size5) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size6',
@@ -167,7 +167,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size6) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size7',
@@ -175,7 +175,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size7) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size8',
@@ -183,7 +183,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size8) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size9',
@@ -191,7 +191,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size9) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size10',
@@ -199,7 +199,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size10) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size11',
@@ -207,7 +207,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size11) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size12_24pairs',
@@ -215,7 +215,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size12_24pairs) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size13',
@@ -223,7 +223,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size13) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size11x12',
@@ -231,7 +231,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size11x12) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size3',
@@ -239,7 +239,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size3) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size4',
@@ -247,7 +247,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size4) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size6to10',
@@ -255,7 +255,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size6to10) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size7to10',
@@ -263,7 +263,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size7to10) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size8to10',
@@ -271,7 +271,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size8to10) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size4to8',
@@ -279,7 +279,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size4to8) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size6to9',
@@ -287,7 +287,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size6to9) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size5to8',
@@ -295,7 +295,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size5to8) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size6to10A',
@@ -303,7 +303,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size6to10A) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size7to10B',
@@ -311,7 +311,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size7to10B) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size6to9A',
@@ -319,7 +319,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size6to9A) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size11close',
@@ -327,7 +327,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size11close) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size11to13',
@@ -335,7 +335,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size11to13) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             },
             {
                 accessorKey: 'size3to8',
@@ -343,7 +343,7 @@ export default function PendingOrdersReport() {
                 size: 120,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.size3to8) }, 0).toFixed()}</b>,
                 aggregationFn: 'sum',
-                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+                AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
             }
         ],
         [reports],

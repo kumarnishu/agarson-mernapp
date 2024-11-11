@@ -56,7 +56,11 @@ const PaymentSchema = new mongoose.Schema<IPayment, mongoose.Model<IPayment, {},
         default: 'manual'
     },
     due_date: {
-        type: Date
+        type: Date,
+        required: true
+    },
+    next_date: {
+        type: Date,
     },
     category:
     {

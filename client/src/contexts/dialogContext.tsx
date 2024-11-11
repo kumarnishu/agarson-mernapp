@@ -6,7 +6,9 @@ type UserChoices = "signup" | "reset_password_mail" | "close_user" | "new_user" 
 
 
 
-type CheckListChoices = "create_or_edit_checklist" | "create_or_edit_checklist_category" | "delete_checklist" | "close_checklist" | "bulk_delete_checklist" | "delete_checklist_category" | "create_or_edit_checklist_remark" | "view_checklist_remarks" | "delete_checklist_remark" |"assign_checklist_to_users"
+type CheckListChoices = "create_or_edit_checklist" | "create_or_edit_checklist_category" | "delete_checklist" | "close_checklist" | "bulk_delete_checklist" | "delete_checklist_category" | "create_or_edit_checklist_remark" | "view_checklist_remarks" | "delete_checklist_remark" | "assign_checklist_to_users"
+
+type PaymentChoices = "create_or_edit_payment" | "create_or_edit_payment_category" | "delete_payment" | "close_payment" | "bulk_delete_payment" | "delete_payment_category" | "create_or_edit_payment_remark" | "view_payment_remarks" | "delete_payment_remark" | "assign_payment_to_users"
 
 
 type LeadChoices = "create_or_edit_refer" | "create_or_edit_leadtype" | "create_or_edit_source" | "delete_crm_item" | "view_remarks" | "close_lead" | "create_or_edit_city" | "bulk_assign_crm_cities" | "find_unknown_stages" | "create_or_edit_bill" | "convert_lead_to_refer" | "bulk_delete_useless_leads" | "view_referrals" | "delete_crm_state" | "find_unknown_cities" |
@@ -16,7 +18,7 @@ type LeadChoices = "create_or_edit_refer" | "create_or_edit_leadtype" | "create_
 type ProductionChoices = "create_or_edit_machine" | "close_production" | "create_or_edit_spareDye" | "create_or_edit_article" | "create_or_edit_thickness" | "create_or_edit_dye" | "update_dye" | "validate_weight" | "toogle_machine" | "toogle_article" | "toogle_dye" | "view_shoe_photo" | "view_shoe_photo2" | "view_shoe_photo3" | "create_or_edit_shoe_weight" | "validate_spareDye" | "view_spare_dye_photo" | "create_or_edit_production" | "update_production" | "delete_production_item" | "create_or_edit_location" | "toogle_dye_location" | "update_shoe_weight2" | "update_shoe_weight3" | "create_or_edit_machine_category"
 
 
-type ChoiceState = UserChoices | LeadChoices | CheckListChoices | ProductionChoices 
+type ChoiceState = UserChoices | PaymentChoices | LeadChoices | CheckListChoices | ProductionChoices
 
 const initialState: ChoiceState | null = null
 
@@ -60,6 +62,19 @@ export enum CheckListChoiceActions {
   create_or_edit_checklist_remark = "create_or_edit_checklist_remark",
   view_checklist_remarks = "view_checklist_remarks",
   assign_checklist_to_users = "assign_checklist_to_users"
+}
+
+export enum PaymentsChoiceActions {
+  create_or_edit_payment = "create_or_edit_payment",
+  create_or_edit_payment_category = "create_or_edit_payment_category",
+  delete_payment = "delete_payment",
+  close_payment = "close_payment",
+  bulk_delete_payment = "bulk_delete_payment",
+  delete_payment_category = "delete_payment_category",
+  delete_payment_remark = "delete_payment_remark",
+  create_or_edit_payment_remark = "create_or_edit_payment_remark",
+  view_payment_remarks = "view_payment_remarks",
+  assign_payment_to_users = "assign_payment_to_users"
 }
 
 export enum LeadChoiceActions {
@@ -136,7 +151,7 @@ export enum UserChoiceActions {
 
 type Action = {
   type: UserChoiceActions |
-  LeadChoiceActions | CheckListChoiceActions | ProductionChoiceActions 
+  LeadChoiceActions | CheckListChoiceActions | ProductionChoiceActions | PaymentsChoiceActions
 }
 
 // reducer
@@ -251,6 +266,17 @@ function reducer(state: ChoiceState | null, action: Action) {
     case CheckListChoiceActions.view_checklist_remarks: return type
     case CheckListChoiceActions.create_or_edit_checklist_remark: return type
     case CheckListChoiceActions.assign_checklist_to_users: return type
+
+    case PaymentsChoiceActions.create_or_edit_payment: return type
+    case PaymentsChoiceActions.create_or_edit_payment_category: return type
+    case PaymentsChoiceActions.delete_payment: return type
+    case PaymentsChoiceActions.close_payment: return type
+    case PaymentsChoiceActions.bulk_delete_payment: return type
+    case PaymentsChoiceActions.delete_payment_category: return type
+    case PaymentsChoiceActions.delete_payment_remark: return type
+    case PaymentsChoiceActions.view_payment_remarks: return type
+    case PaymentsChoiceActions.create_or_edit_payment_remark: return type
+    case PaymentsChoiceActions.assign_payment_to_users: return type
 
     default: return state
   }

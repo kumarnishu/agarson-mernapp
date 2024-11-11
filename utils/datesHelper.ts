@@ -24,7 +24,9 @@ hundredDaysAgo.setHours(0, 0, 0, 0);
 export const prevWeekDate = new Date(today);
 prevWeekDate.setDate(today.getDate() - 7);
 
-
+export function extractDateFromExcel(date:any){
+    new Date(new Date(Date.UTC(1900, 0, 1)).getTime() + (Number(date) - 2) * 86400000)
+}
 export function dateToExcelFormat(date:any) {
     const excelEpoch = moment('1899-12-30'); // Excel epoch date
     const diffInDays = moment(date).diff(excelEpoch, 'days', true); // Calculate difference in days

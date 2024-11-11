@@ -1,97 +1,88 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
-import { Checklist, IChecklist } from "../models/checklist";
-import { AssignOrRemoveChecklistDto, CreateOrEditChecklistDto, GetChecklistBoxDto, GetChecklistDto, GetChecklistFromExcelDto } from "../dtos";
-import { ChecklistBox, IChecklistBox } from "../models/checklist-box";
+import { AssignOrRemovePaymentDto, CreateOrEditPaymentDto, GetPaymentsFromExcelDto, GetPaymentDto, CreateOrEditChecklistRemarkDto, CreateOrEditPaymentDocumentDto } from "../dtos";
 import moment from "moment";
 import { Asset, User } from "../models/user";
 import { uploadFileToCloud } from "../utils/uploadFileToCloud";
 import { destroyCloudFile } from "../utils/destroyCloudFile";
 import isMongoId from "validator/lib/isMongoId";
 import ConvertJsonToExcel from "../utils/ConvertJsonToExcel";
-import { ChecklistRemark } from "../models/checklist-remark";
-import { getFirstMonday } from "../utils/getFirstMondayDate";
-import { ChecklistCategory } from "../models/checklist-category";
-import { getBoxes } from "../utils/checklistHelper";
-import { nextYear, previousYear } from "../utils/datesHelper";
+import { PaymentCategory } from "../models/payment-category";
+import { IPayment, Payment } from "../models/payment";
+import { PaymentDocument } from "../models/payment-document";
+import { isDate } from "util/types";
+import { dateToExcelFormat, extractDateFromExcel } from "../utils/datesHelper";
 
 
-export const GetChecklistTopBarDetails = async (req: Request, res: Response, next: NextFunction) => {
+export const GetPaymentsTopBarDetails = async (req: Request, res: Response, next: NextFunction) => {
     let result: { category: string, count: number }[] = []
-    let categories = await ChecklistCategory.find().sort('category')
-    let count = await Checklist.find({ category: { $in: categories } }).countDocuments()
+    let categories = await PaymentCategory.find().sort('category')
+    let count = await Payment.find({ category: { $in: categories } }).countDocuments()
     result.push({ category: 'total', count: count })
     for (let i = 0; i < categories.length; i++) {
         let cat = categories[i]
-        let count = await Checklist.find({ category: categories[i]._id }).countDocuments()
+        let count = await Payment.find({ category: categories[i]._id }).countDocuments()
         result.push({ category: cat.category, count: count })
     }
     return res.status(200).json(result)
 }
-
-
-export const GetChecklists = async (req: Request, res: Response, next: NextFunction) => {
+export const GetPayments = async (req: Request, res: Response, next: NextFunction) => {
     let stage = req.query.stage
     let limit = Number(req.query.limit)
     let page = Number(req.query.page)
     let id = req.query.id
-    let checklists: IChecklist[] = []
+    let payments: IPayment[] = []
     let count = 0
-    let result: GetChecklistDto[] = []
+    let result: GetPaymentDto[] = []
 
     if (!Number.isNaN(limit) && !Number.isNaN(page)) {
         if (req.user?.is_admin && !id) {
             {
-                checklists = await Checklist.find().populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').sort('created_at').skip((page - 1) * limit).limit(limit)
-                count = await Checklist.find().countDocuments()
+                payments = await Payment.find().populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedpayment').sort('created_at').skip((page - 1) * limit).limit(limit)
+                count = await Payment.find().countDocuments()
             }
         }
         else if (!id) {
-            checklists = await Checklist.find({  assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('lastcheckedbox').populate('assigned_users').sort('created_at').skip((page - 1) * limit).limit(limit)
-            count = await Checklist.find({ assigned_users: req.user?._id }).countDocuments()
+            payments = await Payment.find({ assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('lastcheckedpayment').populate('assigned_users').sort('created_at').skip((page - 1) * limit).limit(limit)
+            count = await Payment.find({ assigned_users: req.user?._id }).countDocuments()
         }
 
         else {
-            checklists = await Checklist.find({  assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate({
-                path: 'checklist_boxes',
-                match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-            }).sort('created_at').skip((page - 1) * limit).limit(limit)
-            count = await Checklist.find({ assigned_users: id }).countDocuments()
+            payments = await Payment.find({ assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').sort('created_at').skip((page - 1) * limit).limit(limit)
+            count = await Payment.find({ assigned_users: id }).countDocuments()
         }
-        if (stage == "open") {
-            checklists = checklists.filter((ch) => {
-                return Boolean(!ch.lastcheckedbox)
+        if (stage == "completed") {
+            payments = payments.filter((ch) => {
+                return !ch.active
             })
         }
-        if (stage == "pending" || stage == "done") {
-            checklists = checklists.filter((ch) => {
-                if (ch.lastcheckedbox)
-                    return Boolean(ch.lastcheckedbox.stage == stage)
+        else if (stage == "pending") {
+            payments = payments.filter((ch) => {
+                return ch.active
             })
         }
 
-        result = checklists.map((ch) => {
+        result = payments.map((ch) => {
             return {
                 _id: ch._id,
                 active: ch.active,
-                work_title: ch.work_title,
-                work_description: ch.work_description,
+                payment_title: ch.payment_title,
+                payment_description: ch.payment_description,
                 link: ch.link,
-                last_checked_box: ch.lastcheckedbox && {
-                    _id: ch.lastcheckedbox._id,
-                    stage: ch.lastcheckedbox.stage,
-                    last_remark: ch.lastcheckedbox.last_remark,
-                    checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                    date: ch.lastcheckedbox.date.toString()
+                last_document: ch.lastcheckedpayment && {
+                    _id: ch.lastcheckedpayment._id,
+                    document: ch.lastcheckedpayment && ch.lastcheckedpayment.document && ch.lastcheckedpayment.document.public_url || '',
+                    remark: ch.lastcheckedpayment.remark,
+                    payment: { id: ch._id, label: ch.payment_title, value: ch.payment_title },
+                    date: ch.lastcheckedpayment.created_at.toString()
                 },
                 category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
                 frequency: ch.frequency,
                 assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
                 created_at: ch.created_at.toString(),
+                due_date: ch.due_date.toString(),
                 updated_at: ch.updated_at.toString(),
-                boxes: getBoxes(ch, ch.checklist_boxes),
                 next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
-                photo: ch.photo?.public_url || "",
                 created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
                 updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
             }
@@ -108,38 +99,33 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
     else
         return res.status(400).json({ message: "bad request" })
 }
+export const GetMobilePayments = async (req: Request, res: Response, next: NextFunction) => {
+    let payments: IPayment[] = []
+    let result: GetPaymentDto[] = []
 
-export const GetMobileChecklists = async (req: Request, res: Response, next: NextFunction) => {
-    let checklists: IChecklist[] = []
-    let result: GetChecklistDto[] = []
+    payments = await Payment.find({ active: true, assigned_users: req.user?._id }).populate('created_by').populate('lastcheckedpayment').populate('updated_by').populate('category').populate('assigned_users')
 
-    checklists = await Checklist.find({ active: true, assigned_users: req.user?._id }).populate('created_by').populate({
-        path: 'checklist_boxes',
-        match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-    }).populate('lastcheckedbox').populate('updated_by').populate('category').populate('assigned_users')
-
-    result = checklists.map((ch) => {
+    result = payments.map((ch) => {
         return {
             _id: ch._id,
             active: ch.active,
-            work_title: ch.work_title,
-            work_description: ch.work_description,
+            payment_title: ch.payment_title,
+            payment_description: ch.payment_description,
             link: ch.link,
-            last_checked_box: ch.lastcheckedbox && {
-                _id: ch.lastcheckedbox._id,
-                stage: ch.lastcheckedbox.stage,
-                last_remark: ch.lastcheckedbox.last_remark,
-                checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                date: ch.lastcheckedbox.date.toString()
+            last_document: ch.lastcheckedpayment && {
+                _id: ch.lastcheckedpayment._id,
+                document: ch.lastcheckedpayment && ch.lastcheckedpayment.document && ch.lastcheckedpayment.document.public_url || '',
+                remark: ch.lastcheckedpayment.remark,
+                payment: { id: ch._id, label: ch.payment_title, value: ch.payment_title },
+                date: ch.lastcheckedpayment.created_at.toString()
             },
             category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
             frequency: ch.frequency,
             assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
             created_at: ch.created_at.toString(),
+            due_date: ch.due_date.toString(),
             updated_at: ch.updated_at.toString(),
-            boxes: getBoxes(ch, ch.checklist_boxes),
             next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
-            photo: ch.photo?.public_url || "",
             created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
             updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
         }
@@ -147,280 +133,93 @@ export const GetMobileChecklists = async (req: Request, res: Response, next: Nex
     return res.status(200).json(result)
 }
 
-export const GetChecklistsReport = async (req: Request, res: Response, next: NextFunction) => {
-    let stage = req.query.stage
-    let limit = Number(req.query.limit)
-    let page = Number(req.query.page)
-    let id = req.query.id
-    let start_date = req.query.start_date
-    let end_date = req.query.end_date
-    let checklists: IChecklist[] = []
-    let count = 0
-    let dt1 = new Date(String(start_date))
-    let dt2 = new Date(String(end_date))
-    let result: GetChecklistDto[] = []
-
-
-    if (!Number.isNaN(limit) && !Number.isNaN(page)) {
-        if (req.user?.is_admin && !id) {
-            {
-                checklists = await Checklist.find().populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('assigned_users').sort('created_at').skip((page - 1) * limit).limit(limit)
-                count = await Checklist.find().countDocuments()
-            }
-        }
-        else if (!id) {
-            checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('assigned_users').sort('created_at').skip((page - 1) * limit).limit(limit)
-            count = await Checklist.find({ user: req.user?._id }).countDocuments()
-        }
-
-        else {
-            checklists = await Checklist.find({ assigned_users: id }).populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('assigned_users').populate({
-                path: 'checklist_boxes',
-                match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-            }).sort('created_at').skip((page - 1) * limit).limit(limit)
-            count = await Checklist.find({ user: id }).countDocuments()
-        }
-
-        if (stage == "open") {
-            checklists = checklists.filter((ch) => {
-                return Boolean(!ch.lastcheckedbox)
-            })
-        }
-        if (stage == "pending" || stage == "done") {
-            checklists = checklists.filter((ch) => {
-                if (ch.lastcheckedbox)
-                    return Boolean(ch.lastcheckedbox.stage == stage)
-            })
-        }
-       
-        result = checklists.map((ch) => {
-            return {
-                _id: ch._id,
-                active: ch.active,
-                work_title: ch.work_title,
-
-                work_description: ch.work_description,
-                link: ch.link,
-                last_checked_box: ch.lastcheckedbox && {
-                    _id: ch.lastcheckedbox._id,
-                    stage: ch.lastcheckedbox.stage,
-                    last_remark: ch.lastcheckedbox.last_remark,
-                    checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                    date: ch.lastcheckedbox.date.toString()
-                },
-                category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
-                frequency: ch.frequency,
-                assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
-                created_at: ch.created_at.toString(),
-                updated_at: ch.updated_at.toString(),
-                boxes: ch.checklist_boxes.filter((b) => {
-                    return b.date >= dt1 && b.date < dt2
-                }).map((bo) => {
-                    return {
-                        _id: bo._id,
-                        stage: bo.stage,
-                        last_remark: bo.last_remark,
-                        checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                        date: bo.date.toString()
-                    }
-                }),
-                next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
-                photo: ch.photo?.public_url || "",
-                created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
-                updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
-            }
-        })
-
-        return res.status(200).json({
-            result,
-            total: Math.ceil(count / limit),
-            page: page,
-            limit: limit
-        })
-    }
-    else
-        return res.status(400).json({ message: "bad request" })
-}
-
-
-export const CreateChecklist = async (req: Request, res: Response, next: NextFunction) => {
-    let body = JSON.parse(req.body.body)
+export const CreatePayment = async (req: Request, res: Response, next: NextFunction) => {
     const {
         category,
-        work_title,
-        work_description,
+        payment_title,
+        duedate,
+        payment_description,
         link,
         assigned_users,
-        frequency } = body as CreateOrEditChecklistDto
+        frequency } = req.body as CreateOrEditPaymentDto
 
-    console.log(req.body)
-    if (!category || !work_title || !frequency)
+    if (!category || !payment_title || !frequency || !duedate)
         return res.status(400).json({ message: "please provide all required fields" })
-    let checklistboxes: IChecklistBox[] = []
-    let checklist = new Checklist({
+
+    let payment = new Payment({
         category: category,
-        work_title: work_title,
-        work_description: work_description,
+        payment_title: payment_title,
+        payment_description: payment_description,
         assigned_users: assigned_users,
         link: link,
         frequency: frequency,
         created_at: new Date(),
+        due_date: new Date(duedate),
         created_by: req.user,
         updated_at: new Date(),
         updated_by: req.user
     })
-
-    let document: Asset = undefined
-    if (req.file) {
-        const allowedFiles = ["image/png", "image/jpeg", "image/gif", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv", "application/pdf"];
-        const storageLocation = `checklist/media`;
-        if (!allowedFiles.includes(req.file.mimetype))
-            return res.status(400).json({ message: `${req.file.originalname} is not valid, only ${allowedFiles} types are allowed to upload` })
-        if (req.file.size > 20 * 1024 * 1024)
-            return res.status(400).json({ message: `${req.file.originalname} is too large limit is :10mb` })
-        const doc = await uploadFileToCloud(req.file.buffer, storageLocation, req.file.originalname)
-        if (doc)
-            document = doc
-        else {
-            return res.status(500).json({ message: "file uploading error" })
-        }
-    }
-    checklist.photo = document;
-
-    let end_date = new Date();
-    end_date.setFullYear(end_date.getFullYear() + 30)
-
-    if (frequency == "daily") {
-        let current_date = new Date()
-        current_date.setDate(1)
-        current_date.setMonth(0)
-        while (current_date <= new Date(end_date)) {
-            let checklistbox = await new ChecklistBox({
-                date: new Date(current_date),
-                stage: 'open',
-                checklist: checklist._id,
-                created_at: new Date(),
-                updated_at: new Date(),
-                created_by: req.user,
-                updated_by: req.user
-            }).save()
-            checklistboxes.push(checklistbox)
-            current_date.setDate(new Date(current_date).getDate() + 1)
-        }
-    }
-    if (frequency == "weekly") {
-        let mon = getFirstMonday()
-        let current_date = mon;
-
-        console.log(mon)
-        while (current_date <= new Date(end_date)) {
-            let checklist_box = await new ChecklistBox({
-                date: new Date(current_date),
-                stage: 'open',
-                checklist: checklist._id,
-                created_at: new Date(),
-                updated_at: new Date(),
-                created_by: req.user,
-                updated_by: req.user
-            }).save()
-            checklistboxes.push(checklist_box)
-            current_date.setDate(new Date(current_date).getDate() + 7)
-        }
-    }
-    if (frequency == "monthly") {
-        let current_date = new Date()
-        current_date.setDate(1)
-        current_date.setMonth(0)
-        while (current_date <= new Date(end_date)) {
-            let box = await new ChecklistBox({
-                date: new Date(current_date),
-                stage: 'open',
-                checklist: checklist._id,
-                created_at: new Date(),
-                updated_at: new Date(),
-                created_by: req.user,
-                updated_by: req.user
-            }).save()
-            checklistboxes.push(box)
-            current_date.setMonth(new Date(current_date).getMonth() + 1)
-        }
-    }
-    if (frequency == "yearly") {
-        let current_date = new Date()
-        current_date.setDate(1)
-        current_date.setMonth(0)
-        current_date.setFullYear(2020)
-        while (current_date <= new Date(end_date)) {
-            let box = await new ChecklistBox({
-                date: new Date(current_date),
-                stage: 'open',
-                checklist: checklist._id,
-                created_at: new Date(),
-                updated_at: new Date(),
-                created_by: req.user,
-                updated_by: req.user
-            }).save()
-            checklistboxes.push(box)
-            current_date.setFullYear(new Date(current_date).getFullYear() + 1)
-        }
-    }
-    console.log(checklistboxes.length)
-    checklist.checklist_boxes = checklistboxes;
-    await checklist.save();
-    return res.status(201).json({ message: `new Checklist added` });
+    await payment.save();
+    return res.status(201).json({ message: `New Payment added` });
 }
+export const EditPayment = async (req: Request, res: Response, next: NextFunction) => {
 
-export const EditChecklist = async (req: Request, res: Response, next: NextFunction) => {
-
-    let body = JSON.parse(req.body.body)
     const {
         category,
-        work_title,
-        work_description,
+        payment_title,
+        payment_description,
         link,
-        assigned_users } = body as CreateOrEditChecklistDto
-    if (!work_title)
+        frequency,
+        duedate,
+        assigned_users } = req.body as CreateOrEditPaymentDto
+    if (!payment_title && !duedate)
         return res.status(400).json({ message: "please provide all required fields" })
 
     let id = req.params.id
 
-    let checklist = await Checklist.findById(id)
-    if (!checklist)
-        return res.status(404).json({ message: 'checklist not exists' })
+    let payment = await Payment.findById(id)
+    if (!payment)
+        return res.status(404).json({ message: 'payment not exists' })
 
-    let document: Asset = checklist.photo
-    if (req.file) {
-        const allowedFiles = ["image/png", "image/jpeg", "image/gif", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv", "application/pdf"];
-        const storageLocation = `checklist/media`;
-        if (!allowedFiles.includes(req.file.mimetype))
-            return res.status(400).json({ message: `${req.file.originalname} is not valid, only ${allowedFiles} types are allowed to upload` })
-        if (req.file.size > 20 * 1024 * 1024)
-            return res.status(400).json({ message: `${req.file.originalname} is too large limit is :10mb` })
-        const doc = await uploadFileToCloud(req.file.buffer, storageLocation, req.file.originalname)
-        if (doc) {
-            document = doc
-            if (checklist.photo && checklist.photo?._id)
-                await destroyCloudFile(checklist.photo._id)
-        }
-        else {
-            return res.status(500).json({ message: "file uploading error" })
-        }
-    }
 
-    await Checklist.findByIdAndUpdate(checklist._id, {
-        work_title: work_title,
-        work_description: work_description,
+
+    await Payment.findByIdAndUpdate(payment._id, {
+        payment_title: payment_title,
+        payment_description: payment_description,
         category: category,
         link: link,
+        frequency: frequency,
+        due_date: new Date(duedate),
         assigned_users: assigned_users,
         updated_at: new Date(),
         updated_by: req.user,
-        photo: document
     })
-    return res.status(200).json({ message: `Checklist updated` });
+    return res.status(200).json({ message: `Payment updated` });
 }
-export const ChangeNextDate = async (req: Request, res: Response, next: NextFunction) => {
 
+export const CompletePayment = async (req: Request, res: Response, next: NextFunction) => {
+    const { remark } = req.body as CreateOrEditPaymentDocumentDto
+    let document = new PaymentDocument({ remark: remark })
+    await document.save()
+    return res.status(200).json({ message: "document uploaded successfully" })
+}
+
+export const UpdatePayment = async (req: Request, res: Response, next: NextFunction) => {
+    const { remark } = req.body as CreateOrEditPaymentDocumentDto
+    if (!remark) return res.status(403).json({ message: "please fill required fields" })
+
+    const id = req.params.id;
+    if (!isMongoId(id)) return res.status(403).json({ message: "id not valid" })
+    let document = await PaymentDocument.findById(id)
+    if (!document) {
+        return res.status(404).json({ message: "document not found" })
+    }
+    document.remark = remark
+    await document.save()
+    return res.status(200).json({ message: "document updated successfully" })
+}
+
+export const ChangeNextDate = async (req: Request, res: Response, next: NextFunction) => {
     const {
         next_date } = req.body as { next_date: string }
     if (!next_date)
@@ -428,40 +227,56 @@ export const ChangeNextDate = async (req: Request, res: Response, next: NextFunc
 
     let id = req.params.id
 
-    let checklist = await Checklist.findById(id)
-    if (!checklist)
-        return res.status(404).json({ message: 'checklist not exists' })
+    let payment = await Payment.findById(id)
+    if (!payment)
+        return res.status(404).json({ message: 'payment not exists' })
 
-    await Checklist.findByIdAndUpdate(checklist._id, {
+    await Payment.findByIdAndUpdate(payment._id, {
         next_date: new Date(next_date),
         updated_at: new Date(),
         updated_by: req.user
     })
-    return res.status(200).json({ message: `Checklist next date updated` });
+    return res.status(200).json({ message: `Payment next date updated` });
 }
+export const ChangeDueDate = async (req: Request, res: Response, next: NextFunction) => {
+    const {
+        due_date } = req.body as { due_date: string }
+    if (!due_date)
+        return res.status(400).json({ message: "please provide all required fields" })
 
-export const DeleteChecklist = async (req: Request, res: Response, next: NextFunction) => {
+    let id = req.params.id
+
+    let payment = await Payment.findById(id)
+    if (!payment)
+        return res.status(404).json({ message: 'payment not exists' })
+
+    await Payment.findByIdAndUpdate(payment._id, {
+        due_date: new Date(due_date),
+        updated_at: new Date(),
+        updated_by: req.user
+    })
+    return res.status(200).json({ message: `Payment next date updated` });
+}
+export const DeletePayment = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: " id not valid" })
 
-    let checklist = await Checklist.findById(id)
-    if (!checklist) {
-        return res.status(404).json({ message: "Checklist not found" })
+    let payment = await Payment.findById(id)
+    if (!payment) {
+        return res.status(404).json({ message: "Payment not found" })
     }
-    let boxes = await ChecklistBox.find({ checklist: checklist._id })
-    for (let i = 0; i < boxes.length; i++) {
-        await ChecklistRemark.deleteMany({ checklist_box: boxes[i]._id })
+    let docs = await PaymentDocument.find({ payment: payment._id })
+    for (let i = 0; i < docs.length; i++) {
+        let doc = docs[i]
+        if (doc.document && doc.document?._id)
+            await destroyCloudFile(doc.document._id)
+        await PaymentDocument.findByIdAndDelete(doc._id)
     }
-    await ChecklistBox.deleteMany({ checklist: checklist._id })
-    if (checklist.photo && checklist.photo?._id)
-        await destroyCloudFile(checklist.photo._id)
-
-    await checklist.remove()
-    return res.status(200).json({ message: `Checklist deleted` });
+    await payment.remove()
+    return res.status(200).json({ message: `Payment deleted` });
 }
-
-export const CreateChecklistFromExcel = async (req: Request, res: Response, next: NextFunction) => {
-    let result: GetChecklistFromExcelDto[] = []
+export const CreatePaymentFromExcel = async (req: Request, res: Response, next: NextFunction) => {
+    let result: GetPaymentsFromExcelDto[] = []
     let statusText: string = ""
     if (!req.file)
         return res.status(400).json({
@@ -475,7 +290,7 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
             return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
         const workbook = xlsx.read(req.file.buffer);
         let workbook_sheet = workbook.SheetNames;
-        let workbook_response: GetChecklistFromExcelDto[] = xlsx.utils.sheet_to_json(
+        let workbook_response: GetPaymentsFromExcelDto[] = xlsx.utils.sheet_to_json(
             workbook.Sheets[workbook_sheet[0]]
         );
         if (workbook_response.length > 3000) {
@@ -484,34 +299,35 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
         let end_date = new Date();
         end_date.setFullYear(end_date.getFullYear() + 30)
         for (let i = 0; i < workbook_response.length; i++) {
-            let checklist = workbook_response[i]
-            let checklistboxes: IChecklistBox[] = []
-            let work_title: string | null = checklist.work_title
-            let work_description: string | null = checklist.work_description
-            let category: string | null = checklist.category
-            let link: string | null = checklist.link
-            let frequency: string | null = checklist.frequency
-            let assigned_users: string | null = checklist.assigned_users
-            let _id: string | undefined = checklist._id
+            let payment = workbook_response[i]
+            let payment_title: string | null = payment.payment_title
+            let payment_description: string | null = payment.payment_description
+            let category: string | null = payment.category
+            let duedate: string | null = payment.duedate
+            let link: string | null = payment.link
+            let frequency: string | undefined = payment.frequency
+            let assigned_users: string | null = payment.assigned_users
+            let _id: string | undefined = payment._id
 
             let validated = true
 
             //important
-            if (!work_title) {
+            if (!payment_title) {
                 validated = false
-                statusText = "required work title"
+                statusText = "required payment title"
             }
 
-            if (!frequency) {
+            if (!duedate) {
                 validated = false
-                statusText = "required frequency"
+                statusText = "required duedate"
             }
+           
             if (!category) {
                 validated = false
                 statusText = "required category"
             }
             if (category) {
-                let cat = await ChecklistCategory.findOne({ category: category.trim().toLowerCase() })
+                let cat = await PaymentCategory.findOne({ category: category.trim().toLowerCase() })
                 if (!cat) {
                     validated = false
                     statusText = "category not found"
@@ -519,19 +335,19 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
                 else
                     category = cat._id
             }
-            if (work_title) {
+            if (payment_title) {
                 if (_id && isMongoId(String(_id))) {
-                    let ch = await Checklist.findById(_id)
-                    if (ch?.work_title !== work_title)
-                        if (await Checklist.findOne({ work_title: work_title.trim().toLowerCase() })) {
+                    let ch = await Payment.findById(_id)
+                    if (ch?.payment_title !== payment_title)
+                        if (await Payment.findOne({ payment_title: payment_title.trim().toLowerCase() })) {
                             validated = false
-                            statusText = "checklist already exists"
+                            statusText = "payment already exists"
                         }
                 }
                 else {
-                    if (await Checklist.findOne({ work_title: work_title.trim().toLowerCase() })) {
+                    if (await Payment.findOne({ payment_title: payment_title.trim().toLowerCase() })) {
                         validated = false
-                        statusText = "checklist already exists"
+                        statusText = "payment already exists"
                     }
                 }
             }
@@ -550,199 +366,130 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
                 }
 
             }
-            if (!['daily', 'weekly', 'monthly', 'yearly'].includes(frequency)) {
+            if (frequency && !['quarterly', 'monthly', 'yearly'].includes(frequency)) {
                 validated = false
                 statusText = `invalid frequency`
             }
+            console.log(duedate)
             if (validated) {
                 if (_id && isMongoId(String(_id))) {
-                    await Checklist.findByIdAndUpdate(checklist._id, {
-                        work_title: work_title,
-                        work_description: work_description,
+                    await Payment.findByIdAndUpdate(payment._id, {
+                        payment_title: payment_title,
+                        payment_description: payment_description,
                         category: category,
+                        frequency,
                         link: link,
                         assigned_users: users,
                         updated_at: new Date(),
+                        due_date: extractDateFromExcel(duedate),
                         updated_by: req.user
                     })
                     statusText = "updated"
                 }
                 else {
-                    let checklist = new Checklist({
-                        work_title,
-                        work_description,
+                    let paymt = new Payment({
+                        payment_title,
+                        payment_description,
                         assigned_users: users,
                         frequency,
                         link,
                         category,
                         created_by: req.user,
                         updated_by: req.user,
+                        due_date: extractDateFromExcel(duedate),
                         updated_at: new Date(Date.now()),
                         created_at: new Date(Date.now())
                     })
-                    if (frequency == "daily") {
-                        let current_date = new Date()
-                        current_date.setDate(1)
-                        current_date.setMonth(0)
-                        while (current_date <= new Date(end_date)) {
-                            let checklistbox = await new ChecklistBox({
-                                date: new Date(current_date),
-                                stage: 'open',
-                                checklist: checklist._id,
-                                created_at: new Date(),
-                                updated_at: new Date(),
-                                created_by: req.user,
-                                updated_by: req.user
-                            }).save()
-                            checklistboxes.push(checklistbox)
-                            current_date.setDate(new Date(current_date).getDate() + 1)
-                        }
-                    }
-                    if (frequency == "weekly") {
-                        let mon = getFirstMonday()
-                        let current_date = mon;
 
-                        console.log(mon)
-                        while (current_date <= new Date(end_date)) {
-                            let checklist_box = await new ChecklistBox({
-                                date: new Date(current_date),
-                                stage: 'open',
-                                checklist: checklist._id,
-                                created_at: new Date(),
-                                updated_at: new Date(),
-                                created_by: req.user,
-                                updated_by: req.user
-                            }).save()
-                            checklistboxes.push(checklist_box)
-                            current_date.setDate(new Date(current_date).getDate() + 7)
-                        }
-                    }
-                    if (frequency == "monthly") {
-                        let current_date = new Date()
-                        current_date.setDate(1)
-                        current_date.setMonth(0)
-                        while (current_date <= new Date(end_date)) {
-                            let box = await new ChecklistBox({
-                                date: new Date(current_date),
-                                stage: 'open',
-                                checklist: checklist._id,
-                                created_at: new Date(),
-                                updated_at: new Date(),
-                                created_by: req.user,
-                                updated_by: req.user
-                            }).save()
-                            checklistboxes.push(box)
-                            current_date.setMonth(new Date(current_date).getMonth() + 1)
-                        }
-                    }
-                    if (frequency == "yearly") {
-                        let current_date = new Date()
-                        current_date.setDate(1)
-                        current_date.setMonth(0)
-                        current_date.setFullYear(2020)
-                        while (current_date <= new Date(end_date)) {
-                            let box = await new ChecklistBox({
-                                date: new Date(current_date),
-                                stage: 'open',
-                                checklist: checklist._id,
-                                created_at: new Date(),
-                                updated_at: new Date(),
-                                created_by: req.user,
-                                updated_by: req.user
-                            }).save()
-                            checklistboxes.push(box)
-                            current_date.setFullYear(new Date(current_date).getFullYear() + 1)
-                        }
-                    }
-                    console.log(checklistboxes.length)
-                    checklist.checklist_boxes = checklistboxes;
-                    await checklist.save()
+                    await paymt.save()
                     statusText = "created"
                 }
 
 
             }
             result.push({
-                ...checklist,
+                ...payment,
                 status: statusText
             })
         }
     }
     return res.status(200).json(result);
 }
-
-export const DownloadExcelTemplateForCreatechecklists = async (req: Request, res: Response, next: NextFunction) => {
-    let checklists: GetChecklistFromExcelDto[] = [{
+export const DownloadExcelTemplateForCreatePayments = async (req: Request, res: Response, next: NextFunction) => {
+    let payments: GetPaymentsFromExcelDto[] = [{
         _id: "umc3m9344343vn934",
         category: 'maintenance',
-        work_title: 'machine work',
-        work_description: 'please check all the parts',
+        payment_title: 'machine work',
+        payment_description: 'please check all the parts',
         link: 'http://www.bo.agarson.in',
+        duedate: '13-10-2024',
         assigned_users: 'sujata,pawan',
-        frequency: "daily"
+        frequency: "monthly"
     }]
 
 
     let users = (await User.find()).map((u) => { return { name: u.username } })
-    let categories = (await ChecklistCategory.find()).map((u) => { return { name: u.category } })
-    let categoriesids = await ChecklistCategory.find()
-    let dt = await Checklist.find({ category: { $in: categoriesids } }).populate('category').populate('assigned_users')
+    let categories = (await PaymentCategory.find()).map((u) => { return { name: u.category } })
+    let categoriesids = await PaymentCategory.find()
+    let dt = await Payment.find({ category: { $in: categoriesids } }).populate('category').populate('assigned_users')
     if (dt && dt.length > 0)
-        checklists = dt.map((ch) => {
+        payments = dt.map((ch) => {
             return {
                 _id: ch._id.valueOf(),
                 category: ch.category && ch.category.category || "",
-                work_title: ch.work_title,
-                work_description: ch.work_description,
+                payment_title: ch.payment_title,
+                payment_description: ch.payment_description,
                 link: ch.link,
                 assigned_users: ch.assigned_users.map((a) => { return a.username }).toString(),
+                duedate: moment(ch.due_date).format("dd-mm-yyyy"),
                 frequency: ch.frequency
             }
         })
+
+    console.log(payments)
     let template: { sheet_name: string, data: any[] }[] = []
-    template.push({ sheet_name: 'template', data: checklists })
+    template.push({ sheet_name: 'template', data: payments })
     template.push({ sheet_name: 'categories', data: categories })
     template.push({ sheet_name: 'users', data: users })
-    template.push({ sheet_name: 'frequency', data: [{ frequency: "daily" }, { frequency: "weekly" }, { frequency: "monthly" }, { frequency: "yearly" }] })
+    template.push({ sheet_name: 'frequency', data: [{ frequency: "monthly" }, { frequency: "quarterly" }, { frequency: "yearly" }] })
     ConvertJsonToExcel(template)
-    let fileName = "CreateChecklistTemplate.xlsx"
+    let fileName = "CreatePaymentTemplate.xlsx"
     return res.download("./file", fileName)
 }
-
-export const AssignChecklistToUsers = async (req: Request, res: Response, next: NextFunction) => {
-    const { checklist_ids, user_ids, flag } = req.body as AssignOrRemoveChecklistDto
-    if (checklist_ids && checklist_ids.length === 0)
-        return res.status(400).json({ message: "please select one checklist " })
+export const AssignPaymentsToUsers = async (req: Request, res: Response, next: NextFunction) => {
+    const { payment_ids, user_ids, flag } = req.body as AssignOrRemovePaymentDto
+    if (payment_ids && payment_ids.length === 0)
+        return res.status(400).json({ message: "please select one payment " })
     if (user_ids && user_ids.length === 0)
         return res.status(400).json({ message: "please select one user" })
 
 
     if (flag == 0) {
-        for (let k = 0; k < checklist_ids.length; k++) {
-            let checklist = await Checklist.findById({ _id: checklist_ids[k] }).populate('assigned_users')
+        for (let k = 0; k < payment_ids.length; k++) {
+            let payment = await Payment.findById({ _id: payment_ids[k] }).populate('assigned_users')
 
-            if (checklist) {
-                let oldusers = checklist.assigned_users.map((item) => { return item._id.valueOf() });
+            if (payment) {
+                let oldusers = payment.assigned_users.map((item) => { return item._id.valueOf() });
                 oldusers = oldusers.filter((item) => { return !user_ids.includes(item) });
-                await Checklist.findByIdAndUpdate(checklist._id, {
+                await Payment.findByIdAndUpdate(payment._id, {
                     assigned_users: oldusers
                 })
             }
         }
     }
     else {
-        for (let k = 0; k < checklist_ids.length; k++) {
-            let checklist = await Checklist.findById({ _id: checklist_ids[k] }).populate('assigned_users')
+        for (let k = 0; k < payment_ids.length; k++) {
+            let payment = await Payment.findById({ _id: payment_ids[k] }).populate('assigned_users')
 
-            if (checklist) {
-                let oldusers = checklist.assigned_users.map((item) => { return item._id.valueOf() });
+            if (payment) {
+                let oldusers = payment.assigned_users.map((item) => { return item._id.valueOf() });
 
                 user_ids.forEach((id) => {
                     if (!oldusers.includes(id))
                         oldusers.push(id)
                 })
 
-                await Checklist.findByIdAndUpdate(checklist._id, {
+                await Payment.findByIdAndUpdate(payment._id, {
                     assigned_users: oldusers
                 })
             }
@@ -751,23 +498,21 @@ export const AssignChecklistToUsers = async (req: Request, res: Response, next: 
 
     return res.status(200).json({ message: "successfull" })
 }
-
-export const BulkDeleteChecklists = async (req: Request, res: Response, next: NextFunction) => {
+export const BulkDeletePayments = async (req: Request, res: Response, next: NextFunction) => {
     const { ids } = req.body as { ids: string[] }
     for (let i = 0; i < ids.length; i++) {
-        let checklist = await Checklist.findById(ids[i])
-        if (!checklist) {
-            return res.status(404).json({ message: "Checklist not found" })
+        let payment = await Payment.findById(ids[i])
+        if (!payment) {
+            return res.status(404).json({ message: "Payment not found" })
         }
-        let boxes = await ChecklistBox.find({ checklist: checklist._id })
-        for (let i = 0; i < boxes.length; i++) {
-            await ChecklistRemark.deleteMany({ checklist_box: boxes[i]._id })
+        let docs = await PaymentDocument.find({ payment: payment._id })
+        for (let i = 0; i < docs.length; i++) {
+            let doc = docs[i]
+            if (doc.document && doc.document?._id)
+                await destroyCloudFile(doc.document._id)
+            await PaymentDocument.findByIdAndDelete(doc._id)
         }
-        await ChecklistBox.deleteMany({ checklist: checklist._id })
-        if (checklist.photo && checklist.photo?._id)
-            await destroyCloudFile(checklist.photo._id)
-
-        await checklist.remove()
+        await payment.remove()
     }
-    return res.status(200).json({ message: "checklists are deleted" })
+    return res.status(200).json({ message: "payments are deleted" })
 }
