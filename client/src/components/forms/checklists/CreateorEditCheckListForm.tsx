@@ -139,7 +139,8 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
                     {...formik.getFieldProps('work_title')}
                 />
                 <TextField
-
+                    multiline
+                    rows={4}
                     error={
                         formik.touched.work_description && formik.errors.work_description ? true : false
                     }
@@ -210,7 +211,6 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
                         formik.touched.category && formik.errors.category ? true : false
                     }
                     id="category"
-                    disabled={checklist ? true : false}
                     label="Category"
                     fullWidth
                     helperText={
@@ -219,7 +219,6 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
                     {...formik.getFieldProps('category')}
                 >
                     <option key={0} value={undefined}>
-                        Select Category
                     </option>
                     {
                         categories && categories.map(cat => {
