@@ -61,7 +61,7 @@ function PaymentsPage() {
         accessorKey: 'actions',
         header: '',
         maxSize: 50,
-        size: 120,
+        size: 150,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -107,16 +107,11 @@ function PaymentsPage() {
           </Tooltip>}
         </>
       },
-      {
-        accessorKey: 'payment_description',
-        header: ' Payment Description',
-        size: 300,
-        Cell: (cell) =>  <Tooltip title={cell.row.original.payment_description}><span>{cell.row.original.payment_description ? cell.row.original.payment_description : ""}</span></Tooltip>
-      },
+      
       {
         accessorKey: 'assigned_users.value',
         header: 'Responsible',
-        size: 190,
+        size: 220,
         filter: 'custom',
         enableColumnFilter: true,
         Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.value }).toString() || ""}</>,
@@ -131,19 +126,19 @@ function PaymentsPage() {
       {
         accessorKey: 'category.value',
         header: ' Category',
-        size: 120,
+        size: 150,
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
       },
       {
         accessorKey: 'frequency',
         header: ' Frequency',
-        size: 120,
+        size: 150,
         Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
       },
       {
         accessorKey: 'due_date',
         header: 'Due Date',
-        size: 120,
+        size: 150,
         Cell: (cell) => <>
           < input
             type="date"
@@ -162,7 +157,7 @@ function PaymentsPage() {
       {
         accessorKey: 'next_date',
         header: 'Next Check Date',
-        size: 120,
+        size: 150,
         Cell: (cell) => <>
           < input
             type="date"
