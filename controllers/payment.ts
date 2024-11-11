@@ -11,7 +11,7 @@ import { PaymentCategory } from "../models/payment-category";
 import { IPayment, Payment } from "../models/payment";
 import { PaymentDocument } from "../models/payment-document";
 import { isDate } from "util/types";
-import { dateToExcelFormat, extractDateFromExcel } from "../utils/datesHelper";
+import { dateToExcelFormat, extractDateFromExcel, parseExcelDate } from "../utils/datesHelper";
 
 
 export const GetPaymentsTopBarDetails = async (req: Request, res: Response, next: NextFunction) => {
@@ -321,7 +321,13 @@ export const CreatePaymentFromExcel = async (req: Request, res: Response, next: 
                 validated = false
                 statusText = "required duedate"
             }
-           
+
+            console.log(duedate)
+            if (duedate && !isDate(parseExcelDate(duedate))) {
+                validated = false
+                statusText = "invalid duedate"
+            }
+
             if (!category) {
                 validated = false
                 statusText = "required category"
@@ -370,7 +376,6 @@ export const CreatePaymentFromExcel = async (req: Request, res: Response, next: 
                 validated = false
                 statusText = `invalid frequency`
             }
-            console.log(duedate)
             if (validated) {
                 if (_id && isMongoId(String(_id))) {
                     await Payment.findByIdAndUpdate(payment._id, {
@@ -381,7 +386,7 @@ export const CreatePaymentFromExcel = async (req: Request, res: Response, next: 
                         link: link,
                         assigned_users: users,
                         updated_at: new Date(),
-                        due_date: extractDateFromExcel(duedate),
+                        due_date: parseExcelDate(duedate),
                         updated_by: req.user
                     })
                     statusText = "updated"
@@ -396,7 +401,7 @@ export const CreatePaymentFromExcel = async (req: Request, res: Response, next: 
                         category,
                         created_by: req.user,
                         updated_by: req.user,
-                        due_date: extractDateFromExcel(duedate),
+                        due_date: parseExcelDate(duedate),
                         updated_at: new Date(Date.now()),
                         created_at: new Date(Date.now())
                     })
@@ -441,7 +446,7 @@ export const DownloadExcelTemplateForCreatePayments = async (req: Request, res: 
                 payment_description: ch.payment_description,
                 link: ch.link,
                 assigned_users: ch.assigned_users.map((a) => { return a.username }).toString(),
-                duedate: moment(ch.due_date).format("dd-mm-yyyy"),
+                duedate: moment(ch.due_date).format("DD-MM-yyyy"),
                 frequency: ch.frequency
             }
         })

@@ -24,8 +24,14 @@ hundredDaysAgo.setHours(0, 0, 0, 0);
 export const prevWeekDate = new Date(today);
 prevWeekDate.setDate(today.getDate() - 7);
 
+
+export function parseExcelDate(dateStr:any) {
+    const [day, month, year] = dateStr.split('-');
+    return new Date(`${year}-${month}-${day}`);
+}
+
 export function extractDateFromExcel(date:any){
-    new Date(new Date(Date.UTC(1900, 0, 1)).getTime() + (Number(date) - 2) * 86400000)
+    return new Date(new Date(Date.UTC(1900, 0, 1)).getTime() + (Number(date) - 2) * 86400000)
 }
 export function dateToExcelFormat(date:any) {
     const excelEpoch = moment('1899-12-30'); // Excel epoch date
