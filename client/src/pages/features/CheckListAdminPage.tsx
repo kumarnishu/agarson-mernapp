@@ -305,6 +305,12 @@ function CheckListAdminPage() {
         backgroundColor: 'whitesmoke',
         color: 'white',
         border: '1px solid lightgrey;',
+        '& span': {
+          display: 'none',  // This hides any span within header cells
+        },
+        '&:hover span': {
+          display: 'flex',  // Hide span when hovering over the header cell
+        },
       },
     }),
     renderTopToolbarCustomActions: ({ table }) => (

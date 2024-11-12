@@ -516,11 +516,20 @@ export default function LeadsPage() {
         color: 'white',
       }
     }),
+    muiTableHeadProps:()=>({
+      
+    }),
     muiTableHeadRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white',
         border: '1px solid lightgrey;',
+         '& span': {
+          display: 'none',  // This hides any span within header cells
+        }, 
+        '&:hover span': {
+          display: 'flex',  // Hide span when hovering over the header cell
+        },
       },
     }),
     muiTableContainerProps: (table) => ({
