@@ -44,43 +44,33 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
             {
                 checklists = await Checklist.find().populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').sort('created_at').skip((page - 1) * limit).limit(limit)
                 count = await Checklist.find().countDocuments()
-                if (stage == "open") {
-                    checklists = checklists.filter((ch) => {
-                        return Boolean(!ch.lastcheckedbox)
-                    })
-                }
-                if (stage == "pending" || stage == "done") {
-                    checklists = checklists.filter((ch) => {
-                        if (ch.lastcheckedbox)
-                            return Boolean(ch.lastcheckedbox.stage == stage)
-                    })
-                }
+               
             }
         }
         else if (!id) {
             checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('lastcheckedbox').populate('assigned_users').sort('created_at').skip((page - 1) * limit).limit(limit)
             count = await Checklist.find({ assigned_users: req.user?._id }).countDocuments()
-            if (stage == "open") {
-                checklists = checklists.filter((ch) => {
-                    return Boolean(!ch.lastcheckedbox)
-                })
-            }
-            if (stage == "pending" || stage == "done") {
-                checklists = checklists.filter((ch) => {
-                    if (ch.lastcheckedbox)
-                        return Boolean(ch.lastcheckedbox.stage == stage)
-                })
-            }
+          
         }
 
         else {
-            checklists = await Checklist.find({ active: true, assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate({
+            checklists = await Checklist.find({ assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate({
                 path: 'checklist_boxes',
                 match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
             }).sort('created_at').skip((page - 1) * limit).limit(limit)
             count = await Checklist.find({ assigned_users: id }).countDocuments()
         }
-
+        if (stage == "open") {
+            checklists = checklists.filter((ch) => {
+                return Boolean(!ch.lastcheckedbox)
+            })
+        }
+        if (stage == "pending" || stage == "done") {
+            checklists = checklists.filter((ch) => {
+                if (ch.lastcheckedbox)
+                    return Boolean(ch.lastcheckedbox.stage == stage)
+            })
+        }
 
         result = checklists.map((ch) => {
             return {

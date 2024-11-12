@@ -112,7 +112,7 @@ export const GetMyReminders = async (req: Request, res: Response, next: NextFunc
     let ids: string[] = []
     let filteredRemarks: IRemark[] = []
 
-    for(let i=0;i<=remarks.length;i++){
+    for(let i=0;i<remarks.length;i++){
         let rem=remarks[i]
         if (rem && rem.lead && !ids.includes(rem.lead._id)) {
             ids.push(rem.lead._id);

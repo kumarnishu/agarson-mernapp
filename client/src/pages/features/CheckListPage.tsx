@@ -342,40 +342,36 @@ function ChecklistPage() {
 
   return (
     <>
-
-
-
-
       <Stack sx={{ p: 2 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
         < Typography variant='h6' >
           Checklists :  {checklists.length || 0}
         </Typography >
         <Stack direction="row" spacing={2} >
-          {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
-            < TextField
-              select
-              size="small"
-              SelectProps={{
-                native: true,
-              }}
-              onChange={(e) => {
-                setStage(e.target.value)
-              }}
-              focused
-              required
-              id="Stage"
-              label="Checklist Stage"
-              fullWidth
-            >
-              {
-                ['all', 'open', 'pending', 'done'].map((st, index) => {
 
-                  return (<option key={index} value={st}>
-                    {toTitleCase(st)}
-                  </option>)
-                })
-              }
-            </TextField>}
+          < TextField
+            select
+            size="small"
+            SelectProps={{
+              native: true,
+            }}
+            onChange={(e) => {
+              setStage(e.target.value)
+            }}
+            focused
+            required
+            id="Stage"
+            label="Checklist Stage"
+            fullWidth
+          >
+            {
+              ['all', 'open', 'pending', 'done'].map((st, index) => {
+
+                return (<option key={index} value={st}>
+                  {toTitleCase(st)}
+                </option>)
+              })
+            }
+          </TextField>
           {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
             < TextField
               select

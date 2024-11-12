@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import xlsx from "xlsx";
 import { KeyCategory } from '../models/key-category';
 import { Key } from '../models/keys';
+import { ExcelDB, IExcelDb } from '../models/excel-db';
 
 export const test = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.file)
@@ -16,26 +17,33 @@ export const test = async (req: Request, res: Response, next: NextFunction) => {
             return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
         const workbook = xlsx.read(req.file.buffer);
 
-        let category = await KeyCategory.findOne({ $toLower: {category: 'BillsAge'.toLowerCase() } });
-        let keys = await Key.find({ category: category })
-        console.log(keys)
+        let categories = await KeyCategory.find();
+        for (let i = 0; i < categories.length; i++) {
+            let sheetName = categories[i];
+            const worksheet = workbook.Sheets[sheetName.category];
+            const sheetData: any[] = xlsx.utils.sheet_to_json(worksheet, { header: 4 });
 
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets['billsage'];
+            if (worksheet && sheetData) {
+                let columns = await Key.find({ category: sheetName });
 
-        const data: any[] = xlsx.utils.sheet_to_json(worksheet, { header: 4 });
-        const headers = data[4]; // 3rd row (index 2)
-        const rowData = data.slice(6);
-        console.log(rowData)
-        console.log(headers)
+                if (columns && sheetData) {
+                    await ExcelDB.deleteMany({ category: sheetName });
 
-        if (data.length > 3000) {
-            return res.status(400).json({ message: "Maximum 3000 records allowed at one time" })
+                    for (let j = 0; j < sheetData.length - 3; j++) {
+                        let obj: any = {};
+                        obj.category = sheetName;
+
+                        for (let k = 0; k < columns.length; k++) {
+                            let column = columns[k];
+                            obj.key = column;
+                            obj[String(column.key)] = sheetData[j][column.key];
+                        }
+
+                        await new ExcelDB(obj).save();
+                    }
+                }
+            }
         }
-
-
     }
-
-
     return res.status(200).json("successs");
 }
