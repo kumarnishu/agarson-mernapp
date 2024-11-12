@@ -16,7 +16,6 @@ export const CreateKeyCategory = async (req: Request, res: Response, next: NextF
     if (!key) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
-    key = trimToLowerText(key);
 
     if (await KeyCategory.findOne({ category: key }))
         return res.status(400).json({ message: "already exists this category" })
@@ -37,7 +36,6 @@ export const UpdateKeyCategory = async (req: Request, res: Response, next: NextF
     if (!key) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
-    key = trimToLowerText(key);
 
 
     const id = req.params.id

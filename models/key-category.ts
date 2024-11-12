@@ -17,7 +17,6 @@ const KeyCategorySchema = new mongoose.Schema<IKeyCategory, mongoose.Model<IKeyC
         type: String,
         trim: true,
         index: true,
-        lowercase: true,
         required: true
     },
     created_at: {

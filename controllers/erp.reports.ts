@@ -12,6 +12,7 @@ import { GetLastYearlyachievementBystate, GetMonthlyachievementBystate, GetMonth
 import { ErpEmployee, IErpEmployee } from "../models/erp-employee";
 import { VisitReport } from "../models/visit-report";
 import { decimalToTimeForXlsx } from "../utils/decimalToTimeForXlsx";
+import { parseExcelDate } from "../utils/datesHelper";
 
 export const GetBillsAgingReports = async (req: Request, res: Response, next: NextFunction) => {
     let state_ids = req.user?.assigned_states.map((state: IState) => { return state }) || []
@@ -799,7 +800,7 @@ export const BulkCreateVisitReportFromExcel = async (req: Request, res: Response
                 if (owner) {
                     await new VisitReport({
                         employee: owner,
-                        visit_date: new Date(new Date(Date.UTC(1900, 0, 1)).getTime() + (Number(visit_date) - 2) * 86400000),
+                        visit_date: parseExcelDate(visit_date),
                         customer,
                         intime: intime ? decimalToTimeForXlsx(intime) : "",
                         outtime: outtime ? decimalToTimeForXlsx(outtime) : "",

@@ -28,7 +28,6 @@ export const CreateKey = async (req: Request, res: Response, next: NextFunction)
     if (!category || !key) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
-    key = trimToLowerText(key);
 
     if (await Key.findOne({ key:key,category: category }))
         return res.status(400).json({ message: "already exists this key" })
@@ -53,7 +52,6 @@ export const UpdateKey = async (req: Request, res: Response, next: NextFunction)
     if (!category || !key) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
-    key = trimToLowerText(key);
 
 
     const id = req.params.id

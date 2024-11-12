@@ -17,7 +17,6 @@ const KeySchema = new mongoose.Schema<IKey, mongoose.Model<IKey, {}, {}>, {}>({
         type: String,
         trim: true,
         index: true,
-        lowercase: true,
         required: true
     },
     category: {
