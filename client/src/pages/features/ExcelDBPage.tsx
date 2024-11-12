@@ -138,6 +138,7 @@ export default function ExcelDBPage() {
           <>
             < TextField
               select
+              sx={{ minWidth: 200 }}
               value={category}
               size="small"
               SelectProps={{
@@ -168,7 +169,7 @@ export default function ExcelDBPage() {
           </>
         </Stack>
 
-       
+
       </Stack >
 
       <MaterialReactTable table={table} />
