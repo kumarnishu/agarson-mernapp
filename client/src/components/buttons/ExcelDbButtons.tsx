@@ -5,8 +5,6 @@ import { useEffect, useState } from "react"
 import { Button, CircularProgress, Stack } from "@mui/material"
 import { Upload } from "@mui/icons-material"
 import styled from "styled-components"
-import ExportToExcel from "../../utils/ExportToExcel"
-import { queryClient } from "../../main"
 import { CreateExcelDBFromExcel } from "../../services/ExcelDbService"
 
 
@@ -19,7 +17,7 @@ color:blue;
 export function ExcelDbButtons() {
     const { data, mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<any[]>, BackendError, FormData>
-        (CreateExcelDBFromExcel, { onSuccess: () => queryClient.refetchQueries('exceldb') })
+        (CreateExcelDBFromExcel)
     const [file, setFile] = useState<File | null>(null)
 
 
@@ -38,8 +36,7 @@ export function ExcelDbButtons() {
 
     useEffect(() => {
         if (isSuccess) {
-            if (data.data.length > 0)
-                ExportToExcel(data.data, "output.xlsx")
+            alert("uploaded success")
         }
     }, [isSuccess, data])
 

@@ -20,7 +20,7 @@ export default function ExcelDBPage() {
   const [category, setKeyCategory] = useState<string>("")
   const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
   const { user } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb", category], async () => GetExcelDbReport(category))
+  const { data, isLoading, isSuccess, refetch } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb", category], async () => GetExcelDbReport(category), { enabled: false })
   const { data: categoryData, isSuccess: isSuccessCategories } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategories())
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
@@ -45,10 +45,13 @@ export default function ExcelDBPage() {
       }
     })
     ,
-    [reports, reportcolumns],
+    [],
     //end
   );
-
+  useEffect(() => {
+    if (category !== "")
+      refetch()
+  }, [category])
   useEffect(() => {
     if (isSuccessCategories && categoryData) {
       setKeyCategorys(categoryData.data);
@@ -65,7 +68,7 @@ export default function ExcelDBPage() {
   const table = useMaterialReactTable({
     //@ts-ignore
     columns, columnFilterDisplayMode: 'popover',
-    data: reports, //10,000 rows       
+    data: reports ? reports : [], //10,000 rows       
     enableColumnResizing: true,
     enableColumnVirtualization: true, enableStickyFooter: true,
     muiTableFooterRowProps: () => ({
