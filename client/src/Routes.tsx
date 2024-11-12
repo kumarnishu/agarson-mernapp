@@ -51,6 +51,7 @@ import PaymentsPage from './pages/features/PaymentsPage.tsx'
 import PaymentCategoriesPage from './pages/dropdowns/PaymentCategoriesPage.tsx'
 import KeysCategoriesPage from './pages/dropdowns/KeysCategoriesPage.tsx'
 import KeysPage from './pages/dropdowns/KeysPage.tsx'
+import ExcelDBPage from './pages/features/ExcelDBPage.tsx'
 
 
 function AppRoutes() {
@@ -94,29 +95,29 @@ function AppRoutes() {
                   <ProductionPage />
                 }
               />}
-              {user?.assigned_permissions.includes('shoe_weight_view') &&<Route
+              {user?.assigned_permissions.includes('shoe_weight_view') && <Route
                 path="ShoeWeightPage" element={
                   <ShoeWeightPage />
                 }
               />}
-              {user?.assigned_permissions.includes('spare_dye_view') &&<Route
+              {user?.assigned_permissions.includes('spare_dye_view') && <Route
                 path="SpareDyesPage" element={
                   <SpareDyesPage />
                 }
               />}
-               {user?.assigned_permissions.includes('leads_view') &&<Route path="LeadsPage" element={
+              {user?.assigned_permissions.includes('leads_view') && <Route path="LeadsPage" element={
                 <LeadsPage />
               }
               />}
-              {user?.assigned_permissions.includes('refer_view') &&<Route path="RefersPage" element={
+              {user?.assigned_permissions.includes('refer_view') && <Route path="RefersPage" element={
                 <RefersPage />
               }
               />}
-              {user?.assigned_permissions.includes('reminders_view') &&<Route path="RemindersPage" element={
+              {user?.assigned_permissions.includes('reminders_view') && <Route path="RemindersPage" element={
                 < RemindersPage />
               }
               />}
-              {user?.assigned_permissions.includes('checklist_view') &&<Route path="CheckListPage" element={
+              {user?.assigned_permissions.includes('checklist_view') && <Route path="CheckListPage" element={
                 < CheckListPage />
               }
               />}
@@ -132,8 +133,13 @@ function AppRoutes() {
                 < PaymentsPage />
               }
               />}
-            
-              {user?.assigned_permissions.includes('sole_thickness_view') &&<Route
+              {user?.assigned_permissions.includes('excel_db_view') && <Route path="ExcelDBPage" element={
+                < ExcelDBPage />
+              }
+              />}
+
+
+              {user?.assigned_permissions.includes('sole_thickness_view') && <Route
                 path="SoleThicknessPage" element={
                   <SoleThicknessPage />
                 }
@@ -147,7 +153,7 @@ function AppRoutes() {
                   <ReportDashboard />
                 }
               />
-              
+
               {user?.assigned_permissions.includes('visit_report_view') && <Route
                 path="VisitReportPage" element={
                   <VisitReportPage />
@@ -159,7 +165,7 @@ function AppRoutes() {
                 }
               />}
 
-              
+
 
               {user?.assigned_permissions.includes('thekedar_wise_production_report_view') && <Route
                 path="ThekedarWiseProductionReportPage" element={
@@ -247,52 +253,52 @@ function AppRoutes() {
               }
               />
 
-              {user?.assigned_permissions.includes('machine_category_view') &&<Route
+              {user?.assigned_permissions.includes('machine_category_view') && <Route
                 path="MachineCategoriesPage" element={
                   <MachineCategoriesPage />
                 }
               />}
-              {user?.assigned_permissions.includes('dye_location_view') &&<Route
+              {user?.assigned_permissions.includes('dye_location_view') && <Route
                 path="DyeLocationsPage" element={
                   <DyeLocationPage />
                 }
               />}
-              {user?.assigned_permissions.includes('machine_view') &&<Route
+              {user?.assigned_permissions.includes('machine_view') && <Route
                 path="MachinePage" element={
                   <MachinePage />
                 }
               />}
-              {user?.assigned_permissions.includes('dye_view') &&<Route
+              {user?.assigned_permissions.includes('dye_view') && <Route
                 path="DyePage" element={
                   <DyePage />
                 }
               />}
-              {user?.assigned_permissions.includes('article_view') &&<Route
+              {user?.assigned_permissions.includes('article_view') && <Route
                 path="ArticlePage" element={
                   <ArticlePage />
                 }
               />}
-              {user?.assigned_permissions.includes('city_view') &&<Route path="CitiesPage" element={
+              {user?.assigned_permissions.includes('city_view') && <Route path="CitiesPage" element={
                 <CitiesPage />
               }
               />}
-              {user?.assigned_permissions.includes('lead_source_view') &&<Route path="LeadSourcesPage" element={
+              {user?.assigned_permissions.includes('lead_source_view') && <Route path="LeadSourcesPage" element={
                 <CrmLeadSourcesPage />
               }
               />}
-              {user?.assigned_permissions.includes('leadstage_view') &&<Route path="StagesPage" element={
+              {user?.assigned_permissions.includes('leadstage_view') && <Route path="StagesPage" element={
                 <CrmStagesPage />
               }
               />}
-              {user?.assigned_permissions.includes('states_view') &&<Route path='CrmStatesPage' element={
+              {user?.assigned_permissions.includes('states_view') && <Route path='CrmStatesPage' element={
                 <CrmStatesPage />
               }
               />}
-              {user?.assigned_permissions.includes('leadtype_view') &&<Route path='LeadTypesPage' element={
+              {user?.assigned_permissions.includes('leadtype_view') && <Route path='LeadTypesPage' element={
                 <CrmTypesPage />
               }
               />}
-              {user?.assigned_permissions.includes('erp_state_view') &&<Route
+              {user?.assigned_permissions.includes('erp_state_view') && <Route
                 path="ErpStatesPage" element={
                   <ErpStatesPage />
                 }
@@ -302,7 +308,7 @@ function AppRoutes() {
                   <ErpEmployeesPage />
                 }
               />}
-              {user?.assigned_permissions.includes('checklist_category_view') &&<Route
+              {user?.assigned_permissions.includes('checklist_category_view') && <Route
                 path="ChecklistCategoriesPage" element={
                   <ChecklistCategoriesPage />
                 }

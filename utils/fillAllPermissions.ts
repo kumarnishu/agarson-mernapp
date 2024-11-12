@@ -310,6 +310,31 @@ export function FetchAllPermissions() {
                     label: 'export'
                 }
             ]
+        },
+        {
+            label: 'ExcelDB',
+            permissions: [
+                {
+                    value: 'excel_db_view',
+                    label: 'view'
+                },
+                {
+                    value: 'excel_db_create',
+                    label: 'create'
+                },
+                {
+                    value: 'excel_db_edit',
+                    label: 'edit'
+                },
+                {
+                    value: 'excel_db_delete',
+                    label: 'delete'
+                },
+                {
+                    value: 'excel_db_export',
+                    label: 'export'
+                }
+            ]
         }
     ]
     }

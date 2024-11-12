@@ -1,33 +1,34 @@
-import { Box, Button, LinearProgress, TextField, Typography } from '@mui/material'
+import { TextField, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
-import moment from 'moment'
-import { GetproductionThekedarWise } from '../../services/ProductionServices'
-import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import { IColumnRowData } from '../../dtos'
-import ExportToExcel from '../../utils/ExportToExcel'
+import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { DropDownDto, IColumnRowData } from '../../dtos'
+import { GetExcelDbReport } from '../../services/ExcelDbService'
+import { ExcelDbButtons } from '../../components/buttons/ExcelDbButtons'
+import { GetAllKeyCategories } from '../../services/KeyServices'
+import { onlyUnique } from '../../utils/UniqueArray'
 
-export default function ThekedarWiseProductionReportPage() {
+
+
+export default function ExcelDBPage() {
   const [reports, setReports] = useState<IColumnRowData['rows']>([])
+  const [categories, setKeyCategorys] = useState<DropDownDto[]>([])
+  const [category, setKeyCategory] = useState<string>("")
   const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
-  const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
-    start_date: moment(new Date().setDate(1)).format("YYYY-MM-DD")
-    , end_date: moment(new Date().setDate(31)).format("YYYY-MM-DD")
-  })
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["thekedarwisereports", dates.start_date, dates.end_date], async () => GetproductionThekedarWise({ start_date: dates.start_date, end_date: dates.end_date }))
   const { user } = useContext(UserContext)
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb", category], async () => GetExcelDbReport(category))
+  const { data: categoryData, isSuccess: isSuccessCategories } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategories())
 
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
   const columns = useMemo<MRT_ColumnDef<IColumnRowData['columns']>[]>(
     () => reportcolumns && reportcolumns.map((item) => {
+
       if (item.type == "string")
         return { accessorKey: item.key, header: item.header, Footer: "" }
       if (item.type == "date")
@@ -49,12 +50,17 @@ export default function ThekedarWiseProductionReportPage() {
   );
 
   useEffect(() => {
+    if (isSuccessCategories && categoryData) {
+      setKeyCategorys(categoryData.data);
+    }
+  }, [categoryData, isSuccessCategories]);
+
+  useEffect(() => {
     if (isSuccess) {
       setReports(data.data.rows);
       setReportColumns(data.data.columns)
     }
   }, [isSuccess]);
-
 
   const table = useMaterialReactTable({
     //@ts-ignore
@@ -77,38 +83,6 @@ export default function ThekedarWiseProductionReportPage() {
         color: 'white'
       },
     }),
-    renderTopToolbarCustomActions: ({ table }) => (
-      <Box
-        sx={{
-          display: 'flex',
-          gap: '16px',
-          padding: '8px',
-          flexWrap: 'wrap',
-        }}
-      >
-        {user?.assigned_permissions.includes("shoe_weight_report_export") && <Button
-          //export all data that is currently in the table (ignore pagination, sorting, filtering, etc.)
-          onClick={() => {
-            ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "shoe_weight_difference")
-          }}
-          startIcon={<FileDownloadIcon />}
-        >
-          Export All Data
-        </Button>}
-
-
-        {user?.assigned_permissions.includes("shoe_weight_report_export") && <Button
-          disabled={
-            !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()
-          }
-          //only export selected rows
-          onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "shoe_weight_difference")}
-          startIcon={<FileDownloadIcon />}
-        >
-          Export Selected Rows
-        </Button>}
-      </Box>
-    ),
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid #c2beba;',
@@ -126,7 +100,6 @@ export default function ThekedarWiseProductionReportPage() {
     enableRowSelection: true,
     manualPagination: false,
     enablePagination: true,
-    enableRowNumbers: true,
     enableColumnPinning: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
@@ -136,14 +109,16 @@ export default function ThekedarWiseProductionReportPage() {
     onSortingChange: setSorting,
     state: { isLoading, sorting }
   });
-
-  console.log(columns)
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
   return (
     <>
-      {
-        isLoading && <LinearProgress />
-      }
-
       <Stack
         spacing={2}
         padding={1}
@@ -156,44 +131,44 @@ export default function ThekedarWiseProductionReportPage() {
           component={'h1'}
           sx={{ pl: 1 }}
         >
-          Thekedar Wise
+          Excel DB
         </Typography>
-        <Stack direction="row" gap={2}>
-          < TextField
-            size="small"
-            type="date"
-            id="start_date"
-            label="Start Date"
-            fullWidth
-            value={dates.start_date}
-            focused
-            onChange={(e) => {
-              if (e.currentTarget.value) {
-                setDates({
-                  ...dates,
-                  start_date: moment(e.target.value).format("YYYY-MM-DD")
+
+        <Stack direction={'row'} gap={2} alignItems={'center'}>
+          <>
+            < TextField
+              select
+              value={category}
+              size="small"
+              SelectProps={{
+                native: true,
+              }}
+              onChange={(e) => {
+                setKeyCategory(e.target.value)
+              }}
+              required
+              id="sheets"
+              label="Select Sheet"
+              fullWidth
+            >
+              <option key={'00'} value={undefined}>
+
+              </option>
+              {
+                categories.map((cat, index) => {
+
+                  return (<option key={index} value={cat.id}>
+                    {cat.value}
+                  </option>)
                 })
               }
-            }}
-          />
-          < TextField
-            size="small"
-            type="date"
-            id="end_date"
-            label="End Date"
-            focused
-            value={dates.end_date}
-            fullWidth
-            onChange={(e) => {
-              if (e.currentTarget.value) {
-                setDates({
-                  ...dates,
-                  end_date: moment(e.target.value).format("YYYY-MM-DD")
-                })
-              }
-            }}
-          />
+            </TextField>
+
+            {user?.assigned_permissions.includes("excel_db_create") && <ExcelDbButtons />}
+          </>
         </Stack>
+
+       
       </Stack >
 
       <MaterialReactTable table={table} />
