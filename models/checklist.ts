@@ -11,8 +11,8 @@ export type IChecklist = {
     work_description: string,
     photo: Asset,
     assigned_users: IUser[],
-    lastcheckedbox:IChecklistBox,
-    checklist_boxes:IChecklistBox[]
+    lastcheckedbox: IChecklistBox,
+    checklist_boxes: IChecklistBox[]
     link: string,
     category: IChecklistCategory,
     frequency: string,
@@ -26,13 +26,14 @@ export type IChecklist = {
 
 const ChecklistSchema = new mongoose.Schema<IChecklist, mongoose.Model<IChecklist, {}, {}>, {}>({
     active: {
-        type:Boolean,
+        type: Boolean,
         default: true,
     },
     work_title: {
         type: String,
         lowercase: true,
-        required: true
+        required: true,
+        index: true
     },
     lastcheckedbox: {
         type: mongoose.Schema.Types.ObjectId,
@@ -40,11 +41,13 @@ const ChecklistSchema = new mongoose.Schema<IChecklist, mongoose.Model<IChecklis
     },
     checklist_boxes: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'ChecklistBox'
+        ref: 'ChecklistBox',
+        index: false
     }],
     work_description: {
         type: String,
         lowercase: true,
+        index: true
     },
     link: {
         type: String,
@@ -75,7 +78,8 @@ const ChecklistSchema = new mongoose.Schema<IChecklist, mongoose.Model<IChecklis
     assigned_users:
         [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'User',
+            index: true
         }]
     ,
     created_at: {
