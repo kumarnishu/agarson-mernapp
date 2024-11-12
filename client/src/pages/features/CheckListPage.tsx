@@ -24,7 +24,7 @@ import { toTitleCase } from '../../utils/TitleCase'
 function ChecklistPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const [users, setUsers] = useState<GetUserDto[]>([])
-  const [stage, setStage] = useState('all')
+  const [stage, setStage] = useState('open')
   const [checklist, setChecklist] = useState<GetChecklistDto>()
   const [checklists, setChecklists] = useState<GetChecklistDto[]>([])
   const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
@@ -358,6 +358,7 @@ function ChecklistPage() {
               setStage(e.target.value)
             }}
             focused
+            value={stage}
             required
             id="Stage"
             label="Checklist Stage"

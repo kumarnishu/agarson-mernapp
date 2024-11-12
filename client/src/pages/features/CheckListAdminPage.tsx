@@ -35,7 +35,7 @@ function CheckListAdminPage() {
   const [checklists, setChecklists] = useState<GetChecklistDto[]>([])
   const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
   const [flag, setFlag] = useState(1);
-  const [stage, setStage] = useState('all')
+  const [stage, setStage] = useState('open')
   const [checklistBox, setChecklistBox] = useState<GetChecklistBoxDto>()
   const [categoriesData, setCategoriesData] = useState<{ category: string, count: number }[]>([])
   const [userId, setUserId] = useState<string>()
