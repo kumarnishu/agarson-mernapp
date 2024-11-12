@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { DropDownDto, GetKeyDto } from "../dtos";
+import { GetKeyDto } from "../dtos";
 import isMongoId from "validator/lib/isMongoId";
-import { trimToLowerText } from '../utils/trimText';
 import { Key } from '../models/keys';
 import moment from 'moment';
 
@@ -11,30 +10,31 @@ export const GetAllKey = async (req: Request, res: Response, next: NextFunction)
 
     data = result.map((r) => {
         return {
-            _id:r._id,
+            _id: r._id,
             key: r.key,
-            category: {id:r.category._id,value:r.category.category,label:r.category.category},
+            type: r.type,
+            category: { id: r.category._id, value: r.category.category, label: r.category.category },
             created_at: moment(r.created_at).format("DD/MM/YYYY"),
             updated_at: moment(r.updated_at).format("DD/MM/YYYY"),
-            created_by: {id:r._id,value:r.created_by.username,label:r.created_by.username},
-            updated_by: {id:r._id,value:r.updated_by.username,label:r.updated_by.username}
+            created_by: { id: r._id, value: r.created_by.username, label: r.created_by.username },
+            updated_by: { id: r._id, value: r.updated_by.username, label: r.updated_by.username }
         }
     });
     return res.status(200).json(data)
 }
 
 export const CreateKey = async (req: Request, res: Response, next: NextFunction) => {
-    let { key, category } = req.body as { key: string, category: string }
-    if (!category || !key) {
+    let { key, category, type } = req.body as { key: string, category: string, type: string }
+    if (!category || !key || !type) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
-
-    if (await Key.findOne({ key:key,category: category }))
+    if (await Key.findOne({ key: key, category: category }))
         return res.status(400).json({ message: "already exists this key" })
 
 
     let result = await new Key({
         key,
+        type,
         category: category,
         updated_at: new Date(),
         created_by: req.user,
@@ -45,11 +45,12 @@ export const CreateKey = async (req: Request, res: Response, next: NextFunction)
 }
 
 export const UpdateKey = async (req: Request, res: Response, next: NextFunction) => {
-    let { key, category } = req.body as {
+    let { key, category, type } = req.body as {
         key: string,
         category: string,
+        type: string,
     }
-    if (!category || !key) {
+    if (!category || !key || !type) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
 
@@ -60,11 +61,12 @@ export const UpdateKey = async (req: Request, res: Response, next: NextFunction)
         return res.status(404).json({ message: "key not found" })
 
     if (oldkey.key !== key)
-        if (await Key.findOne({key:key, category: category }))
+        if (await Key.findOne({ key: key, category: category }))
             return res.status(400).json({ message: "already exists this key" })
 
     await Key.findByIdAndUpdate(id, {
         key,
+        type,
         category: category,
         updated_at: new Date(),
         updated_by: req.user

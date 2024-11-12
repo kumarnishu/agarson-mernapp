@@ -78,6 +78,14 @@ export default function KeysPage() {
                 Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.value : ""}</>
               
             },
+            {
+                accessorKey: 'type',
+                header: 'Type',
+                size: 150,
+                filterVariant: 'multi-select',
+                Cell: (cell) => <>{cell.row.original.type ? cell.row.original.type : ""}</>
+
+            },
 
         ],
         [keys],

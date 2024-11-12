@@ -1087,6 +1087,7 @@ export type AssignPermissionForMultipleUserDto = {
 export type GetKeyDto = {
     _id: string,
     key: string,
+    type:string,
     category: DropDownDto,
     created_at: string,
     updated_at: string,

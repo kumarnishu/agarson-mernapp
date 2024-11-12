@@ -8,7 +8,9 @@ export const GetAllKeys = async () => {
 export const CreateOrEditKey = async ({ body, id }: {
     body: {
         key: string,
-        category: string }
+        category: string,
+        type: string
+     }
     id?: string
 }) => {
     if (id) {

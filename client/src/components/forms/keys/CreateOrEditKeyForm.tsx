@@ -18,7 +18,8 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
         <AxiosResponse<string>, BackendError, {
             body: {
                 key: string,
-                category: string
+                category: string,
+                type: string
             },
             id?: string
         }>
@@ -33,25 +34,30 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
 
     const formik = useFormik<{
         category: string,
-        key: string
+        key: string,
+        type: string
     }>({
         initialValues: {
             key: keyitm ? keyitm.key : "",
             category: keyitm ? keyitm.category.id : "",
+            type: keyitm ? keyitm.type : "",
         },
         validationSchema: yup.object({
             key: yup.string().required(),
-            category: yup.string().required()
+            category: yup.string().required(),
+            type: yup.string().required()
         }),
         onSubmit: (values: {
             key: string,
             category: string,
+            type: string,
         }) => {
             mutate({
                 id: keyitm?._id,
                 body: {
                     key: values.key,
-                    category: values.category
+                    category: values.category,
+                    type: values.type
                 }
             })
         }
@@ -119,7 +125,32 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
                     }
                 </TextField>
 
+                < TextField
+                    select
+                    SelectProps={{
+                        native: true
+                    }}
+                    focused
+                    error={
+                        formik.touched.type && formik.errors.type ? true : false
+                    }
+                    id="type"
+                    label="Category"
+                    fullWidth
+                    helperText={
+                        formik.touched.type && formik.errors.type ? formik.errors.type : ""
+                    }
+                    {...formik.getFieldProps('type')}
+                >
 
+                    {
+                        ['string', 'number', 'boolean', 'date'].map(type => {
+                            return (<option key={type} value={type}>
+                                {type && toTitleCase(type)}
+                            </option>)
+                        })
+                    }
+                </TextField>
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
                     fullWidth>{Boolean(isLoading) ? <CircularProgress /> : !keyitm ? "Add Key" : "Update Key"}

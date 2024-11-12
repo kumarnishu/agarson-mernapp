@@ -321,7 +321,7 @@ function CheckListAdminPage() {
         direction="row"
         alignItems={'center'}
         justifyContent="space-between">
-        <Stack direction={'row'} gap={1} sx={{ maxWidth: '70vw', background: 'whitesmoke', p: 1, borderRadius: 5 }} className='scrollable-stack'>
+        <Stack direction={'row'} gap={1} sx={{ maxWidth: '70vw', background: 'whitesmoke', p: 1, borderRadius: 1 }} className='scrollable-stack'>
           {categoriesData.map((category, index) => (
             <Stack style={{ minWidth: '100px', overflowY: 'hidden' }}
               key={index}
