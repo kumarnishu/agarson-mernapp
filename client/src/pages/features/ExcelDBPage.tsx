@@ -45,7 +45,7 @@ export default function ExcelDBPage() {
       }
     })
     ,
-    [],
+    [reports, reportcolumns],
     //end
   );
   useEffect(() => {
