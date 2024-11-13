@@ -79,8 +79,7 @@ function LoginForm() {
           sx={{ minWidth: '300px' }}
         >
           <TextField
-            variant="outlined"
-            focused
+            variant="filled"
             fullWidth
             required
             error={
@@ -94,8 +93,7 @@ function LoginForm() {
             {...formik.getFieldProps('username')}
           />
           <TextField
-            variant="outlined"
-            focused
+            variant="filled"
             required
             error={
               formik.touched.password && formik.errors.password ? true : false
@@ -131,7 +129,7 @@ function LoginForm() {
               <AlertBar message="logged in" color="success" />
             ) : null
           }
-          <Button size="large" variant="contained"
+          <Button size="large" variant="contained" color='inherit'
             disabled={Boolean(isLoading)}
             type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Login"}
           </Button>
