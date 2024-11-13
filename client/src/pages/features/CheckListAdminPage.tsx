@@ -26,11 +26,9 @@ import { currentYear, getNextMonday, nextMonth } from '../../utils/datesHelper'
 import { ChecklistExcelButtons } from '../../components/buttons/ChecklistExcelButtons'
 import AssignChecklistsDialog from '../../components/dialogs/checklists/AssignChecklistsDialog'
 import BulkDeleteCheckListDialog from '../../components/dialogs/checklists/BulkDeleteCheckListDialog'
-import ViewTextDialog from '../../components/dialogs/text/ViewTextDialog'
 
 
 function CheckListAdminPage() {
-  const [text, setText] = useState<string>()
   const { user: LoggedInUser } = useContext(UserContext)
   const [users, setUsers] = useState<GetUserDto[]>([])
   const [checklist, setChecklist] = useState<GetChecklistDto>()
@@ -121,9 +119,9 @@ function CheckListAdminPage() {
           ))
         } >
           {cell.row.original.link && cell.row.original.link != "" ?
-            <a onClick={() => setText(cell.row.original.work_description)} style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
+            <a style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
             :
-            <span onClick={() => setText(cell.row.original.work_description)} style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }}>
+            <span style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }}>
               {cell.row.original.work_title}
             </span>
           }
