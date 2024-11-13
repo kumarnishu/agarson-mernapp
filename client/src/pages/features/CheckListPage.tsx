@@ -98,7 +98,7 @@ function ChecklistPage() {
       }, {
         accessorKey: 'boxes',
         header: 'Dates',
-        size: 350,
+        size: 200,
         Cell: (cell) => userId ? <Stack direction="row" className="scrollable-stack" sx={{ height: '30px' }}>
           {cell.row.original && cell.row.original.boxes.map((b) => (
             <>
