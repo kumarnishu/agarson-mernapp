@@ -32,7 +32,7 @@ function CreateorEditPaymentForm({ payment }: { payment?: GetPaymentDto }) {
     const { data: categoriesData, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("payment_categories", GetAllPaymentCategories)
     const { setChoice } = useContext(ChoiceContext)
 
-    const formik = useFormik<CreateOrEditPaymentDto>({
+    const formik = useFormik({
         initialValues: {
             category: payment ? payment.category.id : "",
             payment_title: payment ? payment.payment_title : "",
@@ -40,7 +40,7 @@ function CreateorEditPaymentForm({ payment }: { payment?: GetPaymentDto }) {
             link: payment ? payment.link : "",
             assigned_users: payment ? payment.assigned_users.map((user) => { return user.id }) : [],
             duedate: payment ? moment(payment.due_date).format("YYYY-MM-DD") : moment(new Date()).format("YYYY-MM-DD"),
-            frequency: payment?.frequency
+            frequency: payment?.frequency||""
         },
         validationSchema: Yup.object({
             payment_title: Yup.string().required("required field")
