@@ -1,4 +1,4 @@
-import { Avatar, IconButton, Menu, MenuItem, Stack, Tooltip, Typography } from '@mui/material'
+import { Avatar, IconButton, Menu, MenuItem, Stack,  Typography } from '@mui/material'
 import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { UserMenuActions, MenuContext } from '../../contexts/menuContext';
