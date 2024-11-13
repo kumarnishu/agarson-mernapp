@@ -6,6 +6,8 @@ import { IState } from "./erp-state";
 import { IErpEmployee } from "./erp-employee";
 import { ICRMState } from "./crm-state";
 import { ICRMCity } from "./crm-city";
+import { IKey } from "./keys";
+import { IKeyCategory } from "./key-category";
 
 
 export type Asset = {
@@ -43,6 +45,8 @@ export type IUser = {
   assigned_crm_states: ICRMState[]
   assigned_crm_cities: ICRMCity[],
   assigned_permissions: string[],
+  assigned_keys:IKey[],
+  assigned_keycategories:IKeyCategory[],
   created_at: Date,
   updated_at: Date,
   created_by: IUser,
@@ -134,6 +138,20 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
+      default: []
+    }
+  ],
+  assigned_keys: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Key',
+      default: []
+    }
+  ],
+  assigned_keycategories: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'KeyCategory',
       default: []
     }
   ],

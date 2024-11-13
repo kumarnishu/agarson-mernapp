@@ -24,37 +24,39 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
     }
 
     let data = await ExcelDB.find({ category: category }).sort('-created_at')
-
+    let assigned_keys: any[] = req.user.assigned_keys;
 
     for (let k = 0; k < data.length; k++) {
         let obj: IRowData = {}
         let dt = data[k]
         if (dt) {
             for (let i = 0; i < keys.length; i++) {
-                let key = keys[i].key
+                if (assigned_keys.includes(keys[i]._id.valueOf)) {
+                    let key = keys[i].key
+                    //@ts-ignore
+                    if (dt[key]) {
+                        if (keys[i].type == "number")
+                            //@ts-ignore
+                            obj[key] = Number(dt[key])
+                        else if (keys[i].type == "date")
+                            //@ts-ignore
+                            obj[key] = new Date(parseExcelDate(dt[key]))
+                        else if (keys[i].type == "timestamp")
+                            //@ts-ignore
+                            obj[key] = decimalToTimeForXlsx(dt[key])
+                        else
+                            //@ts-ignore
+                            obj[key] = dt[key]
 
-                //@ts-ignore
-                if (dt[key]) {
-                    if (keys[i].type == "number")
-                        //@ts-ignore
-                        obj[key] = Number(dt[key])
-                    else if (keys[i].type == "date")
-                        //@ts-ignore
-                        obj[key] = new Date(parseExcelDate(dt[key]))
-                    else if (keys[i].type == "timestamp")
-                        //@ts-ignore
-                        obj[key] = decimalToTimeForXlsx(dt[key])
-                    else
-                        //@ts-ignore
-                        obj[key] = dt[key]
+                    }
+                    else {
+                        if (keys[i].type == "number")
+                            obj[key] = 0
+                        else
+                            obj[key] = ""
+                    }
+                }
 
-                }
-                else {
-                    if (keys[i].type == "number")
-                        obj[key] = 0
-                    else
-                        obj[key] = ""
-                }
             }
         }
         result.rows.push(obj)

@@ -8,7 +8,7 @@ import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
 import { GetUserDto } from '../../dtos'
 import { DropDownDto } from '../../dtos'
-import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import {  MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { CheckListChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import { FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
 import { DownloadFile } from '../../utils/DownloadFile'
@@ -19,7 +19,6 @@ import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/View
 import { queryClient } from '../../main'
 import { currentYear, getNextMonday, getPrevMonday, nextMonth, nextYear, previousMonth, previousYear } from '../../utils/datesHelper'
 import { toTitleCase } from '../../utils/TitleCase'
-import ViewTextDialog from '../../components/dialogs/text/ViewTextDialog'
 
 
 
@@ -27,7 +26,6 @@ function ChecklistPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const [users, setUsers] = useState<GetUserDto[]>([])
   const [stage, setStage] = useState('open')
-  const [text, setText] = useState<string>()
   const [checklist, setChecklist] = useState<GetChecklistDto>()
   const [checklists, setChecklists] = useState<GetChecklistDto[]>([])
   const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
@@ -69,15 +67,19 @@ function ChecklistPage() {
         accessorKey: 'work_title',
         header: ' Work Title',
         size: 300,
-        Cell: (cell) => <Tooltip title={cell.row.original.work_title}>
-          {cell.row.original.link && cell.row.original.link!=""?
-            <a onClick={() => setText(cell.row.original.work_description)} style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
+        Cell: (cell) => <Tooltip sx={{ width: 300 }} title={
+          cell.row.original.work_description && cell.row.original.work_description.split('\n').map((line, index) => (
+            <div key={index}>{line}</div>
+          ))
+        } >
+          {cell.row.original.link && cell.row.original.link != "" ?
+            <a  style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
             :
-            <span onClick={() => setText(cell.row.original.work_description)} style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }}>
+            <span  style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }}>
               {cell.row.original.work_title}
             </span>
-        }
-         
+          }
+
         </Tooltip>
       },
       {
@@ -414,10 +416,8 @@ function ChecklistPage() {
 
         </Stack>
       </Stack>
-
-      {checklist && checklistBox && <ViewChecklistRemarksDialog checklist={checklist} checklist_box={checklistBox} />}
-      {text && <ViewTextDialog text={text} setText={setText} />}
       <MaterialReactTable table={table} />
+      {checklist && checklistBox && <ViewChecklistRemarksDialog checklist={checklist} checklist_box={checklistBox} />}
     </>
   )
 }

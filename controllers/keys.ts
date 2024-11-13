@@ -3,6 +3,7 @@ import { GetKeyDto } from "../dtos";
 import isMongoId from "validator/lib/isMongoId";
 import { Key } from '../models/keys';
 import moment from 'moment';
+import { User } from '../models/user';
 
 export const GetAllKey = async (req: Request, res: Response, next: NextFunction) => {
     let result = await Key.find().populate('category').populate('created_by').populate('updated_by').sort("key");
@@ -84,4 +85,48 @@ export const DeleteKey = async (req: Request, res: Response, next: NextFunction)
     }
     await key.remove();
     return res.status(200).json({ message: "key deleted successfully" })
+}
+
+export const AssignKeysToUsers = async (req: Request, res: Response, next: NextFunction) => {
+    const { key_ids, user_ids, flag } = req.body as {
+        user_ids: string[],
+        key_ids: string[],
+        flag: number
+    }
+    if (key_ids && key_ids.length === 0)
+        return res.status(400).json({ message: "please select one employee " })
+    if (user_ids && user_ids.length === 0)
+        return res.status(400).json({ message: "please select one user" })
+
+    let owners = user_ids
+
+    if (flag == 0) {
+        for (let i = 0; i < owners.length; i++) {
+            let owner = await User.findById(owners[i]).populate('assigned_keys');
+            if (owner) {
+                let oldemps = owner.assigned_keys.map((item) => { return item._id.valueOf() });
+                oldemps = oldemps.filter((item) => { return !key_ids.includes(item) });
+                await User.findByIdAndUpdate(owner._id, {
+                    assigned_keys: oldemps
+                })
+            }
+        }
+    }
+    else for (let k = 0; k < owners.length; k++) {
+        const user = await User.findById(owners[k]).populate('assigned_keys')
+        if (user) {
+            let assigned_keys = user.assigned_keys;
+            for (let i = 0; i <= key_ids.length; i++) {
+                if (!assigned_keys.map(i => { return i._id.valueOf() }).includes(key_ids[i])) {
+                    let emp = await Key.findById(key_ids[i]);
+                    if (emp)
+                        assigned_keys.push(emp)
+                }
+            }
+
+            user.assigned_keys = assigned_keys
+            await user.save();
+        }
+
+    }
 }
