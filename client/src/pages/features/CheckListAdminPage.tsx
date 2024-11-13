@@ -26,9 +26,11 @@ import { currentYear, getNextMonday, nextMonth } from '../../utils/datesHelper'
 import { ChecklistExcelButtons } from '../../components/buttons/ChecklistExcelButtons'
 import AssignChecklistsDialog from '../../components/dialogs/checklists/AssignChecklistsDialog'
 import BulkDeleteCheckListDialog from '../../components/dialogs/checklists/BulkDeleteCheckListDialog'
+import ViewTextDialog from '../../components/dialogs/text/ViewTextDialog'
 
 
 function CheckListAdminPage() {
+  const [text, setText] = useState<string>()
   const { user: LoggedInUser } = useContext(UserContext)
   const [users, setUsers] = useState<GetUserDto[]>([])
   const [checklist, setChecklist] = useState<GetChecklistDto>()
@@ -113,11 +115,9 @@ function CheckListAdminPage() {
         accessorKey: 'work_title',
         header: ' Work Title',
         size: 300,
-        Cell: (cell) => <>{!cell.row.original.link ? <Tooltip title={cell.row.original.work_description}><span>{cell.row.original.work_title ? cell.row.original.work_title : ""}</span></Tooltip> :
-          <Tooltip title={cell.row.original.work_description}>
-            <a style={{ fontSize: 11, fontWeight: 'bold', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
-          </Tooltip>}
-        </>
+        Cell: (cell) => <Tooltip title={cell.row.original.work_title}>
+          <a onClick={() => setText(cell.row.original.work_description)} style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
+        </Tooltip>
       },
       {
         accessorKey: 'assigned_users.value',
@@ -616,7 +616,7 @@ function CheckListAdminPage() {
       <MaterialReactTable table={table} />
       {<AssignChecklistsDialog flag={flag} checklists={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
       {table.getSelectedRowModel().rows && table.getSelectedRowModel().rows.length > 0 && <BulkDeleteCheckListDialog ids={table.getSelectedRowModel().rows.map((l) => { return l.original._id })} clearIds={() => { table.resetRowSelection() }} />}
-
+      {text && <ViewTextDialog text={text} setText={setText} />}
     </>
   )
 }

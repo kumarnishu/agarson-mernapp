@@ -19,12 +19,15 @@ import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/View
 import { queryClient } from '../../main'
 import { currentYear, getNextMonday, getPrevMonday, nextMonth, nextYear, previousMonth, previousYear } from '../../utils/datesHelper'
 import { toTitleCase } from '../../utils/TitleCase'
+import ViewTextDialog from '../../components/dialogs/text/ViewTextDialog'
+
 
 
 function ChecklistPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const [users, setUsers] = useState<GetUserDto[]>([])
   const [stage, setStage] = useState('open')
+  const [text, setText] = useState<string>()
   const [checklist, setChecklist] = useState<GetChecklistDto>()
   const [checklists, setChecklists] = useState<GetChecklistDto[]>([])
   const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
@@ -66,11 +69,9 @@ function ChecklistPage() {
         accessorKey: 'work_title',
         header: ' Work Title',
         size: 300,
-        Cell: (cell) => <>{!cell.row.original.link ? <Tooltip title={cell.row.original.work_description}><span>{cell.row.original.work_title ? cell.row.original.work_title : ""}</span></Tooltip> :
-          <Tooltip title={cell.row.original.work_description}>
-            <a style={{ fontSize: 11, fontWeight: 'bold', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
-          </Tooltip>}
-        </>
+        Cell: (cell) => <Tooltip title={cell.row.original.work_title}>
+          <a onClick={()=>setText(cell.row.original.work_description)} style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
+        </Tooltip>
       },
       {
         accessorKey: 'assigned_users.value',
@@ -407,6 +408,7 @@ function ChecklistPage() {
       </Stack>
 
       {checklist && checklistBox && <ViewChecklistRemarksDialog checklist={checklist} checklist_box={checklistBox} />}
+      {text && <ViewTextDialog text={text} setText={setText} />}
       <MaterialReactTable table={table} />
     </>
   )
