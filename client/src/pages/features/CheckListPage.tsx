@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Button, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
@@ -95,20 +95,7 @@ function ChecklistPage() {
             user.value.toLowerCase().includes(filterValue.toLowerCase())
           );
         },
-      },
-      {
-        accessorKey: 'category.value',
-        header: ' Category',
-        size: 120,
-        Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
-      },
-      {
-        accessorKey: 'frequency',
-        header: ' Frequency',
-        size: 120,
-        Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
-      },
-      {
+      }, {
         accessorKey: 'boxes',
         header: 'Dates',
         size: 350,
@@ -207,6 +194,19 @@ function ChecklistPage() {
         </Tooltip>
       },
       {
+        accessorKey: 'category.value',
+        header: ' Category',
+        size: 120,
+        Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
+      },
+      {
+        accessorKey: 'frequency',
+        header: ' Frequency',
+        size: 120,
+        Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
+      },
+    
+      {
         accessorKey: 'last_checked_date',
         header: 'Last Checked Date',
         size: 100,
@@ -269,39 +269,96 @@ function ChecklistPage() {
       },
     }),
     renderTopToolbarCustomActions: ({ table }) => (
+      <Box minWidth={'100vw'} >
+        <Stack sx={{ p: 1 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
+          <Typography variant='h6'>Checklists : {checklists.length}</Typography>
+          <Stack
+            pt={1}
+            direction="row"
+            alignItems={'center'}
+            justifyContent="right">
 
-      <Stack
-        sx={{ width: '100%' }}
-        pt={1}
-        direction="row"
-        alignItems={'center'}
-        justifyContent="space-between">
-        <Stack direction={'row'} gap={1}>
+            <Stack justifyContent={'right'} pr={2} direction={'row'} gap={1}>
+             
+                < TextField
+                  variant='filled'
+                  select
+                  size="small"
+                  SelectProps={{
+                    native: true,
+                  }}
+                  onChange={(e) => {
+                    setStage(e.target.value)
+                  }}
+                  value={stage}
 
+                  required
+                  id="Stage"
+                  label="Checklist Stage"
+                  fullWidth
+                >
+                  {
+                    ['all', 'open', 'pending', 'done'].map((st, index) => {
+
+                      return (<option key={index} value={st}>
+                        {toTitleCase(st)}
+                      </option>)
+                    })
+                  }
+                </TextField>
+
+              {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
+                < TextField
+                  variant='filled'
+                  select
+                  size="small"
+                  SelectProps={{
+                    native: true,
+                  }}
+                  onChange={(e) => {
+                    setUserId(e.target.value)
+                  }}
+                  required
+                  id="checklist_owners"
+                  label="Person"
+                  fullWidth
+                >
+                  <option key={'00'} value={undefined}>
+                  </option>
+                  {
+                    users.map((user, index) => {
+
+                      return (<option key={index} value={user._id}>
+                        {toTitleCase(user.username)}
+                      </option>)
+
+                    })
+                  }
+                </TextField>}
+              
+              <Tooltip title="Toogle Filter">
+                <Button size="small" color="inherit" variant='contained'
+                  onClick={() => {
+                    table.resetColumnFilters(true)
+                  }
+                  }
+                >
+                  <FilterAltOff />
+                </Button>
+              </Tooltip>
+
+              <Tooltip title="Toogle FullScreen" >
+                <Button size="small" color="inherit" variant='contained'
+                  onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
+                  }
+                >
+                  {table.getState().isFullScreen ? <FullscreenExit /> : <Fullscreen />}
+                </Button>
+              </Tooltip>
+            </Stack>
+          </Stack>
         </Stack>
-
-        <Stack justifyContent={'right'} direction={'row'} gap={1}>
-          <Tooltip title="Toogle Filter">
-            <Button size="small" color="inherit" variant='contained'
-              onClick={() => {
-                table.resetColumnFilters(true)
-              }
-              }
-            >
-              <FilterAltOff />
-            </Button>
-          </Tooltip>
-          <Tooltip title="Toogle FullScreen">
-            <Button size="small" color="inherit" variant='contained'
-              onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
-              }
-            >
-              {table.getState().isFullScreen ? <FullscreenExit /> : <Fullscreen />}
-            </Button>
-          </Tooltip>
-
-        </Stack>
-      </Stack>
+      </Box >
     ),
     renderBottomToolbarCustomActions: () => (
       <DBPagination paginationData={paginationData} refetch={refetch} setPaginationData={setPaginationData} />
@@ -351,69 +408,7 @@ function ChecklistPage() {
 
   return (
     <>
-      <Stack sx={{ p: 2 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
-        < Typography variant='h6' >
-          Checklists :  {checklists.length || 0}
-        </Typography >
-        <Stack direction="row" spacing={2} >
-
-          < TextField
-            select
-            size="small"
-            SelectProps={{
-              native: true,
-            }}
-            onChange={(e) => {
-              setStage(e.target.value)
-            }}
-            focused
-            value={stage}
-            required
-            id="Stage"
-            label="Checklist Stage"
-            fullWidth
-          >
-            {
-              ['all', 'open', 'pending', 'done'].map((st, index) => {
-
-                return (<option key={index} value={st}>
-                  {toTitleCase(st)}
-                </option>)
-              })
-            }
-          </TextField>
-          {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
-            < TextField
-              select
-
-              size="small"
-              SelectProps={{
-                native: true,
-              }}
-              onChange={(e) => {
-                setUserId(e.target.value)
-              }}
-              required
-              id="checklist_owners"
-              label="Person"
-              fullWidth
-            >
-              <option key={'00'} value={undefined}>
-
-              </option>
-              {
-                users.map((user, index) => {
-
-                  return (<option key={index} value={user._id}>
-                    {user.username}
-                  </option>)
-
-                })
-              }
-            </TextField>}
-
-        </Stack>
-      </Stack>
+    
       <MaterialReactTable table={table} />
       {checklist && checklistBox && <ViewChecklistRemarksDialog checklist={checklist} checklist_box={checklistBox} />}
     </>

@@ -37,7 +37,7 @@ input[type=date]{
 }
 
 .scrollable-stack::-webkit-scrollbar {
-  height: 8px;
+  height: 5px;
   /* Height of horizontal scrollbar */
   opacity: 0;
   /* Initially invisible */
@@ -65,6 +65,6 @@ input[type=date]{
 .scrollable-stack::-webkit-scrollbar-track {
   background: #f1f1f1;
   /* Color of the scrollbar track */
-  border-radius: 10px;
+  border-radius: 4px;
   /* Rounded edges */
 }

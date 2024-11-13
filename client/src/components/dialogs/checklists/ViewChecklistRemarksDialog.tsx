@@ -79,12 +79,12 @@ function ViewChecklistRemarksDialog({ checklist_box, checklist }: { checklist: G
 
             </DialogContent>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>
-                <Button variant='contained'
+                {checklist_box.stage !== 'done' || user?.is_admin && <Button variant='contained'
                     fullWidth
                     onClick={() => {
                         setDisplay2(true)
                         setRemark(undefined)
-                    }}>Add Remark</Button>
+                    }}>Add Remark</Button>}
             </DialogTitle>
             {remark && display && <DeleteChecklistRemarkDialog display={display} setDisplay={setDisplay} remark={remark} />}
             {!remark && display2 && <CreateOrEditChecklistRemarkDialog

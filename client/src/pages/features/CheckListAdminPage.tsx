@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Button, Fade, IconButton, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Fade, IconButton, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
@@ -111,7 +111,7 @@ function CheckListAdminPage() {
       },
       {
         accessorKey: 'serial_no',
-        header: ' #',
+        header: ' No',
         size: 50
       },
       {
@@ -142,30 +142,17 @@ function CheckListAdminPage() {
             user.value.toLowerCase().includes(filterValue.toLowerCase())
           );
         },
-      },
-      {
-        accessorKey: 'category.value',
-        header: ' Category',
-        size: 120,
-        Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
-      },
-      {
-        accessorKey: 'frequency',
-        header: ' Frequency',
-        size: 120,
-        Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
-      },
-      {
+      }, {
         accessorKey: 'boxes',
         header: 'Dates',
-        size: 100,
-        Cell: (cell) => userId ? <Stack direction="row" className="scrollable-stack" sx={{ height: '30px' }}>
+        size: 300,
+        Cell: (cell) => userId ? <Stack direction="row" className="scrollable-stack" sx={{ height: '20px' }}>
           {cell.row.original && cell.row.original.boxes.map((b) => (
             <>
               {
                 cell.row.original.frequency == 'daily' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                   <Button
-                    sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '20px', m: 0.3, pl: 1 }}
+                    sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0.3, pl: 1 }}
                     onClick={() => {
                       setChecklistBox(b);
                       setChecklist(cell.row.original)
@@ -183,7 +170,7 @@ function CheckListAdminPage() {
               {
                 cell.row.original.frequency == 'weekly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                   <Button
-                    sx={{ borderRadius: 20, maxHeight: '20px', minWidth: '15px', m: 0.3, pl: 1 }}
+                    sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0.3, pl: 1 }}
                     onClick={() => {
                       setChecklistBox(b);
                       setChecklist(cell.row.original)
@@ -201,7 +188,8 @@ function CheckListAdminPage() {
               {
                 cell.row.original.frequency == 'monthly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                   <Button
-                    sx={{ borderRadius: 20, m: 0.3, pl: 1 }}
+
+                    sx={{ borderRadius: 10, maxHeight: '15px', m: 0.3, pl: 1 }}
                     onClick={() => {
                       setChecklistBox(b);
                       setChecklist(cell.row.original)
@@ -220,7 +208,7 @@ function CheckListAdminPage() {
               {
                 cell.row.original.frequency == 'yearly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                   <Button
-                    sx={{ borderRadius: 20, m: 0.3, pl: 1 }}
+                    sx={{ borderRadius: 10, maxHeight: '15px', m: 0.3, pl: 1 }}
                     onClick={() => {
                       console.log(new Date(b.date))
                       console.log(new Date(previous_date))
@@ -240,9 +228,22 @@ function CheckListAdminPage() {
             </>
           ))}
         </Stack> : <Tooltip title={cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}>
-          <Button size="small" color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? toTitleCase(cell.row.original.last_checked_box.stage) : "Open"}</Button>
+          <Button size="small" sx={{ p: 0, m: 0 }} color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? toTitleCase(cell.row.original.last_checked_box.stage) : "Open"}</Button>
         </Tooltip>
       },
+      {
+        accessorKey: 'category.value',
+        header: ' Category',
+        size: 120,
+        Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
+      },
+      {
+        accessorKey: 'frequency',
+        header: ' Frequency',
+        size: 120,
+        Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
+      },
+     
       {
         accessorKey: 'last_checked_date',
         header: 'Last Checked Date',
@@ -308,30 +309,23 @@ function CheckListAdminPage() {
       }
     }),
     muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '65vh' }
+      sx: { maxHeight: table.table.getState().isFullScreen ? 'auto' : '64vh' }
+    }),
+    muiTableHeadCellProps: () => ({
+      sx: {
+        border: '1px solid lightgrey;',
+      }
     }),
     muiTableHeadRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white',
-        border: '1px solid lightgrey;',
-        '& span': {
-          display: 'none',  // This hides any span within header cells
-        },
-        '&:hover span': {
-          display: 'flex',  // Hide span when hovering over the header cell
-        },
+
       },
     }),
     renderTopToolbarCustomActions: ({ table }) => (
-
-      <Stack
-        sx={{ width: '100%' }}
-        pt={1}
-        direction="row"
-        alignItems={'center'}
-        justifyContent="space-between">
-        <Stack direction={'row'} gap={1} sx={{ maxWidth: '70vw', background: 'whitesmoke', p: 1, borderRadius: 1 }} className='scrollable-stack'>
+      <Box minWidth={'100vw'} >
+        <Stack direction={'row'} gap={1} sx={{ maxWidth: '100vw', height: 40, background: 'whitesmoke', p: 1, borderRadius: 1 }} className='scrollable-stack'>
           {categoriesData.map((category, index) => (
             <Stack style={{ minWidth: '100px', overflowY: 'hidden' }}
               key={index}
@@ -340,36 +334,154 @@ function CheckListAdminPage() {
             </Stack>
           ))}
         </Stack>
-        <Stack justifyContent={'right'} direction={'row'} gap={1}>
-          <Tooltip title="Toogle Filter">
-            <Button size="small" color="inherit" variant='contained'
-              onClick={() => {
-                table.resetColumnFilters(true)
-              }
-              }
-            >
-              <FilterAltOff />
-            </Button>
-          </Tooltip>
-          <Tooltip title="Toogle FullScreen">
-            <Button size="small" color="inherit" variant='contained'
-              onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
-              }
-            >
-              {table.getState().isFullScreen ? <FullscreenExit /> : <Fullscreen />}
-            </Button>
-          </Tooltip>
-          <Tooltip title="Menu">
-            <Button size="small" color="inherit" variant='contained'
-              onClick={(e) => setAnchorEl(e.currentTarget)
-              }
-            >
-              <MenuIcon />
-              <Typography pl={1}> Menu</Typography>
-            </Button>
-          </Tooltip>
+        <Stack sx={{ p: 1 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
+          <Typography variant='h6'>Checklists : {checklists.length}</Typography>
+          <Stack
+            pt={1}
+            direction="row"
+            alignItems={'center'}
+            justifyContent="right">
+
+            <Stack justifyContent={'right'} pr={2} direction={'row'} gap={1}>
+              < TextField
+                variant='filled'
+                size="small"
+                type="date"
+                id="start_date"
+                label="Start Date"
+                fullWidth
+
+                value={dates.start_date}
+                onChange={(e) => {
+                  if (e.currentTarget.value) {
+                    setDates({
+                      ...dates,
+                      start_date: moment(e.target.value).format("YYYY-MM-DD")
+                    })
+                  }
+                }}
+              />
+              < TextField
+                variant='filled'
+                type="date"
+                id="end_date"
+                size="small"
+                label="End Date"
+                value={dates.end_date}
+
+                fullWidth
+                onChange={(e) => {
+                  setDates({
+                    ...dates,
+                    end_date: moment(e.target.value).format("YYYY-MM-DD")
+                  })
+                }}
+              />
+
+
+
+              {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
+                < TextField
+                  variant='filled'
+                  select
+                  size="small"
+                  SelectProps={{
+                    native: true,
+                  }}
+                  onChange={(e) => {
+                    setStage(e.target.value)
+                  }}
+                  value={stage}
+
+                  required
+                  id="Stage"
+                  label="Checklist Stage"
+                  fullWidth
+                >
+                  {
+                    ['all', 'open', 'pending', 'done'].map((st, index) => {
+
+                      return (<option key={index} value={st}>
+                        {toTitleCase(st)}
+                      </option>)
+                    })
+                  }
+                </TextField>}
+
+              {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
+                < TextField
+                  variant='filled'
+                  select
+                  size="small"
+                  SelectProps={{
+                    native: true,
+                  }}
+                  onChange={(e) => {
+                    setUserId(e.target.value)
+                  }}
+                  required
+                  id="checklist_owners"
+                  label="Person"
+                  fullWidth
+                >
+                  <option key={'00'} value={undefined}>
+                  </option>
+                  {
+                    users.map((user, index) => {
+
+                      return (<option key={index} value={user._id}>
+                        {toTitleCase(user.username)}
+                      </option>)
+
+                    })
+                  }
+                </TextField>}
+              {LoggedInUser?._id === LoggedInUser?.created_by.id && LoggedInUser?.assigned_permissions.includes('checklist_admin_delete') &&
+                <Button variant='contained' color='inherit' size='large'
+                  onClick={() => {
+                    let data: any[] = [];
+                    data = table.getSelectedRowModel().rows
+                    if (data.length == 0)
+                      alert("select some checklists")
+                    else
+                      setChoice({ type: CheckListChoiceActions.bulk_delete_checklist })
+                  }}
+                >
+                  <Delete sx={{ width: 25, height: 25 }} />
+                </Button>}
+              {LoggedInUser?.assigned_permissions.includes('checklist_create') && <ChecklistExcelButtons />}
+              <Tooltip title="Toogle Filter">
+                <Button size="small" color="inherit" variant='contained'
+                  onClick={() => {
+                    table.resetColumnFilters(true)
+                  }
+                  }
+                >
+                  <FilterAltOff />
+                </Button>
+              </Tooltip>
+
+              <Tooltip title="Toogle FullScreen" >
+                <Button size="small" color="inherit" variant='contained'
+                  onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
+                  }
+                >
+                  {table.getState().isFullScreen ? <FullscreenExit /> : <Fullscreen />}
+                </Button>
+              </Tooltip>
+              <Tooltip title="Menu" sx={{ pl: 1 }}>
+                <Button size="small" color="inherit" variant='contained'
+                  onClick={(e) => setAnchorEl(e.currentTarget)
+                  }
+                >
+                  <MenuIcon />
+                  <Typography pl={1}> {`Menu `}</Typography>
+                </Button>
+              </Tooltip>
+            </Stack>
+          </Stack>
         </Stack>
-      </Stack>
+      </Box >
     ),
     renderBottomToolbarCustomActions: () => (
       <DBPagination paginationData={paginationData} refetch={refetch} setPaginationData={setPaginationData} />
@@ -419,9 +531,6 @@ function CheckListAdminPage() {
 
   return (
     <>
-
-
-
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -511,115 +620,7 @@ function CheckListAdminPage() {
 
         >Export Selected</MenuItem>}
       </Menu>
-      <Stack sx={{ p: 2 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'center'}>
-        < TextField
-          size="small"
-          type="date"
-          id="start_date"
-          label="Start Date"
-          fullWidth
-          focused
-          value={dates.start_date}
-          onChange={(e) => {
-            if (e.currentTarget.value) {
-              setDates({
-                ...dates,
-                start_date: moment(e.target.value).format("YYYY-MM-DD")
-              })
-            }
-          }}
-        />
-        < TextField
-          type="date"
-          id="end_date"
-          size="small"
-          label="End Date"
-          value={dates.end_date}
-          focused
-          fullWidth
-          onChange={(e) => {
-            setDates({
-              ...dates,
-              end_date: moment(e.target.value).format("YYYY-MM-DD")
-            })
-          }}
-        />
 
-        {LoggedInUser?._id === LoggedInUser?.created_by.id && LoggedInUser?.assigned_permissions.includes('checklist_admin_delete') && <Tooltip title="Delete Selected">
-          <Button variant='contained' color='error'
-
-            onClick={() => {
-              let data: any[] = [];
-              data = table.getSelectedRowModel().rows
-              if (data.length == 0)
-                alert("select some checklists")
-              else
-                setChoice({ type: CheckListChoiceActions.bulk_delete_checklist })
-            }}
-          >
-            <Delete />
-          </Button>
-        </Tooltip>}
-
-        {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
-          < TextField
-            select
-            size="small"
-            SelectProps={{
-              native: true,
-            }}
-            onChange={(e) => {
-              setStage(e.target.value)
-            }}
-            value={stage}
-            focused
-            required
-            id="Stage"
-            label="Checklist Stage"
-            fullWidth
-          >
-            {
-              ['all', 'open', 'pending', 'done'].map((st, index) => {
-
-                return (<option key={index} value={st}>
-                  {toTitleCase(st)}
-                </option>)
-              })
-            }
-          </TextField>}
-
-        {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
-          < TextField
-            select
-
-            size="small"
-            SelectProps={{
-              native: true,
-            }}
-            onChange={(e) => {
-              setUserId(e.target.value)
-            }}
-            focused
-            required
-            id="checklist_owners"
-            label="Person"
-            fullWidth
-          >
-            <option key={'00'} value={undefined}>
-            </option>
-            {
-              users.map((user, index) => {
-
-                return (<option key={index} value={user._id}>
-                  {user.username}
-                </option>)
-
-              })
-            }
-          </TextField>}
-
-        {LoggedInUser?.assigned_permissions.includes('checklist_create') && <ChecklistExcelButtons />}
-      </Stack>
       <CreateOrEditCheckListDialog checklist={checklist} setChecklist={setChecklist} />
       {checklist && <DeleteCheckListDialog checklist={checklist} />}
       {checklist && <CreateOrEditCheckListDialog checklist={checklist} setChecklist={setChecklist} />}

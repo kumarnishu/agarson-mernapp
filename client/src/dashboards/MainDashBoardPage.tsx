@@ -62,7 +62,7 @@ function MainDashBoardPage() {
   return (
     <>
 
-      <Paper sx={{ bgcolor: 'whitesmoke', width: '100vw'}}>
+      <Paper sx={{ bgcolor: '#f3f5f6', width: '100vw'}}>
         {/* parent stack */}
         <Stack direction="row" sx={{
           justifyContent: "space-between", alignItems: "center"
