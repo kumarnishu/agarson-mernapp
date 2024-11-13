@@ -1,17 +1,14 @@
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { Box, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { UserContext } from '../contexts/userContext';
 import { FeatureContext } from '../contexts/featureContext';
-import AgarsonLogo, { ButtonLogo } from '../components/logo/Agarson';
+import { ButtonLogo } from '../components/logo/Agarson';
 import React, { useContext, useEffect, useState } from 'react';
-import { LineChart, PieChart } from '@mui/x-charts';
 import ProfileLogo from '../components/logo/ProfileLogo';
 import LogoutButton from '../components/buttons/LogoutButton';
 import { toTitleCase } from '../utils/TitleCase';
@@ -28,40 +25,24 @@ function MainDashBoardPage() {
   };
 
   const DrawerList = (
-    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
-      <Stack direction={'row'} justifyContent={'center'} mr={4}>
-        <Link to="/" replace={true} onClick={() => {
-          {
-            setFeature({ feature: "Dashboard", url: "/" })
-            navigate("/")
-          }
-        }}>
-          <AgarsonLogo width={120} height={120} title='Go To Dashboard' />
-        </Link>
-      </Stack>
+    <Box sx={{ width: 150, marginTop: 2 }} role="presentation" onClick={toggleDrawer(false)}>
+      <Stack ml={1}> <ProfileLogo /></Stack>
       <List>
         {features.map((feat, index) => (
           <React.Fragment key={index}>
             {feat && feat.is_visible && < Link style={{ textDecoration: 'none', color: 'black' }} to={feat.url} onClick={() => {
               setFeature({ feature: feat.feature.toUpperCase(), url: feat.url })
             }}>
+              <Stack direction={'row'} gap={1} p={1} justifyContent={'center'} alignItems={'center'}>
+                <ButtonLogo title="" height={15} width={15} />
+                <ListItemText sx={{ textAlign: 'left' }} primary={toTitleCase(feat.feature)} />
+              </Stack>
               <Divider />
-              <ListItem key={index} >
-                <ListItemButton >
-                  <ButtonLogo title="" height={25} width={25} />
-                  <ListItemText sx={{ pl: 1 }} primary={feat.feature.toUpperCase()} />
-                </ListItemButton>
-              </ListItem>
             </Link >}
           </React.Fragment >
-
         ))}
-        <ListItem sx={{ px: 1, pt: 4 }} key={'sojs'} disablePadding>
-
-          <LogoutButton />
-        </ListItem>
+        <Stack sx={{p:0.2,bottom:0}}><LogoutButton /></Stack>
       </List>
-
     </Box >
   );
 
@@ -81,21 +62,18 @@ function MainDashBoardPage() {
   return (
     <>
 
-      <Box sx={{ bgcolor: '#059ff7', width: '100%' }}>
+      <Paper sx={{ bgcolor: 'whitesmoke', width: '100vw'}}>
         {/* parent stack */}
         <Stack direction="row" sx={{
           justifyContent: "space-between", alignItems: "center"
         }}
         >
-          {/* child stack1 */}
-          <Stack direction="row" gap={2} pl={2} justifyContent={'center'} alignItems={'center'}>
+          <Stack direction="row" gap={2} pl={1} justifyContent={'center'} alignItems={'center'}>
 
             <ProfileLogo />
 
           </Stack>
-          {/* child stack2 */}
 
-          {/* child stack3 */}
           <Stack
             direction="row"
             justifyContent={"center"}
@@ -108,7 +86,7 @@ function MainDashBoardPage() {
                 navigate("/")
               }
             }} replace={true} style={{ textDecoration: 'none' }}>
-              <Paper sx={{ ml: 2, p: 1, bgcolor: 'white', boxShadow: 1, borderRadius: 1, borderColor: 'white' }}>
+              <Paper sx={{ ml: 2, p: 0.5, bgcolor: 'white', boxShadow: 1, borderRadius: 1, borderColor: 'white' }}>
                 <Stack flexDirection={"row"} gap={2} sx={{ alignItems: 'center' }}>
                   <ButtonLogo title="" height={20} width={20} />
                   <Typography variant="button" sx={{ fontSize: 12 }} component="div">
@@ -118,12 +96,12 @@ function MainDashBoardPage() {
               </Paper>
             </Link>
 
-            <IconButton onClick={toggleDrawer(true)} size='large'>
-              < MenuIcon sx={{ width: 35, height: 35, color: 'white' }} />
+            <IconButton onClick={toggleDrawer(true)} size='small'>
+              < MenuIcon sx={{ width: 35, height: 35, color: 'inherit' }} />
             </IconButton>
           </Stack>
         </Stack>
-      </Box >
+      </Paper >
 
 
 
@@ -131,40 +109,7 @@ function MainDashBoardPage() {
 
         <>
           <Stack direction={'row'} gap={2} alignItems={'center'}>
-            <LineChart
-              xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
-              series={[
-                {
-                  data: [2, 5.5, 2, 8.5, 1.5, 5],
-                },
-              ]}
-              width={500}
-              height={300}
-            />
-            <PieChart
-              series={[
-                {
-                  data: [
-                    { id: 0, value: 10, label: 'series A' },
-                    { id: 1, value: 15, label: 'series B' },
-                    { id: 2, value: 20, label: 'series C' },
-                  ],
-                },
-              ]}
-              width={400}
-              height={200}
-            />
-            <LineChart
-              xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
-              series={[
-                {
-                  data: [2, 5.5, 2, 8.5, 1.5, 5],
-                  area: true,
-                },
-              ]}
-              width={500}
-              height={300}
-            />
+            Dashboard
           </Stack> :
         </>
         :

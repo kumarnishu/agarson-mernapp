@@ -10,7 +10,7 @@ function LogoutButton() {
     const goto = useNavigate()
     const { setUser } = useContext(UserContext)
     return (
-        <Button fullWidth color="error" variant="outlined"
+        <Button size="small"  fullWidth color="error" variant="contained"
             onClick={
                 () => {
                     mutate()

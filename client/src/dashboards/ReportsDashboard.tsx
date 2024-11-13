@@ -47,16 +47,14 @@ function ReportDashboard() {
                                     sx={{
                                         p: 2,
                                         m: 0,
-                                        height: 80,
-                                        boxShadow: 3,
-                                        borderRadius: 4,
+                                        height: 60,
+                                        borderRadius: 3,
                                         position: 'relative',
                                         overflow: 'hidden',
                                         backdropFilter: 'blur(10px)', // Blurry effect
                                         backgroundColor: 'rgba(255, 255, 255, 0.6)', // Semi-transparent blue
                                         transition: '0.3s',
                                         '&:hover': {
-                                            boxShadow: 6,
                                             transform: 'translateY(-2px)',
                                             backgroundColor: 'rgba(70, 130, 180, 0.7)', // Darken on hover
                                         },
@@ -67,12 +65,12 @@ function ReportDashboard() {
                                         gap={2}
                                         sx={{ alignItems: 'center' }}
                                     >
-                                        <ButtonLogo title="" height={40} width={40} />
+                                        <ButtonLogo title="" height={20} width={20} />
                                         <Typography
                                             variant="h6"
                                             component="div"
                                             sx={{
-                                                fontWeight: 'medium',
+                                                fontWeight: 'medium', fontSize: 14
                                             }}
                                         >
                                             {toTitleCase(feat.feature)}

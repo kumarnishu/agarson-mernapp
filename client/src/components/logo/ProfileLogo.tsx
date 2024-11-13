@@ -1,4 +1,4 @@
-import { Avatar, IconButton, Menu, MenuItem, Tooltip } from '@mui/material'
+import { Avatar, IconButton, Menu, MenuItem, Stack, Tooltip, Typography } from '@mui/material'
 import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { UserMenuActions, MenuContext } from '../../contexts/menuContext';
@@ -11,6 +11,7 @@ import { UserContext } from '../../contexts/userContext';
 import ProfileDialog from '../dialogs/users/ProfileDialog';
 import { FeatureContext } from '../../contexts/featureContext';
 import LogoutButton from '../buttons/LogoutButton';
+import { toTitleCase } from '../../utils/TitleCase';
 
 
 function ProfileMenu() {
@@ -90,20 +91,19 @@ function ProfileLogo() {
     const { user } = useContext(UserContext)
     const { setMenu } = useContext(MenuContext)
     return (
-        <>
-            <Tooltip title={user?.username || "open settings"}>
-                <IconButton
-                    sx={{ border: 2, p: 0, mr: 1, borderColor: 'white' }}
-                    onClick={(e) => setMenu({ type: UserMenuActions.profile_menu, anchorEl: e.currentTarget })
-                    }
-                >
-                    <Avatar
-                        sx={{ width: 34, height: 34 }}
-                        alt="img1" src={user?.dp} />
-                </IconButton>
-            </Tooltip>
+       <Stack direction={'row'} justifyContent={'left'} alignItems={'center'}>
+            <IconButton
+                sx={{ border: 2, p: 0, mr: 1, borderColor: 'white' }}
+                onClick={(e) => setMenu({ type: UserMenuActions.profile_menu, anchorEl: e.currentTarget })
+                }
+            >
+                <Avatar
+                    sx={{ width: 20, height: 20 }}
+                    alt="img1" src={user?.dp} />
+            </IconButton>
+            <Typography variant='h5'> {toTitleCase(user?.username || "")}</Typography>
             <ProfileMenu />
-        </>
+       </Stack>
     )
 }
 

@@ -20,11 +20,12 @@ export function ButtonLogo({ width, height, title }: Props) {
 }
 export function AgarsonLogo({ width, height, title }: Props) {
     return (
-
-        <img  title={title}
-            style={{ width: width, height: height, borderRadius: 10 }}
-            alt="img1" src={logo}
-        />
+        <>
+            <img title={title}
+                style={{ width: width, height: height, borderRadius: 10 }}
+                alt="img1" src={logo}
+            />
+        </>
     )
 }
 
