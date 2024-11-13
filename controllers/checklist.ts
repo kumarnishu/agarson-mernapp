@@ -42,22 +42,22 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
     if (!Number.isNaN(limit) && !Number.isNaN(page)) {
         if (req.user?.is_admin && !id) {
             {
-                checklists = await Checklist.find().populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').sort('created_at').skip((page - 1) * limit).limit(limit)
+                checklists = await Checklist.find().populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').sort('serial_no').skip((page - 1) * limit).limit(limit)
                 count = await Checklist.find().countDocuments()
-               
+
             }
         }
         else if (!id) {
-            checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('lastcheckedbox').populate('assigned_users').sort('created_at').skip((page - 1) * limit).limit(limit)
+            checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('lastcheckedbox').populate('assigned_users').sort('serial_no').skip((page - 1) * limit).limit(limit)
             count = await Checklist.find({ assigned_users: req.user?._id }).countDocuments()
-          
+
         }
 
         else {
             checklists = await Checklist.find({ assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate({
                 path: 'checklist_boxes',
                 match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-            }).sort('created_at').skip((page - 1) * limit).limit(limit)
+            }).sort('serial_no').skip((page - 1) * limit).limit(limit)
             count = await Checklist.find({ assigned_users: id }).countDocuments()
         }
         if (stage == "open") {
@@ -76,6 +76,7 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
             return {
                 _id: ch._id,
                 active: ch.active,
+                serial_no: ch.serial_no,
                 work_title: ch.work_title,
                 work_description: ch.work_description,
                 link: ch.link,
@@ -119,7 +120,7 @@ export const GetMobileChecklists = async (req: Request, res: Response, next: Nex
         checklists = await Checklist.find({ active: true, category: category, assigned_users: req.user?._id }).populate('created_by').populate({
             path: 'checklist_boxes',
             match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-        }).populate('lastcheckedbox').populate('updated_by').populate('category').populate('assigned_users')
+        }).populate('lastcheckedbox').populate('updated_by').populate('category').populate('assigned_users').sort()
     }
     else
         checklists = await Checklist.find({ active: true, assigned_users: req.user?._id }).populate('created_by').populate({
@@ -131,6 +132,7 @@ export const GetMobileChecklists = async (req: Request, res: Response, next: Nex
         return {
             _id: ch._id,
             active: ch.active,
+            serial_no: ch.serial_no,
             work_title: ch.work_title,
             work_description: ch.work_description,
             link: ch.link,
@@ -207,7 +209,7 @@ export const GetChecklistsReport = async (req: Request, res: Response, next: Nex
                 _id: ch._id,
                 active: ch.active,
                 work_title: ch.work_title,
-
+                serial_no: ch.serial_no,
                 work_description: ch.work_description,
                 link: ch.link,
                 last_checked_box: ch.lastcheckedbox && {
@@ -257,6 +259,7 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
     const {
         category,
         work_title,
+        serial_no,
         work_description,
         link,
         assigned_users,
@@ -265,10 +268,16 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
     console.log(req.body)
     if (!category || !work_title || !frequency)
         return res.status(400).json({ message: "please provide all required fields" })
+
+    if (await Checklist.findOne({ serial_no: serial_no })) {
+        return res.status(400).json({ message: "serial no already exists" })
+    }
+
     let checklistboxes: IChecklistBox[] = []
     let checklist = new Checklist({
         category: category,
         work_title: work_title,
+        serial_no: serial_no,
         work_description: work_description,
         assigned_users: assigned_users,
         link: link,
@@ -385,6 +394,7 @@ export const EditChecklist = async (req: Request, res: Response, next: NextFunct
     const {
         category,
         work_title,
+        serial_no,
         work_description,
         link,
         assigned_users } = body as CreateOrEditChecklistDto
@@ -415,9 +425,13 @@ export const EditChecklist = async (req: Request, res: Response, next: NextFunct
             return res.status(500).json({ message: "file uploading error" })
         }
     }
-
+    if (checklist.serial_no !== serial_no.trim().toLowerCase())
+        if (await Checklist.findOne({ serial_no: serial_no })) {
+            return res.status(400).json({ message: "serial no already exists" })
+        }
     await Checklist.findByIdAndUpdate(checklist._id, {
         work_title: work_title,
+        serial_no: serial_no,
         work_description: work_description,
         category: category,
         link: link,
@@ -496,6 +510,7 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
             let checklist = workbook_response[i]
             let checklistboxes: IChecklistBox[] = []
             let work_title: string | null = checklist.work_title
+            let serial_no: string | null = checklist.serial_no
             let work_description: string | null = checklist.work_description
             let category: string | null = checklist.category
             let link: string | null = checklist.link
@@ -518,6 +533,10 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
             if (!category) {
                 validated = false
                 statusText = "required category"
+            }
+            if (await Checklist.findOne({ serial_no: serial_no })) {
+                validated = false
+                statusText = `serial no ${serial_no} exists`
             }
             if (category) {
                 let cat = await ChecklistCategory.findOne({ category: category.trim().toLowerCase() })
@@ -565,8 +584,15 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
             }
             if (validated) {
                 if (_id && isMongoId(String(_id))) {
+                    let ch = await Checklist.findById(_id)
+                    if (ch && ch.serial_no && ch.serial_no !== String(serial_no).trim().toLowerCase())
+                        if (await Checklist.findOne({ serial_no: serial_no })) {
+                            return res.status(400).json({ message: "serial no already exists" })
+                        }
+
                     await Checklist.findByIdAndUpdate(checklist._id, {
                         work_title: work_title,
+                        serial_no: serial_no,
                         work_description: work_description,
                         category: category,
                         link: link,
@@ -580,6 +606,7 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
                     let checklist = new Checklist({
                         work_title,
                         work_description,
+                        serial_no,
                         assigned_users: users,
                         frequency,
                         link,
@@ -683,6 +710,7 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
 export const DownloadExcelTemplateForCreatechecklists = async (req: Request, res: Response, next: NextFunction) => {
     let checklists: GetChecklistFromExcelDto[] = [{
         _id: "umc3m9344343vn934",
+        serial_no: '1',
         category: 'maintenance',
         work_title: 'machine work',
         work_description: 'please check all the parts',
@@ -700,6 +728,7 @@ export const DownloadExcelTemplateForCreatechecklists = async (req: Request, res
         checklists = dt.map((ch) => {
             return {
                 _id: ch._id.valueOf(),
+                serial_no: ch.serial_no,
                 category: ch.category && ch.category.category || "",
                 work_title: ch.work_title,
                 work_description: ch.work_description,

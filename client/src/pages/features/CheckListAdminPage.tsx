@@ -110,6 +110,11 @@ function CheckListAdminPage() {
         />
       },
       {
+        accessorKey: 'serial_no',
+        header: ' #',
+        size: 50
+      },
+      {
         accessorKey: 'work_title',
         header: ' Work Title',
         size: 300,
@@ -379,7 +384,6 @@ function CheckListAdminPage() {
     enableToolbarInternalActions: false,
     initialState: { density: 'compact' },
     enableRowSelection: true,
-    enableRowNumbers: true,
     enableColumnPinning: true,
     onSortingChange: setSorting,
     enableTableFooter: true,
@@ -472,6 +476,7 @@ function CheckListAdminPage() {
           data = table.getRowModel().rows.map((row) => {
             return {
               _id: row.original._id,
+              serial_no: row.original.serial_no,
               work_title: row.original.work_title,
               work_description: row.original.work_description,
               category: row.original.category.value,
@@ -490,6 +495,7 @@ function CheckListAdminPage() {
           data = table.getSelectedRowModel().rows.map((row) => {
             return {
               _id: row.original._id,
+              serial_no: row.original.serial_no,
               work_title: row.original.work_title,
               work_description: row.original.work_description,
               category: row.original.category.value,

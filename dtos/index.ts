@@ -41,6 +41,7 @@ export type GetPaymentDto = {
 export type GetChecklistDto = {
     _id: string,
     active: boolean
+    serial_no:string
     work_title: string,
     work_description: string,
     photo: string,
@@ -58,6 +59,7 @@ export type GetChecklistDto = {
 }
 export type CreateOrEditChecklistDto = {
     work_title: string,
+    serial_no:string,
     work_description: string,
     category: string,
     link: string,
@@ -100,6 +102,7 @@ export type AssignOrRemovePaymentDto = {
 export type GetChecklistFromExcelDto = {
     _id?: string,
     work_title: string,
+    serial_no:string,
     work_description: string,
     category: string,
     link: string,

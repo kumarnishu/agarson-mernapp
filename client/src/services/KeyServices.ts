@@ -40,3 +40,22 @@ export const CreateOrEditKeyCategory = async ({ body, id }: {
 export const DeleteKeyCategory = async (id: string) => {
     return await apiClient.delete(`key-category/${id}`)
 }
+
+export const AssignKeyCategoryToUsers = async ({ body }: {
+    body: {
+        user_ids: string[],
+        categoryids: string[],
+        flag: number
+    }
+}) => {
+    return await apiClient.patch(`key-category/assign`, body)
+}
+export const AssignKeysToUsers = async ({ body }: {
+    body: {
+        user_ids: string[],
+        key_ids: string[],
+        flag: number
+    }
+}) => {
+    return await apiClient.patch(`keys/assign`, body)
+}

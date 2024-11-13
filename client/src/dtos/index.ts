@@ -41,6 +41,7 @@ export type GetPaymentDto = {
 export type GetChecklistDto = {
     _id: string,
     active: boolean
+    serial_no: string
     work_title: string,
     work_description: string,
     photo: string,
@@ -58,11 +59,12 @@ export type GetChecklistDto = {
 }
 export type CreateOrEditChecklistDto = {
     work_title: string,
+    serial_no: string,
     work_description: string,
     category: string,
     link: string,
     assigned_users: string[]
-    frequency: string,
+    frequency?: string,
     photo: string
 }
 export type CreateOrEditPaymentDto = {
@@ -72,7 +74,7 @@ export type CreateOrEditPaymentDto = {
     link: string,
     duedate: string,
     assigned_users: string[]
-    frequency?: string,
+    frequency: string,
 }
 
 
@@ -100,6 +102,7 @@ export type AssignOrRemovePaymentDto = {
 export type GetChecklistFromExcelDto = {
     _id?: string,
     work_title: string,
+    serial_no: string,
     work_description: string,
     category: string,
     link: string,
@@ -1087,7 +1090,7 @@ export type AssignPermissionForMultipleUserDto = {
 export type GetKeyDto = {
     _id: string,
     key: string,
-    type:string,
+    type: string,
     category: DropDownDto,
     created_at: string,
     updated_at: string,

@@ -62,7 +62,11 @@ function ChecklistPage() {
   const columns = useMemo<MRT_ColumnDef<GetChecklistDto>[]>(
     //column definitions...
     () => checklists && [
-
+      {
+        accessorKey: 'serial_no',
+        header: ' #',
+        size: 50
+      },
       {
         accessorKey: 'work_title',
         header: ' Work Title',
@@ -312,7 +316,6 @@ function ChecklistPage() {
     enableToolbarInternalActions: false,
     initialState: { density: 'compact' },
     enableRowSelection: true,
-    enableRowNumbers: true,
     enableColumnPinning: true,
     onSortingChange: setSorting,
     enableTableFooter: true,

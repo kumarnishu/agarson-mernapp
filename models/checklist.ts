@@ -10,6 +10,7 @@ export type IChecklist = {
     work_title: string,
     work_description: string,
     photo: Asset,
+    serial_no:string,
     assigned_users: IUser[],
     lastcheckedbox: IChecklistBox,
     checklist_boxes: IChecklistBox[]
@@ -29,6 +30,11 @@ const ChecklistSchema = new mongoose.Schema<IChecklist, mongoose.Model<IChecklis
         type: Boolean,
         default: true,
     },
+    serial_no:{
+        type: String,
+        lowercase: true,
+        index: true  
+    },
     work_title: {
         type: String,
         lowercase: true,
@@ -46,7 +52,6 @@ const ChecklistSchema = new mongoose.Schema<IChecklist, mongoose.Model<IChecklis
     }],
     work_description: {
         type: String,
-        lowercase: true,
         index: true
     },
     link: {

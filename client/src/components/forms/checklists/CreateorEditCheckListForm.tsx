@@ -35,6 +35,7 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
     const formik = useFormik<CreateOrEditChecklistDto>({
         initialValues: {
             category: checklist ? checklist.category.id : "",
+            serial_no: checklist ? checklist.serial_no : "",
             work_title: checklist ? checklist.work_title : "",
             work_description: checklist ? checklist.work_description : "",
             link: checklist ? checklist.link : "",
@@ -43,6 +44,7 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
             photo: checklist && checklist.photo && checklist.photo || ""
         },
         validationSchema: Yup.object({
+            serial_no: Yup.string().required("required field"),
             work_title: Yup.string().required("required field")
                 .min(5, 'Must be 5 characters or more')
                 .max(200, 'Must be 200 characters or less'),
@@ -125,6 +127,19 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
                 pt={2}
             >
                 {/* titles */}
+                <TextField
+                    required
+                    error={
+                        formik.touched.serial_no && formik.errors.serial_no ? true : false
+                    }
+                    id="serial_no"
+                    label="Serial Number"
+                    fullWidth
+                    helperText={
+                        formik.touched.serial_no && formik.errors.serial_no ? formik.errors.serial_no : ""
+                    }
+                    {...formik.getFieldProps('serial_no')}
+                />
                 <TextField
                     required
                     error={
