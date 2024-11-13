@@ -70,7 +70,14 @@ function ChecklistPage() {
         header: ' Work Title',
         size: 300,
         Cell: (cell) => <Tooltip title={cell.row.original.work_title}>
-          <a onClick={()=>setText(cell.row.original.work_description)} style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
+          {cell.row.original.link && cell.row.original.link!=""?
+            <a onClick={() => setText(cell.row.original.work_description)} style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
+            :
+            <span onClick={() => setText(cell.row.original.work_description)} style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }}>
+              {cell.row.original.work_title}
+            </span>
+        }
+         
         </Tooltip>
       },
       {
