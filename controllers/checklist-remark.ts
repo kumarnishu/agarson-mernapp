@@ -94,11 +94,13 @@ export const NewChecklistRemark = async (req: Request, res: Response, next: Next
             else {
                 checklistTmp.active = false
             }
-            
+
         }
     }
+
     if (checklistTmp) {
-        checklistTmp.lastcheckedbox = box
+        //@ts-ignore
+        checklistTmp.lastcheckedbox = stage == "open" ? undefined : box;
         checklistTmp.updated_by = req.user
         checklistTmp.updated_at = new Date(Date.now())
         await checklistTmp.save()
