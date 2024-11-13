@@ -4,6 +4,8 @@ import { IColumnRowData, IRowData } from "../dtos";
 import { KeyCategory } from "../models/key-category";
 import { Key } from "../models/keys";
 import { ExcelDB } from "../models/excel-db";
+import { parseExcelDate } from "../utils/datesHelper";
+import { decimalToTimeForXlsx } from "../utils/decimalToTimeForXlsx";
 
 export const GetExcelDbReport = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -30,10 +32,22 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
         if (dt) {
             for (let i = 0; i < keys.length; i++) {
                 let key = keys[i].key
+
                 //@ts-ignore
                 if (dt[key]) {
-                    //@ts-ignore
-                    obj[key] = dt[key]
+                    if (keys[i].type == "number")
+                        //@ts-ignore
+                        obj[key] = Number(dt[key])
+                    else if (keys[i].type == "date")
+                        //@ts-ignore
+                        obj[key] = new Date(parseExcelDate(dt[key]))
+                    else if (keys[i].type == "timestamp")
+                        //@ts-ignore
+                        obj[key] = decimalToTimeForXlsx(dt[key])
+                    else
+                        //@ts-ignore
+                        obj[key] = dt[key]
+
                 }
                 else {
                     if (keys[i].type == "number")

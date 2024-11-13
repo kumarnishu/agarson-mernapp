@@ -142,9 +142,11 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
                     }
                     {...formik.getFieldProps('type')}
                 >
-
+                    <option key={'wd'} value={undefined}>
+                        Select Type
+                    </option>
                     {
-                        ['string', 'number', 'boolean', 'date'].map(type => {
+                        ['string', 'number', 'boolean', 'date','timestamp'].map(type => {
                             return (<option key={type} value={type}>
                                 {type && toTitleCase(type)}
                             </option>)

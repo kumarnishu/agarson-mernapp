@@ -10,8 +10,7 @@ import { DropDownDto, IColumnRowData } from '../../dtos'
 import { GetExcelDbReport } from '../../services/ExcelDbService'
 import { ExcelDbButtons } from '../../components/buttons/ExcelDbButtons'
 import { GetAllKeyCategories } from '../../services/KeyServices'
-import { onlyUnique } from '../../utils/UniqueArray'
-
+import moment from 'moment'
 
 
 export default function ExcelDBPage() {
@@ -31,18 +30,31 @@ export default function ExcelDBPage() {
 
       if (item.type == "string")
         return { accessorKey: item.key, header: item.header, Footer: "" }
-      if (item.type == "date")
+      else if (item.type == "timestamp")
+        return { accessorKey: item.key, header: item.header, Footer: "" }
+      else if (item.type == "date")
         return {
-          accessorKey: item.key, header: item.header, Footer: <b>Total</b>,
-          filterVariant: 'multi-select', filterSelectOptions: reports && reports.map((i) => { return i['date'].toString() }).filter(onlyUnique)
+          accessorKey: item.key,
+          header: item.header,
+
+          Footer: <b>Total</b>,
+          filterSelectOptions: reports
+            ? [...new Set(reports.map(i => moment(i['date']).format("DD/MM/YYYY")))]
+            : [], // Unique formatted dates
+          //@ts-ignore
+          Cell: (cell) => moment(cell.cell.getValue()).isValid()
+            //@ts-ignore
+            ? moment(cell.cell.getValue()).format("DD/MM/YYYY")
+            : "", // Format cell as date if valid
         }
-      return {
-        accessorKey: item.key, header: item.header,
-        aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
-        //@ts-ignore
-        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
-      }
+      else
+        return {
+          accessorKey: item.key, header: item.header,
+          aggregationFn: 'sum',
+          AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
+          //@ts-ignore
+          Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
+        }
     })
     ,
     [reports, reportcolumns],
