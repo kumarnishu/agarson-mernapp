@@ -67,20 +67,15 @@ function ChecklistPage() {
         accessorKey: 'work_title',
         header: ' Work Title',
         size: 300,
-        Cell: (cell) => <Tooltip sx={{ width: 300 }} title={
-          cell.row.original.work_description && cell.row.original.work_description.split('\n').map((line, index) => (
-            <div key={index}>{line}</div>
-          ))
-        } >
+        Cell: (cell) => <span title={cell.row.original.work_description} >
           {cell.row.original.link && cell.row.original.link != "" ?
-            <a  style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
+            <a style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
             :
-            <span  style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }}>
+            <span style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }}>
               {cell.row.original.work_title}
             </span>
           }
-
-        </Tooltip>
+        </span>
       },
       {
         accessorKey: 'assigned_users.value',
