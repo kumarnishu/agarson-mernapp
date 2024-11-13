@@ -330,7 +330,7 @@ function CheckListAdminPage() {
             <Stack style={{ minWidth: '100px', overflowY: 'hidden' }}
               key={index}
             >
-              <span key={category.category} style={{ paddingLeft: '5px', fontSize: '13px' }}> {category.count} : {toTitleCase(category.category)} </span>
+              <span key={category.category} style={{ paddingLeft: '5px', fontSize: '13px' }}> {category.count} : {toTitleCase(category.category).slice(0,10)} </span>
             </Stack>
           ))}
         </Stack>
