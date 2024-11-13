@@ -290,6 +290,7 @@ function CheckListAdminPage() {
     columns, columnFilterDisplayMode: 'popover',
     data: checklists, //10,000 rows       
     enableColumnResizing: true,
+    enableGrouping:true,
     enableColumnVirtualization: true, enableStickyFooter: true,
     muiTableFooterRowProps: () => ({
       sx: {
