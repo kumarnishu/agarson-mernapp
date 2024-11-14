@@ -259,7 +259,7 @@ function ChecklistPage() {
       }
     }),
     muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '65vh' }
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '71vh' }
     }),
     muiTableHeadRowProps: () => ({
       sx: {
