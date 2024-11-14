@@ -30,7 +30,7 @@ export const test = async (req: Request, res: Response, next: NextFunction) => {
             await ch.save();
         }
        else{
-            let finalboxes = boxes.slice(-10).map((bo) => {
+            let finalboxes = boxes.slice(-6).map((bo) => {
                 return {
                     _id: bo._id,
                     stage: bo.stage,

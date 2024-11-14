@@ -41,8 +41,8 @@ function CheckListAdminPage() {
   const [categoriesData, setCategoriesData] = useState<{ category: string, count: number }[]>([])
   const [userId, setUserId] = useState<string>('all')
   const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
-    start_date: moment(new Date().setDate(new Date().getDate() - 6)).format("YYYY-MM-DD")
-    , end_date: moment(new Date().setDate(new Date().getDate() + 4)).format("YYYY-MM-DD")
+    start_date: moment(new Date().setDate(new Date().getDate() - 4)).format("YYYY-MM-DD")
+    , end_date: moment(new Date().setDate(new Date().getDate() + 2)).format("YYYY-MM-DD")
   })
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
