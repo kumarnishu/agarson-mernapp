@@ -113,7 +113,7 @@ export default function MachinePage() {
         header: '',
         maxSize: 50,
         enableColumnFilter: false,
-        size: 120,
+        grow:false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -153,7 +153,8 @@ export default function MachinePage() {
       {
         accessorKey: 'serialno',
         header: 'Serial No',
-        size: 120,
+        minSize: 120,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.serial_no.toString() || "" ? cell.row.original.serial_no.toString() || "" : ""}</>,
         filterSelectOptions: machines && machines.map((i) => {
@@ -163,7 +164,8 @@ export default function MachinePage() {
       {
         accessorKey: 'active',
         header: 'Status',
-        size: 120,
+        minSize: 120,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.active ? "active" : "inactive"}</>,
         filterSelectOptions: machines && machines.map((i) => {
@@ -173,7 +175,8 @@ export default function MachinePage() {
       {
         accessorKey: 'name',
         header: 'Name',
-        size: 220,
+        minSize: 220,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
         filterSelectOptions: machines && machines.map((i) => {
@@ -183,7 +186,8 @@ export default function MachinePage() {
       {
         accessorKey: 'display_name',
         header: 'Display Name',
-        size: 220,
+        minSize: 220,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.display_name ? cell.row.original.display_name : ""}</>,
         filterSelectOptions: machines && machines.map((i) => {
@@ -195,7 +199,8 @@ export default function MachinePage() {
       {
         accessorKey: 'category',
         header: 'Category',
-        size: 220,
+        minSize: 220,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category : ""}</>,
         filterSelectOptions: machines && machines.map((i) => {

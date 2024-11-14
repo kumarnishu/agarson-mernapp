@@ -30,14 +30,16 @@ export default function DyeStatusReportPage() {
     () => reports && [
       {
         accessorKey: 'created_at',
-        size: 140,
+        minSize: 140,
+        grow:false,
         header: 'Date',
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => { return i.created_at.toString() }).filter(onlyUnique)
       },
       {
         accessorKey: 'dye',
-        size: 140,
+        minSize: 140,
+        grow:false,
         header: 'Dye',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -50,7 +52,8 @@ export default function DyeStatusReportPage() {
       },
       {
         accessorKey: 'article',
-        size: 140,
+        minSize: 140,
+        grow:false,
         header: 'Article',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -63,7 +66,8 @@ export default function DyeStatusReportPage() {
       },
       {
         accessorKey: 'size',
-        size: 140,
+        minSize: 140,
+        grow:false,
         header: 'Size',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -76,7 +80,8 @@ export default function DyeStatusReportPage() {
       },
       {
         accessorKey: 'std_weight',
-        size: 140,
+        minSize: 140,
+        grow:false,
         header: 'St Weight',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -89,7 +94,8 @@ export default function DyeStatusReportPage() {
       },
       {
         accessorKey: 'location',
-        size: 140,
+        minSize: 140,
+        grow:false,
         header: 'Location',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -102,7 +108,8 @@ export default function DyeStatusReportPage() {
       },
       {
         accessorKey: 'repair_required',
-        size: 140,
+        minSize: 140,
+        grow:false,
         header: 'Repair Required',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -115,7 +122,8 @@ export default function DyeStatusReportPage() {
       },
       {
         accessorKey: 'remarks',
-        size: 180,
+        minSize: 180,
+        grow:false,
         header: 'Remarks',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -129,7 +137,8 @@ export default function DyeStatusReportPage() {
       {
         accessorKey: 'created_by',
         header: 'Creator',
-        size: 120,
+        minSize: 120,
+        grow:false,
         aggregationFn: 'count',
         filterVariant: 'multi-select',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,

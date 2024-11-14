@@ -36,7 +36,7 @@ export default function PaymentCategoriesPage() {
         accessorKey: 'actions',
         header: '',
         maxSize: 50,
-        size: 120,
+        grow:false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -63,7 +63,8 @@ export default function PaymentCategoriesPage() {
       {
         accessorKey: 'value',
         header: 'Category',
-        size: 350,
+        minSize: 350,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.value ? cell.row.original.value : ""}</>,
         filterSelectOptions: categories && categories.map((i) => {
@@ -74,7 +75,8 @@ export default function PaymentCategoriesPage() {
       {
         accessorKey: 'label',
         header: 'Display Name',
-        size: 350,
+        minSize: 350,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
         filterSelectOptions: categories && categories.map((i) => {

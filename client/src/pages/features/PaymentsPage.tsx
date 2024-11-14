@@ -61,7 +61,7 @@ function PaymentsPage() {
         accessorKey: 'actions',
         header: '',
         maxSize: 50,
-        size: 150,
+        group:true,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -100,7 +100,8 @@ function PaymentsPage() {
       {
         accessorKey: 'payment_title',
         header: ' Payment Title',
-        size: 300,
+        minSize: 300,
+        group:true,
         Cell: (cell) => <>{!cell.row.original.link ? <Tooltip title={cell.row.original.payment_description}><span>{cell.row.original.payment_title ? cell.row.original.payment_title : ""}</span></Tooltip> :
           <Tooltip title={cell.row.original.payment_description}>
             <a style={{ fontSize: 11, fontWeight: 'bold', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.payment_title}</a>
@@ -111,7 +112,8 @@ function PaymentsPage() {
       {
         accessorKey: 'assigned_users.value',
         header: 'Responsible',
-        size: 220,
+        minSize: 220,
+        group:true,
         filter: 'custom',
         enableColumnFilter: true,
         Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.value }).toString() || ""}</>,
@@ -126,19 +128,22 @@ function PaymentsPage() {
       {
         accessorKey: 'category.value',
         header: ' Category',
-        size: 150,
+        minSize: 150,
+        group:true,
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
       },
       {
         accessorKey: 'frequency',
         header: ' Frequency',
-        size: 150,
+        minSize: 150,
+        group:true,
         Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
       },
       {
         accessorKey: 'due_date',
         header: 'Due Date',
-        size: 150,
+        minSize: 150,
+        group:true,
         Cell: (cell) => <>
           < input
             type="date"
@@ -157,7 +162,8 @@ function PaymentsPage() {
       {
         accessorKey: 'next_date',
         header: 'Next Check Date',
-        size: 150,
+        minSize: 150,
+        group:true,
         Cell: (cell) => <>
           < input
             type="date"
@@ -176,7 +182,8 @@ function PaymentsPage() {
       {
         accessorKey: 'updated_by',
         header: 'Last Updated By',
-        size: 100,
+        minSize: 100,
+        group:true,
         Cell: (cell) => <>{cell.row.original.updated_by ? cell.row.original.updated_by.value : ""}</>
       },
     ],

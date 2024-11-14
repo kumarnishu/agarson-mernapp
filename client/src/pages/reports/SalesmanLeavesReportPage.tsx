@@ -25,7 +25,7 @@ export default function SalesmanLeavesReportPage() {
     () => reportcolumns && reportcolumns.map((item) => {
 
       return {
-        accessorKey: item.key, header: item.header,
+        accessorKey: item.key, header: item.header,grow:false,
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         // //@ts-ignore

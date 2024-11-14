@@ -28,7 +28,7 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
                 queryClient.invalidateQueries('keys')
             }
         })
-    const { data, isSuccess: isSuccesskeysData } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategories())
+    const { data, isSuccess: isSuccesskeysData } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategories({show_assigned_only:false}))
 
     const { setChoice } = useContext(ChoiceContext)
 

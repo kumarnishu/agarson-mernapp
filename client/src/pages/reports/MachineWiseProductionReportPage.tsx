@@ -30,13 +30,13 @@ export default function MachineWiseProductionReportPage() {
   const columns = useMemo<MRT_ColumnDef<IColumnRowData['rows']>[]>(
     () => reportcolumns && reportcolumns.map((item) => {
       if (item.type == "string")
-        return { accessorKey: item.key, size: 120, header: item.header, Footer: "" }
+        return { accessorKey: item.key, minSize: 120,grow:false, header: item.header, Footer: "" }
       if (item.type == "date")
         return {
-          accessorKey: item.key, size: 120, header: item.header, Footer: <b>Total</b>,
+          accessorKey: item.key, minSize: 120, grow: true, header: item.header, Footer: <b>Total</b>,
           filterVariant: 'multi-select', filterSelectOptions: reports && reports.map((i) => {return i['date'].toString() }).filter(onlyUnique) }
       return {
-        accessorKey: item.key, size: 120, header: item.header,
+        accessorKey: item.key, minSize: 120, grow: true, header: item.header,
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         //@ts-ignore

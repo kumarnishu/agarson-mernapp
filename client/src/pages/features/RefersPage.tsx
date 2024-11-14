@@ -204,7 +204,7 @@ export default function RefersPage() {
         enableColumnFilter: false,
         maxSize: 50,
         Footer: <b></b>,
-        size: 120,
+        grow:false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -293,7 +293,8 @@ export default function RefersPage() {
       {
         accessorKey: 'name',
         header: 'Name',
-        size: 350,
+        minSize: 350,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
@@ -304,7 +305,8 @@ export default function RefersPage() {
         accessorKey: 'city',
         header: 'City',
         filterVariant: 'multi-select',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
           return i.city;
@@ -314,7 +316,8 @@ export default function RefersPage() {
         accessorKey: 'state',
         header: 'State',
         filterVariant: 'multi-select',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
           return i.state;
@@ -323,31 +326,36 @@ export default function RefersPage() {
       {
         accessorKey: 'mobile',
         header: 'Mobile1',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.mobile ? cell.row.original.mobile : ""}</>
       }, {
         accessorKey: 'mobile2',
         header: 'Mobile2',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.mobile2 ? cell.row.original.mobile2 : ""}</>
       }, {
         accessorKey: 'mobile3',
         header: 'Mobile3',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.mobile3 ? cell.row.original.mobile3 : ""}</>
       },
 
       {
         accessorKey: 'last_remark',
         header: 'Remark',
-        size: 350,
+        minSize: 350,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.last_remark ? cell.row.original.last_remark : ""}</>,
       },
 
       {
         accessorKey: 'refers',
         header: 'Refers',
-        size: 100,
+        minSize: 100,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.refers ? cell.row.original.refers.toString() : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
@@ -357,7 +365,8 @@ export default function RefersPage() {
       {
         accessorKey: 'customer_name',
         header: 'Customer Name',
-        size: 180,
+        minSize: 180,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.customer_name ? cell.row.original.customer_name : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
@@ -367,28 +376,32 @@ export default function RefersPage() {
       {
         accessorKey: 'gst',
         header: 'GST',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.gst ? cell.row.original.gst : ""}</>
       },
 
       {
         accessorKey: 'address',
         header: 'Address',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.address ? cell.row.original.address : ""}</>
       },
 
       {
         accessorKey: 'created_at',
         header: 'Created on',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
       },
 
       {
         accessorKey: 'created_by.label',
         header: 'Creator',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
       }
     ],

@@ -7,7 +7,12 @@ import { Key } from '../models/keys';
 
 export const GetAllKeyCategory = async (req: Request, res: Response, next: NextFunction) => {
     let assigned_keycategories: any[] = req.user.assigned_keycategories;
-    let result = await KeyCategory.find({ _id: { $in: assigned_keycategories } });
+    let show_assigned_only = req.query.show_assigned_only
+    let result: IKeyCategory[] = []
+    if (show_assigned_only)
+        result = await KeyCategory.find({ _id: { $in: assigned_keycategories } });
+    else
+        result = await KeyCategory.find();  
     let data: DropDownDto[];
     data = result.map((r) => { return { id: r._id, label: r.category, value: r.category } });
     return res.status(200).json(data)

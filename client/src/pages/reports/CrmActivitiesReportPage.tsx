@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { GetActivitiesTopBarDeatils, GetAllStages, GetRemarks } from '../../services/LeadsServices'
 import { BackendError } from '../..'
-import { Button, Fade, IconButton, LinearProgress, Menu, MenuItem, Select, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Fade, IconButton, LinearProgress, Menu, MenuItem, Select, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
@@ -27,7 +27,7 @@ function CrmActivitiesReportPage() {
     const { user } = useContext(UserContext)
     const [users, setUsers] = useState<GetUserDto[]>([])
     const [paginationData, setPaginationData] = useState({ limit: 5000, page: 1, total: 1 });
-    const [stage, setStage] = useState<string>('undefined');
+    const [stage, setStage] = useState<string>('all');
     const [stages, setStages] = useState<DropDownDto[]>([])
     const [remark, setRemark] = useState<GetActivitiesOrRemindersDto>()
     const [remarks, setRemarks] = useState<GetActivitiesOrRemindersDto[]>([])
@@ -58,7 +58,7 @@ function CrmActivitiesReportPage() {
                 maxSize: 50,
                 enableColumnFilter: false,
                 Footer: <b></b>,
-                size: 120,
+                grow:false,
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row" spacing={1}>
@@ -98,39 +98,45 @@ function CrmActivitiesReportPage() {
             {
                 accessorKey: 'remark',
                 header: ' Last Remark',
-                size: 320,
+                minSize: 320,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.remark ? cell.row.original.remark : ""}</>
             },
             {
                 accessorKey: 'created_by.label',
                 header: 'Creator',
-                size: 100,
+                minSize: 100,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
             },
             {
                 accessorKey: 'created_at',
                 header: 'TimeStamp',
-                size: 200,
+                minSize: 200,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
             },
             {
                 accessorKey: 'stage',
                 header: 'Stage',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.stage ? cell.row.original.stage : ""}</>
             },
 
             {
                 accessorKey: 'remind_date',
                 header: 'Next Call',
-                size: 140,
+                minSize: 140,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.remind_date ? cell.row.original.remind_date : ""}</>
             },
 
             {
                 accessorKey: 'name',
                 header: 'Name',
-                size: 250,
+                minSize: 250,
+                grow:false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
                 filterSelectOptions: remarks && remarks.map((i) => {
@@ -142,43 +148,50 @@ function CrmActivitiesReportPage() {
             {
                 accessorKey: 'mobile',
                 header: 'Mobile1',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.mobile ? cell.row.original.mobile : ""}</>
             }, {
                 accessorKey: 'alternate_mobile1',
                 header: 'Mobile2',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.alternate_mobile1 ? cell.row.original.alternate_mobile1 : ""}</>
             }, {
                 accessorKey: 'alternate_mobile2',
                 header: 'Mobile3',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.alternate_mobile2 ? cell.row.original.alternate_mobile2 : ""}</>
             },
 
             {
                 accessorKey: 'referred_party_name',
                 header: 'Refer Party',
-                size: 320,
+                minSize: 320,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.referred_party_name ? cell.row.original.referred_party_name : ""}</>
             },
             {
                 accessorKey: 'referred_party_mobile',
                 header: 'Refer Mobile',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.referred_party_mobile ? cell.row.original.referred_party_mobile : ""}</>
             },
             {
                 accessorKey: 'referred_date',
                 header: 'Refer Date',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.referred_date ? cell.row.original.referred_date : ""}</>
             },
             {
                 accessorKey: 'city',
                 header: 'City',
                 filterVariant: 'multi-select',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
                 filterSelectOptions: remarks && remarks.map((i) => {
                     return i.city;
@@ -188,7 +201,8 @@ function CrmActivitiesReportPage() {
                 accessorKey: 'state',
                 header: 'State',
                 filterVariant: 'multi-select',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
                 filterSelectOptions: remarks && remarks.map((i) => {
                     return i.state;
@@ -199,13 +213,15 @@ function CrmActivitiesReportPage() {
             {
                 accessorKey: 'customer_name',
                 header: 'Customer',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.customer_name ? cell.row.original.customer_name : ""}</>
             }
             , {
                 accessorKey: 'customer_designation',
                 header: 'Designitaion',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.customer_designation ? cell.row.original.customer_designation : ""}</>
             }
 
@@ -213,14 +229,16 @@ function CrmActivitiesReportPage() {
             {
                 accessorKey: 'email',
                 header: 'Email',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.email ? cell.row.original.email : ""}</>
             }
             ,
             {
                 accessorKey: 'alternate_email',
                 header: 'Email2',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.alternate_email ? cell.row.original.alternate_email : ""}</>
             }
             ,
@@ -228,31 +246,36 @@ function CrmActivitiesReportPage() {
             {
                 accessorKey: 'address',
                 header: 'Address',
-                size: 320,
+                minSize: 320,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.address ? cell.row.original.address : ""}</>
             },
             {
                 accessorKey: 'source',
                 header: 'Lead Source',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.lead_source ? cell.row.original.lead_source : ""}</>
             },
             {
                 accessorKey: 'type',
                 header: 'Lead Type',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.lead_type ? cell.row.original.lead_type : ""}</>
             },
             {
                 accessorKey: 'country',
                 header: 'Country',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.country ? cell.row.original.country : ""}</>
             },
             {
                 accessorKey: 'visiting_card',
                 header: 'Visiting Card',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <span onDoubleClick={() => {
                     if (cell.row.original.visiting_card && cell.row.original.visiting_card) {
                         DownloadFile(cell.row.original.visiting_card, 'visiting card')
@@ -265,7 +288,7 @@ function CrmActivitiesReportPage() {
         //end
     );
     const table = useMaterialReactTable({
-        columns, columnFilterDisplayMode: 'popover', 
+        columns, columnFilterDisplayMode: 'popover',
         data: remarks, //10,000 rows       
         enableColumnResizing: true,
         enableColumnVirtualization: true, enableStickyFooter: true,
@@ -286,51 +309,148 @@ function CrmActivitiesReportPage() {
             },
         }),
         renderTopToolbarCustomActions: ({ table }) => (
-
-            <Stack
-                sx={{ width: '100%' }}
-                pt={1}
-                direction="row"
-                alignItems={'center'}
-                justifyContent="space-between">
-                <Stack direction={'row'} gap={1} p={1} sx={{background:'whitesmoke'}}>
+            <Box sx={{ width: '100%' }}>
+                <Stack direction={'row'} gap={1} sx={{ maxWidth: '100vw', height: 40, background: 'whitesmoke', p: 1, borderRadius: 1 }} className='scrollable-stack'>
                     {activitiesTopBarData && activitiesTopBarData.data && activitiesTopBarData.data.map((stage, index) => (
-                        <span key={index} style={{ paddingLeft: '25px'}}>{toTitleCase(stage.stage)} - {stage.value}</span>
+                        <span key={index} style={{ paddingLeft: '10px',fontSize:11 }}>{toTitleCase(stage.stage)} - {stage.value}</span>
                     ))}
                 </Stack>
+                <Stack
+                    sx={{ width: '100%' }}
+                    pt={1}
+                    direction="row"
+                    alignItems={'center'}
+                    justifyContent="space-between">
+                    <Typography variant='h6'>Activities</Typography>
 
-                <Stack justifyContent={'right'} direction={'row'} gap={1}>
-                    <Tooltip title="Toogle Filter">
-                        <Button size="small" color="inherit" variant='contained'
-                            onClick={() => {
-                                if (table.getState().showColumnFilters)
-                                    table.resetColumnFilters(true)
-                                table.setShowColumnFilters(!table.getState().showColumnFilters)
-                            }
-                            }
+                    <Stack justifyContent={'right'} alignItems={'center'} direction={'row'} gap={1}>
+                        < TextField
+                            size="small"
+                            type="date"
+                            variant="filled"
+                            id="start_date"
+                            label="Start Date"
+                            fullWidth
+
+                            value={dates.start_date}
+                            onChange={(e) => {
+                                if (e.currentTarget.value) {
+                                    setDates({
+                                        ...dates,
+                                        start_date: moment(e.target.value).format("YYYY-MM-DD")
+                                    })
+                                }
+                            }}
+                        />
+                        < TextField
+                            type="date"
+                            id="end_date"
+                            variant="filled"
+                            size="small"
+                            label="End Date"
+                            value={dates.end_date}
+
+                            fullWidth
+                            onChange={(e) => {
+                                if (e.currentTarget.value) {
+                                    setDates({
+                                        ...dates,
+                                        end_date: moment(e.target.value).format("YYYY-MM-DD")
+                                    })
+                                }
+                            }}
+                        />
+                        {user?.assigned_users && user?.assigned_users.length > 0 && <Select
+                            sx={{ m: 1, width: 300 }}
+                            labelId="demo-multiple-name-label"
+                            id="demo-multiple-name"
+                            variant='filled'
+                            value={stage}
+                            onChange={(e) => {
+                                setStage(e.target.value);
+                            }}
+                            size='small'
                         >
-                            {table.getState().showColumnFilters ? <FilterAltOff /> : <FilterAlt />}
-                        </Button>
-                    </Tooltip>
-                    <Tooltip title="Toogle FullScreen">
-                        <Button size="small" color="inherit" variant='contained'
-                            onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
-                            }
-                        >
-                            {table.getState().isFullScreen ? <FullscreenExit /> : <Fullscreen />}
-                        </Button>
-                    </Tooltip>
-                    <Tooltip title="Menu">
-                        <Button size="small" color="inherit" variant='contained'
-                            onClick={(e) => setAnchorEl(e.currentTarget)
-                            }
-                        >
-                            <MenuIcon />
-                            <Typography pl={1}> Menu</Typography>
-                        </Button>
-                    </Tooltip>
+                            <MenuItem
+                                key={'00'}
+                                value={stage}
+                                onChange={() => setStage('all')}
+                            >
+                                All
+                            </MenuItem>
+                            {stages.map((stage, index) => (
+                                <MenuItem
+                                    key={index}
+                                    value={stage.value}
+                                >
+                                    {toTitleCase(stage.label)}
+                                </MenuItem>
+                            ))}
+                        </Select>}
+
+                        {user?.assigned_users && user?.assigned_users.length > 0 &&
+                            < TextField
+                                select
+
+                                variant="filled"
+                                size="small"
+                                SelectProps={{
+                                    native: true,
+                                }}
+                                onChange={(e) => {
+                                    setUserId(e.target.value)
+                                    ReftechRemarks()
+                                }}
+                                required
+                                id="lead_owners"
+                                label="Filter Remarks Of Indivdual"
+                                fullWidth
+                            >
+                                <option key={'00'} value={undefined}>
+
+                                </option>
+                                {
+                                    users.map((user, index) => {
+
+                                        return (<option key={index} value={user._id}>
+                                            {user.username}
+                                        </option>)
+
+                                    })
+                                }
+                            </TextField>}
+                        <Tooltip title="Toogle Filter">
+                            <Button color="inherit" variant='contained'
+                                onClick={() => {
+                                    if (table.getState().showColumnFilters)
+                                        table.resetColumnFilters(true)
+                                    table.setShowColumnFilters(!table.getState().showColumnFilters)
+                                }
+                                }
+                            >
+                                {table.getState().showColumnFilters ? <FilterAltOff sx={{ width: 30, height: 30 }} /> : <FilterAlt sx={{ width: 30, height: 30 }} />}
+                            </Button>
+                        </Tooltip>
+                        <Tooltip title="Toogle FullScreen">
+                            <Button color="inherit" variant='contained'
+                                onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
+                                }
+                            >
+                                {table.getState().isFullScreen ? <FullscreenExit sx={{ width: 30, height: 30 }} /> : <Fullscreen sx={{ width: 30, height: 30 }} />}
+                            </Button>
+                        </Tooltip>
+                        <Tooltip title="Menu">
+                            <Button color="inherit" variant='contained'
+                                onClick={(e) => setAnchorEl(e.currentTarget)
+                                }
+                            >
+                                <MenuIcon sx={{ width: 30, height: 30 }} />
+                                <Typography pl={1}></Typography>
+                            </Button>
+                        </Tooltip>
+                    </Stack>
                 </Stack>
-            </Stack>
+            </Box>
         ),
         renderBottomToolbarCustomActions: () => (
             <DBPagination paginationData={paginationData} refetch={ReftechRemarks} setPaginationData={setPaginationData} />
@@ -402,99 +522,7 @@ function CrmActivitiesReportPage() {
 
                 >Export Selected</MenuItem>}
             </Menu>
-            <Stack sx={{ p: 2 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'center'}>
-                < TextField
-                    size="small"
-                    type="date"
-                    id="start_date"
-                    label="Start Date"
-                    fullWidth
-                    focused
-                    value={dates.start_date}
-                    onChange={(e) => {
-                        if (e.currentTarget.value) {
-                            setDates({
-                                ...dates,
-                                start_date: moment(e.target.value).format("YYYY-MM-DD")
-                            })
-                        }
-                    }}
-                />
-                < TextField
-                    type="date"
-                    id="end_date"
-                    size="small"
-                    label="End Date"
-                    value={dates.end_date}
-                    focused
-                    fullWidth
-                    onChange={(e) => {
-                        if (e.currentTarget.value) {
-                            setDates({
-                                ...dates,
-                                end_date: moment(e.target.value).format("YYYY-MM-DD")
-                            })
-                        }
-                    }}
-                />
-                {user?.assigned_users && user?.assigned_users.length > 0 && <Select
-                    sx={{ m: 1, width: 300 }}
-                    labelId="demo-multiple-name-label"
-                    id="demo-multiple-name"
-                    value={stage}
-                    onChange={(e) => {
-                        setStage(e.target.value);
-                    }}
-                    size='small'
-                >
-                    <MenuItem
-                        key={'00'}
-                        value={'undefined'}
-                        onChange={() => setStage('undefined')}
-                    >
-                        All
-                    </MenuItem>
-                    {stages.map((stage, index) => (
-                        <MenuItem
-                            key={index}
-                            value={stage.value}
-                        >
-                            {toTitleCase(stage.label)}
-                        </MenuItem>
-                    ))}
-                </Select>}
 
-                {user?.assigned_users && user?.assigned_users.length > 0 &&
-                    < TextField
-                        select
-
-                        size="small"
-                        SelectProps={{
-                            native: true,
-                        }}
-                        onChange={(e) => {
-                            setUserId(e.target.value)
-                            ReftechRemarks()
-                        }}
-                        required
-                        id="lead_owners"
-                        label="Filter Remarks Of Indivdual"
-                        fullWidth
-                    >
-                        <option key={'00'} value={undefined}>
-
-                        </option>
-                        {
-                            users.map((user, index) => {
-
-                                return (<option key={index} value={user._id}>
-                                    {user.username}
-                                </option>)
-
-                            })
-                        }
-                    </TextField>}
-            </Stack>
             {remark && <ViewRemarksDialog id={remark.lead_id} />}
             {remark && <CreateOrEditRemarkDialog lead={remark ? {
                 _id: remark.lead_id,

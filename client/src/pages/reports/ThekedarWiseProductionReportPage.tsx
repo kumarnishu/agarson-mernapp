@@ -29,14 +29,14 @@ export default function ThekedarWiseProductionReportPage() {
   const columns = useMemo<MRT_ColumnDef<IColumnRowData['columns']>[]>(
     () => reportcolumns && reportcolumns.map((item) => {
       if (item.type == "string")
-        return { accessorKey: item.key, header: item.header, Footer: "" }
+        return { accessorKey: item.key, grow: true, header: item.header, Footer: "" }
       if (item.type == "date")
         return {
-          accessorKey: item.key, header: item.header, Footer: <b>Total</b>,
+          accessorKey: item.key, header: item.header, grow: true, Footer: <b>Total</b>,
           filterVariant: 'multi-select', filterSelectOptions: reports && reports.map((i) => { return i['date'].toString() }).filter(onlyUnique)
         }
       return {
-        accessorKey: item.key, header: item.header,
+        accessorKey: item.key, header: item.header, grow: true,
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
         //@ts-ignore

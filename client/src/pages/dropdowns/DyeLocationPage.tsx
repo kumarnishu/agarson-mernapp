@@ -38,7 +38,7 @@ export default function DyeLocationPage() {
         accessorKey: 'actions',
         header: '',
         maxSize: 50,
-        size: 120,
+        grow:false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -79,7 +79,8 @@ export default function DyeLocationPage() {
       {
         accessorKey: 'active',
         header: 'Status',
-        size: 120,
+        minSize: 120,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.active ? "active" : "inactive"}</>,
         filterSelectOptions: dyelocations && dyelocations.map((i) => {
@@ -89,7 +90,8 @@ export default function DyeLocationPage() {
       {
         accessorKey: 'name',
         header: 'Name',
-        size: 350,
+        minSize: 350,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
         filterSelectOptions: dyelocations && dyelocations.map((i) => {
@@ -100,7 +102,8 @@ export default function DyeLocationPage() {
       {
         accessorKey: 'display_name',
         header: 'Display Name',
-        size: 350,
+        minSize: 350,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.display_name ? cell.row.original.display_name : ""}</>,
         filterSelectOptions: dyelocations && dyelocations.map((i) => {
@@ -110,7 +113,8 @@ export default function DyeLocationPage() {
       {
         accessorKey: 'created_by.value',
         header: 'Created By',
-        size: 350,
+        minSize: 350,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.created_by.value ? cell.row.original.created_by.value : ""}</>,
         filterSelectOptions: dyelocations && dyelocations.map((i) => {

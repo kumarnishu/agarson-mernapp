@@ -68,7 +68,7 @@ export default function SoleThicknessPage() {
                 header: '',
                 maxSize: 50,
                 enableColumnFilter: false,
-                size: 120,
+                grow:false,
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row" spacing={1}>
@@ -106,7 +106,8 @@ export default function SoleThicknessPage() {
             {
                 accessorKey: 'dye',
                 header: 'Dye',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.dye && cell.row.original.dye.value.toString() || "" ? cell.row.original.dye.value.toString() || "" : ""}</>,
                 filterSelectOptions: thicknesses && thicknesses.map((i) => {
@@ -116,7 +117,8 @@ export default function SoleThicknessPage() {
             {
                 accessorKey: 'article',
                 header: 'Article',
-                size: 220,
+                minSize: 220,
+                grow:false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.article && cell.row.original.article.value || "" ? cell.row.original.article.value || "" : ""}</>,
                 filterSelectOptions: thicknesses && thicknesses.map((i) => {
@@ -126,7 +128,8 @@ export default function SoleThicknessPage() {
             {
                 accessorKey: 'size',
                 header: 'Size',
-                size: 150,
+                minSize: 150,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.size && cell.row.original.size.toString() || "" ? cell.row.original.size.toString() || "" : ""}</>,
 
             },
@@ -134,26 +137,30 @@ export default function SoleThicknessPage() {
             {
                 accessorKey: 'left_thickness',
                 header: 'Left Thickness',
-                size: 150,
+                minSize: 150,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.right_thickness && cell.row.original.right_thickness.toString() || "" ? cell.row.original.right_thickness.toString() || "" : ""}</>,
 
             },
             {
                 accessorKey: 'right_thickness',
                 header: 'Right Thickness',
-                size: 150,
+                minSize: 150,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.right_thickness && cell.row.original.right_thickness.toString() || "" ? cell.row.original.right_thickness.toString() || "" : ""}</>
             },
             {
                 accessorKey: 'created_at',
                 header: 'Created At',
-                size: 150,
+                minSize: 150,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.created_at || ""}</>
             },
             {
                 accessorKey: 'created_by',
                 header: 'Creator',
-                size: 150,
+                minSize: 150,
+                grow:false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.created_by.value.toString() || "" ? cell.row.original.created_by.value.toString() || "" : ""}</>,
                 filterSelectOptions: thicknesses && thicknesses.map((i) => {

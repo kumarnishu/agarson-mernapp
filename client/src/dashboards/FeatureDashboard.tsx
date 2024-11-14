@@ -22,7 +22,7 @@ function FeatureDashboard() {
         user?.assigned_permissions.includes('checklist_admin_view') && tmpfeatures.push({ feature: 'CheckLists Admin ', is_visible: false, url: "CheckListAdminPage" })
         user?.assigned_permissions.includes('payments_view') && tmpfeatures.push({ feature: 'Payments ', is_visible: false, url: "PaymentsPage" })
         user?.assigned_permissions.includes('excel_db_view') && tmpfeatures.push({ feature: 'ExcelDB ', is_visible: false, url: "ExcelDBPage" })
-        
+        user?.assigned_permissions.includes('activities_view') && tmpfeatures.push({ feature: 'Crm activities ', is_visible: true, url: "CrmActivitiesPage" })
         tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
         setFeatures(tmpfeatures)
         

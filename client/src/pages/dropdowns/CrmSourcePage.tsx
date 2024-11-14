@@ -39,7 +39,7 @@ export default function CrmLeadSourcesPage() {
         header: '',
         maxSize: 50,
         Footer: <b></b>,
-        size: 120,
+        grow:false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -81,7 +81,8 @@ export default function CrmLeadSourcesPage() {
       {
         accessorKey: 'label',
         header: 'Source',
-        size: 350,
+        minSize: 350,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.value ? cell.row.original.value : ""}</>,
         filterSelectOptions: sources && sources.map((i) => {

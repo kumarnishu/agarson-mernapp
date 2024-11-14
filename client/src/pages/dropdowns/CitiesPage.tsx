@@ -156,7 +156,7 @@ export default function CrmCitiesPage() {
         header: '',
         maxSize: 50,
         Footer: <b></b>,
-        size: 120,
+        grow:false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -198,7 +198,8 @@ export default function CrmCitiesPage() {
       {
         accessorKey: 'city',
         header: 'City',
-        size: 350,
+        minSize: 350,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
         filterSelectOptions: cities && cities.map((i) => {
@@ -209,7 +210,8 @@ export default function CrmCitiesPage() {
         // accessorKey: 'assigned_users.value',
         accessorFn:(Cell)=>{return Cell.assigned_users},
         header: 'Assigned Users',
-        size: 650,
+        minSize: 650,
+        grow:false,
         filterVariant: 'text',
         Cell: (cell) => <>{cell.row.original.assigned_users && cell.row.original.assigned_users.length > 0 ? cell.row.original.assigned_users : ""}</>,
       }

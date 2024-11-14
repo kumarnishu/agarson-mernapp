@@ -46,7 +46,8 @@ export default function UsersPage() {
             {
                 accessorKey: 'actions',
                 header: '',
-                size: 50,
+                maxSize: 50,
+                grow:false,
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row">
@@ -252,7 +253,8 @@ export default function UsersPage() {
             {
                 accessorKey: 'dp',
                 header: 'DP',
-                size: 50,
+                maxSize: 50,
+                grow:false,
                 Cell: (cell) => <Avatar
                     title="double click to download"
                     sx={{ width: 16, height: 16 }}
@@ -267,14 +269,16 @@ export default function UsersPage() {
             {
                 accessorKey: 'username',
                 header: 'Name',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 filterVariant: 'multi-select',
                 filterSelectOptions: data && users.map((i) => { return i.username.toString() }).filter(onlyUnique)
             },
             {
                 accessorKey: 'is_admin',
                 header: 'Role',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.is_admin ? "admin" : "user"}</>,
                 filterSelectOptions: data && users.map((i) => {
@@ -285,19 +289,22 @@ export default function UsersPage() {
             {
                 accessorKey: 'email',
                 header: 'Email',
-                size: 220,
+                minSize: 220,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.email || ""}</>
             },
             {
                 accessorKey: 'mobile',
                 header: 'Mobile',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.mobile || ""}</>
             },
             {
                 accessorKey: 'is_active',
                 header: 'Status',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.is_active ? "active" : "blocked"}</>,
                 filterSelectOptions: data && users.map((i) => {
@@ -308,7 +315,8 @@ export default function UsersPage() {
             {
                 accessorKey: 'password',
                 header: 'Password',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.orginal_password}</>,
                 filterSelectOptions: data && users.map((i) => {
@@ -318,31 +326,36 @@ export default function UsersPage() {
             {
                 accessorKey: 'assigned_permissions',
                 header: 'Permissions',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.assigned_permissions.length || 0}</>
             },
             {
                 accessorKey: 'show_only_visiting_card_leads',
                 header: 'Leads View',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.show_only_visiting_card_leads ? "All Leads" : "Only Having Cards"}</>
             },
             {
                 accessorKey: 'is_multi_login',
                 header: 'Multi Device',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.is_multi_login ? "Allowed" : "Blocked"}</>
             },
             {
                 accessorKey: 'assigned_users',
                 header: 'Assigned Users',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.assigned_users.length || 0}</>
             },
             {
                 accessorKey: 'last_login',
                 header: 'Last Active',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.last_login || ""}</>
             },
            

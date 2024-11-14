@@ -35,7 +35,7 @@ export default function KeysPage() {
                 accessorKey: 'actions',
                 header: '',
                 maxSize: 50,
-                size: 120,
+                grow:false,
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row">
@@ -62,7 +62,8 @@ export default function KeysPage() {
             {
                 accessorKey: 'key',
                 header: 'Category',
-                size: 350,
+                minSize: 350,
+                grow:false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.key ? cell.row.original.key : ""}</>,
                 filterSelectOptions: keys && keys.map((i) => {
@@ -73,7 +74,8 @@ export default function KeysPage() {
             {
                 accessorKey: 'category.value',
                 header: 'Category',
-                size: 350,
+                minSize: 350,
+                grow:false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.value : ""}</>
               
@@ -81,7 +83,8 @@ export default function KeysPage() {
             {
                 accessorKey: 'type',
                 header: 'Type',
-                size: 150,
+                minSize: 150,
+                grow:false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.type ? cell.row.original.type : ""}</>
 

@@ -115,7 +115,7 @@ export default function ArticlePage() {
         header: '',
         maxSize: 50,
         enableColumnFilter: false,
-        size: 120,
+        grow:false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -156,7 +156,8 @@ export default function ArticlePage() {
       {
         accessorKey: 'active',
         header: 'Status',
-        size: 120,
+        minSize: 120,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.active ? "active" : "inactive"}</>,
         filterSelectOptions: articles && articles.map((i) => {
@@ -166,7 +167,8 @@ export default function ArticlePage() {
       {
         accessorKey: 'name',
         header: 'Name',
-        size: 220,
+        minSize: 220,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
         filterSelectOptions: articles && articles.map((i) => {
@@ -176,7 +178,8 @@ export default function ArticlePage() {
       {
         accessorKey: 'display_name',
         header: 'Display Name',
-        size: 220,
+        minSize: 220,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.display_name ? cell.row.original.display_name : ""}</>,
         filterSelectOptions: articles && articles.map((i) => {

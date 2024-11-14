@@ -47,7 +47,7 @@ export default function AssignedReferReportPage() {
         accessorKey: 'actions',
         header: '',
         maxSize: 50,
-        size: 120,
+        grow:false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -189,7 +189,8 @@ export default function AssignedReferReportPage() {
       {
         accessorKey: 'name',
         header: 'Name',
-        size: 350,
+        minSize: 350,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
         filterSelectOptions: leads && leads.map((i) => {
@@ -199,55 +200,64 @@ export default function AssignedReferReportPage() {
       {
         accessorKey: 'mobile',
         header: 'Mobile1',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.mobile ? cell.row.original.mobile : ""}</>
       }, {
         accessorKey: 'alternate_mobile1',
         header: 'Mobile2',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.alternate_mobile1 ? cell.row.original.alternate_mobile1 : ""}</>
       }, {
         accessorKey: 'alternate_mobile2',
         header: 'Mobile3',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.alternate_mobile2 ? cell.row.original.alternate_mobile2 : ""}</>
       },
       {
         accessorKey: 'uploaded_bills',
         header: 'Uploaded Bills',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.uploaded_bills ? cell.row.original.uploaded_bills : ""}</>
       },
       
       {
         accessorKey: 'last_remark',
         header: 'Remark',
-        size: 320,
+        minSize: 320,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.last_remark ? cell.row.original.last_remark : ""}</>
       },
       {
         accessorKey: 'referred_party_name',
         header: 'Refer Party',
-        size: 320,
+        minSize: 320,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.referred_party_name ? cell.row.original.referred_party_name : ""}</>
       },
       {
         accessorKey: 'referred_party_mobile',
         header: 'Refer Mobile',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.referred_party_mobile ? cell.row.original.referred_party_mobile : ""}</>
       },
       {
         accessorKey: 'referred_date',
         header: 'Refer Date',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.referred_date ? cell.row.original.referred_date : ""}</>
       },
       {
         accessorKey: 'city',
         header: 'City',
         filterVariant: 'multi-select',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
         filterSelectOptions: leads && leads.map((i) => {
           return i.city;
@@ -257,7 +267,8 @@ export default function AssignedReferReportPage() {
         accessorKey: 'state',
         header: 'State',
         filterVariant: 'multi-select',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
         filterSelectOptions: leads && leads.map((i) => {
           return i.state;
@@ -266,7 +277,8 @@ export default function AssignedReferReportPage() {
       {
         accessorKey: 'stage',
         header: 'Stage',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.stage ? cell.row.original.stage : ""}</>
       },
 
@@ -274,13 +286,15 @@ export default function AssignedReferReportPage() {
       {
         accessorKey: 'customer_name',
         header: 'Customer',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.customer_name ? cell.row.original.customer_name : ""}</>
       }
       , {
         accessorKey: 'customer_designation',
         header: 'Designitaion',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.customer_designation ? cell.row.original.customer_designation : ""}</>
       }
 
@@ -288,14 +302,16 @@ export default function AssignedReferReportPage() {
       {
         accessorKey: 'email',
         header: 'Email',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.email ? cell.row.original.email : ""}</>
       }
       ,
       {
         accessorKey: 'alternate_email',
         header: 'Email2',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.alternate_email ? cell.row.original.alternate_email : ""}</>
       }
       ,
@@ -303,55 +319,64 @@ export default function AssignedReferReportPage() {
       {
         accessorKey: 'address',
         header: 'Address',
-        size: 320,
+        minSize: 320,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.address ? cell.row.original.address : ""}</>
       },
       {
         accessorKey: 'source',
         header: 'Lead Source',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.lead_source ? cell.row.original.lead_source : ""}</>
       },
       {
         accessorKey: 'type',
         header: 'Lead Type',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.lead_type ? cell.row.original.lead_type : ""}</>
       },
       {
         accessorKey: 'country',
         header: 'Country',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.country ? cell.row.original.country : ""}</>
       },
       {
         accessorKey: 'created_at',
         header: 'Created on',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
       },
       {
         accessorKey: 'updated_at',
         header: 'Updated on',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.updated_at ? cell.row.original.updated_at : ""}</>
       },
       {
         accessorKey: 'created_by.label',
         header: 'Creator',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
       },
       {
         accessorKey: 'updated_by.label',
         header: 'Updated By',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.updated_by.label ? cell.row.original.updated_by.label : ""}</>
       },
       {
         accessorKey: 'visiting_card',
         header: 'Visiting Card',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <span onDoubleClick={() => {
           if (cell.row.original.visiting_card && cell.row.original.visiting_card) {
             DownloadFile(cell.row.original.visiting_card, 'visiting card')

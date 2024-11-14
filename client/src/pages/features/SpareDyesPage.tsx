@@ -70,7 +70,7 @@ export default function SpareDyesPage() {
                 header: '',
                 maxSize: 50,
                 enableColumnFilter: false,
-                size: 120,
+                grow:false,
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row" spacing={1}>
@@ -118,7 +118,8 @@ export default function SpareDyesPage() {
             {
                 accessorKey: 'dye_photo',
                 header: 'Photo',
-                size: 160,
+                minSize: 160,
+                grow:false,
                 Cell: (cell) => <>
                     {cell.row.original.dye_photo && <IconButton
                         disabled={!LoggedInUser?.assigned_permissions.includes('spare_dye_view')}
@@ -134,13 +135,15 @@ export default function SpareDyesPage() {
             {
                 accessorKey: 'photo_time',
                 header: 'Photo Time',
-                size: 150,
+                minSize: 150,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.photo_time || ""}</>
             },
             {
                 accessorKey: 'dye',
                 header: 'Dye',
-                size: 150,
+                minSize: 150,
+                grow:false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.dye.value.toString() || "" ? cell.row.original.dye.value.toString() || "" : ""}</>,
                 filterSelectOptions: spareDyes && spareDyes.map((i) => {
@@ -150,7 +153,8 @@ export default function SpareDyesPage() {
             {
                 accessorKey: 'location',
                 header: 'Dye Location',
-                size: 150,
+                minSize: 150,
+                grow:false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.location.value.toString() || "" ? cell.row.original.location.value.toString() || "" : ""}</>,
                 filterSelectOptions: spareDyes && spareDyes.map((i) => {
@@ -160,25 +164,29 @@ export default function SpareDyesPage() {
             {
                 accessorKey: 'repair_required',
                 header: 'Repair Required',
-                size: 150,
+                minSize: 150,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.repair_required ? "Yes" : "No"}</>
             },
             {
                 accessorKey: 'remarks',
                 header: 'remarks',
-                size: 250,
+                minSize: 250,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.remarks || ""}</>
             },
             {
                 accessorKey: 'created_at',
                 header: 'Created At',
-                size: 150,
+                minSize: 150,
+                grow:false,
                 Cell: (cell) => <>{cell.row.original.created_at || ""}</>
             },
             {
                 accessorKey: 'created_by',
                 header: 'Creator',
-                size: 150,
+                minSize: 150,
+                grow:false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.created_by.value.toString() || "" ? cell.row.original.created_by.value.toString() || "" : ""}</>,
                 filterSelectOptions: spareDyes && spareDyes.map((i) => {

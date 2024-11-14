@@ -255,7 +255,7 @@ export const GetActivities = async (req: Request, res: Response, next: NextFunct
             }).sort('-updated_at').skip((page - 1) * limit).limit(limit)
             count = await Remark.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: id }).countDocuments()
         }
-        if (stage !== 'undefined') {
+        if (stage !== 'all') {
             remarks = remarks.filter((r) => {
                 if (r.lead)
                     return r.lead.stage == stage

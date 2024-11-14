@@ -101,7 +101,7 @@ function ProfileLogo() {
                     sx={{ width: 20, height: 20 }}
                     alt="img1" src={user?.dp} />
             </IconButton>
-            <Typography variant='h5'> {toTitleCase(user?.username || "")}</Typography>
+            <Typography variant='h5' sx={{color:'white'}}> {toTitleCase(user?.username || "")}</Typography>
             <ProfileMenu />
        </Stack>
     )

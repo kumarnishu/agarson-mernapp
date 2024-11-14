@@ -66,12 +66,14 @@ function ChecklistPage() {
       {
         accessorKey: 'serial_no',
         header: ' #',
-        size: 70
+        maxSize: 70,
+        grow:false,
       },
       {
         accessorKey: 'work_title',
         header: ' Work Title',
-        size: 350,
+        minSize: 350,
+        grow:false,
         Cell: (cell) => <span title={cell.row.original.work_description} >
           {cell.row.original.link && cell.row.original.link != "" ?
             <a style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
@@ -85,7 +87,8 @@ function ChecklistPage() {
       {
         accessorKey: 'assigned_users.value',
         header: 'Responsible',
-        size: 160,
+        minSize: 160,
+        grow:false,
         filter: 'custom',
         enableColumnFilter: true,
         Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.value }).toString() || ""}</>,
@@ -199,26 +202,30 @@ function ChecklistPage() {
       {
         accessorKey: 'category.value',
         header: ' Category',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
       },
       {
         accessorKey: 'frequency',
         header: ' Frequency',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
       },
     
       {
         accessorKey: 'last_checked_date',
         header: 'Last Checked Date',
-        size: 100,
+        minSize: 100,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.updated_at ? moment(cell.row.original.updated_at).format('DD/MM/YYYY') : ""}</>
       },
       {
         accessorKey: 'next_date',
         header: 'Next Check Date',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>
           < input
             type="date"
@@ -237,7 +244,8 @@ function ChecklistPage() {
       {
         accessorKey: 'photo',
         header: 'Photo',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <span onDoubleClick={() => {
           if (cell.row.original.photo && cell.row.original.photo) {
             DownloadFile(cell.row.original.photo, 'photo')

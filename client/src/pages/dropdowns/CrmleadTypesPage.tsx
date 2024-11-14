@@ -39,7 +39,7 @@ export default function CrmTypesPage() {
         header: '',
         maxSize: 50,
         Footer: <b></b>,
-        size: 120,
+        grow:false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -81,7 +81,8 @@ export default function CrmTypesPage() {
       {
         accessorKey: 'label',
         header: 'Type',
-        size: 350,
+        minSize: 350,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.value ? cell.row.original.value : ""}</>,
         filterSelectOptions: types && types.map((i) => {

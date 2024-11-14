@@ -71,7 +71,7 @@ export default function ShoeWeightPage() {
         header: '',
         maxSize: 50,
         enableColumnFilter: false,
-        size: 160,
+        group:true,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -137,7 +137,8 @@ export default function ShoeWeightPage() {
       {
         accessorKey: 'shoe_photo1',
         header: 'Photos',
-        size: 160,
+        minSize: 160,
+        group:true,
         Cell: (cell) => <>
           {cell.row.original.shoe_photo1 && <Photo onClick={() => {
             setWeight(cell.row.original)
@@ -159,7 +160,8 @@ export default function ShoeWeightPage() {
       {
         accessorKey: 'machine',
         header: 'Machine',
-        size: 160,
+        minSize: 160,
+        group:true,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.machine.value.toString() || ""}</>,
         filterSelectOptions: weights && weights.map((i) => {
@@ -169,14 +171,16 @@ export default function ShoeWeightPage() {
       {
         accessorKey: 'month',
         header: 'Clock In',
-        size: 160,
+        minSize: 160,
+        group:true,
         Cell: (cell) => <>{months.find(x => x.month == cell.row.original.month) && months.find(x => x.month == cell.row.original.month)?.label}</>
       },
 
       {
         accessorKey: 'dye',
         header: 'Dye',
-        size: 160,
+        minSize: 160,
+        group:true,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.dye.value.toString() || ""}</>,
         filterSelectOptions: weights && weights.map((i) => {
@@ -186,7 +190,8 @@ export default function ShoeWeightPage() {
       {
         accessorKey: 'article',
         header: 'Article',
-        size: 160,
+        minSize: 160,
+        group:true,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.article.value.toString() || ""}</>,
         filterSelectOptions: weights && weights.map((i) => {
@@ -196,78 +201,91 @@ export default function ShoeWeightPage() {
       {
         accessorKey: 'size',
         header: 'Size',
-        size: 160,
+        minSize: 160,
+        group:true,
         Cell: (cell) => <>{cell.row.original.size.toString() || ""}</>
       },
       {
         accessorKey: 'std_weigtht',
         header: 'Std Sole Weight',
-        size: 160,
+        minSize: 160,
+        group:true,
         Cell: (cell) => <>{cell.row.original.std_weigtht.toString() || ""}</>
       },
       {
         accessorKey: 'upper_weight1',
         header: 'Upper Weight1',
-        size: 160,
+        minSize: 160,
+        group:true,
         Cell: (cell) => <>{cell.row.original.upper_weight1.toString() || ""}</>
       },
       {
         accessorKey: 'shoe_weight1',
         header: 'Shoe Weight1',
-        size: 160,
+        minSize: 160,
+        group:true,
         Cell: (cell) => <>{cell.row.original.shoe_weight1.toString() || ""}</>
       },
       {
         accessorKey: 'weighttime1',
         header: 'Weight Time1',
-        size: 160,
+        minSize: 160,
+        group:true,
         Cell: (cell) => <>{cell.row.original.weighttime1.toString() || ""}</>
       },
       {
         accessorKey: 'upper_weight2',
         header: 'Upper Weight2',
-        size: 160,
+        minSize: 160,
+        group:true,
         Cell: (cell) => <>{cell.row.original.upper_weight2 && cell.row.original.upper_weight2.toString() || ""}</>
       },
       {
         accessorKey: 'shoe_weight2',
         header: 'Shoe Weight2',
-        size: 160,
+        minSize: 160,
+        group:true,
         Cell: (cell) => <>{cell.row.original.shoe_weight2 && cell.row.original.shoe_weight2.toString() || ""}</>
       },
       {
         accessorKey: 'weighttime2',
         header: 'Weight Time2',
-        size: 160,
+        minSize: 160,
+        group:true,
         Cell: (cell) => <>{cell.row.original.weighttime2 && cell.row.original.weighttime2.toString() || ""}</>
       },
       {
         accessorKey: 'upper_weight3',
         header: 'Upper Weight3',
-        size: 160,
+        minSize: 160,
+        group:true,
         Cell: (cell) => <>{cell.row.original.upper_weight3 && cell.row.original.upper_weight3.toString() || ""}</>
       },
       {
         accessorKey: 'shoe_weight3',
         header: 'Shoe Weight3',
-        size: 160,
+        minSize: 160,
+        group:true,
         Cell: (cell) => <>{cell.row.original.shoe_weight3 && cell.row.original.shoe_weight3.toString() || ""}</>
       },
       {
         accessorKey: 'weighttime3',
         header: 'Weight Time3',
-        size: 160,
+        minSize: 160,
+        group:true,
         Cell: (cell) => <>{cell.row.original.weighttime3 && cell.row.original.weighttime3.toString() || ""}</>
       }, {
         accessorKey: 'created_at',
         header: 'Created At',
-        size: 150,
+        minSize: 150,
+        group:true,
         Cell: (cell) => <>{cell.row.original.created_at || ""}</>
       },
       {
         accessorKey: 'created_by',
         header: 'Creator',
-        size: 150,
+        minSize: 150,
+        group:true,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.created_by.value.toString() || "" ? cell.row.original.created_by.value.toString() || "" : ""}</>,
         filterSelectOptions: weights && weights.map((i) => {

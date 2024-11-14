@@ -113,7 +113,7 @@ export default function DyePage() {
         header: '',
         maxSize: 50,
         enableColumnFilter: false,
-        size: 120,
+        grow:false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -153,7 +153,8 @@ export default function DyePage() {
       {
         accessorKey: 'active',
         header: 'Status',
-        size: 120,
+        minSize: 120,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.active ? "active" : "inactive"}</>,
         filterSelectOptions: dyes && dyes.map((i) => {
@@ -163,7 +164,8 @@ export default function DyePage() {
       {
         accessorKey: 'dye_number',
         header: 'Dye',
-        size: 120,
+        minSize: 120,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.dye_number.toString() || "" ? cell.row.original.dye_number.toString() || "" : ""}</>,
         filterSelectOptions: dyes && dyes.map((i) => {
@@ -173,7 +175,8 @@ export default function DyePage() {
       {
         accessorKey: 'size',
         header: 'Size',
-        size: 200,
+        minSize: 200,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.size ? cell.row.original.size : ""}</>,
         filterSelectOptions: dyes && dyes.map((i) => {
@@ -183,7 +186,8 @@ export default function DyePage() {
       {
         accessorKey: 'articles',
         header: 'Articles',
-        size: 720,
+        minSize: 720,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.articles.toString() ? cell.row.original.articles.map((a) => { return a.value }).toString() : ""}</>,
         filterSelectOptions: dyes && dyes.map((i) => {

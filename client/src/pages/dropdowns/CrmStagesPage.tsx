@@ -40,7 +40,7 @@ export default function CrmStagesPage() {
         header: '',
         maxSize: 50,
         Footer: <b></b>,
-        size: 120,
+        grow:false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -82,7 +82,8 @@ export default function CrmStagesPage() {
       {
         accessorKey: 'label',
         header: 'Stage',
-        size: 350,
+        minSize: 350,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.value ? cell.row.original.value : ""}</>,
         filterSelectOptions: stages && stages.map((i) => {

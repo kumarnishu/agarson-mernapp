@@ -74,7 +74,7 @@ function CheckListAdminPage() {
         accessorKey: 'actions',
         header: '',
         maxSize: 50,
-        size: 120,
+        grow: true,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -113,12 +113,14 @@ function CheckListAdminPage() {
       {
         accessorKey: 'serial_no',
         header: ' No',
-        size: 70
+        maxSize: 70,
+        grow: true,
       },
       {
         accessorKey: 'work_title',
         header: ' Work Title',
-        size: 350,
+        minSize: 350,
+        grow: true,
         Cell: (cell) => <span title={cell.row.original.work_description} >
           {cell.row.original.link && cell.row.original.link != "" ?
             <a style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
@@ -132,7 +134,8 @@ function CheckListAdminPage() {
       {
         accessorKey: 'assigned_users.value',
         header: 'Responsible',
-        size: 160,
+        minSize: 160,
+        grow: true,
         filter: 'custom',
         enableColumnFilter: true,
         Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.value }).toString() || ""}</>,
@@ -146,7 +149,7 @@ function CheckListAdminPage() {
       }, {
         accessorKey: 'boxes',
         header: 'Dates',
-        Cell: (cell) => userId!=='all' ? <Stack direction="row" className="scrollable-stack" sx={{ height: '20px' }}>
+        Cell: (cell) => userId !== 'all' ? <Stack direction="row" className="scrollable-stack" sx={{ height: '20px' }}>
           {cell.row.original && cell.row.original.boxes.map((b) => (
             <>
               {
@@ -228,35 +231,39 @@ function CheckListAdminPage() {
             </>
           ))}
         </Stack> : <Tooltip title={cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}>
-            <Button onClick={() => {
-              setChecklist(cell.row.original)
-              setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
-            }}  size="small" sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0, p:0.5 }} color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? toTitleCase(cell.row.original.last_checked_box.stage) : "Open"}</Button>
+          <Button onClick={() => {
+            setChecklist(cell.row.original)
+            setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
+          }} size="small" sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0, p: 0.5 }} color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? toTitleCase(cell.row.original.last_checked_box.stage) : "Open"}</Button>
         </Tooltip>
       },
       {
         accessorKey: 'category.value',
         header: ' Category',
-        size: 120,
+        minSize: 120,
+        grow: true,
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
       },
       {
         accessorKey: 'frequency',
         header: ' Frequency',
-        size: 120,
+        minSize: 120,
+        grow: true,
         Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
       },
-     
+
       {
         accessorKey: 'last_checked_date',
         header: 'Last Checked Date',
-        size: 100,
+        minSize: 100,
+        grow: true,
         Cell: (cell) => <>{cell.row.original.updated_at ? moment(cell.row.original.updated_at).format('DD/MM/YYYY') : ""}</>
       },
       {
         accessorKey: 'next_date',
         header: 'Next Check Date',
-        size: 120,
+        minSize: 120,
+        grow: true,
         Cell: (cell) => <>
           < input
             type="date"
@@ -275,7 +282,8 @@ function CheckListAdminPage() {
       {
         accessorKey: 'photo',
         header: 'Photo',
-        size: 120,
+        minSize: 120,
+        grow: true,
         Cell: (cell) => <span onDoubleClick={() => {
           if (cell.row.original.photo && cell.row.original.photo) {
             DownloadFile(cell.row.original.photo, 'photo')
@@ -286,13 +294,15 @@ function CheckListAdminPage() {
       {
         accessorKey: 'updated_at',
         header: 'Last Updated At',
-        size: 100,
+        minSize: 100,
+        grow: true,
         Cell: (cell) => <>{cell.row.original.updated_at ? moment(cell.row.original.updated_at).format("DD/MM/YYYY") : ""}</>
       },
       {
         accessorKey: 'updated_by',
         header: 'Last Updated By',
-        size: 100,
+        minSize: 100,
+        grow: true,
         Cell: (cell) => <>{cell.row.original.updated_by ? cell.row.original.updated_by.value : ""}</>
       },
     ],
@@ -333,7 +343,7 @@ function CheckListAdminPage() {
             <Stack style={{ minWidth: '100px', overflowY: 'hidden' }}
               key={index}
             >
-              <span key={category.category} style={{ paddingLeft: '5px', fontSize: '13px' }}> {category.count} : {toTitleCase(category.category).slice(0,10)} </span>
+              <span key={category.category} style={{ paddingLeft: '5px', fontSize: '13px' }}> {category.count} : {toTitleCase(category.category).slice(0, 10)} </span>
             </Stack>
           ))}
         </Stack>
@@ -628,7 +638,7 @@ function CheckListAdminPage() {
       {checklist && <DeleteCheckListDialog checklist={checklist} />}
       {checklist && <CreateOrEditCheckListDialog checklist={checklist} setChecklist={setChecklist} />}
       {checklist && checklistBox && <ViewChecklistBoxRemarksDialog checklist={checklist} checklist_box={checklistBox} />}
-      {checklist  && <ViewChecklistRemarksDialog checklist={checklist} />}
+      {checklist && <ViewChecklistRemarksDialog checklist={checklist} />}
       <MaterialReactTable table={table} />
       {<AssignChecklistsDialog flag={flag} checklists={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
       {table.getSelectedRowModel().rows && table.getSelectedRowModel().rows.length > 0 && <BulkDeleteCheckListDialog ids={table.getSelectedRowModel().rows.map((l) => { return l.original._id })} clearIds={() => { table.resetRowSelection() }} />}

@@ -122,7 +122,7 @@ export default function CrmStatesPage() {
         header: '',
         maxSize: 50,
         Footer: <b></b>,
-        size: 120,
+        grow:false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -164,7 +164,8 @@ export default function CrmStatesPage() {
       {
         accessorKey: 'state',
         header: 'State',
-        size: 350,
+        minSize: 350,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
         filterSelectOptions: states && states.map((i) => {
@@ -174,7 +175,8 @@ export default function CrmStatesPage() {
       {
         accessorKey: 'assigned_users',
         header: 'Assigned Users',
-        size: 650,
+        minSize: 650,
+        grow:false,
         filterVariant: 'text',
         Cell: (cell) => <>{cell.row.original.assigned_users && cell.row.original.assigned_users.length > 0 ? cell.row.original.assigned_users : ""}</>,
       }

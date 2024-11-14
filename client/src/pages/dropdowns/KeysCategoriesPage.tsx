@@ -7,7 +7,7 @@ import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import { KeyChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import { Edit } from '@mui/icons-material'
-import { Fade,  IconButton, Menu, MenuItem,  Tooltip, Typography } from '@mui/material'
+import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
@@ -22,7 +22,7 @@ export default function KeysCategoriesPage() {
   const [category, setKeyCategory] = useState<DropDownDto>()
   const [categories, setKeyCategorys] = useState<DropDownDto[]>([])
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategories())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategories({ show_assigned_only: false }))
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
@@ -36,7 +36,7 @@ export default function KeysCategoriesPage() {
         accessorKey: 'actions',
         header: '',
         maxSize: 50,
-        size: 120,
+        minSize: 120,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -59,29 +59,31 @@ export default function KeysCategoriesPage() {
             </Stack>}
         />
       },
-      
+
       {
         accessorKey: 'value',
         header: 'Category',
-        size: 350,
+        minSize: 350,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.value ? cell.row.original.value : ""}</>,
         filterSelectOptions: categories && categories.map((i) => {
           return i.value;
         }).filter(onlyUnique)
       },
-     
+
       {
         accessorKey: 'label',
         header: 'Display Name',
-        size: 350,
+        minSize: 350,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
         filterSelectOptions: categories && categories.map((i) => {
           return i.label;
         }).filter(onlyUnique)
       },
-     
+
     ],
     [categories],
     //end
@@ -89,7 +91,7 @@ export default function KeysCategoriesPage() {
 
 
   const table = useMaterialReactTable({
-    columns, columnFilterDisplayMode: 'popover', 
+    columns, columnFilterDisplayMode: 'popover',
     data: categories, //10,000 rows       
     enableColumnResizing: true,
     enableColumnVirtualization: true, enableStickyFooter: true,
@@ -163,7 +165,7 @@ export default function KeysCategoriesPage() {
 
 
         <>
-          
+
           <IconButton size="small" color="primary"
             onClick={(e) => setAnchorEl(e.currentTarget)
             }

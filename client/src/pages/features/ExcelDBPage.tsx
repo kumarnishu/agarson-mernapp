@@ -20,7 +20,7 @@ export default function ExcelDBPage() {
   const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
   const { user } = useContext(UserContext)
   const { data, isLoading, isSuccess, refetch } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb", category], async () => GetExcelDbReport(category), { enabled: false })
-  const { data: categoryData, isSuccess: isSuccessCategories } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategories())
+  const { data: categoryData, isSuccess: isSuccessCategories } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategories({ show_assigned_only: false }))
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
@@ -29,14 +29,14 @@ export default function ExcelDBPage() {
     () => reportcolumns && reportcolumns.map((item) => {
 
       if (item.type == "string")
-        return { accessorKey: item.key, header: item.header, Footer: "" }
+        return { accessorKey: item.key, header: item.header, Footer: "", grow: true }
       else if (item.type == "timestamp")
-        return { accessorKey: item.key, header: item.header, Footer: "" }
+        return { accessorKey: item.key, header: item.header, Footer: "", grow: true }
       else if (item.type == "date")
         return {
           accessorKey: item.key,
           header: item.header,
-
+          grow: true,
           Footer: <b>Total</b>,
           filterSelectOptions: reports
             ? [...new Set(reports.map(i => moment(i['date']).format("DD/MM/YYYY")))]
@@ -50,7 +50,7 @@ export default function ExcelDBPage() {
       else
         return {
           accessorKey: item.key, header: item.header,
-          aggregationFn: 'sum',
+          aggregationFn: 'sum', grow: true,
           AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
           //@ts-ignore
           Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>

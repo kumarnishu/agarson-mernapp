@@ -10,7 +10,7 @@ export const CreateOrEditKey = async ({ body, id }: {
         key: string,
         category: string,
         type: string
-     }
+    }
     id?: string
 }) => {
     if (id) {
@@ -24,8 +24,11 @@ export const DeleteKey = async (id: string) => {
 
 
 
-export const GetAllKeyCategories = async () => {
-    return await apiClient.get(`key-category`)
+export const GetAllKeyCategories = async ({ show_assigned_only }: { show_assigned_only?: boolean }) => {
+    if (show_assigned_only)
+        return await apiClient.get(`key-category/?show_assigned_only=${show_assigned_only}`)
+    else
+        return await apiClient.get(`key-category`)
 }
 
 export const CreateOrEditKeyCategory = async ({ body, id }: {

@@ -2,12 +2,12 @@ import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
-import { Box, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { Avatar, Box, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { UserContext } from '../contexts/userContext';
 import { FeatureContext } from '../contexts/featureContext';
-import { ButtonLogo } from '../components/logo/Agarson';
+import  { ButtonLogo } from '../components/logo/Agarson';
 import React, { useContext, useEffect, useState } from 'react';
 import ProfileLogo from '../components/logo/ProfileLogo';
 import LogoutButton from '../components/buttons/LogoutButton';
@@ -26,7 +26,19 @@ function MainDashBoardPage() {
 
   const DrawerList = (
     <Box sx={{ width: 150, marginTop: 2 }} role="presentation" onClick={toggleDrawer(false)}>
-      <Stack ml={1}> <ProfileLogo /></Stack>
+      <Stack ml={1} justifyContent={'center'} > 
+        <Stack direction={'row'} justifyContent={'left'} alignItems={'center'}>
+          <IconButton
+            sx={{ border: 2, p: 0, mr: 1, borderColor: 'white' }}
+            
+          >
+            <Avatar
+              sx={{ width: 20, height: 20 }}
+              alt="img1" src={user?.dp} />
+          </IconButton>
+          <Typography variant='h5' > {toTitleCase(user?.username || "")}</Typography>
+        </Stack>
+      </Stack>
       <List>
         {features.map((feat, index) => (
           <React.Fragment key={index}>
@@ -62,7 +74,7 @@ function MainDashBoardPage() {
   return (
     <>
 
-      <Paper sx={{ bgcolor: '#f3f5f6', width: '100vw'}}>
+      <Paper sx={{ bgcolor: 'grey', width: '100vw'}}>
         {/* parent stack */}
         <Stack direction="row" sx={{
           justifyContent: "space-between", alignItems: "center"
@@ -97,7 +109,7 @@ function MainDashBoardPage() {
             </Link>
 
             <IconButton onClick={toggleDrawer(true)} size='small'>
-              < MenuIcon sx={{ width: 35, height: 35, color: 'inherit' }} />
+              < MenuIcon sx={{ width: 35, height: 35, color: 'white' }} />
             </IconButton>
           </Stack>
         </Stack>

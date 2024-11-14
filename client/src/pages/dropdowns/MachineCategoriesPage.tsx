@@ -38,7 +38,7 @@ export default function MachineCategoryPage() {
                 accessorKey: 'actions',
                 header: '',
                 maxSize: 50,
-                size: 120,
+                grow:false,
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row">
@@ -80,7 +80,8 @@ export default function MachineCategoryPage() {
             {
                 accessorKey: 'label',
                 header: 'Category',
-                size: 350,
+                minSize: 350,
+                grow:false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.value ? cell.row.original.value : ""}</>,
                 filterSelectOptions: categories && categories.map((i) => {

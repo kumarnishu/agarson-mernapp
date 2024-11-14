@@ -32,7 +32,8 @@ export default function CategoryWiseProductionReportPage() {
       {
         accessorKey: 'date',
         header: 'Date',
-        size: 150,
+        maxSize: 150,
+        grow:false,
         Footer: <b>Total</b>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => { return i.date.toString() }).filter(onlyUnique)

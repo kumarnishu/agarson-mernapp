@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { GetReminderRemarks } from '../../services/LeadsServices'
 import { BackendError } from '../..'
-import { Box, DialogTitle, LinearProgress, Stack } from '@mui/material'
+import { Box, DialogTitle,  Stack } from '@mui/material'
 
 import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
 import { Comment, Visibility } from '@mui/icons-material'
@@ -34,7 +34,7 @@ function CrmReminderPage() {
         header: '',
         maxSize: 50,
         Footer: <b></b>,
-        size: 120,
+        grow:false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -74,34 +74,39 @@ function CrmReminderPage() {
       {
         accessorKey: 'remark',
         header: ' Last Remark',
-        size: 320,
+        minSize: 320,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.remark ? cell.row.original.remark : ""}</>
       },
       {
         accessorKey: 'created_by.label',
         header: 'Creator',
-        size: 100,
+        minSize: 100,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
       },
       
       {
         accessorKey: 'stage',
         header: 'Stage',
-        size: 80,
+        minSize: 80,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.stage ? cell.row.original.stage : ""}</>
       },
 
       {
         accessorKey: 'remind_date',
         header: 'Next Call',
-        size: 180,
+        minSize: 180,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.remind_date ? cell.row.original.remind_date : ""}</>
       },
 
       {
         accessorKey: 'name',
         header: 'Name',
-        size: 250,
+        minSize: 250,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
         filterSelectOptions: remarks && remarks.map((i) => {
@@ -112,7 +117,8 @@ function CrmReminderPage() {
         accessorKey: 'city',
         header: 'City',
         filterVariant: 'multi-select',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
         filterSelectOptions: remarks && remarks.map((i) => {
           return i.city;
@@ -122,7 +128,8 @@ function CrmReminderPage() {
         accessorKey: 'state',
         header: 'State',
         filterVariant: 'multi-select',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
         filterSelectOptions: remarks && remarks.map((i) => {
           return i.state;
@@ -133,41 +140,48 @@ function CrmReminderPage() {
       {
         accessorKey: 'mobile',
         header: 'Mobile1',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.mobile ? cell.row.original.mobile : ""}</>
       }, {
         accessorKey: 'alternate_mobile1',
         header: 'Mobile2',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.alternate_mobile1 ? cell.row.original.alternate_mobile1 : ""}</>
       }, {
         accessorKey: 'alternate_mobile2',
         header: 'Mobile3',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.alternate_mobile2 ? cell.row.original.alternate_mobile2 : ""}</>
       },
       {
         accessorKey: 'created_at',
         header: 'TimeStamp',
-        size: 200,
+        minSize: 200,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
       },
       {
         accessorKey: 'referred_party_name',
         header: 'Refer Party',
-        size: 320,
+        minSize: 320,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.referred_party_name ? cell.row.original.referred_party_name : ""}</>
       },
       {
         accessorKey: 'referred_party_mobile',
         header: 'Refer Mobile',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.referred_party_mobile ? cell.row.original.referred_party_mobile : ""}</>
       },
       {
         accessorKey: 'referred_date',
         header: 'Refer Date',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.referred_date ? cell.row.original.referred_date : ""}</>
       },
      
@@ -175,13 +189,15 @@ function CrmReminderPage() {
       {
         accessorKey: 'customer_name',
         header: 'Customer',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.customer_name ? cell.row.original.customer_name : ""}</>
       }
       , {
         accessorKey: 'customer_designation',
         header: 'Designitaion',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.customer_designation ? cell.row.original.customer_designation : ""}</>
       }
 
@@ -189,14 +205,16 @@ function CrmReminderPage() {
       {
         accessorKey: 'email',
         header: 'Email',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.email ? cell.row.original.email : ""}</>
       }
       ,
       {
         accessorKey: 'alternate_email',
         header: 'Email2',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.alternate_email ? cell.row.original.alternate_email : ""}</>
       }
       ,
@@ -204,31 +222,36 @@ function CrmReminderPage() {
       {
         accessorKey: 'address',
         header: 'Address',
-        size: 320,
+        minSize: 320,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.address ? cell.row.original.address : ""}</>
       },
       {
         accessorKey: 'source',
         header: 'Lead Source',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.lead_source ? cell.row.original.lead_source : ""}</>
       },
       {
         accessorKey: 'type',
         header: 'Lead Type',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.lead_type ? cell.row.original.lead_type : ""}</>
       },
       {
         accessorKey: 'country',
         header: 'Country',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <>{cell.row.original.country ? cell.row.original.country : ""}</>
       },
       {
         accessorKey: 'visiting_card',
         header: 'Visiting Card',
-        size: 120,
+        minSize: 120,
+        grow:false,
         Cell: (cell) => <span onDoubleClick={() => {
           if (cell.row.original.visiting_card && cell.row.original.visiting_card) {
             DownloadFile(cell.row.original.visiting_card, 'visiting card')
@@ -293,9 +316,6 @@ function CrmReminderPage() {
 
   return (
     <Box>
-      {
-        isLoading && <LinearProgress />
-      }
       <DialogTitle sx={{ textAlign: 'center' }}>My Reminders - {remarks && remarks.length}</DialogTitle>
       {remark && <ViewRemarksDialog id={remark.lead_id} />}
       {remark && <CreateOrEditRemarkDialog lead={remark ? {

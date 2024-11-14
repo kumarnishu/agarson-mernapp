@@ -26,8 +26,8 @@ export default function SaleAnalysisReport() {
       {
         accessorKey: 'state',
         header: 'State',
-        size: 150,
-        width: '50',
+        minSize: 150,
+        grow:false,
         Footer: <h1>Total</h1>,
         filterVariant: 'multi-select',
         aggregationFn: 'count',
@@ -37,7 +37,8 @@ export default function SaleAnalysisReport() {
       {
         accessorKey: 'monthly_target',
         header: 'MONTHLY TARGET',
-        size: 120,
+        minSize: 120,
+        grow:false,
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.monthly_target) }, 0).toFixed(2)}</b>
@@ -45,7 +46,8 @@ export default function SaleAnalysisReport() {
       {
         accessorKey: 'monthly_achivement',
         header: 'MONTHLY ACHIVEMENT',
-        size: 120,
+        minSize: 120,
+        grow:false,
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.monthly_achivement) }, 0).toFixed(2)}</b>
@@ -53,7 +55,8 @@ export default function SaleAnalysisReport() {
       {
         accessorKey: 'monthly_percentage',
         header: 'MONTHLY PERCENTAGE',
-        size: 120,
+        minSize: 120,
+        grow:false,
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.monthly_percentage) }, 0).toFixed(2)}</b>
@@ -61,7 +64,8 @@ export default function SaleAnalysisReport() {
       {
         accessorKey: 'annual_target',
         header: 'ANNUAL TARGET',
-        size: 120,
+        minSize: 120,
+        grow:false,
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.annual_target) }, 0).toFixed(2)}</b>
@@ -69,7 +73,8 @@ export default function SaleAnalysisReport() {
       {
         accessorKey: 'annual_achivement',
         header: 'ANNUAL ACHIVEMENT',
-        size: 120,
+        minSize: 120,
+        grow:false,
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.annual_achivement) }, 0).toFixed(2)}</b>
@@ -77,7 +82,8 @@ export default function SaleAnalysisReport() {
       {
         accessorKey: 'annual_percentage',
         header: 'ANNUAL PERCENTAGE',
-        size: 120,
+        minSize: 120,
+        grow:false,
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.annual_percentage) }, 0).toFixed(2)}</b>
@@ -85,7 +91,8 @@ export default function SaleAnalysisReport() {
       {
         accessorKey: 'last_year_sale',
         header: 'LAST YEAR SALE',
-        size: 120,
+        minSize: 120,
+        grow:false,
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.last_year_sale) }, 0).toFixed(2)}</b>
@@ -93,7 +100,8 @@ export default function SaleAnalysisReport() {
       {
         accessorKey: 'last_year_sale_percentage_comparison',
         header: 'LAST YEAR PERCENTAGE COMPARISON',
-        size: 420,
+        minSize: 420,
+        grow:false,
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.last_year_sale_percentage_comparison) }, 0).toFixed(2)}</b>

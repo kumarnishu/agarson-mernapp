@@ -103,42 +103,48 @@ export default function BillsAgingReportPage() {
             {
                 accessorKey: 'created_at',
                 header: 'Created On',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 filterVariant: 'multi-select',
                 filterSelectOptions: reports.map((i) => { return i.created_at || "" }).filter(onlyUnique)
             },
             {
                 accessorKey: 'report_owner',
                 header: 'State',
-                size: 150,
+                minSize: 150,
+                grow:false,
                 filterVariant: 'multi-select',
                 filterSelectOptions: reports.map((i) => { return i.report_owner }).filter(onlyUnique)
             },
             {
                 accessorKey: 'account',
                 header: 'Account',
-                size: 350,
+                minSize: 350,
+                grow:false,
                 filterVariant: 'multi-select',
                 filterSelectOptions: reports.map((i) => { return i.account }).filter(onlyUnique)
 
             },
             {
                 accessorKey: 'total',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 header: 'Total'
             },
             {
                 accessorKey: 'plu70',
                 header: '>70',
                 aggregationFn: 'sum',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.plu70) }, 0).toFixed(2)}</b>
             },
             {
                 accessorKey: 'in70to90',
                 header: '70-90',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 aggregationFn: 'sum',
                 AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.in70to90) }, 0).toFixed(2)}</b>
@@ -146,7 +152,8 @@ export default function BillsAgingReportPage() {
             {
                 accessorKey: 'in90to120',
                 header: '90-120',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 aggregationFn: 'sum',
                 AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.in90to120) }, 0).toFixed(2)}</b>
@@ -155,7 +162,8 @@ export default function BillsAgingReportPage() {
                 accessorKey: 'plus120',
                 header: '>120',
                 aggregationFn: 'sum',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.plus120) }, 0).toFixed(2)}</b>
             }

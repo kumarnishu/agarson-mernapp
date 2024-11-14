@@ -237,6 +237,31 @@ export function FetchAllPermissions() {
             ]
         },
         {
+            label: 'Crm Activities',
+            permissions: [
+                {
+                    value: 'activities_view',
+                    label: 'view'
+                },
+                {
+                    value: 'activities_create',
+                    label: 'create'
+                },
+                {
+                    value: 'activities_edit',
+                    label: 'edit'
+                },
+                {
+                    value: 'activities_delete',
+                    label: 'delete'
+                },
+                {
+                    value: 'activities_export',
+                    label: 'export'
+                }
+            ]
+        },
+        {
             label: 'Checklists',
             permissions: [
                 {
@@ -469,31 +494,7 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
-            {
-                label: 'Activities Reports',
-                permissions: [
-                    {
-                        value: 'activities_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'activities_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'activities_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'activities_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'activities_export',
-                        label: 'export'
-                    }
-                ]
-            },
+           
             {
                 label: 'Assigned Refer Reports',
                 permissions: [

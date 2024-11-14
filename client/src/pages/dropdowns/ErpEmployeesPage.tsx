@@ -39,7 +39,7 @@ export default function ErpEmployeesPage() {
         header: '',
         maxSize: 50,
         Footer: <b></b>,
-        size: 120,
+        grow:false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -81,7 +81,8 @@ export default function ErpEmployeesPage() {
       {
         accessorKey: 'name',
         header: 'Employee',
-        size: 350,
+        minSize: 350,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
         filterSelectOptions: employees && employees.map((i) => {
@@ -91,7 +92,8 @@ export default function ErpEmployeesPage() {
       {
         accessorKey: 'display_name',
         header: 'Display Name',
-        size: 350,
+        minSize: 350,
+        grow:false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.display_name ? cell.row.original.display_name : ""}</>,
         filterSelectOptions: employees && employees.map((i) => {
@@ -102,7 +104,8 @@ export default function ErpEmployeesPage() {
       {
         accessorKey: 'assigned_users',
         header: 'Assigned Users',
-        size: 650,
+        minSize: 650,
+        grow:false,
         filterVariant: 'text',
         Cell: (cell) => <>{cell.row.original.assigned_employees ? cell.row.original.assigned_employees : ""}</>,
       }

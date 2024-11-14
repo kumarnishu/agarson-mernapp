@@ -17,8 +17,6 @@ function ReportDashboard() {
             user?.assigned_permissions.includes('last_year_client_sale_report_view') && tmpfeatures.push({ feature: 'Client Sale Last Year report', is_visible: true, url: "ClientSaleLastYearReportsPage" }),
             user?.assigned_permissions.includes('party_target_view') && tmpfeatures.push({ feature: 'Party Target report', is_visible: true, url: "PartyTargetReportsPage" }),
             user?.assigned_permissions.includes('sale_analysis_view') && tmpfeatures.push({ feature: 'Sale Analysis report', is_visible: true, url: "SaleAnalysisReport" }),
-
-            user?.assigned_permissions.includes('activities_view') && tmpfeatures.push({ feature: 'activities reports ', is_visible: true, url: "CrmActivitiesPage" })
         user?.assigned_permissions.includes('assignedrefer_view') && tmpfeatures.push({ feature: 'assigned refer reports', is_visible: true, url: "AssignedReferReportPage" })
         user?.assigned_permissions.includes('newrefer_view') && tmpfeatures.push({ feature: 'new customer reports ', is_visible: true, url: "NewReferReportPage" })
         user?.assigned_permissions.includes('shoe_weight_report_view') && tmpfeatures.push({ feature: 'Shoe Weight Difference report', is_visible: true, url: "ShowWeightDifferenceReportPage" })

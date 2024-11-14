@@ -117,6 +117,10 @@ function AppRoutes() {
                 < RemindersPage />
               }
               />}
+              {user?.assigned_permissions.includes('activities_view') && <Route path="CrmActivitiesPage" element={
+                <CrmActivitiesPage />
+              }
+              />}
               {user?.assigned_permissions.includes('checklist_view') && <Route path="CheckListPage" element={
                 < CheckListPage />
               }
@@ -192,10 +196,7 @@ function AppRoutes() {
                   <DyeStatusReportPage />
                 }
               />}
-              {user?.assigned_permissions.includes('activities_view') && <Route path="CrmActivitiesPage" element={
-                <CrmActivitiesPage />
-              }
-              />}
+              
               {user?.assigned_permissions.includes('assignedrefer_view') && <Route path="AssignedReferReportPage" element={
                 <AssignedReferReportPage />
               }

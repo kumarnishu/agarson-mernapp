@@ -103,53 +103,62 @@ export default function VisitReportPage() {
             {
                 accessorKey: 'employee',
                 header: 'Employee',
-                size: 150,
+                minSize: 150,
+                grow:false,
                 filterVariant: 'multi-select',
                 filterSelectOptions: reports.map((i) => { return i.employee }).filter(onlyUnique)
             },
             {
                 accessorKey: 'visit_date',
                 header: 'Visit Date',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 filterVariant: 'multi-select',
                 filterSelectOptions: reports.map((i) => { return i.created_at || "" }).filter(onlyUnique)
             },
             {
                 accessorKey: 'customer',
                 header: 'Customer',
-                size: 250,
+                minSize: 250,
+                grow:false,
             }
             ,
             {
                 accessorKey: 'intime',
                 header: 'in Time',
-                size: 120,
+                minSize: 120,
+                grow:false,
             },
             {
                 accessorKey: 'outtime',
                 header: 'Out Time',
-                size: 120,
+                minSize: 120,
+                grow:false,
             },
             {
                 accessorKey: 'visitInLocation',
                 header: 'Visit In Location',
-                size: 350,
+                minSize: 350,
+                grow:false,
             },
             {
                 accessorKey: 'visitOutLocation',
                 header: 'Visit Out Location',
-                size: 350,
+                minSize: 350,
+                grow:false,
             },
             {
                 accessorKey: 'remarks',
                 header: 'Remarks',
-                size: 350,
+                minSize: 350,
+                grow:false,
             },
 
             {
                 accessorKey: 'created_at',
                 header: 'Created On',
-                size: 120,
+                minSize: 120,
+                grow:false,
                 filterVariant: 'multi-select',
                 filterSelectOptions: reports.map((i) => { return i.created_at || "" }).filter(onlyUnique)
             },
