@@ -196,7 +196,7 @@ function CheckListAdminPage() {
                   {
                     cell.row.original.frequency == 'monthly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                       <Button
-                        sx={{ borderRadius: 4, maxHeight: '15px', minWidth: '10px', m: 0.3, px: 4 }}
+                        sx={{ borderRadius: 4, maxHeight: '15px', minWidth: '10px', m: 0.3 }}
                         onClick={() => {
                           setChecklistBox(b);
                           setChecklist(cell.row.original)
@@ -215,7 +215,7 @@ function CheckListAdminPage() {
                   {
                     cell.row.original.frequency == 'yearly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                       <Button
-                        sx={{ borderRadius: 4, maxHeight: '15px', minWidth: '10px', m: 0.3, px: 4 }}
+                        sx={{ borderRadius: 4, maxHeight: '15px', minWidth: '10px', m: 0.3 }}
                         onClick={() => {
                           console.log(new Date(b.date))
                           console.log(new Date(previous_date))
@@ -278,7 +278,7 @@ function CheckListAdminPage() {
                   {
                     cell.row.original.frequency == 'monthly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                       <Button
-                        sx={{ borderRadius: 4, maxHeight: '15px', minWidth: '10px', m: 0.3, px: 4 }}
+                        sx={{ borderRadius: 4, maxHeight: '15px', minWidth: '10px', m: 0.3 }}
                         onClick={() => {
                           setChecklistBox(b);
                           setChecklist(cell.row.original)
@@ -297,7 +297,7 @@ function CheckListAdminPage() {
                   {
                     cell.row.original.frequency == 'yearly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                       <Button
-                        sx={{ borderRadius: 4, maxHeight: '15px', minWidth: '10px', m: 0.3, px: 4 }}
+                        sx={{ borderRadius: 4, maxHeight: '15px', minWidth: '10px', m: 0.3 }}
                         onClick={() => {
                           console.log(new Date(b.date))
                           console.log(new Date(previous_date))

@@ -101,7 +101,7 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
                 assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
                 created_at: ch.created_at.toString(),
                 updated_at: ch.updated_at.toString(),
-                boxes: getBoxes(ch, ch.checklist_boxes),
+                boxes: [],
                 next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
                 photo: ch.photo?.public_url || "",
                 created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
