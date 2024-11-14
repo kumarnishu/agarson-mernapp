@@ -15,34 +15,37 @@ export const test = async (req: Request, res: Response, next: NextFunction) => {
     for (let i = 0; i < checklists.length; i++) {
         let ch = checklists[i]
         let boxes = await ChecklistBox.find({ checklist:checklists[i],date: { $gte: previousYear, $lte: today } })
-        if (ch.frequency == "monthly" || ch.frequency == "yearly"){
-            let finalboxes = boxes.slice(-3).map((bo) => {
-                return {
-                    _id: bo._id,
-                    stage: bo.stage,
-                    last_remark: bo.last_remark,
-                    checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                    date: bo.date.toString()
-                }
-            })
-            //@ts-ignore
-            ch.last_10_boxes = finalboxes
-            await ch.save();
+        if(boxes.length>6){
+            if (ch.frequency == "monthly" || ch.frequency == "yearly") {
+                let finalboxes = boxes.slice(-3).map((bo) => {
+                    return {
+                        _id: bo._id,
+                        stage: bo.stage,
+                        last_remark: bo.last_remark,
+                        checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+                        date: bo.date.toString()
+                    }
+                })
+                //@ts-ignore
+                ch.last_10_boxes = finalboxes
+                await ch.save();
+            }
+            else {
+                let finalboxes = boxes.slice(-6).map((bo) => {
+                    return {
+                        _id: bo._id,
+                        stage: bo.stage,
+                        last_remark: bo.last_remark,
+                        checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+                        date: bo.date.toString()
+                    }
+                })
+                //@ts-ignore
+                ch.last_10_boxes = finalboxes
+                await ch.save();
+            }
         }
-       else{
-            let finalboxes = boxes.slice(-6).map((bo) => {
-                return {
-                    _id: bo._id,
-                    stage: bo.stage,
-                    last_remark: bo.last_remark,
-                    checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                    date: bo.date.toString()
-                }
-            })
-            //@ts-ignore
-            ch.last_10_boxes = finalboxes
-            await ch.save();
-       }
+        
     }
 
     // let dt1 = new Date()
