@@ -1,5 +1,5 @@
 import { BuildOutlined, Comment, Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Search, Share, Visibility } from '@mui/icons-material'
-import {  Fade, IconButton, InputAdornment, LinearProgress, Menu, MenuItem, Select, TextField,  Typography } from '@mui/material'
+import { Fade, IconButton, InputAdornment, LinearProgress, Menu, MenuItem, Select, TextField, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
@@ -98,7 +98,7 @@ function UploadLeadsExcelButton() {
           :
           <>
             <Button
-              size="small"
+              
               variant="contained"
               component="label"
               color="inherit"
@@ -516,17 +516,17 @@ export default function LeadsPage() {
         color: 'white',
       }
     }),
-    muiTableHeadProps:()=>({
-      
+    muiTableHeadProps: () => ({
+
     }),
     muiTableHeadRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white',
         border: '1px solid lightgrey;',
-         '& span': {
+        '& span': {
           display: 'none',  // This hides any span within header cells
-        }, 
+        },
         '&:hover span': {
           display: 'flex',  // Hide span when hovering over the header cell
         },
@@ -547,7 +547,7 @@ export default function LeadsPage() {
         <Typography variant="h6">Leads</Typography>
         <TextField
           sx={{ width: '40vw' }}
-          size="small"
+          size='small'
           onChange={(e) => {
             setFilter(e.currentTarget.value)
           }}
@@ -599,7 +599,7 @@ export default function LeadsPage() {
         </Select>
         <Stack justifyContent={'right'} direction={'row'} gap={1}>
           {LoggedInUser?._id === LoggedInUser?.created_by.id && LoggedInUser?.assigned_permissions.includes('leads_delete') && <Tooltip title="Delete Selected Leads">
-            <Button size="small" variant='contained' color='error'
+            <Button  variant='contained' color='error'
 
               onClick={() => {
                 let data: any[] = [];
@@ -615,7 +615,7 @@ export default function LeadsPage() {
           </Tooltip>}
           {LoggedInUser?.assigned_permissions.includes('leads_create') && <UploadLeadsExcelButton />}
           <Tooltip title="Toogle Filter">
-            <Button size="small" color="inherit" variant='contained'
+            <Button  color="inherit" variant='contained'
               onClick={() => {
                 if (table.getState().showColumnFilters)
                   table.resetColumnFilters(true)
@@ -627,7 +627,7 @@ export default function LeadsPage() {
             </Button>
           </Tooltip>
           <Tooltip title="Toogle FullScreen">
-            <Button size="small" color="inherit" variant='contained'
+            <Button  color="inherit" variant='contained'
               onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
               }
             >
@@ -635,7 +635,7 @@ export default function LeadsPage() {
             </Button>
           </Tooltip>
           <Tooltip title="Menu">
-            <Button size="small" color="inherit" variant='contained'
+            <Button  color="inherit" variant='contained'
               onClick={(e) => setAnchorEl(e.currentTarget)
               }
             >
@@ -683,7 +683,7 @@ export default function LeadsPage() {
     }
   }, [sorting]);
 
-  
+
   return (
     <>
       {

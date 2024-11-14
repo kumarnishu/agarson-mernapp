@@ -214,7 +214,7 @@ export default function SoleThicknessPage() {
                         label="Start Date"
                         fullWidth
                         value={dates.start_date}
-                        focused
+                        variant="filled"
                         onChange={(e) => {
                             if (e.currentTarget.value) {
                                 setDates({
@@ -230,7 +230,7 @@ export default function SoleThicknessPage() {
                         type="date"
                         id="end_date"
                         label="End Date"
-                        focused
+                        variant="filled"
                         value={dates.end_date}
                         fullWidth
                         onChange={(e) => {
@@ -243,7 +243,7 @@ export default function SoleThicknessPage() {
                         }}
                     />
                     {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 && < TextField
-                        focused
+                        variant="filled"
                         size="small"
                         select
                         SelectProps={{

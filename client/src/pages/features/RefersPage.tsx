@@ -27,7 +27,7 @@ import React from "react"
 import { useMutation } from "react-query"
 import { styled } from "styled-components"
 import { BulkReferUpdateFromExcel } from "../../services/LeadsServices"
-import {  Snackbar } from "@mui/material"
+import { Snackbar } from "@mui/material"
 import { CreateOrEditReferFromExcelDto } from "../../dtos"
 
 const FileInput = styled.input`
@@ -92,7 +92,7 @@ function UploadRefersExcelButton() {
           :
           <>
             <Button
-              size="small"
+
               color="inherit"
               variant="contained"
               component="label"
@@ -336,14 +336,14 @@ export default function RefersPage() {
         size: 120,
         Cell: (cell) => <>{cell.row.original.mobile3 ? cell.row.original.mobile3 : ""}</>
       },
-      
+
       {
         accessorKey: 'last_remark',
         header: 'Remark',
         size: 350,
         Cell: (cell) => <>{cell.row.original.last_remark ? cell.row.original.last_remark : ""}</>,
       },
-      
+
       {
         accessorKey: 'refers',
         header: 'Refers',
@@ -399,7 +399,7 @@ export default function RefersPage() {
 
   const table = useMaterialReactTable({
     columns,
-    data: refers, columnFilterDisplayMode: 'popover', 
+    data: refers, columnFilterDisplayMode: 'popover',
     enableColumnResizing: true,
     enableColumnVirtualization: true, enableStickyFooter: true,
     muiTableFooterRowProps: () => ({
@@ -425,8 +425,8 @@ export default function RefersPage() {
 
         <Typography variant="h6">Customers</Typography>
         <TextField
-          sx={{ width: '40vw',p:0 }}
-          size="small"
+          sx={{ width: '40vw', p: 0 }}
+          size='small'
           onChange={(e) => {
             setFilter(e.currentTarget.value)
           }}
@@ -453,7 +453,7 @@ export default function RefersPage() {
         <Stack justifyContent={'right'} direction={'row'} gap={1}>
           {LoggedInUser?.assigned_permissions.includes('leads_create') && <UploadRefersExcelButton />}
           <Tooltip title="Toogle Filter">
-            <Button size="small" color="inherit" variant='contained'
+            <Button color="inherit" variant='contained'
               onClick={() => {
                 if (table.getState().showColumnFilters)
                   table.resetColumnFilters(true)
@@ -465,7 +465,7 @@ export default function RefersPage() {
             </Button>
           </Tooltip>
           <Tooltip title="Toogle FullScreen">
-            <Button size="small" color="inherit" variant='contained'
+            <Button color="inherit" variant='contained'
               onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
               }
             >
@@ -473,7 +473,7 @@ export default function RefersPage() {
             </Button>
           </Tooltip>
           <Tooltip title="Menu">
-            <Button size="small" color="inherit" variant='contained'
+            <Button color="inherit" variant='contained'
               onClick={(e) => setAnchorEl(e.currentTarget)
               }
             >

@@ -200,7 +200,7 @@ export default function ProductionPage() {
 
 
   const table = useMaterialReactTable({
-    columns, columnFilterDisplayMode: 'popover', 
+    columns, columnFilterDisplayMode: 'popover',
     data: productions,
     enableColumnResizing: true,
     enableColumnVirtualization: true, enableStickyFooter: true,
@@ -241,14 +241,13 @@ export default function ProductionPage() {
         {/* filter dates and person */}
         <Stack direction="row" gap={2} justifyContent={'end'}>
           < TextField
-
+            variant="filled"
             size="small"
             type="date"
             id="start_date"
             label="Start Date"
             fullWidth
             value={dates.start_date}
-            focused
             onChange={(e) => {
               if (e.currentTarget.value) {
                 setDates({
@@ -259,12 +258,11 @@ export default function ProductionPage() {
             }}
           />
           < TextField
-
+            variant="filled"
             size="small"
             type="date"
             id="end_date"
             label="End Date"
-            focused
             value={dates.end_date}
             fullWidth
             onChange={(e) => {
@@ -277,7 +275,7 @@ export default function ProductionPage() {
             }}
           />
           {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 && < TextField
-            focused
+            variant="filled"
             size="small"
             select
             SelectProps={{

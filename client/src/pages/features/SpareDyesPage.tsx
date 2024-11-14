@@ -24,7 +24,7 @@ import ViewSpareDyePhotoDialog from '../../components/dialogs/production/ViewSpa
 
 
 export default function SpareDyesPage() {
-    const [paginationData, setPaginationData] = useState({ limit: 100, page: 1, total: 1 });
+    const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
     const { user: LoggedInUser } = useContext(UserContext)
     const [spareDye, setSpareDye] = useState<GetSpareDyeDto>()
     const [spareDyes, setSpareDyes] = useState<GetSpareDyeDto[]>([])
@@ -232,14 +232,13 @@ export default function SpareDyesPage() {
                 {/* filter dates and person */}
                 <Stack direction="row" gap={2} justifyContent={'end'}>
                     < TextField
-
+                        variant="filled"
                         size="small"
                         type="date"
                         id="start_date"
                         label="Start Date"
                         fullWidth
                         value={dates.start_date}
-                        focused
                         onChange={(e) => {
                             if (e.currentTarget.value) {
                                 setDates({
@@ -250,12 +249,11 @@ export default function SpareDyesPage() {
                         }}
                     />
                     < TextField
-
+                        variant="filled"
                         size="small"
                         type="date"
                         id="end_date"
                         label="End Date"
-                        focused
                         value={dates.end_date}
                         fullWidth
                         onChange={(e) => {
@@ -268,9 +266,8 @@ export default function SpareDyesPage() {
                         }}
                     />
                     {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 && < TextField
-                        focused
                         size="small"
-                        select
+                        variant='filled'
                         SelectProps={{
                             native: true,
                         }}
