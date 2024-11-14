@@ -218,6 +218,7 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
                 </TextField>
                 < TextField
                     select
+                    variant='filled'
                     SelectProps={{
                         native: true
                     }}
@@ -248,6 +249,7 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
                 <InputLabel id="demo-multiple-checkbox-label">Users</InputLabel>
                 <Select
                     label="Users"
+                    variant='filled'
                     fullWidth
                     labelId="demo-multiple-checkbox-label"
                     id="demo-multiple-checkbox"
@@ -268,6 +270,7 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
 
                 <TextField
                     fullWidth
+                    variant='filled'
                     error={
                         formik.touched.photo && formik.errors.photo ? true : false
                     }

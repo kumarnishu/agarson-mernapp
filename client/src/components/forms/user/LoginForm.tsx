@@ -82,6 +82,7 @@ function LoginForm() {
             variant="filled"
             fullWidth
             required
+            focused
             error={
               formik.touched.username && formik.errors.username ? true : false
             }
@@ -95,6 +96,7 @@ function LoginForm() {
           <TextField
             variant="filled"
             required
+            focused
             error={
               formik.touched.password && formik.errors.password ? true : false
             }
