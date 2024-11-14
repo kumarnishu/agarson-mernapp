@@ -216,10 +216,10 @@ export const GetChecklistsReport = async (req: Request, res: Response, next: Nex
 
         else {
             checklists = await Checklist.find({ assigned_users: id }).populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('last_10_boxes').populate('assigned_users')
-            // .populate({
-            //     path: 'checklist_boxes',
-            //     match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-            // })
+            .populate({
+                path: 'checklist_boxes',
+                match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
+            })
             .sort('created_at').skip((page - 1) * limit).limit(limit)
             count = await Checklist.find({ user: id }).countDocuments()
         }
