@@ -116,18 +116,31 @@ export const GetMobileChecklists = async (req: Request, res: Response, next: Nex
     let checklists: IChecklist[] = []
     let result: GetChecklistDto[] = []
     let category = req.query.category
+    let stage = req.query.stage
     if (category) {
-        checklists = await Checklist.find({ active: true, category: category, assigned_users: req.user?._id }).populate('created_by').populate({
+        checklists = await Checklist.find({category: category, assigned_users: req.user?._id }).populate('created_by').populate({
             path: 'checklist_boxes',
             match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
         }).populate('lastcheckedbox').populate('updated_by').populate('category').populate('assigned_users').sort()
     }
     else
-        checklists = await Checklist.find({ active: true, assigned_users: req.user?._id }).populate('created_by').populate({
+        checklists = await Checklist.find({  assigned_users: req.user?._id }).populate('created_by').populate({
             path: 'checklist_boxes',
             match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
         }).populate('lastcheckedbox').populate('updated_by').populate('category').populate('assigned_users')
 
+    if (stage == "open") {
+        checklists = checklists.filter((ch) => {
+            return Boolean(!ch.lastcheckedbox)
+        })
+    }
+    if (stage == "pending" || stage == "done") {
+        checklists = checklists.filter((ch) => {
+            if (ch.lastcheckedbox)
+                return Boolean(ch.lastcheckedbox.stage == stage)
+        })
+    }
+    
     result = checklists.map((ch) => {
         return {
             _id: ch._id,
