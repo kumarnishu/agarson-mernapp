@@ -8,10 +8,10 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
-import { DropDownDto } from '../../../dtos';
+import { GetKeyCategoryDto } from '../../../dtos';
 import { CreateOrEditKeyCategory } from '../../../services/KeyServices';
 
-function CreateOrEditKeyCategoryForm({ category }: { category?: DropDownDto}) {
+function CreateOrEditKeyCategoryForm({ category }: { category?: GetKeyCategoryDto}) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
@@ -32,7 +32,7 @@ function CreateOrEditKeyCategoryForm({ category }: { category?: DropDownDto}) {
         category: string
     }>({
         initialValues: {
-            category: category ? category.value : ""
+            category: category ? category.category : ""
         },
         validationSchema:yup.object({
             category:yup.string().required()
@@ -41,7 +41,7 @@ function CreateOrEditKeyCategoryForm({ category }: { category?: DropDownDto}) {
             category: string,
         }) => {
             mutate({
-                id:category?.id,
+                id:category?._id,
                 body: {
                     key: values.category
                 }

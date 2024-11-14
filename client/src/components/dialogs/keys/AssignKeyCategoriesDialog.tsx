@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button,   InputLabel, Select, OutlinedInput, MenuItem, Checkbox, ListItemText } from '@mui/material'
 import { useContext, useEffect, useState } from 'react';
-import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
+import { ChoiceContext,  KeyChoiceActions } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { useMutation, useQuery } from 'react-query';
@@ -10,12 +10,11 @@ import AlertBar from '../../snacks/AlertBar';
 import { useFormik } from 'formik';
 import * as Yup from "yup"
 import { GetUsers } from '../../../services/UserServices';
-import { AssignCRMStatesToUsers } from '../../../services/LeadsServices';
-import { GetUserDto } from '../../../dtos';
-import { GetCrmStateDto } from '../../../dtos';
+import { GetKeyCategoryDto, GetUserDto } from '../../../dtos';
+import { AssignKeyCategoryToUsers } from '../../../services/KeyServices';
 
 
-function AssignKeyCategoriesDialog({ states, flag }: { states: GetCrmStateDto[], flag: number }) {
+function AssignKeyCategoriesDialog({ categories, flag }: { categories: GetKeyCategoryDto[], flag: number }) {
 
     const [users, setUsers] = useState<GetUserDto[]>([])
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', show_assigned_only: false }))
@@ -27,37 +26,37 @@ function AssignKeyCategoriesDialog({ states, flag }: { states: GetCrmStateDto[],
         <AxiosResponse<string>, BackendError, {
             body: {
                 user_ids: string[],
-                state_ids: string[],
+                categoryids: string[],
                 flag: number
             }
         }>
-        (AssignCRMStatesToUsers, {
+        (AssignKeyCategoryToUsers, {
             onSuccess: () => {
-                queryClient.invalidateQueries('crm_states')
+                queryClient.invalidateQueries('key_categories')
             }
         })
     const formik = useFormik<{
         user_ids: string[],
-        state_ids: string[],
+        categoryids: string[],
     }>({
         initialValues: {
             user_ids: [],
-            state_ids: states.map((item) => { return item._id })
+            categoryids: categories.map((item) => { return item._id })
         },
         validationSchema: Yup.object({
             user_ids: Yup.array()
                 .required('field'),
-            state_ids: Yup.array()
+            categoryids: Yup.array()
                 .required('field')
         }),
         onSubmit: (values: {
             user_ids: string[],
-            state_ids: string[]
+            categoryids: string[]
         }) => {
             mutate({
                 body: {
                     user_ids: values.user_ids,
-                    state_ids: states.map((item) => { return item._id }),
+                    categoryids: categories.map((item) => { return item._id }),
                     flag: flag
                 }
             })
@@ -73,27 +72,27 @@ function AssignKeyCategoriesDialog({ states, flag }: { states: GetCrmStateDto[],
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: LeadChoiceActions.close_lead });
-            formik.setValues({ user_ids: [], state_ids: [] });
+            setChoice({ type: KeyChoiceActions.close_key });
+            formik.setValues({ user_ids: [], categoryids: [] });
         }
     }, [isSuccess])
     return (
         <Dialog
             fullWidth
-            open={choice === LeadChoiceActions.bulk_assign_crm_states ? true : false}
+            open={choice === KeyChoiceActions.assign_categories ? true : false}
             onClose={() => {
-                setChoice({ type: LeadChoiceActions.close_lead });
-                formik.setValues({ user_ids: [], state_ids: [] });
+                setChoice({ type: KeyChoiceActions.close_key });
+                formik.setValues({ user_ids: [], categoryids: [] });
             }}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                setChoice({ type: LeadChoiceActions.close_lead });
-                formik.setValues({ user_ids: [], state_ids: [] });
+                setChoice({ type: KeyChoiceActions.close_key });
+                formik.setValues({ user_ids: [], categoryids: [] });
             }}>
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
-                {flag === 0 ? 'Remove States' : 'Assign States'}
+                {flag === 0 ? 'Remove categories' : 'Assign categories'}
             </DialogTitle>
             <DialogContent>
                 <Stack
@@ -101,11 +100,11 @@ function AssignKeyCategoriesDialog({ states, flag }: { states: GetCrmStateDto[],
                 >
                     <Typography variant="body1" color="error">
 
-                        {flag === 1 && `Warning ! This will assign ${states.length} States to the ${formik.values.user_ids.length} Users.`}
-                        {flag === 0 && `Warning ! This will remove  ${states.length} States from  ${formik.values.user_ids.length} Users.`}
+                        {flag === 1 && `Warning ! This will assign ${categories.length} categories to the ${formik.values.user_ids.length} Users.`}
+                        {flag === 0 && `Warning ! This will remove  ${categories.length} categories from  ${formik.values.user_ids.length} Users.`}
 
                     </Typography>
-                    <Button onClick={() => formik.setValues({ user_ids: [], state_ids: states.map((item) => { return item._id }) })}>Remove Selection</Button>
+                    <Button onClick={() => formik.setValues({ user_ids: [], categoryids: categories.map((item) => { return item._id }) })}>Remove Selection</Button>
                     <form onSubmit={formik.handleSubmit}>
 
                         <InputLabel id="demo-multiple-checkbox-label">Users</InputLabel>

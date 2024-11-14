@@ -8,6 +8,8 @@ import { CRMState } from "../models/crm-state";
 import Lead from "../models/lead";
 import { ReferredParty } from "../models/refer";
 import isMongoId from "validator/lib/isMongoId";
+
+
 export const AssignCRMCitiesToUsers = async (req: Request, res: Response, next: NextFunction) => {
     const { city_ids, user_ids, flag } = req.body as AssignOrRemoveCrmCityDto
 

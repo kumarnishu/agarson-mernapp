@@ -39,8 +39,8 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
     }>({
         initialValues: {
             key: keyitm ? keyitm.key : "",
-            category: keyitm ? keyitm.category.id : "",
-            type: keyitm ? keyitm.type : "",
+            category: keyitm ? keyitm.category : "",
+            type:  "",
         },
         validationSchema: yup.object({
             key: yup.string().required(),

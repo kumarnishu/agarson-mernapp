@@ -12,24 +12,26 @@ import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { DropDownDto } from '../../dtos'
+import { GetKeyCategoryDto } from '../../dtos'
 import { GetAllKeyCategories } from '../../services/KeyServices'
 import CreateOrEditKeyCategoryDialog from '../../components/dialogs/keys/CreateOrEditKeyCategoryDialog'
+import AssignKeyCategoriesDialog from '../../components/dialogs/keys/AssignKeyCategoriesDialog'
 
 
 
 export default function KeysCategoriesPage() {
-  const [category, setKeyCategory] = useState<DropDownDto>()
-  const [categories, setKeyCategorys] = useState<DropDownDto[]>([])
+  const [categories, setKeyCategorys] = useState<GetKeyCategoryDto[]>([])
+  const [category, setKeyCategory] = useState<GetKeyCategoryDto>()
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategories({ show_assigned_only: false }))
+  const [flag, setFlag] = useState(1);
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetKeyCategoryDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategories({ show_assigned_only: false }))
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
   const { setChoice } = useContext(ChoiceContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-  const columns = useMemo<MRT_ColumnDef<DropDownDto>[]>(
+  const columns = useMemo<MRT_ColumnDef<GetKeyCategoryDto>[]>(
     //column definitions...
     () => categories && [
       {
@@ -61,27 +63,24 @@ export default function KeysCategoriesPage() {
       },
 
       {
-        accessorKey: 'value',
+        accessorKey: 'category',
         header: 'Category',
         minSize: 350,
-        grow:false,
+        grow: false,
         filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.value ? cell.row.original.value : ""}</>,
+        Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category : ""}</>,
         filterSelectOptions: categories && categories.map((i) => {
-          return i.value;
+          return i.category;
         }).filter(onlyUnique)
       },
 
       {
-        accessorKey: 'label',
-        header: 'Display Name',
+        accessorKey: 'assigned_users',
+        header: 'Assigned Users',
         minSize: 350,
-        grow:false,
-        filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
-        filterSelectOptions: categories && categories.map((i) => {
-          return i.label;
-        }).filter(onlyUnique)
+        grow: false,
+        Cell: (cell) => <>{cell.row.original.assigned_users ? cell.row.original.assigned_users : ""}</>,
+
       },
 
     ],
@@ -193,6 +192,36 @@ export default function KeysCategoriesPage() {
               }}
 
             > Add New</MenuItem>}
+            {LoggedInUser?.assigned_permissions.includes('key_category_edit') && <MenuItem
+
+              onClick={() => {
+                if (!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()) {
+                  alert("select some key_category")
+                }
+                else {
+                  setChoice({ type: KeyChoiceActions.assign_categories })
+                  setKeyCategory(undefined)
+                  setFlag(1)
+                }
+                setAnchorEl(null)
+              }}
+            > Assign Categories</MenuItem>}
+            {LoggedInUser?.assigned_permissions.includes('key_category_edit') && <MenuItem
+
+              onClick={() => {
+                if (!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()) {
+                  alert("select some key_category")
+                }
+                else {
+                  setChoice({ type: KeyChoiceActions.assign_categories })
+                  setKeyCategory(undefined)
+                  setFlag(0)
+                }
+                setAnchorEl(null)
+              }}
+            > Remove Categories</MenuItem>}
+
+
             {LoggedInUser?.assigned_permissions.includes('key_category_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
             >Export All</MenuItem>}
@@ -202,6 +231,7 @@ export default function KeysCategoriesPage() {
 
           </Menu >
           <CreateOrEditKeyCategoryDialog category={category} />
+          {<AssignKeyCategoriesDialog flag={flag} categories={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
         </>
 
 

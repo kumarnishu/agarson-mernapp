@@ -44,6 +44,7 @@ export type GetChecklistDto = {
     serial_no: string
     work_title: string,
     work_description: string,
+    last_10_boxes: GetChecklistBoxDto[]
     photo: string,
     last_checked_box?: GetChecklistBoxDto,
     assigned_users: DropDownDto[],
@@ -145,9 +146,21 @@ export type GetCrmCityDto = {
     state: string;
     assigned_users: string;
 }
+export type GetKeyDto = {
+    _id: string,
+    key: string;
+    category: string;
+    assigned_users: string;
+}
 export type GetCrmStateDto = {
     _id: string,
     state: string,
+    assigned_users: string;
+}
+
+export type GetKeyCategoryDto = {
+    _id: string,
+    category: string,
     assigned_users: string;
 }
 
@@ -1087,16 +1100,6 @@ export type AssignPermissionForMultipleUserDto = {
     flag: number
 }
 
-export type GetKeyDto = {
-    _id: string,
-    key: string,
-    type: string,
-    category: DropDownDto,
-    created_at: string,
-    updated_at: string,
-    created_by: DropDownDto,
-    updated_by: DropDownDto
-}
 
 
 export type CreateOrEditKeyDto = {

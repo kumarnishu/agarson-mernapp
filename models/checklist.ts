@@ -12,6 +12,7 @@ export type IChecklist = {
     photo: Asset,
     serial_no:string,
     assigned_users: IUser[],
+    last_10_boxes:IChecklistBox[]
     lastcheckedbox: IChecklistBox,
     checklist_boxes: IChecklistBox[]
     link: string,
@@ -41,6 +42,12 @@ const ChecklistSchema = new mongoose.Schema<IChecklist, mongoose.Model<IChecklis
         required: true,
         index: true
     },
+    last_10_boxes:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'ChecklistBox'
+        }
+    ],
     lastcheckedbox: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'ChecklistBox'

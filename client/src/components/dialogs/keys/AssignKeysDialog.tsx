@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button,  InputLabel, Select, OutlinedInput, MenuItem, Checkbox, ListItemText } from '@mui/material'
 import { useContext, useEffect, useState } from 'react';
-import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
+import { ChoiceContext, KeyChoiceActions } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { useMutation, useQuery } from 'react-query';
@@ -10,12 +10,12 @@ import AlertBar from '../../snacks/AlertBar';
 import { useFormik } from 'formik';
 import * as Yup from "yup"
 import { GetUsers } from '../../../services/UserServices';
-import { DropDownDto } from '../../../dtos';
+import {  GetKeyDto } from '../../../dtos';
 import { GetUserDto } from '../../../dtos';
 import { AssignKeysToUsers } from '../../../services/KeyServices';
 
 
-function AssignKeysDialog({ keys, flag }: { keys: DropDownDto[], flag: number }) {
+function AssignKeysDialog({ keys, flag }: { keys: GetKeyDto[], flag: number }) {
     const [users, setUsers] = useState<GetUserDto[]>([])
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', show_assigned_only: false }))
 
@@ -40,7 +40,7 @@ function AssignKeysDialog({ keys, flag }: { keys: DropDownDto[], flag: number })
     }>({
         initialValues: {
             user_ids: [],
-            key_ids: keys.map((item) => { return item.id })
+            key_ids: keys.map((item) => { return item._id })
         },
         validationSchema: Yup.object({
             user_ids: Yup.array()
@@ -55,7 +55,7 @@ function AssignKeysDialog({ keys, flag }: { keys: DropDownDto[], flag: number })
             mutate({
                 body: {
                     user_ids: values.user_ids,
-                    key_ids: keys.map((item) => { return item.id }),
+                    key_ids: keys.map((item) => { return item._id }),
                     flag: flag
                 }
             })
@@ -71,21 +71,21 @@ function AssignKeysDialog({ keys, flag }: { keys: DropDownDto[], flag: number })
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: LeadChoiceActions.close_lead });
+            setChoice({ type: KeyChoiceActions.close_key });
             formik.setValues({ user_ids: [], key_ids: [] });
         }
     }, [isSuccess])
     return (
         <Dialog
             fullWidth
-            open={choice === LeadChoiceActions.bulk_assign_crm_cities ? true : false}
+            open={choice === KeyChoiceActions.assign_keys ? true : false}
             onClose={() => {
-                setChoice({ type: LeadChoiceActions.close_lead });
+                setChoice({ type: KeyChoiceActions.close_key });
                 formik.setValues({ user_ids: [], key_ids: [] });
             }}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                setChoice({ type: LeadChoiceActions.close_lead });
+                setChoice({ type: KeyChoiceActions.close_key });
                 formik.setValues({ user_ids: [], key_ids: [] });
             }}>
                 <Cancel fontSize='large' />
@@ -103,7 +103,7 @@ function AssignKeysDialog({ keys, flag }: { keys: DropDownDto[], flag: number })
                         {flag === 0 && `Warning ! This will remove  ${keys.length} States from  ${formik.values.user_ids.length} Users.`}
 
                     </Typography>
-                    <Button onClick={() => formik.setValues({ user_ids: [], key_ids: keys.map((item) => { return item.id }) })}>Remove Selection</Button>
+                    <Button onClick={() => formik.setValues({ user_ids: [], key_ids: keys.map((item) => { return item._id }) })}>Remove Selection</Button>
                     <form onSubmit={formik.handleSubmit}>
                         <InputLabel id="demo-multiple-checkbox-label">Users</InputLabel>
                         <Select

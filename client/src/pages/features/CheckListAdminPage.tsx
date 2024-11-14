@@ -40,10 +40,6 @@ function CheckListAdminPage() {
   const [checklistBox, setChecklistBox] = useState<GetChecklistBoxDto>()
   const [categoriesData, setCategoriesData] = useState<{ category: string, count: number }[]>([])
   const [userId, setUserId] = useState<string>('all')
-  const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
-    start_date: moment(new Date().setDate(new Date().getDate() - 6)).format("YYYY-MM-DD")
-    , end_date: moment(new Date().setDate(new Date().getDate() + 4)).format("YYYY-MM-DD")
-  })
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
@@ -55,7 +51,7 @@ function CheckListAdminPage() {
   let day = previous_date.getDate() - 3
   previous_date.setDate(day)
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'checklist_view', show_assigned_only: false }))
-  const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date, stage], async () => GetChecklistReports({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date, stage: stage }))
+  const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId,  stage], async () => GetChecklistReports({ limit: paginationData?.limit, page: paginationData?.page, id: userId, stage: stage }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { mutate: changedate } = useMutation
     <AxiosResponse<any>, BackendError, { id: string, next_date: string }>
@@ -146,11 +142,14 @@ function CheckListAdminPage() {
             user.value.toLowerCase().includes(filterValue.toLowerCase())
           );
         },
-      }, {
-        accessorKey: 'boxes',
-        header: 'Dates',
-        Cell: (cell) => userId !== 'all' ? <Stack direction="row" className="scrollable-stack" sx={{ height: '20px' }}>
-          {cell.row.original && cell.row.original.boxes.map((b) => (
+      }, 
+      {
+        accessorKey: 'last_10_boxes',
+        header: 'Last 10 boxes',
+        minSize: 250,
+        grow: true,
+        Cell: (cell) => <Stack direction="row" className="scrollable-stack" sx={{ height: '20px' }}>
+          {cell.row.original && cell.row.original.last_10_boxes.map((b) => (
             <>
               {
                 cell.row.original.frequency == 'daily' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
@@ -191,8 +190,7 @@ function CheckListAdminPage() {
               {
                 cell.row.original.frequency == 'monthly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                   <Button
-
-                    sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0.3, pl: 1 }}
+                    sx={{ borderRadius: 4, maxHeight: '15px', minWidth: '10px', m: 0.3, px: 4 }}
                     onClick={() => {
                       setChecklistBox(b);
                       setChecklist(cell.row.original)
@@ -211,7 +209,7 @@ function CheckListAdminPage() {
               {
                 cell.row.original.frequency == 'yearly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                   <Button
-                    sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0.3, pl: 1 }}
+                    sx={{ borderRadius: 4, maxHeight: '15px', minWidth: '10px', m: 0.3, px: 4 }}
                     onClick={() => {
                       console.log(new Date(b.date))
                       console.log(new Date(previous_date))
@@ -230,7 +228,12 @@ function CheckListAdminPage() {
               }
             </>
           ))}
-        </Stack> : <Tooltip title={cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}>
+        </Stack> 
+      },
+      {
+        accessorKey: 'last_checked_box',
+        header: 'Stage',
+        Cell: (cell) => <Tooltip title={cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}>
           <Button onClick={() => {
             setChecklist(cell.row.original)
             setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
@@ -250,14 +253,6 @@ function CheckListAdminPage() {
         minSize: 120,
         grow: true,
         Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
-      },
-
-      {
-        accessorKey: 'last_checked_date',
-        header: 'Last Checked Date',
-        minSize: 100,
-        grow: true,
-        Cell: (cell) => <>{cell.row.original.updated_at ? moment(cell.row.original.updated_at).format('DD/MM/YYYY') : ""}</>
       },
       {
         accessorKey: 'next_date',
@@ -356,43 +351,7 @@ function CheckListAdminPage() {
             justifyContent="right">
 
             <Stack justifyContent={'right'} pr={2} direction={'row'} gap={1}>
-              < TextField
-                variant='filled'
-                size="small"
-                type="date"
-                id="start_date"
-                label="Start Date"
-                fullWidth
-
-                value={dates.start_date}
-                onChange={(e) => {
-                  if (e.currentTarget.value) {
-                    setDates({
-                      ...dates,
-                      start_date: moment(e.target.value).format("YYYY-MM-DD")
-                    })
-                  }
-                }}
-              />
-              < TextField
-                variant='filled'
-                type="date"
-                id="end_date"
-                size="small"
-                label="End Date"
-                value={dates.end_date}
-
-                fullWidth
-                onChange={(e) => {
-                  setDates({
-                    ...dates,
-                    end_date: moment(e.target.value).format("YYYY-MM-DD")
-                  })
-                }}
-              />
-
-
-
+              
               {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
                 < TextField
                   variant='filled'

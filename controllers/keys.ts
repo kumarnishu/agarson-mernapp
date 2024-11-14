@@ -1,28 +1,33 @@
 import { NextFunction, Request, Response } from 'express';
 import { GetKeyDto } from "../dtos";
 import isMongoId from "validator/lib/isMongoId";
-import { Key } from '../models/keys';
-import moment from 'moment';
+import { IKey, Key } from '../models/keys';
 import { User } from '../models/user';
 
 export const GetAllKey = async (req: Request, res: Response, next: NextFunction) => {
-    let result = await Key.find().populate('category').populate('created_by').populate('updated_by').sort("key");
-    let data: GetKeyDto[];
+    let category = req.query.category;
+    let data:IKey[]
+    if (category && category !== 'all')
+        data = await Key.find().populate('category').sort("key");
+    else
+        data = await Key.find({ category: category }).populate('category').sort("key");
 
-    data = result.map((r) => {
-        return {
-            _id: r._id,
-            key: r.key,
-            type: r.type,
-            category: { id: r.category._id, value: r.category.category, label: r.category.category },
-            created_at: moment(r.created_at).format("DD/MM/YYYY"),
-            updated_at: moment(r.updated_at).format("DD/MM/YYYY"),
-            created_by: { id: r._id, value: r.created_by.username, label: r.created_by.username },
-            updated_by: { id: r._id, value: r.updated_by.username, label: r.updated_by.username }
-        }
-    });
-    return res.status(200).json(data)
+    let result: GetKeyDto[]=[];
+
+    for (let i = 0; i < data.length; i++) {
+        let users = await (await User.find({ assigned_keys: data[i]._id })).
+            map((i) => { return { _id: i._id.valueOf(), username: i.username } })
+        result.push(
+            {
+                _id: data[i]._id,
+                key: data[i].key,
+                category: data[i].category.category,
+                assigned_users: String(users.map((u) => { return u.username }))
+            });
+    }
+    return res.status(200).json(result)
 }
+
 
 export const CreateKey = async (req: Request, res: Response, next: NextFunction) => {
     let { key, category, type } = req.body as { key: string, category: string, type: string }
