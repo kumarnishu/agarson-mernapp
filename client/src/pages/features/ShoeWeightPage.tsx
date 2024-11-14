@@ -139,33 +139,21 @@ export default function ShoeWeightPage() {
         header: 'Photos',
         size: 160,
         Cell: (cell) => <>
-          {cell.row.original.shoe_photo1 && <IconButton
-            disabled={!LoggedInUser?.assigned_permissions.includes('shoe_weight_view')}
-            onClick={() => {
-              setWeight(cell.row.original)
-              setChoice({ type: ProductionChoiceActions.view_shoe_photo })
-            }}
-
-          ><Photo />
-          </IconButton>}
-          {cell.row.original.shoe_photo2 && <IconButton
-            disabled={!LoggedInUser?.assigned_permissions.includes('shoe_weight_view')}
-            onClick={() => {
-              setWeight(cell.row.original)
-              setChoice({ type: ProductionChoiceActions.view_shoe_photo2 })
-            }}
-
-          ><Photo />
-          </IconButton>}
-          {cell.row.original.shoe_photo3 && <IconButton
-            disabled={!LoggedInUser?.assigned_permissions.includes('shoe_weight_view')}
-            onClick={() => {
-              setWeight(cell.row.original)
-              setChoice({ type: ProductionChoiceActions.view_shoe_photo3 })
-            }}
-
-          ><Photo />
-          </IconButton>}
+          {cell.row.original.shoe_photo1 && <Photo onClick={() => {
+            setWeight(cell.row.original)
+            setChoice({ type: ProductionChoiceActions.view_shoe_photo })
+          }} sx={{ height: 15, width: 15,color:'grey',cursor:'pointer' }} />
+          }
+          {cell.row.original.shoe_photo2 && <Photo onClick={() => {
+            setWeight(cell.row.original)
+            setChoice({ type: ProductionChoiceActions.view_shoe_photo2 })
+          }} sx={{ height: 15, width: 15,color:'grey',cursor:'pointer' }} />
+          }
+          {cell.row.original.shoe_photo3 && <Photo onClick={() => {
+            setWeight(cell.row.original)
+            setChoice({ type: ProductionChoiceActions.view_shoe_photo3 })
+          }} sx={{ height: 15, width: 15,color:'grey',cursor:'pointer' }} />
+          }
         </>
       },
       {
@@ -333,14 +321,13 @@ export default function ShoeWeightPage() {
         {/* filter dates and person */}
         <Stack direction="row" gap={2} justifyContent={'end'}>
           < TextField
-
+            variant='filled'
             size="small"
             type="date"
             id="start_date"
             label="Start Date"
             fullWidth
             value={dates.start_date}
-            focused
             onChange={(e) => {
               if (e.currentTarget.value) {
                 setDates({
@@ -351,12 +338,11 @@ export default function ShoeWeightPage() {
             }}
           />
           < TextField
-
+            variant='filled'
             size="small"
             type="date"
             id="end_date"
             label="End Date"
-            focused
             value={dates.end_date}
             fullWidth
             onChange={(e) => {
@@ -369,9 +355,9 @@ export default function ShoeWeightPage() {
             }}
           />
           {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 && < TextField
-            focused
             size="small"
             select
+            variant='filled'
             SelectProps={{
               native: true,
             }}
