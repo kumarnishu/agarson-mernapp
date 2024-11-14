@@ -6,7 +6,7 @@ type UserChoices = "signup" | "reset_password_mail" | "close_user" | "new_user" 
 
 
 
-type CheckListChoices = "create_or_edit_checklist" | "create_or_edit_checklist_category" | "delete_checklist" | "close_checklist" | "bulk_delete_checklist" | "view_ checklist_box_remarks" | "create_or_edit_checklist_remark" | "view_checklist_remarks" | "delete_checklist_remark" | "assign_checklist_to_users"
+type CheckListChoices = "create_or_edit_checklist" | "create_or_edit_checklist_category" | "delete_checklist" | "close_checklist" | "bulk_delete_checklist" | "view_ checklist_box_remarks" | "create_or_edit_checklist_remark" | "view_checklist_remarks" | "delete_checklist_remark" | "assign_checklist_to_users" |"delete_checklist_category"
 
 
 type KeyChoices = "create_or_edit_key" | "create_or_edit_key_category" | "delete_key" | "close_key" | "bulk_delete_key" | "delete_key_category"
@@ -73,7 +73,8 @@ export enum CheckListChoiceActions {
   delete_checklist_remark = "delete_checklist_remark",
   create_or_edit_checklist_remark = "create_or_edit_checklist_remark",
   view_checklist_remarks = "view_checklist_remarks",
-  assign_checklist_to_users = "assign_checklist_to_users"
+  assign_checklist_to_users = "assign_checklist_to_users",
+  delete_checklist_category ="delete_checklist_category"
 }
 
 export enum PaymentsChoiceActions {
@@ -278,6 +279,7 @@ function reducer(state: ChoiceState | null, action: Action) {
     case CheckListChoiceActions.view_checklist_remarks: return type
     case CheckListChoiceActions.create_or_edit_checklist_remark: return type
     case CheckListChoiceActions.assign_checklist_to_users: return type
+    case CheckListChoiceActions.delete_checklist_category: return type
 
 
     case KeyChoiceActions.create_or_edit_key: return type
