@@ -45,6 +45,26 @@ export const test = async (req: Request, res: Response, next: NextFunction) => {
        }
     }
 
+    // let dt1 = new Date()
+    // dt1.setHours(0)
+    // dt1.setMinutes(0)
+    // let dt2 = new Date()
+    // dt2.setDate(dt1.getDate() + 1)
+    // dt2.setHours(0)
+    // dt2.setMinutes(0)
+    // let works = await Checklist.find({ frequency: 'daily' });
+    // for (let i = 0; i < works.length; i++) {
+    //     let work = works[i]
+    //     let box = await ChecklistBox.findOne({ checklist: works[i], date: { $gte: dt1, $lt: dt2 } })
+    //     if (box) {
+    //         let boxes = work.last_10_boxes.slice(1)
+    //         boxes.push(box)
+    //         work.last_10_boxes = boxes;
+    //         await work.save();
+    //     }
+        
+    // }
+
     // if (!req.file)
     //     return res.status(400).json({
     //         message: "please provide an Excel file",

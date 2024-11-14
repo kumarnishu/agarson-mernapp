@@ -117,10 +117,22 @@ function CheckListAdminPage() {
         grow: true,
       },
       {
+        accessorKey: 'last_checked_box',
+        header: 'Stage',
+        maxSize: 70,
+        grow: false,
+        Cell: (cell) => <Tooltip title={cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}>
+          <Button onClick={() => {
+            setChecklist(cell.row.original)
+            setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
+          }} size="small" sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0, p: 0.5 }} color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? toTitleCase(cell.row.original.last_checked_box.stage) : "Open"}</Button>
+        </Tooltip>
+      },
+      {
         accessorKey: 'work_title',
         header: ' Work Title',
         minSize: 350,
-        grow: true,
+        grow: false,
         Cell: (cell) => <span title={cell.row.original.work_description} >
           {cell.row.original.link && cell.row.original.link != "" ?
             <a style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
@@ -130,12 +142,12 @@ function CheckListAdminPage() {
             </span>
           }
         </span>
-      },
+      }, 
       {
         accessorKey: 'assigned_users.value',
         header: 'Responsible',
-        minSize: 160,
-        grow: true,
+        minSize: 120,
+        grow: false,
         filter: 'custom',
         enableColumnFilter: true,
         Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.value }).toString() || ""}</>,
@@ -147,6 +159,7 @@ function CheckListAdminPage() {
           );
         },
       },
+    
       {
         accessorKey: 'last_10_boxes',
         header: 'Filtered Dates',
@@ -320,30 +333,23 @@ function CheckListAdminPage() {
           }
         </>
       },
-      {
-        accessorKey: 'last_checked_box',
-        header: 'Stage',
-        Cell: (cell) => <Tooltip title={cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}>
-          <Button onClick={() => {
-            setChecklist(cell.row.original)
-            setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
-          }} size="small" sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0, p: 0.5 }} color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? toTitleCase(cell.row.original.last_checked_box.stage) : "Open"}</Button>
-        </Tooltip>
-      },
+     
       {
         accessorKey: 'category.value',
         header: ' Category',
         minSize: 120,
-        grow: true,
+        grow: false,
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
       },
       {
         accessorKey: 'frequency',
         header: ' Frequency',
         minSize: 120,
-        grow: true,
+        grow: false,
         Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
       },
+      
+     
       {
         accessorKey: 'next_date',
         header: 'Next Check Date',
@@ -440,7 +446,7 @@ function CheckListAdminPage() {
             alignItems={'center'}
             justifyContent="right">
 
-            <Stack justifyContent={'right'} pr={2} direction={'row'} gap={1}>
+            <Stack justifyContent={'right'}  direction={'row'} gap={1}>
               < TextField
                 variant='filled'
                 size="small"
@@ -545,7 +551,7 @@ function CheckListAdminPage() {
                       setChoice({ type: CheckListChoiceActions.bulk_delete_checklist })
                   }}
                 >
-                  <Delete sx={{ width: 20, height: 20 }} />
+                  <Delete sx={{ width: 15, height: 15 }} />
                 </Button>}
               {LoggedInUser?.assigned_permissions.includes('checklist_create') && <ChecklistExcelButtons />}
               <Tooltip title="Toogle Filter">

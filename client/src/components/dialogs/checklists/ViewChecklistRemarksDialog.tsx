@@ -44,7 +44,7 @@ function ViewChecklistRemarksDialog({ checklist }: { checklist: GetChecklistDto 
             </IconButton>
             <br />
             <br />
-            <Typography sx={{ textAlign: 'center', px: 2,mx:2, fontWeight: 600,minWidth:300 }}>{checklist.work_title.slice(0,70)}</Typography>
+            <Typography sx={{ textAlign: 'center', px: 2,mx:2, fontWeight: 600,minWidth:300 }}>Remarks History</Typography>
             <DialogContent>
                 <Stack direction="column" gap={2} >
                     {remarks && remarks.map((item, index) => {

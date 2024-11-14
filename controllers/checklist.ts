@@ -54,10 +54,7 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
         }
 
         else {
-            checklists = await Checklist.find({ assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes').populate({
-                path: 'checklist_boxes',
-                match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-            }).sort('serial_no').skip((page - 1) * limit).limit(limit)
+            checklists = await Checklist.find({ assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes').sort('serial_no').skip((page - 1) * limit).limit(limit)
             count = await Checklist.find({ assigned_users: id }).countDocuments()
         }
         if (stage == "open") {
@@ -187,7 +184,6 @@ export const GetMobileChecklists = async (req: Request, res: Response, next: Nex
     })
     return res.status(200).json(result)
 }
-
 export const GetChecklistsReport = async (req: Request, res: Response, next: NextFunction) => {
     let stage = req.query.stage
     let limit = Number(req.query.limit)
@@ -293,8 +289,6 @@ export const GetChecklistsReport = async (req: Request, res: Response, next: Nex
     else
         return res.status(400).json({ message: "bad request" })
 }
-
-
 export const CreateChecklist = async (req: Request, res: Response, next: NextFunction) => {
     let body = JSON.parse(req.body.body)
     const {
@@ -428,7 +422,6 @@ export const CreateChecklist = async (req: Request, res: Response, next: NextFun
     await checklist.save();
     return res.status(201).json({ message: `new Checklist added` });
 }
-
 export const EditChecklist = async (req: Request, res: Response, next: NextFunction) => {
 
     let body = JSON.parse(req.body.body)
@@ -503,7 +496,6 @@ export const ChangeNextDate = async (req: Request, res: Response, next: NextFunc
     })
     return res.status(200).json({ message: `Checklist next date updated` });
 }
-
 export const DeleteChecklist = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: " id not valid" })
@@ -523,7 +515,6 @@ export const DeleteChecklist = async (req: Request, res: Response, next: NextFun
     await checklist.remove()
     return res.status(200).json({ message: `Checklist deleted` });
 }
-
 export const CreateChecklistFromExcel = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetChecklistFromExcelDto[] = []
     let statusText: string = ""
@@ -747,7 +738,6 @@ export const CreateChecklistFromExcel = async (req: Request, res: Response, next
     }
     return res.status(200).json(result);
 }
-
 export const DownloadExcelTemplateForCreatechecklists = async (req: Request, res: Response, next: NextFunction) => {
     let checklists: GetChecklistFromExcelDto[] = [{
         _id: "umc3m9344343vn934",
@@ -787,7 +777,6 @@ export const DownloadExcelTemplateForCreatechecklists = async (req: Request, res
     let fileName = "CreateChecklistTemplate.xlsx"
     return res.download("./file", fileName)
 }
-
 export const AssignChecklistToUsers = async (req: Request, res: Response, next: NextFunction) => {
     const { checklist_ids, user_ids, flag } = req.body as AssignOrRemoveChecklistDto
     if (checklist_ids && checklist_ids.length === 0)
@@ -830,7 +819,6 @@ export const AssignChecklistToUsers = async (req: Request, res: Response, next: 
 
     return res.status(200).json({ message: "successfull" })
 }
-
 export const BulkDeleteChecklists = async (req: Request, res: Response, next: NextFunction) => {
     const { ids } = req.body as { ids: string[] }
     for (let i = 0; i < ids.length; i++) {
