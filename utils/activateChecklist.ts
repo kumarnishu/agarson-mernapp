@@ -12,6 +12,7 @@ export async function activateChecklist() {
         dt1.setHours(0)
         dt1.setMinutes(0)
         let dt2 = new Date()
+
         dt2.setDate(dt1.getDate() + 1)
         dt2.setHours(0)
         dt2.setMinutes(0)
@@ -32,7 +33,7 @@ export async function activateChecklist() {
 
     //weekly
     new CronJob("0 0 * * 1", async () => {
-        let works = await Checklist.find({ active: false, frequency: 'weekly' })
+        let works = await Checklist.find({ frequency: 'weekly' })
         for (let i = 0; i < works.length; i++) {
             let work = works[i]
             let box = await ChecklistBox.findOne({ checklist: works[i], date: { $gte: getPrevMonday(), $lt: getNextMonday() } })
@@ -49,7 +50,7 @@ export async function activateChecklist() {
 
     //monthly
     new CronJob("0 0 1 * *", async () => {
-        let works = await Checklist.find({ active: false, frequency: 'monthly' })
+        let works = await Checklist.find({  frequency: 'monthly' })
         for (let i = 0; i < works.length; i++) {
              let work = works[i];
             let box = await ChecklistBox.findOne({ checklist: works[i], date: { $gte: previousMonth, $lt: nextMonth } })
@@ -66,7 +67,7 @@ export async function activateChecklist() {
 
     //yearly
     new CronJob("0 0 1 1 *", async () => {
-        let works = await Checklist.find({ active: false, frequency: 'yearly' })
+        let works = await Checklist.find({  frequency: 'yearly' })
         for (let i = 0; i < works.length; i++) {
              let work = works[i];
             let box = await ChecklistBox.findOne({ checklist: works[i], date: { $gte: previousYear, $lt: nextYear } })
