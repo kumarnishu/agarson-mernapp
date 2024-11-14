@@ -71,7 +71,7 @@ function ChecklistPage() {
       {
         accessorKey: 'work_title',
         header: ' Work Title',
-        size: 300,
+        size: 350,
         Cell: (cell) => <span title={cell.row.original.work_description} >
           {cell.row.original.link && cell.row.original.link != "" ?
             <a style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
