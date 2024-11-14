@@ -20,12 +20,13 @@ import { ChangeChecklistNextDate, GetChecklistReports, GetChecklistTopBarDetails
 import { GetChecklistBoxDto, GetChecklistDto } from '../../dtos'
 import DeleteCheckListDialog from '../../components/dialogs/checklists/DeleteCheckListDialog'
 import CreateOrEditCheckListDialog from '../../components/dialogs/checklists/CreateOrEditCheckListDialog'
-import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
 import { queryClient } from '../../main'
 import { currentYear, getNextMonday, nextMonth } from '../../utils/datesHelper'
 import { ChecklistExcelButtons } from '../../components/buttons/ChecklistExcelButtons'
 import AssignChecklistsDialog from '../../components/dialogs/checklists/AssignChecklistsDialog'
 import BulkDeleteCheckListDialog from '../../components/dialogs/checklists/BulkDeleteCheckListDialog'
+import ViewChecklistBoxRemarksDialog from '../../components/dialogs/checklists/ViewChecklistBoxRemarksDialog'
+import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
 
 
 function CheckListAdminPage() {
@@ -155,7 +156,7 @@ function CheckListAdminPage() {
                     onClick={() => {
                       setChecklistBox(b);
                       setChecklist(cell.row.original)
-                      setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
+                      setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
                     }}
                     size="small"
                     disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) > new Date()}
@@ -173,7 +174,7 @@ function CheckListAdminPage() {
                     onClick={() => {
                       setChecklistBox(b);
                       setChecklist(cell.row.original)
-                      setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
+                      setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
                     }}
                     size="small"
                     disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= new Date(getNextMonday())}
@@ -188,11 +189,11 @@ function CheckListAdminPage() {
                 cell.row.original.frequency == 'monthly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                   <Button
 
-                    sx={{ borderRadius: 10, maxHeight: '15px', m: 0.3, pl: 1 }}
+                    sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0.3, pl: 1 }}
                     onClick={() => {
                       setChecklistBox(b);
                       setChecklist(cell.row.original)
-                      setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
+                      setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
 
                     }}
                     size="small"
@@ -207,13 +208,13 @@ function CheckListAdminPage() {
               {
                 cell.row.original.frequency == 'yearly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
                   <Button
-                    sx={{ borderRadius: 10, maxHeight: '15px', m: 0.3, pl: 1 }}
+                    sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0.3, pl: 1 }}
                     onClick={() => {
                       console.log(new Date(b.date))
                       console.log(new Date(previous_date))
                       setChecklistBox(b);
                       setChecklist(cell.row.original)
-                      setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
+                      setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
                     }}
                     size="small"
                     disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) > currentYear}
@@ -227,7 +228,10 @@ function CheckListAdminPage() {
             </>
           ))}
         </Stack> : <Tooltip title={cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}>
-          <Button size="small" sx={{ p: 0, m: 0 }} color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? toTitleCase(cell.row.original.last_checked_box.stage) : "Open"}</Button>
+            <Button onClick={() => {
+              setChecklist(cell.row.original)
+              setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
+            }}  size="small" sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0, p:0.5 }} color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? toTitleCase(cell.row.original.last_checked_box.stage) : "Open"}</Button>
         </Tooltip>
       },
       {
@@ -623,7 +627,8 @@ function CheckListAdminPage() {
       <CreateOrEditCheckListDialog checklist={checklist} setChecklist={setChecklist} />
       {checklist && <DeleteCheckListDialog checklist={checklist} />}
       {checklist && <CreateOrEditCheckListDialog checklist={checklist} setChecklist={setChecklist} />}
-      {checklist && checklistBox && <ViewChecklistRemarksDialog checklist={checklist} checklist_box={checklistBox} />}
+      {checklist && checklistBox && <ViewChecklistBoxRemarksDialog checklist={checklist} checklist_box={checklistBox} />}
+      {checklist  && <ViewChecklistRemarksDialog checklist={checklist} />}
       <MaterialReactTable table={table} />
       {<AssignChecklistsDialog flag={flag} checklists={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
       {table.getSelectedRowModel().rows && table.getSelectedRowModel().rows.length > 0 && <BulkDeleteCheckListDialog ids={table.getSelectedRowModel().rows.map((l) => { return l.original._id })} clearIds={() => { table.resetRowSelection() }} />}

@@ -68,6 +68,9 @@ export const ChangeChecklistNextDate = async ({ id, next_date }: { id: string, n
     return await apiClient.patch(`checklists/nextdate/${id}`, { next_date: next_date })
 }
 
+export const GetCheckListBoxRemarksHistory = async (id: string) => {
+    return await apiClient.get(`checklist/remarks/box/${id}`)
+}
 export const GetCheckListRemarksHistory = async (id: string) => {
     return await apiClient.get(`checklist/remarks/${id}`)
 }
