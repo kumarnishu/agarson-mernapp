@@ -38,7 +38,7 @@ function CheckListAdminPage() {
   const [stage, setStage] = useState('open')
   const [checklistBox, setChecklistBox] = useState<GetChecklistBoxDto>()
   const [categoriesData, setCategoriesData] = useState<{ category: string, count: number }[]>([])
-  const [userId, setUserId] = useState<string>()
+  const [userId, setUserId] = useState<string>('all')
   const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
     start_date: moment(new Date().setDate(new Date().getDate() - 6)).format("YYYY-MM-DD")
     , end_date: moment(new Date().setDate(new Date().getDate() + 4)).format("YYYY-MM-DD")
@@ -112,7 +112,7 @@ function CheckListAdminPage() {
       {
         accessorKey: 'serial_no',
         header: ' No',
-        size: 50
+        size: 70
       },
       {
         accessorKey: 'work_title',
@@ -145,8 +145,7 @@ function CheckListAdminPage() {
       }, {
         accessorKey: 'boxes',
         header: 'Dates',
-        size: 300,
-        Cell: (cell) => userId ? <Stack direction="row" className="scrollable-stack" sx={{ height: '20px' }}>
+        Cell: (cell) => userId!=='all' ? <Stack direction="row" className="scrollable-stack" sx={{ height: '20px' }}>
           {cell.row.original && cell.row.original.boxes.map((b) => (
             <>
               {
@@ -424,7 +423,7 @@ function CheckListAdminPage() {
                   label="Person"
                   fullWidth
                 >
-                  <option key={'00'} value={undefined}>
+                  <option key={'00'} value={'all'}>All
                   </option>
                   {
                     users.map((user, index) => {
@@ -447,7 +446,7 @@ function CheckListAdminPage() {
                       setChoice({ type: CheckListChoiceActions.bulk_delete_checklist })
                   }}
                 >
-                  <Delete sx={{ width: 25, height: 25 }} />
+                  <Delete sx={{ width: 20, height: 20 }} />
                 </Button>}
               {LoggedInUser?.assigned_permissions.includes('checklist_create') && <ChecklistExcelButtons />}
               <Tooltip title="Toogle Filter">

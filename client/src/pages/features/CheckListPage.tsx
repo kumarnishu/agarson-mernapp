@@ -31,7 +31,7 @@ function ChecklistPage() {
   const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
   const [checklistBox, setChecklistBox] = useState<GetChecklistBoxDto>()
   const [categories, setCategories] = useState<DropDownDto[]>([])
-  const [userId, setUserId] = useState<string>()
+  const [userId, setUserId] = useState<string>('all')
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
@@ -65,7 +65,7 @@ function ChecklistPage() {
       {
         accessorKey: 'serial_no',
         header: ' #',
-        size: 50
+        size: 70
       },
       {
         accessorKey: 'work_title',
@@ -98,8 +98,7 @@ function ChecklistPage() {
       }, {
         accessorKey: 'boxes',
         header: 'Dates',
-        size: 200,
-        Cell: (cell) => userId ? <Stack direction="row" className="scrollable-stack" sx={{ height: '30px' }}>
+        Cell: (cell) => userId !=='all' ? <Stack direction="row" className="scrollable-stack" sx={{ height: '30px' }}>
           {cell.row.original && cell.row.original.boxes.map((b) => (
             <>
               {
@@ -323,7 +322,7 @@ function ChecklistPage() {
                   label="Person"
                   fullWidth
                 >
-                  <option key={'00'} value={undefined}>
+                  <option key={'00'} value={'all'}>All
                   </option>
                   {
                     users.map((user, index) => {
