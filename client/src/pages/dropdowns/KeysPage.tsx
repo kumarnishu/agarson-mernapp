@@ -76,7 +76,17 @@ export default function KeysPage() {
                     return i.key;
                 }).filter(onlyUnique)
             },
-
+            {
+                accessorKey: 'type',
+                header: 'Type',
+                minSize: 350,
+                grow: false,
+                filterVariant: 'multi-select',
+                Cell: (cell) => <>{cell.row.original.type ? cell.row.original.type : ""}</>,
+                filterSelectOptions: keys && keys.map((i) => {
+                    return i.type;
+                }).filter(onlyUnique)
+            },
             {
                 accessorKey: 'category',
                 header: 'Category',
