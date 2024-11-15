@@ -25,7 +25,7 @@ export const GetAllKey = async (req: Request, res: Response, next: NextFunction)
                 _id: data[i]._id,
                 key: data[i].key,
                 type: data[i].type,
-                category: data[i].category.category,
+                category: { id: data[i].category._id, label: data[i].category.category, value: data[i].category.category },
                 assigned_users: String(users.map((u) => { return u.username }))
             });
     }

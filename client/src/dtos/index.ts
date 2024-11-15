@@ -149,7 +149,7 @@ export type GetCrmCityDto = {
 export type GetKeyDto = {
     _id: string,
     key: string;
-    category: string;
+    category: DropDownDto;
     type: string;
     assigned_users: string;
 }

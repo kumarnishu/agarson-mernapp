@@ -51,6 +51,7 @@ export default function ExcelDBPage() {
         return {
           accessorKey: item.key, header: item.header,
           aggregationFn: 'sum', grow: true,
+          Cell: (cell) => parseFloat(Number(cell.cell.getValue()).toFixed(2)),
           AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
           //@ts-ignore
           Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>

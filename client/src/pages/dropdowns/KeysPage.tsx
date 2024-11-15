@@ -88,12 +88,11 @@ export default function KeysPage() {
                 }).filter(onlyUnique)
             },
             {
-                accessorKey: 'category',
+                accessorKey: 'category.value',
                 header: 'Category',
                 minSize: 150,
                 grow: false,
-                filterVariant: 'multi-select',
-                Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category : ""}</>
+                Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.value : ""}</>
 
             },
             {
