@@ -115,9 +115,9 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
                     }
                     {...formik.getFieldProps('category')}
                 >
-                    <option key={0} value={undefined}>
+                    {!keyitm&&<option key={0} value={undefined}>
                         Select Category
-                    </option>
+                    </option>}
                     {
                         categories && categories.map(state => {
                             return (<option key={state.id} value={state.id}>

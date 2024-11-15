@@ -68,7 +68,7 @@ export default function KeysPage() {
             {
                 accessorKey: 'key',
                 header: 'Key',
-                minSize: 350,
+                minSize: 150,
                 grow: false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.key ? cell.row.original.key : ""}</>,
@@ -79,7 +79,7 @@ export default function KeysPage() {
             {
                 accessorKey: 'type',
                 header: 'Type',
-                minSize: 350,
+                minSize: 150,
                 grow: false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.type ? cell.row.original.type : ""}</>,
@@ -90,7 +90,7 @@ export default function KeysPage() {
             {
                 accessorKey: 'category',
                 header: 'Category',
-                minSize: 350,
+                minSize: 150,
                 grow: false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category : ""}</>
@@ -99,7 +99,7 @@ export default function KeysPage() {
             {
                 accessorKey: 'assigned_users',
                 header: 'Assigned Users',
-                minSize: 150,
+                minSize: 350,
                 grow: false,
                 Cell: (cell) => <>{cell.row.original.assigned_users ? cell.row.original.assigned_users : ""}</>
 
