@@ -150,6 +150,7 @@ export type GetKeyDto = {
     _id: string,
     key: string;
     category: string;
+    type: string;
     assigned_users: string;
 }
 export type GetCrmStateDto = {

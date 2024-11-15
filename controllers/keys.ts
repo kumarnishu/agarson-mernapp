@@ -6,13 +6,16 @@ import { User } from '../models/user';
 
 export const GetAllKey = async (req: Request, res: Response, next: NextFunction) => {
     let category = req.query.category;
-    let data:IKey[]
-    if (category && category !== 'all')
+
+    let data: IKey[]
+    if (category == 'all')
         data = await Key.find().populate('category').sort("key");
     else
         data = await Key.find({ category: category }).populate('category').sort("key");
 
-    let result: GetKeyDto[]=[];
+
+
+    let result: GetKeyDto[] = [];
 
     for (let i = 0; i < data.length; i++) {
         let users = await (await User.find({ assigned_keys: data[i]._id })).
@@ -21,6 +24,7 @@ export const GetAllKey = async (req: Request, res: Response, next: NextFunction)
             {
                 _id: data[i]._id,
                 key: data[i].key,
+                type: data[i].type,
                 category: data[i].category.category,
                 assigned_users: String(users.map((u) => { return u.username }))
             });
@@ -118,20 +122,19 @@ export const AssignKeysToUsers = async (req: Request, res: Response, next: NextF
         }
     }
     else for (let k = 0; k < owners.length; k++) {
-        const user = await User.findById(owners[k]).populate('assigned_keys')
+        const user = await User.findById(owners[k])
         if (user) {
-            let assigned_keys = user.assigned_keys;
-            for (let i = 0; i <= key_ids.length; i++) {
-                if (!assigned_keys.map(i => { return i._id.valueOf() }).includes(key_ids[i])) {
-                    let emp = await Key.findById(key_ids[i]);
-                    if (emp)
-                        assigned_keys.push(emp)
+            let assigned_keys: any[] = user.assigned_keys;
+            for (let i = 0; i < key_ids.length; i++) {
+                if (!assigned_keys.includes(key_ids[i])) {
+                    assigned_keys.push(key_ids[i])
                 }
             }
-
             user.assigned_keys = assigned_keys
             await user.save();
         }
 
     }
+
+    return res.status(200).json({ message: "successfull" })
 }

@@ -1,18 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
-import {  GetKeyCategoryDto } from "../dtos";
+import { DropDownDto, GetKeyCategoryDto } from "../dtos";
 import isMongoId from "validator/lib/isMongoId";
 import { IKeyCategory, KeyCategory } from "../models/key-category";
 import { User } from '../models/user';
 import { Key } from '../models/keys';
+import { log } from 'console';
 
 export const GetAllKeyCategory = async (req: Request, res: Response, next: NextFunction) => {
-    let assigned_keycategories: any[] = req.user.assigned_keycategories;
-    let show_assigned_only = req.query.show_assigned_only
     let data: IKeyCategory[] = []
-    if (show_assigned_only)
-        data = await KeyCategory.find({ _id: { $in: assigned_keycategories } });
-    else
-        data = await KeyCategory.find();
+    data = await KeyCategory.find();
     let result: GetKeyCategoryDto[] = [];
     for (let i = 0; i < data.length; i++) {
         let users = await (await User.find({ assigned_keycategories: data[i]._id })).map((i) => { return { _id: i._id.valueOf(), username: i.username } })
@@ -20,6 +16,21 @@ export const GetAllKeyCategory = async (req: Request, res: Response, next: NextF
     }
     return res.status(200).json(result)
 }
+
+export const GetAllKeyCategoryForDropDown = async (req: Request, res: Response, next: NextFunction) => {
+    let assigned_keycategories: any[] = req.user.assigned_keycategories;
+    let show_assigned_only = req.query.show_assigned_only
+    let data: IKeyCategory[] = []
+    if (show_assigned_only)
+        data = await KeyCategory.find({ _id: { $in: assigned_keycategories } });
+    else
+        data = await KeyCategory.find();
+
+    let result: DropDownDto[] = [];
+    result = data.map((R) => { return { id: R._id, label: R.category, value: R.category } })
+    return res.status(200).json(result)
+}
+
 
 
 export const CreateKeyCategory = async (req: Request, res: Response, next: NextFunction) => {
@@ -112,20 +123,18 @@ export const AssignKeyCategoriesToUsers = async (req: Request, res: Response, ne
     }
     else {
         for (let k = 0; k < owners.length; k++) {
-            const user = await User.findById(owners[k]).populate('assigned_keycategories').populate('assigned_keys');
-            console
+            const user = await User.findById(owners[k])
+            log(user)
             if (user) {
-                let assigned_categorys = user.assigned_keycategories;
-                for (let i = 0; i <= categoryids.length; i++) {
-                    if (!assigned_categorys.map(i => { return i._id.valueOf() }).includes(categoryids[i])) {
-                        let category = await KeyCategory.findById(categoryids[i]);
-                        if (category)
-                            assigned_categorys.push(category)
+                let assigned_categorys: any[] = user.assigned_keycategories;
+                for (let i = 0; i < categoryids.length; i++) {
+                    if (!assigned_categorys.includes(categoryids[i])) {
+                        assigned_categorys.push(categoryids[i])
                     }
                 }
 
                 user.assigned_keycategories = assigned_categorys
-                let keys = await Key.find({ category: { $in: assigned_categorys.map(i => { return i.category }) } })
+                let keys = await Key.find({ category: { $in: assigned_categorys } })
                 user.assigned_keys = keys;
                 await user.save();
             }

@@ -2,11 +2,11 @@ import { useContext, useEffect, useMemo, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Box, Button, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Fade, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
-import { GetUserDto } from '../../dtos'
+import { GetChecklistFromExcelDto, GetUserDto } from '../../dtos'
 import { DropDownDto } from '../../dtos'
 import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { CheckListChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
@@ -20,7 +20,8 @@ import { currentYear, getNextMonday, getPrevMonday, nextMonth, nextYear, previou
 import { toTitleCase } from '../../utils/TitleCase'
 import ViewChecklistBoxRemarksDialog from '../../components/dialogs/checklists/ViewChecklistBoxRemarksDialog'
 import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
-
+import { Menu as MenuIcon } from '@mui/icons-material';
+import ExportToExcel from '../../utils/ExportToExcel'
 
 
 function ChecklistPage() {
@@ -41,6 +42,7 @@ function ChecklistPage() {
   const { setChoice } = useContext(ChoiceContext)
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   let previous_date = new Date()
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   let day = previous_date.getDate() - 1
   previous_date.setDate(day)
   previous_date.setHours(0, 0, 0, 0)
@@ -370,6 +372,15 @@ function ChecklistPage() {
                   {table.getState().isFullScreen ? <FullscreenExit /> : <Fullscreen />}
                 </Button>
               </Tooltip>
+              <Tooltip title="Menu" sx={{ pl: 1 }}>
+                <Button size="small" color="inherit" variant='contained'
+                  onClick={(e) => setAnchorEl(e.currentTarget)
+                  }
+                >
+                  <MenuIcon />
+                  <Typography pl={1}> {`Menu `}</Typography>
+                </Button>
+              </Tooltip>
             </Stack>
           </Stack>
         </Stack>
@@ -423,7 +434,58 @@ function ChecklistPage() {
 
   return (
     <>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={() => setAnchorEl(null)
+        }
+        TransitionComponent={Fade}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+        sx={{ borderRadius: 2 }}
+      >
+        {LoggedInUser?.assigned_permissions.includes('checklist_export') && < MenuItem onClick={() => {
 
+          let data: GetChecklistFromExcelDto[] = []
+          data = table.getRowModel().rows.map((row) => {
+            return {
+              _id: row.original._id,
+              serial_no: row.original.serial_no,
+              work_title: row.original.work_title,
+              work_description: row.original.work_description,
+              category: row.original.category.value,
+              frequency: row.original.frequency,
+              link: row.original.link,
+              assigned_users: row.original.assigned_users.map((u) => { return u.value }).toString(),
+              status: ""
+            }
+          })
+          ExportToExcel(data, "Checklists Data")
+        }
+        }
+        >Export All</MenuItem>}
+        {LoggedInUser?.assigned_permissions.includes('checklist_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => {
+          let data: GetChecklistFromExcelDto[] = []
+          data = table.getSelectedRowModel().rows.map((row) => {
+            return {
+              _id: row.original._id,
+              serial_no: row.original.serial_no,
+              work_title: row.original.work_title,
+              work_description: row.original.work_description,
+              category: row.original.category.value,
+              frequency: row.original.frequency,
+              link: row.original.link,
+              assigned_users: row.original.assigned_users.map((u) => { return u.value }).toString(),
+              status: ""
+            }
+          }
+          )
+          ExportToExcel(data, "Checklists Data")
+        }}
+
+        >Export Selected</MenuItem>}
+      </Menu>
       <MaterialReactTable table={table} />
       {checklist && checklistBox && <ViewChecklistBoxRemarksDialog checklist={checklist} checklist_box={checklistBox} />}
       {checklist && <ViewChecklistRemarksDialog checklist={checklist} />}

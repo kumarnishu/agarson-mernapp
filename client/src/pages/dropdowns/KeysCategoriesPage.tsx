@@ -24,7 +24,7 @@ export default function KeysCategoriesPage() {
   const [category, setKeyCategory] = useState<GetKeyCategoryDto>()
   const { user: LoggedInUser } = useContext(UserContext)
   const [flag, setFlag] = useState(1);
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetKeyCategoryDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategories({ show_assigned_only: false }))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetKeyCategoryDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategories())
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 

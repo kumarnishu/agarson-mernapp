@@ -42,19 +42,19 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
     if (!Number.isNaN(limit) && !Number.isNaN(page)) {
         if (req.user?.is_admin && id == 'all') {
             {
-                checklists = await Checklist.find().populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes').sort('serial_no').skip((page - 1) * limit).limit(limit)
+                checklists = await Checklist.find().populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes').sort('created_at').skip((page - 1) * limit).limit(limit)
                 count = await Checklist.find().countDocuments()
 
             }
         }
         else if (id == 'all') {
-            checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('lastcheckedbox').populate('last_10_boxes').populate('assigned_users').sort('serial_no').skip((page - 1) * limit).limit(limit)
+            checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('lastcheckedbox').populate('last_10_boxes').populate('assigned_users').sort('created_at').skip((page - 1) * limit).limit(limit)
             count = await Checklist.find({ assigned_users: req.user?._id }).countDocuments()
 
         }
 
         else {
-            checklists = await Checklist.find({ assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes').sort('serial_no').skip((page - 1) * limit).limit(limit)
+            checklists = await Checklist.find({ assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes').sort('created_at').skip((page - 1) * limit).limit(limit)
             count = await Checklist.find({ assigned_users: id }).countDocuments()
         }
         if (stage == "open") {
@@ -127,13 +127,13 @@ export const GetMobileChecklists = async (req: Request, res: Response, next: Nex
         checklists = await Checklist.find({ category: category, assigned_users: req.user?._id }).populate('created_by').populate({
             path: 'checklist_boxes',
             match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-        }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users').sort()
+        }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users').sort('created_at')
     }
     else
         checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate({
             path: 'checklist_boxes',
             match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-        }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users')
+        }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users').sort('created_at')
 
     if (stage == "open") {
         checklists = checklists.filter((ch) => {

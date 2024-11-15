@@ -9,7 +9,7 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState
 import { DropDownDto, IColumnRowData } from '../../dtos'
 import { GetExcelDbReport } from '../../services/ExcelDbService'
 import { ExcelDbButtons } from '../../components/buttons/ExcelDbButtons'
-import { GetAllKeyCategories } from '../../services/KeyServices'
+import { GetAllKeyCategoriesForDropdown } from '../../services/KeyServices'
 import moment from 'moment'
 
 
@@ -20,7 +20,7 @@ export default function ExcelDBPage() {
   const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
   const { user } = useContext(UserContext)
   const { data, isLoading, isSuccess, refetch } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb", category], async () => GetExcelDbReport(category), { enabled: false })
-  const { data: categoryData, isSuccess: isSuccessCategories } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategories({ show_assigned_only: false }))
+  const { data: categoryData, isSuccess: isSuccessCategories } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategoriesForDropdown({ show_assigned_only: true }))
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
@@ -60,10 +60,14 @@ export default function ExcelDBPage() {
     [reports, reportcolumns],
     //end
   );
+
+
   useEffect(() => {
     if (category !== "")
       refetch()
   }, [category])
+
+
   useEffect(() => {
     if (isSuccessCategories && categoryData) {
       setKeyCategorys(categoryData.data);
@@ -71,11 +75,11 @@ export default function ExcelDBPage() {
   }, [categoryData, isSuccessCategories]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && data) {
       setReports(data.data.rows);
       setReportColumns(data.data.columns)
     }
-  }, [isSuccess]);
+  }, [isSuccess, data]);
 
   const table = useMaterialReactTable({
     //@ts-ignore

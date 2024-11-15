@@ -7,27 +7,32 @@ import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import { KeyChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import { Edit } from '@mui/icons-material'
-import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
+import { Fade, IconButton, Menu, MenuItem, TextField, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { GetKeyDto } from '../../dtos'
-import { GetAllKeys } from '../../services/KeyServices'
+import { DropDownDto, GetKeyDto } from '../../dtos'
+import { GetAllKeyCategoriesForDropdown, GetAllKeys } from '../../services/KeyServices'
 import CreateOrEditKeyDialog from '../../components/dialogs/keys/CreateOrEditKeyDialog'
 import AssignKeysDialog from '../../components/dialogs/keys/AssignKeysDialog'
+import { toTitleCase } from '../../utils/TitleCase'
 
 
 export default function KeysPage() {
     const [key, setkey] = useState<GetKeyDto>()
     const [keys, setkeys] = useState<GetKeyDto[]>([])
+    const [category, setKeyCategory] = useState<string>('all')
     const { user: LoggedInUser } = useContext(UserContext)
-    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetKeyDto[]>, BackendError>(["keys"], async () => GetAllKeys())
+    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetKeyDto[]>, BackendError>(["keys", category], async () => GetAllKeys({ category: category }))
     const [flag, setFlag] = useState(1);
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
-
+    const [categories, setKeyCategorys] = useState<DropDownDto[]>([])
     const { setChoice } = useContext(ChoiceContext)
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+    const { data: categoriesdata } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategoriesForDropdown({ show_assigned_only: false }))
+
 
     const columns = useMemo<MRT_ColumnDef<GetKeyDto>[]>(
         //column definitions...
@@ -36,7 +41,7 @@ export default function KeysPage() {
                 accessorKey: 'actions',
                 header: '',
                 maxSize: 50,
-                grow:false,
+                grow: false,
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row">
@@ -64,7 +69,7 @@ export default function KeysPage() {
                 accessorKey: 'key',
                 header: 'Key',
                 minSize: 350,
-                grow:false,
+                grow: false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.key ? cell.row.original.key : ""}</>,
                 filterSelectOptions: keys && keys.map((i) => {
@@ -76,16 +81,16 @@ export default function KeysPage() {
                 accessorKey: 'category',
                 header: 'Category',
                 minSize: 350,
-                grow:false,
+                grow: false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category : ""}</>
-              
+
             },
             {
                 accessorKey: 'assigned_users',
                 header: 'Assigned Users',
                 minSize: 150,
-                grow:false,
+                grow: false,
                 Cell: (cell) => <>{cell.row.original.assigned_users ? cell.row.original.assigned_users : ""}</>
 
             },
@@ -148,6 +153,11 @@ export default function KeysPage() {
         }
     }, [data, isSuccess]);
 
+    useEffect(() => {
+        if (isSuccess && categoriesdata) {
+            setKeyCategorys(categoriesdata.data);
+        }
+    }, [categoriesdata, isSuccess]);
 
     return (
         <>
@@ -171,7 +181,32 @@ export default function KeysPage() {
 
 
                 <>
-
+                    < TextField
+                        select
+                        SelectProps={{
+                            native: true
+                        }}
+                        id="state"
+                        size="small"
+                        label="Select Category"
+                        sx={{ width: '200px' }}
+                        value={category}
+                        onChange={(e) => {
+                            setKeyCategory(e.target.value);
+                        }
+                        }
+                    >
+                        <option key={0} value={'all'}>
+                            Select Category
+                        </option>
+                        {
+                            categories && categories.map(cat => {
+                                return (<option key={cat.id} value={cat.id}>
+                                    {cat && toTitleCase(cat.value||"")}
+                                </option>)
+                            })
+                        }
+                    </TextField>
                     <IconButton size="small" color="primary"
                         onClick={(e) => setAnchorEl(e.currentTarget)
                         }
@@ -228,7 +263,7 @@ export default function KeysPage() {
                                 setAnchorEl(null)
                             }}
                         > Remove Keys</MenuItem>}
-                        
+
                         {LoggedInUser?.assigned_permissions.includes('key_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
                         >Export All</MenuItem>}

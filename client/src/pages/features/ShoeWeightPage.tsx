@@ -137,7 +137,7 @@ export default function ShoeWeightPage() {
       {
         accessorKey: 'shoe_photo1',
         header: 'Photos',
-        minSize: 160,
+        maxSize: 100,
         group:true,
         Cell: (cell) => <>
           {cell.row.original.shoe_photo1 && <Photo onClick={() => {

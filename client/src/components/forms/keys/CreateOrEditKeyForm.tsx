@@ -9,7 +9,7 @@ import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
 import { DropDownDto, GetKeyDto } from '../../../dtos';
-import { CreateOrEditKey, GetAllKeyCategories } from '../../../services/KeyServices';
+import { CreateOrEditKey, GetAllKeyCategoriesForDropdown } from '../../../services/KeyServices';
 import { toTitleCase } from '../../../utils/TitleCase';
 
 function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
@@ -28,7 +28,7 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
                 queryClient.invalidateQueries('keys')
             }
         })
-    const { data, isSuccess: isSuccesskeysData } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategories({show_assigned_only:false}))
+    const { data, isSuccess: isSuccesskeysData } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategoriesForDropdown({ show_assigned_only: false }))
 
     const { setChoice } = useContext(ChoiceContext)
 
@@ -40,7 +40,7 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
         initialValues: {
             key: keyitm ? keyitm.key : "",
             category: keyitm ? keyitm.category : "",
-            type:  "",
+            type: keyitm ? keyitm.type : "",
         },
         validationSchema: yup.object({
             key: yup.string().required(),
@@ -75,6 +75,8 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
 
         }
     }, [isSuccess, setChoice])
+
+    console.log(keyitm)
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack
@@ -135,7 +137,7 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
                         formik.touched.type && formik.errors.type ? true : false
                     }
                     id="type"
-                    label="Category"
+                    label="Type"
                     fullWidth
                     helperText={
                         formik.touched.type && formik.errors.type ? formik.errors.type : ""
@@ -146,7 +148,7 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
                         Select Type
                     </option>
                     {
-                        ['string', 'number', 'boolean', 'date','timestamp'].map(type => {
+                        ['string', 'number', 'boolean', 'date', 'timestamp'].map(type => {
                             return (<option key={type} value={type}>
                                 {type && toTitleCase(type)}
                             </option>)

@@ -1,9 +1,9 @@
 import { apiClient } from "./utils/AxiosInterceptor";
 
-
-export const GetAllKeys = async () => {
-    return await apiClient.get(`keys`)
+export const GetAllKeys = async ({  category }: { category: string }) => {
+    return await apiClient.get(`keys/?category=${category}`)
 }
+
 
 export const CreateOrEditKey = async ({ body, id }: {
     body: {
@@ -23,11 +23,15 @@ export const DeleteKey = async (id: string) => {
 }
 
 
-
-export const GetAllKeyCategories = async ({ show_assigned_only }: { show_assigned_only?: boolean }) => {
+export const GetAllKeyCategoriesForDropdown = async ({ show_assigned_only }: { show_assigned_only?: boolean }) => {
     if (show_assigned_only)
-        return await apiClient.get(`key-category/?show_assigned_only=${show_assigned_only}`)
+        return await apiClient.get(`key-category/dropdown/?show_assigned_only=${show_assigned_only}`)
     else
+        return await apiClient.get(`key-category/dropdown`)
+}
+
+
+export const GetAllKeyCategories = async () => {
         return await apiClient.get(`key-category`)
 }
 

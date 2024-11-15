@@ -14,24 +14,25 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
         columns: [],
         rows: []
     };
+    let assigned_keys: any[] = req.user.assigned_keys;
     if (!category) {
         return res.status(400).json({ message: 'please select category ' })
     }
-    let keys = await Key.find({ category: category });
+    let keys = await Key.find({ category: category, _id:{$in: assigned_keys} });
     for (let k = 0; k < keys.length; k++) {
         let c = keys[k]
         result.columns.push({ key: c.key, header: c.key, type: c.type })
     }
 
     let data = await ExcelDB.find({ category: category }).sort('-created_at')
-    let assigned_keys: any[] = req.user.assigned_keys;
+    
 
     for (let k = 0; k < data.length; k++) {
         let obj: IRowData = {}
         let dt = data[k]
         if (dt) {
             for (let i = 0; i < keys.length; i++) {
-                if (assigned_keys.includes(keys[i]._id.valueOf)) {
+                if (assigned_keys.includes(keys[i]._id)) {
                     let key = keys[i].key
                     //@ts-ignore
                     if (dt[key]) {
