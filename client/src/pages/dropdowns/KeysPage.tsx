@@ -17,6 +17,7 @@ import { GetAllKeyCategoriesForDropdown, GetAllKeys } from '../../services/KeySe
 import CreateOrEditKeyDialog from '../../components/dialogs/keys/CreateOrEditKeyDialog'
 import AssignKeysDialog from '../../components/dialogs/keys/AssignKeysDialog'
 import { toTitleCase } from '../../utils/TitleCase'
+import { KeyExcelButton } from '../../components/buttons/KeyExcelButton'
 
 
 export default function KeysPage() {
@@ -64,7 +65,17 @@ export default function KeysPage() {
                         </Stack>}
                 />
             },
-
+            {
+                accessorKey: 'serial_no',
+                header: 'NO',
+                minSize: 150,
+                grow: false,
+                filterVariant: 'multi-select',
+                Cell: (cell) => <>{cell.row.original.serial_no ? cell.row.original.serial_no : ""}</>,
+                filterSelectOptions: keys && keys.map((i) => {
+                    return i.serial_no.toString();
+                }).filter(onlyUnique)
+            },
             {
                 accessorKey: 'key',
                 header: 'Key',
@@ -216,6 +227,7 @@ export default function KeysPage() {
                             })
                         }
                     </TextField>
+                    {LoggedInUser?.assigned_permissions.includes('key_create') && <KeyExcelButton />}
                     <IconButton size="small" color="primary"
                         onClick={(e) => setAnchorEl(e.currentTarget)
                         }

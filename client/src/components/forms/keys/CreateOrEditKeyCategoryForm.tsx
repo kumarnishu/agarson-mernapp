@@ -15,7 +15,8 @@ function CreateOrEditKeyCategoryForm({ category }: { category?: GetKeyCategoryDt
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
-                key: string
+                key: string,
+                skip_bottom_rows:number
             },
             id?: string
         }>
@@ -29,21 +30,25 @@ function CreateOrEditKeyCategoryForm({ category }: { category?: GetKeyCategoryDt
     const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<{
-        category: string
+        category: string,
+        skip_bottom_rows:number
     }>({
         initialValues: {
-            category: category ? category.category : ""
+            category: category ? category.category : "",
+            skip_bottom_rows: category ? category.skip_bottom_rows:0
         },
         validationSchema:yup.object({
-            category:yup.string().required()
+            category: yup.string().required(),
+            skip_bottom_rows: yup.number().required()
         }),
         onSubmit: (values: {
             category: string,
+            skip_bottom_rows:number
         }) => {
             mutate({
                 id:category?._id,
                 body: {
-                    key: values.category
+                    key: values.category, skip_bottom_rows: values.skip_bottom_rows
                 }
             })
         }
@@ -76,7 +81,20 @@ function CreateOrEditKeyCategoryForm({ category }: { category?: GetKeyCategoryDt
                     {...formik.getFieldProps('category')}
                 />
               
-               
+                <TextField
+                    required
+                    error={
+                        formik.touched.skip_bottom_rows && formik.errors.skip_bottom_rows ? true : false
+                    }
+                    autoFocus
+                    id="skip_bottom_rows"
+                    label="Skip Bottom Rows"
+                    fullWidth
+                    helperText={
+                        formik.touched.skip_bottom_rows && formik.errors.skip_bottom_rows ? formik.errors.skip_bottom_rows : ""
+                    }
+                    {...formik.getFieldProps('skip_bottom_rows')}
+                />
 
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}

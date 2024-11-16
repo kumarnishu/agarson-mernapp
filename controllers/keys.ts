@@ -1,8 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
-import { GetKeyDto } from "../dtos";
+import { GetKeyDto, GetKeyFromExcelDto } from "../dtos";
 import isMongoId from "validator/lib/isMongoId";
 import { IKey, Key } from '../models/keys';
 import { User } from '../models/user';
+import xlsx from "xlsx"
+import { KeyCategory } from '../models/key-category';
+import ConvertJsonToExcel from '../utils/ConvertJsonToExcel';
 
 export const GetAllKey = async (req: Request, res: Response, next: NextFunction) => {
     let category = req.query.category;
@@ -23,6 +26,7 @@ export const GetAllKey = async (req: Request, res: Response, next: NextFunction)
         result.push(
             {
                 _id: data[i]._id,
+                serial_no: data[i].serial_no,
                 key: data[i].key,
                 type: data[i].type,
                 category: { id: data[i].category._id, label: data[i].category.category, value: data[i].category.category },
@@ -34,7 +38,7 @@ export const GetAllKey = async (req: Request, res: Response, next: NextFunction)
 
 
 export const CreateKey = async (req: Request, res: Response, next: NextFunction) => {
-    let { key, category, type } = req.body as { key: string, category: string, type: string }
+    let { key, category, type, serial_no } = req.body as { key: string, category: string, type: string, serial_no: number }
     if (!category || !key || !type) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
@@ -45,6 +49,7 @@ export const CreateKey = async (req: Request, res: Response, next: NextFunction)
     let result = await new Key({
         key,
         type,
+        serial_no,
         category: category,
         updated_at: new Date(),
         created_by: req.user,
@@ -55,10 +60,11 @@ export const CreateKey = async (req: Request, res: Response, next: NextFunction)
 }
 
 export const UpdateKey = async (req: Request, res: Response, next: NextFunction) => {
-    let { key, category, type } = req.body as {
+    let { key, category, type, serial_no } = req.body as {
         key: string,
         category: string,
         type: string,
+        serial_no: number
     }
     if (!category || !key || !type) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -76,6 +82,7 @@ export const UpdateKey = async (req: Request, res: Response, next: NextFunction)
 
     await Key.findByIdAndUpdate(id, {
         key,
+        serial_no,
         type,
         category: category,
         updated_at: new Date(),
@@ -137,4 +144,153 @@ export const AssignKeysToUsers = async (req: Request, res: Response, next: NextF
     }
 
     return res.status(200).json({ message: "successfull" })
+}
+export const CreateKeysFromExcel = async (req: Request, res: Response, next: NextFunction) => {
+    let result: GetKeyFromExcelDto[] = []
+    let statusText: string = ""
+    if (!req.file)
+        return res.status(400).json({
+            message: "please provide an Excel file",
+        });
+    if (req.file) {
+        const allowedFiles = ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv"];
+        if (!allowedFiles.includes(req.file.mimetype))
+            return res.status(400).json({ message: `${req.file.originalname} is not valid, only excel and csv are allowed to upload` })
+        if (req.file.size > 100 * 1024 * 1024)
+            return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
+        const workbook = xlsx.read(req.file.buffer);
+        let workbook_sheet = workbook.SheetNames;
+        let workbook_response: GetKeyFromExcelDto[] = xlsx.utils.sheet_to_json(
+            workbook.Sheets[workbook_sheet[0]]
+        );
+        if (workbook_response.length > 3000) {
+            return res.status(400).json({ message: "Maximum 3000 records allowed at one time" })
+        }
+        let end_date = new Date();
+        end_date.setFullYear(end_date.getFullYear() + 30)
+        for (let i = 0; i < workbook_response.length; i++) {
+            let keyItem = workbook_response[i]
+            let serial_no: number | null = keyItem.serial_no
+            let key: string | null = keyItem.key
+            let type: string | null = keyItem.type
+            let category: string | null = keyItem.category
+            let _id: string | undefined = keyItem._id
+
+            let validated = true
+
+            //important
+            if (!key) {
+                validated = false
+                statusText = "required key"
+            }
+            if (!serial_no) {
+                validated = false
+                statusText = "required serial_no"
+            }
+            if (!category) {
+                validated = false
+                statusText = "required category"
+            }
+            if (!type) {
+                validated = false
+                statusText = "required type"
+            }
+            if (type && !['number', 'string', 'date', 'timestamp', 'boolean'].includes(type)) {
+                validated = false
+                statusText = `invalid type`
+            }
+            if (category) {
+                let cat = await KeyCategory.findOne({ category: category })
+                if (!cat) {
+                    validated = false
+                    statusText = "category not found"
+                }
+                else
+                    category = cat._id
+            }
+            if (key) {
+                if (_id && isMongoId(String(_id))) {
+                    let ch = await Key.findById(_id)
+                    if (ch?.key !== key)
+                        if (await Key.findOne({ key: key, category: category })) {
+                            validated = false
+                            statusText = `key ${key} exists`
+                        }
+                }
+                else {
+                    let keyl = await Key.findOne({ key: key })
+                    if (keyl) {
+                        validated = false
+                        statusText = `${keyl} already exists`
+                    }
+                }
+            }
+            if (validated) {
+                if (_id && isMongoId(String(_id))) {
+                    let ch = await Key.findById(_id)
+
+
+                    await Key.findByIdAndUpdate(_id, {
+                        key,
+                        serial_no,
+                        type,
+                        category: category,
+                        updated_at: new Date(),
+                        updated_by: req.user
+                    })
+                    statusText = "updated"
+                }
+                else {
+                    await new Key({
+                        key,
+                        serial_no,
+                        type,
+                        category: category,
+                        created_by: req.user,
+                        updated_by: req.user,
+                        updated_at: new Date(Date.now()),
+                        created_at: new Date(Date.now())
+                    }).save()
+                    statusText = "created"
+                }
+
+
+            }
+            result.push({
+                ...keyItem,
+                status: statusText
+            })
+        }
+    }
+    return res.status(200).json(result);
+}
+export const DownloadExcelTemplateForCreateKeys = async (req: Request, res: Response, next: NextFunction) => {
+    let keys: GetKeyFromExcelDto[] = [{
+        _id: "umc3m9344343vn934",
+        serial_no: 1,
+        key: 'Employee Name',
+        category: 'visitsummary',
+        type: 'string',
+    }]
+    let data = (await Key.find().populate('category')).map((u) => {
+        return {
+            _id: u._id.valueOf(),
+            serial_no: u.serial_no,
+            key: u.key,
+            type: u.type,
+            category: u.category.category,
+        }
+    })
+    if (data.length > 0) {
+        keys = data
+    }
+    let categories = (await KeyCategory.find()).map((u) => { return { name: u.category } })
+
+    let template: { sheet_name: string, data: any[] }[] = []
+    template.push({ sheet_name: 'template', data: keys })
+    template.push({ sheet_name: 'categories', data: categories })
+    template.push({ sheet_name: 'types', data: [{ type: "string" }, { type: "number" }, { type: "date" }, { type: "timestamp" }, { type: 'boolean' }] })
+    ConvertJsonToExcel(template)
+    let fileName = "CreateKeysTemplate.xlsx"
+    return res.download("./file", fileName)
 }

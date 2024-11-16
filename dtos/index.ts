@@ -150,10 +150,19 @@ export type GetCrmCityDto = {
 }
 export type GetKeyDto = {
     _id: string,
+    serial_no: number,
     key: string;
     category: DropDownDto;
     type: string;
     assigned_users: string;
+}
+export type GetKeyFromExcelDto = {
+    _id?: string,
+    serial_no: number,
+    key: string,
+    type: string,
+    category: string,
+    status?: string
 }
 export type GetCrmStateDto = {
     _id: string,
@@ -163,6 +172,7 @@ export type GetCrmStateDto = {
 
 export type GetKeyCategoryDto = {
     _id: string,
+    skip_bottom_rows: number,
     category: string,
     assigned_users: string;
 }

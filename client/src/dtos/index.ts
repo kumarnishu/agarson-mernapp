@@ -148,6 +148,7 @@ export type GetCrmCityDto = {
 }
 export type GetKeyDto = {
     _id: string,
+    serial_no: number,
     key: string;
     category: DropDownDto;
     type: string;
@@ -161,6 +162,7 @@ export type GetCrmStateDto = {
 
 export type GetKeyCategoryDto = {
     _id: string,
+    skip_bottom_rows: number,
     category: string,
     assigned_users: string;
 }

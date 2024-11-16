@@ -73,6 +73,17 @@ export default function KeysCategoriesPage() {
           return i.category;
         }).filter(onlyUnique)
       },
+      {
+        accessorKey: 'skip_bottom_rows',
+        header: 'Skip Bottom Rows',
+        minSize: 350,
+        grow: false,
+        filterVariant: 'multi-select',
+        Cell: (cell) => <>{cell.row.original.skip_bottom_rows ? cell.row.original.skip_bottom_rows.toString() || "" : ""}</>,
+        filterSelectOptions: categories && categories.map((i) => {
+          return i.skip_bottom_rows.toString() || "";
+        }).filter(onlyUnique)
+      },
 
       {
         accessorKey: 'assigned_users',

@@ -3,10 +3,12 @@ import { BackendError } from "../.."
 import { useMutation } from "react-query"
 import { useEffect, useState } from "react"
 import { Button, CircularProgress, Stack } from "@mui/material"
-import { Upload } from "@mui/icons-material"
+import { Download, Upload } from "@mui/icons-material"
 import styled from "styled-components"
-import { CreateExcelDBFromExcel } from "../../services/ExcelDbService"
+import { saveAs } from 'file-saver';
 import ExportToExcel from "../../utils/ExportToExcel"
+import { queryClient } from "../../main"
+import { CreateKeysFromExcel } from "../../services/KeyServices"
 
 
 const FileInput = styled.input`
@@ -15,11 +17,17 @@ color:blue;
 `
 
 
-export function ExcelDbButtons() {
+export function KeyExcelButton() {
     const { data, mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<any[]>, BackendError, FormData>
-        (CreateExcelDBFromExcel)
+        (CreateKeysFromExcel, { onSuccess: () => queryClient.refetchQueries('keys') })
     const [file, setFile] = useState<File | null>(null)
+
+
+
+    function HandleExport() {
+        saveAs(`/api/v1/download/template/keys`)
+    }
 
 
     function handleFile() {
@@ -36,18 +44,11 @@ export function ExcelDbButtons() {
     }, [file])
 
     useEffect(() => {
-        if (isSuccess && data && data.data.length == 0) {
-            alert("uploaded success")
-        }
-    }, [isSuccess, data])
-
-    useEffect(() => {
-        if (isSuccess && data) {
+        if (isSuccess) {
             if (data.data.length > 0)
                 ExportToExcel(data.data, "output.xlsx")
         }
     }, [isSuccess, data])
-
 
     return (
         <Stack direction={'row'} gap={1}>
@@ -59,11 +60,12 @@ export function ExcelDbButtons() {
                         :
                         <>
                             <Button
+
                                 component="label"
-                                fullWidth
+                                color="inherit"
                                 variant="contained"
                             >
-                                <Upload /> Excel
+                                <Upload />
                                 <FileInput
                                     id="upload_input"
                                     hidden
@@ -78,6 +80,7 @@ export function ExcelDbButtons() {
                         </>
                 }
             </>
+            <Button variant="contained" color="inherit" startIcon={<Download />} onClick={() => HandleExport()}> Template</Button>
         </Stack>
 
     )

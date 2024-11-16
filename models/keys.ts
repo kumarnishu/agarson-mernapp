@@ -5,8 +5,9 @@ import { IKeyCategory } from "./key-category"
 
 export type IKey = {
     _id: string,
+    serial_no: number,
     key: string,
-    type:string,
+    type: string,
     category: IKeyCategory,
     created_at: Date,
     updated_at: Date,
@@ -14,17 +15,23 @@ export type IKey = {
     updated_by: IUser
 }
 const KeySchema = new mongoose.Schema<IKey, mongoose.Model<IKey, {}, {}>, {}>({
+    serial_no: {
+        type: Number,
+        index: true,
+        required: true,
+        default:0
+    },
     key: {
         type: String,
         trim: true,
         index: true,
         required: true
     },
-    type:{
-        type:String,
-        lowercase:true,
-        trim:true,
-        default:'string'
+    type: {
+        type: String,
+        lowercase: true,
+        trim: true,
+        default: 'string'
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,

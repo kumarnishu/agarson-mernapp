@@ -1,6 +1,6 @@
 import { apiClient } from "./utils/AxiosInterceptor";
 
-export const GetAllKeys = async ({  category }: { category: string }) => {
+export const GetAllKeys = async ({ category }: { category: string }) => {
     return await apiClient.get(`keys/?category=${category}`)
 }
 
@@ -9,7 +9,8 @@ export const CreateOrEditKey = async ({ body, id }: {
     body: {
         key: string,
         category: string,
-        type: string
+        type: string,
+        serial_no: number
     }
     id?: string
 }) => {
@@ -32,11 +33,11 @@ export const GetAllKeyCategoriesForDropdown = async ({ show_assigned_only }: { s
 
 
 export const GetAllKeyCategories = async () => {
-        return await apiClient.get(`key-category`)
+    return await apiClient.get(`key-category`)
 }
 
 export const CreateOrEditKeyCategory = async ({ body, id }: {
-    body: { key: string }
+    body: { key: string, skip_bottom_rows: number }
     id?: string
 }) => {
     if (id) {
@@ -65,4 +66,7 @@ export const AssignKeysToUsers = async ({ body }: {
     }
 }) => {
     return await apiClient.patch(`keys/assign`, body)
+}
+export const CreateKeysFromExcel = async (body: FormData) => {
+    return await apiClient.put(`create-from-excel/keys`, body)
 }

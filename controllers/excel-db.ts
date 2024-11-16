@@ -18,7 +18,7 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
     if (!category) {
         return res.status(400).json({ message: 'please select category ' })
     }
-    let keys = await Key.find({ category: category, _id: { $in: assigned_keys } });
+    let keys = await Key.find({ category: category, _id: { $in: assigned_keys } }).sort('-serial_no');
     for (let k = 0; k < keys.length; k++) {
         let c = keys[k]
         result.columns.push({ key: c.key, header: c.key, type: c.type })
@@ -62,6 +62,7 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
 
 
 export const CreateExcelDBFromExcel = async (req: Request, res: Response, next: NextFunction) => {
+    let result: { problem: string }[] = []
     if (!req.file)
         return res.status(400).json({
             message: "please provide an Excel file",
@@ -80,18 +81,31 @@ export const CreateExcelDBFromExcel = async (req: Request, res: Response, next: 
             const worksheet = workbook.Sheets[sheetName.category];
             const sheetData: any[] = xlsx.utils.sheet_to_json(worksheet, { raw: true });
 
+
             if (worksheet && sheetData) {
                 let columns = await Key.find({ category: sheetName });
+                const keys: any = xlsx.utils.sheet_to_json(worksheet, { header: 1, raw: false })[0];
+                const remotekeys = columns.map((c) => { return c.key })
+
+
+                if (Array.isArray(keys)) {
+                    for (let rk = 0; rk < keys.length; rk++) {
+                        if (!remotekeys.includes(keys[rk]))
+                            result.push({ problem: `${keys[rk]} not found for the category ${sheetName.category}` })
+                    }
+                }
+
 
                 if (columns && sheetData) {
                     await ExcelDB.deleteMany({ category: sheetName });
 
-                    for (let j = 0; j < sheetData.length - 3; j++) {
+                    for (let j = 0; j < sheetData.length - sheetName.skip_bottom_rows || 0; j++) {
                         let obj: any = {};
                         obj.category = sheetName;
 
                         for (let k = 0; k < columns.length; k++) {
                             let column = columns[k];
+
                             if (column.type == 'date') {
                                 obj.key = column;
                                 obj[String(column.key)] = new Date(excelSerialToDate(sheetData[j][column.key])) > invalidate ? new Date(excelSerialToDate(sheetData[j][column.key])) : parseExcelDate(sheetData[j][column.key])
@@ -108,7 +122,10 @@ export const CreateExcelDBFromExcel = async (req: Request, res: Response, next: 
             }
         }
     }
-    return res.status(200).json("successs");
+    if (result.length > 0)
+        return res.status(200).json(result);
+    else
+        return res.status(200).json([]);
 }
 
 

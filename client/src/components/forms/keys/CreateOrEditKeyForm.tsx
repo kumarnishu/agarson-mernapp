@@ -19,7 +19,8 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
             body: {
                 key: string,
                 category: string,
-                type: string
+                type: string,
+                serial_no:number
             },
             id?: string
         }>
@@ -35,29 +36,34 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
     const formik = useFormik<{
         category: string,
         key: string,
-        type: string
+        type: string,
+        serial_no: number
     }>({
         initialValues: {
             key: keyitm ? keyitm.key : "",
             category: keyitm ? keyitm.category.id : "",
             type: keyitm ? keyitm.type : "",
+            serial_no: keyitm ? keyitm.serial_no : 0,
         },
         validationSchema: yup.object({
             key: yup.string().required(),
             category: yup.string().required(),
-            type: yup.string().required()
+            type: yup.string().required(),
+            serial_no: yup.number().required()
         }),
         onSubmit: (values: {
             key: string,
             category: string,
             type: string,
+            serial_no: number
         }) => {
             mutate({
                 id: keyitm?._id,
                 body: {
                     key: values.key,
                     category: values.category,
-                    type: values.type
+                    type: values.type,
+                    serial_no: values.serial_no
                 }
             })
         }
@@ -83,6 +89,20 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
                 gap={2}
                 pt={2}
             >
+                <TextField
+                    required
+                    error={
+                        formik.touched.serial_no && formik.errors.serial_no ? true : false
+                    }
+                    autoFocus
+                    id="serial_no"
+                    label="Serial No"
+                    fullWidth
+                    helperText={
+                        formik.touched.serial_no && formik.errors.serial_no ? formik.errors.serial_no : ""
+                    }
+                    {...formik.getFieldProps('serial_no')}
+                />
                 <TextField
                     required
                     error={

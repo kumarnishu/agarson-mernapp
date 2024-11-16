@@ -5,6 +5,7 @@ import { IUser } from "./user"
 export type IKeyCategory = {
     _id: string,
     category: string,
+    skip_bottom_rows:number,
     created_at: Date,
     updated_at: Date,
     created_by: IUser,
@@ -18,6 +19,12 @@ const KeyCategorySchema = new mongoose.Schema<IKeyCategory, mongoose.Model<IKeyC
         trim: true,
         index: true,
         required: true
+    },
+    skip_bottom_rows: {
+        type: Number,
+        index: true,
+        required: true,
+        default: 0
     },
     created_at: {
         type: Date,
