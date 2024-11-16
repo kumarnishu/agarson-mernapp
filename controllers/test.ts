@@ -36,9 +36,9 @@ export const test = async (req: Request, res: Response, next: NextFunction) => {
 
             if (type && type == 'date') {
                 key = convertDateToExcelFormat(key)
+                console.log(key)
             }
 
-            console.log(sheet)
             let cat = await KeyCategory.findOne({ category: category })
             if (cat) {
                 if (!await Key.findOne({ key: key, category: cat })) {
