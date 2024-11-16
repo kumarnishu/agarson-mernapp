@@ -23,9 +23,11 @@ export const test = async (req: Request, res: Response, next: NextFunction) => {
         const workbook = xlsx.read(req.file.buffer);
 
         let workbook_sheet = workbook.SheetNames;
+        var name ='Sheet2'
+        const sheetData: { key: string, category: string, type: string }[] = xlsx.utils.sheet_to_json(workbook.Sheets[name],{raw:false});
+        // const sheetData: { key: string, category: string, type: string }[] = xlsx.utils.sheet_to_json(workbook.Sheets[workbook_sheet[0]],{header:1,raw:false});
 
-        const sheetData: { key: string, category: string, type: string }[] = xlsx.utils.sheet_to_json(workbook.Sheets[workbook_sheet[0]]);
-
+        console.log(sheetData)
         for (let i = 0; i < sheetData.length; i++) {
             let sheet = sheetData[i]
             let key: string | null = sheet.key

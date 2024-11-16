@@ -43,3 +43,11 @@ export function getPrevMonday() {
     preMon.setHours(0, 0, 0, 0)
     return preMon;
 }
+export const invalidate = new Date("1970-01-01T00:00:00.000+00:00")
+export function excelSerialToDate(serial: any) {
+    // Excel's base date is January 1, 1900
+    const excelBaseDate = new Date(1900, 0, 1); // Month is 0-indexed (0 = January)
+    // Add the serial number to the base date (Excel uses 1-based indexing, so we subtract 1)
+    const date = new Date(excelBaseDate.setDate(excelBaseDate.getDate() + serial - 2));
+    return date;
+}

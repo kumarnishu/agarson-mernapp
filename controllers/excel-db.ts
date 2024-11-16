@@ -4,7 +4,7 @@ import { IColumnRowData, IRowData } from "../dtos";
 import { KeyCategory } from "../models/key-category";
 import { Key } from "../models/keys";
 import { ExcelDB } from "../models/excel-db";
-import { parseExcelDate } from "../utils/datesHelper";
+import { excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
 import { decimalToTimeForXlsx } from "../utils/decimalToTimeForXlsx";
 
 export const GetExcelDbReport = async (req: Request, res: Response, next: NextFunction) => {
@@ -18,14 +18,14 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
     if (!category) {
         return res.status(400).json({ message: 'please select category ' })
     }
-    let keys = await Key.find({ category: category, _id:{$in: assigned_keys} });
+    let keys = await Key.find({ category: category, _id: { $in: assigned_keys } });
     for (let k = 0; k < keys.length; k++) {
         let c = keys[k]
         result.columns.push({ key: c.key, header: c.key, type: c.type })
     }
 
     let data = await ExcelDB.find({ category: category }).sort('-created_at')
-    
+
 
     for (let k = 0; k < data.length; k++) {
         let obj: IRowData = {}
@@ -36,13 +36,7 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
                     let key = keys[i].key
                     //@ts-ignore
                     if (dt[key]) {
-                        if (keys[i].type == "number")
-                            //@ts-ignore
-                            obj[key] = Number(dt[key])
-                        else if (keys[i].type == "date")
-                            //@ts-ignore
-                            obj[key] = new Date(parseExcelDate(dt[key]))
-                        else if (keys[i].type == "timestamp")
+                        if (keys[i].type == "timestamp")
                             //@ts-ignore
                             obj[key] = decimalToTimeForXlsx(dt[key])
                         else
@@ -84,7 +78,7 @@ export const CreateExcelDBFromExcel = async (req: Request, res: Response, next: 
         for (let i = 0; i < categories.length; i++) {
             let sheetName = categories[i];
             const worksheet = workbook.Sheets[sheetName.category];
-            const sheetData: any[] = xlsx.utils.sheet_to_json(worksheet, { header: 4 });
+            const sheetData: any[] = xlsx.utils.sheet_to_json(worksheet, { raw: true });
 
             if (worksheet && sheetData) {
                 let columns = await Key.find({ category: sheetName });
@@ -98,8 +92,14 @@ export const CreateExcelDBFromExcel = async (req: Request, res: Response, next: 
 
                         for (let k = 0; k < columns.length; k++) {
                             let column = columns[k];
-                            obj.key = column;
-                            obj[String(column.key)] = sheetData[j][column.key];
+                            if (column.type == 'date') {
+                                obj.key = column;
+                                obj[String(column.key)] = new Date(excelSerialToDate(sheetData[j][column.key])) > invalidate ? new Date(excelSerialToDate(sheetData[j][column.key])) : parseExcelDate(sheetData[j][column.key])
+                            }
+                            else {
+                                obj.key = column;
+                                obj[String(column.key)] = sheetData[j][column.key];
+                            }
                         }
 
                         await new ExcelDB(obj).save();

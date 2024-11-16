@@ -42,10 +42,10 @@ export default function ExcelDBPage() {
             ? [...new Set(reports.map(i => moment(i['date']).format("DD/MM/YYYY")))]
             : [], // Unique formatted dates
           //@ts-ignore
-          Cell: (cell) => moment(cell.cell.getValue()).isValid()
-            //@ts-ignore
-            ? moment(cell.cell.getValue()).format("DD/MM/YYYY")
-            : "", // Format cell as date if valid
+          // Cell: (cell) => moment(excelSerialToDate(cell.cell.getValue())).isValid()
+          //   //@ts-ignore
+          //   ? moment(excelSerialToDate(cell.cell.getValue())).format("DD/MM/YYYY")
+          //   : "", // Format cell as date if valid
         }
       else
         return {

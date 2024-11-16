@@ -24,12 +24,12 @@ hundredDaysAgo.setHours(0, 0, 0, 0);
 export const prevWeekDate = new Date(today);
 prevWeekDate.setDate(today.getDate() - 7);
 
-
-export function parseExcelDate(dateStr:any) {
+export function parseExcelDate(dateStr: any) {
     const [day, month, year] = dateStr.split('-');
     return new Date(`${year}-${month}-${day}`);
 }
 
+export const invalidate = new Date("1970-01-01T00:00:00.000+00:00")
 export function extractDateFromExcel(date:any){
     return new Date(new Date(Date.UTC(1900, 0, 1)).getTime() + (Number(date) - 2) * 86400000)
 }
@@ -39,6 +39,13 @@ export function dateToExcelFormat(date:any) {
     return diffInDays;
 }
 
+export function excelSerialToDate(serial:any) {
+    // Excel's base date is January 1, 1900
+    const excelBaseDate = new Date(1900, 0, 1); // Month is 0-indexed (0 = January)
+    // Add the serial number to the base date (Excel uses 1-based indexing, so we subtract 1)
+    const date = new Date(excelBaseDate.setDate(excelBaseDate.getDate() + serial - 2));
+    return date;
+}
 
 
 export function getNextMonday() {
