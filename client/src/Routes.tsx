@@ -46,6 +46,7 @@ import KeysPage from './pages/dropdowns/KeysPage.tsx'
 import ExcelDBPage from './pages/features/ExcelDBPage.tsx'
 import AuthorizationDashboard from './dashboards/AppAuthorizationDashboard.tsx'
 import ExcelDBDashboard from './dashboards/ExcelDBDashboard.tsx'
+import SalesmanLeavesReportPage from './pages/reports/SalesmanLeavesReportPage.tsx'
 
 
 function AppRoutes() {
@@ -289,6 +290,11 @@ function AppRoutes() {
               {user?.assigned_permissions.includes('grp_excel_view') && <Route
                 path="ExcelDbReports/:id/:name" element={
                   <ExcelDBPage />
+                }
+              />}
+              {user?.assigned_permissions.includes('salesman_leaves_report_view') && <Route
+                path="SalesmanLeavesReportPage" element={
+                  <SalesmanLeavesReportPage />
                 }
               />}
 
