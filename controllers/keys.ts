@@ -180,7 +180,7 @@ export const CreateKeysFromExcel = async (req: Request, res: Response, next: Nex
             if (is_date_key == true) {
                 key = convertDateToExcelFormat(key)
             }
-         
+
             let validated = true
 
             //important
@@ -217,24 +217,24 @@ export const CreateKeysFromExcel = async (req: Request, res: Response, next: Nex
             if (validated) {
                 if (_id && isMongoId(String(_id))) {
                     let ch = await Key.findById(_id)
-                    if (ch?.key !== key)
+                    if (ch?.key !== key) {
                         if (await Key.findOne({ key: key, category: category })) {
                             validated = false
                             statusText = `key ${key} exists`
                         }
-                        else {
-                            await Key.findByIdAndUpdate(_id, {
-                                key,
-                                serial_no,
-                                type,
-                                is_date_key: is_date_key ? true : false,
-                                category: category,
-                                updated_at: new Date(),
-                                updated_by: req.user
-                            })
-                            statusText = "updated"
-                        }
-
+                    }
+                    else {
+                        await Key.findByIdAndUpdate(_id, {
+                            key,
+                            serial_no,
+                            type,
+                            is_date_key: is_date_key ? true : false,
+                            category: category,
+                            updated_at: new Date(),
+                            updated_by: req.user
+                        })
+                        statusText = "updated"
+                    }
                 }
                 else {
                     let keyl = await Key.findOne({ key: key, category: category })
