@@ -34,9 +34,9 @@ function ExcelDBDashboard() {
     return (
         <>
 
-           
+
             <Grid container sx={{ pt: 2 }} >
-                <Grid key={0} item xs={12} md={4} lg={3} sx={{ p: 1 }}>
+                {user?.assigned_permissions.includes("grp_excel_create") && <Grid key={0} item xs={12} md={4} lg={3} sx={{ p: 1 }}>
                     <Paper
                         sx={{
                             p: 2,
@@ -54,9 +54,9 @@ function ExcelDBDashboard() {
                             },
                         }}
                     >
-                        {user?.assigned_permissions.includes("excel_db_create") && <ExcelDbButtons />}
+                        <ExcelDbButtons />
                     </Paper>
-                </Grid>
+                </Grid>}
                 {features.map((feat, index) => {
                     return (
                         <Grid key={index} item xs={12} md={4} lg={3} sx={{ p: 1 }}>
