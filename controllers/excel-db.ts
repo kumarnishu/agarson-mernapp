@@ -4,8 +4,7 @@ import { IColumnRowData, IRowData } from "../dtos";
 import { KeyCategory } from "../models/key-category";
 import { Key } from "../models/keys";
 import { ExcelDB } from "../models/excel-db";
-import { excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
-import { decimalToTimeForXlsx } from "../utils/decimalToTimeForXlsx";
+import { decimalToTimeForXlsx, excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
 
 export const GetExcelDbReport = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -18,13 +17,13 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
     if (!category) {
         return res.status(400).json({ message: 'please select category ' })
     }
-    let keys = await Key.find({ category: category, _id: { $in: assigned_keys } }).sort('-serial_no');
+    let keys = await Key.find({ category: category, _id: { $in: assigned_keys } }).sort('serial_no');
     for (let k = 0; k < keys.length; k++) {
         let c = keys[k]
         result.columns.push({ key: c.key, header: c.key, type: c.type })
     }
 
-    let data = await ExcelDB.find({ category: category }).sort('-created_at')
+    let data = await ExcelDB.find({ category: category }).sort('created_at')
 
 
     for (let k = 0; k < data.length; k++) {

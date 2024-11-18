@@ -4,7 +4,7 @@ import isMongoId from 'validator/lib/isMongoId';
 import { ChecklistRemark, IChecklistRemark } from '../models/checklist-remark';
 import { ChecklistBox } from '../models/checklist-box';
 import { Checklist } from '../models/checklist';
-import { areDatesEqual } from '../utils/areDatesEqual';
+import { areDatesEqual } from '../utils/datesHelper';
 
 
 export const UpdateChecklistRemark = async (req: Request, res: Response, next: NextFunction) => {

@@ -9,6 +9,7 @@ export type IKey = {
     key: string,
     type: string,
     category: IKeyCategory,
+    is_date_key:boolean
     created_at: Date,
     updated_at: Date,
     created_by: IUser,
@@ -19,7 +20,7 @@ const KeySchema = new mongoose.Schema<IKey, mongoose.Model<IKey, {}, {}>, {}>({
         type: Number,
         index: true,
         required: true,
-        default:0
+        default: 0
     },
     key: {
         type: String,
@@ -37,6 +38,10 @@ const KeySchema = new mongoose.Schema<IKey, mongoose.Model<IKey, {}, {}>, {}>({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'KeyCategory',
         required: true
+    },
+    is_date_key: {
+        type: Boolean,
+        default: false
     },
     created_at: {
         type: Date,

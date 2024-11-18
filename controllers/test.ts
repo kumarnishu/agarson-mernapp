@@ -4,9 +4,8 @@ import { KeyCategory } from '../models/key-category';
 import { Key } from '../models/keys';
 import { ExcelDB, IExcelDb } from '../models/excel-db';
 import { Checklist } from '../models/checklist';
-import { previousYear } from '../utils/datesHelper';
+import { convertDateToExcelFormat, previousYear } from '../utils/datesHelper';
 import { ChecklistBox } from '../models/checklist-box';
-import { convertDateToExcelFormat } from '../utils/decimalToTimeForXlsx';
 
 export const test = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -24,19 +23,17 @@ export const test = async (req: Request, res: Response, next: NextFunction) => {
         const workbook = xlsx.read(req.file.buffer);
 
         let workbook_sheet = workbook.SheetNames;
-        var name = 'Sheet1'
-        const sheetData: { key: string, category: string, type: string }[] = xlsx.utils.sheet_to_json(workbook.Sheets[name], { header: 1, raw: true });
-
+        var name = 'Sheet2'
+        const sheetData: { key: string, category: string, type: string, is_date_key: boolean }[] = xlsx.utils.sheet_to_json(workbook.Sheets[name]);
+       console.log(sheetData)
         for (let i = 1; i < sheetData.length; i++) {
             let sheet = sheetData[i]
             let key: string | null = sheet.key
             let type: string | null = sheet.type
             let category: string | null = sheet.category
-
-
-            if (type && type == 'date') {
+            let is_date_key: boolean | null = sheet.is_date_key
+            if (is_date_key==true) {
                 key = convertDateToExcelFormat(key)
-                console.log(key)
             }
 
             let cat = await KeyCategory.findOne({ category: category })

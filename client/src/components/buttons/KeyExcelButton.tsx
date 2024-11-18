@@ -9,6 +9,8 @@ import { saveAs } from 'file-saver';
 import ExportToExcel from "../../utils/ExportToExcel"
 import { queryClient } from "../../main"
 import { CreateKeysFromExcel } from "../../services/KeyServices"
+import { GetKeyFromExcelDto } from "../../dtos"
+import { convertDateToExcelFormat } from "../../utils/datesHelper"
 
 
 const FileInput = styled.input`
@@ -19,7 +21,7 @@ color:blue;
 
 export function KeyExcelButton() {
     const { data, mutate, isLoading, isSuccess } = useMutation
-        <AxiosResponse<any[]>, BackendError, FormData>
+        <AxiosResponse<GetKeyFromExcelDto[]>, BackendError, FormData>
         (CreateKeysFromExcel, { onSuccess: () => queryClient.refetchQueries('keys') })
     const [file, setFile] = useState<File | null>(null)
 
@@ -45,8 +47,20 @@ export function KeyExcelButton() {
 
     useEffect(() => {
         if (isSuccess) {
-            if (data.data.length > 0)
-                ExportToExcel(data.data, "output.xlsx")
+            if (data.data.length > 0) {
+                let refeineddata = data.data.map((dt) => {
+                    return {
+                        _id: dt._id,
+                        serial_no: dt.serial_no,
+                        key: dt.is_date_key ? convertDateToExcelFormat(dt.key) : dt.key,
+                        type: dt.type,
+                        category: dt.category,
+                        is_date_key: dt.is_date_key,
+                        status: dt.status
+                    }
+                })
+                ExportToExcel(refeineddata, "output.xlsx")
+            }
         }
     }, [isSuccess, data])
 

@@ -6,6 +6,7 @@ import { User } from '../models/user';
 import xlsx from "xlsx"
 import { KeyCategory } from '../models/key-category';
 import ConvertJsonToExcel from '../utils/ConvertJsonToExcel';
+import { convertDateToExcelFormat } from '../utils/datesHelper';
 
 export const GetAllKey = async (req: Request, res: Response, next: NextFunction) => {
     let category = req.query.category;
@@ -64,7 +65,7 @@ export const UpdateKey = async (req: Request, res: Response, next: NextFunction)
         key: string,
         category: string,
         type: string,
-        serial_no: number
+        serial_no: number,
     }
     if (!category || !key || !type) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -175,7 +176,11 @@ export const CreateKeysFromExcel = async (req: Request, res: Response, next: Nex
             let type: string | null = keyItem.type
             let category: string | null = keyItem.category
             let _id: string | undefined = keyItem._id
-
+            let is_date_key: boolean | null = keyItem.is_date_key
+            if (is_date_key == true) {
+                key = convertDateToExcelFormat(key)
+            }
+         
             let validated = true
 
             //important
@@ -208,7 +213,8 @@ export const CreateKeysFromExcel = async (req: Request, res: Response, next: Nex
                 else
                     category = cat._id
             }
-            if (key) {
+            console.log(keyItem)
+            if (validated) {
                 if (_id && isMongoId(String(_id))) {
                     let ch = await Key.findById(_id)
                     if (ch?.key !== key)
@@ -216,42 +222,40 @@ export const CreateKeysFromExcel = async (req: Request, res: Response, next: Nex
                             validated = false
                             statusText = `key ${key} exists`
                         }
+                        else {
+                            await Key.findByIdAndUpdate(_id, {
+                                key,
+                                serial_no,
+                                type,
+                                is_date_key: is_date_key ? true : false,
+                                category: category,
+                                updated_at: new Date(),
+                                updated_by: req.user
+                            })
+                            statusText = "updated"
+                        }
+
                 }
                 else {
-                    let keyl = await Key.findOne({ key: key })
+                    let keyl = await Key.findOne({ key: key, category: category })
                     if (keyl) {
                         validated = false
                         statusText = `${keyl} already exists`
                     }
-                }
-            }
-            if (validated) {
-                if (_id && isMongoId(String(_id))) {
-                    let ch = await Key.findById(_id)
-
-
-                    await Key.findByIdAndUpdate(_id, {
-                        key,
-                        serial_no,
-                        type,
-                        category: category,
-                        updated_at: new Date(),
-                        updated_by: req.user
-                    })
-                    statusText = "updated"
-                }
-                else {
-                    await new Key({
-                        key,
-                        serial_no,
-                        type,
-                        category: category,
-                        created_by: req.user,
-                        updated_by: req.user,
-                        updated_at: new Date(Date.now()),
-                        created_at: new Date(Date.now())
-                    }).save()
-                    statusText = "created"
+                    else {
+                        await new Key({
+                            key,
+                            serial_no,
+                            type,
+                            is_date_key: is_date_key ? true : false,
+                            category: category,
+                            created_by: req.user,
+                            updated_by: req.user,
+                            updated_at: new Date(Date.now()),
+                            created_at: new Date(Date.now())
+                        }).save()
+                        statusText = "created"
+                    }
                 }
 
 
@@ -271,6 +275,7 @@ export const DownloadExcelTemplateForCreateKeys = async (req: Request, res: Resp
         key: 'Employee Name',
         category: 'visitsummary',
         type: 'string',
+        is_date_key: false
     }]
     let data = (await Key.find().populate('category')).map((u) => {
         return {
@@ -279,6 +284,7 @@ export const DownloadExcelTemplateForCreateKeys = async (req: Request, res: Resp
             key: u.key,
             type: u.type,
             category: u.category.category,
+            is_date_key: u.is_date_key
         }
     })
     if (data.length > 0) {

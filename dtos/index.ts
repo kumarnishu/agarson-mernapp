@@ -162,6 +162,7 @@ export type GetKeyFromExcelDto = {
     key: string,
     type: string,
     category: string,
+    is_date_key:boolean,
     status?: string
 }
 export type GetCrmStateDto = {

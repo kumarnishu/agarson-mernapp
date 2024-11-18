@@ -154,6 +154,16 @@ export type GetKeyDto = {
     type: string;
     assigned_users: string;
 }
+
+export type GetKeyFromExcelDto = {
+    _id?: string,
+    serial_no: number,
+    key: string,
+    type: string,
+    category: string,
+    is_date_key: boolean,
+    status?: string
+}
 export type GetCrmStateDto = {
     _id: string,
     state: string,
