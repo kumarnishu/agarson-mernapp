@@ -89,7 +89,7 @@ export const CreateExcelDBFromExcel = async (req: Request, res: Response, next: 
 
                 if (Array.isArray(keys)) {
                     for (let rk = 0; rk < keys.length; rk++) {
-                        if (!remotekeys.includes(keys[rk]))
+                        if (keys[rk] && !remotekeys.includes(keys[rk]))
                             result.push({ problem: `${keys[rk]} not found for the category ${sheetName.category}` })
                     }
                 }
@@ -104,18 +104,20 @@ export const CreateExcelDBFromExcel = async (req: Request, res: Response, next: 
 
                         for (let k = 0; k < columns.length; k++) {
                             let column = columns[k];
+                            if (column && column.key) {
+                                if (column.type == 'date') {
+                                    obj.key = column;
+                                    obj[String(column.key)] = new Date(excelSerialToDate(sheetData[j][column.key])) > invalidate ? new Date(excelSerialToDate(sheetData[j][column.key])) : parseExcelDate(sheetData[j][column.key])
+                                }
+                                else {
+                                    obj.key = column;
+                                    obj[String(column.key)] = sheetData[j][column.key];
+                                }
+                            }
 
-                            if (column.type == 'date') {
-                                obj.key = column;
-                                obj[String(column.key)] = new Date(excelSerialToDate(sheetData[j][column.key])) > invalidate ? new Date(excelSerialToDate(sheetData[j][column.key])) : parseExcelDate(sheetData[j][column.key])
-                            }
-                            else {
-                                obj.key = column;
-                                obj[String(column.key)] = sheetData[j][column.key];
-                            }
                         }
-
-                        await new ExcelDB(obj).save();
+                        if (obj['key'])
+                            await new ExcelDB(obj).save();
                     }
                 }
             }
