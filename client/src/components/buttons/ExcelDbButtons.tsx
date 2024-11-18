@@ -60,10 +60,10 @@ export function ExcelDbButtons() {
                         <>
                             <Button
                                 component="label"
-                                fullWidth
-                                variant="contained"
+                                variant="text"
+                                color="inherit"
                             >
-                                <Upload /> Excel
+                                <Upload sx={{mr:2}}/> {`  Upload Grp Excel`}
                                 <FileInput
                                     id="upload_input"
                                     hidden

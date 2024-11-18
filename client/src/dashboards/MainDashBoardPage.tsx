@@ -62,11 +62,12 @@ function MainDashBoardPage() {
 
   useEffect(() => {
     let tmpfeatures: { feature: string, is_visible?: boolean, url: string }[] = []
-    tmpfeatures.push({ feature: 'Home', is_visible: true, url: "/Home" })
-    user?.is_admin && tmpfeatures.push({ feature: 'Users', is_visible: true, url: "/Users" })
+    tmpfeatures.push({ feature: 'Dashboard', is_visible: true, url: "/Home" })
     user?.assigned_permissions.includes('feature_menu') && tmpfeatures.push({ feature: 'Features', is_visible: true, url: "/Features" })
-    user?.assigned_permissions.includes('report_menu') && tmpfeatures.push({ feature: 'Reports', is_visible: true, url: "/Reports" })
-    user?.assigned_permissions.includes('dropdown_menu') && tmpfeatures.push({ feature: 'DropDown', is_visible: true, url: "/DropDown" })
+    user?.assigned_permissions.includes('report_menu') && tmpfeatures.push({ feature: 'Feature Reports', is_visible: true, url: "/Reports" })
+    user?.assigned_permissions.includes('dropdown_menu') && tmpfeatures.push({ feature: 'Constants', is_visible: true, url: "/DropDown" })
+    user?.assigned_permissions.includes('excel_db_menu') && tmpfeatures.push({ feature: 'Exceldb', is_visible: true, url: "/ExcelDB" })
+    user?.is_admin && tmpfeatures.push({ feature: 'Authorization', is_visible: true, url: "/Authorization" })
 
     setFeatures(tmpfeatures)
 

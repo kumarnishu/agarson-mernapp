@@ -3,544 +3,86 @@ import { IMenu } from "../dtos";
 export function FetchAllPermissions() {
     let permissions: IMenu[] = [];
 
-
-    let featureMenu: IMenu = {
-        label: 'Feature',
+    let exceldbMenu: IMenu = {
+        label: 'ExcelDB',
         permissions: [
             {
-            value: 'feature_menu',
-            label: 'Feature Button'
-        },
-    ],
-    menues:[
-        {
-            label: 'Production',
-            permissions: [
-                {
-                    value: 'production_view',
-                    label: 'view'
-                },
-                {
-                    value: 'production_create',
-                    label: 'create'
-                },
-                {
-                    value: 'production_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'production_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'production_export',
-                    label: 'export'
-                }
-            ]
-        },
-        {
-            label: 'Sole Thickness',
-            permissions: [
-                {
-                    value: 'sole_thickness_view',
-                    label: 'view'
-                },
-                {
-                    value: 'sole_thickness_create',
-                    label: 'create'
-                },
-                {
-                    value: 'sole_thickness_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'sole_thickness_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'sole_thickness_export',
-                    label: 'export'
-                }
-            ]
-        },
-        {
-            label: 'Shoe Weight',
-            permissions: [
-                {
-                    value: 'shoe_weight_view',
-                    label: 'view'
-                },
-                {
-                    value: 'shoe_weight_create',
-                    label: 'create'
-                },
-                {
-                    value: 'shoe_weight_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'shoe_weight_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'shoe_weight_export',
-                    label: 'export'
-                }
-            ]
-        },
-        {
-            label: 'Spare Dye',
-            permissions: [
-                {
-                    value: 'spare_dye_view',
-                    label: 'view'
-                },
-                {
-                    value: 'spare_dye_create',
-                    label: 'create'
-                },
-                {
-                    value: 'spare_dye_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'spare_dye_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'spare_dye_export',
-                    label: 'export'
-                }
-            ]
-        }, {
-            label: 'Leads',
-            permissions: [
-                {
-                    value: 'leads_view',
-                    label: 'view'
-                },
-                {
-                    value: 'leads_create',
-                    label: 'create'
-                },
-
-                {
-                    value: 'leads_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'leads_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'show_leads_useless',
-                    label: 'Show Useless Leads'
-                },
-                {
-                    value: 'show_refer_leads',
-                    label: 'Show Referred Leads'
-                },
-                {
-                    value: 'leads_merge',
-                    label: 'Merge Leads'
-                },
-                {
-                    value: 'create_lead_bills',
-                    label: 'Upload Bill'
-                },
-                {
-                    value: 'edit_lead_bills',
-                    label: 'Edit Bill'
-                },
-                {
-                    value: 'delete_lead_bills',
-                    label: 'Delete Bill'
-                },
-                {
-                    value: 'view_lead_bills',
-                    label: 'View Bills'
-                },
-                {
-                    value: 'leads_export',
-                    label: 'export'
-                }
-            ]
-        },
-        {
-            label: 'Refers',
-            permissions: [
-                {
-                    value: 'refer_view',
-                    label: 'view'
-                },
-                {
-                    value: 'refer_create',
-                    label: 'create'
-                },
-                {
-                    value: 'refer_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'refers_merge',
-                    label: 'Merge Refers'
-                },
-                {
-                    value: 'refer_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'refer_export',
-                    label: 'export'
-                },
-                {
-                    value: 'create_refer_bills',
-                    label: 'Upload Bill'
-                },
-                {
-                    value: 'edit_refer_bills',
-                    label: 'Edit Bill'
-                },
-                {
-                    value: 'delete_refer_bills',
-                    label: 'Delete Bill'
-                },
-                {
-                    value: 'view_refer_bills',
-                    label: 'View Bills'
-                },
-            ]
-        },
-        {
-            label: 'Reminders',
-            permissions: [
-                {
-                    value: 'reminders_view',
-                    label: 'view'
-                },
-                {
-                    value: 'reminders_create',
-                    label: 'create'
-                },
-                {
-                    value: 'reminders_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'reminders_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'reminders_export',
-                    label: 'export'
-                }
-            ]
-        },
-        {
-            label: 'Crm Activities',
-            permissions: [
-                {
-                    value: 'activities_view',
-                    label: 'view'
-                },
-                {
-                    value: 'activities_create',
-                    label: 'create'
-                },
-                {
-                    value: 'activities_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'activities_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'activities_export',
-                    label: 'export'
-                }
-            ]
-        },
-        {
-            label: 'Checklists',
-            permissions: [
-                {
-                    value: 'checklist_view',
-                    label: 'view'
-                },
-                {
-                    value: 'checklist_create',
-                    label: 'create'
-                },
-                {
-                    value: 'checklist_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'checklist_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'checklist_export',
-                    label: 'export'
-                }
-            ]
-        },
-        {
-            label: 'Checklist Admin',
-            permissions: [
-                {
-                    value: 'checklist_admin_view',
-                    label: 'view'
-                },
-                {
-                    value: 'checklist_admin_create',
-                    label: 'create'
-                },
-                {
-                    value: 'checklist_admin_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'checklist_admin_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'checklist_admin_export',
-                    label: 'export'
-                }
-            ]
-        },
-        {
-            label: 'Payments',
-            permissions: [
-                {
-                    value: 'payments_view',
-                    label: 'view'
-                },
-                {
-                    value: 'payments_create',
-                    label: 'create'
-                },
-                {
-                    value: 'payments_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'payments_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'payments_export',
-                    label: 'export'
-                }
-            ]
-        },
-        {
-            label: 'ExcelDB',
-            permissions: [
-                {
-                    value: 'excel_db_view',
-                    label: 'view'
-                },
-                {
-                    value: 'excel_db_create',
-                    label: 'create'
-                },
-                {
-                    value: 'excel_db_edit',
-                    label: 'edit'
-                },
-                {
-                    value: 'excel_db_delete',
-                    label: 'delete'
-                },
-                {
-                    value: 'excel_db_export',
-                    label: 'export'
-                }
-            ]
-        }
-    ]
-    }
-    let reportsMenu: IMenu = {
-        label: 'Reports',
-        permissions: [{
-            value: 'report_menu',
-            label: 'Report Button'
-        }], menues: [
+                value: 'excel_db_menu',
+                label: 'ExcelDB Button'
+            },
+        ],
+        menues: [
             {
-                label: 'Shoe Weight Difference Report',
+                label: 'Grp Excel',
                 permissions: [
                     {
-                        value: 'shoe_weight_report_view',
+                        value: 'grp_excel_view',
                         label: 'view'
                     },
                     {
-                        value: 'shoe_weight_report_create',
+                        value: 'grp_excel_create',
                         label: 'create'
                     },
                     {
-                        value: 'shoe_weight_report_edit',
+                        value: 'grp_excel_edit',
                         label: 'edit'
                     },
                     {
-                        value: 'shoe_weight_report_delete',
+                        value: 'grp_excel_delete',
                         label: 'delete'
                     },
                     {
-                        value: 'shoe_weight_report_export',
+                        value: 'grp_excel_export',
                         label: 'export'
                     }
                 ]
             },
             {
-                label: 'Dye Status Report',
+                label: 'Salesman Leaves',
                 permissions: [
                     {
-                        value: 'dye_status_report_view',
+                        value: 'salesman_leaves_report_view',
                         label: 'view'
                     },
                     {
-                        value: 'dye_status_report_create',
+                        value: 'salesman_leaves_report_create',
                         label: 'create'
                     },
                     {
-                        value: 'dye_status_report_edit',
+                        value: 'salesman_leaves_report_edit',
                         label: 'edit'
                     },
                     {
-                        value: 'dye_status_report_delete',
+                        value: 'salesman_leaves_report_delete',
                         label: 'delete'
                     },
                     {
-                        value: 'dye_status_report_export',
+                        value: 'salesman_leaves_report_export',
                         label: 'export'
                     }
                 ]
             },
             {
-                label: 'Machine Wise Production Report',
+                label: 'Visit Report',
                 permissions: [
                     {
-                        value: 'machine_wise_production_report_view',
+                        value: 'visit_report_view',
                         label: 'view'
                     },
                     {
-                        value: 'machine_wise_production_report_create',
+                        value: 'visit_report_create',
                         label: 'create'
                     },
                     {
-                        value: 'machine_wise_production_report_edit',
+                        value: 'visit_report_edit',
                         label: 'edit'
                     },
                     {
-                        value: 'machine_wise_production_report_delete',
+                        value: 'visit_report_delete',
                         label: 'delete'
                     },
                     {
-                        value: 'machine_wise_production_report_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Thekedar Wise Production Report',
-                permissions: [
-                    {
-                        value: 'thekedar_wise_production_report_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'thekedar_wise_production_report_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'thekedar_wise_production_report_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'thekedar_wise_production_report_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'thekedar_wise_production_report_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Machine category Wise Production Report',
-                permissions: [
-                    {
-                        value: 'machine_category_wise_production_report_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'machine_category_wise_production_report_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'machine_category_wise_production_report_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'machine_category_wise_production_report_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'machine_category_wise_production_report_export',
-                        label: 'export'
-                    }
-                ]
-            },
-           
-            {
-                label: 'Assigned Refer Reports',
-                permissions: [
-                    {
-                        value: 'assignedrefer_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'assignedrefer_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'assignedrefer_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'assignedrefer_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'assignedrefer_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'New Refer Reports',
-                permissions: [
-                    {
-                        value: 'newrefer_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'newrefer_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'newrefer_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'newrefer_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'newrefer_export',
+                        value: 'visit_report_export',
                         label: 'export'
                     }
                 ]
@@ -695,57 +237,529 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
+            
+            
+
+        ]
+    }
+    let featureMenu: IMenu = {
+        label: 'Feature',
+        permissions: [
             {
-                label: 'Visit Report',
+                value: 'feature_menu',
+                label: 'Feature Button'
+            },
+        ],
+        menues: [
+            {
+                label: 'Production',
                 permissions: [
                     {
-                        value: 'visit_report_view',
+                        value: 'production_view',
                         label: 'view'
                     },
                     {
-                        value: 'visit_report_create',
+                        value: 'production_create',
                         label: 'create'
                     },
                     {
-                        value: 'visit_report_edit',
+                        value: 'production_edit',
                         label: 'edit'
                     },
                     {
-                        value: 'visit_report_delete',
+                        value: 'production_delete',
                         label: 'delete'
                     },
                     {
-                        value: 'visit_report_export',
+                        value: 'production_export',
                         label: 'export'
                     }
                 ]
             },
-            
             {
-                label: 'Salesman Leaves Report',
+                label: 'Sole Thickness',
                 permissions: [
                     {
-                        value: 'salesman_leaves_report_view',
+                        value: 'sole_thickness_view',
                         label: 'view'
                     },
                     {
-                        value: 'salesman_leaves_report_create',
+                        value: 'sole_thickness_create',
                         label: 'create'
                     },
                     {
-                        value: 'salesman_leaves_report_edit',
+                        value: 'sole_thickness_edit',
                         label: 'edit'
                     },
                     {
-                        value: 'salesman_leaves_report_delete',
+                        value: 'sole_thickness_delete',
                         label: 'delete'
                     },
                     {
-                        value: 'salesman_leaves_report_export',
+                        value: 'sole_thickness_export',
                         label: 'export'
                     }
                 ]
-            }
+            },
+            {
+                label: 'Shoe Weight',
+                permissions: [
+                    {
+                        value: 'shoe_weight_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'shoe_weight_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'shoe_weight_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'shoe_weight_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'shoe_weight_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Spare Dye',
+                permissions: [
+                    {
+                        value: 'spare_dye_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'spare_dye_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'spare_dye_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'spare_dye_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'spare_dye_export',
+                        label: 'export'
+                    }
+                ]
+            }, {
+                label: 'Leads',
+                permissions: [
+                    {
+                        value: 'leads_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'leads_create',
+                        label: 'create'
+                    },
+
+                    {
+                        value: 'leads_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'leads_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'show_leads_useless',
+                        label: 'Show Useless Leads'
+                    },
+                    {
+                        value: 'show_refer_leads',
+                        label: 'Show Referred Leads'
+                    },
+                    {
+                        value: 'leads_merge',
+                        label: 'Merge Leads'
+                    },
+                    {
+                        value: 'create_lead_bills',
+                        label: 'Upload Bill'
+                    },
+                    {
+                        value: 'edit_lead_bills',
+                        label: 'Edit Bill'
+                    },
+                    {
+                        value: 'delete_lead_bills',
+                        label: 'Delete Bill'
+                    },
+                    {
+                        value: 'view_lead_bills',
+                        label: 'View Bills'
+                    },
+                    {
+                        value: 'leads_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Refers',
+                permissions: [
+                    {
+                        value: 'refer_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'refer_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'refer_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'refers_merge',
+                        label: 'Merge Refers'
+                    },
+                    {
+                        value: 'refer_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'refer_export',
+                        label: 'export'
+                    },
+                    {
+                        value: 'create_refer_bills',
+                        label: 'Upload Bill'
+                    },
+                    {
+                        value: 'edit_refer_bills',
+                        label: 'Edit Bill'
+                    },
+                    {
+                        value: 'delete_refer_bills',
+                        label: 'Delete Bill'
+                    },
+                    {
+                        value: 'view_refer_bills',
+                        label: 'View Bills'
+                    },
+                ]
+            },
+            {
+                label: 'Crm Reminders',
+                permissions: [
+                    {
+                        value: 'reminders_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'reminders_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'reminders_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'reminders_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'reminders_export',
+                        label: 'export'
+                    }
+                ]
+            },
+
+            {
+                label: 'Checklists',
+                permissions: [
+                    {
+                        value: 'checklist_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'checklist_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'checklist_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'checklist_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'checklist_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Checklist Admin',
+                permissions: [
+                    {
+                        value: 'checklist_admin_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'checklist_admin_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'checklist_admin_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'checklist_admin_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'checklist_admin_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Payments',
+                permissions: [
+                    {
+                        value: 'payments_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'payments_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'payments_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'payments_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'payments_export',
+                        label: 'export'
+                    }
+                ]
+            },
+
+        ]
+    }
+    let featureReportsMenu: IMenu = {
+        label: 'Reports',
+        permissions: [{
+            value: 'report_menu',
+            label: 'Report Button'
+        }], menues: [
+            {
+                label: 'Shoe Weight Difference Report',
+                permissions: [
+                    {
+                        value: 'shoe_weight_report_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'shoe_weight_report_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'shoe_weight_report_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'shoe_weight_report_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'shoe_weight_report_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Dye Status Report',
+                permissions: [
+                    {
+                        value: 'dye_status_report_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'dye_status_report_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'dye_status_report_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'dye_status_report_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'dye_status_report_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Machine Wise Production Report',
+                permissions: [
+                    {
+                        value: 'machine_wise_production_report_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'machine_wise_production_report_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'machine_wise_production_report_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'machine_wise_production_report_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'machine_wise_production_report_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Thekedar Wise Production Report',
+                permissions: [
+                    {
+                        value: 'thekedar_wise_production_report_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'thekedar_wise_production_report_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'thekedar_wise_production_report_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'thekedar_wise_production_report_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'thekedar_wise_production_report_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Machine category Wise Production Report',
+                permissions: [
+                    {
+                        value: 'machine_category_wise_production_report_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'machine_category_wise_production_report_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'machine_category_wise_production_report_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'machine_category_wise_production_report_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'machine_category_wise_production_report_export',
+                        label: 'export'
+                    }
+                ]
+            },
+
+            {
+                label: 'Assigned Refer Reports',
+                permissions: [
+                    {
+                        value: 'assignedrefer_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'assignedrefer_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'assignedrefer_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'assignedrefer_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'assignedrefer_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'New Refer Reports',
+                permissions: [
+                    {
+                        value: 'newrefer_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'newrefer_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'newrefer_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'newrefer_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'newrefer_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Crm Activities',
+                permissions: [
+                    {
+                        value: 'activities_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'activities_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'activities_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'activities_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'activities_export',
+                        label: 'export'
+                    }
+                ]
+            },
         ]
     }
 
@@ -754,7 +768,7 @@ export function FetchAllPermissions() {
         permissions: [{
             value: 'dropdown_menu',
             label: 'DropDown Button'
-        }], 
+        }],
         menues: [
             {
                 label: 'Article',
@@ -882,56 +896,6 @@ export function FetchAllPermissions() {
                 ]
             },
             {
-                label: 'States',
-                permissions: [
-                    {
-                        value: 'states_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'states_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'states_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'states_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'states_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Cities',
-                permissions: [
-                    {
-                        value: 'city_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'city_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'city_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'city_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'city_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
                 label: 'Lead Type',
                 permissions: [
                     {
@@ -1002,55 +966,6 @@ export function FetchAllPermissions() {
                     },
                     {
                         value: 'leadstage_export',
-                        label: 'export'
-                    }
-                ]
-            }, {
-                label: 'Erp Employees',
-                permissions: [
-                    {
-                        value: 'erp_employee_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'erp_employee_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'erp_employee_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'erp_employee_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'erp_employee_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Erp States',
-                permissions: [
-                    {
-                        value: 'erp_state_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'erp_state_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'erp_state_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'erp_state_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'erp_state_export',
                         label: 'export'
                     }
                 ]
@@ -1156,7 +1071,167 @@ export function FetchAllPermissions() {
             },
         ]
     }
+    let authorizationMenu: IMenu = {
+        label: 'Authorization',
+        permissions: [{
+            value: 'authorization_menu',
+            label: 'Authorization Button'
+        }],
+        menues: [
 
+            {
+                label: 'States',
+                permissions: [
+                    {
+                        value: 'states_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'states_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'states_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'states_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'states_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Cities',
+                permissions: [
+                    {
+                        value: 'city_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'city_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'city_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'city_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'city_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Erp Employees',
+                permissions: [
+                    {
+                        value: 'erp_employee_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'erp_employee_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'erp_employee_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'erp_employee_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'erp_employee_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Erp States',
+                permissions: [
+                    {
+                        value: 'erp_state_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'erp_state_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'erp_state_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'erp_state_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'erp_state_export',
+                        label: 'export'
+                    }
+                ]
+            }
+            ,
+            {
+                label: 'Key',
+                permissions: [
+                    {
+                        value: 'key_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'key_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'key_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'key_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'key_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Key Category',
+                permissions: [
+                    {
+                        value: 'key_category_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'key_category_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'key_category_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'key_category_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'key_category_export',
+                        label: 'export'
+                    }
+                ]
+            },
+        ]
+    }
 
     let dashboardMenu: IMenu = {
         label: 'Dashboard',
@@ -1170,8 +1245,11 @@ export function FetchAllPermissions() {
     }
 
     permissions.push(dashboardMenu)
+    permissions.push(exceldbMenu)
     permissions.push(featureMenu)
-    permissions.push(reportsMenu)
+    permissions.push(authorizationMenu)
     permissions.push(dropdownMenu)
+    permissions.push(featureReportsMenu)
+
     return permissions;
 }

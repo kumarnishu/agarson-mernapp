@@ -4,39 +4,59 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/userContext";
 import { ButtonLogo } from "../components/logo/Agarson";
 import { toTitleCase } from "../utils/TitleCase";
+import { BackendError } from "..";
+import { DropDownDto } from "../dtos";
+import { AxiosResponse } from "axios";
+import { useQuery } from "react-query";
+import { GetAllKeyCategoriesForDropdown } from "../services/KeyServices";
+import { ExcelDbButtons } from "../components/buttons/ExcelDbButtons";
 
-function ReportDashboard() {
+function ExcelDBDashboard() {
     const [features, setFeatures] = useState<{ feature: string, is_visible: boolean, url: string }[]>([])
     const { user } = useContext(UserContext)
+    const { data: categoryData } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategoriesForDropdown({ show_assigned_only: true }))
+
 
     useEffect(() => {
         let tmpfeatures: { feature: string, is_visible: boolean, url: string }[] = []
-        user?.assigned_permissions.includes('pending_orders_view') && tmpfeatures.push({ feature: 'pending orders report', is_visible: true, url: "PendingOrdersReport" })
-        user?.assigned_permissions.includes('bills_ageing_view') && tmpfeatures.push({ feature: 'bills aging  report', is_visible: true, url: "BillsAgingReportPage" })
-        user?.assigned_permissions.includes('client_sale_report_view') && tmpfeatures.push({ feature: 'Client Sale  report', is_visible: true, url: "ClientSaleReportsPage" }),
-            user?.assigned_permissions.includes('last_year_client_sale_report_view') && tmpfeatures.push({ feature: 'Client Sale Last Year report', is_visible: true, url: "ClientSaleLastYearReportsPage" }),
-            user?.assigned_permissions.includes('party_target_view') && tmpfeatures.push({ feature: 'Party Target report', is_visible: true, url: "PartyTargetReportsPage" }),
-            user?.assigned_permissions.includes('sale_analysis_view') && tmpfeatures.push({ feature: 'Sale Analysis report', is_visible: true, url: "SaleAnalysisReport" }),
-        user?.assigned_permissions.includes('assignedrefer_view') && tmpfeatures.push({ feature: 'assigned refer reports', is_visible: true, url: "AssignedReferReportPage" })
-        user?.assigned_permissions.includes('newrefer_view') && tmpfeatures.push({ feature: 'new customer reports ', is_visible: true, url: "NewReferReportPage" })
-        user?.assigned_permissions.includes('shoe_weight_report_view') && tmpfeatures.push({ feature: 'Shoe Weight Difference report', is_visible: true, url: "ShowWeightDifferenceReportPage" })
-        user?.assigned_permissions.includes('dye_status_report_view') && tmpfeatures.push({ feature: 'Dye Status report', is_visible: true, url: "DyeStatusReportPage" })
-        user?.assigned_permissions.includes('machine_wise_production_report_view') && tmpfeatures.push({ feature: 'Machine Wise production report', is_visible: true, url: "MachineWiseProductionReportPage" })
-        user?.assigned_permissions.includes('machine_category_wise_production_report_view') && tmpfeatures.push({ feature: 'Category Wise Production report', is_visible: true, url: "CategoryWiseProductionReportPage" }),
-            user?.assigned_permissions.includes('thekedar_wise_production_report_view') && tmpfeatures.push({ feature: 'Thekedar Wise production report', is_visible: true, url: "ThekedarWiseProductionReportPage" })
-        user?.assigned_permissions.includes('visit_report_view') && tmpfeatures.push({ feature: 'salesmen visit report ', is_visible: false, url: "VisitReportPage" })
+
+        if (categoryData && categoryData.data) {
+            categoryData.data.map((dt) => {
+                tmpfeatures.push({ feature: dt.value, is_visible: true, url: `ExcelDbReports/${dt.id}/${dt.value}` })
+            })
+        }
         user?.assigned_permissions.includes('salesman_leaves_report_view') && tmpfeatures.push({ feature: 'salesmen leaves report ', is_visible: false, url: "SalesmanLeavesReportPage" })
-       
-      
-        
-        tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
         setFeatures(tmpfeatures)
 
-    }, [user])
+    }, [user, categoryData])
+
 
     return (
         <>
+
+           
             <Grid container sx={{ pt: 2 }} >
+                <Grid key={0} item xs={12} md={4} lg={3} sx={{ p: 1 }}>
+                    <Paper
+                        sx={{
+                            p: 2,
+                            m: 0,
+                            height: 60,
+                            borderRadius: 3,
+                            position: 'relative',
+                            overflow: 'hidden',
+                            backdropFilter: 'blur(10px)', // Blurry effect
+                            backgroundColor: 'rgba(255, 255, 255, 0.6)', // Semi-transparent blue
+                            transition: '0.3s',
+                            '&:hover': {
+                                transform: 'translateY(-2px)',
+                                backgroundColor: 'rgba(70, 130, 180, 0.7)', // Darken on hover
+                            },
+                        }}
+                    >
+                        {user?.assigned_permissions.includes("excel_db_create") && <ExcelDbButtons />}
+                    </Paper>
+                </Grid>
                 {features.map((feat, index) => {
                     return (
                         <Grid key={index} item xs={12} md={4} lg={3} sx={{ p: 1 }}>
@@ -71,7 +91,7 @@ function ReportDashboard() {
                                                 fontWeight: 'medium', fontSize: 14
                                             }}
                                         >
-                                            {toTitleCase(feat.feature)}
+                                            {feat.feature && toTitleCase(feat.feature)}
                                         </Typography>
                                     </Stack>
                                 </Paper>
@@ -85,4 +105,4 @@ function ReportDashboard() {
 }
 
 
-export default ReportDashboard
+export default ExcelDBDashboard

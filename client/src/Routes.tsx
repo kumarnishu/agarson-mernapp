@@ -5,8 +5,8 @@ import LoginPage from './pages/LoginPage.tsx'
 import UsersPage from './pages/features/UsersPage.tsx'
 import EmailVerifyPage from './pages/EmailVerifyPage.tsx'
 import ResetPasswordDialog from './components/dialogs/users/ResetPasswordDialog.tsx'
-import ReportDashboard from './dashboards/ReportsDashboard.tsx'
-import DropDownDashboard from './dashboards/DropDownDashboard.tsx'
+import ReportDashboard from './dashboards/FeatureReportsDashboard.tsx'
+import DropDownDashboard from './dashboards/AppConstantsDashboard.tsx'
 import MainDashBoardPage from './dashboards/MainDashBoardPage.tsx'
 import RemindersPage from './pages/features/CrmRemindersPage.tsx'
 import CitiesPage from './pages/dropdowns/CitiesPage.tsx'
@@ -16,18 +16,12 @@ import CrmLeadSourcesPage from './pages/dropdowns/CrmSourcePage.tsx'
 import CrmStagesPage from './pages/dropdowns/CrmStagesPage.tsx'
 import CrmTypesPage from './pages/dropdowns/CrmleadTypesPage.tsx'
 import CrmActivitiesPage from './pages/reports/CrmActivitiesReportPage.tsx'
-import PartyTargetReportsPage from './pages/reports/PartyTargetReportPage.tsx'
-import SaleAnalysisReport from './pages/reports/SaleAnalysisReport.tsx'
 import ShoeWeightPage from './pages/features/ShoeWeightPage.tsx'
 import MachineCategoriesPage from './pages/dropdowns/MachineCategoriesPage.tsx'
 import ProductionPage from './pages/features/ProductionPage.tsx'
 import DyePage from './pages/dropdowns/DyesPage.tsx'
 import ArticlePage from './pages/dropdowns/ArticlesPage.tsx'
 import ErpStatesPage from './pages/dropdowns/ErpStatesPage.tsx'
-import PendingOrdersReport from './pages/reports/PendingOrdersReport.tsx'
-import ClientSaleReportsPage from './pages/reports/ClientSaleReportsPage.tsx'
-import ClientSaleLastYearReportsPage from './pages/reports/ClientSaleReportsPageLastyear.tsx'
-import BillsAgingReportPage from './pages/reports/BillsAgingReportPage.tsx'
 import LeadsPage from './pages/features/LeadsPage.tsx'
 import MachinePage from './pages/dropdowns/MachinesPage.tsx'
 import AssignedReferReportPage from './pages/reports/AssignedReferReportPage.tsx'
@@ -42,16 +36,16 @@ import CheckListPage from './pages/features/CheckListPage.tsx'
 import SpareDyesPage from './pages/features/SpareDyesPage.tsx'
 import SoleThicknessPage from './pages/features/SoleThicknessPage.tsx'
 import DyeLocationPage from './pages/dropdowns/DyeLocationPage.tsx'
-import FeatureDashboard from './dashboards/FeatureDashboard.tsx'
+import FeatureDashboard from './dashboards/AppFeatureDashboard.tsx'
 import ErpEmployeesPage from './pages/dropdowns/ErpEmployeesPage.tsx'
-import VisitReportPage from './pages/reports/VisitReportPage.tsx'
 import CheckListAdminPage from './pages/features/CheckListAdminPage.tsx'
-import SalesmanLeavesReportPage from './pages/reports/SalesmanLeavesReportPage.tsx'
 import PaymentsPage from './pages/features/PaymentsPage.tsx'
 import PaymentCategoriesPage from './pages/dropdowns/PaymentCategoriesPage.tsx'
 import KeysCategoriesPage from './pages/dropdowns/KeysCategoriesPage.tsx'
 import KeysPage from './pages/dropdowns/KeysPage.tsx'
 import ExcelDBPage from './pages/features/ExcelDBPage.tsx'
+import AuthorizationDashboard from './dashboards/AppAuthorizationDashboard.tsx'
+import ExcelDBDashboard from './dashboards/ExcelDBDashboard.tsx'
 
 
 function AppRoutes() {
@@ -61,21 +55,50 @@ function AppRoutes() {
     <Routes >
       {
         !user && <Route path="/Login" element={<LoginPage />} />}
-
-
       {
         user && <Route path="/"
           element={
             <MainDashBoardPage />
           }>
-
-          {user?.is_admin &&
-            < Route path="Users">
-              <Route index
-                element={
-                  <UsersPage />
-                }
+          {user && user?.is_admin &&
+            < Route path="Authorization" >
+              <Route index element={
+                <AuthorizationDashboard />
+              }
               />
+              < Route path="Users" element={
+                <UsersPage />
+              }/>
+              {user?.assigned_permissions.includes('city_view') && <Route path="CitiesPage" element={
+                <CitiesPage />
+              }
+              />}
+
+              {user?.assigned_permissions.includes('states_view') && <Route path='CrmStatesPage' element={
+                <CrmStatesPage />
+              }
+              />}
+
+              {user?.assigned_permissions.includes('erp_state_view') && <Route
+                path="ErpStatesPage" element={
+                  <ErpStatesPage />
+                }
+              />}
+              {user?.assigned_permissions.includes('erp_employee_view') && <Route
+                path="ErpEmployeesPage" element={
+                  <ErpEmployeesPage />
+                }
+              />}
+              {user?.assigned_permissions.includes('key_category_view') && <Route
+                path="KeysCategoriesPage" element={
+                  <KeysCategoriesPage />
+                }
+              />}
+              {user?.assigned_permissions.includes('key_view') && <Route
+                path="KeysPage" element={
+                  <KeysPage />
+                }
+              />}
             </Route>}
 
           {user && user?.assigned_permissions.includes('feature_menu') &&
@@ -157,20 +180,7 @@ function AppRoutes() {
                   <ReportDashboard />
                 }
               />
-
-              {user?.assigned_permissions.includes('visit_report_view') && <Route
-                path="VisitReportPage" element={
-                  <VisitReportPage />
-                }
-              />}
-              {user?.assigned_permissions.includes('salesman_leaves_report_view') && <Route
-                path="SalesmanLeavesReportPage" element={
-                  <SalesmanLeavesReportPage />
-                }
-              />}
-
-
-
+             
               {user?.assigned_permissions.includes('thekedar_wise_production_report_view') && <Route
                 path="ThekedarWiseProductionReportPage" element={
                   <ThekedarWiseProductionReportPage />
@@ -196,7 +206,7 @@ function AppRoutes() {
                   <DyeStatusReportPage />
                 }
               />}
-              
+
               {user?.assigned_permissions.includes('assignedrefer_view') && <Route path="AssignedReferReportPage" element={
                 <AssignedReferReportPage />
               }
@@ -205,47 +215,7 @@ function AppRoutes() {
                 <NewReferReportPage />
               }
               />}
-              {user?.assigned_permissions.includes('pending_orders_view') && <Route path="PendingOrdersReport" element={
-
-                < PendingOrdersReport />
-
-              }
-              />} {user?.assigned_permissions.includes('client_sale_report_view') && <Route path="ClientSaleReportsPage" element={
-
-                < ClientSaleReportsPage />
-
-
-              }
-              />}
-              {user?.assigned_permissions.includes('last_year_client_sale_report_view') && <Route path="ClientSaleLastYearReportsPage" element={
-
-                < ClientSaleLastYearReportsPage />
-
-
-              }
-              />}
-              {user?.assigned_permissions.includes('bills_ageing_view') && <Route path="BillsAgingReportPage" element={
-
-                < BillsAgingReportPage />
-
-
-              }
-              />}
-              {user?.assigned_permissions.includes('party_target_view') && <Route path="PartyTargetReportsPage" element={
-
-                < PartyTargetReportsPage />
-
-
-              }
-              />}
-              {user?.assigned_permissions.includes('sale_analysis_view') && <Route path="SaleAnalysisReport" element={
-                < SaleAnalysisReport />
-              }
-              />}
-
-
             </Route>}
-
 
           {user && user?.assigned_permissions.includes('dropdown_menu') &&
             < Route path="DropDown" >
@@ -279,10 +249,7 @@ function AppRoutes() {
                   <ArticlePage />
                 }
               />}
-              {user?.assigned_permissions.includes('city_view') && <Route path="CitiesPage" element={
-                <CitiesPage />
-              }
-              />}
+             
               {user?.assigned_permissions.includes('lead_source_view') && <Route path="LeadSourcesPage" element={
                 <CrmLeadSourcesPage />
               }
@@ -291,24 +258,13 @@ function AppRoutes() {
                 <CrmStagesPage />
               }
               />}
-              {user?.assigned_permissions.includes('states_view') && <Route path='CrmStatesPage' element={
-                <CrmStatesPage />
-              }
-              />}
+             
               {user?.assigned_permissions.includes('leadtype_view') && <Route path='LeadTypesPage' element={
                 <CrmTypesPage />
               }
               />}
-              {user?.assigned_permissions.includes('erp_state_view') && <Route
-                path="ErpStatesPage" element={
-                  <ErpStatesPage />
-                }
-              />}
-              {user?.assigned_permissions.includes('erp_employee_view') && <Route
-                path="ErpEmployeesPage" element={
-                  <ErpEmployeesPage />
-                }
-              />}
+             
+            
               {user?.assigned_permissions.includes('checklist_category_view') && <Route
                 path="ChecklistCategoriesPage" element={
                   <ChecklistCategoriesPage />
@@ -319,16 +275,23 @@ function AppRoutes() {
                   <PaymentCategoriesPage />
                 }
               />}
-              {user?.assigned_permissions.includes('key_category_view') && <Route
-                path="KeysCategoriesPage" element={
-                  <KeysCategoriesPage />
+             
+            </Route>}
+
+          {user && user?.assigned_permissions.includes('excel_db_menu') &&
+            < Route path="ExcelDB" >
+              <Route index
+                element={
+                  <ExcelDBDashboard />
+                }
+              />
+
+              {user?.assigned_permissions.includes('grp_excel_view') && <Route
+                path="ExcelDbReports/:id/:name" element={
+                  <ExcelDBPage />
                 }
               />}
-              {user?.assigned_permissions.includes('key_view') && <Route
-                path="KeysPage" element={
-                  <KeysPage />
-                }
-              />}
+
             </Route>}
         </Route>
       }

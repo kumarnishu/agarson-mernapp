@@ -1,27 +1,21 @@
-import { TextField, Typography } from '@mui/material'
+import { LinearProgress, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
-import { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import {  useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { UserContext } from '../../contexts/userContext'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
-import { DropDownDto, IColumnRowData } from '../../dtos'
+import { IColumnRowData } from '../../dtos'
 import { GetExcelDbReport } from '../../services/ExcelDbService'
-import { ExcelDbButtons } from '../../components/buttons/ExcelDbButtons'
-import { GetAllKeyCategoriesForDropdown } from '../../services/KeyServices'
 import moment from 'moment'
+import { useParams } from 'react-router-dom'
 
 
 export default function ExcelDBPage() {
   const [reports, setReports] = useState<IColumnRowData['rows']>([])
-  const [categories, setKeyCategorys] = useState<DropDownDto[]>([])
-  const [category, setKeyCategory] = useState<string>("")
   const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
-  const { user } = useContext(UserContext)
-  const { data, isLoading, isSuccess, refetch } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb", category], async () => GetExcelDbReport(category), { enabled: false })
-  const { data: categoryData, isSuccess: isSuccessCategories } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategoriesForDropdown({ show_assigned_only: true }))
-
+  const { id, name } = useParams()
+  const { data, isLoading, isSuccess, refetch } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb"], async () => GetExcelDbReport(id || ""), { enabled: false })
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
@@ -42,10 +36,10 @@ export default function ExcelDBPage() {
             ? [...new Set(reports.map(i => moment(i['date']).format("DD/MM/YYYY")))]
             : [], // Unique formatted dates
           //@ts-ignore
-          // Cell: (cell) => moment(excelSerialToDate(cell.cell.getValue())).isValid()
-          //   //@ts-ignore
-          //   ? moment(excelSerialToDate(cell.cell.getValue())).format("DD/MM/YYYY")
-          //   : "", // Format cell as date if valid
+          Cell: (cell) => moment((cell.cell.getValue())).isValid()
+            //@ts-ignore
+            ? moment((cell.cell.getValue())).format("DD/MM/YYYY")
+            : "", // Format cell as date if valid
         }
       else
         return {
@@ -64,16 +58,9 @@ export default function ExcelDBPage() {
 
 
   useEffect(() => {
-    if (category !== "")
+    if (id != "")
       refetch()
-  }, [category])
-
-
-  useEffect(() => {
-    if (isSuccessCategories && categoryData) {
-      setKeyCategorys(categoryData.data);
-    }
-  }, [categoryData, isSuccessCategories]);
+  }, [id])
 
   useEffect(() => {
     if (isSuccess && data) {
@@ -137,6 +124,7 @@ export default function ExcelDBPage() {
       console.error(error);
     }
   }, [sorting]);
+
   return (
     <>
       <Stack
@@ -151,48 +139,11 @@ export default function ExcelDBPage() {
           component={'h1'}
           sx={{ pl: 1 }}
         >
-          Excel DB
+          {name || "Excel DB"}
         </Typography>
-
-        <Stack direction={'row'} gap={2} alignItems={'center'}>
-          <>
-            < TextField
-              select
-              sx={{ minWidth: 200 }}
-              value={category}
-              size="small"
-              SelectProps={{
-                native: true,
-              }}
-              onChange={(e) => {
-                setKeyCategory(e.target.value)
-              }}
-              required
-              id="sheets"
-              label="Select Sheet"
-              fullWidth
-            >
-              <option key={'00'} value={undefined}>
-
-              </option>
-              {
-                categories.map((cat, index) => {
-
-                  return (<option key={index} value={cat.id}>
-                    {cat.value}
-                  </option>)
-                })
-              }
-            </TextField>
-
-            {user?.assigned_permissions.includes("excel_db_create") && <ExcelDbButtons />}
-          </>
-        </Stack>
-
-
       </Stack >
 
-      <MaterialReactTable table={table} />
+      {!isLoading ? <MaterialReactTable table={table} /> : <LinearProgress />}
     </>
 
   )

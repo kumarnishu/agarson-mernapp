@@ -5,16 +5,13 @@ import { UserContext } from "../contexts/userContext";
 import { ButtonLogo } from "../components/logo/Agarson";
 import { toTitleCase } from "../utils/TitleCase";
 
-function DropDownDashboard() {
+function AppConstantsDashboard() {
     const [features, setFeatures] = useState<{ feature: string, is_visible: boolean, url: string }[]>([])
     const { user } = useContext(UserContext)
 
     //process feature and access
     useEffect(() => {
         let tmpfeatures: { feature: string, is_visible: boolean, url: string }[] = []
-        user?.assigned_permissions.includes('erp_state_view') && tmpfeatures.push({ feature: 'Erp states', is_visible: true, url: "ErpStatesPage" })
-        user?.assigned_permissions.includes('states_view') && tmpfeatures.push({ feature: 'states', is_visible: true, url: "CrmStatesPage" })
-        user?.assigned_permissions.includes('city_view') && tmpfeatures.push({ feature: 'cities', is_visible: true, url: "CitiesPage" })
         user?.assigned_permissions.includes('leadtype_view') && tmpfeatures.push({ feature: 'Lead Type', is_visible: true, url: "LeadTypesPage" })
         user?.assigned_permissions.includes('lead_source_view') && tmpfeatures.push({ feature: 'Lead Source', is_visible: true, url: "LeadSourcesPage" })
         user?.assigned_permissions.includes('leadstage_view') && tmpfeatures.push({ feature: 'Lead Stage', is_visible: true, url: "StagesPage" })
@@ -25,12 +22,8 @@ function DropDownDashboard() {
         user?.assigned_permissions.includes('dye_view') && tmpfeatures.push({ feature: 'dyes ', is_visible: true, url: "DyePage" })
         user?.assigned_permissions.includes('checklist_category_view') && tmpfeatures.push({ feature: 'Checklist Category ', is_visible: true, url: "ChecklistCategoriesPage" })
         user?.assigned_permissions.includes('payment_category_view') && tmpfeatures.push({ feature: 'Payment Category ', is_visible: true, url: "PaymentCategoriesPage" })
-        user?.assigned_permissions.includes('erp_employee_view') && tmpfeatures.push({ feature: 'Erp Employee ', is_visible: true, url: "ErpEmployeesPage" })
-        user?.assigned_permissions.includes('key_view') && tmpfeatures.push({ feature: 'Key ', is_visible: true, url: "KeysPage" })
-        user?.assigned_permissions.includes('key_category_view') && tmpfeatures.push({ feature: 'Key Category ', is_visible: true, url: "KeysCategoriesPage" })
-        
-        
-        tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
+       
+       
 
         setFeatures(tmpfeatures)
 
@@ -86,4 +79,4 @@ function DropDownDashboard() {
 }
 
 
-export default DropDownDashboard
+export default AppConstantsDashboard
