@@ -143,6 +143,9 @@ export type GetKeyDto = {
     key: string;
     category: DropDownDto;
     type: string;
+    is_date_key: boolean,
+    map_to_username: boolean,
+    map_to_state: boolean,
     assigned_users: string;
 }
 export type GetKeyFromExcelDto = {
@@ -152,6 +155,8 @@ export type GetKeyFromExcelDto = {
     type: string,
     category: string,
     is_date_key: boolean,
+    map_to_username: boolean,
+    map_to_state: boolean,
     status?: string
 }
 export type GetCrmStateDto = {
@@ -712,7 +717,6 @@ export type GetUserDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-
 
 export type LoginDto = {
     username: string,

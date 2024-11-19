@@ -9,7 +9,9 @@ export type IKey = {
     key: string,
     type: string,
     category: IKeyCategory,
-    is_date_key:boolean
+    is_date_key: boolean
+    map_to_username: boolean
+    map_to_state: boolean
     created_at: Date,
     updated_at: Date,
     created_by: IUser,
@@ -40,6 +42,14 @@ const KeySchema = new mongoose.Schema<IKey, mongoose.Model<IKey, {}, {}>, {}>({
         required: true
     },
     is_date_key: {
+        type: Boolean,
+        default: false
+    },
+    map_to_username: {
+        type: Boolean,
+        default: false
+    },
+    map_to_state: {
         type: Boolean,
         default: false
     },

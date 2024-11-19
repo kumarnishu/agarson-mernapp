@@ -107,6 +107,30 @@ export default function KeysPage() {
 
             },
             {
+                accessorKey: 'is_date_key',
+                header: 'Is date Key',
+                minSize: 150,
+                grow: false,
+                Cell: (cell) => <>{cell.row.original.is_date_key ? "true" : "false"}</>
+
+            },
+            {
+                accessorKey: 'map_to_username',
+                header: 'Map Username',
+                minSize: 150,
+                grow: false,
+                Cell: (cell) => <>{cell.row.original.map_to_username ? "true" : "false"}</>
+
+            },
+            {
+                accessorKey: 'map_to_state',
+                header: 'Map State',
+                minSize: 150,
+                grow: false,
+                Cell: (cell) => <>{cell.row.original.map_to_state ? "true" : "false"}</>
+
+            },
+            {
                 accessorKey: 'assigned_users',
                 header: 'Assigned Users',
                 minSize: 350,
@@ -222,7 +246,7 @@ export default function KeysPage() {
                         {
                             categories && categories.map(cat => {
                                 return (<option key={cat.id} value={cat.id}>
-                                    {cat && toTitleCase(cat.value||"")}
+                                    {cat && toTitleCase(cat.value || "")}
                                 </option>)
                             })
                         }

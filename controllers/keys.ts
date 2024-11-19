@@ -31,6 +31,9 @@ export const GetAllKey = async (req: Request, res: Response, next: NextFunction)
                 key: data[i].key,
                 type: data[i].type,
                 category: { id: data[i].category._id, label: data[i].category.category, value: data[i].category.category },
+                is_date_key:data[i].is_date_key,
+                map_to_state:data[i].map_to_state,
+                map_to_username:data[i].map_to_username,
                 assigned_users: String(users.map((u) => { return u.username }))
             });
     }
@@ -177,6 +180,9 @@ export const CreateKeysFromExcel = async (req: Request, res: Response, next: Nex
             let category: string | null = keyItem.category
             let _id: string | undefined = keyItem._id
             let is_date_key: boolean | null = keyItem.is_date_key
+            let map_to_username: boolean | null = keyItem.map_to_username
+            let map_to_state: boolean | null = keyItem.map_to_state
+
             if (is_date_key == true) {
                 key = convertDateToExcelFormat(key)
             }
@@ -229,6 +235,8 @@ export const CreateKeysFromExcel = async (req: Request, res: Response, next: Nex
                             serial_no,
                             type,
                             is_date_key: is_date_key ? true : false,
+                            map_to_username: map_to_username ? true : false,
+                            map_to_state: map_to_state ? true : false,
                             category: category,
                             updated_at: new Date(),
                             updated_by: req.user
@@ -248,6 +256,8 @@ export const CreateKeysFromExcel = async (req: Request, res: Response, next: Nex
                             serial_no,
                             type,
                             is_date_key: is_date_key ? true : false,
+                            map_to_username: map_to_username ? true : false,
+                            map_to_state: map_to_state ? true : false,
                             category: category,
                             created_by: req.user,
                             updated_by: req.user,
@@ -275,7 +285,9 @@ export const DownloadExcelTemplateForCreateKeys = async (req: Request, res: Resp
         key: 'Employee Name',
         category: 'visitsummary',
         type: 'string',
-        is_date_key: false
+        is_date_key: false,
+        map_to_username: false,
+        map_to_state: false
     }]
     let data = (await Key.find().populate('category')).map((u) => {
         return {
@@ -284,7 +296,9 @@ export const DownloadExcelTemplateForCreateKeys = async (req: Request, res: Resp
             key: u.key,
             type: u.type,
             category: u.category.category,
-            is_date_key: u.is_date_key
+            is_date_key: u.is_date_key,
+            map_to_username: u.map_to_username,
+            map_to_state: u.map_to_state
         }
     })
     if (data.length > 0) {

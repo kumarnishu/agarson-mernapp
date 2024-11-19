@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Stack, TextField } from '@mui/material';
+import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useContext, useState } from 'react';
@@ -20,7 +20,10 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
                 key: string,
                 category: string,
                 type: string,
-                serial_no:number
+                serial_no: number,
+                is_date_key: boolean,
+                map_to_username: boolean,
+                map_to_state: boolean,
             },
             id?: string
         }>
@@ -37,25 +40,37 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
         category: string,
         key: string,
         type: string,
-        serial_no: number
+        serial_no: number,
+        is_date_key: boolean,
+        map_to_username: boolean,
+        map_to_state: boolean,
     }>({
         initialValues: {
             key: keyitm ? keyitm.key : "",
             category: keyitm ? keyitm.category.id : "",
             type: keyitm ? keyitm.type : "",
             serial_no: keyitm ? keyitm.serial_no : 0,
+            is_date_key: keyitm && keyitm.is_date_key ? true : false,
+            map_to_username: keyitm && keyitm.map_to_username ? true : false,
+            map_to_state: keyitm && keyitm.map_to_state ? true : false,
         },
         validationSchema: yup.object({
             key: yup.string().required(),
             category: yup.string().required(),
             type: yup.string().required(),
-            serial_no: yup.number().required()
+            serial_no: yup.number().required(),
+            is_date_key: yup.boolean(),
+            map_to_username: yup.boolean(),
+            map_to_state: yup.boolean(),
         }),
         onSubmit: (values: {
             key: string,
             category: string,
             type: string,
-            serial_no: number
+            serial_no: number,
+            is_date_key: boolean,
+            map_to_username: boolean,
+            map_to_state: boolean,
         }) => {
             mutate({
                 id: keyitm?._id,
@@ -63,7 +78,10 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
                     key: values.key,
                     category: values.category,
                     type: values.type,
-                    serial_no: values.serial_no
+                    serial_no: values.serial_no,
+                    is_date_key: values.is_date_key,
+                    map_to_username: values.map_to_username,
+                    map_to_state: values.map_to_state,
                 }
             })
         }
@@ -82,7 +100,7 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
         }
     }, [isSuccess, setChoice])
 
-    console.log(keyitm)
+    console.log(formik.errors)
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack
@@ -135,7 +153,7 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
                     }
                     {...formik.getFieldProps('category')}
                 >
-                    {!keyitm&&<option key={0} value={undefined}>
+                    {!keyitm && <option key={0} value={undefined}>
                         Select Category
                     </option>}
                     {
@@ -175,6 +193,21 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
                         })
                     }
                 </TextField>
+                <FormGroup>
+                    <FormControlLabel control={<Checkbox
+                        {...formik.getFieldProps('is_date_key')}
+                    />} label="Is Date Key" />
+                </FormGroup>
+                <FormGroup>
+                    <FormControlLabel control={<Checkbox
+                        {...formik.getFieldProps('map_to_username')}
+                    />} label="Map To Username" />
+                </FormGroup>
+                <FormGroup>
+                    <FormControlLabel control={<Checkbox
+                        {...formik.getFieldProps('map_to_state')}
+                    />} label="Make To State" />
+                </FormGroup>
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
                     fullWidth>{Boolean(isLoading) ? <CircularProgress /> : !keyitm ? "Add Key" : "Update Key"}
