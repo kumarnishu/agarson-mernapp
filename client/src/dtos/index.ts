@@ -1,13 +1,3 @@
-export type Asset = {
-    _id: string,
-    filename: string,
-    public_url: string,
-    content_type: string,
-    size: string,
-    bucket: string,
-    created_at: Date
-} | undefined
-
 export type DropDownDto = {
     id: string,
     value: string,
@@ -710,7 +700,6 @@ export type GetUserDto = {
     is_admin: Boolean,
     email_verified: Boolean,
     mobile_verified: Boolean,
-    show_only_visiting_card_leads: boolean,
     is_active: Boolean,
     last_login: string,
     is_multi_login: boolean,
@@ -723,6 +712,7 @@ export type GetUserDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
+
 
 export type LoginDto = {
     username: string,

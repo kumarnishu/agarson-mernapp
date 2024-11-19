@@ -1,6 +1,6 @@
 import express from "express";
 import { isAdmin, isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { MakeAdmin, AllowMultiLogin, BlockMultiLogin, BlockUser, UnBlockUser, RemoveAdmin, ToogleShowvisitingcard, Login, Logout, updatePassword, resetUserPassword, ResetPassword, VerifyEmail, GetAllPermissions, AssignPermissionsToUsers, AssignPermissionsToOneUser } from "../controllers/auth";
+import { MakeAdmin, AllowMultiLogin, BlockMultiLogin, BlockUser, UnBlockUser, RemoveAdmin,  Login, Logout, updatePassword, resetUserPassword, ResetPassword, VerifyEmail, GetAllPermissions, AssignPermissionsToUsers, AssignPermissionsToOneUser } from "../controllers/auth";
 const router = express.Router() 
 
 
@@ -10,8 +10,6 @@ router.patch("/block/multi_login/:id", isAuthenticatedUser, isAdmin, BlockMultiL
 router.patch("/block/user/:id", isAuthenticatedUser, isAdmin, BlockUser)
 router.patch("/unblock/user/:id", isAuthenticatedUser, isAdmin, UnBlockUser)
 router.patch("/remove-admin/user/:id", isAuthenticatedUser, isAdmin, RemoveAdmin)
-router.patch("/tooglevisitingcardleads/user/:id", isAuthenticatedUser, isAdmin, ToogleShowvisitingcard)
-
 router.post("/login", Login)
 router.post("/logout", Logout)
 router.route("/password/update").patch(isAuthenticatedUser, updatePassword)

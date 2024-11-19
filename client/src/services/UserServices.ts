@@ -44,6 +44,11 @@ export const GetUsers = async ({ hidden, permission, show_assigned_only }: { hid
 }
 
 
+export const GetUsersForAssignment = async () => {
+  return await apiClient.get(`users/assignment`)
+}
+
+
 export const GetPermissions = async () => {
   return await apiClient.get(`permissions`)
 }

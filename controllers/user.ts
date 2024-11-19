@@ -74,7 +74,6 @@ export const SignUp = async (req: Request, res: Response, next: NextFunction) =>
         is_admin: owner.is_admin,
         email_verified: owner.email_verified,
         mobile_verified: owner.mobile_verified,
-        show_only_visiting_card_leads: owner.show_only_visiting_card_leads,
         is_active: owner.is_active,
         last_login: moment(owner.last_login).calendar(),
         is_multi_login: owner.is_multi_login,
@@ -298,7 +297,7 @@ export const GetUsers = async (req: Request, res: Response, next: NextFunction) 
 
     if (show_assigned_only == 'true') {
         let ids: string[] = []
-        ids = req.user?.assigned_users.map((id:{_id:string}) => { return id._id })
+        ids = req.user?.assigned_users.map((id: { _id: string }) => { return id._id })
         users = await User.find({ is_active: true, _id: { $in: ids } }).populate("created_by").populate("updated_by").populate('assigned_users').sort('username')
     }
     else {
@@ -319,7 +318,6 @@ export const GetUsers = async (req: Request, res: Response, next: NextFunction) 
             is_admin: u.is_admin,
             email_verified: u.email_verified,
             mobile_verified: u.mobile_verified,
-            show_only_visiting_card_leads: u.show_only_visiting_card_leads,
             is_active: u.is_active,
             last_login: moment(u.last_login).format("lll"),
             is_multi_login: u.is_multi_login,
@@ -328,7 +326,7 @@ export const GetUsers = async (req: Request, res: Response, next: NextFunction) 
                     id: u._id, label: u.username, value: u.username
                 }
             }),
-            
+
             assigned_crm_states: u.assigned_crm_states.length || 0,
             assigned_crm_cities: u.assigned_crm_cities.length || 0,
             assigned_permissions: u.assigned_permissions,
@@ -340,6 +338,44 @@ export const GetUsers = async (req: Request, res: Response, next: NextFunction) 
     })
     return res.status(200).json(result)
 }
+
+export const GetUsersForAssignmentPage = async (req: Request, res: Response, next: NextFunction) => {
+    let result: GetUserDto[] = []
+    let users = await User.find({ is_admin: false }).populate("created_by").populate("updated_by").populate('assigned_users').sort('username')
+
+    result = users.map((u) => {
+        return {
+            _id: u._id,
+            username: u.username,
+            email: u.email,
+            mobile: u.mobile,
+            dp: u.dp?.public_url || "",
+            orginal_password: u.orginal_password,
+            assigned_erpEmployees: 0,
+            is_admin: u.is_admin,
+            email_verified: u.email_verified,
+            mobile_verified: u.mobile_verified,
+            is_active: u.is_active,
+            last_login: moment(u.last_login).format("lll"),
+            is_multi_login: u.is_multi_login,
+            assigned_users: u.assigned_users.map((u) => {
+                return {
+                    id: u._id, label: u.username, value: u.username
+                }
+            }),
+
+            assigned_crm_states: u.assigned_crm_states.length || 0,
+            assigned_crm_cities: u.assigned_crm_cities.length || 0,
+            assigned_permissions: u.assigned_permissions,
+            created_at: moment(u.created_at).format("DD/MM/YYYY"),
+            updated_at: moment(u.updated_at).format("DD/MM/YYYY"),
+            created_by: { id: u.created_by._id, label: u.created_by.username, value: u.created_by.username },
+            updated_by: { id: u.updated_by._id, label: u.updated_by.username, value: u.updated_by.username },
+        }
+    })
+    return res.status(200).json(result)
+}
+
 export const GetProfile = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetUserDto | null = null;
     const user = await User.findById(req.user?._id).populate("created_by").populate("updated_by").populate('assigned_users')
@@ -351,10 +387,9 @@ export const GetProfile = async (req: Request, res: Response, next: NextFunction
             mobile: user.mobile,
             dp: user.dp?.public_url || "",
             orginal_password: user.orginal_password,
-            is_admin: user.is_admin, 
+            is_admin: user.is_admin,
             email_verified: user.email_verified,
             mobile_verified: user.mobile_verified,
-            show_only_visiting_card_leads: user.show_only_visiting_card_leads,
             is_active: user.is_active,
             last_login: moment(user.last_login).calendar(),
             is_multi_login: user.is_multi_login,

@@ -45,6 +45,7 @@ import ExcelDBPage from './pages/exceldb/ExcelDBPage.tsx'
 import AuthorizationDashboard from './dashboards/AppAuthorizationDashboard.tsx'
 import ExcelDBDashboard from './dashboards/ExcelDBDashboard.tsx'
 import SalesmanLeavesReportPage from './pages/feature reports/SalesmanLeavesReportPage.tsx'
+import UserAssignementPage from './pages/authorization/UserAssignementPage.tsx'
 
 
 function AppRoutes() {
@@ -59,15 +60,24 @@ function AppRoutes() {
           element={
             <MainDashBoardPage />
           }>
+          < Route path="/Users" element={
+            <UsersPage />
+          } />
+
           {user && user?.is_admin &&
             < Route path="Authorization" >
               <Route index element={
                 <AuthorizationDashboard />
               }
               />
-              < Route path="Users" element={
-                <UsersPage />
-              }/>
+             
+              {user && <Route path="UserAssignementPage" element={
+                <UserAssignementPage />
+              }
+              />}
+             
+              
+
               {user?.assigned_permissions.includes('city_view') && <Route path="CitiesPage" element={
                 <CitiesPage />
               }
@@ -97,7 +107,7 @@ function AppRoutes() {
                   <FeatureDashboard />
                 }
               />
-            
+
               {user?.assigned_permissions.includes('production_view') && <Route
                 path="ProductionPage" element={
                   <ProductionPage />
@@ -125,10 +135,7 @@ function AppRoutes() {
                 < RemindersPage />
               }
               />}
-              {user?.assigned_permissions.includes('activities_view') && <Route path="CrmActivitiesPage" element={
-                <CrmActivitiesPage />
-              }
-              />}
+            
               {user?.assigned_permissions.includes('checklist_view') && <Route path="CheckListPage" element={
                 < CheckListPage />
               }
@@ -165,7 +172,11 @@ function AppRoutes() {
                   <ReportDashboard />
                 }
               />
-             
+              {user?.assigned_permissions.includes('activities_view') && <Route path="CrmActivitiesPage" element={
+                <CrmActivitiesPage />
+              }
+              />}
+
               {user?.assigned_permissions.includes('thekedar_wise_production_report_view') && <Route
                 path="ThekedarWiseProductionReportPage" element={
                   <ThekedarWiseProductionReportPage />
@@ -234,7 +245,7 @@ function AppRoutes() {
                   <ArticlePage />
                 }
               />}
-             
+
               {user?.assigned_permissions.includes('lead_source_view') && <Route path="LeadSourcesPage" element={
                 <CrmLeadSourcesPage />
               }
@@ -243,13 +254,13 @@ function AppRoutes() {
                 <CrmStagesPage />
               }
               />}
-             
+
               {user?.assigned_permissions.includes('leadtype_view') && <Route path='LeadTypesPage' element={
                 <CrmTypesPage />
               }
               />}
-             
-            
+
+
               {user?.assigned_permissions.includes('checklist_category_view') && <Route
                 path="ChecklistCategoriesPage" element={
                   <ChecklistCategoriesPage />
@@ -260,7 +271,7 @@ function AppRoutes() {
                   <PaymentCategoriesPage />
                 }
               />}
-             
+
             </Route>}
 
           {user && user?.assigned_permissions.includes('excel_db_menu') &&

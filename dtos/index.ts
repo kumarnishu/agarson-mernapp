@@ -700,7 +700,6 @@ export type GetUserDto = {
     is_admin: Boolean,
     email_verified: Boolean,
     mobile_verified: Boolean,
-    show_only_visiting_card_leads: boolean,
     is_active: Boolean,
     last_login: string,
     is_multi_login: boolean,

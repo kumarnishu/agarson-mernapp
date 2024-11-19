@@ -1,6 +1,6 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
-import {  CreateOrEditLeadDto, CreateOrEditMergeLeadsDto, CreateOrRemoveReferForLeadDto, GetLeadDto, GetLeadFromExcelDto } from "../dtos";
+import { CreateOrEditLeadDto, CreateOrEditMergeLeadsDto, CreateOrRemoveReferForLeadDto, GetLeadDto, GetLeadFromExcelDto } from "../dtos";
 import Lead, { ILead } from "../models/lead";
 import { ReferredParty } from "../models/refer";
 import { Remark } from "../models/crm-remarks";
@@ -108,7 +108,7 @@ export const GetLeads = async (req: Request, res: Response, next: NextFunction) 
     let page = Number(req.query.page)
     let stage = req.query.stage
     let user = await User.findById(req.user).populate('assigned_crm_states').populate('assigned_crm_cities');
-    let showonlycardleads = Boolean(user?.show_only_visiting_card_leads)
+    let showonlycardleads = Boolean(user?.assigned_permissions.includes('show_leads_having_cards_only'))
     let result: GetLeadDto[] = []
     let states = user?.assigned_crm_states.map((item) => { return item.state })
     let cities = user?.assigned_crm_cities.map((item) => { return item.city })
@@ -308,7 +308,7 @@ export const FuzzySearchLeads = async (req: Request, res: Response, next: NextFu
     let page = Number(req.query.page)
     let result: GetLeadDto[] = []
     let user = await User.findById(req.user).populate('assigned_crm_states').populate('assigned_crm_cities');
-    let showonlycardleads = Boolean(user?.show_only_visiting_card_leads)
+    let showonlycardleads = Boolean(user?.assigned_permissions.includes('show_leads_having_cards_only'))
     let states = user?.assigned_crm_states.map((item) => { return item.state })
     let cities = user?.assigned_crm_cities.map((item) => { return item.city })
     let key = String(req.query.key).split(",")
@@ -1115,8 +1115,8 @@ export const FuzzySearchLeads = async (req: Request, res: Response, next: NextFu
                 address: lead.address,
                 work_description: lead.work_description,
                 turnover: lead.turnover,
-                alternate_mobile1:lead.lead_type == "company" ? "" : lead.alternate_mobile1,
-                alternate_mobile2:lead.lead_type == "company" ? "" : lead.alternate_mobile2,
+                alternate_mobile1: lead.lead_type == "company" ? "" : lead.alternate_mobile1,
+                alternate_mobile2: lead.lead_type == "company" ? "" : lead.alternate_mobile2,
                 alternate_email: lead.alternate_email,
                 lead_type: lead.lead_type,
                 stage: lead.stage,
@@ -1131,7 +1131,7 @@ export const FuzzySearchLeads = async (req: Request, res: Response, next: NextFu
                 updated_by: { id: lead.updated_by._id, value: lead.updated_by.username, label: lead.updated_by.username },
             }
         })
-     
+
         return res.status(200).json({
             result,
             total: Math.ceil(count / limit),

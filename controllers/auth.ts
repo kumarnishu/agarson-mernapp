@@ -62,7 +62,6 @@ export const Login = async (req: Request, res: Response, next: NextFunction) => 
         is_admin: user.is_admin,
         email_verified: user.email_verified,
         mobile_verified: user.mobile_verified,
-        show_only_visiting_card_leads: user.show_only_visiting_card_leads,
         is_active: user.is_active,
         last_login: moment(user.last_login).calendar(),
         is_multi_login: user.is_multi_login,
@@ -145,20 +144,7 @@ export const MakeAdmin = async (req: Request, res: Response, next: NextFunction)
     await user.save();
     res.status(200).json({ message: "admin role provided successfully" });
 }
-export const ToogleShowvisitingcard = async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
-    if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })
-    let user = await User.findById(id)
-    if (!user) {
-        return res.status(404).json({ message: "user not found" })
-    }
-    user.show_only_visiting_card_leads = !user.show_only_visiting_card_leads
-    if (req.user) {
-        user.updated_by = user
-    }
-    await user.save();
-    res.status(200).json({ message: "changed successfully" });
-}
+
 export const AllowMultiLogin = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoId(id)) return res.status(400).json({ message: "user id not valid" })

@@ -47,7 +47,7 @@ export const AssignCRMStatesToUsers = async (req: Request, res: Response, next: 
 
     if (flag == 0) {
         for (let k = 0; k < owners.length; k++) {
-            let owner = await User.findById(owners[k]).populate('assigned_crm_states').populate('assigned_crm_cities');;
+            let owner = await User.findById(owners[k]).populate('assigned_crm_states')
             if (owner) {
                 let oldstates = owner.assigned_crm_states.map((item) => { return item._id.valueOf() });
                 oldstates = oldstates.filter((item) => { return !state_ids.includes(item) });
@@ -59,18 +59,15 @@ export const AssignCRMStatesToUsers = async (req: Request, res: Response, next: 
                         newStates.push(state)
                 }
 
-                let crm_cities = await CRMCity.find({ state: { $in: newStates.map(i => { return i.state }) } })
-
                 await User.findByIdAndUpdate(owner._id, {
                     assigned_crm_states: oldstates,
-                    assigned_crm_cities: crm_cities
                 })
             }
         }
     }
     else {
         for (let k = 0; k < owners.length; k++) {
-            const user = await User.findById(owners[k]).populate('assigned_crm_states').populate('assigned_crm_cities');
+            const user = await User.findById(owners[k]).populate('assigned_crm_states')
             if (user) {
                 let assigned_states = user.assigned_crm_states;
                 for (let i = 0; i <= state_ids.length; i++) {
@@ -82,8 +79,6 @@ export const AssignCRMStatesToUsers = async (req: Request, res: Response, next: 
                 }
 
                 user.assigned_crm_states = assigned_states
-                let cities = await CRMCity.find({ state: { $in: assigned_states.map(i => { return i.state }) } })
-                user.assigned_crm_cities = cities;
                 await user.save();
             }
 

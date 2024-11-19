@@ -200,7 +200,7 @@ export default function KeysPage() {
 
 
 
-                <>
+                <Stack direction={'row'} gap={1} alignItems={'center'}>
                     < TextField
                         select
                         SelectProps={{
@@ -294,7 +294,7 @@ export default function KeysPage() {
 
                     </Menu >
                     <CreateOrEditKeyDialog keyitm={key} />
-                </>
+                </Stack>
 
                 {<AssignKeysDialog flag={flag} keys={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
             </Stack >

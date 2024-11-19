@@ -3,19 +3,20 @@ import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
 import { Avatar, Box, IconButton, Paper, Stack, Typography } from '@mui/material';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { UserContext } from '../contexts/userContext';
+import { FeatureContext } from '../contexts/featureContext';
 import { ButtonLogo } from '../components/logo/Agarson';
 import React, { useContext, useEffect, useState } from 'react';
 import ProfileLogo from '../components/logo/ProfileLogo';
 import LogoutButton from '../components/buttons/LogoutButton';
 import { toTitleCase } from '../utils/TitleCase';
-import { FeatureContext } from '../contexts/featureContext';
 
 function MainDashBoardPage() {
-  const [open, setOpen] = useState(false);
+  const navigate = useNavigate()
   const { feature, setFeature } = useContext(FeatureContext)
+  const [open, setOpen] = useState(false);
   const { user } = useContext(UserContext)
   const [features, setFeatures] = useState<{ feature: string, url: string, is_visible?: boolean, icon?: Element }[]>([])
 
@@ -24,7 +25,7 @@ function MainDashBoardPage() {
   };
 
   const DrawerList = (
-    <Box sx={{ width: 200, marginTop: 2 }} role="presentation" onClick={toggleDrawer(false)}>
+    <Box sx={{ width: 150, marginTop: 2 }} role="presentation" onClick={toggleDrawer(false)}>
       <Stack ml={1} justifyContent={'center'} >
         <Stack direction={'row'} justifyContent={'left'} alignItems={'center'}>
           <IconButton
@@ -38,14 +39,12 @@ function MainDashBoardPage() {
           <Typography variant='h5' > {toTitleCase(user?.username || "")}</Typography>
         </Stack>
       </Stack>
-      <List>
+      <List sx={{marginTop:2}}>
         {features.map((feat, index) => (
           <React.Fragment key={index}>
-            {feat && feat.is_visible && < Link style={{ textDecoration: 'none', color: 'black' }} to={feat.url}
-              onClick={() => {
-                setFeature({ feature: feat.feature.toUpperCase(), url: feat.url })
-              }}
-            >
+            {feat && feat.is_visible && < Link style={{ textDecoration: 'none', color: 'black' }} to={feat.url} onClick={() => {
+              setFeature({ feature: feat.feature.toUpperCase(), url: feat.url })
+            }}>
               <Stack direction={'row'} gap={1} p={1} justifyContent={'center'} alignItems={'center'}>
                 <ButtonLogo title="" height={15} width={15} />
                 <ListItemText sx={{ textAlign: 'left' }} primary={toTitleCase(feat.feature)} />
@@ -64,12 +63,13 @@ function MainDashBoardPage() {
   useEffect(() => {
     let tmpfeatures: { feature: string, is_visible?: boolean, url: string }[] = []
     tmpfeatures.push({ feature: 'Dashboard', is_visible: true, url: "/" })
+    user?.is_admin && tmpfeatures.push({ feature: 'Users', is_visible: true, url: "/Users" })
     user?.is_admin && tmpfeatures.push({ feature: 'Authorization', is_visible: true, url: "/Authorization" })
     user?.assigned_permissions.includes('feature_menu') && tmpfeatures.push({ feature: 'Features', is_visible: true, url: "/Features" })
     user?.assigned_permissions.includes('dropdown_menu') && tmpfeatures.push({ feature: 'Dropdowns', is_visible: true, url: "/DropDown" })
-    user?.assigned_permissions.includes('report_menu') && tmpfeatures.push({ feature: 'Feature Reports', is_visible: true, url: "/Reports" })
     user?.assigned_permissions.includes('excel_db_menu') && tmpfeatures.push({ feature: 'Excel Reports', is_visible: true, url: "/ExcelDB" })
-
+    user?.assigned_permissions.includes('report_menu') && tmpfeatures.push({ feature: 'Feature Reports', is_visible: true, url: "/Reports" })
+   
 
     setFeatures(tmpfeatures)
 
@@ -95,12 +95,17 @@ function MainDashBoardPage() {
             alignItems="center"
             gap={2}
           >
-            <Link to={"/"} replace={true} style={{ textDecoration: 'none' }}>
+            <Link to={feature ? feature.url : "/"} onDoubleClick={() => {
+              {
+                setFeature({ feature: "Dashboard", url: "/" })
+                navigate("/")
+              }
+            }} replace={true} style={{ textDecoration: 'none' }}>
               <Paper sx={{ ml: 2, p: 0.5, bgcolor: 'white', boxShadow: 1, borderRadius: 1, borderColor: 'white' }}>
                 <Stack flexDirection={"row"} gap={2} sx={{ alignItems: 'center' }}>
                   <ButtonLogo title="" height={20} width={20} />
-                  <Typography variant="button" sx={{ fontSize: 12,mr:2 }} component="div">
-                    {feature?.feature || "Dashboard"}
+                  <Typography variant="button" sx={{ fontSize: 12 }} component="div">
+                    {toTitleCase(feature?.feature || "Dashboard")}
                   </Typography>
                 </Stack>
               </Paper>
@@ -112,7 +117,18 @@ function MainDashBoardPage() {
           </Stack>
         </Stack>
       </Paper >
-      <Outlet />
+
+
+
+      {feature?.feature == "Dashboard" ?
+
+        <>
+          <Stack direction={'row'} gap={2} alignItems={'center'}>
+            Dashboard
+          </Stack> :
+        </>
+        :
+        <Outlet />}
 
       <Drawer open={open} onClose={toggleDrawer(false)} anchor='right'>
         {DrawerList}

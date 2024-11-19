@@ -193,7 +193,7 @@ export function FetchAllPermissions() {
                         label: 'delete'
                     },
                     {
-                        value: 'show_leads_having cards',
+                        value: 'show_leads_having_cards_only',
                         label: 'Show Only Visiting Card Leads'
                     },
                     {

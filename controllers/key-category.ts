@@ -3,8 +3,7 @@ import { DropDownDto, GetKeyCategoryDto } from "../dtos";
 import isMongoId from "validator/lib/isMongoId";
 import { IKeyCategory, KeyCategory } from "../models/key-category";
 import { User } from '../models/user';
-import { Key } from '../models/keys';
-import { log } from 'console';
+
 
 export const GetAllKeyCategory = async (req: Request, res: Response, next: NextFunction) => {
     let data: IKeyCategory[] = []
@@ -12,7 +11,7 @@ export const GetAllKeyCategory = async (req: Request, res: Response, next: NextF
     let result: GetKeyCategoryDto[] = [];
     for (let i = 0; i < data.length; i++) {
         let users = await (await User.find({ assigned_keycategories: data[i]._id })).map((i) => { return { _id: i._id.valueOf(), username: i.username } })
-        result.push({ _id: data[i]._id, category: data[i].category, skip_bottom_rows:data[i].skip_bottom_rows, assigned_users: String(users.map((u) => { return u.username })) });
+        result.push({ _id: data[i]._id, category: data[i].category, skip_bottom_rows: data[i].skip_bottom_rows, assigned_users: String(users.map((u) => { return u.username })) });
     }
     return res.status(200).json(result)
 }
@@ -34,7 +33,7 @@ export const GetAllKeyCategoryForDropDown = async (req: Request, res: Response, 
 
 
 export const CreateKeyCategory = async (req: Request, res: Response, next: NextFunction) => {
-    let { key, skip_bottom_rows} = req.body as { key: string, skip_bottom_rows: number, }
+    let { key, skip_bottom_rows } = req.body as { key: string, skip_bottom_rows: number, }
     if (!key) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
@@ -102,7 +101,7 @@ export const AssignKeyCategoriesToUsers = async (req: Request, res: Response, ne
 
     if (flag == 0) {
         for (let k = 0; k < owners.length; k++) {
-            let owner = await User.findById(owners[k]).populate('assigned_keycategories').populate('assigned_keys');;
+            let owner = await User.findById(owners[k]).populate('assigned_keycategories')
             if (owner) {
                 let oldcategorys = owner.assigned_keycategories.map((item) => { return item._id.valueOf() });
                 oldcategorys = oldcategorys.filter((item) => { return !categoryids.includes(item) });
@@ -113,12 +112,8 @@ export const AssignKeyCategoriesToUsers = async (req: Request, res: Response, ne
                     if (category)
                         newCategories.push(category)
                 }
-
-                let keys = await Key.find({ category: { $in: newCategories.map(i => { return i.category }) } })
-
                 await User.findByIdAndUpdate(owner._id, {
                     assigned_keycategories: oldcategorys,
-                    assigned_keys: keys
                 })
             }
         }
@@ -126,7 +121,6 @@ export const AssignKeyCategoriesToUsers = async (req: Request, res: Response, ne
     else {
         for (let k = 0; k < owners.length; k++) {
             const user = await User.findById(owners[k])
-            log(user)
             if (user) {
                 let assigned_categorys: any[] = user.assigned_keycategories;
                 for (let i = 0; i < categoryids.length; i++) {
@@ -134,10 +128,7 @@ export const AssignKeyCategoriesToUsers = async (req: Request, res: Response, ne
                         assigned_categorys.push(categoryids[i])
                     }
                 }
-
                 user.assigned_keycategories = assigned_categorys
-                let keys = await Key.find({ category: { $in: assigned_categorys } })
-                user.assigned_keys = keys;
                 await user.save();
             }
 

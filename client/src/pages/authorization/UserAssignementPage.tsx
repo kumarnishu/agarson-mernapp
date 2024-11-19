@@ -1,0 +1,333 @@
+import { Avatar, Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
+import { Stack } from '@mui/system'
+import { AxiosResponse } from 'axios'
+import { useContext, useEffect, useMemo, useState } from 'react'
+import { useQuery } from 'react-query'
+import { BackendError } from '../..'
+import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { onlyUnique } from '../../utils/UniqueArray'
+import { Assignment, KeyOffOutlined } from '@mui/icons-material'
+import { GetUserDto } from '../../dtos'
+import { UserContext } from '../../contexts/userContext'
+import { Menu as MenuIcon } from '@mui/icons-material';
+import { DownloadFile } from '../../utils/DownloadFile'
+import {  GetUsersForAssignment } from '../../services/UserServices'
+import NewUserDialog from '../../components/dialogs/users/NewUserDialog'
+import AssignPermissionsToUsersDialog from '../../components/dialogs/users/AssignPermissionsToUsersDialog'
+import { ChoiceContext, UserChoiceActions } from '../../contexts/dialogContext'
+import PopUp from '../../components/popup/PopUp'
+import UpdateUserDialog from '../../components/dialogs/users/UpdateUserDialog'
+import ResetMultiLoginDialog from '../../components/dialogs/users/ResetMultiLogin'
+import BlockMultiLoginDialog from '../../components/dialogs/users/BlockMultiLoginDialog'
+import UpdatePasswordDialog from '../../components/dialogs/users/UpdatePasswordDialog'
+import BlockUserDialog from '../../components/dialogs/users/BlockUserDialog'
+import UnBlockUserDialog from '../../components/dialogs/users/UnBlockUserDialog'
+import MakeAdminDialog from '../../components/dialogs/users/MakeAdminDialog'
+import RemoveAdminDialog from '../../components/dialogs/users/RemoveAdminDialog'
+import UpdateUsePasswordDialog from '../../components/dialogs/users/UpdateUsePasswordDialog'
+import AssignUsersDialog from '../../components/dialogs/users/AssignUsersDialog'
+import AssignPermissionsToOneUserDialog from '../../components/dialogs/users/AssignPermissionsToOneUserDialog'
+import ExportToExcel from '../../utils/ExportToExcel'
+
+export default function UserAssignementPage() {
+  const [user, setUser] = useState<GetUserDto>()
+  const [users, setUsers] = useState<GetUserDto[]>([])
+  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>(["users"], async () => GetUsersForAssignment())
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const { user: LoggedInUser } = useContext(UserContext)
+  const { setChoice } = useContext(ChoiceContext)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [flag, setFlag] = useState(1);
+  const columns = useMemo<MRT_ColumnDef<GetUserDto>[]>(
+    //column definitions...
+    () => users && [
+      {
+        accessorKey: 'actions',
+        header: '',
+        maxSize: 50,
+        grow: false,
+        Cell: ({ cell }) => <PopUp
+          element={
+            <Stack direction="row">
+
+
+              {LoggedInUser?.created_by.id === cell.row.original._id ?
+                null :
+                <>
+                  {LoggedInUser?._id === cell.row.original._id ?
+                    <Tooltip title="assign users">
+                      <IconButton
+                        color="success"
+                        size="medium"
+                        onClick={() => {
+                          setChoice({ type: UserChoiceActions.assign_users })
+                          setUser(cell.row.original)
+                        }}>
+                        <Assignment />
+                      </IconButton>
+                    </Tooltip> :
+                    <Tooltip title="assign users">
+                      <IconButton
+                        disabled={cell.row.original?.created_by.id === cell.row.original._id}
+                        color="success"
+                        size="medium"
+                        onClick={() => {
+                          setChoice({ type: UserChoiceActions.assign_users })
+                          setUser(cell.row.original)
+                        }}>
+                        <Assignment />
+                      </IconButton>
+                    </Tooltip>}
+                </>
+              }
+
+              <Tooltip title="Change Permissions for this user">
+                <IconButton
+                  color="info"
+                  onClick={() => {
+                    setChoice({ type: UserChoiceActions.assign_permissions })
+                    setUser(cell.row.original)
+
+                  }}>
+                  <KeyOffOutlined />
+                </IconButton>
+              </Tooltip>
+
+            </Stack>} />
+
+      },
+
+      {
+        accessorKey: 'dp',
+        header: 'DP',
+        maxSize: 50,
+        grow: false,
+        Cell: (cell) => <Avatar
+          title="double click to download"
+          sx={{ width: 16, height: 16 }}
+          onDoubleClick={() => {
+            if (cell.row.original.dp && cell.row.original.dp) {
+              DownloadFile(cell.row.original.dp, "profile")
+            }
+          }}
+
+          alt="display picture" src={cell.row.original && cell.row.original.dp} />
+      },
+      {
+        accessorKey: 'username',
+        header: 'Name',
+        minSize: 120,
+        grow: false,
+        filterVariant: 'multi-select',
+        filterSelectOptions: data && users.map((i) => { return i.username.toString() }).filter(onlyUnique)
+      },
+      {
+        accessorKey: 'is_admin',
+        header: 'Role',
+        maxSize: 80,
+        grow: false,
+        filterVariant: 'multi-select',
+        Cell: (cell) => <>{cell.row.original.is_admin ? "admin" : "user"}</>,
+        filterSelectOptions: data && users.map((i) => {
+          if (i.is_admin) return "admin"
+          return "user"
+        }).filter(onlyUnique)
+      },
+      {
+        accessorKey: 'email',
+        header: 'Email',
+        minSize: 220,
+        grow: false,
+        Cell: (cell) => <>{cell.row.original.email || ""}</>
+      },
+      {
+        accessorKey: 'mobile',
+        header: 'Mobile',
+        minSize: 120,
+        grow: false,
+        Cell: (cell) => <>{cell.row.original.mobile || ""}</>
+      },
+      {
+        accessorKey: 'assigned_permissions',
+        header: 'Permissions',
+        minSize: 120,
+        grow: false,
+        Cell: (cell) => <>{cell.row.original.assigned_permissions.length || 0}</>
+      },
+      {
+        accessorKey: 'last_login',
+        header: 'Last Active',
+        minSize: 120,
+        grow: false,
+        Cell: (cell) => <>{cell.row.original.last_login || ""}</>
+      },
+      {
+        accessorKey: 'assigned_users',
+        header: 'Assigned Users',
+        minSize: 120,
+        grow: true,
+        Cell: (cell) => <Stack title={String(cell.row.original.assigned_users.length || 0)+" users"} className="scrollable-stack" direction={'row'} >{cell.row.original.assigned_users && cell.row.original.assigned_users.map((u) => { return u.value }).toString()}</Stack>
+      },
+    ],
+    [users],
+    //end
+  );
+
+
+  const table = useMaterialReactTable({
+    columns, columnFilterDisplayMode: 'popover',
+    data: users, //10,000 rows       
+    enableColumnResizing: true,
+    enableColumnVirtualization: true, enableStickyFooter: true,
+    muiTableFooterRowProps: () => ({
+      sx: {
+        backgroundColor: 'whitesmoke',
+        color: 'white',
+      }
+    }),
+    muiTableContainerProps: (table) => ({
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '68vh' }
+    }),
+    muiTableHeadRowProps: () => ({
+      sx: {
+        backgroundColor: 'whitesmoke',
+        color: 'white',
+        border: '1px solid lightgrey;',
+      },
+    }),
+    muiTableBodyCellProps: () => ({
+      sx: {
+        border: '1px solid lightgrey;',
+      },
+    }),
+    muiPaginationProps: {
+      rowsPerPageOptions: [100, 200, 500, 1000],
+      shape: 'rounded',
+      variant: 'outlined',
+    },
+    initialState: {
+      density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 100 }
+    },
+    enableGrouping: true,
+    enableRowSelection: true,
+    manualPagination: false,
+    enablePagination: true,
+    enableRowNumbers: true,
+    enableColumnPinning: true,
+    enableTableFooter: true,
+    enableRowVirtualization: true,
+    onSortingChange: setSorting,
+    state: { isLoading, sorting }
+  });
+
+  useEffect(() => {
+    if (isSuccess && data) {
+      setUsers(data.data)
+    }
+  }, [isSuccess, data])
+
+  return (
+    <>
+      <Stack
+        spacing={2}
+        padding={1}
+        direction="row"
+        justifyContent="space-between"
+
+      >
+        <Typography
+          variant={'h6'}
+          component={'h1'}
+          sx={{ pl: 1 }}
+        >
+          Users Assignment
+        </Typography>
+
+        <Stack
+          direction="row"
+        >
+          {/* user menu */}
+          <>
+            <IconButton size="small" color="primary"
+              onClick={(e) => setAnchorEl(e.currentTarget)
+              }
+              sx={{ border: 2, borderRadius: 3, marginLeft: 1 }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={() => setAnchorEl(null)
+              }
+              TransitionComponent={Fade}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+              sx={{ borderRadius: 2 }}
+            >
+              <MenuItem
+
+                onClick={() => {
+                  setChoice({ type: UserChoiceActions.close_user })
+                  if (!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()) {
+                    alert("select some users")
+                  }
+                  else {
+                    setChoice({ type: UserChoiceActions.bulk_assign_permissions })
+                    setFlag(1)
+                  }
+                  setAnchorEl(null)
+                }}
+              >Assign Permissions</MenuItem>
+
+              <MenuItem
+
+                onClick={() => {
+                  setChoice({ type: UserChoiceActions.close_user })
+                  if (!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()) {
+                    alert("select some users")
+                  }
+                  else {
+                    setChoice({ type: UserChoiceActions.bulk_assign_permissions })
+                    setFlag(0)
+                  }
+                  setAnchorEl(null)
+                }}
+              >Remove Permissions</MenuItem>
+
+              <MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+              >Export All</MenuItem>
+              <MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+              >Export Selected</MenuItem>
+            </Menu>
+            <NewUserDialog />
+            <AssignPermissionsToUsersDialog flag={flag} user_ids={table.getSelectedRowModel().rows.map((I) => { return I.original._id })} />
+          </>
+        </Stack >
+      </Stack >
+
+
+      <MaterialReactTable table={table} />
+      {
+        user ?
+          <>
+            <UpdateUserDialog user={user} />
+            <ResetMultiLoginDialog id={user._id} />
+            <BlockMultiLoginDialog id={user._id} />
+            <UpdatePasswordDialog />
+            <BlockUserDialog id={user._id} />
+            <UnBlockUserDialog id={user._id} />
+            <MakeAdminDialog id={user._id} />
+            <RemoveAdminDialog id={user._id} />
+            <UpdateUsePasswordDialog user={user} />
+            <AssignUsersDialog user={user} setUser={setUser} />
+            <AssignPermissionsToOneUserDialog user={user} />
+          </>
+          : null
+      }
+    </>
+
+  )
+
+}

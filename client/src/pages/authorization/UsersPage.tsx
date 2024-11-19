@@ -317,13 +317,7 @@ export default function UsersPage() {
                 grow:false,
                 Cell: (cell) => <>{cell.row.original.assigned_permissions.length || 0}</>
             },
-            {
-                accessorKey: 'show_only_visiting_card_leads',
-                header: 'Leads View',
-                minSize: 120,
-                grow:false,
-                Cell: (cell) => <>{cell.row.original.show_only_visiting_card_leads ? "All Leads" : "Only Having Cards"}</>
-            },
+            
             {
                 accessorKey: 'is_multi_login',
                 header: 'Multi Device',
