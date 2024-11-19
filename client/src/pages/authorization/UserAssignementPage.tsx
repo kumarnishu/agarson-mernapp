@@ -49,12 +49,7 @@ export default function UserAssignementPage() {
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
-
-
-              {LoggedInUser?.created_by.id === cell.row.original._id ?
-                null :
-                <>
-                  {LoggedInUser?._id === cell.row.original._id ?
+              {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') &&
                     <Tooltip title="assign users">
                       <IconButton
                         color="success"
@@ -65,23 +60,10 @@ export default function UserAssignementPage() {
                         }}>
                         <Assignment />
                       </IconButton>
-                    </Tooltip> :
-                    <Tooltip title="assign users">
-                      <IconButton
-                        disabled={cell.row.original?.created_by.id === cell.row.original._id}
-                        color="success"
-                        size="medium"
-                        onClick={() => {
-                          setChoice({ type: UserChoiceActions.assign_users })
-                          setUser(cell.row.original)
-                        }}>
-                        <Assignment />
-                      </IconButton>
-                    </Tooltip>}
-                </>
+                    </Tooltip> 
               }
 
-              <Tooltip title="Change Permissions for this user">
+              {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') &&<Tooltip title="Change Permissions for this user">
                 <IconButton
                   color="info"
                   onClick={() => {
@@ -91,7 +73,7 @@ export default function UserAssignementPage() {
                   }}>
                   <KeyOffOutlined />
                 </IconButton>
-              </Tooltip>
+              </Tooltip>}
 
             </Stack>} />
 
@@ -266,7 +248,7 @@ export default function UserAssignementPage() {
               }}
               sx={{ borderRadius: 2 }}
             >
-              <MenuItem
+              {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') &&<MenuItem
 
                 onClick={() => {
                   setChoice({ type: UserChoiceActions.close_user })
@@ -279,9 +261,9 @@ export default function UserAssignementPage() {
                   }
                   setAnchorEl(null)
                 }}
-              >Assign Permissions</MenuItem>
+              >Assign Permissions</MenuItem>}
 
-              <MenuItem
+              {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') &&<MenuItem
 
                 onClick={() => {
                   setChoice({ type: UserChoiceActions.close_user })
@@ -294,12 +276,12 @@ export default function UserAssignementPage() {
                   }
                   setAnchorEl(null)
                 }}
-              >Remove Permissions</MenuItem>
+              >Remove Permissions</MenuItem>}
 
-              <MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
-              >Export All</MenuItem>
-              <MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
-              >Export Selected</MenuItem>
+              {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') &&<MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+              >Export All</MenuItem>}
+              {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') &&<MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+              >Export Selected</MenuItem>}
             </Menu>
             <NewUserDialog />
             <AssignPermissionsToUsersDialog flag={flag} user_ids={table.getSelectedRowModel().rows.map((I) => { return I.original._id })} />

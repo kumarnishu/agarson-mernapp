@@ -12,13 +12,13 @@ function AppAuthorizationDashboard() {
     //process feature and access
     useEffect(() => {
         let tmpfeatures: { feature: string, is_visible: boolean, url: string }[] = []
-        user?.is_admin && tmpfeatures.push({ feature: 'states', is_visible: true, url: "CrmStatesPage" })
-        user?.is_admin && tmpfeatures.push({ feature: 'cities', is_visible: true, url: "CitiesPage" })
-        user?.is_admin && tmpfeatures.push({ feature: 'Keys ', is_visible: true, url: "KeysPage" })
-        user?.is_admin && tmpfeatures.push({ feature: 'Key Categories ', is_visible: true, url: "KeysCategoriesPage" })
-        user?.is_admin && tmpfeatures.push({ feature: 'User Assignement ', is_visible: true, url: "UserAssignementPage" })
+        user?.assigned_permissions.includes('states_view') && tmpfeatures.push({ feature: 'states', is_visible: true, url: "CrmStatesPage" })
+        user?.assigned_permissions.includes('city_view') && tmpfeatures.push({ feature: 'cities', is_visible: true, url: "CitiesPage" })
+        user?.assigned_permissions.includes('key_view') && tmpfeatures.push({ feature: 'Keys ', is_visible: true, url: "KeysPage" })
+        user?.assigned_permissions.includes('key_category_view') && tmpfeatures.push({ feature: 'Key Categories ', is_visible: true, url: "KeysCategoriesPage" })
+        user?.assigned_permissions.includes('user_assignment_view') && tmpfeatures.push({ feature: 'User Assignement ', is_visible: true, url: "UserAssignementPage" })
 
-        
+
         tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
 
         setFeatures(tmpfeatures)

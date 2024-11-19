@@ -269,7 +269,7 @@ export default function KeysPage() {
                                 }
                                 setAnchorEl(null)
                             }}
-                        > Assign keys</MenuItem>}
+                        > Assign Users</MenuItem>}
                         {LoggedInUser?.assigned_permissions.includes('key_edit') && <MenuItem
 
                             onClick={() => {
@@ -283,7 +283,7 @@ export default function KeysPage() {
                                 }
                                 setAnchorEl(null)
                             }}
-                        > Remove Keys</MenuItem>}
+                        > Remove Users</MenuItem>}
 
                         {LoggedInUser?.assigned_permissions.includes('key_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 

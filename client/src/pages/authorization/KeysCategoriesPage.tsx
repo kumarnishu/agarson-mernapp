@@ -212,7 +212,7 @@ export default function KeysCategoriesPage() {
                 }
                 setAnchorEl(null)
               }}
-            > Assign Categories</MenuItem>}
+            > Assign Users</MenuItem>}
             {LoggedInUser?.assigned_permissions.includes('key_category_edit') && <MenuItem
 
               onClick={() => {
@@ -226,7 +226,7 @@ export default function KeysCategoriesPage() {
                 }
                 setAnchorEl(null)
               }}
-            > Remove Categories</MenuItem>}
+            > Remove Users</MenuItem>}
 
 
             {LoggedInUser?.assigned_permissions.includes('key_category_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}

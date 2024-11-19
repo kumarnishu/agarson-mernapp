@@ -93,7 +93,7 @@ function AssignCrmCitiesDialog({ cities, flag }: { cities: DropDownDto[], flag: 
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
-                {flag === 0 ? 'Remove States' : 'Assign States'}
+                {flag === 0 ? 'Remove Cities' : 'Assign Cities'}
             </DialogTitle>
             <DialogContent>
                 <Stack
@@ -101,8 +101,8 @@ function AssignCrmCitiesDialog({ cities, flag }: { cities: DropDownDto[], flag: 
                 >
                     <Typography variant="body1" color="error">
 
-                        {flag === 1 && `Warning ! This will assign ${cities.length} States to the ${formik.values.user_ids.length} Users.`}
-                        {flag === 0 && `Warning ! This will remove  ${cities.length} States from  ${formik.values.user_ids.length} Users.`}
+                        {flag === 1 && `Warning ! This will assign ${cities.length} Cities to the ${formik.values.user_ids.length} Users.`}
+                        {flag === 0 && `Warning ! This will remove  ${cities.length} Cities from  ${formik.values.user_ids.length} Users.`}
 
                     </Typography>
                     <Button onClick={() => formik.setValues({ user_ids: [], city_ids: cities.map((item) => { return item.id }) })}>Remove Selection</Button>

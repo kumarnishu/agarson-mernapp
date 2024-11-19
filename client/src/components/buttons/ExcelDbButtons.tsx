@@ -56,18 +56,19 @@ export function ExcelDbButtons() {
                 {
                     isLoading ?
                         <Stack direction={'row'} gap={2} >
-                            <CircularProgress  sx={{height:15}} />
-                            <Typography variant="h6">Pleas Wait Uploading Excel file ...</Typography>
+                            <CircularProgress sx={{ height: 15 }} />
+                            <Typography variant="h6">Uploading Excel file ...</Typography>
                         </Stack>
                         :
                         <>
                             <Button
                                 component="label"
-                                variant="text"
+                                variant="contained"
                                 fullWidth
+                                sx={{ py: 1 }}
                                 color="inherit"
                             >
-                                <Upload sx={{ mr: 2 }} /> {`  Upload Grp Excel To genrate The Excel  Reports !!`}
+                                <Upload sx={{ mr: 2 }} /> {`  Upload Grp Excel !!`}
                                 <FileInput
                                     id="upload_input"
                                     hidden
