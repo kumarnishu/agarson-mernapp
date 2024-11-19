@@ -42,7 +42,6 @@ function ExcelDBDashboard() {
                             p: 2,
                             m: 0,
                             height: 60,
-                            borderRadius: 3,
                             position: 'relative',
                             overflow: 'hidden',
                             backdropFilter: 'blur(10px)', // Blurry effect

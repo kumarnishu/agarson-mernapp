@@ -1,4 +1,4 @@
-import { Avatar, IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material'
+import { Avatar,  Menu, MenuItem, Stack, Typography } from '@mui/material'
 import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { ChoiceContext, UserChoiceActions } from '../../contexts/dialogContext';
@@ -20,20 +20,6 @@ function ProfileMenu() {
 
     return (
         <>
-            <Stack direction={'row'} justifyContent={'left'} alignItems={'center'}>
-                <IconButton
-                    sx={{ border: 2, p: 0, mr: 1, borderColor: 'white' }}
-                    onClick={(e) => { setAnchorEl(e.currentTarget) }}
-                >
-                    <Avatar
-                        sx={{ width: 20, height: 20 }}
-                        alt="img1" src={user?.dp} />
-                </IconButton>
-                <Typography variant='h5' sx={{ color: 'white' }}> {toTitleCase(user?.username || "")}</Typography>
-                <ProfileMenu />
-            </Stack>
-
-            {/* new user dialog */}
             <NewUserDialog />
             <Menu
                 anchorEl={anchorEl}
@@ -103,7 +89,7 @@ function ProfileLogo() {
             <Avatar
                 sx={{ width: 20, height: 20 }}
                 alt="img1" src={user?.dp} />
-            <Typography variant='h5' sx={{ color: 'white' }}> {toTitleCase(user?.username || "")}</Typography>
+            <Typography variant='h5' sx={{ color: 'white',pl:1 }}> {toTitleCase(user?.username || "")}</Typography>
             <ProfileMenu />
         </Stack>
     )

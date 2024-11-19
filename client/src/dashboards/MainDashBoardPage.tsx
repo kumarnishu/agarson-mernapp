@@ -11,9 +11,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import ProfileLogo from '../components/logo/ProfileLogo';
 import LogoutButton from '../components/buttons/LogoutButton';
 import { toTitleCase } from '../utils/TitleCase';
+import { FeatureContext } from '../contexts/featureContext';
 
 function MainDashBoardPage() {
   const [open, setOpen] = useState(false);
+  const { feature, setFeature } = useContext(FeatureContext)
   const { user } = useContext(UserContext)
   const [features, setFeatures] = useState<{ feature: string, url: string, is_visible?: boolean, icon?: Element }[]>([])
 
@@ -39,7 +41,11 @@ function MainDashBoardPage() {
       <List>
         {features.map((feat, index) => (
           <React.Fragment key={index}>
-            {feat && feat.is_visible && < Link style={{ textDecoration: 'none', color: 'black' }} to={feat.url}>
+            {feat && feat.is_visible && < Link style={{ textDecoration: 'none', color: 'black' }} to={feat.url}
+              onClick={() => {
+                setFeature({ feature: feat.feature.toUpperCase(), url: feat.url })
+              }}
+            >
               <Stack direction={'row'} gap={1} p={1} justifyContent={'center'} alignItems={'center'}>
                 <ButtonLogo title="" height={15} width={15} />
                 <ListItemText sx={{ textAlign: 'left' }} primary={toTitleCase(feat.feature)} />
@@ -57,12 +63,13 @@ function MainDashBoardPage() {
 
   useEffect(() => {
     let tmpfeatures: { feature: string, is_visible?: boolean, url: string }[] = []
-    tmpfeatures.push({ feature: 'Dashboard', is_visible: true, url: "/Home" })
-    user?.assigned_permissions.includes('feature_menu') && tmpfeatures.push({ feature: 'Features', is_visible: true, url: "/Features" })
-    user?.assigned_permissions.includes('report_menu') && tmpfeatures.push({ feature: 'Feature Reports', is_visible: true, url: "/Reports" })
-    user?.assigned_permissions.includes('dropdown_menu') && tmpfeatures.push({ feature: 'Constants', is_visible: true, url: "/DropDown" })
-    user?.assigned_permissions.includes('excel_db_menu') && tmpfeatures.push({ feature: 'Exceldb', is_visible: true, url: "/ExcelDB" })
+    tmpfeatures.push({ feature: 'Dashboard', is_visible: true, url: "/" })
     user?.is_admin && tmpfeatures.push({ feature: 'Authorization', is_visible: true, url: "/Authorization" })
+    user?.assigned_permissions.includes('feature_menu') && tmpfeatures.push({ feature: 'Features', is_visible: true, url: "/Features" })
+    user?.assigned_permissions.includes('dropdown_menu') && tmpfeatures.push({ feature: 'Dropdowns', is_visible: true, url: "/DropDown" })
+    user?.assigned_permissions.includes('report_menu') && tmpfeatures.push({ feature: 'Feature Reports', is_visible: true, url: "/Reports" })
+    user?.assigned_permissions.includes('excel_db_menu') && tmpfeatures.push({ feature: 'Excel Reports', is_visible: true, url: "/ExcelDB" })
+
 
     setFeatures(tmpfeatures)
 
@@ -92,8 +99,8 @@ function MainDashBoardPage() {
               <Paper sx={{ ml: 2, p: 0.5, bgcolor: 'white', boxShadow: 1, borderRadius: 1, borderColor: 'white' }}>
                 <Stack flexDirection={"row"} gap={2} sx={{ alignItems: 'center' }}>
                   <ButtonLogo title="" height={20} width={20} />
-                  <Typography variant="button" sx={{ fontSize: 12 }} component="div">
-                    {"Dashboard"}
+                  <Typography variant="button" sx={{ fontSize: 12,mr:2 }} component="div">
+                    {feature?.feature || "Dashboard"}
                   </Typography>
                 </Stack>
               </Paper>

@@ -2,7 +2,7 @@ import { AxiosResponse } from "axios"
 import { BackendError } from "../.."
 import { useMutation } from "react-query"
 import { useEffect, useState } from "react"
-import { Button, CircularProgress, Stack } from "@mui/material"
+import { Button, CircularProgress, Stack, Typography } from "@mui/material"
 import { Upload } from "@mui/icons-material"
 import styled from "styled-components"
 import { CreateExcelDBFromExcel } from "../../services/ExcelDbService"
@@ -55,15 +55,19 @@ export function ExcelDbButtons() {
 
                 {
                     isLoading ?
-                        <CircularProgress />
+                        <Stack direction={'row'} gap={2} >
+                            <CircularProgress  sx={{height:15}} />
+                            <Typography variant="h6">Pleas Wait Uploading Excel file ...</Typography>
+                        </Stack>
                         :
                         <>
                             <Button
                                 component="label"
                                 variant="text"
+                                fullWidth
                                 color="inherit"
                             >
-                                <Upload sx={{mr:2}}/> {`  Upload Grp Excel`}
+                                <Upload sx={{ mr: 2 }} /> {`  Upload Grp Excel To genrate The Excel  Reports !!`}
                                 <FileInput
                                     id="upload_input"
                                     hidden
