@@ -1,7 +1,7 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
 import { Checklist, IChecklist } from "../models/checklist";
-import { AssignOrRemoveChecklistDto, CreateOrEditChecklistDto, GetChecklistBoxDto, GetChecklistDto, GetChecklistFromExcelDto } from "../dtos";
+import {  CreateOrEditChecklistDto, GetChecklistBoxDto, GetChecklistDto, GetChecklistFromExcelDto } from "../dtos";
 import { ChecklistBox, IChecklistBox } from "../models/checklist-box";
 import moment from "moment";
 import { Asset, User } from "../models/user";
@@ -778,7 +778,7 @@ export const DownloadExcelTemplateForCreatechecklists = async (req: Request, res
     return res.download("./file", fileName)
 }
 export const AssignChecklistToUsers = async (req: Request, res: Response, next: NextFunction) => {
-    const { checklist_ids, user_ids, flag } = req.body as AssignOrRemoveChecklistDto
+    const { checklist_ids, user_ids, flag } = req.body as { checklist_ids:string[], user_ids:string[], flag:number }
     if (checklist_ids && checklist_ids.length === 0)
         return res.status(400).json({ message: "please select one checklist " })
     if (user_ids && user_ids.length === 0)

@@ -1,6 +1,6 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
-import { CreateAndUpdatesLeadFromExcelDto, CreateOrEditLeadDto, CreateOrEditMergeLeadsDto, CreateOrRemoveReferForLeadDto, GetLeadDto } from "../dtos";
+import {  CreateOrEditLeadDto, CreateOrEditMergeLeadsDto, CreateOrRemoveReferForLeadDto, GetLeadDto, GetLeadFromExcelDto } from "../dtos";
 import Lead, { ILead } from "../models/lead";
 import { ReferredParty } from "../models/refer";
 import { Remark } from "../models/crm-remarks";
@@ -1348,7 +1348,7 @@ export const DeleteLead = async (req: Request, res: Response, next: NextFunction
 }
 
 export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next: NextFunction) => {
-    let result: CreateAndUpdatesLeadFromExcelDto[] = []
+    let result: GetLeadFromExcelDto[] = []
     let statusText: string = ""
     if (!req.file)
         return res.status(400).json({
@@ -1362,7 +1362,7 @@ export const BulkLeadUpdateFromExcel = async (req: Request, res: Response, next:
             return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
         const workbook = xlsx.read(req.file.buffer);
         let workbook_sheet = workbook.SheetNames;
-        let workbook_response: CreateAndUpdatesLeadFromExcelDto[] = xlsx.utils.sheet_to_json(
+        let workbook_response: GetLeadFromExcelDto[] = xlsx.utils.sheet_to_json(
             workbook.Sheets[workbook_sheet[0]]
         );
         if (workbook_response.length > 3000) {

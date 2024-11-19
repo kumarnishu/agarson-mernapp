@@ -26,104 +26,11 @@ import ConvertLeadToReferDialog from '../../components/dialogs/crm/ConvertLeadTo
 import ReferLeadDialog from '../../components/dialogs/crm/ReferLeadDialog'
 import { DownloadFile } from '../../utils/DownloadFile'
 import { AxiosResponse } from "axios"
-import React from "react"
-import { useMutation } from "react-query"
-import { styled } from "styled-components"
 import { BackendError } from "../.."
-import { BulkLeadUpdateFromExcel } from "../../services/LeadsServices"
-import { Button, Snackbar, Tooltip } from "@mui/material"
+import { Button,  Tooltip } from "@mui/material"
 import ExportToExcel from "../../utils/ExportToExcel"
-import { Upload } from "@mui/icons-material"
-import { CreateAndUpdatesLeadFromExcelDto } from "../../dtos"
-
-const FileInput = styled.input`
-background:none;
-color:blue;
-`
-function UploadLeadsExcelButton() {
-  const [leads, setLeads] = React.useState<CreateAndUpdatesLeadFromExcelDto[]>()
-  const { data, mutate, isLoading, isSuccess, isError, error } = useMutation
-    <AxiosResponse<CreateAndUpdatesLeadFromExcelDto[]>, BackendError, FormData>
-    (BulkLeadUpdateFromExcel)
-  const [file, setFile] = React.useState<File | null>(null)
 
 
-  function handleFile() {
-    if (file) {
-      let formdata = new FormData()
-      formdata.append('file', file)
-      mutate(formdata)
-    }
-  }
-  React.useEffect(() => {
-    if (file) {
-      handleFile()
-    }
-  }, [file])
-
-
-  React.useEffect(() => {
-    if (data) {
-      setLeads(data.data)
-    }
-  }, [data, leads])
-
-  React.useEffect(() => {
-    if (isSuccess) {
-      if (data.data.length > 0)
-        ExportToExcel(data.data, "upload_output")
-    }
-  }, [isSuccess])
-  return (
-    <>
-
-      <Snackbar
-        open={isSuccess}
-        autoHideDuration={6000}
-        onClose={() => setFile(null)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        message="Uploaded Successfuly wait for some minutes"
-      />
-
-      <Snackbar
-        open={isError}
-        autoHideDuration={6000}
-        onClose={() => setFile(null)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        message={error?.response.data.message}
-      />
-      {
-        isLoading ?
-          <p style={{ color: 'blue', paddingTop: '10px' }}>processing...</p>
-          :
-          <>
-            <Button
-              
-              variant="contained"
-              component="label"
-              color="inherit"
-            >
-              <Tooltip title="upload excel template">
-                <Upload />
-              </Tooltip>
-              <FileInput
-                id="upload_input"
-                hidden
-                type="file"
-                name="file"
-                onChange={
-                  (e: any) => {
-                    if (e.currentTarget.files) {
-                      setFile(e.currentTarget.files[0])
-                    }
-                  }}>
-              </FileInput >
-            </Button>
-          </>
-      }
-    </>
-  )
-}
 
 export default function LeadsPage() {
   const [paginationData, setPaginationData] = useState({ limit: 100, page: 1, total: 1 });
@@ -637,7 +544,7 @@ export default function LeadsPage() {
               <Delete />
             </Button>
           </Tooltip>}
-          {LoggedInUser?.assigned_permissions.includes('leads_create') && <UploadLeadsExcelButton />}
+          
           <Tooltip title="Toogle Filter">
             <Button  color="inherit" variant='contained'
               onClick={() => {

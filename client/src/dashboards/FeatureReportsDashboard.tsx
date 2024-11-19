@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/userContext";
 import { ButtonLogo } from "../components/logo/Agarson";
-import { toTitleCase } from "../utils/TitleCase";
 
 function FeatureReportsDashboard() {
     const [features, setFeatures] = useState<{ feature: string, is_visible: boolean, url: string }[]>([])
@@ -14,13 +13,13 @@ function FeatureReportsDashboard() {
 
         user?.assigned_permissions.includes('activities_view') && tmpfeatures.push({ feature: 'Crm activities ', is_visible: true, url: "CrmActivitiesPage" })
 
-        user?.assigned_permissions.includes('assignedrefer_view') && tmpfeatures.push({ feature: 'assigned refer reports', is_visible: true, url: "AssignedReferReportPage" })
-        user?.assigned_permissions.includes('newrefer_view') && tmpfeatures.push({ feature: 'new customer reports ', is_visible: true, url: "NewReferReportPage" })
-        user?.assigned_permissions.includes('shoe_weight_report_view') && tmpfeatures.push({ feature: 'Shoe Weight Difference report', is_visible: true, url: "ShowWeightDifferenceReportPage" })
-        user?.assigned_permissions.includes('dye_status_report_view') && tmpfeatures.push({ feature: 'Dye Status report', is_visible: true, url: "DyeStatusReportPage" })
-        user?.assigned_permissions.includes('machine_wise_production_report_view') && tmpfeatures.push({ feature: 'Machine Wise production report', is_visible: true, url: "MachineWiseProductionReportPage" })
-        user?.assigned_permissions.includes('machine_category_wise_production_report_view') && tmpfeatures.push({ feature: 'Category Wise Production report', is_visible: true, url: "CategoryWiseProductionReportPage" }),
-            user?.assigned_permissions.includes('thekedar_wise_production_report_view') && tmpfeatures.push({ feature: 'Thekedar Wise production report', is_visible: true, url: "ThekedarWiseProductionReportPage" })
+        user?.assigned_permissions.includes('assignedrefer_view') && tmpfeatures.push({ feature: 'Assigned refers', is_visible: true, url: "AssignedReferReportPage" })
+        user?.assigned_permissions.includes('newrefer_view') && tmpfeatures.push({ feature: 'New customers  ', is_visible: true, url: "NewReferReportPage" })
+        user?.assigned_permissions.includes('shoe_weight_report_view') && tmpfeatures.push({ feature: 'Shoe weight difference', is_visible: true, url: "ShowWeightDifferenceReportPage" })
+        user?.assigned_permissions.includes('dye_status_report_view') && tmpfeatures.push({ feature: 'Dye status ', is_visible: true, url: "DyeStatusReportPage" })
+        user?.assigned_permissions.includes('machine_wise_production_report_view') && tmpfeatures.push({ feature: 'Machine wise production ', is_visible: true, url: "MachineWiseProductionReportPage" })
+        user?.assigned_permissions.includes('machine_category_wise_production_report_view') && tmpfeatures.push({ feature: 'Category wise production', is_visible: true, url: "CategoryWiseProductionReportPage" }),
+            user?.assigned_permissions.includes('thekedar_wise_production_report_view') && tmpfeatures.push({ feature: 'Thekedar wise production', is_visible: true, url: "ThekedarWiseProductionReportPage" })
 
         setFeatures(tmpfeatures)
 
@@ -63,7 +62,7 @@ function FeatureReportsDashboard() {
                                                 fontWeight: 'medium', fontSize: 14
                                             }}
                                         >
-                                            {toTitleCase(feat.feature)}
+                                            {feat.feature}
                                         </Typography>
                                     </Stack>
                                 </Paper>

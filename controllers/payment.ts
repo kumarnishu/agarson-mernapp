@@ -1,6 +1,6 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
-import { AssignOrRemovePaymentDto, CreateOrEditPaymentDto, GetPaymentsFromExcelDto, GetPaymentDto, CreateOrEditChecklistRemarkDto, CreateOrEditPaymentDocumentDto } from "../dtos";
+import {  CreateOrEditPaymentDto, GetPaymentsFromExcelDto, GetPaymentDto, CreateOrEditChecklistRemarkDto, CreateOrEditPaymentDocumentDto } from "../dtos";
 import moment from "moment";
 import { Asset, User } from "../models/user";
 import { uploadFileToCloud } from "../utils/uploadFileToCloud";
@@ -462,7 +462,7 @@ export const DownloadExcelTemplateForCreatePayments = async (req: Request, res: 
     return res.download("./file", fileName)
 }
 export const AssignPaymentsToUsers = async (req: Request, res: Response, next: NextFunction) => {
-    const { payment_ids, user_ids, flag } = req.body as AssignOrRemovePaymentDto
+    const { payment_ids, user_ids, flag } = req.body as { payment_ids:string[], user_ids:string[], flag:number }
     if (payment_ids && payment_ids.length === 0)
         return res.status(400).json({ message: "please select one payment " })
     if (user_ids && user_ids.length === 0)

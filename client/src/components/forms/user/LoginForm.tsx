@@ -14,7 +14,6 @@ import { BackendError } from '../../..';
 import AlertBar from '../../snacks/AlertBar';
 import { Navigate } from "react-router-dom";
 import { GetUserDto } from '../../../dtos';
-import { FeatureContext } from '../../../contexts/featureContext';
 
 function LoginForm() {
   const goto = useNavigate()
@@ -26,7 +25,6 @@ function LoginForm() {
 
   const { setChoice } = useContext(ChoiceContext)
   const { setUser } = useContext(UserContext)
-  const { setFeature } = useContext(FeatureContext)
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -62,7 +60,6 @@ function LoginForm() {
   useEffect(() => {
     if (isSuccess) {
       setUser(data.data.user)
-      setFeature({ feature: "Dashboard", url: "/" })
       setChoice({ type: UserChoiceActions.close_user })
     }
   }, [setUser, goto, setChoice, isSuccess, data])

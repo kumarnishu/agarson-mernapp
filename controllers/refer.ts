@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { IReferredParty, ReferredParty } from "../models/refer";
 import { NextFunction, Request, Response } from 'express';
-import { CreateOrEditMergeRefersDto, CreateOrEditReferDto, CreateOrEditReferFromExcelDto, GetReferDto } from "../dtos";
+import { CreateOrEditMergeRefersDto, CreateOrEditReferDto,  GetReferDto, GetReferFromExcelDto } from "../dtos";
 import Lead from "../models/lead";
 import { Remark } from "../models/crm-remarks";
 import { Bill } from "../models/crm-bill";
@@ -473,7 +473,7 @@ export const DeleteReferParty = async (req: Request, res: Response, next: NextFu
 
 
 export const BulkReferUpdateFromExcel = async (req: Request, res: Response, next: NextFunction) => {
-    let result: CreateOrEditReferFromExcelDto[] = []
+    let result: GetReferFromExcelDto[] = []
     let statusText: string = ""
     if (!req.file)
         return res.status(400).json({
@@ -487,7 +487,7 @@ export const BulkReferUpdateFromExcel = async (req: Request, res: Response, next
             return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
         const workbook = xlsx.read(req.file.buffer);
         let workbook_sheet = workbook.SheetNames;
-        let workbook_response: CreateOrEditReferFromExcelDto[] = xlsx.utils.sheet_to_json(
+        let workbook_response: GetReferFromExcelDto[] = xlsx.utils.sheet_to_json(
             workbook.Sheets[workbook_sheet[0]]
         );
         if (workbook_response.length > 3000) {

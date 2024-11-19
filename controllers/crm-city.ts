@@ -1,6 +1,6 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express'; 
-import { AssignOrRemoveCrmCityDto, CreateAndUpdatesCityFromExcelDto, CreateOrEditCrmCity, GetCrmCityDto } from "../dtos";
+import {  CreateOrEditCrmCity, GetCityFromExcelDto, GetCrmCityDto } from "../dtos";
 import { assignCRMCities } from "../utils/assignCRMCities";
 import { CRMCity, ICRMCity } from "../models/crm-city";
 import { User } from "../models/user";
@@ -11,7 +11,7 @@ import isMongoId from "validator/lib/isMongoId";
 
 
 export const AssignCRMCitiesToUsers = async (req: Request, res: Response, next: NextFunction) => {
-    const { city_ids, user_ids, flag } = req.body as AssignOrRemoveCrmCityDto
+    const { city_ids, user_ids, flag } = req.body as { city_ids:string[], user_ids:string[], flag:number }
 
     if (city_ids && city_ids.length === 0)
         return res.status(400).json({ message: "please select one city " })
@@ -113,7 +113,7 @@ export const DeleteCRMCity = async (req: Request, res: Response, next: NextFunct
 }
 export const BulkCreateAndUpdateCRMCityFromExcel = async (req: Request, res: Response, next: NextFunction) => {
     let state = req.params.state
-    let result: CreateAndUpdatesCityFromExcelDto[] = []
+    let result: GetCityFromExcelDto[] = []
     let statusText: string = ""
     if (!req.file)
         return res.status(400).json({
@@ -127,7 +127,7 @@ export const BulkCreateAndUpdateCRMCityFromExcel = async (req: Request, res: Res
             return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
         const workbook = xlsx.read(req.file.buffer);
         let workbook_sheet = workbook.SheetNames;
-        let workbook_response: CreateAndUpdatesCityFromExcelDto[] = xlsx.utils.sheet_to_json(
+        let workbook_response: GetCityFromExcelDto[] = xlsx.utils.sheet_to_json(
             workbook.Sheets[workbook_sheet[0]]
         );
         if (!state || !await CRMState.findOne({ state: state }))

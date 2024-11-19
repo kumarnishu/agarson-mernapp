@@ -6,7 +6,7 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
-import { Assignment, Block, DeviceHubOutlined, Edit, GroupAdd, GroupRemove, Key, KeyOffOutlined, RemoveCircle, RemoveRedEye, Restore } from '@mui/icons-material'
+import { Assignment, Block, DeviceHubOutlined, Edit, GroupAdd, GroupRemove, Key, KeyOffOutlined, RemoveCircle,  Restore } from '@mui/icons-material'
 import { GetUserDto } from '../../dtos'
 import { UserContext } from '../../contexts/userContext'
 import { Menu as MenuIcon } from '@mui/icons-material';
@@ -25,7 +25,6 @@ import UnBlockUserDialog from '../../components/dialogs/users/UnBlockUserDialog'
 import MakeAdminDialog from '../../components/dialogs/users/MakeAdminDialog'
 import RemoveAdminDialog from '../../components/dialogs/users/RemoveAdminDialog'
 import UpdateUsePasswordDialog from '../../components/dialogs/users/UpdateUsePasswordDialog'
-import ToogleVisitingcardShowDialog from '../../components/dialogs/users/ToogleVisitingcardShowDialog'
 import AssignUsersDialog from '../../components/dialogs/users/AssignUsersDialog'
 import AssignPermissionsToOneUserDialog from '../../components/dialogs/users/AssignPermissionsToOneUserDialog'
 import ExportToExcel from '../../utils/ExportToExcel'
@@ -169,19 +168,7 @@ export default function UsersPage() {
                                     }
                                 </>
                             }
-                            <Tooltip title="Manage Leads View">
-                                <IconButton
-                                    color="success"
-                                    size="medium"
-                                    onClick={() => {
-                                        setChoice({ type: UserChoiceActions.toogle_show_visitingcard })
-                                        setUser(cell.row.original)
-
-                                    }}
-                                >
-                                    <RemoveRedEye />
-                                </IconButton>
-                            </Tooltip>
+                           
 
 
                             {/*  block login */}
@@ -536,7 +523,6 @@ export default function UsersPage() {
                         <RemoveAdminDialog id={user._id} />
                         <UpdateUsePasswordDialog user={user} />
                         <AssignUsersDialog user={user} setUser={setUser} />
-                        <ToogleVisitingcardShowDialog user={user} />
                         <AssignPermissionsToOneUserDialog user={user} />
                     </>
                     : null

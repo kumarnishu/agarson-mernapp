@@ -1,7 +1,7 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
 import { Dye, IDye } from "../models/dye";
-import { CreateOrEditDyeDTo, CreateOrEditDyeDtoFromExcel, GetDyeDto } from "../dtos";
+import { CreateOrEditDyeDTo,  GetDyeDto, GetDyeDtoFromExcel } from "../dtos";
 import moment from "moment";
 import { Article, IArticle } from "../models/article";
 
@@ -63,7 +63,7 @@ export const BulkUploadDye = async (req: Request, res: Response, next: NextFunct
             return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
         const workbook = xlsx.read(req.file.buffer);
         let workbook_sheet = workbook.SheetNames;
-        let workbook_response: CreateOrEditDyeDtoFromExcel[] = xlsx.utils.sheet_to_json(
+        let workbook_response: GetDyeDtoFromExcel[] = xlsx.utils.sheet_to_json(
             workbook.Sheets[workbook_sheet[0]]
         );
         let newDyes: { dye_number: number, size: string, articles: IArticle[], st_weight: number }[] = []

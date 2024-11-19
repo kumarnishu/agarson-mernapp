@@ -8,6 +8,7 @@ function PopUp({ element }: { element: JSX.Element }) {
         <div>
             <AcUnitTwoTone color='primary' onClick={(e) => setPopup(e.currentTarget)} sx={{ height: 14, width: 14, cursor: 'pointer' }} />
             <Popover
+            
                 open={Boolean(popup)}
                 anchorEl={popup}
                 onClose={() =>

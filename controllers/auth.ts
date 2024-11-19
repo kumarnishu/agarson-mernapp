@@ -55,7 +55,7 @@ export const Login = async (req: Request, res: Response, next: NextFunction) => 
     let result: GetUserDto | null = {
         _id: user._id,
         username: user.username,
-        email: user.email, assigned_erpEmployees: 0,
+        email: user.email, 
         mobile: user.mobile,
         dp: user.dp?.public_url || "",
         orginal_password: user.orginal_password,
@@ -71,7 +71,6 @@ export const Login = async (req: Request, res: Response, next: NextFunction) => 
                 id: u._id, label: u.username, value: u.username
             }
         }),
-        assigned_states: user.assigned_states.length || 0,
         assigned_crm_states: user.assigned_crm_states.length || 0,
         assigned_crm_cities: user.assigned_crm_cities.length || 0,
         assigned_permissions: user.assigned_permissions,

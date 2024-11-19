@@ -2,8 +2,6 @@ import mongoose from "mongoose"
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import { IState } from "./erp-state";
-import { IErpEmployee } from "./erp-employee";
 import { ICRMState } from "./crm-state";
 import { ICRMCity } from "./crm-city";
 import { IKey } from "./keys";
@@ -40,8 +38,6 @@ export type IUser = {
   multi_login_token: string | null,
   is_multi_login: boolean,
   assigned_users: IUser[]
-  assigned_states: IState[]
-  assigned_erpEmployees: IErpEmployee[]
   assigned_crm_states: ICRMState[]
   assigned_crm_cities: ICRMCity[],
   assigned_permissions: string[],
@@ -152,20 +148,6 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'KeyCategory',
-      default: []
-    }
-  ],
-  assigned_erpEmployees:[
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'ErpEmployee',
-      default: []
-    }
-  ],
-  assigned_states: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'State',
       default: []
     }
   ],

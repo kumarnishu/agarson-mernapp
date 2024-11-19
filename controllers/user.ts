@@ -69,7 +69,7 @@ export const SignUp = async (req: Request, res: Response, next: NextFunction) =>
         username: owner.username,
         email: owner.email,
         mobile: owner.mobile,
-        dp: owner.dp?.public_url || "", assigned_erpEmployees: 0,
+        dp: owner.dp?.public_url || "",
         orginal_password: owner.orginal_password,
         is_admin: owner.is_admin,
         email_verified: owner.email_verified,
@@ -83,7 +83,6 @@ export const SignUp = async (req: Request, res: Response, next: NextFunction) =>
                 id: owner._id, label: owner.username, value: owner.username
             }
         }),
-        assigned_states: owner.assigned_states.length || 0,
         assigned_crm_states: owner.assigned_crm_states.length || 0,
         assigned_crm_cities: owner.assigned_crm_cities.length || 0,
         assigned_permissions: owner.assigned_permissions,
@@ -329,7 +328,7 @@ export const GetUsers = async (req: Request, res: Response, next: NextFunction) 
                     id: u._id, label: u.username, value: u.username
                 }
             }),
-            assigned_states: u.assigned_states.length || 0,
+            
             assigned_crm_states: u.assigned_crm_states.length || 0,
             assigned_crm_cities: u.assigned_crm_cities.length || 0,
             assigned_permissions: u.assigned_permissions,
@@ -352,7 +351,7 @@ export const GetProfile = async (req: Request, res: Response, next: NextFunction
             mobile: user.mobile,
             dp: user.dp?.public_url || "",
             orginal_password: user.orginal_password,
-            is_admin: user.is_admin, assigned_erpEmployees: 0,
+            is_admin: user.is_admin, 
             email_verified: user.email_verified,
             mobile_verified: user.mobile_verified,
             show_only_visiting_card_leads: user.show_only_visiting_card_leads,
@@ -364,7 +363,6 @@ export const GetProfile = async (req: Request, res: Response, next: NextFunction
                     id: user._id, label: user.username, value: user.username
                 }
             }),
-            assigned_states: user.assigned_states.length || 0,
             assigned_crm_states: user.assigned_crm_states.length || 0,
             assigned_crm_cities: user.assigned_crm_cities.length || 0,
             assigned_permissions: user.assigned_permissions,

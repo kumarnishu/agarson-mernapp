@@ -2,51 +2,49 @@ import { useContext } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { UserContext } from './contexts/userContext'
 import LoginPage from './pages/LoginPage.tsx'
-import UsersPage from './pages/features/UsersPage.tsx'
+import UsersPage from './pages/authorization/UsersPage.tsx'
 import EmailVerifyPage from './pages/EmailVerifyPage.tsx'
 import ResetPasswordDialog from './components/dialogs/users/ResetPasswordDialog.tsx'
 import ReportDashboard from './dashboards/FeatureReportsDashboard.tsx'
 import DropDownDashboard from './dashboards/AppConstantsDashboard.tsx'
 import MainDashBoardPage from './dashboards/MainDashBoardPage.tsx'
 import RemindersPage from './pages/features/CrmRemindersPage.tsx'
-import CitiesPage from './pages/dropdowns/CitiesPage.tsx'
-import CrmStatesPage from './pages/dropdowns/CrmStatesPage.tsx'
+import CitiesPage from './pages/authorization/CitiesPage.tsx'
+import CrmStatesPage from './pages/authorization/CrmStatesPage.tsx'
 import RefersPage from './pages/features/RefersPage.tsx'
 import CrmLeadSourcesPage from './pages/dropdowns/CrmSourcePage.tsx'
 import CrmStagesPage from './pages/dropdowns/CrmStagesPage.tsx'
 import CrmTypesPage from './pages/dropdowns/CrmleadTypesPage.tsx'
-import CrmActivitiesPage from './pages/reports/CrmActivitiesReportPage.tsx'
+import CrmActivitiesPage from './pages/feature reports/CrmActivitiesReportPage.tsx'
 import ShoeWeightPage from './pages/features/ShoeWeightPage.tsx'
 import MachineCategoriesPage from './pages/dropdowns/MachineCategoriesPage.tsx'
 import ProductionPage from './pages/features/ProductionPage.tsx'
 import DyePage from './pages/dropdowns/DyesPage.tsx'
 import ArticlePage from './pages/dropdowns/ArticlesPage.tsx'
-import ErpStatesPage from './pages/dropdowns/ErpStatesPage.tsx'
 import LeadsPage from './pages/features/LeadsPage.tsx'
 import MachinePage from './pages/dropdowns/MachinesPage.tsx'
-import AssignedReferReportPage from './pages/reports/AssignedReferReportPage.tsx'
-import NewReferReportPage from './pages/reports/NewReferReportPage.tsx'
-import ShowWeightDifferenceReportPage from './pages/reports/ShowWeightDifferenceReportPage.tsx'
-import MachineWiseProductionReportPage from './pages/reports/MachineWiseProductionReportPage.tsx'
-import CategoryWiseProductionReportPage from './pages/reports/CategoryWiseProductionReportPage.tsx'
-import ThekedarWiseProductionReportPage from './pages/reports/ThekedarWiseProductionReportPage.tsx'
-import DyeStatusReportPage from './pages/reports/DyeStatusReportPage.tsx'
+import AssignedReferReportPage from './pages/feature reports/AssignedReferReportPage.tsx'
+import NewReferReportPage from './pages/feature reports/NewReferReportPage.tsx'
+import ShowWeightDifferenceReportPage from './pages/feature reports/ShowWeightDifferenceReportPage.tsx'
+import MachineWiseProductionReportPage from './pages/feature reports/MachineWiseProductionReportPage.tsx'
+import CategoryWiseProductionReportPage from './pages/feature reports/CategoryWiseProductionReportPage.tsx'
+import ThekedarWiseProductionReportPage from './pages/feature reports/ThekedarWiseProductionReportPage.tsx'
+import DyeStatusReportPage from './pages/feature reports/DyeStatusReportPage.tsx'
 import ChecklistCategoriesPage from './pages/dropdowns/ChecklistCategoriesPage.tsx'
 import CheckListPage from './pages/features/CheckListPage.tsx'
 import SpareDyesPage from './pages/features/SpareDyesPage.tsx'
 import SoleThicknessPage from './pages/features/SoleThicknessPage.tsx'
 import DyeLocationPage from './pages/dropdowns/DyeLocationPage.tsx'
 import FeatureDashboard from './dashboards/AppFeatureDashboard.tsx'
-import ErpEmployeesPage from './pages/dropdowns/ErpEmployeesPage.tsx'
 import CheckListAdminPage from './pages/features/CheckListAdminPage.tsx'
 import PaymentsPage from './pages/features/PaymentsPage.tsx'
 import PaymentCategoriesPage from './pages/dropdowns/PaymentCategoriesPage.tsx'
-import KeysCategoriesPage from './pages/dropdowns/KeysCategoriesPage.tsx'
-import KeysPage from './pages/dropdowns/KeysPage.tsx'
-import ExcelDBPage from './pages/features/ExcelDBPage.tsx'
+import KeysCategoriesPage from './pages/authorization/KeysCategoriesPage.tsx'
+import KeysPage from './pages/authorization/KeysPage.tsx'
+import ExcelDBPage from './pages/exceldb/ExcelDBPage.tsx'
 import AuthorizationDashboard from './dashboards/AppAuthorizationDashboard.tsx'
 import ExcelDBDashboard from './dashboards/ExcelDBDashboard.tsx'
-import SalesmanLeavesReportPage from './pages/reports/SalesmanLeavesReportPage.tsx'
+import SalesmanLeavesReportPage from './pages/feature reports/SalesmanLeavesReportPage.tsx'
 
 
 function AppRoutes() {
@@ -80,16 +78,6 @@ function AppRoutes() {
               }
               />}
 
-              {user?.assigned_permissions.includes('erp_state_view') && <Route
-                path="ErpStatesPage" element={
-                  <ErpStatesPage />
-                }
-              />}
-              {user?.assigned_permissions.includes('erp_employee_view') && <Route
-                path="ErpEmployeesPage" element={
-                  <ErpEmployeesPage />
-                }
-              />}
               {user?.assigned_permissions.includes('key_category_view') && <Route
                 path="KeysCategoriesPage" element={
                   <KeysCategoriesPage />
@@ -109,11 +97,7 @@ function AppRoutes() {
                   <FeatureDashboard />
                 }
               />
-              {user?.is_admin &&
-                < Route path="Users" element={
-                  <UsersPage />
-                }>
-                </Route>}
+            
               {user?.assigned_permissions.includes('production_view') && <Route
                 path="ProductionPage" element={
                   <ProductionPage />

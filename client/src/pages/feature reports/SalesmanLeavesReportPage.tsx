@@ -4,11 +4,11 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { GetSalesManLeavesReports } from '../../services/ErpServices'
 import { UserContext } from '../../contexts/userContext'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { IColumnRowData } from '../../dtos'
 import { SalesmanLeavesButton } from '../../components/buttons/SalesmanLeavesButton'
+import { GetSalesManLeavesReports } from '../../services/ExcelDbService'
 
 
 

@@ -11,5 +11,10 @@ export const CreateExcelDBFromExcel = async (body: FormData) => {
 }
 
 
+export const GetSalesManLeavesReports = async () => {
+    return await apiClient.get(`salesman-leaves/report`)
+}
 
-
+export const BulkSalesManLeavesReportFromExcel = async (body: FormData) => {
+    return await apiClient.post(`create-salesman-leaves-from-excel`, body)
+}

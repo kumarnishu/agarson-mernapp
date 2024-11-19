@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/userContext";
 import { ButtonLogo } from "../components/logo/Agarson";
-import { toTitleCase } from "../utils/TitleCase";
 
 function AppConstantsDashboard() {
     const [features, setFeatures] = useState<{ feature: string, is_visible: boolean, url: string }[]>([])
@@ -12,16 +11,16 @@ function AppConstantsDashboard() {
     //process feature and access
     useEffect(() => {
         let tmpfeatures: { feature: string, is_visible: boolean, url: string }[] = []
-        user?.assigned_permissions.includes('leadtype_view') && tmpfeatures.push({ feature: 'Lead Type', is_visible: true, url: "LeadTypesPage" })
-        user?.assigned_permissions.includes('lead_source_view') && tmpfeatures.push({ feature: 'Lead Source', is_visible: true, url: "LeadSourcesPage" })
-        user?.assigned_permissions.includes('leadstage_view') && tmpfeatures.push({ feature: 'Lead Stage', is_visible: true, url: "StagesPage" })
-        user?.assigned_permissions.includes('dye_location_view') && tmpfeatures.push({ feature: 'Dye-Location  ', is_visible: true, url: "DyeLocationsPage" })
-        user?.assigned_permissions.includes('article_view') && tmpfeatures.push({ feature: 'articles', is_visible: true, url: "ArticlePage" })
-        user?.assigned_permissions.includes('machine_view') && tmpfeatures.push({ feature: 'machines ', is_visible: true, url: "MachinePage" })
-        user?.assigned_permissions.includes('machine_category_view') && tmpfeatures.push({ feature: 'machine categories ', is_visible: true, url: "MachineCategoriesPage" })
-        user?.assigned_permissions.includes('dye_view') && tmpfeatures.push({ feature: 'dyes ', is_visible: true, url: "DyePage" })
-        user?.assigned_permissions.includes('checklist_category_view') && tmpfeatures.push({ feature: 'Checklist Category ', is_visible: true, url: "ChecklistCategoriesPage" })
-        user?.assigned_permissions.includes('payment_category_view') && tmpfeatures.push({ feature: 'Payment Category ', is_visible: true, url: "PaymentCategoriesPage" })
+        user?.assigned_permissions.includes('leadtype_view') && tmpfeatures.push({ feature: 'Lead types', is_visible: true, url: "LeadTypesPage" })
+        user?.assigned_permissions.includes('lead_source_view') && tmpfeatures.push({ feature: 'Lead source', is_visible: true, url: "LeadSourcesPage" })
+        user?.assigned_permissions.includes('leadstage_view') && tmpfeatures.push({ feature: 'Lead stage', is_visible: true, url: "StagesPage" })
+        user?.assigned_permissions.includes('dye_location_view') && tmpfeatures.push({ feature: 'Dye location  ', is_visible: true, url: "DyeLocationsPage" })
+        user?.assigned_permissions.includes('article_view') && tmpfeatures.push({ feature: 'Articles', is_visible: true, url: "ArticlePage" })
+        user?.assigned_permissions.includes('machine_view') && tmpfeatures.push({ feature: 'Machines ', is_visible: true, url: "MachinePage" })
+        user?.assigned_permissions.includes('machine_category_view') && tmpfeatures.push({ feature: 'Machine categories ', is_visible: true, url: "MachineCategoriesPage" })
+        user?.assigned_permissions.includes('dye_view') && tmpfeatures.push({ feature: 'Dyes ', is_visible: true, url: "DyePage" })
+        user?.assigned_permissions.includes('checklist_category_view') && tmpfeatures.push({ feature: 'Checklist category ', is_visible: true, url: "ChecklistCategoriesPage" })
+        user?.assigned_permissions.includes('payment_category_view') && tmpfeatures.push({ feature: 'Payment category ', is_visible: true, url: "PaymentCategoriesPage" })
        
        
 
@@ -65,7 +64,7 @@ function AppConstantsDashboard() {
                                             fontWeight: 'medium', fontSize: 14
                                         }}
                                     >
-                                        {toTitleCase(feat.feature)}
+                                        {feat.feature}
                                     </Typography>
                                 </Stack>
                             </Paper>

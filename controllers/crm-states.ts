@@ -1,6 +1,6 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
-import { AssignOrRemoveCrmStateDto, CreateAndUpdatesStateFromExcelDto, CreateOrEditDropDownDto, GetCrmStateDto } from "../dtos";
+import { CreateOrEditDropDownDto, GetCrmStateDto } from "../dtos";
 import { CRMState, ICRMState } from "../models/crm-state";
 import { User } from "../models/user";
 import { CRMCity } from "../models/crm-city";
@@ -37,7 +37,7 @@ export const CreateCRMState = async (req: Request, res: Response, next: NextFunc
 
 }
 export const AssignCRMStatesToUsers = async (req: Request, res: Response, next: NextFunction) => {
-    const { state_ids, user_ids, flag } = req.body as AssignOrRemoveCrmStateDto
+    const { state_ids, user_ids, flag } = req.body as { state_ids: string[], user_ids: string[], flag: number }
     if (state_ids && state_ids.length === 0)
         return res.status(400).json({ message: "please select one state " })
     if (user_ids && user_ids.length === 0)
@@ -130,7 +130,7 @@ export const DeleteCRMState = async (req: Request, res: Response, next: NextFunc
     return res.status(200).json({ message: "state deleted successfully" })
 }
 export const BulkCreateAndUpdateCRMStatesFromExcel = async (req: Request, res: Response, next: NextFunction) => {
-    let result: CreateAndUpdatesStateFromExcelDto[] = []
+    let result: { state: string, status?: any }[] = []
     let statusText: string = ""
     if (!req.file)
         return res.status(400).json({

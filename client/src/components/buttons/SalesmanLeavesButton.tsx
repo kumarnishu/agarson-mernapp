@@ -8,7 +8,7 @@ import styled from "styled-components"
 import { saveAs } from 'file-saver';
 import ExportToExcel from "../../utils/ExportToExcel"
 import { queryClient } from "../../main"
-import { BulkSalesManLeavesReportFromExcel } from "../../services/ErpServices"
+import { BulkSalesManLeavesReportFromExcel } from "../../services/ExcelDbService"
 
 
 const FileInput = styled.input`

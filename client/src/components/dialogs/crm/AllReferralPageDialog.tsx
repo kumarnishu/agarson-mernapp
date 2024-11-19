@@ -11,10 +11,10 @@ import { GetAllReferrals } from '../../../services/LeadsServices'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
-import { CreateAndUpdatesLeadFromExcelDto, GetActivitiesOrRemindersDto, GetReferDto } from '../../../dtos'
+import { GetLeadFromExcelDto, GetActivitiesOrRemindersDto, GetReferDto } from '../../../dtos'
 
 function AllReferralPageDialog({ refer }: { refer: GetReferDto }) {
-    const [selectedData, setSelectedData] = useState<CreateAndUpdatesLeadFromExcelDto[]>([])
+    const [selectedData, setSelectedData] = useState<GetLeadFromExcelDto[]>([])
     const { user: LoggedInUser } = useContext(UserContext)
     const [sent, setSent] = useState(false)
     const { choice, setChoice } = useContext(ChoiceContext)
@@ -47,7 +47,7 @@ function AllReferralPageDialog({ refer }: { refer: GetReferDto }) {
 
 
     useEffect(() => {
-        let tmpdata: CreateAndUpdatesLeadFromExcelDto[] = []
+        let tmpdata: GetLeadFromExcelDto[] = []
         tmpdata = leads.map((lead) => {
             return (
                 {

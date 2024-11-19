@@ -1,5 +1,3 @@
-import { IKeyCategory } from "../models/key-category"
-
 export type DropDownDto = {
     id: string,
     value: string,
@@ -19,9 +17,7 @@ export type IMenu = {
     menues?: IMenu[],
     permissions: IPermission[]
 }
-export type CreateOrEditChecklistCategoryDto = {
-    category: string
-}
+
 
 export type GetPaymentDto = {
     _id: string,
@@ -43,8 +39,8 @@ export type GetPaymentDto = {
 export type GetChecklistDto = {
     _id: string,
     active: boolean
-    serial_no:string
-    last_10_boxes:GetChecklistBoxDto[]
+    serial_no: string
+    last_10_boxes: GetChecklistBoxDto[]
     work_title: string,
     work_description: string,
     photo: string,
@@ -62,7 +58,7 @@ export type GetChecklistDto = {
 }
 export type CreateOrEditChecklistDto = {
     work_title: string,
-    serial_no:string,
+    serial_no: string,
     work_description: string,
     category: string,
     link: string,
@@ -96,16 +92,10 @@ export type GetChecklistBoxDto = {
     date: string,
 }
 
-export type AssignOrRemoveChecklistDto = {
-    checklist_ids: string[], user_ids: string[], flag: number
-}
-export type AssignOrRemovePaymentDto = {
-    payment_ids: string[], user_ids: string[], flag: number
-}
 export type GetChecklistFromExcelDto = {
     _id?: string,
     work_title: string,
-    serial_no:string,
+    serial_no: string,
     work_description: string,
     category: string,
     link: string,
@@ -125,7 +115,6 @@ export type GetPaymentsFromExcelDto = {
     duedate: string,
     status?: string
 }
-
 
 export type MergeTwoLeadsDto = {
     name: string,
@@ -162,7 +151,7 @@ export type GetKeyFromExcelDto = {
     key: string,
     type: string,
     category: string,
-    is_date_key:boolean,
+    is_date_key: boolean,
     status?: string
 }
 export type GetCrmStateDto = {
@@ -178,29 +167,13 @@ export type GetKeyCategoryDto = {
     assigned_users: string;
 }
 
-export type AssignOrRemoveCrmCityDto = {
-    user_ids: string[],
-    city_ids: string[],
-    flag: number
-}
-export type AssignOrRemoveCrmStateDto = {
-    user_ids: string[],
-    state_ids: string[],
-    flag: number
-}
 
-export type CreateAndUpdatesStateFromExcelDto = {
-    _id: string,
-    state: string,
-    users?: string,
-    status?: string
-}
-export type CreateAndUpdatesCityFromExcelDto = {
+export type GetCityFromExcelDto = {
     _id: string,
     city: string,
-    users?: string,
     status?: string
 }
+
 export type CreateOrEditCrmCity = {
     id: string,
     state: string,
@@ -208,7 +181,7 @@ export type CreateOrEditCrmCity = {
 }
 
 
-export type CreateAndUpdatesLeadFromExcelDto = {
+export type GetLeadFromExcelDto = {
     _id: string,
     name: string,
     customer_name: string,
@@ -285,7 +258,9 @@ export type CreateOrEditLeadDto = {
     lead_source: string,
 }
 export type CreateOrRemoveReferForLeadDto = {
-    party_id: string, remark: string, remind_date: string
+    party_id: string,
+    remark: string,
+    remind_date: string
 }
 
 export type CreateOrEditMergeLeadsDto = {
@@ -346,7 +321,7 @@ export type CreateOrEditReferDto = {
     city: string,
     state: string
 }
-export type CreateOrEditReferFromExcelDto = {
+export type GetReferFromExcelDto = {
     _id: string,
     name: string,
     customer_name: string,
@@ -478,348 +453,7 @@ export type CreateOrEditChecklistRemarkDto = {
 export type CreateOrEditPaymentDocumentDto = {
     remark: string,
 }
-export type GetErpEmployeeDto = {
-    _id: string,
-    name: string,
-    display_name: string,
-    assigned_employees: string,
-    created_at: string,
-    updated_at: string,
-    created_by: string,
-    updated_by: string
-}
 
-export type GetVisitReportDto = {
-    _id: string,
-    employee: string
-    visit_date: string,
-    customer: string,
-    intime: string,
-    outtime: string,
-    visitInLocation: string,
-    visitOutLocation: string,
-    remarks: string,
-    created_at: string,
-    updated_at: string,
-    created_by: string,
-    updated_by: string,
-}
-
-export type GetErpStateDto = {
-    _id: string,
-    state: string,
-    apr: number,
-    may: number,
-    jun: number,
-    jul: number,
-    aug: number,
-    sep: number,
-    oct: number,
-    nov: number,
-    dec: number,
-    jan: number,
-    feb: number,
-    mar: number,
-    created_at: string,
-    updated_at: string,
-    created_by: DropDownDto,
-    updated_by: DropDownDto,
-    assigned_users: string
-}
-export type CreateOrEditErpEmployeeDto = {
-    name: string,
-    display_name: string,
-}
-export type CreateOrEditErpStateDto = {
-    state: string,
-    apr: number,
-    may: number,
-    jun: number,
-    jul: number,
-    aug: number,
-    sep: number,
-    oct: number,
-    nov: number,
-    dec: number,
-    jan: number,
-    feb: number,
-    mar: number
-}
-export type GetPendingOrdersReportDto = {
-    _id: string,
-    report_owner: DropDownDto
-    account: string,
-    product_family: string,
-    article: string,
-    size5: number,
-    size6: number,
-    size7: number,
-    size8: number,
-    size9: number,
-    size10: number,
-    size11: number,
-    size12_24pairs: number,
-    size13: number,
-    size11x12: number,
-    size3: number,
-    size4: number,
-    size6to10: number,
-    size7to10: number,
-    size8to10: number,
-    size4to8: number,
-    size6to9: number,
-    size5to8: number,
-    size6to10A: number,
-    size7to10B: number,
-    size6to9A: number,
-    size11close: number,
-    size11to13: number,
-    size3to8: number,
-    created_at: string,
-    updated_at: string,
-    created_by: DropDownDto,
-    updated_by: DropDownDto,
-    status?: string
-}
-export type GetPartyTargetReportDto = {
-    _id: string,
-    slno: string,
-    PARTY: string,
-    Create_string: string,
-    STATION: string,
-    SALES_OWNER: string,
-    report_owner: DropDownDto
-    All_TARGET: string,
-    TARGET: number,
-    PROJECTION: number,
-    GROWTH: number,
-    TARGET_ACHIEVE: number,
-    TOTAL_SALE_OLD: number,
-    TOTAL_SALE_NEW: number,
-    Last_Apr: number,
-    Cur_Apr: number,
-    Last_May: number,
-    Cur_May: number,
-    Last_Jun: number,
-    Cur_Jun: number,
-    Last_Jul: number,
-    Cur_Jul: number,
-    Last_Aug: number,
-    Cur_Aug: number,
-    Last_Sep: number,
-    Cur_Sep: number,
-    Last_Oct: number,
-    Cur_Oct: number,
-    Last_Nov: number,
-    Cur_Nov: number,
-    Last_Dec: number,
-    Cur_Dec: number,
-    Last_Jan: number,
-    Cur_Jan: number,
-    Last_Feb: number,
-    Cur_Feb: number,
-    Last_Mar: number,
-    Cur_Mar: number,
-    created_at: string,
-    updated_at: string,
-    created_by: DropDownDto,
-    updated_by: DropDownDto,
-    status?: string
-}
-export type GetClientSaleLastYearReportDto = {
-    _id: string,
-    report_owner: DropDownDto
-    account: string,
-    article: string,
-    oldqty: number,
-    newqty: number,
-    apr: number,
-    may: number,
-    jun: number,
-    jul: number,
-    aug: number,
-    sep: number,
-    oct: number,
-    nov: number,
-    dec: number,
-    jan: number,
-    feb: number,
-    mar: number,
-    created_at: string,
-    updated_at: string,
-    created_by: DropDownDto,
-    updated_by: DropDownDto,
-    status?: string
-}
-export type GetBillsAgingReportDto = {
-    _id: string,
-    report_owner: DropDownDto
-    account: string,
-    plu70: number,
-    in70to90: number,
-    in90to120: number,
-    plus120: number
-    created_at: string,
-    updated_at: string,
-    created_by: DropDownDto,
-    updated_by: DropDownDto,
-    status?: string
-}
-
-export type GetErpStateFromExcelDto = {
-    _id?: string,
-    state: string,
-    apr: number,
-    may: number,
-    jun: number,
-    jul: number,
-    aug: number,
-    sep: number,
-    oct: number,
-    nov: number,
-    dec: number,
-    jan: number,
-    feb: number,
-    mar: number,
-    status?: any
-}
-
-
-
-export type GetSaleAnalysisReportDto = {
-    state: string,
-    monthly_target: number,
-    monthly_achivement: number,
-    monthly_percentage: number,
-    annual_target: number,
-    annual_achivement: number,
-    annual_percentage: number,
-    last_year_sale: number,
-    last_year_sale_percentage_comparison: number
-}
-export type GetPartyTargetReportFromExcelDto = {
-    slno: string,
-    PARTY: string,
-    Create_Date: string,
-    STATION: string,
-    SALES_OWNER: string,
-    report_owner: string
-    All_TARGET: string,
-    TARGET: number,
-    PROJECTION: number,
-    GROWTH: number,
-    TARGET_ACHIEVE: number,
-    TOTAL_SALE_OLD: number,
-    TOTAL_SALE_NEW: number,
-    Last_Apr: number,
-    Cur_Apr: number,
-    Last_May: number,
-    Cur_May: number,
-    Last_Jun: number,
-    Cur_Jun: number,
-    Last_Jul: number,
-    Cur_Jul: number,
-    Last_Aug: number,
-    Cur_Aug: number,
-    Last_Sep: number,
-    Cur_Sep: number,
-    Last_Oct: number,
-    Cur_Oct: number,
-    Last_Nov: number,
-    Cur_Nov: number,
-    Last_Dec: number,
-    Cur_Dec: number,
-    Last_Jan: number,
-    Cur_Jan: number,
-    Last_Feb: number,
-    Cur_Feb: number,
-    Last_Mar: number,
-    Cur_Mar: number,
-    status?: string,
-    created_at?: string,
-}
-
-
-
-export type GetBillsAgingReportFromExcelDto = {
-    report_owner: string
-    account: string,
-    total?: number,
-    plu70: number,
-    in70to90: number,
-    in90to120: number,
-    plus120: number
-    status?: string,
-    created_at?: string,
-}
-export type GetPendingOrdersReportFromExcelDto = {
-    report_owner: string
-    account: string,
-    product_family: string,
-    article: string,
-    total?: number,
-    size5: number,
-    size6: number,
-    size7: number,
-    size8: number,
-    size9: number,
-    size10: number,
-    size11: number,
-    size12_24pairs: number,
-    size13: number,
-    size11x12: number,
-    size3: number,
-    size4: number,
-    size6to10: number,
-    size7to10: number,
-    size8to10: number,
-    size4to8: number,
-    size6to9: number,
-    size5to8: number,
-    size6to10A: number,
-    size7to10B: number,
-    size6to9A: number,
-    size11close: number,
-    size11to13: number,
-    size3to8: number,
-    status?: string, created_at?: string,
-}
-
-export type GetClientSaleReportFromExcelDto = {
-    report_owner: string,
-    account: string,
-    article: string,
-    oldqty: number,
-    newqty: number,
-    total?: number,
-    apr: number,
-    may: number,
-    jun: number,
-    jul: number,
-    aug: number,
-    sep: number,
-    oct: number,
-    nov: number,
-    dec: number,
-    jan: number,
-    feb: number,
-    mar: number,
-    status?: string,
-    created_at?: string,
-}
-
-export type GetVisitReportFromExcelDto = {
-    _id: string,
-    employee: string
-    visit_date: string,
-    customer: string,
-    intime: string,
-    outtime: string,
-    visitInLocation: string,
-    visitOutLocation: string,
-    remarks: string,
-    status?: string
-}
 export type GetSoleThicknessDto = {
     _id: string,
     dye: DropDownDto,
@@ -968,10 +602,16 @@ export type CreateOrEditMachineDto = {
     category: string
 }
 export type CreateOrEditDyeDTo = {
-    dye_number: number, size: string, articles: string[], st_weight: number
+    dye_number: number,
+    size: string,
+    articles: string[],
+    st_weight: number
 }
-export type CreateOrEditDyeDtoFromExcel = {
-    dye_number: number, size: string, articles: string, st_weight: number
+export type GetDyeDtoFromExcel = {
+    dye_number: number,
+    size: string,
+    articles: string,
+    st_weight: number
 }
 export type CreateOrEditArticleDto = {
     name: string, display_name: string
@@ -1065,8 +705,6 @@ export type GetUserDto = {
     last_login: string,
     is_multi_login: boolean,
     assigned_users: DropDownDto[]
-    assigned_states: number,
-    assigned_erpEmployees: number,
     assigned_crm_states: number,
     assigned_crm_cities: number,
     assigned_permissions: string[],
@@ -1075,8 +713,6 @@ export type GetUserDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-
-
 
 export type LoginDto = {
     username: string,
@@ -1112,12 +748,4 @@ export type AssignPermissionForMultipleUserDto = {
     permissions: string[],
     user_ids: string[],
     flag: number
-}
-
-
-
-export type CreateOrEditKeyDto = {
-    _id: string,
-    key: string,
-    category: string
 }

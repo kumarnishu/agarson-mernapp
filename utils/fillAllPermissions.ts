@@ -62,184 +62,6 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
-            {
-                label: 'Visit Report',
-                permissions: [
-                    {
-                        value: 'visit_report_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'visit_report_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'visit_report_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'visit_report_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'visit_report_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Pending Orders',
-                permissions: [
-                    {
-                        value: 'pending_orders_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'pending_orders_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'pending_orders_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'pending_orders_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'pending_orders_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Bills Ageing Report',
-                permissions: [
-                    {
-                        value: 'bills_ageing_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'bills_ageing_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'bills_ageing_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'bills_ageing_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'bills_ageing_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Client Sale Report',
-                permissions: [
-                    {
-                        value: 'client_sale_report_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'client_sale_report_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'client_sale_report_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'client_sale_report_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'client_sale_report_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Last Year Client Sale Report',
-                permissions: [
-                    {
-                        value: 'last_year_client_sale_report_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'last_year_client_sale_report_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'last_year_client_sale_report_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'last_year_client_sale_report_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'last_year_client_sale_report_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Party Target',
-                permissions: [
-                    {
-                        value: 'party_target_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'party_target_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'party_target_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'party_target_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'party_target_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Sale Analysis',
-                permissions: [
-                    {
-                        value: 'sale_analysis_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'sale_analysis_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'sale_analysis_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'sale_analysis_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'sale_analysis_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            
-            
-
         ]
     }
     let featureMenu: IMenu = {
@@ -371,6 +193,10 @@ export function FetchAllPermissions() {
                         label: 'delete'
                     },
                     {
+                        value: 'show_leads_having cards',
+                        label: 'Show Only Visiting Card Leads'
+                    },
+                    {
                         value: 'show_leads_useless',
                         label: 'Show Useless Leads'
                     },
@@ -405,7 +231,7 @@ export function FetchAllPermissions() {
                 ]
             },
             {
-                label: 'Refers',
+                label: 'Customers',
                 permissions: [
                     {
                         value: 'refer_view',
@@ -560,7 +386,7 @@ export function FetchAllPermissions() {
             label: 'Report Button'
         }], menues: [
             {
-                label: 'Shoe Weight Difference Report',
+                label: 'Shoe Weight Difference',
                 permissions: [
                     {
                         value: 'shoe_weight_report_view',
@@ -585,7 +411,7 @@ export function FetchAllPermissions() {
                 ]
             },
             {
-                label: 'Dye Status Report',
+                label: 'Dye Status',
                 permissions: [
                     {
                         value: 'dye_status_report_view',
@@ -610,7 +436,7 @@ export function FetchAllPermissions() {
                 ]
             },
             {
-                label: 'Machine Wise Production Report',
+                label: 'Machine Wise Production',
                 permissions: [
                     {
                         value: 'machine_wise_production_report_view',
@@ -635,7 +461,7 @@ export function FetchAllPermissions() {
                 ]
             },
             {
-                label: 'Thekedar Wise Production Report',
+                label: 'Thekedar Wise Production',
                 permissions: [
                     {
                         value: 'thekedar_wise_production_report_view',
@@ -660,7 +486,7 @@ export function FetchAllPermissions() {
                 ]
             },
             {
-                label: 'Machine category Wise Production Report',
+                label: 'Machine-category Wise Production',
                 permissions: [
                     {
                         value: 'machine_category_wise_production_report_view',
@@ -686,7 +512,7 @@ export function FetchAllPermissions() {
             },
 
             {
-                label: 'Assigned Refer Reports',
+                label: 'Assigned Refer',
                 permissions: [
                     {
                         value: 'assignedrefer_view',
@@ -711,7 +537,7 @@ export function FetchAllPermissions() {
                 ]
             },
             {
-                label: 'New Refer Reports',
+                label: 'New Customers',
                 permissions: [
                     {
                         value: 'newrefer_view',
@@ -1019,56 +845,7 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
-            {
-                label: 'Key',
-                permissions: [
-                    {
-                        value: 'key_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'key_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'key_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'key_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'key_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Key Category',
-                permissions: [
-                    {
-                        value: 'key_category_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'key_category_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'key_category_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'key_category_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'key_category_export',
-                        label: 'export'
-                    }
-                ]
-            },
+            
         ]
     }
     let authorizationMenu: IMenu = {
@@ -1129,57 +906,6 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
-            {
-                label: 'Erp Employees',
-                permissions: [
-                    {
-                        value: 'erp_employee_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'erp_employee_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'erp_employee_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'erp_employee_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'erp_employee_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Erp States',
-                permissions: [
-                    {
-                        value: 'erp_state_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'erp_state_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'erp_state_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'erp_state_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'erp_state_export',
-                        label: 'export'
-                    }
-                ]
-            }
-            ,
             {
                 label: 'Key',
                 permissions: [
