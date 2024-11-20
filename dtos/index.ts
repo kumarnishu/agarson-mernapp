@@ -1,3 +1,4 @@
+
 export type DropDownDto = {
     id: string,
     value: string,
@@ -364,6 +365,16 @@ export type GetChecklistRemarksDto = {
     created_by: DropDownDto
 
 }
+export type GetExcelDBRemarksDto = {
+    _id: string,
+    remark: string,
+    next_date: string,
+    created_date: string,
+    created_by: string,
+    category: DropDownDto,
+    obj: string
+
+}
 
 export type GetActivitiesTopBarDetailsDto = { stage: string, value: number }
 export type GetActivitiesOrRemindersDto = {
@@ -457,6 +468,14 @@ export type CreateOrEditChecklistRemarkDto = {
     checklist_box: string,
     checklist: string
 }
+export type CreateOrEditExcelDbRemarkDto = {
+    remark: string,
+    category: string,
+    key:string,
+    obj: string,
+    next_date:string
+}
+
 
 export type CreateOrEditPaymentDocumentDto = {
     remark: string,
