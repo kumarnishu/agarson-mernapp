@@ -34,9 +34,9 @@ function ExcelDBDashboard() {
     return (
         <>
 
-            <Stack sx={{ width: '100%' }} direction={'row'} p={2} justifyContent={'end'}>
+            {user?.assigned_permissions.includes('grp_excel_create') && <Stack sx={{ width: '100%' }} direction={'row'} p={2} justifyContent={'end'}>
                 <ExcelDbButtons />
-            </Stack>
+            </Stack>}
             <Grid container sx={{ pt: 2 }} >
                 {features.map((feat, index) => {
                     return (

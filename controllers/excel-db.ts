@@ -15,6 +15,10 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
         columns: [],
         rows: []
     };
+    if (!category) {
+        return res.status(400).json({ message: 'please select category ' })
+    }
+
     let assigned_keys: any[] = req.user.assigned_keys;
     let assigned_states: string[] = []
     let user = await User.findById(req.user._id).populate('assigned_crm_states')
@@ -27,15 +31,9 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
     });
     let assigned_employees: string[] = [String(req.user.username), String(req.user.alias1 || ""), String(req.user.alias2 || "")].filter(value => value)
 
-    console.log(assigned_employees)
-    console.log(assigned_states)
 
-    if (!category) {
-        return res.status(400).json({ message: 'please select category ' })
-    }
+
     let keys = await Key.find({ category: category, _id: { $in: assigned_keys } }).sort('serial_no');
-
-
 
 
     //data push for assigned keys
@@ -43,6 +41,16 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
 
     let maptoemployeekeys = await Key.find({ map_to_username: true, category: category }).sort('serial_no');
     let maptostateskeys = await Key.find({ map_to_state: true, category: category }).sort('serial_no');
+
+    if (req.user.assigned_users && req.user?.assigned_users.length > 0) {
+        req.user.assigned_users.map((u: any) => {
+            assigned_employees.push(u.username)
+            if (u.alias1)
+                assigned_employees.push(u.alias1)
+            if (u.alias2)
+                assigned_employees.push(u.alias2)
+        })
+    }
     // filter for states
     if (maptostateskeys && maptostateskeys.length > 0)
         data = data.filter((dt) => {
@@ -72,6 +80,8 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
                 return dt;
             }
         })
+
+
 
     for (let k = 0; k < keys.length; k++) {
         let c = keys[k]

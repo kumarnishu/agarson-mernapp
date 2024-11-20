@@ -86,7 +86,7 @@ export default function KeysCategoriesPage() {
         header: 'Assigned Users',
         minSize: 350,
         grow: false,
-        Cell: (cell) => <>{cell.row.original.assigned_users ? cell.row.original.assigned_users : ""}</>,
+        Cell: (cell) => <span title={cell.row.original.assigned_users}>{cell.row.original.assigned_users ? cell.row.original.assigned_users : ""}</span>,
 
       },
 

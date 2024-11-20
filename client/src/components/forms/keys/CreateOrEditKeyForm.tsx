@@ -195,16 +195,19 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
                 </TextField>
                 <FormGroup>
                     <FormControlLabel control={<Checkbox
+                        checked={formik.values.is_date_key}
                         {...formik.getFieldProps('is_date_key')}
                     />} label="Is Date Key" />
                 </FormGroup>
                 <FormGroup>
                     <FormControlLabel control={<Checkbox
+                    checked={formik.values.map_to_username}
                         {...formik.getFieldProps('map_to_username')}
                     />} label="Map To Username" />
                 </FormGroup>
                 <FormGroup>
                     <FormControlLabel control={<Checkbox
+                        checked={formik.values.map_to_state}
                         {...formik.getFieldProps('map_to_state')}
                     />} label="Map To State" />
                 </FormGroup>
