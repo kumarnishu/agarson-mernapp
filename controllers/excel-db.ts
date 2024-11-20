@@ -41,40 +41,37 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
     //data push for assigned keys
     let data = await ExcelDB.find({ category: category }).populate('key').sort('created_at')
 
-    if (!req.user.is_admin) {
-        let maptoemployeekeys = await Key.find({ map_to_username: true, category: category }).sort('serial_no');
-        let maptostateskeys = await Key.find({ map_to_state: true, category: category }).sort('serial_no');
-        // filter for states
-        if (maptostateskeys && maptostateskeys.length > 0)
-            data = data.filter((dt) => {
-                let matched = false;
-                maptostateskeys.forEach((key) => {
-                    //@ts-ignore
-                    if (assigned_states.includes(String(dt[key.key]).trim().toLowerCase())) {
-                        matched = true
-                    }
-                })
-                if (matched) {
-                    return dt;
+    let maptoemployeekeys = await Key.find({ map_to_username: true, category: category }).sort('serial_no');
+    let maptostateskeys = await Key.find({ map_to_state: true, category: category }).sort('serial_no');
+    // filter for states
+    if (maptostateskeys && maptostateskeys.length > 0)
+        data = data.filter((dt) => {
+            let matched = false;
+            maptostateskeys.forEach((key) => {
+                //@ts-ignore
+                if (assigned_states.includes(String(dt[key.key]).trim().toLowerCase())) {
+                    matched = true
                 }
             })
+            if (matched) {
+                return dt;
+            }
+        })
 
-        //filter for employees
-        if (maptoemployeekeys && maptoemployeekeys.length > 0)
-            data = data.filter((dt) => {
-                let matched = false;
-                maptoemployeekeys.forEach((key) => {
-                    //@ts-ignore
-                    if (assigned_employees.includes(String(dt[key.key]).trim().toLowerCase())) {
-                        matched = true
-                    }
-                })
-                if (matched) {
-                    return dt;
+    //filter for employees
+    if (maptoemployeekeys && maptoemployeekeys.length > 0)
+        data = data.filter((dt) => {
+            let matched = false;
+            maptoemployeekeys.forEach((key) => {
+                //@ts-ignore
+                if (assigned_employees.includes(String(dt[key.key]).trim().toLowerCase())) {
+                    matched = true
                 }
             })
-    }
-
+            if (matched) {
+                return dt;
+            }
+        })
 
     for (let k = 0; k < keys.length; k++) {
         let c = keys[k]
