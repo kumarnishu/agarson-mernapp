@@ -5,6 +5,8 @@ import { IUser } from "./user"
 export type ICRMState = {
     _id: string,
     state: string,
+    alias1: string,
+    alias2: string,
     created_at: Date,
     updated_at: Date,
     created_by: IUser,
@@ -17,6 +19,18 @@ const CRMStateSchema = new mongoose.Schema<ICRMState, mongoose.Model<ICRMState, 
         index: true,
         lowercase: true,
         required:true
+    },
+    alias1: {
+        type: String,
+        trim: true,
+        index: true,
+        lowercase: true,
+    },
+    alias2: {
+        type: String,
+        trim: true,
+        index: true,
+        lowercase: true
     },
     created_at: {
         type: Date,

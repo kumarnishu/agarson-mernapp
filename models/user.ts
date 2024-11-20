@@ -22,6 +22,8 @@ export type Asset = {
 export type IUser = {
   _id: string,
   username: string,
+  alias1: string,
+  alias2:string,
   password: string,
   email: string,
   mobile: string,
@@ -62,6 +64,16 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
   username: {
     type: String,
     required: true,
+    trim: true,
+    lowercase: true,
+  },
+  alias1: {
+    type: String,
+    trim: true,
+    lowercase: true,
+  },
+  alias2: {
+    type: String,
     trim: true,
     lowercase: true,
   },

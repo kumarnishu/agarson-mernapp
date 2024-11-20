@@ -4,6 +4,8 @@ import { IUser } from "./user"
 export type ICRMCity = {
     _id: string,
     city: string,
+    alias1: string,
+    alias2: string,
     state: string,
     created_at: Date,
     updated_at: Date,
@@ -17,6 +19,18 @@ const CRMCitySchema = new mongoose.Schema<ICRMCity, mongoose.Model<ICRMCity, {},
         index: true,
         lowercase: true,
         required: true
+    },
+    alias1: {
+        type: String,
+        trim: true,
+        index: true,
+        lowercase: true,
+    },
+    alias2: {
+        type: String,
+        trim: true,
+        index: true,
+        lowercase: true,
     },
     state: {
         type: String,
