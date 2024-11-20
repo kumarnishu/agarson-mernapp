@@ -5,6 +5,8 @@ import { KeyCategory } from "../models/key-category";
 import { Key } from "../models/keys";
 import { ExcelDB } from "../models/excel-db";
 import { decimalToTimeForXlsx, excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
+import { ICRMState } from "../models/crm-state";
+import { User } from "../models/user";
 
 export const GetExcelDbReport = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -14,21 +16,74 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
         rows: []
     };
     let assigned_keys: any[] = req.user.assigned_keys;
+    let assigned_states: string[] = []
+    let user = await User.findById(req.user._id).populate('assigned_crm_states')
+    user && user?.assigned_crm_states.map((state: ICRMState) => {
+        assigned_states.push(state.state)
+        if (state.alias1)
+            assigned_states.push(state.alias1)
+        if (state.alias2)
+            assigned_states.push(state.alias2)
+    });
+    let assigned_employees: string[] = [String(req.user.username), String(req.user.alias1 || ""), String(req.user.alias2 || "")].filter(value => value)
+
+    console.log(assigned_employees)
+    console.log(assigned_states)
+
     if (!category) {
         return res.status(400).json({ message: 'please select category ' })
     }
     let keys = await Key.find({ category: category, _id: { $in: assigned_keys } }).sort('serial_no');
+
+
+
+
+    //data push for assigned keys
+    let data = await ExcelDB.find({ category: category }).populate('key').sort('created_at')
+
+    if (!req.user.is_admin) {
+        let maptoemployeekeys = await Key.find({ map_to_username: true, category: category }).sort('serial_no');
+        let maptostateskeys = await Key.find({ map_to_state: true, category: category }).sort('serial_no');
+        // filter for states
+        if (maptostateskeys && maptostateskeys.length > 0)
+            data = data.filter((dt) => {
+                let matched = false;
+                maptostateskeys.forEach((key) => {
+                    //@ts-ignore
+                    if (assigned_states.includes(String(dt[key.key]).trim().toLowerCase())) {
+                        matched = true
+                    }
+                })
+                if (matched) {
+                    return dt;
+                }
+            })
+
+        //filter for employees
+        if (maptoemployeekeys && maptoemployeekeys.length > 0)
+            data = data.filter((dt) => {
+                let matched = false;
+                maptoemployeekeys.forEach((key) => {
+                    //@ts-ignore
+                    if (assigned_employees.includes(String(dt[key.key]).trim().toLowerCase())) {
+                        matched = true
+                    }
+                })
+                if (matched) {
+                    return dt;
+                }
+            })
+    }
+
+
     for (let k = 0; k < keys.length; k++) {
         let c = keys[k]
         result.columns.push({ key: c.key, header: c.key, type: c.type })
     }
-
-    let data = await ExcelDB.find({ category: category }).sort('created_at')
-
-
     for (let k = 0; k < data.length; k++) {
         let obj: IRowData = {}
         let dt = data[k]
+
         if (dt) {
             for (let i = 0; i < keys.length; i++) {
                 if (assigned_keys.includes(keys[i]._id)) {

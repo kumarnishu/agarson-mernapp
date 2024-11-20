@@ -1,7 +1,7 @@
 import { LinearProgress, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
-import {  useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
@@ -143,7 +143,8 @@ export default function ExcelDBPage() {
         </Typography>
       </Stack >
 
-      {!isLoading ? <MaterialReactTable table={table} /> : <LinearProgress />}
+      <MaterialReactTable table={table} />
+      {isLoading && <LinearProgress />}
     </>
 
   )

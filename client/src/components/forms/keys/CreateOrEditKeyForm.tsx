@@ -206,7 +206,7 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
                 <FormGroup>
                     <FormControlLabel control={<Checkbox
                         {...formik.getFieldProps('map_to_state')}
-                    />} label="Make To State" />
+                    />} label="Map To State" />
                 </FormGroup>
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}

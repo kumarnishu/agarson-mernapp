@@ -42,7 +42,12 @@ export const GetAllKey = async (req: Request, res: Response, next: NextFunction)
 
 
 export const CreateKey = async (req: Request, res: Response, next: NextFunction) => {
-    let { key, category, type, serial_no } = req.body as { key: string, category: string, type: string, serial_no: number }
+    let { key, category, type, serial_no, is_date_key,
+        map_to_state,
+        map_to_username, } = req.body as {
+        key: string, category: string, type: string, serial_no: number, is_date_key: false,
+        map_to_username: false,
+        map_to_state: false }
     if (!category || !key || !type) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
@@ -54,6 +59,9 @@ export const CreateKey = async (req: Request, res: Response, next: NextFunction)
         key,
         type,
         serial_no,
+        is_date_key,
+        map_to_state,
+        map_to_username,
         category: category,
         updated_at: new Date(),
         created_by: req.user,
@@ -64,11 +72,15 @@ export const CreateKey = async (req: Request, res: Response, next: NextFunction)
 }
 
 export const UpdateKey = async (req: Request, res: Response, next: NextFunction) => {
-    let { key, category, type, serial_no } = req.body as {
+    let { key, category, type, serial_no, is_date_key,
+        map_to_state,
+        map_to_username, } = req.body as {
         key: string,
         category: string,
         type: string,
-        serial_no: number,
+        serial_no: number, is_date_key: false,
+        map_to_username: false,
+        map_to_state: false
     }
     if (!category || !key || !type) {
         return res.status(400).json({ message: "please fill all reqired fields" })
@@ -88,6 +100,9 @@ export const UpdateKey = async (req: Request, res: Response, next: NextFunction)
         key,
         serial_no,
         type,
+        is_date_key,
+        map_to_state,
+        map_to_username,
         category: category,
         updated_at: new Date(),
         updated_by: req.user
