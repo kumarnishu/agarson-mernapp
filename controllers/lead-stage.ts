@@ -1,6 +1,6 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
-import { CreateOrEditDropDownDto, DropDownDto } from "../dtos";
+import {  DropDownDto } from "../dtos";
 import { Stage } from "../models/crm-stage";
 import Lead from "../models/lead";
 import { ReferredParty } from "../models/refer";
@@ -14,7 +14,7 @@ export const GetAllCRMLeadStages = async (req: Request, res: Response, next: Nex
 
 
 export const CreateCRMLeadStages = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
+    const { key } = req.body as {key:string}
     if (!key) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
@@ -31,7 +31,7 @@ export const CreateCRMLeadStages = async (req: Request, res: Response, next: Nex
 }
 
 export const UpdateCRMLeadStages = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
+    const { key } = req.body as { key: string }
 
     if (!key) {
         return res.status(400).json({ message: "please fill all reqired fields" })

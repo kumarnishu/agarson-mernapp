@@ -55,6 +55,8 @@ export const Login = async (req: Request, res: Response, next: NextFunction) => 
     let result: GetUserDto | null = {
         _id: user._id,
         username: user.username,
+        alias1: user.alias1,
+        alias2: user.alias2,
         email: user.email, 
         mobile: user.mobile,
         dp: user.dp?.public_url || "",

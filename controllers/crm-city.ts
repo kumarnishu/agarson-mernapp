@@ -36,6 +36,8 @@ export const GetAllCRMCities = async (req: Request, res: Response, next: NextFun
             {
                 _id: cities[i]._id,
                 city: cities[i].city,
+                alias1: cities[i].alias1,
+                alias2: cities[i].alias2,
                 state: cities[0].state,
                 assigned_users: String(users.map((u) => { return u.username }))
             });
@@ -45,7 +47,7 @@ export const GetAllCRMCities = async (req: Request, res: Response, next: NextFun
 
 
 export const CreateCRMCity = async (req: Request, res: Response, next: NextFunction) => {
-    const { state, city } = req.body as CreateOrEditCrmCity
+    const { state, city,alias1,alias2 } = req.body as CreateOrEditCrmCity
     if (!state || !city) {
         return res.status(400).json({ message: "please provide required fields" })
     }
@@ -57,6 +59,8 @@ export const CreateCRMCity = async (req: Request, res: Response, next: NextFunct
         return res.status(400).json({ message: "already exists this city" })
     let result = await new CRMCity({
         state: state,
+        alias1,
+        alias2,
         city: city,
         updated_at: new Date(),
         created_by: req.user,
@@ -69,7 +73,7 @@ export const CreateCRMCity = async (req: Request, res: Response, next: NextFunct
 }
 
 export const UpdateCRMCity = async (req: Request, res: Response, next: NextFunction) => {
-    const { state, city } = req.body as CreateOrEditCrmCity
+    const { state, city, alias1, alias2 } = req.body as CreateOrEditCrmCity
     if (!state || !city) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
@@ -85,6 +89,8 @@ export const UpdateCRMCity = async (req: Request, res: Response, next: NextFunct
             return res.status(400).json({ message: "already exists this city" })
     let prevcity = oldcity.city
     oldcity.city = city
+    oldcity.alias1 = alias1
+    oldcity.alias2 = alias2
     oldcity.state = state
     oldcity.updated_at = new Date()
     if (req.user)

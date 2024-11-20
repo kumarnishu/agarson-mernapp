@@ -3,10 +3,7 @@ export type DropDownDto = {
     value: string,
     label: string
 }
-export type CreateOrEditDropDownDto = {
-    id: string,
-    key: string
-}
+
 
 export type IPermission = {
     value: string,
@@ -134,6 +131,8 @@ export type MergeTwoLeadsDto = {
 export type GetCrmCityDto = {
     _id: string,
     city: string;
+    alias1: string;
+    alias2: string;
     state: string;
     assigned_users: string;
 }
@@ -162,6 +161,8 @@ export type GetKeyFromExcelDto = {
 export type GetCrmStateDto = {
     _id: string,
     state: string,
+    alias1: string,
+    alias2: string,
     assigned_users: string;
 }
 
@@ -180,8 +181,10 @@ export type GetCityFromExcelDto = {
 }
 
 export type CreateOrEditCrmCity = {
-    id: string,
+    _id: string,
     state: string,
+    alias1: string;
+    alias2: string;
     city: string
 }
 
@@ -691,6 +694,8 @@ export type GetShoeWeightDiffReportDto = {
 }
 export type createOrEditUserDto = {
     username: string,
+    alias1: string,
+    alias2: string,
     email: string,
     password?: string,
     mobile: string,
@@ -698,6 +703,8 @@ export type createOrEditUserDto = {
 export type GetUserDto = {
     _id: string,
     username: string,
+    alias1: string,
+    alias2: string,
     email: string,
     mobile: string,
     dp: string,

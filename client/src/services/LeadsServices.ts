@@ -35,8 +35,8 @@ export const FuzzySearchLeads = async ({ searchString, limit, page, stage }: { s
 
 
 
-export const ConvertLeadToRefer = async ({ id ,body}: { id: string, body: { remark: string } }) => {
-  return await apiClient.patch(`leads/torefer/${id}`,body)
+export const ConvertLeadToRefer = async ({ id, body }: { id: string, body: { remark: string } }) => {
+  return await apiClient.patch(`leads/torefer/${id}`, body)
 }
 
 export const GetRemarks = async ({ stage, limit, page, start_date, end_date, id }: { stage: string, limit: number | undefined, page: number | undefined, start_date?: string, end_date?: string, id?: string }) => {
@@ -176,7 +176,11 @@ export const GetAllStates = async () => {
 
 
 export const CreateOrEditState = async ({ body, id }: {
-  body: { key: string }
+  body: {
+    state: string,
+    alias1: string,
+    alias2: string,
+  }
   id?: string
 }) => {
   if (id) {

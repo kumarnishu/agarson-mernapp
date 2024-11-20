@@ -15,6 +15,8 @@ import { GetUserDto } from '../../../dtos';
 
 type TformData = {
     username: string,
+    alias1: string,
+    alias2: string,
     email: string,
     password: string,
     mobile: string,
@@ -35,12 +37,18 @@ function NewUserForm() {
     const formik = useFormik<TformData>({
         initialValues: {
             username: '',
+            alias1: '',
+            alias2: '',
             email: '',
             mobile: '',
             password: '',
             dp: ''
         },
         validationSchema: Yup.object({
+            alias1: Yup
+                .string(),
+            alias2: Yup
+                .string(),
             username: Yup.string()
                 .required('Required field')
                 .min(4, 'Must be 4 characters or more')
@@ -82,6 +90,8 @@ function NewUserForm() {
         onSubmit: (values: TformData) => {
             let formdata = new FormData()
             formdata.append("username", values.username)
+            formdata.append("alias1", values.alias1)
+            formdata.append("alias2", values.alias2)
             formdata.append("email", values.email)
             formdata.append("password", values.password)
             formdata.append("mobile", values.mobile)
@@ -127,6 +137,33 @@ function NewUserForm() {
                         formik.touched.username && formik.errors.username ? formik.errors.username : ""
                     }
                     {...formik.getFieldProps('username')}
+                /> <TextField
+
+
+                    fullWidth
+                    error={
+                        formik.touched.alias1 && formik.errors.alias1 ? true : false
+                    }
+                    id="alias1"
+                    label="Alias1"
+                    helperText={
+                        formik.touched.alias1 && formik.errors.alias1 ? formik.errors.alias1 : ""
+                    }
+                    {...formik.getFieldProps('alias1')}
+                />
+                <TextField
+
+
+                    fullWidth
+                    error={
+                        formik.touched.alias2 && formik.errors.alias2 ? true : false
+                    }
+                    id="alias2"
+                    label="Alias2"
+                    helperText={
+                        formik.touched.alias2 && formik.errors.alias2 ? formik.errors.alias2 : ""
+                    }
+                    {...formik.getFieldProps('alias2')}
                 />
                 <TextField
                     

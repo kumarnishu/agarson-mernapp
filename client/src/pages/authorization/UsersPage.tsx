@@ -1,4 +1,4 @@
-import { Avatar, Fade, IconButton,  Menu, MenuItem, Tooltip, Typography } from '@mui/material'
+import { Avatar, Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useState } from 'react'
@@ -6,7 +6,7 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
-import { Assignment, Block, DeviceHubOutlined, Edit, GroupAdd, GroupRemove, Key, KeyOffOutlined, RemoveCircle,  Restore } from '@mui/icons-material'
+import { Assignment, Block, DeviceHubOutlined, Edit, GroupAdd, GroupRemove, Key, KeyOffOutlined, RemoveCircle, Restore } from '@mui/icons-material'
 import { GetUserDto } from '../../dtos'
 import { UserContext } from '../../contexts/userContext'
 import { Menu as MenuIcon } from '@mui/icons-material';
@@ -46,7 +46,7 @@ export default function UsersPage() {
                 accessorKey: 'actions',
                 header: '',
                 maxSize: 50,
-                grow:false,
+                grow: false,
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row">
@@ -168,7 +168,7 @@ export default function UsersPage() {
                                     }
                                 </>
                             }
-                           
+
 
 
                             {/*  block login */}
@@ -241,7 +241,7 @@ export default function UsersPage() {
                 accessorKey: 'dp',
                 header: 'DP',
                 maxSize: 50,
-                grow:false,
+                grow: false,
                 Cell: (cell) => <Avatar
                     title="double click to download"
                     sx={{ width: 16, height: 16 }}
@@ -257,7 +257,9 @@ export default function UsersPage() {
                 accessorKey: 'username',
                 header: 'Name',
                 minSize: 120,
-                grow:false,
+                grow: false,
+                Cell: (cell) => <>{[cell.row.original.username, String(cell.row.original.alias1 || ""), String(cell.row.original.alias2 || "")].filter(value => value)
+                    .join(", ") }</>,
                 filterVariant: 'multi-select',
                 filterSelectOptions: data && users.map((i) => { return i.username.toString() }).filter(onlyUnique)
             },
@@ -265,7 +267,7 @@ export default function UsersPage() {
                 accessorKey: 'is_admin',
                 header: 'Role',
                 minSize: 120,
-                grow:false,
+                grow: false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.is_admin ? "admin" : "user"}</>,
                 filterSelectOptions: data && users.map((i) => {
@@ -277,21 +279,21 @@ export default function UsersPage() {
                 accessorKey: 'email',
                 header: 'Email',
                 minSize: 220,
-                grow:false,
+                grow: false,
                 Cell: (cell) => <>{cell.row.original.email || ""}</>
             },
             {
                 accessorKey: 'mobile',
                 header: 'Mobile',
                 minSize: 120,
-                grow:false,
+                grow: false,
                 Cell: (cell) => <>{cell.row.original.mobile || ""}</>
             },
             {
                 accessorKey: 'is_active',
                 header: 'Status',
                 minSize: 120,
-                grow:false,
+                grow: false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.is_active ? "active" : "blocked"}</>,
                 filterSelectOptions: data && users.map((i) => {
@@ -303,7 +305,7 @@ export default function UsersPage() {
                 accessorKey: 'password',
                 header: 'Password',
                 minSize: 120,
-                grow:false,
+                grow: false,
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.orginal_password}</>,
                 filterSelectOptions: data && users.map((i) => {
@@ -314,32 +316,32 @@ export default function UsersPage() {
                 accessorKey: 'assigned_permissions',
                 header: 'Permissions',
                 minSize: 120,
-                grow:false,
+                grow: false,
                 Cell: (cell) => <>{cell.row.original.assigned_permissions.length || 0}</>
             },
-            
+
             {
                 accessorKey: 'is_multi_login',
                 header: 'Multi Device',
                 minSize: 120,
-                grow:false,
+                grow: false,
                 Cell: (cell) => <>{cell.row.original.is_multi_login ? "Allowed" : "Blocked"}</>
             },
             {
                 accessorKey: 'assigned_users',
                 header: 'Assigned Users',
                 minSize: 120,
-                grow:false,
+                grow: false,
                 Cell: (cell) => <>{cell.row.original.assigned_users.length || 0}</>
             },
             {
                 accessorKey: 'last_login',
                 header: 'Last Active',
                 minSize: 120,
-                grow:false,
+                grow: false,
                 Cell: (cell) => <>{cell.row.original.last_login || ""}</>
             },
-           
+
 
         ],
         [users],
@@ -348,7 +350,7 @@ export default function UsersPage() {
 
 
     const table = useMaterialReactTable({
-        columns, columnFilterDisplayMode: 'popover', 
+        columns, columnFilterDisplayMode: 'popover',
         data: users, //10,000 rows       
         enableColumnResizing: true,
         enableColumnVirtualization: true, enableStickyFooter: true,

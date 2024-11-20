@@ -20,6 +20,8 @@ function CreateOrEditCityForm({ city }: { city?: CreateOrEditCrmCity }) {
         <AxiosResponse<string>, BackendError, {
             body: {
                 city: string,
+                alias1: string,
+                alias2: string,
                 state:string
             },
             id?: string
@@ -35,24 +37,34 @@ function CreateOrEditCityForm({ city }: { city?: CreateOrEditCrmCity }) {
 
     const formik = useFormik<{
         city: string,
+        alias1: string,
+        alias2: string,
         state: string
     }>({
         initialValues: {
             city: city ? city.city : "",
+            alias1: city ? city.alias1 : "",
+            alias2: city ? city.alias2 : "",
             state: city ? city.state : ""
         },
         validationSchema: yup.object({
             city: yup.string().required(),
+            alias1: yup.string(),
+            alias2: yup.string(),
             state: yup.string().required()
         }),
         onSubmit: (values: {
             city: string,
+            alias1: string,
+            alias2: string,
             state: string,
         }) => {
             mutate({
-                id: city?.id,
+                id: city?._id,
                 body: {
                     city: values.city,
+                    alias1: values.alias1,
+                    alias2: values.alias2,
                     state: values.state
                 }
             })
@@ -77,22 +89,6 @@ function CreateOrEditCityForm({ city }: { city?: CreateOrEditCrmCity }) {
                 gap={2}
                 pt={2}
             >
-                {/* remarks */}
-                <TextField
-                    required
-                    error={
-                        formik.touched.city && formik.errors.city ? true : false
-                    }
-                    autoFocus
-                    id="city"
-                    label="City"
-                    fullWidth
-                    helperText={
-                        formik.touched.city && formik.errors.city ? formik.errors.city : ""
-                    }
-                    {...formik.getFieldProps('city')}
-                />
-
                 < TextField
 
                     select
@@ -125,6 +121,50 @@ function CreateOrEditCityForm({ city }: { city?: CreateOrEditCrmCity }) {
                         })
                     }
                 </TextField>
+                {/* remarks */}
+                <TextField
+                    required
+                    error={
+                        formik.touched.city && formik.errors.city ? true : false
+                    }
+                    autoFocus
+                    id="city"
+                    label="City"
+                    fullWidth
+                    helperText={
+                        formik.touched.city && formik.errors.city ? formik.errors.city : ""
+                    }
+                    {...formik.getFieldProps('city')}
+                />
+                <TextField
+                    
+                    error={
+                        formik.touched.alias1 && formik.errors.alias1 ? true : false
+                    }
+                    autoFocus
+                    id="alias1"
+                    label="Alias1"
+                    fullWidth
+                    helperText={
+                        formik.touched.alias1 && formik.errors.alias1 ? formik.errors.alias1 : ""
+                    }
+                    {...formik.getFieldProps('alias1')}
+                />
+                <TextField
+                    
+                    error={
+                        formik.touched.alias2 && formik.errors.alias2 ? true : false
+                    }
+                    autoFocus
+                    id="alias2"
+                    label="Alias2"
+                    fullWidth
+                    helperText={
+                        formik.touched.alias2 && formik.errors.alias2 ? formik.errors.alias2 : ""
+                    }
+                    {...formik.getFieldProps('alias2')}
+                />
+            
 
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}

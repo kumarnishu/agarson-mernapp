@@ -40,7 +40,7 @@ export default function CrmStatesPage() {
         header: '',
         maxSize: 50,
         Footer: <b></b>,
-        grow:false,
+        grow: false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -83,9 +83,12 @@ export default function CrmStatesPage() {
         accessorKey: 'state',
         header: 'State',
         minSize: 350,
-        grow:false,
+        grow: false,
         filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
+        Cell: (cell) => <> {
+          [cell.row.original.state, String(cell.row.original.alias1 || ""), String(cell.row.original.alias2 || "")].filter(value => value)
+            .join(", ")
+        }</>,
         filterSelectOptions: states && states.map((i) => {
           return i.state;
         }).filter(onlyUnique)
@@ -94,7 +97,7 @@ export default function CrmStatesPage() {
         accessorKey: 'assigned_users',
         header: 'Assigned Users',
         minSize: 650,
-        grow:false,
+        grow: false,
         filterVariant: 'text',
         Cell: (cell) => <>{cell.row.original.assigned_users && cell.row.original.assigned_users.length > 0 ? cell.row.original.assigned_users : ""}</>,
       }
@@ -252,7 +255,7 @@ export default function CrmStatesPage() {
           </Menu >
           <CreateOrEditStateDialog />
           {LoggedInUser?.is_admin && <FindUknownCrmStatesDialog />}
-          {<AssignCrmStatesDialog flag={flag} states={table.getSelectedRowModel().rows.map((item) => { return  item.original})} />}
+          {<AssignCrmStatesDialog flag={flag} states={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
           <>
             {
               state ?

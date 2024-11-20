@@ -1,7 +1,7 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
 import { ChecklistCategory } from "../models/checklist-category";
-import { CreateOrEditDropDownDto, DropDownDto } from "../dtos";
+import {  DropDownDto } from "../dtos";
 import isMongoId from "validator/lib/isMongoId";
 
 export const GetAllChecklistCategory = async (req: Request, res: Response, next: NextFunction) => {
@@ -12,7 +12,7 @@ export const GetAllChecklistCategory = async (req: Request, res: Response, next:
 }
 
 export const CreateChecklistCategory = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
+    const { key } = req.body as { key: string }
     if (!key) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }

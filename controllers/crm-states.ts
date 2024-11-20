@@ -1,9 +1,8 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
-import { CreateOrEditDropDownDto, GetCrmStateDto } from "../dtos";
+import { GetCrmStateDto } from "../dtos";
 import { CRMState, ICRMState } from "../models/crm-state";
 import { User } from "../models/user";
-import { CRMCity } from "../models/crm-city";
 import Lead from "../models/lead";
 import { ReferredParty } from "../models/refer";
 import isMongoId from "validator/lib/isMongoId";
@@ -14,21 +13,26 @@ export const GetAllCRMStates = async (req: Request, res: Response, next: NextFun
 
     for (let i = 0; i < states.length; i++) {
         let users = await (await User.find({ assigned_crm_states: states[i]._id })).map((i) => { return { _id: i._id.valueOf(), username: i.username } })
-        result.push({ _id: states[i]._id, state: states[i].state, assigned_users: String(users.map((u) => { return u.username })) });
+        result.push({
+            _id: states[i]._id, alias1: states[i].alias1,
+            alias2: states[i].alias2, state: states[i].state, assigned_users: String(users.map((u) => { return u.username }))
+        });
     }
     return res.status(200).json(result)
 }
 
 
 export const CreateCRMState = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
-    if (!key) {
+    const { state,alias1,alias2 } = req.body as { state: string, alias1: string, alias2: string }
+    if (!state) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
-    if (await CRMState.findOne({ state: key.toLowerCase() }))
+    if (await CRMState.findOne({ state: state.toLowerCase() }))
         return res.status(400).json({ message: "already exists this state" })
     let result = await new CRMState({
-        state: key,
+        state: state,
+        alias1: alias1,
+        alias2: alias2,
         updated_at: new Date(),
         created_by: req.user,
         updated_by: req.user
@@ -89,25 +93,27 @@ export const AssignCRMStatesToUsers = async (req: Request, res: Response, next: 
 }
 
 export const UpdateCRMState = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
-    if (!key) {
+    const { state ,alias1,alias2} = req.body as { state: string, alias1: string, alias2: string }
+    if (!state) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
     const id = req.params.id
     let oldstate = await CRMState.findById(id)
     if (!oldstate)
         return res.status(404).json({ message: "state not found" })
-    if (key !== oldstate.state)
-        if (await CRMState.findOne({ state: key.toLowerCase() }))
+    if (state !== oldstate.state)
+        if (await CRMState.findOne({ state: state.toLowerCase() }))
             return res.status(400).json({ message: "already exists this state" })
     let prevstate = oldstate.state
-    oldstate.state = key
+    oldstate.state = state
+    oldstate.alias1 = alias1
+    oldstate.alias2 = alias2
     oldstate.updated_at = new Date()
     if (req.user)
         oldstate.updated_by = req.user
 
-    await Lead.updateMany({ state: prevstate }, { state: key })
-    await ReferredParty.updateMany({ state: prevstate }, { state: key })
+    await Lead.updateMany({ state: prevstate }, { state: state })
+    await ReferredParty.updateMany({ state: prevstate }, { state: state })
 
     await oldstate.save()
     return res.status(200).json(oldstate)

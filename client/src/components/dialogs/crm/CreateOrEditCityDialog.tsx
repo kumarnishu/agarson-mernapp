@@ -20,11 +20,7 @@ function CreateOrEditCityDialog({ city }: { city?: CreateOrEditCrmCity }) {
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!city ? "New City" : "Edit City "}</DialogTitle>
             <DialogContent>
-                <CreateOrEditCityForm city={city ? {
-                    id: city.id,
-                    state: city.state,
-                    city: city.city
-                } : undefined} />
+                <CreateOrEditCityForm city={city} />
             </DialogContent>
         </Dialog>
     )

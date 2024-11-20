@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import { MachineCategory } from "../models/machine-category";
-import { CreateOrEditDropDownDto } from '../dtos';
 import { Machine } from '../models/machine';
 import isMongoId from 'validator/lib/isMongoId';
 
@@ -11,7 +10,7 @@ export const GetMachineCategories = async (req: Request, res: Response, next: Ne
     return res.status(200).json(result)
 }
 export const CreateMachineCategory = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
+    const { key } = req.body as {key:string}
     if (!key) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
@@ -28,7 +27,7 @@ export const CreateMachineCategory = async (req: Request, res: Response, next: N
 }
 
 export const UpdateMachineCategory = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
+    const { key } = req.body as {key:string}
     if (!key) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }

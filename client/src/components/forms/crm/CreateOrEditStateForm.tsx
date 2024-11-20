@@ -15,7 +15,9 @@ function CreateOrEditStateForm({ state }: { state?: GetCrmStateDto}) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
-                key: string
+                state: string,
+                alias1: string,
+                alias2: string,
             },
             id?: string
         }>
@@ -28,21 +30,32 @@ function CreateOrEditStateForm({ state }: { state?: GetCrmStateDto}) {
     const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<{
-        state: string
+        state: string,
+        alias1: string,
+        alias2: string,
     }>({
         initialValues: {
-            state: state ? state.state : ""
+            state: state ? state.state : "",
+            alias1: state ? state.alias1 : "",
+            alias2: state ? state.alias2 : "",
+         
         },
         validationSchema:yup.object({
-            state:yup.string().required()
+            state: yup.string().required(),
+            alias1: yup.string(),
+            alias2: yup.string(),
         }),
         onSubmit: (values: {
             state: string,
+            alias1: string,
+            alias2: string,
         }) => {
             mutate({
                 id:state?._id,
                 body: {
-                    key: values.state
+                    state: values.state,
+                    alias1: values.alias1,
+                    alias2: values.alias2
                 }
             })
         }
@@ -75,7 +88,32 @@ function CreateOrEditStateForm({ state }: { state?: GetCrmStateDto}) {
                     }
                     {...formik.getFieldProps('state')}
                 />
-              
+                <TextField
+                    error={
+                        formik.touched.alias1 && formik.errors.alias1 ? true : false
+                    }
+                    autoFocus
+                    id="alias1"
+                    label="Alias1"
+                    fullWidth
+                    helperText={
+                        formik.touched.alias1 && formik.errors.alias1 ? formik.errors.alias1 : ""
+                    }
+                    {...formik.getFieldProps('alias1')}
+                />
+                <TextField
+                    error={
+                        formik.touched.alias2 && formik.errors.alias2 ? true : false
+                    }
+                    autoFocus
+                    id="alias2"
+                    label="Alias2"
+                    fullWidth
+                    helperText={
+                        formik.touched.alias2 && formik.errors.alias2 ? formik.errors.alias2 : ""
+                    }
+                    {...formik.getFieldProps('alias2')}
+                />
                
 
                 <Button variant="contained" color="primary" type="submit"

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { CreateOrEditDropDownDto, DropDownDto } from "../dtos";
+import {  DropDownDto } from "../dtos";
 import isMongoId from "validator/lib/isMongoId";
 import { PaymentCategory } from "../models/payment-category";
 
@@ -11,7 +11,7 @@ export const GetAllPaymentCategory = async (req: Request, res: Response, next: N
 }
 
 export const CreatePaymentCategory = async (req: Request, res: Response, next: NextFunction) => {
-    const { key } = req.body as CreateOrEditDropDownDto
+    const { key } = req.body as {key:string}
     if (!key) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }

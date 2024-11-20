@@ -1,8 +1,7 @@
 import { Stack } from '@mui/system'
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
-import { MaterialReactTable, MRT_ColumnDef,  MRT_SortingState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
+import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import CreateOrEditCityDialog from '../../components/dialogs/crm/CreateOrEditCityDialog'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
 import { UserContext } from '../../contexts/userContext'
@@ -68,7 +67,7 @@ export default function CrmCitiesPage() {
         header: '',
         maxSize: 50,
         Footer: <b></b>,
-        grow:false,
+        grow: false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -111,19 +110,25 @@ export default function CrmCitiesPage() {
         accessorKey: 'city',
         header: 'City',
         minSize: 350,
-        grow:false,
-        filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
-        filterSelectOptions: cities && cities.map((i) => {
-          return i.city;
-        }).filter(onlyUnique)
+        grow: false,
+        Cell: (cell) => <> {
+          [cell.row.original.city, String(cell.row.original.alias1 || ""), String(cell.row.original.alias2 || "")].filter(value => value)
+            .join(", ")
+        }</>,
       },
       {
+        accessorKey: 'state',
+        header: 'State',
+        minSize: 350,
+        grow: false
+      },
+
+      {
         // accessorKey: 'assigned_users.value',
-        accessorFn:(Cell)=>{return Cell.assigned_users},
+        accessorFn: (Cell) => { return Cell.assigned_users },
         header: 'Assigned Users',
         minSize: 650,
-        grow:false,
+        grow: false,
         filterVariant: 'text',
         Cell: (cell) => <>{cell.row.original.assigned_users && cell.row.original.assigned_users.length > 0 ? cell.row.original.assigned_users : ""}</>,
       }
@@ -134,7 +139,7 @@ export default function CrmCitiesPage() {
 
 
   const table = useMaterialReactTable({
-    columns, columnFilterDisplayMode: 'popover', 
+    columns, columnFilterDisplayMode: 'popover',
     data: cities, //10,000 rows       
     enableColumnResizing: true,
     enableColumnVirtualization: true, enableStickyFooter: true,
@@ -310,7 +315,7 @@ export default function CrmCitiesPage() {
                 <>
 
                   <DeleteCrmItemDialog city={city} />
-                  <CreateOrEditCityDialog city={{ id: city._id, state: city.state, city: city.city }} />
+                  <CreateOrEditCityDialog city={city} />
                   <DeleteCrmItemDialog city={city} />
                 </>
                 : null

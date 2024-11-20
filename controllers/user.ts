@@ -14,7 +14,7 @@ export const SignUp = async (req: Request, res: Response, next: NextFunction) =>
     if (users.length > 0)
         return res.status(400).json({ message: "not allowed" })
 
-    let { username, email, password, mobile } = req.body as createOrEditUserDto
+    let { username, email, password, mobile,alias1,alias2 } = req.body as createOrEditUserDto
     // validations
     if (!username || !email || !password || !mobile)
         return res.status(400).json({ message: "fill all the required fields" });
@@ -47,6 +47,7 @@ export const SignUp = async (req: Request, res: Response, next: NextFunction) =>
     let owner = new User({
         username,
         password,
+        alias1,alias2,
         email,
         mobile,
         is_admin: true,
@@ -67,6 +68,8 @@ export const SignUp = async (req: Request, res: Response, next: NextFunction) =>
     result = {
         _id: owner._id,
         username: owner.username,
+        alias1: owner.alias1,
+        alias2: owner.alias2,
         email: owner.email,
         mobile: owner.mobile,
         dp: owner.dp?.public_url || "",
@@ -93,7 +96,7 @@ export const SignUp = async (req: Request, res: Response, next: NextFunction) =>
     res.status(201).json({ user: result, token: token })
 }
 export const NewUser = async (req: Request, res: Response, next: NextFunction) => {
-    let { username, email, password, mobile } = req.body as createOrEditUserDto;
+    let { username, email, password, mobile,alias1,alias2 } = req.body as createOrEditUserDto;
     // validations
     if (!username || !email || !password || !mobile)
         return res.status(400).json({ message: "fill all the required fields" });
@@ -126,7 +129,7 @@ export const NewUser = async (req: Request, res: Response, next: NextFunction) =
     let user = new User({
         username,
         password,
-        email,
+        email,alias1,alias2,
         mobile,
         is_admin: false,
         dp,
@@ -152,7 +155,7 @@ export const UpdateUser = async (req: Request, res: Response, next: NextFunction
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
-    let { email, username, mobile } = req.body as createOrEditUserDto;
+    let { email, username, mobile,alias1,alias2 } = req.body as createOrEditUserDto;
     if (!username || !email || !mobile)
         return res.status(400).json({ message: "fill all the required fields" });
     //check username
@@ -198,7 +201,7 @@ export const UpdateUser = async (req: Request, res: Response, next: NextFunction
     if (mobile !== user.mobile)
         mobileverified = false
     await User.findByIdAndUpdate(user.id, {
-        username,
+        username,alias1,alias2,
         email,
         mobile,
         email_verified: emaileverified,
@@ -310,6 +313,8 @@ export const GetUsers = async (req: Request, res: Response, next: NextFunction) 
         return {
             _id: u._id,
             username: u.username,
+            alias1: u.alias1,
+            alias2: u.alias2,
             email: u.email,
             mobile: u.mobile,
             dp: u.dp?.public_url || "",
@@ -347,6 +352,8 @@ export const GetUsersForAssignmentPage = async (req: Request, res: Response, nex
         return {
             _id: u._id,
             username: u.username,
+            alias1: u.alias1,
+            alias2: u.alias2,
             email: u.email,
             mobile: u.mobile,
             dp: u.dp?.public_url || "",
@@ -383,6 +390,8 @@ export const GetProfile = async (req: Request, res: Response, next: NextFunction
         result = {
             _id: user._id,
             username: user.username,
+            alias1: user.alias1,
+            alias2: user.alias2,
             email: user.email,
             mobile: user.mobile,
             dp: user.dp?.public_url || "",

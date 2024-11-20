@@ -100,6 +100,8 @@ export default function UserAssignementPage() {
         header: 'Name',
         minSize: 120,
         grow: false,
+        Cell: (cell) => <>{[cell.row.original.username, String(cell.row.original.alias1 || ""), String(cell.row.original.alias2 || "")].filter(value => value) 
+          .join(", ")}</>,
         filterVariant: 'multi-select',
         filterSelectOptions: data && users.map((i) => { return i.username.toString() }).filter(onlyUnique)
       },
