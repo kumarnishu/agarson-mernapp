@@ -36,7 +36,7 @@ export const GetAllKeyCategories = async () => {
     return await apiClient.get(`key-category`)
 }
 export const GetKeyCategoryById = async (id: string) => {
-    return await apiClient.get(`key-category/one/${id}`)
+    return await apiClient.get(`key-category/${id}`)
 }
 
 

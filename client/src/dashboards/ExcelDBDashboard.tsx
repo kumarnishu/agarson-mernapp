@@ -14,13 +14,14 @@ import { ExcelDbButtons } from "../components/buttons/ExcelDbButtons";
 function ExcelDBDashboard() {
     const [features, setFeatures] = useState<{ feature: string, display_name: string, is_visible: boolean, url: string }[]>([])
     const { user } = useContext(UserContext)
-    const { data: categoryData } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategoriesForDropdown({ show_assigned_only: true }))
+    const { data: categoryData } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_category_dropdown"], async () => GetAllKeyCategoriesForDropdown({ show_assigned_only: true }))
 
 
     useEffect(() => {
         let tmpfeatures: { feature: string, is_visible: boolean, display_name: string, url: string }[] = []
-
-        if (categoryData && categoryData.data) {
+        
+        if (user && categoryData && categoryData.data) {
+            console.log(categoryData?.data)
             categoryData.data.map((dt) => {
                 tmpfeatures.push({ feature: dt.value, display_name: dt.label, is_visible: true, url: `ExcelDbReports/${dt.id}/${dt.value}` })
             })

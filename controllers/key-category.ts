@@ -11,7 +11,7 @@ export const GetAllKeyCategory = async (req: Request, res: Response, next: NextF
     let result: GetKeyCategoryDto[] = [];
     for (let i = 0; i < data.length; i++) {
         let users = await (await User.find({ assigned_keycategories: data[i]._id })).map((i) => { return { _id: i._id.valueOf(), username: i.username } })
-        result.push({ _id: data[i]._id, display_name: data[i].display_name,category: data[i].category, skip_bottom_rows: data[i].skip_bottom_rows, assigned_users: String(users.map((u) => { return u.username })) });
+        result.push({ _id: data[i]._id, display_name: data[i].display_name, category: data[i].category, skip_bottom_rows: data[i].skip_bottom_rows, assigned_users: String(users.map((u) => { return u.username })) });
     }
     return res.status(200).json(result)
 }
@@ -40,13 +40,14 @@ export const GetAllKeyCategoryForDropDown = async (req: Request, res: Response, 
 
     let result: DropDownDto[] = [];
     result = data.map((R) => { return { id: R._id, label: R.display_name, value: R.category } })
+    console.log(result)
     return res.status(200).json(result)
 }
 
 
 
 export const CreateKeyCategory = async (req: Request, res: Response, next: NextFunction) => {
-    let { key, skip_bottom_rows,display_name } = req.body as { key: string,display_name:string, skip_bottom_rows: number, }
+    let { key, skip_bottom_rows, display_name } = req.body as { key: string, display_name: string, skip_bottom_rows: number, }
     if (!key) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
