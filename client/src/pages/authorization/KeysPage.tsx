@@ -6,7 +6,7 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTa
 import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import { KeyChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
-import { Edit } from '@mui/icons-material'
+import { Delete, Edit } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, TextField, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
@@ -18,6 +18,7 @@ import CreateOrEditKeyDialog from '../../components/dialogs/keys/CreateOrEditKey
 import AssignKeysDialog from '../../components/dialogs/keys/AssignKeysDialog'
 import { toTitleCase } from '../../utils/TitleCase'
 import { KeyExcelButton } from '../../components/buttons/KeyExcelButton'
+import DeleteKeyDialog from '../../components/dialogs/keys/DeleteKeyDialog'
 
 
 export default function KeysPage() {
@@ -59,7 +60,18 @@ export default function KeysPage() {
                                         <Edit />
                                     </IconButton>
                                 </Tooltip>}
+                                {LoggedInUser?.assigned_permissions.includes('key_delete') && <Tooltip title="delete">
+                                    <IconButton
 
+                                        onClick={() => {
+                                            setkey(cell.row.original)
+                                            setChoice({ type: KeyChoiceActions.delete_key })
+                                        }}
+
+                                    >
+                                        <Delete />
+                                    </IconButton>
+                                </Tooltip>}
                             </>
 
                         </Stack>}
@@ -322,6 +334,7 @@ export default function KeysPage() {
 
                 {<AssignKeysDialog flag={flag} keys={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
             </Stack >
+            {key && <DeleteKeyDialog item={key} />}
 
             {/* table */}
             <MaterialReactTable table={table} />
