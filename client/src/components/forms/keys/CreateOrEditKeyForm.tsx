@@ -126,6 +126,8 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
                     error={
                         formik.touched.key && formik.errors.key ? true : false
                     }
+                    multiline
+                    minRows={4}
                     autoFocus
                     id="key"
                     label="Key"
@@ -159,7 +161,7 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
                     {
                         categories && categories.map(state => {
                             return (<option key={state.id} value={state.id}>
-                                {state.label && toTitleCase(state.label)}
+                                {state.label && state.value.toUpperCase()}
                             </option>)
                         })
                     }
