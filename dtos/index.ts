@@ -182,7 +182,7 @@ export type GetCityFromExcelDto = {
 }
 
 export type CreateOrEditCrmCity = {
-    id: string,
+    _id: string,
     state: string,
     alias1: string;
     alias2: string;
@@ -471,11 +471,9 @@ export type CreateOrEditChecklistRemarkDto = {
 export type CreateOrEditExcelDbRemarkDto = {
     remark: string,
     category: string,
-    key:string,
     obj: string,
-    next_date:string
+    next_date?: string
 }
-
 
 export type CreateOrEditPaymentDocumentDto = {
     remark: string,

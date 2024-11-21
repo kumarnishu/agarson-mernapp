@@ -18,6 +18,7 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
     if (!category) {
         return res.status(400).json({ message: 'please select category ' })
     }
+    result.columns.push({ key: 'action', header: 'Action', type: 'action' })
 
     let assigned_keys: any[] = req.user.assigned_keys;
     let assigned_states: string[] = []

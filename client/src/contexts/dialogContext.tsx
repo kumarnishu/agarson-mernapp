@@ -9,7 +9,7 @@ type UserChoices = "signup" | "reset_password_mail" | "close_user" | "new_user" 
 type CheckListChoices = "create_or_edit_checklist" | "create_or_edit_checklist_category" | "delete_checklist" | "close_checklist" | "bulk_delete_checklist" | "view_ checklist_box_remarks" | "create_or_edit_checklist_remark" | "view_checklist_remarks" | "delete_checklist_remark" | "assign_checklist_to_users" | "delete_checklist_category"
 
 
-type KeyChoices = "create_or_edit_key" | "create_or_edit_key_category" | "delete_key" | "close_key" | "bulk_delete_key" | "delete_key_category" | "assign_categories" | "assign_keys"
+type KeyChoices = "create_or_edit_key" | "create_or_edit_key_category" | "delete_key" | "close_key" | "bulk_delete_key" | "delete_key_category" | "assign_categories" | "assign_keys"|"create_or_edit_excel_db_remark"|"delete_excel_db_remark"|"view_excel_db_remarks"
 
 
 type PaymentChoices = "create_or_edit_payment" | "create_or_edit_payment_category" | "delete_payment" | "close_payment" | "bulk_delete_payment" | "delete_payment_category" | "create_or_edit_payment_remark" | "view_payment_remarks" | "delete_payment_remark" | "assign_payment_to_users"
@@ -63,7 +63,11 @@ export enum KeyChoiceActions {
   assign_categories = "assign_categories",
   assign_keys = "assign_keys",
   bulk_delete_key = "bulk_delete_key",
-  delete_key_category = "delete_key_category"
+  delete_key_category = "delete_key_category",
+  create_or_edit_excel_db_remark="create_or_edit_excel_db_remark",
+  delete_excel_db_remark="delete_excel_db_remark",
+  view_excel_db_remarks= "view_excel_db_remarks"
+
 }
 export enum CheckListChoiceActions {
   create_or_edit_checklist = "create_or_edit_checklist",
@@ -292,6 +296,9 @@ function reducer(state: ChoiceState | null, action: Action) {
     case KeyChoiceActions.delete_key_category: return type
     case KeyChoiceActions.assign_categories: return type
     case KeyChoiceActions.assign_keys: return type
+    case KeyChoiceActions.create_or_edit_excel_db_remark: return type
+    case KeyChoiceActions.view_excel_db_remarks: return type
+    case KeyChoiceActions.delete_excel_db_remark: return type
 
 
     case PaymentsChoiceActions.create_or_edit_payment: return type

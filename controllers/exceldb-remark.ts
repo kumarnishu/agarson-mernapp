@@ -4,7 +4,7 @@ import { CreateOrEditExcelDbRemarkDto, GetExcelDBRemarksDto } from '../dtos';
 import { ExcelDBRemark, IExcelDBRemark } from '../models/excel-db-remark';
 import { KeyCategory } from '../models/key-category';
 import moment from 'moment';
-
+ 
 
 export const UpdateExcelDBRemark = async (req: Request, res: Response, next: NextFunction) => {
     const { remark } = req.body as CreateOrEditExcelDbRemarkDto
@@ -34,19 +34,21 @@ export const DeleteExcelDBRemark = async (req: Request, res: Response, next: Nex
 
 
 export const GetExcelDBRemarkHistory = async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id; 
+    const id = req.params.id;
+    const obj = req.query.obj
     let remarks: IExcelDBRemark[] = []
     let result: GetExcelDBRemarksDto[] = []
 
     if (!isMongoId(id)) return res.status(400).json({ message: "id not valid" })
+    if (!obj) return res.status(404).json({ message: "obj not found" })
 
-    remarks = await ExcelDBRemark.find({ category: id }).populate('category').populate('created_by').sort('-created_at')
+    remarks = await ExcelDBRemark.find({ category: id, obj: String(obj).trim().toLowerCase() }).populate('category').populate('created_by').sort('-created_at')
 
     result = remarks.map((r) => {
         return {
             _id: r._id,
             remark: r.remark,
-            obj:r.obj,
+            obj: r.obj,
             category: { id: r.category._id, value: r.category.category, label: r.category.category },
             next_date: r.next_date ? moment(r.next_date).format('DD/MM/YYYY') : "",
             created_date: r.created_at.toString(),

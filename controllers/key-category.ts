@@ -16,6 +16,19 @@ export const GetAllKeyCategory = async (req: Request, res: Response, next: NextF
     return res.status(200).json(result)
 }
 
+
+export const GetKeyCategoryById = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id
+    if (!isMongoId(id)) {
+        return res.status(400).json({ message: "invalid id" })
+    }
+    let category = await KeyCategory.findById(id)
+    let result: DropDownDto | null = null;
+    if (category)
+        result = { id: category._id, label: category.category, value: category.category }
+    return res.status(200).json(result)
+}
+
 export const GetAllKeyCategoryForDropDown = async (req: Request, res: Response, next: NextFunction) => {
     let assigned_keycategories: any[] = req.user.assigned_keycategories;
     let show_assigned_only = req.query.show_assigned_only

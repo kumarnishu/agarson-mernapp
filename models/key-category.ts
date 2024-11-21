@@ -16,7 +16,6 @@ export type IKeyCategory = {
 const KeyCategorySchema = new mongoose.Schema<IKeyCategory, mongoose.Model<IKeyCategory, {}, {}>, {}>({
     category: {
         type: String,
-        trim: true,
         index: true,
         required: true
     },

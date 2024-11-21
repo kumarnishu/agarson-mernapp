@@ -26,7 +26,6 @@ const KeySchema = new mongoose.Schema<IKey, mongoose.Model<IKey, {}, {}>, {}>({
     },
     key: {
         type: String,
-        trim: true,
         index: true,
         required: true
     },

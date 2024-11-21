@@ -1,28 +1,86 @@
-import { LinearProgress, Typography } from '@mui/material'
+import { IconButton, LinearProgress, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
-import { IColumnRowData } from '../../dtos'
+import { DropDownDto,  IColumnRowData } from '../../dtos'
 import { GetExcelDbReport } from '../../services/ExcelDbService'
 import moment from 'moment'
 import { useParams } from 'react-router-dom'
+import PopUp from '../../components/popup/PopUp'
+import { UserContext } from '../../contexts/userContext'
+import { ChoiceContext, KeyChoiceActions } from '../../contexts/dialogContext'
+import { Comment, Visibility } from '@mui/icons-material'
+import { GetKeyCategoryById } from '../../services/KeyServices'
+import CreateOrEditExcelDBRemarkDialog from '../../components/dialogs/excel-db/CreateOrEditExcelDBRemarkDialog'
+import ViewExcelDBRemarksDialog from '../../components/dialogs/excel-db/ViewExcelDBRemarksDialog'
 
 
 export default function ExcelDBPage() {
   const [reports, setReports] = useState<IColumnRowData['rows']>([])
   const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
+  const [category, setCategory] = useState<DropDownDto>()
+  const [obj, setObj] = useState<string | undefined>()
+  const { user: LoggedInUser } = useContext(UserContext)
+  const { setChoice } = useContext(ChoiceContext)
   const { id, name } = useParams()
+
+  const { data: categorydata, refetch: RefetchCategory, isSuccess: isSuccessCategorydata } = useQuery<AxiosResponse<DropDownDto>, BackendError>(["key_categories"], async () => GetKeyCategoryById(id || ""), { enabled: false })
+
   const { data, isLoading, isSuccess, refetch } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb"], async () => GetExcelDbReport(id || ""), { enabled: false })
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
-  const columns = useMemo<MRT_ColumnDef<IColumnRowData['columns']>[]>(
+  let columns = useMemo<MRT_ColumnDef<IColumnRowData['columns']>[]>(
     () => reportcolumns && reportcolumns.map((item) => {
+      if (item.type == "action")
+        return {
+          accessorKey: item.key,
+          header: item.header,
+          Cell: (cell) => <PopUp
+            element={
+              <Stack direction="row" spacing={1} key={item.key}>
+                {LoggedInUser?.assigned_permissions.includes('grp_excel_view') && <Tooltip title="view remarks">
+                  <IconButton color="primary"
 
-      if (item.type == "string")
+                    onClick={() => {
+
+                      setChoice({ type: KeyChoiceActions.view_excel_db_remarks })
+                      //@ts-ignore
+                      if (cell.row.original['Account Name'])
+                        //@ts-ignore
+                        setObj(cell.row.original['Account Name'])
+                    }}
+                  >
+                    <Visibility />
+                  </IconButton>
+                </Tooltip>}
+
+                {LoggedInUser?.assigned_permissions.includes('grp_excel_edit') &&
+                  <Tooltip title="Add Remark">
+                    <IconButton
+
+                      color="success"
+                      onClick={() => {
+
+                        setChoice({ type: KeyChoiceActions.create_or_edit_excel_db_remark })
+                        //@ts-ignore
+                        if (cell.row.original['Account Name'])
+                          //@ts-ignore
+                          setObj(cell.row.original['Account Name'])
+                      }}
+                    >
+                      <Comment />
+                    </IconButton>
+                  </Tooltip>}
+
+              </Stack>}
+          />,
+          Footer: ""
+        }
+      else if (item.type == "string")
         return { accessorKey: item.key, header: item.header, Footer: "", grow: true }
       else if (item.type == "timestamp")
         return { accessorKey: item.key, header: item.header, Footer: "", grow: true }
@@ -56,10 +114,11 @@ export default function ExcelDBPage() {
     //end
   );
 
-
   useEffect(() => {
-    if (id != "")
+    if (id != "") {
       refetch()
+      RefetchCategory()
+    }
   }, [id])
 
   useEffect(() => {
@@ -68,6 +127,13 @@ export default function ExcelDBPage() {
       setReportColumns(data.data.columns)
     }
   }, [isSuccess, data]);
+
+  useEffect(() => {
+    if (isSuccessCategorydata && categorydata) {
+      setCategory(categorydata.data);
+    }
+  }, [isSuccessCategorydata, categorydata]);
+
 
   const table = useMaterialReactTable({
     //@ts-ignore
@@ -124,7 +190,8 @@ export default function ExcelDBPage() {
       console.error(error);
     }
   }, [sorting]);
-
+  
+  console.log(category)
   return (
     <>
       <Stack
@@ -142,7 +209,8 @@ export default function ExcelDBPage() {
           {name || "Excel DB"}
         </Typography>
       </Stack >
-
+      {id && obj && <CreateOrEditExcelDBRemarkDialog category={id} obj={obj} />}
+      {id && obj && <ViewExcelDBRemarksDialog id={id} obj={obj} />}
       <MaterialReactTable table={table} />
       {isLoading && <LinearProgress />}
     </>

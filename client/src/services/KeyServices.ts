@@ -35,6 +35,10 @@ export const GetAllKeyCategoriesForDropdown = async ({ show_assigned_only }: { s
 export const GetAllKeyCategories = async () => {
     return await apiClient.get(`key-category`)
 }
+export const GetKeyCategoryById = async (id: string) => {
+    return await apiClient.get(`key-category/one/${id}`)
+}
+
 
 export const CreateOrEditKeyCategory = async ({ body, id }: {
     body: { key: string, skip_bottom_rows: number }

@@ -38,6 +38,7 @@ import PaymentCategoryRoutes from "./payment-category"
 import KeyRoutes from "./key"
 import KeyCategoryRoutes from "./key-category"
 import ExcelDBRoutes from "./excel-db"
+import ExcelDBRemarkRoutes from "./excel-db-remarks"
 
 router.use(ArticlesRoutes);
 router.use(AuthRoutes);
@@ -74,6 +75,7 @@ router.use(PaymentRoutes)
 router.use(KeyRoutes)
 router.use(KeyCategoryRoutes)
 router.use(ExcelDBRoutes)
+router.use(ExcelDBRemarkRoutes)
 
 
 export default router;
