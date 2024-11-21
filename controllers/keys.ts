@@ -263,7 +263,7 @@ export const CreateKeysFromExcel = async (req: Request, res: Response, next: Nex
                     let keyl = await Key.findOne({ key: key, category: category })
                     if (keyl) {
                         validated = false
-                        statusText = `${keyl} already exists`
+                        statusText = `${keyl.key} already exists`
                     }
                     else {
                         await new Key({

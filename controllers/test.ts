@@ -2,10 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import xlsx from "xlsx";
 import { KeyCategory } from '../models/key-category';
 import { Key } from '../models/keys';
-import { ExcelDB, IExcelDb } from '../models/excel-db';
-import { Checklist } from '../models/checklist';
 import { convertDateToExcelFormat, previousYear } from '../utils/datesHelper';
-import { ChecklistBox } from '../models/checklist-box';
 
 export const test = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -23,35 +20,10 @@ export const test = async (req: Request, res: Response, next: NextFunction) => {
         const workbook = xlsx.read(req.file.buffer);
 
         let workbook_sheet = workbook.SheetNames;
-        var name = 'Sheet2'
+        var name = 'DayMonthDA'
         const sheetData: { key: string, category: string, type: string, is_date_key: boolean }[] = xlsx.utils.sheet_to_json(workbook.Sheets[name]);
-       console.log(sheetData)
-        for (let i = 1; i < sheetData.length; i++) {
-            let sheet = sheetData[i]
-            let key: string | null = sheet.key
-            let type: string | null = sheet.type
-            let category: string | null = sheet.category
-            let is_date_key: boolean | null = sheet.is_date_key
-            if (is_date_key==true) {
-                key = convertDateToExcelFormat(key)
-            }
-
-            let cat = await KeyCategory.findOne({ category: category })
-            if (cat) {
-                if (!await Key.findOne({ key: key, category: cat })) {
-
-                    await new Key({
-                        key,
-                        type,
-                        category: cat,
-                        created_by: req.user,
-                        updated_by: req.user,
-                        updated_at: new Date(),
-                        created_at: new Date(),
-                    }).save()
-                }
-            }
-        }
+        console.log(sheetData)
+       
         return res.status(200).json("successs");
     }
 }

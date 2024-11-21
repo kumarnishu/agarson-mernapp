@@ -124,7 +124,7 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
 
 
 export const CreateExcelDBFromExcel = async (req: Request, res: Response, next: NextFunction) => {
-    let result: { problem: string }[] = []
+    let result: { key: string, category: string, problem: string }[] = []
     if (!req.file)
         return res.status(400).json({
             message: "please provide an Excel file",
@@ -146,17 +146,16 @@ export const CreateExcelDBFromExcel = async (req: Request, res: Response, next: 
 
             if (worksheet && sheetData) {
                 let columns = await Key.find({ category: sheetName });
-                const keys: any = xlsx.utils.sheet_to_json(worksheet, { header: 1, raw: false })[0];
+                let keys: any = xlsx.utils.sheet_to_json(worksheet, { header: 1, raw: false })[0];
                 const remotekeys = columns.map((c) => { return c.key })
-
-
+                
                 if (Array.isArray(keys)) {
                     for (let rk = 0; rk < keys.length; rk++) {
+                        console.log(keys[rk])
                         if (keys[rk] && !remotekeys.includes(keys[rk]))
-                            result.push({ problem: `${keys[rk]} not found for the category ${sheetName.category}` })
+                            result.push({ key: keys[rk], category: sheetName.category, problem: "not found" })
                     }
                 }
-
 
                 if (columns && sheetData) {
                     await ExcelDB.deleteMany({ category: sheetName });

@@ -5,7 +5,9 @@ import { AssignKeyCategoriesToUsers, CreateKeyCategory, DeleteKeyCategory, GetAl
 const router = express.Router()
 
 router.route("/key-category").get(isAuthenticatedUser, GetAllKeyCategory).post(isAuthenticatedUser, CreateKeyCategory)
-router.route("/key-category/one/:id").get(isAuthenticatedUser, GetKeyCategoryById).put(isAuthenticatedUser, UpdateKeyCategory).delete(isAuthenticatedUser, DeleteKeyCategory)
+router.route("/key-category/one/:id").get(isAuthenticatedUser, GetKeyCategoryById)
+router.route("/key-category/:id")
+    .put(isAuthenticatedUser, UpdateKeyCategory).delete(isAuthenticatedUser, DeleteKeyCategory)
 router.patch("/key-category/assign", isAuthenticatedUser, AssignKeyCategoriesToUsers)
 router.route("/key-category/dropdown").get(isAuthenticatedUser, GetAllKeyCategoryForDropDown)
 
