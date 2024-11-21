@@ -73,6 +73,17 @@ export default function KeysCategoriesPage() {
         }).filter(onlyUnique)
       },
       {
+        accessorKey: 'display_name',
+        header: 'Display Name',
+        minSize: 350,
+        grow: false,
+        filterVariant: 'multi-select',
+        Cell: (cell) => <>{cell.row.original.display_name ? cell.row.original.display_name : ""}</>,
+        filterSelectOptions: categories && categories.map((i) => {
+          return i.display_name;
+        }).filter(onlyUnique)
+      },
+      {
         accessorKey: 'skip_bottom_rows',
         header: 'Skip Bottom Rows',
         minSize: 350,

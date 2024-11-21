@@ -41,7 +41,7 @@ export const GetKeyCategoryById = async (id: string) => {
 
 
 export const CreateOrEditKeyCategory = async ({ body, id }: {
-    body: { key: string, skip_bottom_rows: number }
+    body: { key: string, display_name:string, skip_bottom_rows: number }
     id?: string
 }) => {
     if (id) {

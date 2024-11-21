@@ -16,6 +16,7 @@ function CreateOrEditKeyCategoryForm({ category }: { category?: GetKeyCategoryDt
         <AxiosResponse<string>, BackendError, {
             body: {
                 key: string,
+                display_name: string,
                 skip_bottom_rows:number
             },
             id?: string
@@ -31,24 +32,28 @@ function CreateOrEditKeyCategoryForm({ category }: { category?: GetKeyCategoryDt
 
     const formik = useFormik<{
         category: string,
+        display_name:string,
         skip_bottom_rows:number
     }>({
         initialValues: {
             category: category ? category.category : "",
+            display_name: category ? category.display_name : "",
             skip_bottom_rows: category ? category.skip_bottom_rows:0
         },
         validationSchema:yup.object({
             category: yup.string().required(),
+            display_name: yup.string().required(),
             skip_bottom_rows: yup.number().required()
         }),
         onSubmit: (values: {
             category: string,
+            display_name: string,
             skip_bottom_rows:number
         }) => {
             mutate({
                 id:category?._id,
                 body: {
-                    key: values.category, skip_bottom_rows: values.skip_bottom_rows
+                    key: values.category, display_name: values.display_name, skip_bottom_rows: values.skip_bottom_rows
                 }
             })
         }
@@ -80,7 +85,20 @@ function CreateOrEditKeyCategoryForm({ category }: { category?: GetKeyCategoryDt
                     }
                     {...formik.getFieldProps('category')}
                 />
-              
+                <TextField
+                    required
+                    error={
+                        formik.touched.display_name && formik.errors.display_name ? true : false
+                    }
+                    autoFocus
+                    id="display_name"
+                    label="Display Name"
+                    fullWidth
+                    helperText={
+                        formik.touched.display_name && formik.errors.display_name ? formik.errors.display_name : ""
+                    }
+                    {...formik.getFieldProps('display_name')}
+                />
                 <TextField
                     required
                     error={

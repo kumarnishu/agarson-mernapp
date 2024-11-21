@@ -12,20 +12,20 @@ import { GetAllKeyCategoriesForDropdown } from "../services/KeyServices";
 import { ExcelDbButtons } from "../components/buttons/ExcelDbButtons";
 
 function ExcelDBDashboard() {
-    const [features, setFeatures] = useState<{ feature: string, is_visible: boolean, url: string }[]>([])
+    const [features, setFeatures] = useState<{ feature: string, display_name: string, is_visible: boolean, url: string }[]>([])
     const { user } = useContext(UserContext)
     const { data: categoryData } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategoriesForDropdown({ show_assigned_only: true }))
 
 
     useEffect(() => {
-        let tmpfeatures: { feature: string, is_visible: boolean, url: string }[] = []
+        let tmpfeatures: { feature: string, is_visible: boolean, display_name: string, url: string }[] = []
 
         if (categoryData && categoryData.data) {
             categoryData.data.map((dt) => {
-                tmpfeatures.push({ feature: dt.value, is_visible: true, url: `ExcelDbReports/${dt.id}/${dt.value}` })
+                tmpfeatures.push({ feature: dt.value, display_name: dt.label, is_visible: true, url: `ExcelDbReports/${dt.id}/${dt.value}` })
             })
         }
-        user?.assigned_permissions.includes('salesman_leaves_report_view') && tmpfeatures.push({ feature: 'salesmen leaves report ', is_visible: false, url: "SalesmanLeavesReportPage" })
+        user?.assigned_permissions.includes('salesman_leaves_report_view') && tmpfeatures.push({ feature: 'salesmen leaves report ', display_name: "", is_visible: false, url: "SalesmanLeavesReportPage" })
         setFeatures(tmpfeatures)
 
     }, [user, categoryData])
@@ -74,6 +74,7 @@ function ExcelDBDashboard() {
                                         >
                                             {feat.feature && toTitleCase(feat.feature)}
                                         </Typography>
+                                        {feat.display_name && <Typography>{`[ ${feat.display_name} ]`}</Typography>}
                                     </Stack>
                                 </Paper>
                             </Link>

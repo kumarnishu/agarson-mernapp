@@ -11,7 +11,7 @@ export const GetAllKeyCategory = async (req: Request, res: Response, next: NextF
     let result: GetKeyCategoryDto[] = [];
     for (let i = 0; i < data.length; i++) {
         let users = await (await User.find({ assigned_keycategories: data[i]._id })).map((i) => { return { _id: i._id.valueOf(), username: i.username } })
-        result.push({ _id: data[i]._id, category: data[i].category, skip_bottom_rows: data[i].skip_bottom_rows, assigned_users: String(users.map((u) => { return u.username })) });
+        result.push({ _id: data[i]._id, display_name: data[i].display_name,category: data[i].category, skip_bottom_rows: data[i].skip_bottom_rows, assigned_users: String(users.map((u) => { return u.username })) });
     }
     return res.status(200).json(result)
 }
@@ -39,14 +39,14 @@ export const GetAllKeyCategoryForDropDown = async (req: Request, res: Response, 
         data = await KeyCategory.find();
 
     let result: DropDownDto[] = [];
-    result = data.map((R) => { return { id: R._id, label: R.category, value: R.category } })
+    result = data.map((R) => { return { id: R._id, label: R.display_name, value: R.category } })
     return res.status(200).json(result)
 }
 
 
 
 export const CreateKeyCategory = async (req: Request, res: Response, next: NextFunction) => {
-    let { key, skip_bottom_rows } = req.body as { key: string, skip_bottom_rows: number, }
+    let { key, skip_bottom_rows,display_name } = req.body as { key: string,display_name:string, skip_bottom_rows: number, }
     if (!key) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
@@ -55,6 +55,7 @@ export const CreateKeyCategory = async (req: Request, res: Response, next: NextF
         return res.status(400).json({ message: "already exists this category" })
     let result = await new KeyCategory({
         category: key,
+        display_name: display_name,
         skip_bottom_rows,
         updated_at: new Date(),
         created_by: req.user,
@@ -65,9 +66,7 @@ export const CreateKeyCategory = async (req: Request, res: Response, next: NextF
 }
 
 export const UpdateKeyCategory = async (req: Request, res: Response, next: NextFunction) => {
-    let { key, skip_bottom_rows } = req.body as {
-        key: string, skip_bottom_rows: number,
-    }
+    let { key, skip_bottom_rows, display_name } = req.body as { key: string, display_name: string, skip_bottom_rows: number, }
     if (!key) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
@@ -82,6 +81,7 @@ export const UpdateKeyCategory = async (req: Request, res: Response, next: NextF
         if (await KeyCategory.findOne({ category: key }))
             return res.status(400).json({ message: "already exists this category" })
     oldcategory.category = key
+    oldcategory.display_name = display_name
     oldcategory.skip_bottom_rows = skip_bottom_rows
     oldcategory.updated_at = new Date()
     if (req.user)
