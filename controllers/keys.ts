@@ -31,9 +31,9 @@ export const GetAllKey = async (req: Request, res: Response, next: NextFunction)
                 key: data[i].key,
                 type: data[i].type,
                 category: { id: data[i].category._id, label: data[i].category.category, value: data[i].category.category },
-                is_date_key:data[i].is_date_key,
-                map_to_state:data[i].map_to_state,
-                map_to_username:data[i].map_to_username,
+                is_date_key: data[i].is_date_key,
+                map_to_state: data[i].map_to_state,
+                map_to_username: data[i].map_to_username,
                 assigned_users: String(users.map((u) => { return u.username }))
             });
     }
@@ -45,9 +45,10 @@ export const CreateKey = async (req: Request, res: Response, next: NextFunction)
     let { key, category, type, serial_no, is_date_key,
         map_to_state,
         map_to_username, } = req.body as {
-        key: string, category: string, type: string, serial_no: number, is_date_key: false,
-        map_to_username: false,
-        map_to_state: false }
+            key: string, category: string, type: string, serial_no: number, is_date_key: false,
+            map_to_username: false,
+            map_to_state: false
+        }
     if (!category || !key || !type) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
@@ -75,13 +76,13 @@ export const UpdateKey = async (req: Request, res: Response, next: NextFunction)
     let { key, category, type, serial_no, is_date_key,
         map_to_state,
         map_to_username, } = req.body as {
-        key: string,
-        category: string,
-        type: string,
-        serial_no: number, is_date_key: false,
-        map_to_username: false,
-        map_to_state: false
-    }
+            key: string,
+            category: string,
+            type: string,
+            serial_no: number, is_date_key: false,
+            map_to_username: false,
+            map_to_state: false
+        }
     if (!category || !key || !type) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
@@ -304,18 +305,37 @@ export const DownloadExcelTemplateForCreateKeys = async (req: Request, res: Resp
         map_to_username: false,
         map_to_state: false
     }]
-    let data = (await Key.find().populate('category')).map((u) => {
-        return {
-            _id: u._id.valueOf(),
-            serial_no: u.serial_no,
-            key: u.key,
-            type: u.type,
-            category: u.category.category,
-            is_date_key: u.is_date_key,
-            map_to_username: u.map_to_username,
-            map_to_state: u.map_to_state
-        }
-    })
+    let cat = req.query.category
+    let data: GetKeyFromExcelDto[] = []
+    if (cat !== 'all') {
+        data = (await Key.find({ category: cat }).populate('category')).map((u) => {
+            return {
+                _id: u._id.valueOf(),
+                serial_no: u.serial_no,
+                key: u.key,
+                type: u.type,
+                category: u.category.category,
+                is_date_key: u.is_date_key,
+                map_to_username: u.map_to_username,
+                map_to_state: u.map_to_state
+            }
+        })
+    }
+    else {
+        data = (await Key.find().populate('category')).map((u) => {
+            return {
+                _id: u._id.valueOf(),
+                serial_no: u.serial_no,
+                key: u.key,
+                type: u.type,
+                category: u.category.category,
+                is_date_key: u.is_date_key,
+                map_to_username: u.map_to_username,
+                map_to_state: u.map_to_state
+            }
+        })
+    }
+
     if (data.length > 0) {
         keys = data
     }

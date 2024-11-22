@@ -19,11 +19,11 @@ function ExcelDBDashboard() {
 
     useEffect(() => {
         let tmpfeatures: { feature: string, is_visible: boolean, display_name: string, url: string }[] = []
-        
+
         if (user && categoryData && categoryData.data) {
             console.log(categoryData?.data)
             categoryData.data.map((dt) => {
-                tmpfeatures.push({ feature: dt.value, display_name: dt.label, is_visible: true, url: `ExcelDbReports/${dt.id}/${dt.value}` })
+                tmpfeatures.push({ feature: dt.value, display_name: dt.label.slice(0, 50), is_visible: true, url: `ExcelDbReports/${dt.id}/${dt.value}` })
             })
         }
         user?.assigned_permissions.includes('salesman_leaves_report_view') && tmpfeatures.push({ feature: 'salesmen leaves report ', display_name: "", is_visible: false, url: "SalesmanLeavesReportPage" })
@@ -47,7 +47,7 @@ function ExcelDBDashboard() {
                                     sx={{
                                         p: 2,
                                         m: 0,
-                                        height: 60,
+                                        height: 100,
                                         borderRadius: 3,
                                         position: 'relative',
                                         overflow: 'hidden',
@@ -75,8 +75,9 @@ function ExcelDBDashboard() {
                                         >
                                             {feat.feature && toTitleCase(feat.feature)}
                                         </Typography>
-                                        {feat.display_name && <Typography>{`[ ${feat.display_name} ]`}</Typography>}
                                     </Stack>
+                                    <br/>
+                                    {feat.display_name && <Typography sx={{pl:4}}>{`${feat.display_name} `}</Typography>}
                                 </Paper>
                             </Link>
                         </Grid>

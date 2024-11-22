@@ -263,7 +263,7 @@ export default function KeysPage() {
                             })
                         }
                     </TextField>
-                    {LoggedInUser?.assigned_permissions.includes('key_create') && <KeyExcelButton />}
+                    {LoggedInUser?.assigned_permissions.includes('key_create') && <KeyExcelButton category={category} />}
                     <IconButton size="small" color="primary"
                         onClick={(e) => setAnchorEl(e.currentTarget)
                         }

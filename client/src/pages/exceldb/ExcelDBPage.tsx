@@ -5,7 +5,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
-import { DropDownDto,  IColumnRowData } from '../../dtos'
+import { DropDownDto, IColumnRowData } from '../../dtos'
 import { GetExcelDbReport } from '../../services/ExcelDbService'
 import moment from 'moment'
 import { useParams } from 'react-router-dom'
@@ -29,7 +29,7 @@ export default function ExcelDBPage() {
 
   const { data: categorydata, refetch: RefetchCategory, isSuccess: isSuccessCategorydata } = useQuery<AxiosResponse<DropDownDto>, BackendError>(["key_categories"], async () => GetKeyCategoryById(id || ""), { enabled: false })
 
-  const { data, isLoading, isSuccess, refetch } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb"], async () => GetExcelDbReport(id || ""), { enabled: false })
+  const { data, isLoading, isSuccess, refetch, isRefetching } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb"], async () => GetExcelDbReport(id || ""), { enabled: false })
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
@@ -190,7 +190,7 @@ export default function ExcelDBPage() {
       console.error(error);
     }
   }, [sorting]);
-  
+
   console.log(category)
   return (
     <>
@@ -211,8 +211,8 @@ export default function ExcelDBPage() {
       </Stack >
       {id && obj && <CreateOrEditExcelDBRemarkDialog category={id} obj={obj} />}
       {id && obj && <ViewExcelDBRemarksDialog id={id} obj={obj} />}
-      <MaterialReactTable table={table} />
-      {isLoading && <LinearProgress />}
+      
+      {isLoading || isRefetching ? <LinearProgress /> : <MaterialReactTable table={table} />}
     </>
 
   )

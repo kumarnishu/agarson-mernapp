@@ -19,7 +19,7 @@ color:blue;
 `
 
 
-export function KeyExcelButton() {
+export function KeyExcelButton({category}:{ category: string }) {
     const { data, mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetKeyFromExcelDto[]>, BackendError, FormData>
         (CreateKeysFromExcel, { onSuccess: () => queryClient.refetchQueries('keys') })
@@ -28,7 +28,7 @@ export function KeyExcelButton() {
 
 
     function HandleExport() {
-        saveAs(`/api/v1/download/template/keys`)
+        saveAs(`/api/v1/download/template/keys?category=${category}`)
     }
 
 
