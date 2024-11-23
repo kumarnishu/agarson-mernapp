@@ -195,13 +195,16 @@ export const GetChecklistsReport = async (req: Request, res: Response, next: Nex
     let count = 0
     let dt1 = new Date(String(start_date))
     let dt2 = new Date(String(end_date))
+    dt1.setHours(0, 0, 0, 0)
+    dt2.setHours(0, 0, 0, 0)
     let result: GetChecklistDto[] = []
-
 
     if (!Number.isNaN(limit) && !Number.isNaN(page)) {
         if (req.user?.is_admin && id == 'all') {
             {
+
                 checklists = await Checklist.find().populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('assigned_users').populate('last_10_boxes').sort('created_at').skip((page - 1) * limit).limit(limit)
+
                 count = await Checklist.find().countDocuments()
             }
         }
@@ -220,64 +223,134 @@ export const GetChecklistsReport = async (req: Request, res: Response, next: Nex
             count = await Checklist.find({ user: id }).countDocuments()
         }
 
-        if (stage == "open") {
-            checklists = checklists.filter((ch) => {
-                return Boolean(!ch.lastcheckedbox)
-            })
-        }
-        if (stage == "pending" || stage == "done") {
-            checklists = checklists.filter((ch) => {
-                if (ch.lastcheckedbox)
-                    return Boolean(ch.lastcheckedbox.stage == stage)
-            })
-        }
+      
 
-        result = checklists.map((ch) => {
-            return {
-                _id: ch._id,
-                active: ch.active,
-                work_title: ch.work_title,
-                serial_no: ch.serial_no,
-                work_description: ch.work_description,
-                link: ch.link,
-                last_checked_box: ch.lastcheckedbox && {
-                    _id: ch.lastcheckedbox._id,
-                    stage: ch.lastcheckedbox.stage,
-                    last_remark: ch.lastcheckedbox.last_remark,
-                    checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                    date: ch.lastcheckedbox.date.toString()
-                },
-                category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
-                frequency: ch.frequency,
-                assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
-                created_at: ch.created_at.toString(),
-                updated_at: ch.updated_at.toString(),
-                last_10_boxes: ch.last_10_boxes && ch.last_10_boxes.map((bo) => {
-                    return {
-                        _id: bo._id,
-                        stage: bo.stage,
-                        last_remark: bo.last_remark,
+        if (dt2.getDate() - dt1.getDate() == 1 && id == 'all') {
+          
+
+            result = checklists.map((ch) => {
+                return {
+                    _id: ch._id,
+                    active: ch.active,
+                    work_title: ch.work_title,
+                    serial_no: ch.serial_no,
+                    work_description: ch.work_description,
+                    link: ch.link,
+                    last_checked_box: ch.last_10_boxes[1] && {
+                        _id: ch.last_10_boxes[1]._id,
+                        stage: ch.last_10_boxes[1].stage,
+                        last_remark: ch.last_10_boxes[1].last_remark,
                         checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                        date: bo.date.toString()
-                    }
-                }),
-                boxes: ch.checklist_boxes.filter((b) => {
-                    return b.date >= dt1 && b.date < dt2
-                }).map((bo) => {
-                    return {
-                        _id: bo._id,
-                        stage: bo.stage,
-                        last_remark: bo.last_remark,
-                        checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                        date: bo.date.toString()
-                    }
-                }),
-                next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
-                photo: ch.photo?.public_url || "",
-                created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
-                updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
+                        date: ch.last_10_boxes[1].date.toString()
+                    },
+                    category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
+                    frequency: ch.frequency,
+                    assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
+                    created_at: ch.created_at.toString(),
+                    updated_at: ch.updated_at.toString(),
+                    last_10_boxes: ch.last_10_boxes && ch.last_10_boxes.filter((b) => {
+                        return b.date >= dt1 && b.date < dt2
+                    }).map((bo) => {
+                        return {
+                            _id: bo._id,
+                            stage: bo.stage,
+                            last_remark: bo.last_remark,
+                            checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+                            date: bo.date.toString()
+                        }
+                    }),
+                    boxes: ch.last_10_boxes && ch.last_10_boxes.filter((b) => {
+                        return b.date >= dt1 && b.date < dt2
+                    }).map((bo) => {
+                        return {
+                            _id: bo._id,
+                            stage: bo.stage,
+                            last_remark: bo.last_remark,
+                            checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+                            date: bo.date.toString()
+                        }
+                    }),
+                    next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
+                    photo: ch.photo?.public_url || "",
+                    created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
+                    updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
+                }
+            })
+
+            if (stage == "open") {
+                result = result.filter((ch) => {
+                    return Boolean(ch.last_checked_box?.stage=='open')
+                })
             }
-        })
+            if (stage == "pending" || stage == "done") {
+                result = result.filter((ch) => {
+                    if (ch.last_checked_box)
+                        return Boolean(ch.last_checked_box.stage == stage)
+                })
+            }
+        }
+        else
+        {
+
+            if (stage == "open") {
+                checklists = checklists.filter((ch) => {
+                    return Boolean(!ch.lastcheckedbox)
+                })
+            }
+            if (stage == "pending" || stage == "done") {
+                checklists = checklists.filter((ch) => {
+                    if (ch.lastcheckedbox)
+                        return Boolean(ch.lastcheckedbox.stage == stage)
+                })
+            }
+            result = checklists.map((ch) => {
+                return {
+                    _id: ch._id,
+                    active: ch.active,
+                    work_title: ch.work_title,
+                    serial_no: ch.serial_no,
+                    work_description: ch.work_description,
+                    link: ch.link,
+                    last_checked_box: ch.lastcheckedbox && {
+                        _id: ch.lastcheckedbox._id,
+                        stage: ch.lastcheckedbox.stage,
+                        last_remark: ch.lastcheckedbox.last_remark,
+                        checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+                        date: ch.lastcheckedbox.date.toString()
+                    },
+                    category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
+                    frequency: ch.frequency,
+                    assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
+                    created_at: ch.created_at.toString(),
+                    updated_at: ch.updated_at.toString(),
+                    last_10_boxes: ch.last_10_boxes && ch.last_10_boxes.map((bo) => {
+                        return {
+                            _id: bo._id,
+                            stage: bo.stage,
+                            last_remark: bo.last_remark,
+                            checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+                            date: bo.date.toString()
+                        }
+                    }),
+                    boxes: ch.checklist_boxes.filter((b) => {
+                        return b.date >= dt1 && b.date < dt2
+                    }).map((bo) => {
+                        return {
+                            _id: bo._id,
+                            stage: bo.stage,
+                            last_remark: bo.last_remark,
+                            checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+                            date: bo.date.toString()
+                        }
+                    }),
+                    next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
+                    photo: ch.photo?.public_url || "",
+                    created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
+                    updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
+                }
+            })
+        }
+           
 
         return res.status(200).json({
             result,

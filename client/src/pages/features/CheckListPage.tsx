@@ -104,9 +104,9 @@ function ChecklistPage() {
         header: 'Responsible',
         minSize: 160,
         grow: false,
-        filter: 'custom',
         enableColumnFilter: true,
         Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.value }).toString() || ""}</>,
+        filter: 'custom',
         filterFn: (row, columnId, filterValue) => {
           console.log(columnId)
           if (!Array.isArray(row.original.assigned_users)) return false;
@@ -120,6 +120,23 @@ function ChecklistPage() {
         header: 'Filtered Dates',
         minSize: 250,
         grow: true,
+        filter: 'custom',
+        enableColumnFilter:true,
+        filterFn: (row, columnId, filterValue) => {
+          console.log(columnId)
+          if (!Array.isArray(row.original.last_10_boxes)) return false;
+          return row.original.last_10_boxes.some((box) => {
+            if (row.original.frequency == 'daily')
+              return  String(new Date(box.date).getDate()).toLowerCase() == filterValue
+            else if (row.original.frequency == 'weekly')
+              return  String(new Date(box.date).getDate()).toLowerCase() == filterValue
+            else if (row.original.frequency == 'monthly')
+              return  String(monthNames[new Date(box.date).getMonth()]).toLowerCase() == filterValue
+            else
+              return  String(new Date(box.date).getFullYear()).toLowerCase() == filterValue
+          }
+          );
+        },
         Cell: (cell) => <>
           <Stack direction="row" className="scrollable-stack" sx={{ height: '20px' }}>
             {cell.row.original && cell.row.original.last_10_boxes.map((b) => (
@@ -171,9 +188,9 @@ function ChecklistPage() {
                       onClick={() => {
                         if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) < nextMonth && new Date(new Date(b.date).setHours(0, 0, 0, 0)) > previousMonth) {
 
-                        setChecklistBox(b);
-                        setChecklist(cell.row.original)
-                        setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
+                          setChecklistBox(b);
+                          setChecklist(cell.row.original)
+                          setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
                         }
                       }}
                       size="small"
@@ -191,9 +208,9 @@ function ChecklistPage() {
                       sx={{ borderRadius: 4, maxHeight: '15px', minWidth: '10px', m: 0.3, }}
                       onClick={() => {
                         if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) > previousYear && new Date(new Date(b.date).setHours(0, 0, 0, 0)) < nextYear) {
-                        setChecklistBox(b);
-                        setChecklist(cell.row.original)
-                        setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
+                          setChecklistBox(b);
+                          setChecklist(cell.row.original)
+                          setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
                         }
                       }}
                       size="small"
