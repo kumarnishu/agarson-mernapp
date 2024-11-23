@@ -24,7 +24,7 @@ function CreateOrEditExcelDBRemarkForm({ category, obj, remark, setDisplay }: {
         }>
         (CreateOrEditExcelDbRemark, {
             onSuccess: () => {
-                queryClient.refetchQueries('excel-db')
+                queryClient.refetchQueries('remarks')
             }
         })
 

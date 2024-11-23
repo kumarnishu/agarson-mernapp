@@ -118,7 +118,7 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
                             obj[key] = dt[key]
                         if (key == 'Account Name') {
                             //@ts-ignore
-                            let lastremark = await ExcelDBRemark.findOne({ category: category, obj: dt[key] })
+                            let lastremark = await ExcelDBRemark.findOne({ category: category, obj: dt[key] }).sort('-created_at')
                             if (lastremark) {
                                 obj['last remark'] = lastremark.remark
                                 if (lastremark.next_date)
