@@ -1,15 +1,16 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
 import { IColumnRowData, IRowData } from "../dtos";
-import { KeyCategory } from "../models/key-category";
+import { IKeyCategory, KeyCategory } from "../models/key-category";
 import { Key } from "../models/keys";
 import { ExcelDB } from "../models/excel-db";
 import { decimalToTimeForXlsx, excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
 import { ICRMState } from "../models/crm-state";
 import { User } from "../models/user";
+import { ExcelDBRemark } from "../models/excel-db-remark";
+import moment from "moment";
 
 export const GetExcelDbReport = async (req: Request, res: Response, next: NextFunction) => {
-
     const category = req.query.category
     let result: IColumnRowData = {
         columns: [],
@@ -18,7 +19,12 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
     if (!category) {
         return res.status(400).json({ message: 'please select category ' })
     }
-    result.columns.push({ key: 'action', header: 'Action', type: 'action' })
+    let cat: IKeyCategory | null = null
+    cat = await KeyCategory.findById(category)
+    if (cat) {
+        if (cat && cat.category == 'BillsAge')
+            result.columns.push({ key: 'action', header: 'Action', type: 'action' })
+    }
 
     let assigned_keys: any[] = req.user.assigned_keys;
     let assigned_states: string[] = []
@@ -88,6 +94,12 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
         let c = keys[k]
         result.columns.push({ key: c.key, header: c.key, type: c.type })
     }
+
+    if (cat && cat.category == 'BillsAge') {
+        result.columns.push({ key: 'last remark', header: 'Last Remark', type: 'string' })
+        result.columns.push({ key: 'next call', header: 'Next Call', type: 'string' })
+    }
+
     for (let k = 0; k < data.length; k++) {
         let obj: IRowData = {}
         let dt = data[k]
@@ -104,7 +116,15 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
                         else
                             //@ts-ignore
                             obj[key] = dt[key]
-
+                        if (key == 'Account Name') {
+                            //@ts-ignore
+                            let lastremark = await ExcelDBRemark.findOne({ category: category, obj: dt[key] })
+                            if (lastremark) {
+                                obj['last remark'] = lastremark.remark
+                                if (lastremark.next_date)
+                                    obj['next call'] = moment(lastremark.next_date).format('DD/MM/YYYY')
+                            }
+                        }
                     }
                     else {
                         if (keys[i].type == "number")
@@ -115,7 +135,11 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
                 }
 
             }
+
+
         }
+
+
         result.rows.push(obj)
     }
 
@@ -148,7 +172,7 @@ export const CreateExcelDBFromExcel = async (req: Request, res: Response, next: 
                 let columns = await Key.find({ category: sheetName });
                 let keys: any = xlsx.utils.sheet_to_json(worksheet, { header: 1, raw: false })[0];
                 const remotekeys = columns.map((c) => { return c.key })
-                
+
                 if (Array.isArray(keys)) {
                     for (let rk = 0; rk < keys.length; rk++) {
                         console.log(keys[rk])

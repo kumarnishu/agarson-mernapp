@@ -7,7 +7,7 @@ import moment from 'moment';
  
 
 export const UpdateExcelDBRemark = async (req: Request, res: Response, next: NextFunction) => {
-    const { remark } = req.body as CreateOrEditExcelDbRemarkDto
+    const { remark,next_date } = req.body as CreateOrEditExcelDbRemarkDto
     if (!remark) return res.status(403).json({ message: "please fill required fields" })
 
     const id = req.params.id;
@@ -17,6 +17,8 @@ export const UpdateExcelDBRemark = async (req: Request, res: Response, next: Nex
         return res.status(404).json({ message: "remark not found" })
     }
     rremark.remark = remark
+    if (next_date)
+        rremark.next_date = new Date(next_date)
     await rremark.save()
     return res.status(200).json({ message: "remark updated successfully" })
 }

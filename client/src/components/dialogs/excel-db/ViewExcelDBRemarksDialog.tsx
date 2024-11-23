@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, IconButton, DialogTitle, Stack } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
-import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
+import { KeyChoiceActions,  ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import DeleteExcelDBRemarkDialog from './DeleteExcelDBRemarkDialog'
 import CreateOrEditExcelDBRemarkDialog from './CreateOrEditExcelDBRemarkDialog'
@@ -32,13 +32,13 @@ function ViewExcelDBRemarksDialog({ id, obj }: { id: string, obj: string }) {
         if (isSuccess && data)
             setRemarks(data?.data)
     }, [isSuccess, data])
-
+    console.log(data)
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
-            open={choice === LeadChoiceActions.view_remarks ? true : false}
-            onClose={() => setChoice({ type: LeadChoiceActions.close_lead })}
+            open={choice === KeyChoiceActions.view_excel_db_remarks ? true : false}
+            onClose={() => setChoice({ type: KeyChoiceActions.close_key })}
         >
-            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: LeadChoiceActions.close_lead })}>
+            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: KeyChoiceActions.close_key })}>
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>
@@ -53,7 +53,7 @@ function ViewExcelDBRemarksDialog({ id, obj }: { id: string, obj: string }) {
                                 <p>{toTitleCase(item.created_by)} : {item.remark} </p>
                                 <p>{item.next_date && `Next Call : ${item.next_date}`} </p>
                                 <br></br>
-                                <p>{item.created_date}</p>
+                                {item.created_date &&<p>{new Date(item.created_date).toLocaleString()}</p>}
                                 {
                                     <Stack justifyContent={'end'} direction="row" gap={0} pt={2}>
                                         {user?.assigned_permissions.includes('activities_delete') && <IconButton size="small" color="error" onClick={() => {
@@ -76,7 +76,7 @@ function ViewExcelDBRemarksDialog({ id, obj }: { id: string, obj: string }) {
                     })}
                 </Stack>
                 {remark && <DeleteExcelDBRemarkDialog display={display} setDisplay={setDisplay} remark={remark} />}
-                {remark && <CreateOrEditExcelDBRemarkDialog obj={obj} category={id}remark={remark} display={display2} setDisplay={setDisplay2} />}
+                {remark && <CreateOrEditExcelDBRemarkDialog obj={obj} category={id} remark={remark} display={display2} setDisplay={setDisplay2} />}
             </DialogContent>
 
         </Dialog>

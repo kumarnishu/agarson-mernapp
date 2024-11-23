@@ -39,6 +39,7 @@ export default function ExcelDBPage() {
         return {
           accessorKey: item.key,
           header: item.header,
+          maxSize:70,
           Cell: (cell) => <PopUp
             element={
               <Stack direction="row" spacing={1} key={item.key}>
@@ -215,7 +216,7 @@ export default function ExcelDBPage() {
       {isLoading || isRefetching ? <LinearProgress /> : <MaterialReactTable table={table} />}
     </>
 
-  )
+  ) 
 
 }
 
