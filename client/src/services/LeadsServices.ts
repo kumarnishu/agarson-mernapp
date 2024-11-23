@@ -89,6 +89,11 @@ export const MergeTwoLeads = async ({ id, body }: { id: string, body: CreateOrEd
 export const MergeTwoRefers = async ({ id, body }: { id: string, body: CreateOrEditMergeRefersDto }) => {
   return await apiClient.put(`merge/refers/${id}`, body)
 }
+
+export const ToogleReferPartyConversion = async (id: string) => {
+  return await apiClient.patch(`toogle-convert/refers/${id}`)
+}
+
 //remarks
 
 

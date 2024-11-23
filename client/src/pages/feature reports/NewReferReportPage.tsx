@@ -1,4 +1,4 @@
-  import { Stack } from '@mui/system'
+import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
@@ -14,13 +14,14 @@ import AllReferralPageDialog from '../../components/dialogs/crm/AllReferralPageD
 import ViewReferRemarksDialog from '../../components/dialogs/crm/ViewReferRemarksDialog'
 import { UserContext } from '../../contexts/userContext'
 import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
-import { Delete, Edit, Upload, Visibility } from '@mui/icons-material'
+import { Delete, Edit, Recycling, Upload, Visibility } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, TextField, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import CreateOrEditBillDialog from '../../components/dialogs/crm/CreateOrEditBillDialog'
 import ViewRefersBillHistoryDialog from '../../components/dialogs/crm/ViewRefersBillHistoryDialog'
+import ToogleReferConversionDialog from '../../components/dialogs/crm/ToogleReferConversionDialog.tsx'
 
 
 
@@ -46,7 +47,7 @@ export default function NewReferReportPage() {
         accessorKey: 'actions',
         header: '',
         maxSize: 50,
-        grow:false,
+        grow: false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -73,6 +74,18 @@ export default function NewReferReportPage() {
                   }}
                 >
                   <Visibility />
+                </IconButton>
+              </Tooltip>}
+              {LoggedInUser?.assigned_permissions.includes('refer_conversion_manual') && cell.row.original.convertedfromlead && <Tooltip title="Convert to Old ">
+                <IconButton color="error"
+
+                  onClick={() => {
+                    setChoice({ type: LeadChoiceActions.toogle_refer })
+                    setRefer(cell.row.original)
+
+                  }}
+                >
+                  <Recycling />
                 </IconButton>
               </Tooltip>}
               {LoggedInUser?.is_admin && LoggedInUser.assigned_permissions.includes('newrefer_delete') &&
@@ -135,7 +148,7 @@ export default function NewReferReportPage() {
         accessorKey: 'name',
         header: 'Name',
         minSize: 350,
-        grow:false,
+        grow: false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
@@ -147,7 +160,7 @@ export default function NewReferReportPage() {
         header: 'City',
         filterVariant: 'multi-select',
         minSize: 120,
-        grow:false,
+        grow: false,
         Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
           return i.city;
@@ -158,7 +171,7 @@ export default function NewReferReportPage() {
         header: 'State',
         filterVariant: 'multi-select',
         minSize: 120,
-        grow:false,
+        grow: false,
         Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
           return i.state;
@@ -168,14 +181,14 @@ export default function NewReferReportPage() {
         accessorKey: 'last_remark',
         header: 'Remark',
         minSize: 350,
-        grow:false,
+        grow: false,
         Cell: (cell) => <>{cell.row.original.last_remark ? cell.row.original.last_remark : ""}</>,
       },
       {
         accessorKey: 'refers',
         header: 'Refers',
         minSize: 100,
-        grow:false,
+        grow: false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.refers ? cell.row.original.refers.toString() : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
@@ -186,14 +199,14 @@ export default function NewReferReportPage() {
         accessorKey: 'uploaded_bills',
         header: 'Uploaded Bills',
         minSize: 120,
-        grow:false,
+        grow: false,
         Cell: (cell) => <>{cell.row.original.uploaded_bills ? cell.row.original.uploaded_bills : ""}</>
       },
       {
         accessorKey: 'customer_name',
         header: 'Customer Name',
         minSize: 120,
-        grow:false,
+        grow: false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.customer_name ? cell.row.original.customer_name : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
@@ -204,27 +217,27 @@ export default function NewReferReportPage() {
         accessorKey: 'mobile',
         header: 'Mobile1',
         minSize: 120,
-        grow:false,
+        grow: false,
         Cell: (cell) => <>{cell.row.original.mobile ? cell.row.original.mobile : ""}</>
       }, {
         accessorKey: 'mobile2',
         header: 'Mobile2',
         minSize: 120,
-        grow:false,
+        grow: false,
         Cell: (cell) => <>{cell.row.original.mobile2 ? cell.row.original.mobile2 : ""}</>
       }, {
         accessorKey: 'mobile3',
         header: 'Mobile3',
         minSize: 120,
-        grow:false,
+        grow: false,
         Cell: (cell) => <>{cell.row.original.mobile3 ? cell.row.original.mobile3 : ""}</>
       },
-     
+
       {
         accessorKey: 'gst',
         header: 'GST',
         minSize: 120,
-        grow:false,
+        grow: false,
         Cell: (cell) => <>{cell.row.original.gst ? cell.row.original.gst : ""}</>
       },
 
@@ -232,7 +245,7 @@ export default function NewReferReportPage() {
         accessorKey: 'address',
         header: 'Address',
         minSize: 120,
-        grow:false,
+        grow: false,
         Cell: (cell) => <>{cell.row.original.address ? cell.row.original.address : ""}</>
       },
 
@@ -240,7 +253,7 @@ export default function NewReferReportPage() {
         accessorKey: 'created_at',
         header: 'Created on',
         minSize: 120,
-        grow:false,
+        grow: false,
         Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
       },
 
@@ -248,17 +261,17 @@ export default function NewReferReportPage() {
         accessorKey: 'created_by.label',
         header: 'Creator',
         minSize: 120,
-        grow:false,
+        grow: false,
         Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
       }
     ],
-    [refers],
+    [refers, data],
     //end
   );
 
 
   const table = useMaterialReactTable({
-    columns, columnFilterDisplayMode: 'popover', 
+    columns, columnFilterDisplayMode: 'popover',
     data: refers, //10,000 rows       
     enableColumnResizing: true,
     enableColumnVirtualization: true, enableStickyFooter: true,
@@ -304,10 +317,10 @@ export default function NewReferReportPage() {
 
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && data) {
       setRefers(data.data);
     }
-  }, [isSuccess]);
+  }, [isSuccess, data]);
 
 
   return (
@@ -403,6 +416,7 @@ export default function NewReferReportPage() {
                   <ViewReferRemarksDialog id={refer._id} />
                   <CreateOrEditBillDialog refer={refer} bill={undefined} />
                   <ViewRefersBillHistoryDialog id={refer._id} />
+                  <ToogleReferConversionDialog refer={refer} />
                 </>
                 : null
             }

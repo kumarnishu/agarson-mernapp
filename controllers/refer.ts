@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { IReferredParty, ReferredParty } from "../models/refer";
 import { NextFunction, Request, Response } from 'express';
-import { CreateOrEditMergeRefersDto, CreateOrEditReferDto,  GetReferDto, GetReferFromExcelDto } from "../dtos";
+import { CreateOrEditMergeRefersDto, CreateOrEditReferDto, GetReferDto, GetReferFromExcelDto } from "../dtos";
 import Lead from "../models/lead";
 import { Remark } from "../models/crm-remarks";
 import { Bill } from "../models/crm-bill";
@@ -471,6 +471,16 @@ export const DeleteReferParty = async (req: Request, res: Response, next: NextFu
 }
 
 
+export const ToogleReferPartyConversion = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id
+    if (!isMongoId(id))
+        return res.status(400).json({ message: "bad mongo id" })
+    let party = await ReferredParty.findById(id)
+    if (!party)
+        return res.status(404).json({ message: "party not found" })
+    await ReferredParty.findByIdAndUpdate(id, { convertedfromlead: !party.convertedfromlead })
+    return res.status(200).json({ message: "converted successfully" })
+}
 
 export const BulkReferUpdateFromExcel = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetReferFromExcelDto[] = []

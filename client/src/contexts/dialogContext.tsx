@@ -15,7 +15,7 @@ type KeyChoices = "create_or_edit_key" | "create_or_edit_key_category" | "delete
 type PaymentChoices = "create_or_edit_payment" | "create_or_edit_payment_category" | "delete_payment" | "close_payment" | "bulk_delete_payment" | "delete_payment_category" | "create_or_edit_payment_remark" | "view_payment_remarks" | "delete_payment_remark" | "assign_payment_to_users"
 
 
-type LeadChoices = "create_or_edit_refer" | "create_or_edit_leadtype" | "create_or_edit_source" | "delete_crm_item" | "view_remarks" | "close_lead" | "create_or_edit_city" | "bulk_assign_crm_cities" | "find_unknown_stages" | "create_or_edit_bill" | "convert_lead_to_refer" | "bulk_delete_useless_leads" | "view_referrals" | "delete_crm_state" | "find_unknown_cities" |
+type LeadChoices = "create_or_edit_refer" | "create_or_edit_leadtype" | "create_or_edit_source" | "delete_crm_item" | "view_remarks" | "close_lead" | "create_or_edit_city" | "bulk_assign_crm_cities" | "find_unknown_stages" | "create_or_edit_bill" | "convert_lead_to_refer" | "bulk_delete_useless_leads" | "view_referrals" | "delete_crm_state" | "find_unknown_cities" |"toogle_refer"|
   "refer_lead" | "remove_referral" | "assign_refer" | "bulk_assign_leads" | "bulk_assign_refers" | "delete_remark" | "create_or_edt_remark" | "create_or_edit_lead" | "create_or_edit_state" | "create_or_edit_stage" | "bulk_assign_crm_states" | "find_unknown_states" | "merge_leads" | "view_refer_remarks" | "delete_bill" | "view_bills" | "merge_refers" | "view_bills_photo"
 
 
@@ -98,6 +98,7 @@ export enum PaymentsChoiceActions {
 
 export enum LeadChoiceActions {
   create_or_edit_lead = "create_or_edit_lead",
+  toogle_refer ="toogle_refer",
   view_bills_photo = "view_bills_photo",
   view_bills = "view_bills",
   merge_refers = "merge_refers",
@@ -245,6 +246,7 @@ function reducer(state: ChoiceState | null, action: Action) {
     case LeadChoiceActions.merge_leads: return type
     case LeadChoiceActions.view_bills_photo: return type
     case LeadChoiceActions.view_refer_remarks: return type
+    case LeadChoiceActions.toogle_refer: return type
 
     //production choice actios
     case ProductionChoiceActions.create_or_edit_machine: return type

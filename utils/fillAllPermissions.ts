@@ -359,6 +359,10 @@ export function FetchAllPermissions() {
                         value: 'view_refer_bills',
                         label: 'View Bills'
                     },
+                    {
+                        value: 'refer_conversion_manual',
+                        label: 'Manual Refer Conversion'
+                    },
                 ]
             },
             {
@@ -968,7 +972,11 @@ export function FetchAllPermissions() {
                     {
                         value: 'newrefer_export',
                         label: 'export'
-                    }
+                    },
+                    {
+                        value: 'refer_report_conversion_manual',
+                        label: 'Manual Refer Conversion'
+                    },
                 ]
             },
             {

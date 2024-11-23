@@ -1,4 +1,4 @@
-import { Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Search, Upload, Visibility } from '@mui/icons-material'
+import { Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Recycling, Search, Upload, Visibility } from '@mui/icons-material'
 import { Button, Fade, IconButton, InputAdornment, LinearProgress, Menu, MenuItem, TextField, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
@@ -22,6 +22,7 @@ import CreateOrEditBillDialog from '../../components/dialogs/crm/CreateOrEditBil
 import ViewRefersBillHistoryDialog from '../../components/dialogs/crm/ViewRefersBillHistoryDialog'
 import MergeTwoRefersDialog from '../../components/dialogs/crm/MergeTwoRefersDialog'
 import ExportToExcel from '../../utils/ExportToExcel'
+import ToogleReferConversionDialog from '../../components/dialogs/crm/ToogleReferConversionDialog.tsx'
 
 
 export default function RefersPage() {
@@ -137,6 +138,18 @@ export default function RefersPage() {
                   }}
                 >
                   <Upload />
+                </IconButton>
+              </Tooltip>}
+              {LoggedInUser?.assigned_permissions.includes('refer_conversion_manual') && <Tooltip title="Convert to Old & New Customer">
+                <IconButton color="error"
+
+                  onClick={() => {
+                    setChoice({ type: LeadChoiceActions.toogle_refer })
+                    setRefer(cell.row.original)
+
+                  }}
+                >
+                  <Recycling />
                 </IconButton>
               </Tooltip>}
 
@@ -502,6 +515,7 @@ export default function RefersPage() {
               <ViewReferRemarksDialog id={refer._id} />
               <CreateOrEditBillDialog refer={refer} bill={undefined} />
               <ViewRefersBillHistoryDialog id={refer._id} />
+              <ToogleReferConversionDialog refer={refer}/>
             </>
             : null
         }
