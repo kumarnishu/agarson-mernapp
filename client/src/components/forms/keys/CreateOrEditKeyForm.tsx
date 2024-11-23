@@ -161,7 +161,7 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
                     {
                         categories && categories.map(state => {
                             return (<option key={state.id} value={state.id}>
-                                {state.label && state.value.toUpperCase()}
+                                {state.value && state.value.toUpperCase()}
                             </option>)
                         })
                     }
