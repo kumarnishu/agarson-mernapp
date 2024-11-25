@@ -4,7 +4,7 @@ import { IColumnRowData, IRowData } from "../dtos";
 import { IKeyCategory, KeyCategory } from "../models/key-category";
 import { Key } from "../models/keys";
 import { ExcelDB } from "../models/excel-db";
-import { decimalToTimeForXlsx, excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
+import { convertDateToExcelFormat, decimalToTimeForXlsx, excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
 import { ICRMState } from "../models/crm-state";
 import { User } from "../models/user";
 import { ExcelDBRemark } from "../models/excel-db-remark";
@@ -113,10 +113,22 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
                         if (keys[i].type == "timestamp")
                             //@ts-ignore
                             obj[key] = decimalToTimeForXlsx(dt[key])
+                        else if (keys[i].type == "date") {
+                            if (cat && cat.category == 'SalesRep' && key == 'Sales Representative') {
+                                //@ts-ignore
+                                obj[key] = moment(dt[key]).format("MMM-YY")
+                            }
+                            else {
+                                //@ts-ignore
+                                obj[key] = moment(dt[key]).format("DD/MM/YYYY")
+                            }
+                        }
                         else
                             //@ts-ignore
                             obj[key] = dt[key]
-                        if (key == 'Account Name') {
+
+                        //adding bills age actions
+                        if (cat && cat.category == 'BillsAge' && key == 'Account Name') {
                             //@ts-ignore
                             let lastremark = await ExcelDBRemark.findOne({ category: category, obj: dt[key] }).sort('-created_at')
                             if (lastremark) {

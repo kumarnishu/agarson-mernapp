@@ -7,7 +7,6 @@ import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { DropDownDto, IColumnRowData } from '../../dtos'
 import { GetExcelDbReport } from '../../services/ExcelDbService'
-import moment from 'moment'
 import { useParams } from 'react-router-dom'
 import PopUp from '../../components/popup/PopUp'
 import { UserContext } from '../../contexts/userContext'
@@ -91,14 +90,6 @@ export default function ExcelDBPage() {
           header: item.header,
           grow: true,
           Footer: <b>Total</b>,
-          filterSelectOptions: reports
-            ? [...new Set(reports.map(i => moment(i['date']).format("DD/MM/YYYY")))]
-            : [], // Unique formatted dates
-          //@ts-ignore
-          Cell: (cell) => moment((cell.cell.getValue())).isValid()
-            //@ts-ignore
-            ? moment((cell.cell.getValue())).format("DD/MM/YYYY")
-            : "", // Format cell as date if valid
         }
       else
         return {
