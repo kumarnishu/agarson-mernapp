@@ -779,7 +779,7 @@ export type AssignPermissionForMultipleUserDto = {
     flag: number
 }
 
-export type GetSalesManVisitReportDto = {
+export type GetSalesManVisitSummaryReportDto = {
     employee: string,
     date1: string,
     old_visits1: number,
@@ -793,4 +793,19 @@ export type GetSalesManVisitReportDto = {
     old_visits3: number,
     new_visits3: number,
     working_time3: string
+}
+export type GetVisitReportDto = {
+    _id: string,
+    employee: string
+    visit_date: string,
+    customer: string,
+    intime: string,
+    outtime: string,
+    visitInLocation: string,
+    visitOutLocation: string,
+    remarks: string,
+    created_at: string,
+    updated_at: string,
+    created_by: string,
+    updated_by: string,
 }

@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import { KeyCategory } from '../models/key-category';
-import { GetSalesManVisitReportDto } from '../dtos';
+import { GetSalesManVisitSummaryReportDto } from '../dtos';
 import { ExcelDB } from '../models/excel-db';
 import { IUser, User } from '../models/user';
 import { decimalToTimeForXlsx } from '../utils/datesHelper';
 import moment from 'moment';
 
 export const GetSalesManVisitReport = async (req: Request, res: Response, next: NextFunction) => {
-    let result: GetSalesManVisitReportDto[] = []
+    let result: GetSalesManVisitSummaryReportDto[] = []
     let date = req.query.date
     if (!date) {
         return res.status(400).json({ error: "Date  is required." });

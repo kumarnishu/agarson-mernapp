@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { TextField, Typography } from '@mui/material'
-import { GetSalesManVisitReportDto } from '../../dtos'
+import { GetSalesManVisitSummaryReportDto } from '../../dtos'
 import { AxiosResponse } from "axios"
 import { BackendError } from "../.."
 import { GetSalesmanVisit } from '../../services/SalesServices'
@@ -12,8 +12,8 @@ import moment from 'moment'
 
 export default function SalesmanVisitPage() {
   const [date, setDate] = useState(moment(new Date(new Date())).format("YYYY-MM-DD"))
-  const [reports, setReports] = useState<GetSalesManVisitReportDto[]>([])
-  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetSalesManVisitReportDto[]>, BackendError>(["visits", date], async () => GetSalesmanVisit({ date: date }))
+  const [reports, setReports] = useState<GetSalesManVisitSummaryReportDto[]>([])
+  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetSalesManVisitSummaryReportDto[]>, BackendError>(["visits", date], async () => GetSalesmanVisit({ date: date }))
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export default function SalesmanVisitPage() {
   }, [isSuccess, data])
 
 
-  const columns = useMemo<MRT_ColumnDef<GetSalesManVisitReportDto>[]>(
+  const columns = useMemo<MRT_ColumnDef<GetSalesManVisitSummaryReportDto>[]>(
     //column definitions...
     () => reports && [
 

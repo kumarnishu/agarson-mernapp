@@ -16,6 +16,21 @@ export type IMenu = {
     permissions: IPermission[]
 }
 
+export type GetVisitReportDto = {
+    _id: string,
+    employee: string
+    visit_date: string,
+    customer: string,
+    intime: string,
+    outtime: string,
+    visitInLocation: string,
+    visitOutLocation: string,
+    remarks: string,
+    created_at: string,
+    updated_at: string,
+    created_by: string,
+    updated_by: string,
+}
 
 export type GetPaymentDto = {
     _id: string,
@@ -780,7 +795,7 @@ export type AssignPermissionForMultipleUserDto = {
 }
 
 
-export type GetSalesManVisitReportDto = {
+export type GetSalesManVisitSummaryReportDto = {
     employee:string,
     date1: string,
     old_visits1: number,
