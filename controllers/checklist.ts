@@ -123,7 +123,7 @@ export const GetMobileChecklists = async (req: Request, res: Response, next: Nex
     let result: GetChecklistDto[] = []
     let category = req.query.category
     let stage = req.query.stage
-    if (category) {
+    if (category !== 'all') {
         checklists = await Checklist.find({ category: category, assigned_users: req.user?._id }).populate('created_by').populate({
             path: 'checklist_boxes',
             match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
@@ -223,10 +223,10 @@ export const GetChecklistsReport = async (req: Request, res: Response, next: Nex
             count = await Checklist.find({ user: id }).countDocuments()
         }
 
-      
+
 
         if (dt2.getDate() - dt1.getDate() == 1 && id == 'all') {
-          
+
 
             result = checklists.map((ch) => {
                 return {
@@ -279,7 +279,7 @@ export const GetChecklistsReport = async (req: Request, res: Response, next: Nex
 
             if (stage == "open") {
                 result = result.filter((ch) => {
-                    return Boolean(ch.last_checked_box?.stage=='open')
+                    return Boolean(ch.last_checked_box?.stage == 'open')
                 })
             }
             if (stage == "pending" || stage == "done") {
@@ -289,8 +289,7 @@ export const GetChecklistsReport = async (req: Request, res: Response, next: Nex
                 })
             }
         }
-        else
-        {
+        else {
 
             if (stage == "open") {
                 checklists = checklists.filter((ch) => {
@@ -350,7 +349,7 @@ export const GetChecklistsReport = async (req: Request, res: Response, next: Nex
                 }
             })
         }
-           
+
 
         return res.status(200).json({
             result,
