@@ -1007,12 +1007,49 @@ export function FetchAllPermissions() {
         ]
     }
 
+    let salesMenu: IMenu = {
+        label: 'Sales',
+        permissions: [{
+            value: 'sales_menu',
+            label: 'Sales Button'
+        }],
+        menues: [
+
+
+            {
+                label: 'SalesMan Visit',
+                permissions: [
+                    {
+                        value: 'salesman_visit_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'salesman_visit_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'salesman_visit_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'salesman_visit_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'salesman_visit_export',
+                        label: 'export'
+                    }
+                ]
+            }
+        ]
+    }
     permissions.push(dashboardMenu)
     permissions.push(authorizationMenu)
     permissions.push(featureMenu)
     permissions.push(dropdownMenu)
     permissions.push(excelReportMenu)
     permissions.push(featureReportsMenu)
+    permissions.push(salesMenu)
 
     return permissions;
 }

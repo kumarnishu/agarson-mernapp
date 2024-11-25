@@ -64,7 +64,8 @@ function MainDashBoardPage() {
     let tmpfeatures: { feature: string, is_visible?: boolean, url: string }[] = []
     tmpfeatures.push({ feature: 'Dashboard', is_visible: true, url: "/" })
     user?.is_admin && tmpfeatures.push({ feature: 'Users', is_visible: true, url: "/Users" })
-    user?.is_admin && tmpfeatures.push({ feature: 'Authorization', is_visible: true, url: "/Authorization" })
+    user?.assigned_permissions.includes('sales_menu') && tmpfeatures.push({ feature: 'Sales', is_visible: true, url: "/Sales" })
+    user?.assigned_permissions.includes('authorization_menu') && tmpfeatures.push({ feature: 'Authorization', is_visible: true, url: "/Authorization" })
     user?.assigned_permissions.includes('feature_menu') && tmpfeatures.push({ feature: 'Features', is_visible: true, url: "/Features" })
     user?.assigned_permissions.includes('dropdown_menu') && tmpfeatures.push({ feature: 'Dropdowns', is_visible: true, url: "/DropDown" })
     user?.assigned_permissions.includes('excel_db_menu') && tmpfeatures.push({ feature: 'Excel Reports', is_visible: true, url: "/ExcelDB" })

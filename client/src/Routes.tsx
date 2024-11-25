@@ -46,6 +46,8 @@ import AuthorizationDashboard from './dashboards/AppAuthorizationDashboard.tsx'
 import ExcelDBDashboard from './dashboards/ExcelDBDashboard.tsx'
 import SalesmanLeavesReportPage from './pages/feature reports/SalesmanLeavesReportPage.tsx'
 import UserAssignementPage from './pages/authorization/UserAssignementPage.tsx'
+import SalesDashboard from './dashboards/SalesDashboard.tsx'
+import SalesmanVisitPage from './pages/sales/SalesmanVisitPage.tsx'
 
 
 function AppRoutes() {
@@ -294,6 +296,24 @@ function AppRoutes() {
               />}
 
             </Route>}
+
+          {user && user?.assigned_permissions.includes('sales_menu') &&
+            < Route path="Sales">
+              <Route index
+                element={
+                  <SalesDashboard />
+                }
+              />
+
+              {user?.assigned_permissions.includes('salesman_visit_view') && <Route
+                path="SalesmanVisit" element={
+                  <SalesmanVisitPage />
+                }
+              />}
+              
+            
+            </Route>}
+
         </Route>
       }
 
