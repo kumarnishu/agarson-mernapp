@@ -6,7 +6,7 @@ import { IUser, User } from '../models/user';
 import { decimalToTimeForXlsx } from '../utils/datesHelper';
 import moment from 'moment';
 
-export const test = async (req: Request, res: Response, next: NextFunction) => {
+export const GetSalesManVisitReport = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetSalesManVisitReportDto[] = []
     let date = req.query.date
     if (!date) {
@@ -48,7 +48,7 @@ export const test = async (req: Request, res: Response, next: NextFunction) => {
         let data1 = await ExcelDB.find({ category: cat, "Visit Date": { $gte: dt2, $lt: dt1 }, 'Employee Name': { $in: regexNames } })
         let data2 = await ExcelDB.find({ category: cat, "Visit Date": { $gte: dt3, $lt: dt2 }, 'Employee Name': { $in: regexNames } })
         let data3 = await ExcelDB.find({ category: cat, "Visit Date": { $gte: dt4, $lt: dt3 }, 'Employee Name': { $in: regexNames } })
-        console.log(data3)
+
         if (data3) {
             let start = ""
             let end = ""
@@ -57,15 +57,16 @@ export const test = async (req: Request, res: Response, next: NextFunction) => {
                 console.log(data3[k]["Customer Name"])
                 //@ts-ignore
                 if (data3[k]["Customer Name"] && data3[k]["Customer Name"].includes('*'))
-                    newvisit3 += newvisit3 + 1
-                oldvisit3 + oldvisit3 + 1
+                    newvisit3 = newvisit3 + 1
+                else
+                    oldvisit3 = oldvisit3 + 1
 
                 if (k == 0) {
                     //@ts-ignore
                     start = decimalToTimeForXlsx(data3[k]['In Time'])
-                    //@ts-ignore
-                    end = decimalToTimeForXlsx(data3[k]['Out Time'])
                 }
+                //@ts-ignore
+                end = decimalToTimeForXlsx(data3[k]['Out Time'])
 
             }
             worktime3 = start + " - " + end
@@ -78,15 +79,16 @@ export const test = async (req: Request, res: Response, next: NextFunction) => {
                 console.log(data2[k]["Customer Name"])
                 //@ts-ignore
                 if (data2[k]["Customer Name"] && data2[k]["Customer Name"].includes('*'))
-                    newvisit2 += newvisit2 + 1
-                oldvisit2 + oldvisit2 + 1
+                    newvisit2 = newvisit2 + 1
+                else
+                    oldvisit2 = oldvisit2 + 1
 
                 if (k == 0) {
                     //@ts-ignore
                     start = decimalToTimeForXlsx(data2[k]['In Time'])
-                    //@ts-ignore
-                    end = decimalToTimeForXlsx(data2[k]['Out Time'])
                 }
+                //@ts-ignore
+                end = decimalToTimeForXlsx(data2[k]['Out Time'])
 
             }
             worktime2 = start + " - " + end
@@ -99,15 +101,16 @@ export const test = async (req: Request, res: Response, next: NextFunction) => {
                 console.log(data1[k]["Customer Name"])
                 //@ts-ignore
                 if (data1[k]["Customer Name"] && data1[k]["Customer Name"].includes('*'))
-                    newvisit1 += newvisit1 + 1
-                oldvisit1 + oldvisit1 + 1
+                    newvisit1 = newvisit1 + 1
+                else
+                    oldvisit1 = oldvisit1 + 1
 
                 if (k == 0) {
                     //@ts-ignore
                     start = decimalToTimeForXlsx(data1[k]['In Time'])
-                    //@ts-ignore
-                    end = decimalToTimeForXlsx(data1[k]['Out Time'])
                 }
+                //@ts-ignore
+                end = decimalToTimeForXlsx(data1[k]['Out Time'])
 
             }
             worktime1 = start + " - " + end

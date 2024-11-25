@@ -187,7 +187,6 @@ export const CreateExcelDBFromExcel = async (req: Request, res: Response, next: 
 
                 if (Array.isArray(keys)) {
                     for (let rk = 0; rk < keys.length; rk++) {
-                        console.log(keys[rk])
                         if (keys[rk] && !remotekeys.includes(keys[rk]))
                             result.push({ key: keys[rk], category: sheetName.category, problem: "not found" })
                     }
