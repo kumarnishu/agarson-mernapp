@@ -4,7 +4,7 @@ import { Checklist, IChecklist } from "../models/checklist";
 import { CreateOrEditChecklistDto, GetChecklistBoxDto, GetChecklistDto, GetChecklistFromExcelDto } from "../dtos";
 import { ChecklistBox, IChecklistBox } from "../models/checklist-box";
 import moment from "moment";
-import { Asset, User } from "../models/user";
+import { Asset, IUser, User } from "../models/user";
 import { uploadFileToCloud } from "../utils/uploadFileToCloud";
 import { destroyCloudFile } from "../utils/destroyCloudFile";
 import isMongoId from "validator/lib/isMongoId";
@@ -38,11 +38,11 @@ export const GetChecklists = async (req: Request, res: Response, next: NextFunct
     let checklists: IChecklist[] = []
     let count = 0
     let result: GetChecklistDto[] = []
-
+    let user_ids = req.user?.assigned_users.map((user: IUser) => { return user._id }) || []
     if (!Number.isNaN(limit) && !Number.isNaN(page)) {
         if (req.user?.assigned_users && req.user?.assigned_users.length > 0 && id == 'all') {
             {
-                checklists = await Checklist.find().populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes').sort('created_at').skip((page - 1) * limit).limit(limit)
+                checklists = await Checklist.find({ assigned_users: { $in: user_ids } }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes').sort('created_at').skip((page - 1) * limit).limit(limit)
                 count = await Checklist.find().countDocuments()
 
             }
