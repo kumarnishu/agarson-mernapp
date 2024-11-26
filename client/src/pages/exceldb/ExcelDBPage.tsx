@@ -24,7 +24,7 @@ export default function ExcelDBPage() {
   const [obj, setObj] = useState<string | undefined>()
   const { user: LoggedInUser } = useContext(UserContext)
   const { setChoice } = useContext(ChoiceContext)
-  const { id, name, label } = useParams()
+  const { id, name } = useParams()
 
   const { data: categorydata, refetch: RefetchCategory, isSuccess: isSuccessCategorydata } = useQuery<AxiosResponse<DropDownDto>, BackendError>(["key_categories"], async () => GetKeyCategoryById(id || ""), { enabled: false })
 
@@ -197,7 +197,7 @@ export default function ExcelDBPage() {
           component={'h1'}
           sx={{ pl: 1 }}
         >
-          {name + (label == 'undefined' ? "" : " - " + label) || "Excel DB"}
+          {name || "Excel DB"}
         </Typography>
       </Stack >
       {id && obj && <CreateOrEditExcelDBRemarkDialog category={id} obj={obj} />}

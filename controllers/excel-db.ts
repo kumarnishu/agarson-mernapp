@@ -6,9 +6,10 @@ import { Key } from "../models/keys";
 import { ExcelDB } from "../models/excel-db";
 import { decimalToTimeForXlsx, excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
 import { ICRMState } from "../models/crm-state";
-import { User } from "../models/user";
+import { IUser, User } from "../models/user";
 import { ExcelDBRemark } from "../models/excel-db-remark";
 import moment from "moment";
+import { VisitReport } from "../models/visit-report";
 
 export const GetExcelDbReport = async (req: Request, res: Response, next: NextFunction) => {
     const category = req.query.category
@@ -155,9 +156,58 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
         result.rows.push(obj)
     }
 
+    await SaveVisistReports(req.user)
     return res.status(200).json(result)
 }
 
+
+async function SaveVisistReports(user: IUser) {
+    let salesman: IUser[] = []
+    salesman = await User.find({ assigned_permissions: 'salesman_visit_view' })
+    let cat = await KeyCategory.findOne({ category: 'visitsummary' })
+    for (let i = 0; i < salesman.length; i++) {
+        let names = [String(salesman[i].username), String(salesman[i].alias1 || ""), String(salesman[i].alias2 || "")].filter(value => value)
+
+        const regexNames = names.map(name => new RegExp(`^${name}$`, 'i'));
+        let records = await ExcelDB.find({ category: cat, 'Employee Name': { $in: regexNames } })
+        for (let k = 0; k < records.length; k++) {
+            let employee = salesman[i];
+            //@ts-ignore
+            let date = records[k]["Visit Date"]
+            let dt1 = new Date(date)
+            let dt2 = new Date(dt1)
+            dt1.setHours(0, 0, 0, 0)
+            dt2.setHours(0, 0, 0, 0)
+            dt2.setDate(dt1.getDate() + 1)
+            //@ts-ignore
+            let intime: records[k]["In Time"]
+            let report = await VisitReport.findOne({ employee: employee, "Visit Date": { $gte: dt2, $lt: dt1 }, intime: intime }).sort('-created_at')
+
+            if (!report) {
+                await new VisitReport({
+                    employee: employee,
+                    visit_date: new Date(date),
+                    //@ts-ignore
+                    customer: records[k]["Customer Name"],
+                    //@ts-ignore
+                    intime: records[k]["In Time"],
+                    //@ts-ignore
+                    outtime: records[k]["Out Time"],
+                    //@ts-ignore
+                    visitInLocation: records[k]["Visit In Location"],
+                    //@ts-ignore
+                    visitOutLocation: records[k]["Visit Out Location"],
+                    //@ts-ignore
+                    remarks: records[k]["Remarks"],
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                    created_by: user,
+                    updated_by: user,
+                }).save()
+            }
+        }
+    }
+}
 
 export const CreateExcelDBFromExcel = async (req: Request, res: Response, next: NextFunction) => {
     let result: { key: string, category: string, problem: string }[] = []

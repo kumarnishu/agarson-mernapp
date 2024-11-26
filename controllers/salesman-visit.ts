@@ -96,10 +96,10 @@ export const GetSalesManVisitReport = async (req: Request, res: Response, next: 
             }
             worktime1 = start + " - " + end
         }
-
+        let names = [String(salesman[i].username), String(salesman[i].alias1 || ""), String(salesman[i].alias2 || "")].filter(value => value)
         result.push({
             employee: {
-                id: salesman[i]._id, label: salesman[i].username, value: salesman[i]
+                id: salesman[i]._id, label: names.toString() , value: salesman[i]
                     .username
             },
             date1: moment(dt2).format("DD/MM/YYYY"),
@@ -119,3 +119,4 @@ export const GetSalesManVisitReport = async (req: Request, res: Response, next: 
     }
     return res.status(200).json(result)
 }
+

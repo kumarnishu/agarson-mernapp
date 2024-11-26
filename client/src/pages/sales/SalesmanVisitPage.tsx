@@ -29,10 +29,10 @@ export default function SalesmanVisitPage() {
     () => reports && [
 
       {
-        accessorKey: 'employee.value',
+        accessorKey: 'employee.label',
         header: 'Employee',
         size: 160,
-        Cell: (cell) => <Typography onClick={() => setEmployee(cell.row.original.employee.id)} sx={{ cursor: 'pointer', '&:hover': { fontWeight: 'bold' } }}> {cell.row.original.employee && cell.row.original.employee.value}</Typography >
+        Cell: (cell) => <Typography onClick={() => setEmployee(cell.row.original.employee.id)} sx={{ cursor: 'pointer', '&:hover': { fontWeight: 'bold' } }}> {cell.row.original.employee && cell.row.original.employee.label}</Typography >
         ,
         grow: false
       },

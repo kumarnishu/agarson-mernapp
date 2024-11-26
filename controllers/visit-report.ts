@@ -37,7 +37,7 @@ export const SaveSalesManVisitReport = async (req: Request, res: Response, next:
     let salesman: IUser[] = []
     salesman = await User.find({ assigned_permissions: 'salesman_visit_view' })
     let cat = await KeyCategory.findOne({ category: 'visitsummary' })
-    await VisitReport.deleteMany()
+    //await VisitReport.deleteMany()
     for (let i = 0; i < salesman.length; i++) {
         let names = [String(salesman[i].username), String(salesman[i].alias1 || ""), String(salesman[i].alias2 || "")].filter(value => value)
 
@@ -53,9 +53,9 @@ export const SaveSalesManVisitReport = async (req: Request, res: Response, next:
             dt2.setHours(0, 0, 0, 0)
             dt2.setDate(dt1.getDate() + 1)
             //@ts-ignore
-            let intime: records[k]["In Time"]
-            let report = await VisitReport.findOne({ employee: employee, "Visit Date": { $gte: dt2, $lt: dt1 }, intime: intime }).sort('-created_at')
-
+            let customer: records[k]["Customer"]
+            let report = await VisitReport.findOne({ employee: employee, visit_date: { $gte: dt1, $lt: dt2 }, customer: customer }).sort('-created_at')
+            console.log(report)
             if (!report) {
                 await new VisitReport({
                     employee: employee,
