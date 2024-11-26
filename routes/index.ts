@@ -40,6 +40,9 @@ import KeyCategoryRoutes from "./key-category"
 import ExcelDBRoutes from "./excel-db"
 import ExcelDBRemarkRoutes from "./excel-db-remarks"
 import SalesmanVisitRoutes from "./salesman-visit"
+import VisitRemarkRoutes from "./visist-remark"
+
+
 
 router.use(ArticlesRoutes);
 router.use(AuthRoutes);
@@ -78,6 +81,7 @@ router.use(KeyCategoryRoutes)
 router.use(ExcelDBRoutes)
 router.use(ExcelDBRemarkRoutes)
 router.use(SalesmanVisitRoutes)
+router.use(VisitRemarkRoutes)
 
 
 export default router;

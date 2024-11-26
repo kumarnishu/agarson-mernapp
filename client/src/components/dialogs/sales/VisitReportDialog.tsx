@@ -1,19 +1,19 @@
-import { Typography } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
-import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
-import { GetVisitReportDto } from '../../dtos'
-import { GetVisitReports } from '../../services/SalesServices'
+import { GetVisitReportDto } from '../../../dtos'
+import { GetVisitReports } from '../../../services/SalesServices'
+import { BackendError } from '../../..'
+import { onlyUnique } from '../../../utils/UniqueArray'
+import { Cancel } from '@mui/icons-material'
 
 
-
-export default function VisitReportPage() {
+function VisitReportPage({ employee }: { employee: string }) {
     const [reports, setReports] = useState<GetVisitReportDto[]>([])
-    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetVisitReportDto[]>, BackendError>("reports", GetVisitReports)
+    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetVisitReportDto[]>, BackendError>(["reports", employee], async () => GetVisitReports({ employee }))
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const columns = useMemo<MRT_ColumnDef<GetVisitReportDto>[]>(
@@ -23,15 +23,13 @@ export default function VisitReportPage() {
                 accessorKey: 'employee',
                 header: 'Employee',
                 size: 150,
-                filterVariant: 'multi-select',
-                filterSelectOptions: reports.map((i) => { return i.employee }).filter(onlyUnique)
             },
             {
                 accessorKey: 'visit_date',
                 header: 'Visit Date',
                 size: 120,
                 filterVariant: 'multi-select',
-                filterSelectOptions: reports.map((i) => { return i.created_at || "" }).filter(onlyUnique)
+                filterSelectOptions: reports.map((i) => { return i.visit_date || "" }).filter(onlyUnique)
             },
             {
                 accessorKey: 'customer',
@@ -169,3 +167,26 @@ export default function VisitReportPage() {
 
 }
 
+
+function ViewVisitReportDialog({ employee, setEmployee }: { employee: string, setEmployee: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    return (
+        <Dialog open={Boolean(employee)}
+            fullWidth
+            onClose={() => setEmployee(undefined)}
+        >
+            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setEmployee(undefined)}>
+                <Cancel fontSize='large' />
+            </IconButton>
+
+            <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
+                {"Visiit Report"}
+            </DialogTitle>
+
+            <DialogContent>
+                {employee && <VisitReportPage employee={employee} />}
+            </DialogContent>
+        </Dialog >
+    )
+}
+
+export default ViewVisitReportDialog

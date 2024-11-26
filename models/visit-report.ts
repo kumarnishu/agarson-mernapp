@@ -4,13 +4,13 @@ import { IUser } from "./user"
 export type IVisitReport = {
     _id: string,
     employee: IUser
-    visit_date:Date,
-    customer:string,
-    intime:string,
-    outtime:string,
+    visit_date: Date,
+    customer: string,
+    intime: number,
+    outtime: number,
     visitInLocation: string,
     visitOutLocation: string,
-    remarks:string,
+    remarks: string,
     created_at: Date,
     updated_at: Date,
     created_by: IUser,
@@ -20,11 +20,13 @@ export type IVisitReport = {
 const VisitReportSchema = new mongoose.Schema<IVisitReport, mongoose.Model<IVisitReport, {}, {}>, {}>({
     employee: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: true
     },
+    
     customer: String,
-    intime: String,
-    outtime: String,
+    intime: Number,
+    outtime: Number,
     visitInLocation: String,
     visitOutLocation: String,
     remarks: String,

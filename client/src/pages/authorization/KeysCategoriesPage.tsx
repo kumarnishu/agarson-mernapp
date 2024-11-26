@@ -36,8 +36,7 @@ export default function KeysCategoriesPage() {
       {
         accessorKey: 'actions',
         header: '',
-        maxSize: 50,
-        minSize: 120,
+        size: 50,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -86,7 +85,7 @@ export default function KeysCategoriesPage() {
       {
         accessorKey: 'skip_bottom_rows',
         header: 'Skip Bottom Rows',
-        minSize: 350,
+        size: 200,
         grow: false,
         Cell: (cell) => <>{cell.row.original.skip_bottom_rows ? cell.row.original.skip_bottom_rows.toString() || "" : ""}</>,
       },

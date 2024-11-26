@@ -24,7 +24,7 @@ export default function ExcelDBPage() {
   const [obj, setObj] = useState<string | undefined>()
   const { user: LoggedInUser } = useContext(UserContext)
   const { setChoice } = useContext(ChoiceContext)
-  const { id, name } = useParams()
+  const { id, name, label } = useParams()
 
   const { data: categorydata, refetch: RefetchCategory, isSuccess: isSuccessCategorydata } = useQuery<AxiosResponse<DropDownDto>, BackendError>(["key_categories"], async () => GetKeyCategoryById(id || ""), { enabled: false })
 
@@ -33,12 +33,12 @@ export default function ExcelDBPage() {
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
   let columns = useMemo<MRT_ColumnDef<IColumnRowData['columns']>[]>(
-    () => reportcolumns && reportcolumns.map((item) => {
+    () => reportcolumns && reportcolumns.map((item, index) => {
       if (item.type == "action")
         return {
           accessorKey: item.key,
           header: item.header,
-          maxSize:70,
+          maxSize: 70,
           Cell: (cell) => <PopUp
             element={
               <Stack direction="row" spacing={1} key={item.key}>
@@ -94,11 +94,10 @@ export default function ExcelDBPage() {
       else
         return {
           accessorKey: item.key, header: item.header,
-          aggregationFn: 'sum', grow: true,
+          grow: true,
           Cell: (cell) => parseFloat(Number(cell.cell.getValue()).toFixed(2)),
-          AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
           //@ts-ignore
-          Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
+          Footer: ({ table }) => <b>{index < 3 ? table.getFilteredRowModel().rows.length : table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
         }
     })
     ,
@@ -198,16 +197,17 @@ export default function ExcelDBPage() {
           component={'h1'}
           sx={{ pl: 1 }}
         >
-          {name || "Excel DB"}
+          {name + (label == 'undefined' ? "" : " - " + label) || "Excel DB"}
         </Typography>
       </Stack >
       {id && obj && <CreateOrEditExcelDBRemarkDialog category={id} obj={obj} />}
       {id && obj && <ViewExcelDBRemarksDialog id={id} obj={obj} />}
-      
-      {isLoading || isRefetching ? <LinearProgress /> : <MaterialReactTable table={table} />}
+
+      <MaterialReactTable table={table} />
+      {isLoading || isRefetching && <LinearProgress />}
     </>
 
-  ) 
+  )
 
 }
 

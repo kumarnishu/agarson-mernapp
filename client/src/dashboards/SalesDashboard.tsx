@@ -12,7 +12,7 @@ function SalesDashboard() {
     //process feature and access
     useEffect(() => {
         let tmpfeatures: { feature: string, is_visible: boolean, url: string }[] = []
-        user?.assigned_permissions.includes('salesman_visit_view') && tmpfeatures.push({ feature: 'Salesman Visits', is_visible: true, url: "SalesmanVisit" })
+        user?.assigned_permissions.includes('salesman_visit_view') && tmpfeatures.push({ feature: 'Salesman Visits Summary', is_visible: true, url: "SalesmanVisit" })
        
         tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
 

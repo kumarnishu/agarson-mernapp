@@ -8,6 +8,7 @@ import { AxiosResponse } from "axios"
 import { BackendError } from "../.."
 import { GetSalesmanVisit } from '../../services/SalesServices'
 import moment from 'moment'
+import ViewVisitReportDialog from '../../components/dialogs/sales/VisitReportDialog'
 
 
 export default function SalesmanVisitPage() {
@@ -15,7 +16,7 @@ export default function SalesmanVisitPage() {
   const [reports, setReports] = useState<GetSalesManVisitSummaryReportDto[]>([])
   const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetSalesManVisitSummaryReportDto[]>, BackendError>(["visits", date], async () => GetSalesmanVisit({ date: date }))
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
-
+  const [employee, setEmployee] = useState<string>()
   useEffect(() => {
     if (isSuccess) {
       setReports(data.data)
@@ -28,9 +29,11 @@ export default function SalesmanVisitPage() {
     () => reports && [
 
       {
-        accessorKey: 'employee',
+        accessorKey: 'employee.value',
         header: 'Employee',
         size: 160,
+        Cell: (cell) => <Typography onClick={() => setEmployee(cell.row.original.employee.id)} sx={{ cursor: 'pointer', '&:hover': { fontWeight: 'bold' } }}> {cell.row.original.employee && cell.row.original.employee.value}</Typography >
+        ,
         grow: false
       },
       {
@@ -197,6 +200,7 @@ export default function SalesmanVisitPage() {
 
       {/* table */}
       <MaterialReactTable table={table} />
+      {employee && <ViewVisitReportDialog employee={employee} setEmployee={setEmployee} />}
     </>
 
   )

@@ -16,6 +16,21 @@ export type IMenu = {
     permissions: IPermission[]
 }
 
+export type GetVisitReportDto = {
+    _id: string,
+    employee: string
+    visit_date: string,
+    customer: string,
+    intime: string,
+    outtime: string,
+    visitInLocation: string,
+    visitOutLocation: string,
+    remarks: string,
+    created_at: string,
+    updated_at: string,
+    created_by: string,
+    updated_by: string,
+}
 
 export type GetPaymentDto = {
     _id: string,
@@ -81,6 +96,20 @@ export type GetPaymentDocumentDto = {
     remark: string,
     payment: DropDownDto,
     date: string,
+}
+
+export type GetVisitSummaryReportRemarkDto = {
+    _id: string,
+    remark: string,
+    employee: DropDownDto,
+    visit_date: string,
+    created_at: string,
+    created_by: string
+}
+export type CreateOrEditVisitSummaryRemarkDto = {
+    remark: string,
+    employee: string,
+    visit_date: string
 }
 export type GetChecklistBoxDto = {
     _id: string,
@@ -779,8 +808,9 @@ export type AssignPermissionForMultipleUserDto = {
     flag: number
 }
 
+
 export type GetSalesManVisitSummaryReportDto = {
-    employee: string,
+    employee: DropDownDto,
     date1: string,
     old_visits1: number,
     new_visits1: number,
@@ -793,19 +823,4 @@ export type GetSalesManVisitSummaryReportDto = {
     old_visits3: number,
     new_visits3: number,
     working_time3: string
-}
-export type GetVisitReportDto = {
-    _id: string,
-    employee: string
-    visit_date: string,
-    customer: string,
-    intime: string,
-    outtime: string,
-    visitInLocation: string,
-    visitOutLocation: string,
-    remarks: string,
-    created_at: string,
-    updated_at: string,
-    created_by: string,
-    updated_by: string,
 }

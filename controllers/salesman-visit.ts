@@ -1,10 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import { KeyCategory } from '../models/key-category';
 import { GetSalesManVisitSummaryReportDto } from '../dtos';
-import { ExcelDB } from '../models/excel-db';
 import { IUser, User } from '../models/user';
 import { decimalToTimeForXlsx } from '../utils/datesHelper';
 import moment from 'moment';
+import { VisitReport } from '../models/visit-report';
 
 export const GetSalesManVisitReport = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetSalesManVisitSummaryReportDto[] = []
@@ -28,12 +27,9 @@ export const GetSalesManVisitReport = async (req: Request, res: Response, next: 
     dt3.setDate(dt1.getDate() - 1)
     dt4.setDate(dt1.getDate() - 2)
     dt1.setDate(dt1.getDate() + 1)
-    let cat = await KeyCategory.findOne({ category: 'visitsummary' })
+
 
     for (let i = 0; i < salesman.length; i++) {
-        let names = [String(salesman[i].username), String(salesman[i].alias1 || ""), String(salesman[i].alias2 || "")].filter(value => value)
-
-        const regexNames = names.map(name => new RegExp(`^${name}$`, 'i'));
         let oldvisit1 = 0
         let newvisit1 = 0
         let worktime1 = ''
@@ -45,28 +41,23 @@ export const GetSalesManVisitReport = async (req: Request, res: Response, next: 
         let worktime3 = ''
 
 
-        let data1 = await ExcelDB.find({ category: cat, "Visit Date": { $gte: dt2, $lt: dt1 }, 'Employee Name': { $in: regexNames } })
-        let data2 = await ExcelDB.find({ category: cat, "Visit Date": { $gte: dt3, $lt: dt2 }, 'Employee Name': { $in: regexNames } })
-        let data3 = await ExcelDB.find({ category: cat, "Visit Date": { $gte: dt4, $lt: dt3 }, 'Employee Name': { $in: regexNames } })
+        let data1 = await VisitReport.find({ employee: salesman[i], visit_date: { $gte: dt2, $lt: dt1 } })
+        let data2 = await VisitReport.find({ employee: salesman[i], visit_date: { $gte: dt3, $lt: dt2 } })
+        let data3 = await VisitReport.find({ employee: salesman[i], visit_date: { $gte: dt4, $lt: dt3 } })
 
         if (data3) {
             let start = ""
             let end = ""
             for (let k = 0; k < data3.length; k++) {
-                //@ts-ignore
-                console.log(data3[k]["Customer Name"])
-                //@ts-ignore
-                if (data3[k]["Customer Name"] && data3[k]["Customer Name"].includes('*'))
+                if (data3[k].customer && data3[k].customer.includes('*'))
                     newvisit3 = newvisit3 + 1
                 else
                     oldvisit3 = oldvisit3 + 1
 
                 if (k == 0) {
-                    //@ts-ignore
-                    start = decimalToTimeForXlsx(data3[k]['In Time'])
+                    start = decimalToTimeForXlsx(data3[k].intime)
                 }
-                //@ts-ignore
-                end = decimalToTimeForXlsx(data3[k]['Out Time'])
+                end = decimalToTimeForXlsx(data3[k].outtime)
 
             }
             worktime3 = start + " - " + end
@@ -75,20 +66,15 @@ export const GetSalesManVisitReport = async (req: Request, res: Response, next: 
             let start = ""
             let end = ""
             for (let k = 0; k < data2.length; k++) {
-                //@ts-ignore
-                console.log(data2[k]["Customer Name"])
-                //@ts-ignore
-                if (data2[k]["Customer Name"] && data2[k]["Customer Name"].includes('*'))
+                if (data2[k].customer && data2[k].customer.includes('*'))
                     newvisit2 = newvisit2 + 1
                 else
                     oldvisit2 = oldvisit2 + 1
 
                 if (k == 0) {
-                    //@ts-ignore
-                    start = decimalToTimeForXlsx(data2[k]['In Time'])
+                    start = decimalToTimeForXlsx(data2[k].intime)
                 }
-                //@ts-ignore
-                end = decimalToTimeForXlsx(data2[k]['Out Time'])
+                end = decimalToTimeForXlsx(data2[k].outtime)
 
             }
             worktime2 = start + " - " + end
@@ -97,27 +83,25 @@ export const GetSalesManVisitReport = async (req: Request, res: Response, next: 
             let start = ""
             let end = ""
             for (let k = 0; k < data1.length; k++) {
-                //@ts-ignore
-                console.log(data1[k]["Customer Name"])
-                //@ts-ignore
-                if (data1[k]["Customer Name"] && data1[k]["Customer Name"].includes('*'))
+                if (data1[k].customer && data1[k].customer.includes('*'))
                     newvisit1 = newvisit1 + 1
                 else
                     oldvisit1 = oldvisit1 + 1
 
                 if (k == 0) {
-                    //@ts-ignore
-                    start = decimalToTimeForXlsx(data1[k]['In Time'])
+                    start = decimalToTimeForXlsx(data1[k].intime)
                 }
-                //@ts-ignore
-                end = decimalToTimeForXlsx(data1[k]['Out Time'])
+                end = decimalToTimeForXlsx(data1[k].outtime)
 
             }
             worktime1 = start + " - " + end
         }
 
         result.push({
-            employee: names.toString(),
+            employee: {
+                id: salesman[i]._id, label: salesman[i].username, value: salesman[i]
+                    .username
+            },
             date1: moment(dt2).format("DD/MM/YYYY"),
             old_visits1: oldvisit1,
             new_visits1: newvisit1,

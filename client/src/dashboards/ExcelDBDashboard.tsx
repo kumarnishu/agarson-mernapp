@@ -23,7 +23,7 @@ function ExcelDBDashboard() {
         if (user && categoryData && categoryData.data) {
             console.log(categoryData?.data)
             categoryData.data.map((dt) => {
-                tmpfeatures.push({ feature: dt.value, display_name: dt.label && dt.label.slice(0, 50), is_visible: true, url: `ExcelDbReports/${dt.id}/${dt.value}` })
+                tmpfeatures.push({ feature: dt.value, display_name: dt.label && dt.label, is_visible: true, url: `ExcelDbReports/${dt.id}/${dt.value}/${dt.label}` })
             })
         }
         user?.assigned_permissions.includes('salesman_leaves_report_view') && tmpfeatures.push({ feature: 'salesmen leaves report ', display_name: "", is_visible: false, url: "SalesmanLeavesReportPage" })
@@ -77,7 +77,7 @@ function ExcelDBDashboard() {
                                         </Typography>
                                     </Stack>
                                     <br />
-                                    {feat.display_name && <Typography sx={{ pl: 4 }}>{`${feat.display_name} `}</Typography>}
+                                    {feat.display_name && <Typography title={toTitleCase(feat.display_name)} sx={{ pl: 4,fontSize:11 }}>{`${toTitleCase(feat.display_name)} `}</Typography>}
                                 </Paper>
                             </Link>
                         </Grid>
