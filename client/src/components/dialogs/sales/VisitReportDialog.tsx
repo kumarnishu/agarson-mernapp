@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import { GetVisitReportDto } from '../../../dtos'
@@ -9,6 +9,7 @@ import { GetVisitReports } from '../../../services/SalesServices'
 import { BackendError } from '../../..'
 import { onlyUnique } from '../../../utils/UniqueArray'
 import { Cancel } from '@mui/icons-material'
+import { ChoiceContext, SaleChoiceActions } from '../../../contexts/dialogContext'
 
 
 function VisitReportPage({ employee }: { employee: string }) {
@@ -169,10 +170,10 @@ function VisitReportPage({ employee }: { employee: string }) {
 
 
 function ViewVisitReportDialog({ employee, setEmployee }: { employee: string, setEmployee: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    const { choice, setChoice } = useContext(ChoiceContext)
     return (
-        <Dialog open={Boolean(employee)}
-            fullWidth
-            onClose={() => setEmployee(undefined)}
+        <Dialog open={choice === SaleChoiceActions.visit_history ? true : false}
+            onClose={() => setChoice({ type: SaleChoiceActions.close_sale })}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setEmployee(undefined)}>
                 <Cancel fontSize='large' />

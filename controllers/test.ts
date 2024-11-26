@@ -127,6 +127,7 @@ export const test = async (req: Request, res: Response, next: NextFunction) => {
             old_visits3: oldvisit3,
             new_visits3: newvisit3,
             working_time3: worktime3,
+            last_remark:""
         })
 
     }

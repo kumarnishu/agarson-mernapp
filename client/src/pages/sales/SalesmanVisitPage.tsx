@@ -1,18 +1,27 @@
 import { Stack } from '@mui/system'
-import { useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
-import { TextField, Typography } from '@mui/material'
+import { IconButton, TextField, Tooltip, Typography } from '@mui/material'
 import { GetSalesManVisitSummaryReportDto } from '../../dtos'
 import { AxiosResponse } from "axios"
 import { BackendError } from "../.."
 import { GetSalesmanVisit } from '../../services/SalesServices'
 import moment from 'moment'
 import ViewVisitReportDialog from '../../components/dialogs/sales/VisitReportDialog'
+import PopUp from '../../components/popup/PopUp'
+import { UserContext } from '../../contexts/userContext'
+import { ChoiceContext, SaleChoiceActions } from '../../contexts/dialogContext'
+import { Comment, Visibility } from '@mui/icons-material'
+import ViewVisitReportRemarksDialog from '../../components/dialogs/sales/ViewVisitReportRemarksDialog'
+import CreateOrEditVisitReportRemarkDialog from '../../components/dialogs/sales/CreateOrEditVisitReportRemarkDialog'
 
 
 export default function SalesmanVisitPage() {
   const [date, setDate] = useState(moment(new Date(new Date())).format("YYYY-MM-DD"))
+  const [realdate, setRealDate] = useState<string | undefined>()
+  const { user: LoggedInUser } = useContext(UserContext)
+  const { setChoice } = useContext(ChoiceContext)
   const [reports, setReports] = useState<GetSalesManVisitSummaryReportDto[]>([])
   const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetSalesManVisitSummaryReportDto[]>, BackendError>(["visits", date], async () => GetSalesmanVisit({ date: date }))
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
@@ -24,16 +33,64 @@ export default function SalesmanVisitPage() {
   }, [isSuccess, data])
 
 
+  useEffect(() => {
+    setRealDate(moment(date).toDate().toString())
+  }, [date])
+
   const columns = useMemo<MRT_ColumnDef<GetSalesManVisitSummaryReportDto>[]>(
     //column definitions...
     () => reports && [
+      {
+        accessorKey: 'action',
+        header: 'Action',
+        maxSize: 70,
+        Cell: (cell) => <PopUp
+          element={
+            <Stack direction="row" spacing={1}>
+              {LoggedInUser?.assigned_permissions.includes('salesman_visit_view') && <Tooltip title="view remarks">
+                <IconButton color="primary"
 
+                  onClick={() => {
+                    setChoice({ type: SaleChoiceActions.view_visit_remarks })
+                    setEmployee(cell.row.original.employee.id)
+                  }}
+                >
+                  <Visibility />
+                </IconButton>
+              </Tooltip>}
+
+              {LoggedInUser?.assigned_permissions.includes('salesman_visit_view') &&
+                <Tooltip title="Add Remark">
+                  <IconButton
+                    color="success"
+                    onClick={() => {
+                      setChoice({ type: SaleChoiceActions.create_or_edit_visit_remark })
+                      setEmployee(cell.row.original.employee.id)
+                    }}
+                  >
+                    <Comment />
+                  </IconButton>
+                </Tooltip>}
+
+            </Stack>}
+        />
+      },
       {
         accessorKey: 'employee.label',
         header: 'Employee',
-        size: 160,
-        Cell: (cell) => <Typography onClick={() => setEmployee(cell.row.original.employee.id)} sx={{ cursor: 'pointer', '&:hover': { fontWeight: 'bold' } }}> {cell.row.original.employee && cell.row.original.employee.label}</Typography >
+        size: 200,
+        Cell: (cell) => <Typography onClick={() => {
+          setChoice({ type: SaleChoiceActions.visit_history })
+          setEmployee(cell.row.original.employee.id)
+        }
+        } sx={{ cursor: 'pointer', '&:hover': { fontWeight: 'bold' } }}> {cell.row.original.employee && cell.row.original.employee.label}</Typography >
         ,
+        grow: false
+      },
+      {
+        accessorKey: 'last_remark',
+        header: 'Last Remark',
+        size: 200,
         grow: false
       },
       {
@@ -107,7 +164,8 @@ export default function SalesmanVisitPage() {
         header: 'Time',
         size: 130,
         grow: false
-      }
+      },
+      
 
 
     ],
@@ -200,6 +258,8 @@ export default function SalesmanVisitPage() {
 
       {/* table */}
       <MaterialReactTable table={table} />
+      {employee && realdate && <ViewVisitReportRemarksDialog employee={employee} visit_date={realdate} />}
+      {employee && realdate && <CreateOrEditVisitReportRemarkDialog employee={employee} visit_date={realdate} />}
       {employee && <ViewVisitReportDialog employee={employee} setEmployee={setEmployee} />}
     </>
 

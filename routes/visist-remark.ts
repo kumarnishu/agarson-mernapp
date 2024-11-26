@@ -4,8 +4,9 @@ import { DeleteVisitRemark, GetVisitSummaryReportRemarkHistory, NewVisitRemark, 
 const router = express.Router()
 
 router.route("/visit/remarks").post(isAuthenticatedUser, NewVisitRemark)
-router.route("/visit/remarks/:id").get(isAuthenticatedUser, GetVisitSummaryReportRemarkHistory)
+router.route("/visit/remarks/:id")
     .put(isAuthenticatedUser, UpdateVisitRemark)
     .delete(isAuthenticatedUser, DeleteVisitRemark)
+router.route("/visit/remarks").get(isAuthenticatedUser, GetVisitSummaryReportRemarkHistory)
 
 export default router

@@ -52,7 +52,7 @@ export const GetVisitSummaryReportRemarkHistory = async (req: Request, res: Resp
             employee: { id: r.created_by._id, value: r.created_by.username, label: r.created_by.username },
             created_at: r.created_at.toString(),
             visit_date: r.visit_date.toString(),
-            created_by: r.employee.username
+            created_by: r.created_by.username
         }
     })
     return res.json(result)

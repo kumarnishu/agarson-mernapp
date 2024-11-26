@@ -9,20 +9,22 @@ type UserChoices = "signup" | "reset_password_mail" | "close_user" | "new_user" 
 type CheckListChoices = "create_or_edit_checklist" | "create_or_edit_checklist_category" | "delete_checklist" | "close_checklist" | "bulk_delete_checklist" | "view_ checklist_box_remarks" | "create_or_edit_checklist_remark" | "view_checklist_remarks" | "delete_checklist_remark" | "assign_checklist_to_users" | "delete_checklist_category"
 
 
-type KeyChoices = "create_or_edit_key" | "create_or_edit_key_category" | "delete_key" | "close_key" | "bulk_delete_key" | "delete_key_category" | "assign_categories" | "assign_keys"|"create_or_edit_excel_db_remark"|"delete_excel_db_remark"|"view_excel_db_remarks"
+type KeyChoices = "create_or_edit_key" | "create_or_edit_key_category" | "delete_key" | "close_key" | "bulk_delete_key" | "delete_key_category" | "assign_categories" | "assign_keys" | "create_or_edit_excel_db_remark" | "delete_excel_db_remark" | "view_excel_db_remarks"
 
+
+type SaleChoices = "create_or_edit_visit_remark" | "delete__visit_remark" | "view_visit_remarks" | "close_sale" |"visit_history"
 
 type PaymentChoices = "create_or_edit_payment" | "create_or_edit_payment_category" | "delete_payment" | "close_payment" | "bulk_delete_payment" | "delete_payment_category" | "create_or_edit_payment_remark" | "view_payment_remarks" | "delete_payment_remark" | "assign_payment_to_users"
 
 
-type LeadChoices = "create_or_edit_refer" | "create_or_edit_leadtype" | "create_or_edit_source" | "delete_crm_item" | "view_remarks" | "close_lead" | "create_or_edit_city" | "bulk_assign_crm_cities" | "find_unknown_stages" | "create_or_edit_bill" | "convert_lead_to_refer" | "bulk_delete_useless_leads" | "view_referrals" | "delete_crm_state" | "find_unknown_cities" |"toogle_refer"|
+type LeadChoices = "create_or_edit_refer" | "create_or_edit_leadtype" | "create_or_edit_source" | "delete_crm_item" | "view_remarks" | "close_lead" | "create_or_edit_city" | "bulk_assign_crm_cities" | "find_unknown_stages" | "create_or_edit_bill" | "convert_lead_to_refer" | "bulk_delete_useless_leads" | "view_referrals" | "delete_crm_state" | "find_unknown_cities" | "toogle_refer" |
   "refer_lead" | "remove_referral" | "assign_refer" | "bulk_assign_leads" | "bulk_assign_refers" | "delete_remark" | "create_or_edt_remark" | "create_or_edit_lead" | "create_or_edit_state" | "create_or_edit_stage" | "bulk_assign_crm_states" | "find_unknown_states" | "merge_leads" | "view_refer_remarks" | "delete_bill" | "view_bills" | "merge_refers" | "view_bills_photo"
 
 
 type ProductionChoices = "create_or_edit_machine" | "close_production" | "create_or_edit_spareDye" | "create_or_edit_article" | "create_or_edit_thickness" | "create_or_edit_dye" | "update_dye" | "validate_weight" | "toogle_machine" | "toogle_article" | "toogle_dye" | "view_shoe_photo" | "view_shoe_photo2" | "view_shoe_photo3" | "create_or_edit_shoe_weight" | "validate_spareDye" | "view_spare_dye_photo" | "create_or_edit_production" | "update_production" | "delete_production_item" | "create_or_edit_location" | "toogle_dye_location" | "update_shoe_weight2" | "update_shoe_weight3" | "create_or_edit_machine_category"
 
 
-type ChoiceState = UserChoices | PaymentChoices | LeadChoices | CheckListChoices | ProductionChoices | KeyChoices
+type ChoiceState = UserChoices | PaymentChoices | LeadChoices | CheckListChoices | ProductionChoices | KeyChoices | SaleChoices
 
 const initialState: ChoiceState | null = null
 
@@ -64,9 +66,17 @@ export enum KeyChoiceActions {
   assign_keys = "assign_keys",
   bulk_delete_key = "bulk_delete_key",
   delete_key_category = "delete_key_category",
-  create_or_edit_excel_db_remark="create_or_edit_excel_db_remark",
-  delete_excel_db_remark="delete_excel_db_remark",
-  view_excel_db_remarks= "view_excel_db_remarks"
+  create_or_edit_excel_db_remark = "create_or_edit_excel_db_remark",
+  delete_excel_db_remark = "delete_excel_db_remark",
+  view_excel_db_remarks = "view_excel_db_remarks"
+
+}
+export enum SaleChoiceActions {
+  create_or_edit_visit_remark = "create_or_edit_visit_remark",
+  delete__visit_remark = "delete__visit_remark",
+  view_visit_remarks = "view_visit_remarks",
+  close_sale = "close_sale",
+  visit_history ="visit_history"
 
 }
 export enum CheckListChoiceActions {
@@ -98,7 +108,7 @@ export enum PaymentsChoiceActions {
 
 export enum LeadChoiceActions {
   create_or_edit_lead = "create_or_edit_lead",
-  toogle_refer ="toogle_refer",
+  toogle_refer = "toogle_refer",
   view_bills_photo = "view_bills_photo",
   view_bills = "view_bills",
   merge_refers = "merge_refers",
@@ -171,7 +181,7 @@ export enum UserChoiceActions {
 
 type Action = {
   type: UserChoiceActions |
-  LeadChoiceActions | CheckListChoiceActions | ProductionChoiceActions | PaymentsChoiceActions | KeyChoiceActions
+  LeadChoiceActions | CheckListChoiceActions | ProductionChoiceActions | PaymentsChoiceActions | KeyChoiceActions | SaleChoiceActions
 }
 
 // reducer
@@ -247,6 +257,14 @@ function reducer(state: ChoiceState | null, action: Action) {
     case LeadChoiceActions.view_bills_photo: return type
     case LeadChoiceActions.view_refer_remarks: return type
     case LeadChoiceActions.toogle_refer: return type
+
+
+    case SaleChoiceActions.create_or_edit_visit_remark: return type
+    case SaleChoiceActions.close_sale: return type
+    case SaleChoiceActions.view_visit_remarks: return type
+    case SaleChoiceActions.visit_history: return type
+    case SaleChoiceActions.delete__visit_remark: return type
+
 
     //production choice actios
     case ProductionChoiceActions.create_or_edit_machine: return type

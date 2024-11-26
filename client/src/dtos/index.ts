@@ -822,5 +822,6 @@ export type GetSalesManVisitSummaryReportDto = {
     date3: string,
     old_visits3: number,
     new_visits3: number,
-    working_time3: string
+    working_time3: string,
+    last_remark: string
 }

@@ -4,6 +4,8 @@ import { IUser, User } from '../models/user';
 import { decimalToTimeForXlsx } from '../utils/datesHelper';
 import moment from 'moment';
 import { VisitReport } from '../models/visit-report';
+import { VisitRemark } from '../models/visit_remark';
+
 
 export const GetSalesManVisitReport = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetSalesManVisitSummaryReportDto[] = []
@@ -30,6 +32,10 @@ export const GetSalesManVisitReport = async (req: Request, res: Response, next: 
 
 
     for (let i = 0; i < salesman.length; i++) {
+        let rremark = await VisitRemark.findOne({ employee: salesman[i], visit_date: { $gte: dt2, $lt: dt1 } }).sort('-created_at')
+        let lastremark = ""
+        if (rremark)
+            lastremark = rremark?.remark
         let oldvisit1 = 0
         let newvisit1 = 0
         let worktime1 = ''
@@ -99,7 +105,7 @@ export const GetSalesManVisitReport = async (req: Request, res: Response, next: 
         let names = [String(salesman[i].username), String(salesman[i].alias1 || ""), String(salesman[i].alias2 || "")].filter(value => value)
         result.push({
             employee: {
-                id: salesman[i]._id, label: names.toString() , value: salesman[i]
+                id: salesman[i]._id, label: names.toString(), value: salesman[i]
                     .username
             },
             date1: moment(dt2).format("DD/MM/YYYY"),
@@ -113,7 +119,8 @@ export const GetSalesManVisitReport = async (req: Request, res: Response, next: 
             date3: moment(dt4).format("DD/MM/YYYY"),
             old_visits3: oldvisit3,
             new_visits3: newvisit3,
-            working_time3: worktime3
+            working_time3: worktime3,
+            last_remark: lastremark
         })
 
     }

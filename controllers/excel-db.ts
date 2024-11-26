@@ -155,8 +155,6 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
 
         result.rows.push(obj)
     }
-
-    await SaveVisistReports(req.user)
     return res.status(200).json(result)
 }
 
@@ -170,6 +168,8 @@ async function SaveVisistReports(user: IUser) {
 
         const regexNames = names.map(name => new RegExp(`^${name}$`, 'i'));
         let records = await ExcelDB.find({ category: cat, 'Employee Name': { $in: regexNames } })
+        let found = 0;
+        let notfound = 0;
         for (let k = 0; k < records.length; k++) {
             let employee = salesman[i];
             //@ts-ignore
@@ -180,10 +180,11 @@ async function SaveVisistReports(user: IUser) {
             dt2.setHours(0, 0, 0, 0)
             dt2.setDate(dt1.getDate() + 1)
             //@ts-ignore
-            let intime: records[k]["In Time"]
-            let report = await VisitReport.findOne({ employee: employee, "Visit Date": { $gte: dt2, $lt: dt1 }, intime: intime }).sort('-created_at')
-
-            if (!report) {
+            let intime = records[k]['In Time'];
+            let report = await VisitReport.findOne({ employee: employee, visit_date: { $gte: dt1, $lt: dt2 }, intime: intime })
+            if (report)
+                found++
+            else {
                 await new VisitReport({
                     employee: employee,
                     visit_date: new Date(date),
@@ -204,8 +205,12 @@ async function SaveVisistReports(user: IUser) {
                     created_by: user,
                     updated_by: user,
                 }).save()
+                notfound++
             }
+
+
         }
+        console.log(found, notfound)
     }
 }
 
@@ -270,6 +275,7 @@ export const CreateExcelDBFromExcel = async (req: Request, res: Response, next: 
             }
         }
     }
+    await SaveVisistReports(req.user)
     if (result.length > 0)
         return res.status(200).json(result);
     else

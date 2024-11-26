@@ -23,7 +23,6 @@ const VisitReportSchema = new mongoose.Schema<IVisitReport, mongoose.Model<IVisi
         ref: 'User',
         required: true
     },
-    
     customer: String,
     intime: Number,
     outtime: Number,
