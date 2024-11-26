@@ -114,7 +114,7 @@ export const test = async (req: Request, res: Response, next: NextFunction) => {
         }
 
         result.push({
-            employee: names.toString(),
+            employee: { id: salesman[i]._id, label: salesman[i].username, value: salesman[i].username },
             date1: moment(dt2).format("DD/MM/YYYY"),
             old_visits1: oldvisit1,
             new_visits1: newvisit1,
