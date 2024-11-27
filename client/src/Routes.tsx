@@ -66,7 +66,7 @@ function AppRoutes() {
             <UsersPage />
           } />
 
-          {user && user?.is_admin &&
+          {user && user?.assigned_permissions.includes('authorization_menu')  &&
             < Route path="Authorization" >
               <Route index element={
                 <AuthorizationDashboard />
@@ -101,7 +101,7 @@ function AppRoutes() {
                 }
               />}
             </Route>}
-
+          
           {user && user?.assigned_permissions.includes('feature_menu') &&
             < Route path="Features">
               <Route index
