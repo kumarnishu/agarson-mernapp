@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
@@ -8,7 +8,7 @@ import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
 import { GetChecklistFromExcelDto, GetUserDto } from '../../dtos'
-import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { CheckListChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import PopUp from '../../components/popup/PopUp'
 import { Delete, Edit, FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
@@ -44,13 +44,21 @@ function CheckListAdminPage() {
     start_date: moment(new Date().setDate(new Date().getDate() - 4)).format("YYYY-MM-DD")
     , end_date: moment(new Date().setDate(new Date().getDate() + 2)).format("YYYY-MM-DD")
   })
+
+  const isFirstRender = useRef(true);
+
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   ];
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+
   const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<{ category: string, count: number }[]>, BackendError>("checklists", GetChecklistTopBarDetails)
   const { setChoice } = useContext(ChoiceContext)
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
   let previous_date = new Date()
   let day = previous_date.getDate() - 3
   previous_date.setDate(day)
@@ -73,8 +81,7 @@ function CheckListAdminPage() {
       {
         accessorKey: 'actions',
         header: '',
-        maxSize: 50,
-        grow: true,
+        
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -113,14 +120,12 @@ function CheckListAdminPage() {
       {
         accessorKey: 'serial_no',
         header: ' No',
-        maxSize: 70,
-        grow: true,
+        
       },
       {
         accessorKey: 'last_checked_box',
         header: 'Stage',
-        maxSize: 70,
-        grow: false,
+        
         Cell: (cell) => <Tooltip title={cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}>
           <Button onClick={() => {
             setChecklist(cell.row.original)
@@ -131,8 +136,7 @@ function CheckListAdminPage() {
       {
         accessorKey: 'work_title',
         header: ' Work Title',
-        minSize: 350,
-        grow: false,
+        
         Cell: (cell) => <span title={cell.row.original.work_description} >
           {cell.row.original.link && cell.row.original.link != "" ?
             <a style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
@@ -142,12 +146,11 @@ function CheckListAdminPage() {
             </span>
           }
         </span>
-      }, 
+      },
       {
         accessorKey: 'assigned_users.value',
         header: 'Responsible',
-        minSize: 120,
-        grow: false,
+       
         filter: 'custom',
         enableColumnFilter: true,
         Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.value }).toString() || ""}</>,
@@ -159,12 +162,11 @@ function CheckListAdminPage() {
           );
         },
       },
-    
+
       {
         accessorKey: 'last_10_boxes',
         header: 'Filtered Dates',
-        minSize: 250,
-        grow: true,
+      
         Cell: (cell) => <>
           {userId == "all" ?
             <Stack direction="row" className="scrollable-stack" sx={{ height: '20px' }}>
@@ -333,28 +335,25 @@ function CheckListAdminPage() {
           }
         </>
       },
-     
+
       {
         accessorKey: 'category.value',
         header: ' Category',
-        minSize: 120,
-        grow: false,
+       
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
       },
       {
         accessorKey: 'frequency',
         header: ' Frequency',
-        minSize: 120,
-        grow: false,
+       
         Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
       },
-      
-     
+
+
       {
         accessorKey: 'next_date',
         header: 'Next Check Date',
-        minSize: 120,
-        grow: true,
+       
         Cell: (cell) => <>
           < input
             type="date"
@@ -373,8 +372,7 @@ function CheckListAdminPage() {
       {
         accessorKey: 'photo',
         header: 'Photo',
-        minSize: 120,
-        grow: true,
+       
         Cell: (cell) => <span onDoubleClick={() => {
           if (cell.row.original.photo && cell.row.original.photo) {
             DownloadFile(cell.row.original.photo, 'photo')
@@ -385,15 +383,13 @@ function CheckListAdminPage() {
       {
         accessorKey: 'updated_at',
         header: 'Last Updated At',
-        minSize: 100,
-        grow: true,
+     
         Cell: (cell) => <>{cell.row.original.updated_at ? moment(cell.row.original.updated_at).format("DD/MM/YYYY") : ""}</>
       },
       {
         accessorKey: 'updated_by',
         header: 'Last Updated By',
-        minSize: 100,
-        grow: true,
+     
         Cell: (cell) => <>{cell.row.original.updated_by ? cell.row.original.updated_by.value : ""}</>
       },
     ],
@@ -446,7 +442,7 @@ function CheckListAdminPage() {
             alignItems={'center'}
             justifyContent="right">
 
-            <Stack justifyContent={'right'}  direction={'row'} gap={1}>
+            <Stack justifyContent={'right'} direction={'row'} gap={1}>
               < TextField
                 variant='filled'
                 size="small"
@@ -604,7 +600,16 @@ function CheckListAdminPage() {
     onSortingChange: setSorting,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    state: { sorting, isLoading: isLoading, showAlertBanner: false },
+    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+    rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
+    columnVirtualizerOptions: { overscan: 2 },
+    onColumnSizingChange: setColumnSizing, state: {
+      isLoading: isLoading,
+      columnVisibility,
+
+      sorting,
+      columnSizing: columnSizing
+    },
     enableBottomToolbar: true,
     enableGlobalFilter: false,
     enablePagination: false,
@@ -632,6 +637,59 @@ function CheckListAdminPage() {
       })
     }
   }, [data])
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+
+
+
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+
+
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+
+    isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
+
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
 
   return (
     <>

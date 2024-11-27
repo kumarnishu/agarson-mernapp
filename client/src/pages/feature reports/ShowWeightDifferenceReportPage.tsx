@@ -6,7 +6,7 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { UserContext } from '../../contexts/userContext'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
 import { GetShoeWeightDiffReportDto } from '../../dtos'
@@ -23,6 +23,11 @@ export default function ShowWeightDifferenceReportPage() {
   })
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetShoeWeightDiffReportDto[]>, BackendError>(["shoeweight_diffreports", dates.start_date, dates.end_date], async () => GetShoeWeightDiffReports({ start_date: dates.start_date, end_date: dates.end_date }))
 
+   const isFirstRender = useRef(true);
+
+    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+  
+  const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const columns = useMemo<MRT_ColumnDef<GetShoeWeightDiffReportDto>[]>(
@@ -30,15 +35,13 @@ export default function ShowWeightDifferenceReportPage() {
     () => reports && [
       {
         accessorKey: 'date',
-        grow:false,
         header: 'Date',
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => { return i.date.toString() }).filter(onlyUnique)
       },
       {
         accessorKey: 'dye_no',
-        minSize: 140,
-        grow:false,
+      
         header: 'Dye',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -51,8 +54,7 @@ export default function ShowWeightDifferenceReportPage() {
       },
       {
         accessorKey: 'article',
-        minSize: 140,
-        grow:false,
+      
         header: 'Article',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -65,8 +67,7 @@ export default function ShowWeightDifferenceReportPage() {
       },
       {
         accessorKey: 'size',
-        minSize: 140,
-        grow:false,
+     
         header: 'Size',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -79,8 +80,7 @@ export default function ShowWeightDifferenceReportPage() {
       },
       {
         accessorKey: 'st_weight',
-        minSize: 140,
-        grow:false,
+      
         header: 'St Weight',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -93,8 +93,7 @@ export default function ShowWeightDifferenceReportPage() {
       },
       {
         accessorKey: 'machine',
-        minSize: 140,
-        grow:false,
+       
         header: 'Machine',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -107,80 +106,70 @@ export default function ShowWeightDifferenceReportPage() {
       },
       {
         accessorKey: 'w1',
-        minSize: 140,
-        grow:false,
+     
         header: 'Weight1',
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'u1',
-        minSize: 140,
-        grow:false,
+      
         header: 'Upper1',
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'd1',
-        minSize: 140,
-        grow:false,
+     
         header: 'Diff-1',
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'w2',
-        minSize: 140,
-        grow:false,
+    
         header: 'Weight2',
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'u2',
-        minSize: 140,
-        grow:false,
+     
         header: 'Upper2',
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'd2',
-        minSize: 140,
-        grow:false,
+       
         header: 'Diff-2',
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'w3',
-        minSize: 140,
-        grow:false,
+      
         header: 'Weight3',
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'u3',
-        minSize: 140,
-        grow:false,
+   
         header: 'Upper3',
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'd3',
-        minSize: 140,
-        grow:false,
+      
         header: 'Diff-3',
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'person',
-        minSize: 140,
-        grow:false,
+      
         header: 'Person',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -195,6 +184,59 @@ export default function ShowWeightDifferenceReportPage() {
     [reports],
     //end
   );
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+    
+
+
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+
+    
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+    
+    isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
+ 
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
 
   useEffect(() => {
     if (isSuccess && data) {
@@ -278,8 +320,15 @@ export default function ShowWeightDifferenceReportPage() {
     rowVirtualizerInstanceRef, //optional
     rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
     columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizer
+    onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
-    state: { isLoading, sorting }
+    onColumnSizingChange: setColumnSizing, state: {
+      isLoading: isLoading,
+      columnVisibility,
+      
+      sorting,
+      columnSizing: columnSizing
+    }
   });
   useEffect(() => {
     //scroll to the top of the table when the sorting changes

@@ -5,7 +5,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { UserContext } from '../../contexts/userContext'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { ChoiceContext, ProductionChoiceActions } from '../../contexts/dialogContext'
 import { Check, Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Menu as MenuIcon, Photo } from '@mui/icons-material';
@@ -32,8 +32,13 @@ export default function SpareDyesPage() {
     const { setChoice } = useContext(ChoiceContext)
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-    const [userId, setUserId] = useState<string>()
+    const isFirstRender = useRef(true);
+
+    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
+    const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
+    const [userId, setUserId] = useState<string>()
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
         start_date: moment(new Date()).format("YYYY-MM-DD")
@@ -68,9 +73,7 @@ export default function SpareDyesPage() {
             {
                 accessorKey: 'actions',
                 header: '',
-                maxSize: 50,
                 enableColumnFilter: false,
-                grow:false,
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row" spacing={1}>
@@ -118,8 +121,7 @@ export default function SpareDyesPage() {
             {
                 accessorKey: 'dye_photo',
                 header: 'Photo',
-                minSize: 160,
-                grow:false,
+              
                 Cell: (cell) => <>
                     {cell.row.original.dye_photo && <IconButton
                         disabled={!LoggedInUser?.assigned_permissions.includes('spare_dye_view')}
@@ -135,15 +137,13 @@ export default function SpareDyesPage() {
             {
                 accessorKey: 'photo_time',
                 header: 'Photo Time',
-                minSize: 150,
-                grow:false,
+               
                 Cell: (cell) => <>{cell.row.original.photo_time || ""}</>
             },
             {
                 accessorKey: 'dye',
                 header: 'Dye',
-                minSize: 150,
-                grow:false,
+               
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.dye.value.toString() || "" ? cell.row.original.dye.value.toString() || "" : ""}</>,
                 filterSelectOptions: spareDyes && spareDyes.map((i) => {
@@ -153,8 +153,7 @@ export default function SpareDyesPage() {
             {
                 accessorKey: 'location',
                 header: 'Dye Location',
-                minSize: 150,
-                grow:false,
+               
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.location.value.toString() || "" ? cell.row.original.location.value.toString() || "" : ""}</>,
                 filterSelectOptions: spareDyes && spareDyes.map((i) => {
@@ -164,29 +163,25 @@ export default function SpareDyesPage() {
             {
                 accessorKey: 'repair_required',
                 header: 'Repair Required',
-                minSize: 150,
-                grow:false,
+               
                 Cell: (cell) => <>{cell.row.original.repair_required ? "Yes" : "No"}</>
             },
             {
                 accessorKey: 'remarks',
                 header: 'remarks',
-                minSize: 250,
-                grow:false,
+               
                 Cell: (cell) => <>{cell.row.original.remarks || ""}</>
             },
             {
                 accessorKey: 'created_at',
                 header: 'Created At',
-                minSize: 150,
-                grow:false,
+               
                 Cell: (cell) => <>{cell.row.original.created_at || ""}</>
             },
             {
                 accessorKey: 'created_by',
                 header: 'Creator',
-                minSize: 150,
-                grow:false,
+               
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.created_by.value.toString() || "" ? cell.row.original.created_by.value.toString() || "" : ""}</>,
                 filterSelectOptions: spareDyes && spareDyes.map((i) => {
@@ -199,7 +194,7 @@ export default function SpareDyesPage() {
 
 
     const table = useMaterialReactTable({
-        columns, columnFilterDisplayMode: 'popover', 
+        columns, columnFilterDisplayMode: 'popover',
         data: spareDyes,
         enableColumnResizing: true,
         enableColumnVirtualization: true, enableStickyFooter: true,
@@ -353,7 +348,14 @@ export default function SpareDyesPage() {
         enableTopToolbar: true,
         enableTableFooter: true,
         enableRowVirtualization: true,
-        state: { sorting, isLoading: isLoading },
+        onColumnVisibilityChange: setColumnVisibility,
+        onColumnSizingChange: setColumnSizing, state: {
+            isLoading: isLoading,
+            columnVisibility,
+
+            sorting,
+            columnSizing: columnSizing
+        },
         enableBottomToolbar: true,
         enableGlobalFilter: false,
         manualPagination: true,
@@ -368,6 +370,62 @@ export default function SpareDyesPage() {
             console.error(error);
         }
     }, [sorting]);
+    useEffect(() => {
+        //scroll to the top of the table when the sorting changes
+        try {
+            rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+        } catch (error) {
+            console.error(error);
+        }
+    }, [sorting]);
+
+    //load state from local storage
+    useEffect(() => {
+        const columnVisibility = localStorage.getItem(
+            'mrt_columnVisibility_table_1',
+        );
+        const columnSizing = localStorage.getItem(
+            'mrt_columnSizing_table_1',
+        );
+
+
+
+
+        const sorting = localStorage.getItem('mrt_sorting_table_1');
+
+
+        if (columnVisibility) {
+            setColumnVisibility(JSON.parse(columnVisibility));
+        }
+
+
+
+        if (columnSizing)
+            setColumnSizing(JSON.parse(columnSizing))
+        if (sorting) {
+            setSorting(JSON.parse(sorting));
+        }
+        isFirstRender.current = false;
+    }, []);
+
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem(
+            'mrt_columnVisibility_table_1',
+            JSON.stringify(columnVisibility),
+        );
+    }, [columnVisibility]);
+
+
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    }, [sorting]);
+
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    }, [columnSizing]);
 
     return (
         <>

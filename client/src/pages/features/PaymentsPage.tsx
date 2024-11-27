@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
@@ -8,7 +8,7 @@ import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
 import { GetPaymentDto, GetPaymentsFromExcelDto, GetUserDto } from '../../dtos'
-import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { PaymentsChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import PopUp from '../../components/popup/PopUp'
 import { Delete, Edit, FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
@@ -34,8 +34,15 @@ function PaymentsPage() {
   const [userId, setUserId] = useState<string>()
   const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<{ category: string, count: number }[]>, BackendError>("payments", GetPaymentsTopBarDetails)
   const { setChoice } = useContext(ChoiceContext)
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'payments_view', show_assigned_only: false }))
+
+
+  const isFirstRender = useRef(true);
+
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const { data, isSuccess, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetPaymentDto[], page: number, total: number, limit: number }>, BackendError>(["payments", userId, stage], async () => GetPaymentss({ limit: paginationData?.limit, page: paginationData?.page, id: userId, stage: stage }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { mutate: changedate } = useMutation
@@ -60,8 +67,7 @@ function PaymentsPage() {
       {
         accessorKey: 'actions',
         header: '',
-        maxSize: 50,
-        group:true,
+        
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -100,20 +106,18 @@ function PaymentsPage() {
       {
         accessorKey: 'payment_title',
         header: ' Payment Title',
-        minSize: 300,
-        group:true,
+        
         Cell: (cell) => <>{!cell.row.original.link ? <Tooltip title={cell.row.original.payment_description}><span>{cell.row.original.payment_title ? cell.row.original.payment_title : ""}</span></Tooltip> :
           <Tooltip title={cell.row.original.payment_description}>
             <a style={{ fontSize: 11, fontWeight: 'bold', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.payment_title}</a>
           </Tooltip>}
         </>
       },
-      
+
       {
         accessorKey: 'assigned_users.value',
         header: 'Responsible',
-        minSize: 220,
-        group:true,
+        
         filter: 'custom',
         enableColumnFilter: true,
         Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.value }).toString() || ""}</>,
@@ -128,22 +132,19 @@ function PaymentsPage() {
       {
         accessorKey: 'category.value',
         header: ' Category',
-        minSize: 150,
-        group:true,
+        
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
       },
       {
         accessorKey: 'frequency',
         header: ' Frequency',
-        minSize: 150,
-        group:true,
+        
         Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
       },
       {
         accessorKey: 'due_date',
         header: 'Due Date',
-        minSize: 150,
-        group:true,
+        
         Cell: (cell) => <>
           < input
             type="date"
@@ -162,8 +163,7 @@ function PaymentsPage() {
       {
         accessorKey: 'next_date',
         header: 'Next Check Date',
-        minSize: 150,
-        group:true,
+        
         Cell: (cell) => <>
           < input
             type="date"
@@ -182,8 +182,7 @@ function PaymentsPage() {
       {
         accessorKey: 'updated_by',
         header: 'Last Updated By',
-        minSize: 100,
-        group:true,
+        
         Cell: (cell) => <>{cell.row.original.updated_by ? cell.row.original.updated_by.value : ""}</>
       },
     ],
@@ -277,7 +276,16 @@ function PaymentsPage() {
     onSortingChange: setSorting,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    state: { sorting, isLoading: isLoading, showAlertBanner: false },
+    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+    rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
+    columnVirtualizerOptions: { overscan: 2 },
+    onColumnSizingChange: setColumnSizing, state: {
+      isLoading: isLoading,
+      columnVisibility,
+
+      sorting,
+      columnSizing: columnSizing
+    },
     enableBottomToolbar: true,
     enableGlobalFilter: false,
     enablePagination: false,
@@ -304,8 +312,61 @@ function PaymentsPage() {
         total: data.data.total
       })
     }
-  }, [isSuccess,data])
+  }, [isSuccess, data])
 
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+
+
+
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+
+
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+
+    isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
+
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
   console.log(payment)
   return (
     <>
@@ -484,7 +545,7 @@ function PaymentsPage() {
       {payment && <DeleteCheckListDialog payment={payment} />}
       {payment && <CreateOrEditCheckListDialog payment={payment} setPayment={setPayment} />}
       {payment && paymentBox && <ViewpaymentRemarksDialog payment={payment} payment_box={paymentBox} />} */}
-     
+
       {<AssignPaymentsDialog flag={flag} payments={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
       {table.getSelectedRowModel().rows && table.getSelectedRowModel().rows.length > 0 && <BulkDeletePaymentsDialog ids={table.getSelectedRowModel().rows.map((l) => { return l.original._id })} clearIds={() => { table.resetRowSelection() }} />}
 

@@ -5,7 +5,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { UserContext } from '../../contexts/userContext'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { ChoiceContext, ProductionChoiceActions } from '../../contexts/dialogContext'
 import { Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Menu as MenuIcon } from '@mui/icons-material';
@@ -30,6 +30,11 @@ export default function SoleThicknessPage() {
     const { setChoice } = useContext(ChoiceContext)
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
+    const isFirstRender = useRef(true);
+
+    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
+    const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
     const [userId, setUserId] = useState<string>()
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
@@ -66,9 +71,7 @@ export default function SoleThicknessPage() {
             {
                 accessorKey: 'actions',
                 header: '',
-                maxSize: 50,
                 enableColumnFilter: false,
-                grow:false,
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row" spacing={1}>
@@ -106,8 +109,7 @@ export default function SoleThicknessPage() {
             {
                 accessorKey: 'dye',
                 header: 'Dye',
-                minSize: 120,
-                grow:false,
+              
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.dye && cell.row.original.dye.value.toString() || "" ? cell.row.original.dye.value.toString() || "" : ""}</>,
                 filterSelectOptions: thicknesses && thicknesses.map((i) => {
@@ -117,8 +119,7 @@ export default function SoleThicknessPage() {
             {
                 accessorKey: 'article',
                 header: 'Article',
-                minSize: 220,
-                grow:false,
+               
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.article && cell.row.original.article.value || "" ? cell.row.original.article.value || "" : ""}</>,
                 filterSelectOptions: thicknesses && thicknesses.map((i) => {
@@ -128,8 +129,7 @@ export default function SoleThicknessPage() {
             {
                 accessorKey: 'size',
                 header: 'Size',
-                minSize: 150,
-                grow:false,
+              
                 Cell: (cell) => <>{cell.row.original.size && cell.row.original.size.toString() || "" ? cell.row.original.size.toString() || "" : ""}</>,
 
             },
@@ -137,30 +137,26 @@ export default function SoleThicknessPage() {
             {
                 accessorKey: 'left_thickness',
                 header: 'Left Thickness',
-                minSize: 150,
-                grow:false,
+              
                 Cell: (cell) => <>{cell.row.original.right_thickness && cell.row.original.right_thickness.toString() || "" ? cell.row.original.right_thickness.toString() || "" : ""}</>,
 
             },
             {
                 accessorKey: 'right_thickness',
                 header: 'Right Thickness',
-                minSize: 150,
-                grow:false,
+              
                 Cell: (cell) => <>{cell.row.original.right_thickness && cell.row.original.right_thickness.toString() || "" ? cell.row.original.right_thickness.toString() || "" : ""}</>
             },
             {
                 accessorKey: 'created_at',
                 header: 'Created At',
-                minSize: 150,
-                grow:false,
+              
                 Cell: (cell) => <>{cell.row.original.created_at || ""}</>
             },
             {
                 accessorKey: 'created_by',
                 header: 'Creator',
-                minSize: 150,
-                grow:false,
+              
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.created_by.value.toString() || "" ? cell.row.original.created_by.value.toString() || "" : ""}</>,
                 filterSelectOptions: thicknesses && thicknesses.map((i) => {
@@ -173,7 +169,7 @@ export default function SoleThicknessPage() {
 
 
     const table = useMaterialReactTable({
-        columns, columnFilterDisplayMode: 'popover', 
+        columns, columnFilterDisplayMode: 'popover',
         data: thicknesses,
         enableColumnResizing: true,
         enableColumnVirtualization: true, enableStickyFooter: true,
@@ -330,7 +326,14 @@ export default function SoleThicknessPage() {
         enableTopToolbar: true,
         enableTableFooter: true,
         enableRowVirtualization: true,
-        state: { sorting, isLoading: isLoading },
+        onColumnVisibilityChange: setColumnVisibility,
+        onColumnSizingChange: setColumnSizing, state: {
+            isLoading: isLoading,
+            columnVisibility,
+
+            sorting,
+            columnSizing: columnSizing
+        },
         enableBottomToolbar: true,
         enableGlobalFilter: false,
         manualPagination: true,
@@ -345,6 +348,62 @@ export default function SoleThicknessPage() {
             console.error(error);
         }
     }, [sorting]);
+    useEffect(() => {
+        //scroll to the top of the table when the sorting changes
+        try {
+            rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+        } catch (error) {
+            console.error(error);
+        }
+    }, [sorting]);
+
+    //load state from local storage
+    useEffect(() => {
+        const columnVisibility = localStorage.getItem(
+            'mrt_columnVisibility_table_1',
+        );
+        const columnSizing = localStorage.getItem(
+            'mrt_columnSizing_table_1',
+        );
+
+
+
+
+        const sorting = localStorage.getItem('mrt_sorting_table_1');
+
+
+        if (columnVisibility) {
+            setColumnVisibility(JSON.parse(columnVisibility));
+        }
+
+
+
+        if (columnSizing)
+            setColumnSizing(JSON.parse(columnSizing))
+        if (sorting) {
+            setSorting(JSON.parse(sorting));
+        }
+        isFirstRender.current = false;
+    }, []);
+
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem(
+            'mrt_columnVisibility_table_1',
+            JSON.stringify(columnVisibility),
+        );
+    }, [columnVisibility]);
+
+
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    }, [sorting]);
+
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    }, [columnSizing]);
 
     return (
         <>

@@ -1,10 +1,10 @@
 import { Avatar, Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { Assignment, Block, DeviceHubOutlined, Edit, GroupAdd, GroupRemove, Key, KeyOffOutlined, RemoveCircle, Restore } from '@mui/icons-material'
 import { GetUserDto } from '../../dtos'
@@ -34,19 +34,24 @@ export default function UsersPage() {
     const [user, setUser] = useState<GetUserDto>()
     const [users, setUsers] = useState<GetUserDto[]>([])
     const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>(["users", hidden], async () => GetUsers({ hidden: hidden, show_assigned_only: false }))
-    const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const { user: LoggedInUser } = useContext(UserContext)
     const { setChoice } = useContext(ChoiceContext)
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [flag, setFlag] = useState(1);
+    const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+    const isFirstRender = useRef(true);
+
+    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
+    const [sorting, setSorting] = useState<MRT_SortingState>([]);
+    const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
     const columns = useMemo<MRT_ColumnDef<GetUserDto>[]>(
         //column definitions...
         () => users && [
             {
                 accessorKey: 'actions',
                 header: '',
-                maxSize: 50,
-                grow: false,
+                
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row">
@@ -240,8 +245,7 @@ export default function UsersPage() {
             {
                 accessorKey: 'dp',
                 header: 'DP',
-                maxSize: 50,
-                grow: false,
+              
                 Cell: (cell) => <Avatar
                     title="double click to download"
                     sx={{ width: 16, height: 16 }}
@@ -256,18 +260,16 @@ export default function UsersPage() {
             {
                 accessorKey: 'username',
                 header: 'Name',
-                minSize: 120,
-                grow: false,
+               
                 Cell: (cell) => <>{[cell.row.original.username, String(cell.row.original.alias1 || ""), String(cell.row.original.alias2 || "")].filter(value => value)
-                    .join(", ") }</>,
+                    .join(", ")}</>,
                 filterVariant: 'multi-select',
                 filterSelectOptions: data && users.map((i) => { return i.username.toString() }).filter(onlyUnique)
             },
             {
                 accessorKey: 'is_admin',
                 header: 'Role',
-                minSize: 120,
-                grow: false,
+               
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.is_admin ? "admin" : "user"}</>,
                 filterSelectOptions: data && users.map((i) => {
@@ -278,22 +280,19 @@ export default function UsersPage() {
             {
                 accessorKey: 'email',
                 header: 'Email',
-                minSize: 220,
-                grow: false,
+               
                 Cell: (cell) => <>{cell.row.original.email || ""}</>
             },
             {
                 accessorKey: 'mobile',
                 header: 'Mobile',
-                minSize: 120,
-                grow: false,
+                
                 Cell: (cell) => <>{cell.row.original.mobile || ""}</>
             },
             {
                 accessorKey: 'is_active',
                 header: 'Status',
-                minSize: 120,
-                grow: false,
+               
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.is_active ? "active" : "blocked"}</>,
                 filterSelectOptions: data && users.map((i) => {
@@ -304,8 +303,7 @@ export default function UsersPage() {
             {
                 accessorKey: 'password',
                 header: 'Password',
-                minSize: 120,
-                grow: false,
+                
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.orginal_password}</>,
                 filterSelectOptions: data && users.map((i) => {
@@ -315,30 +313,25 @@ export default function UsersPage() {
             {
                 accessorKey: 'assigned_permissions',
                 header: 'Permissions',
-                minSize: 120,
-                grow: false,
+                
                 Cell: (cell) => <>{cell.row.original.assigned_permissions.length || 0}</>
             },
 
             {
                 accessorKey: 'is_multi_login',
                 header: 'Multi Device',
-                minSize: 120,
-                grow: false,
+                
                 Cell: (cell) => <>{cell.row.original.is_multi_login ? "Allowed" : "Blocked"}</>
             },
             {
                 accessorKey: 'assigned_users',
                 header: 'Assigned Users',
-                minSize: 120,
-                grow: false,
                 Cell: (cell) => <>{cell.row.original.assigned_users.length || 0}</>
             },
             {
                 accessorKey: 'last_login',
                 header: 'Last Active',
-                minSize: 120,
-                grow: false,
+               
                 Cell: (cell) => <>{cell.row.original.last_login || ""}</>
             },
 
@@ -392,8 +385,72 @@ export default function UsersPage() {
         enableTableFooter: true,
         enableRowVirtualization: true,
         onSortingChange: setSorting,
-        state: { isLoading, sorting }
+        onColumnVisibilityChange: setColumnVisibility,
+        onColumnSizingChange: setColumnSizing, state: {
+            isLoading: isLoading,
+            columnVisibility,
+
+            sorting,
+            columnSizing: columnSizing
+        }
     });
+    useEffect(() => {
+        //scroll to the top of the table when the sorting changes
+        try {
+            rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+        } catch (error) {
+            console.error(error);
+        }
+    }, [sorting]);
+
+    //load state from local storage
+    useEffect(() => {
+        const columnVisibility = localStorage.getItem(
+            'mrt_columnVisibility_table_1',
+        );
+        const columnSizing = localStorage.getItem(
+            'mrt_columnSizing_table_1',
+        );
+
+
+
+
+        const sorting = localStorage.getItem('mrt_sorting_table_1');
+
+
+        if (columnVisibility) {
+            setColumnVisibility(JSON.parse(columnVisibility));
+        }
+
+
+
+        if (columnSizing)
+            setColumnSizing(JSON.parse(columnSizing))
+        if (sorting) {
+            setSorting(JSON.parse(sorting));
+        }
+        isFirstRender.current = false;
+    }, []);
+
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem(
+            'mrt_columnVisibility_table_1',
+            JSON.stringify(columnVisibility),
+        );
+    }, [columnVisibility]);
+
+
+
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    }, [sorting]);
+
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    }, [columnSizing]);
 
     useEffect(() => {
         if (isSuccess && data) {

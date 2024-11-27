@@ -1,10 +1,10 @@
 import { Avatar, Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+   import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { Assignment, KeyOffOutlined } from '@mui/icons-material'
 import { GetUserDto } from '../../dtos'
@@ -33,19 +33,24 @@ export default function UserAssignementPage() {
   const [user, setUser] = useState<GetUserDto>()
   const [users, setUsers] = useState<GetUserDto[]>([])
   const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>(["users"], async () => GetUsersForAssignment())
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const { user: LoggedInUser } = useContext(UserContext)
   const { setChoice } = useContext(ChoiceContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const [flag, setFlag] = useState(1);
+const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag, setFlag] = useState(1);
+
+   const isFirstRender = useRef(true);
+
+    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+  
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const columns = useMemo<MRT_ColumnDef<GetUserDto>[]>(
     //column definitions...
     () => users && [
       {
         accessorKey: 'actions',
         header: '',
-        maxSize: 50,
-        grow: false,
+    
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -82,8 +87,7 @@ export default function UserAssignementPage() {
       {
         accessorKey: 'dp',
         header: 'DP',
-        maxSize: 50,
-        grow: false,
+       
         Cell: (cell) => <Avatar
           title="double click to download"
           sx={{ width: 16, height: 16 }}
@@ -98,8 +102,7 @@ export default function UserAssignementPage() {
       {
         accessorKey: 'username',
         header: 'Name',
-        minSize: 120,
-        grow: false,
+       
         Cell: (cell) => <>{[cell.row.original.username, String(cell.row.original.alias1 || ""), String(cell.row.original.alias2 || "")].filter(value => value) 
           .join(", ")}</>,
         filterVariant: 'multi-select',
@@ -108,8 +111,7 @@ export default function UserAssignementPage() {
       {
         accessorKey: 'is_admin',
         header: 'Role',
-        maxSize: 80,
-        grow: false,
+    
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.is_admin ? "admin" : "user"}</>,
         filterSelectOptions: data && users.map((i) => {
@@ -120,36 +122,31 @@ export default function UserAssignementPage() {
       {
         accessorKey: 'email',
         header: 'Email',
-        minSize: 220,
-        grow: false,
+       
         Cell: (cell) => <>{cell.row.original.email || ""}</>
       },
       {
         accessorKey: 'mobile',
         header: 'Mobile',
-        minSize: 120,
-        grow: false,
+        
         Cell: (cell) => <>{cell.row.original.mobile || ""}</>
       },
       {
         accessorKey: 'assigned_permissions',
         header: 'Permissions',
-        minSize: 120,
-        grow: false,
+        
         Cell: (cell) => <>{cell.row.original.assigned_permissions.length || 0}</>
       },
       {
         accessorKey: 'last_login',
         header: 'Last Active',
-        minSize: 120,
-        grow: false,
+        
         Cell: (cell) => <>{cell.row.original.last_login || ""}</>
       },
       {
         accessorKey: 'assigned_users',
         header: 'Assigned Users',
-        minSize: 120,
-        grow: true,
+        
         Cell: (cell) => <Stack title={String(cell.row.original.assigned_users.length || 0)+" users"} className="scrollable-stack" direction={'row'} >{cell.row.original.assigned_users && cell.row.original.assigned_users.map((u) => { return u.value }).toString()}</Stack>
       },
     ],
@@ -199,10 +196,72 @@ export default function UserAssignementPage() {
     enableRowNumbers: true,
     enableColumnPinning: true,
     enableTableFooter: true,
-    enableRowVirtualization: true,
+      enableRowVirtualization: true,
+    onColumnVisibilityChange: setColumnVisibility,rowVirtualizerInstanceRef, //optional
+        rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
+        columnVirtualizerOptions: { overscan: 2 },
     onSortingChange: setSorting,
-    state: { isLoading, sorting }
+    onColumnSizingChange: setColumnSizing, state: {
+      isLoading: isLoading,
+      columnVisibility,
+      
+      sorting,
+      columnSizing: columnSizing
+    }
   });
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+    
+
+
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+
+    
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+    
+    isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
+ 
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
 
   useEffect(() => {
     if (isSuccess && data) {

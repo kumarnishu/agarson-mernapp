@@ -5,7 +5,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
 import { GetDyeStatusReportDto } from '../../dtos'
@@ -23,6 +23,11 @@ export default function DyeStatusReportPage() {
   const { user } = useContext(UserContext)
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetDyeStatusReportDto[]>, BackendError>(["reports", dates.start_date, dates.end_date], async () => GetDyeStatusReport({ start_date: dates.start_date, end_date: dates.end_date }))
 
+   const isFirstRender = useRef(true);
+
+    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+  
+  const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const columns = useMemo<MRT_ColumnDef<GetDyeStatusReportDto>[]>(
@@ -30,16 +35,14 @@ export default function DyeStatusReportPage() {
     () => reports && [
       {
         accessorKey: 'created_at',
-        minSize: 140,
-        grow:false,
+       
         header: 'Date',
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => { return i.created_at.toString() }).filter(onlyUnique)
       },
       {
         accessorKey: 'dye',
-        minSize: 140,
-        grow:false,
+      
         header: 'Dye',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -52,8 +55,7 @@ export default function DyeStatusReportPage() {
       },
       {
         accessorKey: 'article',
-        minSize: 140,
-        grow:false,
+      
         header: 'Article',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -66,8 +68,7 @@ export default function DyeStatusReportPage() {
       },
       {
         accessorKey: 'size',
-        minSize: 140,
-        grow:false,
+      
         header: 'Size',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -80,8 +81,7 @@ export default function DyeStatusReportPage() {
       },
       {
         accessorKey: 'std_weight',
-        minSize: 140,
-        grow:false,
+      
         header: 'St Weight',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -94,8 +94,7 @@ export default function DyeStatusReportPage() {
       },
       {
         accessorKey: 'location',
-        minSize: 140,
-        grow:false,
+       
         header: 'Location',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -108,8 +107,7 @@ export default function DyeStatusReportPage() {
       },
       {
         accessorKey: 'repair_required',
-        minSize: 140,
-        grow:false,
+     
         header: 'Repair Required',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -122,8 +120,7 @@ export default function DyeStatusReportPage() {
       },
       {
         accessorKey: 'remarks',
-        minSize: 180,
-        grow:false,
+    
         header: 'Remarks',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -137,8 +134,7 @@ export default function DyeStatusReportPage() {
       {
         accessorKey: 'created_by',
         header: 'Creator',
-        minSize: 120,
-        grow:false,
+       
         aggregationFn: 'count',
         filterVariant: 'multi-select',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
@@ -236,9 +232,72 @@ export default function DyeStatusReportPage() {
     rowVirtualizerInstanceRef, //optional
     rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
     columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizer
+    onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
-    state: { isLoading, sorting }
+    onColumnSizingChange: setColumnSizing, state: {
+      isLoading: isLoading,
+      columnVisibility,
+      
+      sorting,
+      columnSizing: columnSizing
+    }
   });
+
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+    
+
+
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+
+    
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+    
+    isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
+ 
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
+
+
   useEffect(() => {
     //scroll to the top of the table when the sorting changes
     try {

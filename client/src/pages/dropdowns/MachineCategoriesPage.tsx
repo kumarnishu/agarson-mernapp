@@ -1,9 +1,9 @@
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+   import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import { ChoiceContext, ProductionChoiceActions } from '../../contexts/dialogContext'
@@ -26,8 +26,13 @@ export default function MachineCategoryPage() {
     const { user: LoggedInUser } = useContext(UserContext)
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["machine_categories"], async () => GetMachineCategories())
 
-    const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
+     const isFirstRender = useRef(true);
+    const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+    
+    const [sorting, setSorting] = useState<MRT_SortingState>([]);
+    const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
     const { setChoice } = useContext(ChoiceContext)
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -37,8 +42,7 @@ export default function MachineCategoryPage() {
             {
                 accessorKey: 'actions',
                 header: '',
-                maxSize: 50,
-                grow:false,
+                
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row">
@@ -80,8 +84,7 @@ export default function MachineCategoryPage() {
             {
                 accessorKey: 'label',
                 header: 'Category',
-                minSize: 350,
-                grow:false,
+              
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.value ? cell.row.original.value : ""}</>,
                 filterSelectOptions: categories && categories.map((i) => {
@@ -136,7 +139,14 @@ export default function MachineCategoryPage() {
         enableTableFooter: true,
         enableRowVirtualization: true,
         onSortingChange: setSorting,
-        state: { isLoading, sorting }
+        onColumnVisibilityChange: setColumnVisibility,
+    onColumnSizingChange: setColumnSizing, state: {
+      isLoading: isLoading,
+      columnVisibility,
+      
+      sorting,
+      columnSizing: columnSizing
+    }
     });
 
 
@@ -145,6 +155,62 @@ export default function MachineCategoryPage() {
             setCategories(data.data);
         }
     }, [data, isSuccess]);
+    useEffect(() => {
+        //scroll to the top of the table when the sorting changes
+        try {
+            rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+        } catch (error) {
+            console.error(error);
+        }
+    }, [sorting]);
+
+    //load state from local storage
+    useEffect(() => {
+        const columnVisibility = localStorage.getItem(
+            'mrt_columnVisibility_table_1',
+        );
+        const columnSizing = localStorage.getItem(
+            'mrt_columnSizing_table_1',
+        );
+        
+    
+
+
+         const sorting = localStorage.getItem('mrt_sorting_table_1');
+
+
+        if (columnVisibility) {
+            setColumnVisibility(JSON.parse(columnVisibility));
+        }
+
+
+       
+        if (columnSizing)
+            setColumnSizing(JSON.parse(columnSizing))
+        if (sorting) {
+            setSorting(JSON.parse(sorting));
+        }
+        isFirstRender.current = false;
+    }, []);
+
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem(
+            'mrt_columnVisibility_table_1',
+            JSON.stringify(columnVisibility),
+        );
+    }, [columnVisibility]);
+
+     
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    }, [sorting]);
+
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    }, [columnSizing]);
 
 
     return (

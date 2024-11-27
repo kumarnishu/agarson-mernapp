@@ -9,9 +9,9 @@ import { UserContext } from '../contexts/userContext';
 import { FeatureContext } from '../contexts/featureContext';
 import { ButtonLogo } from '../components/logo/Agarson';
 import React, { useContext, useEffect, useState } from 'react';
-import ProfileLogo from '../components/logo/ProfileLogo';
 import LogoutButton from '../components/buttons/LogoutButton';
 import { toTitleCase } from '../utils/TitleCase';
+import { ProfileMenu } from '../components/logo/ProfileLogo';
 
 function MainDashBoardPage() {
   const navigate = useNavigate()
@@ -19,7 +19,7 @@ function MainDashBoardPage() {
   const [open, setOpen] = useState(false);
   const { user } = useContext(UserContext)
   const [features, setFeatures] = useState<{ feature: string, url: string, is_visible?: boolean, icon?: Element }[]>([])
-
+  const [anchorEl, setAnchorEl] = useState<Element | null>(null);
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
@@ -39,7 +39,7 @@ function MainDashBoardPage() {
           <Typography variant='h5' > {toTitleCase(user?.username || "")}</Typography>
         </Stack>
       </Stack>
-      <List sx={{marginTop:2}}>
+      <List sx={{ marginTop: 2 }}>
         {features.map((feat, index) => (
           <React.Fragment key={index}>
             {feat && feat.is_visible && < Link style={{ textDecoration: 'none', color: 'black' }} to={feat.url} onClick={() => {
@@ -70,7 +70,7 @@ function MainDashBoardPage() {
     user?.assigned_permissions.includes('dropdown_menu') && tmpfeatures.push({ feature: 'Dropdowns', is_visible: true, url: "/DropDown" })
     user?.assigned_permissions.includes('excel_db_menu') && tmpfeatures.push({ feature: 'Excel Reports', is_visible: true, url: "/ExcelDB" })
     user?.assigned_permissions.includes('report_menu') && tmpfeatures.push({ feature: 'Feature Reports', is_visible: true, url: "/Reports" })
-   
+
 
     setFeatures(tmpfeatures)
 
@@ -86,8 +86,15 @@ function MainDashBoardPage() {
         >
           <Stack direction="row" gap={2} pl={1} justifyContent={'center'} alignItems={'center'}>
 
-            <ProfileLogo />
-
+            <Stack direction={'row'} justifyContent={'left'} alignItems={'center'} sx={{ cursor: 'pointer' }} onClick={(e) => {
+              if (e.currentTarget)
+                setAnchorEl(e.currentTarget)
+            }}>
+              <Avatar
+                sx={{ width: 20, height: 20 }}
+                alt="img1" src={user?.dp} />
+              <Typography variant='h5' sx={{ color: 'white', pl: 1 }}> {toTitleCase(user?.username || "")}</Typography>
+            </Stack>
           </Stack>
 
           <Stack
@@ -134,7 +141,7 @@ function MainDashBoardPage() {
       <Drawer open={open} onClose={toggleDrawer(false)} anchor='right'>
         {DrawerList}
       </Drawer>
-
+      <ProfileMenu anchorEl={anchorEl} setAnchorEl={setAnchorEl} />
     </>
 
   )

@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import moment from 'moment'
 import { GetproductionMachineWise } from '../../services/ProductionServices'
 import { onlyUnique } from '../../utils/UniqueArray'
@@ -23,6 +23,11 @@ export default function MachineWiseProductionReportPage() {
   const { user } = useContext(UserContext)
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["machine_wisereports", dates.start_date, dates.end_date], async () => GetproductionMachineWise({ start_date: dates.start_date, end_date: dates.end_date }))
 
+   const isFirstRender = useRef(true);
+
+    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+  
+  const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
@@ -30,13 +35,13 @@ export default function MachineWiseProductionReportPage() {
   const columns = useMemo<MRT_ColumnDef<IColumnRowData['rows']>[]>(
     () => reportcolumns && reportcolumns.map((item) => {
       if (item.type == "string")
-        return { accessorKey: item.key, minSize: 120,grow:false, header: item.header, Footer: "" }
+        return { accessorKey: item.key, mingrow:false, header: item.header, Footer: "" }
       if (item.type == "date")
         return {
-          accessorKey: item.key, minSize: 120, grow: true, header: item.header, Footer: <b>Total</b>,
+          accessorKey: item.key,  header: item.header, Footer: <b>Total</b>,
           filterVariant: 'multi-select', filterSelectOptions: reports && reports.map((i) => {return i['date'].toString() }).filter(onlyUnique) }
       return {
-        accessorKey: item.key, minSize: 120, grow: true, header: item.header,
+        accessorKey: item.key,  header: item.header,
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         //@ts-ignore
@@ -124,8 +129,15 @@ export default function MachineWiseProductionReportPage() {
     rowVirtualizerInstanceRef, //optional
     rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
     columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizer
+    onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
-    state: { isLoading, sorting }
+    onColumnSizingChange: setColumnSizing, state: {
+      isLoading: isLoading,
+      columnVisibility,
+      
+      sorting,
+      columnSizing: columnSizing
+    }
   });
   useEffect(() => {
     if (typeof window !== 'undefined' && isSuccess) {
@@ -144,8 +156,60 @@ export default function MachineWiseProductionReportPage() {
   }, [sorting]);
 
 
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+    
+
+
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+
+    
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+    
+    isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
  
-  console.log(columns)
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
+
   return (
     <>
       {

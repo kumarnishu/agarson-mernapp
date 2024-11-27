@@ -1,5 +1,5 @@
-import { Avatar,  Menu, MenuItem, Stack, Typography } from '@mui/material'
-import { useContext, useState } from 'react'
+import { Avatar, Menu, MenuItem, Stack, Typography } from '@mui/material'
+import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { ChoiceContext, UserChoiceActions } from '../../contexts/dialogContext';
 import NewUserDialog from '../dialogs/users/NewUserDialog';
@@ -12,10 +12,10 @@ import LogoutButton from '../buttons/LogoutButton';
 import { toTitleCase } from '../../utils/TitleCase';
 
 
-function ProfileMenu() {
+
+export function ProfileMenu({ anchorEl, setAnchorEl }: { anchorEl: Element | null, setAnchorEl: React.Dispatch<React.SetStateAction<Element | null>> }) {
     const { user } = useContext(UserContext)
     const { setChoice } = useContext(ChoiceContext)
-    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const goto = useNavigate()
 
     return (
@@ -89,10 +89,12 @@ function ProfileLogo() {
             <Avatar
                 sx={{ width: 20, height: 20 }}
                 alt="img1" src={user?.dp} />
-            <Typography variant='h5' sx={{ color: 'white',pl:1 }}> {toTitleCase(user?.username || "")}</Typography>
-            <ProfileMenu />
+            <Typography variant='h5' sx={{ color: 'white', pl: 1 }}> {toTitleCase(user?.username || "")}</Typography>
+
         </Stack>
     )
 }
+
+
 
 export default ProfileLogo

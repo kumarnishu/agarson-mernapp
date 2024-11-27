@@ -5,7 +5,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { UserContext } from '../../contexts/userContext'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { ChoiceContext, ProductionChoiceActions } from '../../contexts/dialogContext'
 import { Check, Delete, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Menu as MenuIcon, Photo } from '@mui/icons-material';
@@ -32,10 +32,14 @@ export default function ShoeWeightPage() {
   const [users, setUsers] = useState<GetUserDto[]>([])
   const { setChoice } = useContext(ChoiceContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  const isFirstRender = useRef(true);
 
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
+  const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const [userId, setUserId] = useState<string>()
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
     start_date: moment(new Date()).format("YYYY-MM-DD")
     , end_date: moment(new Date().setDate(new Date().getDate() + 1)).format("YYYY-MM-DD")
@@ -69,9 +73,9 @@ export default function ShoeWeightPage() {
       {
         accessorKey: 'actions',
         header: '',
-        maxSize: 50,
+        
         enableColumnFilter: false,
-        group:true,
+        
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -137,31 +141,30 @@ export default function ShoeWeightPage() {
       {
         accessorKey: 'shoe_photo1',
         header: 'Photos',
-        maxSize: 100,
-        group:true,
+       
+        
         Cell: (cell) => <>
           {cell.row.original.shoe_photo1 && <Photo onClick={() => {
             setWeight(cell.row.original)
             setChoice({ type: ProductionChoiceActions.view_shoe_photo })
-          }} sx={{ height: 15, width: 15,color:'grey',cursor:'pointer' }} />
+          }} sx={{ height: 15, width: 15, color: 'grey', cursor: 'pointer' }} />
           }
           {cell.row.original.shoe_photo2 && <Photo onClick={() => {
             setWeight(cell.row.original)
             setChoice({ type: ProductionChoiceActions.view_shoe_photo2 })
-          }} sx={{ height: 15, width: 15,color:'grey',cursor:'pointer' }} />
+          }} sx={{ height: 15, width: 15, color: 'grey', cursor: 'pointer' }} />
           }
           {cell.row.original.shoe_photo3 && <Photo onClick={() => {
             setWeight(cell.row.original)
             setChoice({ type: ProductionChoiceActions.view_shoe_photo3 })
-          }} sx={{ height: 15, width: 15,color:'grey',cursor:'pointer' }} />
+          }} sx={{ height: 15, width: 15, color: 'grey', cursor: 'pointer' }} />
           }
         </>
       },
       {
         accessorKey: 'machine',
         header: 'Machine',
-        minSize: 160,
-        group:true,
+      
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.machine.value.toString() || ""}</>,
         filterSelectOptions: weights && weights.map((i) => {
@@ -171,16 +174,13 @@ export default function ShoeWeightPage() {
       {
         accessorKey: 'month',
         header: 'Clock In',
-        minSize: 160,
-        group:true,
         Cell: (cell) => <>{months.find(x => x.month == cell.row.original.month) && months.find(x => x.month == cell.row.original.month)?.label}</>
       },
 
       {
         accessorKey: 'dye',
         header: 'Dye',
-        minSize: 160,
-        group:true,
+        
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.dye.value.toString() || ""}</>,
         filterSelectOptions: weights && weights.map((i) => {
@@ -190,8 +190,6 @@ export default function ShoeWeightPage() {
       {
         accessorKey: 'article',
         header: 'Article',
-        minSize: 160,
-        group:true,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.article.value.toString() || ""}</>,
         filterSelectOptions: weights && weights.map((i) => {
@@ -201,91 +199,78 @@ export default function ShoeWeightPage() {
       {
         accessorKey: 'size',
         header: 'Size',
-        minSize: 160,
-        group:true,
+        
         Cell: (cell) => <>{cell.row.original.size.toString() || ""}</>
       },
       {
         accessorKey: 'std_weigtht',
         header: 'Std Sole Weight',
-        minSize: 160,
-        group:true,
+        
         Cell: (cell) => <>{cell.row.original.std_weigtht.toString() || ""}</>
       },
       {
         accessorKey: 'upper_weight1',
         header: 'Upper Weight1',
-        minSize: 160,
-        group:true,
+        
         Cell: (cell) => <>{cell.row.original.upper_weight1.toString() || ""}</>
       },
       {
         accessorKey: 'shoe_weight1',
         header: 'Shoe Weight1',
-        minSize: 160,
-        group:true,
+        
         Cell: (cell) => <>{cell.row.original.shoe_weight1.toString() || ""}</>
       },
       {
         accessorKey: 'weighttime1',
         header: 'Weight Time1',
-        minSize: 160,
-        group:true,
+        
         Cell: (cell) => <>{cell.row.original.weighttime1.toString() || ""}</>
       },
       {
         accessorKey: 'upper_weight2',
         header: 'Upper Weight2',
-        minSize: 160,
-        group:true,
+        
         Cell: (cell) => <>{cell.row.original.upper_weight2 && cell.row.original.upper_weight2.toString() || ""}</>
       },
       {
         accessorKey: 'shoe_weight2',
         header: 'Shoe Weight2',
-        minSize: 160,
-        group:true,
+      
         Cell: (cell) => <>{cell.row.original.shoe_weight2 && cell.row.original.shoe_weight2.toString() || ""}</>
       },
       {
         accessorKey: 'weighttime2',
         header: 'Weight Time2',
-        minSize: 160,
-        group:true,
+      
         Cell: (cell) => <>{cell.row.original.weighttime2 && cell.row.original.weighttime2.toString() || ""}</>
       },
       {
         accessorKey: 'upper_weight3',
         header: 'Upper Weight3',
-        minSize: 160,
-        group:true,
+      
         Cell: (cell) => <>{cell.row.original.upper_weight3 && cell.row.original.upper_weight3.toString() || ""}</>
       },
       {
         accessorKey: 'shoe_weight3',
         header: 'Shoe Weight3',
-        minSize: 160,
-        group:true,
+      
         Cell: (cell) => <>{cell.row.original.shoe_weight3 && cell.row.original.shoe_weight3.toString() || ""}</>
       },
       {
         accessorKey: 'weighttime3',
         header: 'Weight Time3',
-        minSize: 160,
-        group:true,
+      
         Cell: (cell) => <>{cell.row.original.weighttime3 && cell.row.original.weighttime3.toString() || ""}</>
       }, {
         accessorKey: 'created_at',
         header: 'Created At',
-        minSize: 150,
-        group:true,
+        
         Cell: (cell) => <>{cell.row.original.created_at || ""}</>
       },
       {
         accessorKey: 'created_by',
         header: 'Creator',
-        minSize: 150,
-        group:true,
+        
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.created_by.value.toString() || "" ? cell.row.original.created_by.value.toString() || "" : ""}</>,
         filterSelectOptions: weights && weights.map((i) => {
@@ -299,7 +284,7 @@ export default function ShoeWeightPage() {
 
   const table = useMaterialReactTable({
     columns,
-    data: weights, columnFilterDisplayMode: 'popover', 
+    data: weights, columnFilterDisplayMode: 'popover',
     enableColumnResizing: true,
     enableColumnVirtualization: true, enableStickyFooter: true,
     muiTableFooterRowProps: () => ({
@@ -453,7 +438,16 @@ export default function ShoeWeightPage() {
     enableTopToolbar: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    state: { sorting, isLoading: isLoading },
+    onColumnVisibilityChange: setColumnVisibility, //optional
+    rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
+    columnVirtualizerOptions: { overscan: 2 },
+    onColumnSizingChange: setColumnSizing, state: {
+      isLoading: isLoading,
+      columnVisibility,
+
+      sorting,
+      columnSizing: columnSizing
+    },
     enableBottomToolbar: true,
     enableGlobalFilter: false,
     manualPagination: true,
@@ -468,6 +462,59 @@ export default function ShoeWeightPage() {
       console.error(error);
     }
   }, [sorting]);
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+
+
+
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+
+
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+
+    isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
+
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
 
   return (
     <>

@@ -5,7 +5,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { UserContext } from '../../contexts/userContext'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { ChoiceContext, ProductionChoiceActions } from '../../contexts/dialogContext'
 import { Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Menu as MenuIcon } from '@mui/icons-material';
@@ -29,9 +29,13 @@ export default function ProductionPage() {
   const [users, setUsers] = useState<GetUserDto[]>([])
   const { setChoice } = useContext(ChoiceContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const isFirstRender = useRef(true);
 
-  const [userId, setUserId] = useState<string>()
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
+  const [userId, setUserId] = useState<string>()
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
     start_date: moment(new Date().setDate(new Date().getDate() - 3)).format("YYYY-MM-DD")
@@ -66,9 +70,8 @@ export default function ProductionPage() {
       {
         accessorKey: 'actions',
         header: '',
-        maxSize: 50,
+        
         enableColumnFilter: false,
-        grow:false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -105,8 +108,7 @@ export default function ProductionPage() {
       {
         accessorKey: 'date',
         header: 'Production Date',
-        minSize: 140,
-        grow:false,
+       
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.date.toString() || "" ? cell.row.original.date.toString() || "" : ""}</>,
         filterSelectOptions: productions && productions.map((i) => {
@@ -116,8 +118,7 @@ export default function ProductionPage() {
       {
         accessorKey: 'articles',
         header: 'Articles',
-        minSize: 250,
-        grow:false,
+        
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.articles.toString() ? cell.row.original.articles.map((a) => { return a.value }).toString() : ""}</>,
         filterSelectOptions: production && production.articles.map((i) => {
@@ -127,8 +128,7 @@ export default function ProductionPage() {
       {
         accessorKey: 'machine',
         header: 'Machine',
-        minSize: 120,
-        grow:false,
+       
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.machine.value.toString() || "" ? cell.row.original.machine.value.toString() || "" : ""}</>,
         filterSelectOptions: productions && productions.map((i) => {
@@ -138,8 +138,7 @@ export default function ProductionPage() {
       {
         accessorKey: 'thekedar',
         header: 'Thekedar',
-        minSize: 120,
-        grow:false,
+       
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.thekedar.value.toString() || "" ? cell.row.original.thekedar.value.toString() || "" : ""}</>,
         filterSelectOptions: productions && productions.map((i) => {
@@ -149,57 +148,49 @@ export default function ProductionPage() {
       {
         accessorKey: 'production',
         header: 'Production',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.production.toString() || "" ? cell.row.original.production.toString() || "" : ""}</>,
       },
       {
         accessorKey: 'production_hours',
         header: 'Production Hours',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.production_hours.toString() || "" ? cell.row.original.production_hours.toString() || "" : ""}</>,
       },
       {
         accessorKey: 'manpower',
         header: 'Man Power',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.manpower.toString() || "" ? cell.row.original.manpower.toString() || "" : ""}</>,
       },
       {
         accessorKey: 'small_repair',
         header: 'Small Repair',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.small_repair.toString() || "" ? cell.row.original.small_repair.toString() || "" : ""}</>,
       },
       {
         accessorKey: 'big_repair',
         header: 'Big Repair',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.big_repair.toString() || "" ? cell.row.original.big_repair.toString() || "" : ""}</>,
       },
       {
         accessorKey: 'upper_damage',
         header: 'Upper Damage',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.upper_damage.toString() || "" ? cell.row.original.upper_damage.toString() || "" : ""}</>,
       },
       {
         accessorKey: 'created_at',
         header: 'Created At',
-        minSize: 150,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.created_at || ""}</>
       },
       {
         accessorKey: 'created_by',
         header: 'Creator',
-        minSize: 150,
-        grow:false,
+       
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.created_by.value.toString() || "" ? cell.row.original.created_by.value.toString() || "" : ""}</>,
         filterSelectOptions: productions && productions.map((i) => {
@@ -367,7 +358,14 @@ export default function ProductionPage() {
     enableTopToolbar: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    state: { sorting, isLoading: isLoading },
+    onColumnVisibilityChange: setColumnVisibility,
+    onColumnSizingChange: setColumnSizing, state: {
+      isLoading: isLoading,
+      columnVisibility,
+
+      sorting,
+      columnSizing: columnSizing
+    },
     enableBottomToolbar: true,
     enableGlobalFilter: false,
     manualPagination: true,
@@ -382,6 +380,59 @@ export default function ProductionPage() {
       console.error(error);
     }
   }, [sorting]);
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+
+
+
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+
+
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+
+    isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
+
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
 
   return (
     <>

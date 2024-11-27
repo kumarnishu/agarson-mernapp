@@ -1,7 +1,7 @@
 import { Stack } from '@mui/system'
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
-import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { IconButton, TextField, Tooltip, Typography } from '@mui/material'
 import { GetSalesManVisitSummaryReportDto } from '../../dtos'
 import { AxiosResponse } from "axios"
@@ -24,8 +24,15 @@ export default function SalesmanVisitPage() {
   const { setChoice } = useContext(ChoiceContext)
   const [reports, setReports] = useState<GetSalesManVisitSummaryReportDto[]>([])
   const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetSalesManVisitSummaryReportDto[]>, BackendError>(["visits", date], async () => GetSalesmanVisit({ date: date }))
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [employee, setEmployee] = useState<string>()
+
+  const isFirstRender = useRef(true);
+
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
+
   useEffect(() => {
     if (isSuccess) {
       setReports(data.data)
@@ -43,7 +50,7 @@ export default function SalesmanVisitPage() {
       {
         accessorKey: 'action',
         header: 'Action',
-        maxSize: 70,
+        
         Cell: (cell) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -78,94 +85,94 @@ export default function SalesmanVisitPage() {
       {
         accessorKey: 'employee.label',
         header: 'Employee',
-        size: 200,
+        
         Cell: (cell) => <Typography onClick={() => {
           setChoice({ type: SaleChoiceActions.visit_history })
           setEmployee(cell.row.original.employee.id)
         }
         } sx={{ cursor: 'pointer', '&:hover': { fontWeight: 'bold' } }}> {cell.row.original.employee && cell.row.original.employee.label}</Typography >
         ,
-        grow: false
+        
       },
       {
         accessorKey: 'last_remark',
         header: 'Last Remark',
-        size: 200,
-        grow: false
+        
+        
       },
       {
         accessorKey: 'date1',
         header: 'Date',
         size: 130,
-        grow: false
+        
       },
       {
         accessorKey: 'new_visits1',
         header: 'New Visits',
         size: 130,
-        grow: false
+        
       },
       {
         accessorKey: 'old_visits1',
         header: 'Old Visits',
         size: 130,
-        grow: false
+        
       },
       {
         accessorKey: 'working_time1',
         header: 'Time',
         size: 130,
-        grow: false
+        
       },
       {
         accessorKey: 'date2',
         header: 'Date',
         size: 130,
-        grow: false
+        
       },
       {
         accessorKey: 'new_visits2',
         header: 'New Visits',
         size: 130,
-        grow: false
+        
       },
       {
         accessorKey: 'old_visits2',
         header: 'Old Visits',
         size: 130,
-        grow: false
+        
       },
       {
         accessorKey: 'working_time2',
         header: 'Time',
         size: 130,
-        grow: false
+        
       },
       {
         accessorKey: 'date3',
         header: 'Date',
         size: 130,
-        grow: false
+        
       },
       {
         accessorKey: 'new_visits3',
         header: 'New Visits',
         size: 130,
-        grow: false
+        
       },
       {
         accessorKey: 'old_visits3',
         header: 'Old Visits',
         size: 130,
-        grow: false
+        
       },
       {
         accessorKey: 'working_time3',
         header: 'Time',
         size: 130,
-        grow: false
+        
       },
-      
+
 
 
     ],
@@ -217,9 +224,71 @@ export default function SalesmanVisitPage() {
     enableColumnPinning: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
+    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+    rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
+    columnVirtualizerOptions: { overscan: 2 },
     onSortingChange: setSorting,
-    state: { isLoading, sorting }
+    onColumnSizingChange: setColumnSizing, state: {
+      isLoading: isLoading,
+      columnVisibility,
+
+      sorting,
+      columnSizing: columnSizing
+    }
   });
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+
+
+
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+
+
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+
+    isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
+
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
 
   return (
     <>

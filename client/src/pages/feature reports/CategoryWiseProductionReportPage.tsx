@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
 import { GetproductioncategoryWise } from '../../services/ProductionServices'
@@ -24,16 +24,20 @@ export default function CategoryWiseProductionReportPage() {
   const { user } = useContext(UserContext)
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetCategoryWiseProductionReportDto[]>, BackendError>(["categorywisereports", dates.start_date, dates.end_date], async () => GetproductioncategoryWise({ start_date: dates.start_date, end_date: dates.end_date }))
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
+   const isFirstRender = useRef(true);
+
+    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+  
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const columns = useMemo<MRT_ColumnDef<GetCategoryWiseProductionReportDto>[]>(
     //column definitions...
     () => reports &&[
       {
         accessorKey: 'date',
         header: 'Date',
-        maxSize: 150,
-        grow:false,
+        
         Footer: <b>Total</b>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => { return i.date.toString() }).filter(onlyUnique)
@@ -155,9 +159,69 @@ export default function CategoryWiseProductionReportPage() {
     rowVirtualizerInstanceRef, //optional
     rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
     columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizer
+    onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
-    state: { isLoading, sorting }
+    onColumnSizingChange: setColumnSizing, state: {
+      isLoading: isLoading,
+      columnVisibility,
+      
+      sorting,
+      columnSizing: columnSizing
+    }
   });
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+    
+
+
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+
+    
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+    
+    isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
+ 
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
 
   return (
     <>

@@ -3,7 +3,7 @@ import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
-import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+   import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { GetVisitReportDto } from '../../../dtos'
 import { GetVisitReports } from '../../../services/SalesServices'
 import { BackendError } from '../../..'
@@ -15,7 +15,6 @@ import { ChoiceContext, SaleChoiceActions } from '../../../contexts/dialogContex
 function VisitReportPage({ employee }: { employee: string }) {
     const [reports, setReports] = useState<GetVisitReportDto[]>([])
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetVisitReportDto[]>, BackendError>(["reports", employee], async () => GetVisitReports({ employee }))
-    const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const columns = useMemo<MRT_ColumnDef<GetVisitReportDto>[]>(
         //column definitions...
@@ -23,51 +22,51 @@ function VisitReportPage({ employee }: { employee: string }) {
             {
                 accessorKey: 'employee',
                 header: 'Employee',
-                size: 150,
+                
             },
             {
                 accessorKey: 'visit_date',
                 header: 'Visit Date',
-                size: 120,
+                
                 filterVariant: 'multi-select',
                 filterSelectOptions: reports.map((i) => { return i.visit_date || "" }).filter(onlyUnique)
             },
             {
                 accessorKey: 'customer',
                 header: 'Customer',
-                size: 250,
+                
             }
             ,
             {
                 accessorKey: 'intime',
                 header: 'in Time',
-                size: 120,
+                
             },
             {
                 accessorKey: 'outtime',
                 header: 'Out Time',
-                size: 120,
+                
             },
             {
                 accessorKey: 'visitInLocation',
                 header: 'Visit In Location',
-                size: 350,
+               
             },
             {
                 accessorKey: 'visitOutLocation',
                 header: 'Visit Out Location',
-                size: 350,
+               
             },
             {
                 accessorKey: 'remarks',
                 header: 'Remarks',
-                size: 350,
+               
             },
 
             {
                 accessorKey: 'created_at',
                 header: 'Created On',
-                size: 120,
+                
                 filterVariant: 'multi-select',
                 filterSelectOptions: reports.map((i) => { return i.created_at || "" }).filter(onlyUnique)
             },
@@ -75,15 +74,14 @@ function VisitReportPage({ employee }: { employee: string }) {
         [reports],
         //end
     );
+    const isFirstRender = useRef(true);
 
 
+    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
 
+    const [sorting, setSorting] = useState<MRT_SortingState>([]);
+    const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
-    useEffect(() => {
-        if (isSuccess && data) {
-            setReports(data.data);
-        }
-    }, [isSuccess]);
 
     const table = useMaterialReactTable({
         columns, columnFilterDisplayMode: 'popover',
@@ -129,9 +127,85 @@ function VisitReportPage({ employee }: { employee: string }) {
         rowVirtualizerInstanceRef, //optional
         rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
         columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizer
+        onColumnVisibilityChange: setColumnVisibility,
         onSortingChange: setSorting,
-        state: { isLoading, sorting }
+        onColumnSizingChange: setColumnSizing,
+        state: {
+            isLoading: isLoading,
+            columnVisibility,
+            sorting,
+            columnSizing: columnSizing
+        }
     });
+
+    useEffect(() => {
+        //scroll to the top of the table when the sorting changes
+        try {
+            rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+        } catch (error) {
+            console.error(error);
+        }
+    }, [sorting]);
+
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    }, [sorting]);
+
+    //load state from local storage
+    useEffect(() => {
+        const columnVisibility = localStorage.getItem(
+            'mrt_columnVisibility_table_1',
+        );
+        const columnSizing = localStorage.getItem(
+            'mrt_columnSizing_table_1',
+        );
+
+        const sorting = localStorage.getItem('mrt_sorting_table_1');
+
+        if (columnVisibility) {
+            setColumnVisibility(JSON.parse(columnVisibility));
+        }
+
+
+
+        if (columnSizing)
+            setColumnSizing(JSON.parse(columnSizing))
+        if (sorting) {
+            setSorting(JSON.parse(sorting));
+        }
+        isFirstRender.current = false;
+    }, []);
+
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem(
+            'mrt_columnVisibility_table_1',
+            JSON.stringify(columnVisibility),
+        );
+    }, [columnVisibility]);
+
+
+
+
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    }, [sorting]);
+
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    }, [columnSizing]);
+
+
+
+    useEffect(() => {
+        if (isSuccess && data) {
+            setReports(data.data);
+        }
+    }, [isSuccess]);
+
     useEffect(() => {
         //scroll to the top of the table when the sorting changes
         try {

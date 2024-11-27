@@ -1,7 +1,7 @@
 import { Stack } from '@mui/system'
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
-import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+   import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import CreateOrEditCityDialog from '../../components/dialogs/crm/CreateOrEditCityDialog'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
 import { UserContext } from '../../contexts/userContext'
@@ -28,12 +28,17 @@ export default function CrmCitiesPage() {
   const [flag, setFlag] = useState(1);
   const { user: LoggedInUser } = useContext(UserContext)
   const { data: citiesdata, isSuccess, isLoading } = useQuery<AxiosResponse<GetCrmCityDto[]>, BackendError>(["crm_cities", state], async () => GetAllCities({ state: state }))
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const { data, isSuccess: isStateSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>("crm_cities", GetAllStates)
 
   const { setChoice } = useContext(ChoiceContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  const isFirstRender = useRef(true);
 
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
   // const handleExportRows = (rows: MRT_Row<GetCrmStateDto>[]) => {
   //   const doc = new jsPDF();
@@ -65,9 +70,8 @@ export default function CrmCitiesPage() {
       {
         accessorKey: 'actions',
         header: '',
-        maxSize: 50,
+        
         Footer: <b></b>,
-        grow: false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -109,8 +113,7 @@ export default function CrmCitiesPage() {
       {
         accessorKey: 'city',
         header: 'City',
-        minSize: 350,
-        grow: false,
+        
         Cell: (cell) => <> {
           [cell.row.original.city, String(cell.row.original.alias1 || ""), String(cell.row.original.alias2 || "")].filter(value => value)
             .join(", ")
@@ -119,16 +122,15 @@ export default function CrmCitiesPage() {
       {
         accessorKey: 'state',
         header: 'State',
-        minSize: 350,
-        grow: false
+      
+        
       },
 
       {
         // accessorKey: 'assigned_users.value',
         accessorFn: (Cell) => { return Cell.assigned_users },
         header: 'Assigned Users',
-        minSize: 650,
-        grow: false,
+      
         filterVariant: 'text',
         Cell: (cell) => <>{cell.row.original.assigned_users && cell.row.original.assigned_users.length > 0 ? cell.row.original.assigned_users : ""}</>,
       }
@@ -181,9 +183,72 @@ export default function CrmCitiesPage() {
     enableColumnPinning: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
+    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+    rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
+    columnVirtualizerOptions: { overscan: 2 },
     onSortingChange: setSorting,
-    state: { isLoading, sorting }
+    onColumnSizingChange: setColumnSizing,
+    state: {
+      isLoading: isLoading,
+      columnVisibility,
+
+      sorting,
+      columnSizing: columnSizing
+    }
   });
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+
+
+
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+
+
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+
+    isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
+ 
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
 
   return (
     <>

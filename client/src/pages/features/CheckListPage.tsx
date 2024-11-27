@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
@@ -8,7 +8,7 @@ import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
 import { GetChecklistFromExcelDto, GetUserDto } from '../../dtos'
 import { DropDownDto } from '../../dtos'
-import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { CheckListChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import { FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
 import { DownloadFile } from '../../utils/DownloadFile'
@@ -38,6 +38,13 @@ function ChecklistPage() {
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   ];
+
+  const isFirstRender = useRef(true);
+
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+
+  const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("checklist_categories", GetAllCheckCategories)
   const { setChoice } = useContext(ChoiceContext)
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
@@ -69,13 +76,12 @@ function ChecklistPage() {
       {
         accessorKey: 'serial_no',
         header: ' #',
-        maxSize: 70,
-        grow: false,
+       
       },
       {
         accessorKey: 'last_checked_box',
         header: 'Stage',
-        maxSize: 70,
+        
         Cell: (cell) => <Tooltip title={cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}>
           <Button onClick={() => {
             setChecklist(cell.row.original)
@@ -86,8 +92,7 @@ function ChecklistPage() {
       {
         accessorKey: 'work_title',
         header: ' Work Title',
-        minSize: 350,
-        grow: false,
+        
         Cell: (cell) => <span title={cell.row.original.work_description} >
           {cell.row.original.link && cell.row.original.link != "" ?
             <a style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
@@ -102,8 +107,7 @@ function ChecklistPage() {
       {
         accessorKey: 'assigned_users.value',
         header: 'Responsible',
-        minSize: 160,
-        grow: false,
+       
         enableColumnFilter: true,
         Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.value }).toString() || ""}</>,
         filter: 'custom',
@@ -118,22 +122,21 @@ function ChecklistPage() {
       {
         accessorKey: 'last_10_boxes',
         header: 'Filtered Dates',
-        minSize: 250,
-        grow: true,
+       
         filter: 'custom',
-        enableColumnFilter:true,
+        enableColumnFilter: true,
         filterFn: (row, columnId, filterValue) => {
           console.log(columnId)
           if (!Array.isArray(row.original.last_10_boxes)) return false;
           return row.original.last_10_boxes.some((box) => {
             if (row.original.frequency == 'daily')
-              return  String(new Date(box.date).getDate()).toLowerCase() == filterValue
+              return String(new Date(box.date).getDate()).toLowerCase() == filterValue
             else if (row.original.frequency == 'weekly')
-              return  String(new Date(box.date).getDate()).toLowerCase() == filterValue
+              return String(new Date(box.date).getDate()).toLowerCase() == filterValue
             else if (row.original.frequency == 'monthly')
-              return  String(monthNames[new Date(box.date).getMonth()]).toLowerCase() == filterValue
+              return String(monthNames[new Date(box.date).getMonth()]).toLowerCase() == filterValue
             else
-              return  String(new Date(box.date).getFullYear()).toLowerCase() == filterValue
+              return String(new Date(box.date).getFullYear()).toLowerCase() == filterValue
           }
           );
         },
@@ -231,15 +234,13 @@ function ChecklistPage() {
       {
         accessorKey: 'category.value',
         header: ' Category',
-        minSize: 120,
-        grow: false,
+       
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
       },
       {
         accessorKey: 'frequency',
         header: ' Frequency',
-        minSize: 120,
-        grow: false,
+        
         Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
       },
 
@@ -247,8 +248,7 @@ function ChecklistPage() {
       {
         accessorKey: 'next_date',
         header: 'Next Check Date',
-        minSize: 120,
-        grow: false,
+       
         Cell: (cell) => <>
           < input
             type="date"
@@ -267,8 +267,7 @@ function ChecklistPage() {
       {
         accessorKey: 'photo',
         header: 'Photo',
-        minSize: 120,
-        grow: false,
+       
         Cell: (cell) => <span onDoubleClick={() => {
           if (cell.row.original.photo && cell.row.original.photo) {
             DownloadFile(cell.row.original.photo, 'photo')
@@ -420,7 +419,16 @@ function ChecklistPage() {
     onSortingChange: setSorting,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    state: { sorting, isLoading: isLoading, showAlertBanner: false },
+    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+    rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
+    columnVirtualizerOptions: { overscan: 2 },
+    onColumnSizingChange: setColumnSizing, state: {
+      isLoading: isLoading,
+      columnVisibility,
+
+      sorting,
+      columnSizing: columnSizing
+    },
     enableBottomToolbar: true,
     enableGlobalFilter: false,
     enablePagination: false,
@@ -448,6 +456,59 @@ function ChecklistPage() {
       })
     }
   }, [data])
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+
+
+
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+
+
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+
+    isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
+
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
 
   return (
     <>

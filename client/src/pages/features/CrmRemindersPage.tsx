@@ -1,16 +1,16 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { GetReminderRemarks } from '../../services/LeadsServices'
 import { BackendError } from '../..'
-import { Box, DialogTitle,  Stack } from '@mui/material'
+import { Box, DialogTitle, Stack } from '@mui/material'
 
 import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
 import { Comment, Visibility } from '@mui/icons-material'
 import { IconButton, Tooltip } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
 import { GetActivitiesOrRemindersDto } from '../../dtos'
-import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { DownloadFile } from '../../utils/DownloadFile'
@@ -22,19 +22,23 @@ function CrmReminderPage() {
   const [remark, setRemark] = useState<GetActivitiesOrRemindersDto>()
   const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetActivitiesOrRemindersDto[]>, BackendError>(["reminders"], async () => GetReminderRemarks())
   const { user: LoggedInUser } = useContext(UserContext)
-  
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+
   const { setChoice } = useContext(ChoiceContext)
 
+  const isFirstRender = useRef(true);
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const columns = useMemo<MRT_ColumnDef<GetActivitiesOrRemindersDto>[]>(
     //column definitions...
     () => remarks && [
       {
         accessorKey: 'actions',
         header: '',
-        maxSize: 50,
+        
         Footer: <b></b>,
-        grow:false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -74,39 +78,34 @@ function CrmReminderPage() {
       {
         accessorKey: 'remark',
         header: ' Last Remark',
-        minSize: 320,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.remark ? cell.row.original.remark : ""}</>
       },
       {
         accessorKey: 'created_by.label',
         header: 'Creator',
-        minSize: 100,
-        grow:false,
+      
         Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
       },
-      
+
       {
         accessorKey: 'stage',
         header: 'Stage',
-        minSize: 80,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.stage ? cell.row.original.stage : ""}</>
       },
 
       {
         accessorKey: 'remind_date',
         header: 'Next Call',
-        minSize: 180,
-        grow:false,
+      
         Cell: (cell) => <>{cell.row.original.remind_date ? cell.row.original.remind_date : ""}</>
       },
 
       {
         accessorKey: 'name',
         header: 'Name',
-        minSize: 250,
-        grow:false,
+        
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
         filterSelectOptions: remarks && remarks.map((i) => {
@@ -117,8 +116,7 @@ function CrmReminderPage() {
         accessorKey: 'city',
         header: 'City',
         filterVariant: 'multi-select',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
         filterSelectOptions: remarks && remarks.map((i) => {
           return i.city;
@@ -128,8 +126,7 @@ function CrmReminderPage() {
         accessorKey: 'state',
         header: 'State',
         filterVariant: 'multi-select',
-        minSize: 120,
-        grow:false,
+      
         Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
         filterSelectOptions: remarks && remarks.map((i) => {
           return i.state;
@@ -140,64 +137,55 @@ function CrmReminderPage() {
       {
         accessorKey: 'mobile',
         header: 'Mobile1',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.mobile ? cell.row.original.mobile : ""}</>
       }, {
         accessorKey: 'alternate_mobile1',
         header: 'Mobile2',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.alternate_mobile1 ? cell.row.original.alternate_mobile1 : ""}</>
       }, {
         accessorKey: 'alternate_mobile2',
         header: 'Mobile3',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.alternate_mobile2 ? cell.row.original.alternate_mobile2 : ""}</>
       },
       {
         accessorKey: 'created_at',
         header: 'TimeStamp',
-        minSize: 200,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
       },
       {
         accessorKey: 'referred_party_name',
         header: 'Refer Party',
-        minSize: 320,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.referred_party_name ? cell.row.original.referred_party_name : ""}</>
       },
       {
         accessorKey: 'referred_party_mobile',
         header: 'Refer Mobile',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.referred_party_mobile ? cell.row.original.referred_party_mobile : ""}</>
       },
       {
         accessorKey: 'referred_date',
         header: 'Refer Date',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.referred_date ? cell.row.original.referred_date : ""}</>
       },
-     
-     
+
+
       {
         accessorKey: 'customer_name',
         header: 'Customer',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.customer_name ? cell.row.original.customer_name : ""}</>
       }
       , {
         accessorKey: 'customer_designation',
         header: 'Designitaion',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.customer_designation ? cell.row.original.customer_designation : ""}</>
       }
 
@@ -205,16 +193,14 @@ function CrmReminderPage() {
       {
         accessorKey: 'email',
         header: 'Email',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.email ? cell.row.original.email : ""}</>
       }
       ,
       {
         accessorKey: 'alternate_email',
         header: 'Email2',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.alternate_email ? cell.row.original.alternate_email : ""}</>
       }
       ,
@@ -222,36 +208,31 @@ function CrmReminderPage() {
       {
         accessorKey: 'address',
         header: 'Address',
-        minSize: 320,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.address ? cell.row.original.address : ""}</>
       },
       {
         accessorKey: 'source',
         header: 'Lead Source',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.lead_source ? cell.row.original.lead_source : ""}</>
       },
       {
         accessorKey: 'type',
         header: 'Lead Type',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.lead_type ? cell.row.original.lead_type : ""}</>
       },
       {
         accessorKey: 'country',
         header: 'Country',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.country ? cell.row.original.country : ""}</>
       },
       {
         accessorKey: 'visiting_card',
         header: 'Visiting Card',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <span onDoubleClick={() => {
           if (cell.row.original.visiting_card && cell.row.original.visiting_card) {
             DownloadFile(cell.row.original.visiting_card, 'visiting card')
@@ -266,7 +247,7 @@ function CrmReminderPage() {
 
 
   const table = useMaterialReactTable({
-    columns, columnFilterDisplayMode: 'popover', 
+    columns, columnFilterDisplayMode: 'popover',
     data: remarks, //10,000 rows       
     enableColumnResizing: true,
     enableColumnVirtualization: true, enableStickyFooter: true,
@@ -306,13 +287,75 @@ function CrmReminderPage() {
     enableColumnPinning: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
+    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+    rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
+    columnVirtualizerOptions: { overscan: 2 },
     onSortingChange: setSorting,
-    state: { isLoading, sorting }
+    onColumnSizingChange: setColumnSizing, state: {
+      isLoading: isLoading,
+      columnVisibility,
+
+      sorting,
+      columnSizing: columnSizing
+    }
   });
   useEffect(() => {
     if (isSuccess)
       setRemarks(data?.data)
   }, [remarks, isSuccess, data])
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+
+
+
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+
+
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+
+    isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
+
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
 
   return (
     <Box>

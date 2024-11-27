@@ -11,7 +11,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
 import CreateOrEditReferDialog from '../../components/dialogs/crm/CreateOrEditReferDialog'
 import { GetReferDto } from '../../dtos'
-import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import PopUp from '../../components/popup/PopUp'
 import { onlyUnique } from '../../utils/UniqueArray'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
@@ -32,10 +32,12 @@ export default function RefersPage() {
   const [refer, setRefer] = useState<GetReferDto>()
   const [refers, setRefers] = useState<GetReferDto[]>([])
 
+  const isFirstRender = useRef(true);
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+  const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const [preFilteredData, setPreFilteredData] = useState<GetReferDto[]>([])
   const [preFilteredPaginationData, setPreFilteredPaginationData] = useState({ limit: 20, page: 1, total: 1 });
   const [filterCount, setFilterCount] = useState(0)
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{
     result: GetReferDto[], page: number, total: number, limit: number
   }>, BackendError>(["refers"], async () => GetPaginatedRefers({ limit: paginationData?.limit, page: paginationData?.page }))
@@ -50,7 +52,7 @@ export default function RefersPage() {
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const { setChoice } = useContext(ChoiceContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
   useEffect(() => {
     if (!filter) {
@@ -107,9 +109,8 @@ export default function RefersPage() {
         accessorKey: 'actions',
         header: '',
         enableColumnFilter: false,
-        maxSize: 50,
+        
         Footer: <b></b>,
-        grow:false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -210,8 +211,7 @@ export default function RefersPage() {
       {
         accessorKey: 'name',
         header: 'Name',
-        minSize: 350,
-        grow:false,
+        
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
@@ -222,8 +222,7 @@ export default function RefersPage() {
         accessorKey: 'city',
         header: 'City',
         filterVariant: 'multi-select',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
           return i.city;
@@ -233,8 +232,7 @@ export default function RefersPage() {
         accessorKey: 'state',
         header: 'State',
         filterVariant: 'multi-select',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
           return i.state;
@@ -243,36 +241,31 @@ export default function RefersPage() {
       {
         accessorKey: 'mobile',
         header: 'Mobile1',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.mobile ? cell.row.original.mobile : ""}</>
       }, {
         accessorKey: 'mobile2',
         header: 'Mobile2',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.mobile2 ? cell.row.original.mobile2 : ""}</>
       }, {
         accessorKey: 'mobile3',
         header: 'Mobile3',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.mobile3 ? cell.row.original.mobile3 : ""}</>
       },
 
       {
         accessorKey: 'last_remark',
         header: 'Remark',
-        minSize: 350,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.last_remark ? cell.row.original.last_remark : ""}</>,
       },
 
       {
         accessorKey: 'refers',
         header: 'Refers',
-        minSize: 100,
-        grow:false,
+     
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.refers ? cell.row.original.refers.toString() : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
@@ -282,8 +275,7 @@ export default function RefersPage() {
       {
         accessorKey: 'customer_name',
         header: 'Customer Name',
-        minSize: 180,
-        grow:false,
+      
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.customer_name ? cell.row.original.customer_name : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
@@ -293,32 +285,28 @@ export default function RefersPage() {
       {
         accessorKey: 'gst',
         header: 'GST',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.gst ? cell.row.original.gst : ""}</>
       },
 
       {
         accessorKey: 'address',
         header: 'Address',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.address ? cell.row.original.address : ""}</>
       },
 
       {
         accessorKey: 'created_at',
         header: 'Created on',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
       },
 
       {
         accessorKey: 'created_by.label',
         header: 'Creator',
-        minSize: 120,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
       }
     ],
@@ -438,7 +426,15 @@ export default function RefersPage() {
     enableTopToolbar: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    state: { sorting, isLoading: isLoading },
+    onColumnVisibilityChange: setColumnVisibility, //optional
+    rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
+    columnVirtualizerOptions: { overscan: 2 },
+    onColumnSizingChange: setColumnSizing, state: {
+      isLoading: isLoading,
+      columnVisibility,
+      sorting,
+      columnSizing: columnSizing
+    },
     enableBottomToolbar: true,
     enableGlobalFilter: false,
     manualPagination: true,
@@ -452,6 +448,60 @@ export default function RefersPage() {
       console.error(error);
     }
   }, [sorting]);
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+
+
+
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+
+
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+
+    isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
+
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
+
   return (
     <>
       {
@@ -515,7 +565,7 @@ export default function RefersPage() {
               <ViewReferRemarksDialog id={refer._id} />
               <CreateOrEditBillDialog refer={refer} bill={undefined} />
               <ViewRefersBillHistoryDialog id={refer._id} />
-              <ToogleReferConversionDialog refer={refer}/>
+              <ToogleReferConversionDialog refer={refer} />
             </>
             : null
         }

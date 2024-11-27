@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { GetActivitiesTopBarDeatils, GetAllStages, GetRemarks } from '../../services/LeadsServices'
@@ -11,7 +11,6 @@ import { toTitleCase } from '../../utils/TitleCase'
 import { GetUserDto } from '../../dtos'
 import { DropDownDto } from '../../dtos'
 import { GetActivitiesOrRemindersDto, GetActivitiesTopBarDetailsDto } from '../../dtos'
-import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
 import ViewRemarksDialog from '../../components/dialogs/crm/ViewRemarksDialog'
 import CreateOrEditRemarkDialog from '../../components/dialogs/crm/CreateOrEditRemarkDialog'
 import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
@@ -22,6 +21,7 @@ import { DownloadFile } from '../../utils/DownloadFile'
 import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 
 function CrmActivitiesReportPage() {
     const { user } = useContext(UserContext)
@@ -46,19 +46,24 @@ function CrmActivitiesReportPage() {
     previous_date.setDate(day)
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'leads_view', show_assigned_only: true }))
     const { data, isLoading, refetch: ReftechRemarks, isRefetching } = useQuery<AxiosResponse<{ result: GetActivitiesOrRemindersDto[], page: number, total: number, limit: number }>, BackendError>(["activities", stage, userId, dates?.start_date, dates?.end_date], async () => GetRemarks({ stage: stage, limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
-    const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const { setChoice } = useContext(ChoiceContext)
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+    const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+    const isFirstRender = useRef(true);
+
+    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
+    const [sorting, setSorting] = useState<MRT_SortingState>([]);
+    const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
     const columns = useMemo<MRT_ColumnDef<GetActivitiesOrRemindersDto>[]>(
         //column definitions...
         () => remarks && [
             {
                 accessorKey: 'actions',
                 header: '',
-                maxSize: 50,
+                
                 enableColumnFilter: false,
                 Footer: <b></b>,
-                grow:false,
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row" spacing={1}>
@@ -98,45 +103,39 @@ function CrmActivitiesReportPage() {
             {
                 accessorKey: 'remark',
                 header: ' Last Remark',
-                minSize: 320,
-                grow:false,
+        
                 Cell: (cell) => <>{cell.row.original.remark ? cell.row.original.remark : ""}</>
             },
             {
                 accessorKey: 'created_by.label',
                 header: 'Creator',
-                minSize: 100,
-                grow:false,
+             
                 Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
             },
             {
                 accessorKey: 'created_at',
                 header: 'TimeStamp',
-                minSize: 200,
-                grow:false,
+              
                 Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
             },
             {
                 accessorKey: 'stage',
                 header: 'Stage',
-                minSize: 120,
-                grow:false,
+              
                 Cell: (cell) => <>{cell.row.original.stage ? cell.row.original.stage : ""}</>
             },
 
             {
                 accessorKey: 'remind_date',
                 header: 'Next Call',
-                minSize: 140,
-                grow:false,
+             
                 Cell: (cell) => <>{cell.row.original.remind_date ? cell.row.original.remind_date : ""}</>
             },
 
             {
                 accessorKey: 'name',
                 header: 'Name',
-                minSize: 250,
-                grow:false,
+               
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
                 filterSelectOptions: remarks && remarks.map((i) => {
@@ -148,50 +147,43 @@ function CrmActivitiesReportPage() {
             {
                 accessorKey: 'mobile',
                 header: 'Mobile1',
-                minSize: 120,
-                grow:false,
+              
                 Cell: (cell) => <>{cell.row.original.mobile ? cell.row.original.mobile : ""}</>
             }, {
                 accessorKey: 'alternate_mobile1',
                 header: 'Mobile2',
-                minSize: 120,
-                grow:false,
+               
                 Cell: (cell) => <>{cell.row.original.alternate_mobile1 ? cell.row.original.alternate_mobile1 : ""}</>
             }, {
                 accessorKey: 'alternate_mobile2',
                 header: 'Mobile3',
-                minSize: 120,
-                grow:false,
+               
                 Cell: (cell) => <>{cell.row.original.alternate_mobile2 ? cell.row.original.alternate_mobile2 : ""}</>
             },
 
             {
                 accessorKey: 'referred_party_name',
                 header: 'Refer Party',
-                minSize: 320,
-                grow:false,
+               
                 Cell: (cell) => <>{cell.row.original.referred_party_name ? cell.row.original.referred_party_name : ""}</>
             },
             {
                 accessorKey: 'referred_party_mobile',
                 header: 'Refer Mobile',
-                minSize: 120,
-                grow:false,
+              
                 Cell: (cell) => <>{cell.row.original.referred_party_mobile ? cell.row.original.referred_party_mobile : ""}</>
             },
             {
                 accessorKey: 'referred_date',
                 header: 'Refer Date',
-                minSize: 120,
-                grow:false,
+               
                 Cell: (cell) => <>{cell.row.original.referred_date ? cell.row.original.referred_date : ""}</>
             },
             {
                 accessorKey: 'city',
                 header: 'City',
                 filterVariant: 'multi-select',
-                minSize: 120,
-                grow:false,
+              
                 Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
                 filterSelectOptions: remarks && remarks.map((i) => {
                     return i.city;
@@ -201,8 +193,7 @@ function CrmActivitiesReportPage() {
                 accessorKey: 'state',
                 header: 'State',
                 filterVariant: 'multi-select',
-                minSize: 120,
-                grow:false,
+               
                 Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
                 filterSelectOptions: remarks && remarks.map((i) => {
                     return i.state;
@@ -213,15 +204,13 @@ function CrmActivitiesReportPage() {
             {
                 accessorKey: 'customer_name',
                 header: 'Customer',
-                minSize: 120,
-                grow:false,
+               
                 Cell: (cell) => <>{cell.row.original.customer_name ? cell.row.original.customer_name : ""}</>
             }
             , {
                 accessorKey: 'customer_designation',
                 header: 'Designitaion',
-                minSize: 120,
-                grow:false,
+               
                 Cell: (cell) => <>{cell.row.original.customer_designation ? cell.row.original.customer_designation : ""}</>
             }
 
@@ -229,16 +218,14 @@ function CrmActivitiesReportPage() {
             {
                 accessorKey: 'email',
                 header: 'Email',
-                minSize: 120,
-                grow:false,
+               
                 Cell: (cell) => <>{cell.row.original.email ? cell.row.original.email : ""}</>
             }
             ,
             {
                 accessorKey: 'alternate_email',
                 header: 'Email2',
-                minSize: 120,
-                grow:false,
+               
                 Cell: (cell) => <>{cell.row.original.alternate_email ? cell.row.original.alternate_email : ""}</>
             }
             ,
@@ -246,36 +233,31 @@ function CrmActivitiesReportPage() {
             {
                 accessorKey: 'address',
                 header: 'Address',
-                minSize: 320,
-                grow:false,
+               
                 Cell: (cell) => <>{cell.row.original.address ? cell.row.original.address : ""}</>
             },
             {
                 accessorKey: 'source',
                 header: 'Lead Source',
-                minSize: 120,
-                grow:false,
+               
                 Cell: (cell) => <>{cell.row.original.lead_source ? cell.row.original.lead_source : ""}</>
             },
             {
                 accessorKey: 'type',
                 header: 'Lead Type',
-                minSize: 120,
-                grow:false,
+               
                 Cell: (cell) => <>{cell.row.original.lead_type ? cell.row.original.lead_type : ""}</>
             },
             {
                 accessorKey: 'country',
                 header: 'Country',
-                minSize: 120,
-                grow:false,
+               
                 Cell: (cell) => <>{cell.row.original.country ? cell.row.original.country : ""}</>
             },
             {
                 accessorKey: 'visiting_card',
                 header: 'Visiting Card',
-                minSize: 120,
-                grow:false,
+                
                 Cell: (cell) => <span onDoubleClick={() => {
                     if (cell.row.original.visiting_card && cell.row.original.visiting_card) {
                         DownloadFile(cell.row.original.visiting_card, 'visiting card')
@@ -312,7 +294,7 @@ function CrmActivitiesReportPage() {
             <Box sx={{ width: '100%' }}>
                 <Stack direction={'row'} gap={1} sx={{ maxWidth: '100vw', height: 40, background: 'whitesmoke', p: 1, borderRadius: 1 }} className='scrollable-stack'>
                     {activitiesTopBarData && activitiesTopBarData.data && activitiesTopBarData.data.map((stage, index) => (
-                        <span key={index} style={{ paddingLeft: '10px',fontSize:11 }}>{toTitleCase(stage.stage)} - {stage.value}</span>
+                        <span key={index} style={{ paddingLeft: '10px', fontSize: 11 }}>{toTitleCase(stage.stage)} - {stage.value}</span>
                     ))}
                 </Stack>
                 <Stack
@@ -469,12 +451,20 @@ function CrmActivitiesReportPage() {
         onSortingChange: setSorting,
         enableTableFooter: true,
         enableRowVirtualization: true,
-        state: { sorting, isLoading: isLoading },
+        onColumnVisibilityChange: setColumnVisibility,
+        onColumnSizingChange: setColumnSizing, state: {
+            isLoading: isLoading,
+            columnVisibility,
+
+            sorting,
+            columnSizing: columnSizing
+        },
         enableBottomToolbar: true,
         enableGlobalFilter: false,
         enablePagination: false,
         manualPagination: true
     });
+
     useEffect(() => {
         if (stageSuccess)
             setStages(stagedata?.data)
@@ -496,6 +486,62 @@ function CrmActivitiesReportPage() {
             })
         }
     }, [data])
+    useEffect(() => {
+        //scroll to the top of the table when the sorting changes
+        try {
+            rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+        } catch (error) {
+            console.error(error);
+        }
+    }, [sorting]);
+
+    //load state from local storage
+    useEffect(() => {
+        const columnVisibility = localStorage.getItem(
+            'mrt_columnVisibility_table_1',
+        );
+        const columnSizing = localStorage.getItem(
+            'mrt_columnSizing_table_1',
+        );
+
+
+
+
+        const sorting = localStorage.getItem('mrt_sorting_table_1');
+
+
+        if (columnVisibility) {
+            setColumnVisibility(JSON.parse(columnVisibility));
+        }
+
+
+
+        if (columnSizing)
+            setColumnSizing(JSON.parse(columnSizing))
+        if (sorting) {
+            setSorting(JSON.parse(sorting));
+        }
+        isFirstRender.current = false;
+    }, []);
+
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem(
+            'mrt_columnVisibility_table_1',
+            JSON.stringify(columnVisibility),
+        );
+    }, [columnVisibility]);
+
+
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    }, [sorting]);
+
+    useEffect(() => {
+        if (isFirstRender.current) return;
+        localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    }, [columnSizing]);
 
     return (
         <>

@@ -1,4 +1,4 @@
-import { Button, IconButton, Tooltip, Typography } from '@mui/material'
+import { IconButton, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
@@ -32,10 +32,7 @@ export default function ExcelDBPage() {
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
 
-  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>(
-    {},
-  );
-  const [showGlobalFilter, setShowGlobalFilter] = useState(false);
+    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
@@ -45,7 +42,7 @@ export default function ExcelDBPage() {
         return {
           accessorKey: item.key,
           header: item.header,
-          maxSize: 70,
+          
           Cell: (cell) => <PopUp key={item.key}
             element={
               <Stack direction="row" spacing={1} >
@@ -96,20 +93,18 @@ export default function ExcelDBPage() {
           Footer: ""
         }
       else if (item.type == "string")
-        return { accessorKey: item.key, header: item.header, Footer: "", grow: true }
+        return { accessorKey: item.key, header: item.header, Footer: "",  }
       else if (item.type == "timestamp")
-        return { accessorKey: item.key, header: item.header, Footer: "", grow: true }
+        return { accessorKey: item.key, header: item.header, Footer: "",  }
       else if (item.type == "date")
         return {
           accessorKey: item.key,
           header: item.header,
-          grow: true,
           Footer: <b>Total</b>,
         }
       else
         return {
           accessorKey: item.key, header: item.header,
-          grow: true,
           aggregationFn: 'sum',
           AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
           Cell: (cell) => parseFloat(Number(cell.cell.getValue()).toFixed(2)),
@@ -183,19 +178,17 @@ export default function ExcelDBPage() {
     enablePagination: true,
     enableColumnPinning: true,
     enableTableFooter: true,
-    enableDensityToggle:false,
+    enableDensityToggle: false,
     enableRowVirtualization: true,
     rowVirtualizerInstanceRef, //optional
     rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizr
     columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizr
     onColumnVisibilityChange: setColumnVisibility,
-    onShowGlobalFilterChange: setShowGlobalFilter,
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing,
     state: {
       isLoading: isLoading,
       columnVisibility,
-      showGlobalFilter,
       sorting,
       columnSizing: columnSizing
     }
@@ -211,9 +204,7 @@ export default function ExcelDBPage() {
     const columnSizing = localStorage.getItem(
       'mrt_columnSizing_table_1',
     );
-    const showGlobalFilter = localStorage.getItem(
-      'mrt_showGlobalFilter_table_1',
-    );
+
 
     const sorting = localStorage.getItem('mrt_sorting_table_1');
 
@@ -222,9 +213,6 @@ export default function ExcelDBPage() {
       setColumnVisibility(JSON.parse(columnVisibility));
     }
 
-    if (showGlobalFilter) {
-      setShowGlobalFilter(JSON.parse(showGlobalFilter));
-    }
     if (columnSizing)
       setColumnSizing(JSON.parse(columnSizing))
     if (sorting) {
@@ -233,14 +221,7 @@ export default function ExcelDBPage() {
     isFirstRender.current = false;
   }, []);
 
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
+
 
 
   useEffect(() => {
@@ -253,14 +234,6 @@ export default function ExcelDBPage() {
 
 
 
-  useEffect(() => {
-    if (isFirstRender.current) return;
-    localStorage.setItem(
-      'mrt_showGlobalFilter_table_1',
-      JSON.stringify(showGlobalFilter),
-    );
-  }, [showGlobalFilter]);
-
 
   useEffect(() => {
     if (isFirstRender.current) return;
@@ -271,15 +244,6 @@ export default function ExcelDBPage() {
     if (isFirstRender.current) return;
     localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
   }, [columnSizing]);
-
-
-  const resetState = () => {
-    localStorage.removeItem('mrt_columnVisibility_table_1');
-    localStorage.removeItem('mrt_showGlobalFilter_table_1');
-    localStorage.removeItem('mrt_sorting_table_1');
-    localStorage.removeItem('mrt_columnSizing_table_1');
-    window.location.reload();
-  };
 
 
   return (
@@ -298,7 +262,6 @@ export default function ExcelDBPage() {
         >
           {category ? category.label : "Excel DB"}
         </Typography>
-        <Button color='error' onClick={() => resetState()}>Reset</Button>
       </Stack >
       {id && obj && <CreateOrEditExcelDBRemarkDialog category={id} obj={obj} />}
       {id && obj && <ViewExcelDBRemarksDialog id={id} obj={obj} />}

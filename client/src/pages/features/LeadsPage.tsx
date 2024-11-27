@@ -8,7 +8,7 @@ import { UserContext } from '../../contexts/userContext'
 import { toTitleCase } from '../../utils/TitleCase'
 import { GetLeadDto } from '../../dtos'
 import { DropDownDto } from '../../dtos'
-import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import CreateOrEditLeadDialog from '../../components/dialogs/crm/CreateOrEditLeadDialog'
 import MergeTwoLeadsDialog from '../../components/dialogs/crm/MergeTwoLeadsDialog'
@@ -27,7 +27,7 @@ import ReferLeadDialog from '../../components/dialogs/crm/ReferLeadDialog'
 import { DownloadFile } from '../../utils/DownloadFile'
 import { AxiosResponse } from "axios"
 import { BackendError } from "../.."
-import { Button,  Tooltip } from "@mui/material"
+import { Button, Tooltip } from "@mui/material"
 import ExportToExcel from "../../utils/ExportToExcel"
 
 
@@ -44,16 +44,20 @@ export default function LeadsPage() {
   const [stages, setStages] = useState<DropDownDto[]>([])
   const { setChoice } = useContext(ChoiceContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const { data, isLoading, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetLeadDto[], page: number, total: number, limit: number }>, BackendError>(["leads"], async () => GetLeads({ limit: paginationData?.limit, page: paginationData?.page, stage: stage }))
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null); const { data, isLoading, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetLeadDto[], page: number, total: number, limit: number }>, BackendError>(["leads"], async () => GetLeads({ limit: paginationData?.limit, page: paginationData?.page, stage: stage }))
 
   const { data: stagedata, isSuccess: stageSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("crm_stages", GetAllStages)
 
   const { data: fuzzyleads, isLoading: isFuzzyLoading, refetch: refetchFuzzy, isRefetching: isFuzzyRefetching } = useQuery<AxiosResponse<{ result: GetLeadDto[], page: number, total: number, limit: number }>, BackendError>(["fuzzyleads"], async () => FuzzySearchLeads({ searchString: filter, limit: paginationData?.limit, page: paginationData?.page, stage: stage }), {
     enabled: false
   })
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
+  const isFirstRender = useRef(true);
+
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
   useEffect(() => {
     if (stageSuccess && stagedata.data) {
@@ -120,9 +124,8 @@ export default function LeadsPage() {
       {
         accessorKey: 'actions',
         header: '',
-        maxSize: 50,
+        
         enableColumnFilter: false,
-        grow:false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -246,8 +249,7 @@ export default function LeadsPage() {
       {
         accessorKey: 'name',
         header: 'Name',
-        minSize: 350,
-        grow:false,
+        
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
         filterSelectOptions: leads && leads.map((i) => {
@@ -258,8 +260,7 @@ export default function LeadsPage() {
         accessorKey: 'city',
         header: 'City',
         filterVariant: 'multi-select',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
         filterSelectOptions: leads && leads.map((i) => {
           return i.city;
@@ -269,8 +270,7 @@ export default function LeadsPage() {
         accessorKey: 'state',
         header: 'State',
         filterVariant: 'multi-select',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
         filterSelectOptions: leads && leads.map((i) => {
           return i.state;
@@ -279,85 +279,73 @@ export default function LeadsPage() {
       {
         accessorKey: 'stage',
         header: 'Stage',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.stage ? cell.row.original.stage : ""}</>
       },
       {
         accessorKey: 'mobile',
         header: 'Mobile1',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.mobile ? cell.row.original.mobile : ""}</>
       }, {
         accessorKey: 'alternate_mobile1',
         header: 'Mobile2',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.alternate_mobile1 ? cell.row.original.alternate_mobile1 : ""}</>
       }, {
         accessorKey: 'alternate_mobile2',
         header: 'Mobile3',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.alternate_mobile2 ? cell.row.original.alternate_mobile2 : ""}</>
       },
       {
         accessorKey: 'last_remark',
         header: 'Last Remark',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.last_remark ? cell.row.original.last_remark : ""}</>
       },
       {
         accessorKey: 'customer_name',
         header: 'Customer',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.customer_name ? cell.row.original.customer_name : ""}</>
       }
       , {
         accessorKey: 'customer_designation',
         header: 'Designitaion',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.customer_designation ? cell.row.original.customer_designation : ""}</>
       },
       {
         accessorKey: 'referred_party_name',
         header: 'Refer Party',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.referred_party_name ? cell.row.original.referred_party_name : ""}</>
       },
       {
         accessorKey: 'referred_party_mobile',
         header: 'Refer Mobile',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.referred_party_mobile ? cell.row.original.referred_party_mobile : ""}</>
       },
       {
         accessorKey: 'referred_date',
         header: 'Refer Date',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.referred_date ? cell.row.original.referred_date : ""}</>
       }
       ,
       {
         accessorKey: 'email',
         header: 'Email',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.email ? cell.row.original.email : ""}</>
       }
       ,
       {
         accessorKey: 'alternate_email',
         header: 'Email2',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.alternate_email ? cell.row.original.alternate_email : ""}</>
       }
       ,
@@ -365,65 +353,56 @@ export default function LeadsPage() {
       {
         accessorKey: 'address',
         header: 'Address',
-        minSize: 320,
-        grow:false,
+       
         Cell: (cell) => <>{cell.row.original.address ? cell.row.original.address : ""}</>
       },
       {
         accessorKey: 'source',
         header: 'Lead Source',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.lead_source ? cell.row.original.lead_source : ""}</>
       },
       {
         accessorKey: 'type',
         header: 'Lead Type',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.lead_type ? cell.row.original.lead_type : ""}</>
       },
       {
         accessorKey: 'country',
         header: 'Country',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.country ? cell.row.original.country : ""}</>
       },
       {
         accessorKey: 'created_at',
         header: 'Created on',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
       },
       {
         accessorKey: 'updated_at',
         header: 'Updated on',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.updated_at ? cell.row.original.updated_at : ""}</>
       },
       {
         accessorKey: 'created_by.value',
         accessorFn: (row) => { return row.created_by.value },
         header: 'Creator',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
       },
       {
         accessorKey: 'updated_by.label',
         header: 'Updated By',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <>{cell.row.original.updated_by.label ? cell.row.original.updated_by.label : ""}</>
       },
       {
         accessorKey: 'visiting_card',
         header: 'Visiting Card',
-        minSize: 120,
-        grow:false,
+        
         Cell: (cell) => <span onDoubleClick={() => {
           if (cell.row.original.visiting_card && cell.row.original.visiting_card) {
             DownloadFile(cell.row.original.visiting_card, 'visiting card')
@@ -530,7 +509,7 @@ export default function LeadsPage() {
         </Select>
         <Stack justifyContent={'right'} direction={'row'} gap={1}>
           {LoggedInUser?._id === LoggedInUser?.created_by.id && LoggedInUser?.assigned_permissions.includes('leads_delete') && <Tooltip title="Delete Selected Leads">
-            <Button  variant='contained' color='error'
+            <Button variant='contained' color='error'
 
               onClick={() => {
                 let data: any[] = [];
@@ -544,9 +523,9 @@ export default function LeadsPage() {
               <Delete />
             </Button>
           </Tooltip>}
-          
+
           <Tooltip title="Toogle Filter">
-            <Button  color="inherit" variant='contained'
+            <Button color="inherit" variant='contained'
               onClick={() => {
                 if (table.getState().showColumnFilters)
                   table.resetColumnFilters(true)
@@ -558,7 +537,7 @@ export default function LeadsPage() {
             </Button>
           </Tooltip>
           <Tooltip title="Toogle FullScreen">
-            <Button  color="inherit" variant='contained'
+            <Button color="inherit" variant='contained'
               onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
               }
             >
@@ -566,7 +545,7 @@ export default function LeadsPage() {
             </Button>
           </Tooltip>
           <Tooltip title="Menu">
-            <Button  color="inherit" variant='contained'
+            <Button color="inherit" variant='contained'
               onClick={(e) => setAnchorEl(e.currentTarget)
               }
             >
@@ -598,7 +577,14 @@ export default function LeadsPage() {
     enableTopToolbar: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    state: { sorting, isLoading: isLoading },
+    onColumnVisibilityChange: setColumnVisibility,
+    onColumnSizingChange: setColumnSizing, state: {
+      isLoading: isLoading,
+      columnVisibility,
+
+      sorting,
+      columnSizing: columnSizing
+    },
     enableBottomToolbar: true,
     enableGlobalFilter: false,
     manualPagination: true,
@@ -614,6 +600,59 @@ export default function LeadsPage() {
     }
   }, [sorting]);
 
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+
+
+
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+
+
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+
+    isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
+
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
 
   return (
     <>

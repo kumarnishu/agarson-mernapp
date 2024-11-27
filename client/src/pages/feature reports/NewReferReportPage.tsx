@@ -1,9 +1,9 @@
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
 import { GetNewRefers } from '../../services/LeadsServices'
@@ -35,19 +35,23 @@ export default function NewReferReportPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferDto[]>, BackendError>(["new_refer_reports", dates.start_date, dates.end_date], async () => GetNewRefers({ start_date: dates.start_date, end_date: dates.end_date }))
 
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
   const { setChoice } = useContext(ChoiceContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  const isFirstRender = useRef(true);
 
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const columns = useMemo<MRT_ColumnDef<GetReferDto>[]>(
     //column definitions...
     () => refers && [
       {
         accessorKey: 'actions',
         header: '',
-        maxSize: 50,
-        grow: false,
+
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -147,8 +151,7 @@ export default function NewReferReportPage() {
       {
         accessorKey: 'name',
         header: 'Name',
-        minSize: 350,
-        grow: false,
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
@@ -159,8 +162,7 @@ export default function NewReferReportPage() {
         accessorKey: 'city',
         header: 'City',
         filterVariant: 'multi-select',
-        minSize: 120,
-        grow: false,
+
         Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
           return i.city;
@@ -170,8 +172,7 @@ export default function NewReferReportPage() {
         accessorKey: 'state',
         header: 'State',
         filterVariant: 'multi-select',
-        minSize: 120,
-        grow: false,
+
         Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
           return i.state;
@@ -180,15 +181,13 @@ export default function NewReferReportPage() {
       {
         accessorKey: 'last_remark',
         header: 'Remark',
-        minSize: 350,
-        grow: false,
+
         Cell: (cell) => <>{cell.row.original.last_remark ? cell.row.original.last_remark : ""}</>,
       },
       {
         accessorKey: 'refers',
         header: 'Refers',
-        minSize: 100,
-        grow: false,
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.refers ? cell.row.original.refers.toString() : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
@@ -198,15 +197,13 @@ export default function NewReferReportPage() {
       {
         accessorKey: 'uploaded_bills',
         header: 'Uploaded Bills',
-        minSize: 120,
-        grow: false,
+
         Cell: (cell) => <>{cell.row.original.uploaded_bills ? cell.row.original.uploaded_bills : ""}</>
       },
       {
         accessorKey: 'customer_name',
         header: 'Customer Name',
-        minSize: 120,
-        grow: false,
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.customer_name ? cell.row.original.customer_name : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
@@ -216,52 +213,45 @@ export default function NewReferReportPage() {
       {
         accessorKey: 'mobile',
         header: 'Mobile1',
-        minSize: 120,
-        grow: false,
+
         Cell: (cell) => <>{cell.row.original.mobile ? cell.row.original.mobile : ""}</>
       }, {
         accessorKey: 'mobile2',
         header: 'Mobile2',
-        minSize: 120,
-        grow: false,
+
         Cell: (cell) => <>{cell.row.original.mobile2 ? cell.row.original.mobile2 : ""}</>
       }, {
         accessorKey: 'mobile3',
         header: 'Mobile3',
-        minSize: 120,
-        grow: false,
+
         Cell: (cell) => <>{cell.row.original.mobile3 ? cell.row.original.mobile3 : ""}</>
       },
 
       {
         accessorKey: 'gst',
         header: 'GST',
-        minSize: 120,
-        grow: false,
+
         Cell: (cell) => <>{cell.row.original.gst ? cell.row.original.gst : ""}</>
       },
 
       {
         accessorKey: 'address',
         header: 'Address',
-        minSize: 120,
-        grow: false,
+
         Cell: (cell) => <>{cell.row.original.address ? cell.row.original.address : ""}</>
       },
 
       {
         accessorKey: 'created_at',
         header: 'Created on',
-        minSize: 120,
-        grow: false,
+
         Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
       },
 
       {
         accessorKey: 'created_by.label',
         header: 'Creator',
-        minSize: 120,
-        grow: false,
+
         Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
       }
     ],
@@ -311,8 +301,17 @@ export default function NewReferReportPage() {
     enableColumnPinning: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
+    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+    rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
+    columnVirtualizerOptions: { overscan: 2 },
     onSortingChange: setSorting,
-    state: { isLoading, sorting }
+    onColumnSizingChange: setColumnSizing, state: {
+      isLoading: isLoading,
+      columnVisibility,
+
+      sorting,
+      columnSizing: columnSizing
+    }
   });
 
 
@@ -321,6 +320,59 @@ export default function NewReferReportPage() {
       setRefers(data.data);
     }
   }, [isSuccess, data]);
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+
+
+
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+
+
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+
+    isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
+
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
 
 
   return (
