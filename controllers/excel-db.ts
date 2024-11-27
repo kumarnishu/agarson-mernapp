@@ -91,13 +91,6 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
             }
         })
 
-
-
-    for (let k = 0; k < keys.length; k++) {
-        let c = keys[k]
-        result.columns.push({ key: c.key, header: c.key, type: c.type })
-    }
-
     if (cat && cat.category == 'BillsAge') {
         result.columns.push({ key: 'last remark', header: 'Last Remark', type: 'string' })
         result.columns.push({ key: 'next call', header: 'Next Call', type: 'string' })
@@ -108,6 +101,13 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
             result.columns.push({ key: 'next call', header: 'Next Call', type: 'string' })
         }
     }
+
+    for (let k = 0; k < keys.length; k++) {
+        let c = keys[k]
+        result.columns.push({ key: c.key, header: c.key, type: c.type })
+    }
+
+    
 
     for (let k = 0; k < data.length; k++) {
         let obj: IRowData = {}

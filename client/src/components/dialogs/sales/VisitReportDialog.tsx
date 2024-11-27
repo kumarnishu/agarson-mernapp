@@ -1,9 +1,9 @@
-import { Dialog, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material'
+import { Dialog, DialogContent, IconButton, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
-   import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { GetVisitReportDto } from '../../../dtos'
 import { GetVisitReports } from '../../../services/SalesServices'
 import { BackendError } from '../../..'
@@ -22,51 +22,51 @@ function VisitReportPage({ employee }: { employee: string }) {
             {
                 accessorKey: 'employee',
                 header: 'Employee',
-                
+
             },
             {
                 accessorKey: 'visit_date',
                 header: 'Visit Date',
-                
+
                 filterVariant: 'multi-select',
                 filterSelectOptions: reports.map((i) => { return i.visit_date || "" }).filter(onlyUnique)
             },
             {
                 accessorKey: 'customer',
                 header: 'Customer',
-                
+
             }
             ,
             {
                 accessorKey: 'intime',
                 header: 'in Time',
-                
+
             },
             {
                 accessorKey: 'outtime',
                 header: 'Out Time',
-                
+
             },
             {
                 accessorKey: 'visitInLocation',
                 header: 'Visit In Location',
-               
+
             },
             {
                 accessorKey: 'visitOutLocation',
                 header: 'Visit Out Location',
-               
+
             },
             {
                 accessorKey: 'remarks',
                 header: 'Remarks',
-               
+
             },
 
             {
                 accessorKey: 'created_at',
                 header: 'Created On',
-                
+
                 filterVariant: 'multi-select',
                 filterSelectOptions: reports.map((i) => { return i.created_at || "" }).filter(onlyUnique)
             },
@@ -246,18 +246,14 @@ function VisitReportPage({ employee }: { employee: string }) {
 function ViewVisitReportDialog({ employee, setEmployee }: { employee: string, setEmployee: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (
-        <Dialog open={choice === SaleChoiceActions.visit_history ? true : false}
+        <Dialog open={choice === SaleChoiceActions.visit_history ? true : false} fullScreen
             onClose={() => setChoice({ type: SaleChoiceActions.close_sale })}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setEmployee(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>
 
-            <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
-                {"Visiit Report"}
-            </DialogTitle>
-
-            <DialogContent>
+            <DialogContent >
                 {employee && <VisitReportPage employee={employee} />}
             </DialogContent>
         </Dialog >

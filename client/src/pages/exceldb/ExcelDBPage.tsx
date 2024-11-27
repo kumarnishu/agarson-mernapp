@@ -32,7 +32,7 @@ export default function ExcelDBPage() {
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
 
-    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
@@ -42,7 +42,7 @@ export default function ExcelDBPage() {
         return {
           accessorKey: item.key,
           header: item.header,
-          
+
           Cell: (cell) => <PopUp key={item.key}
             element={
               <Stack direction="row" spacing={1} >
@@ -92,10 +92,13 @@ export default function ExcelDBPage() {
           />,
           Footer: ""
         }
-      else if (item.type == "string")
-        return { accessorKey: item.key, header: item.header, Footer: "",  }
+      else if (item.type == "string") {
+        if (item.key == 'last remark' || item.key == 'next call')
+          return { accessorKey: item.key, header: item.header, Footer: "", Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip> }
+        return { accessorKey: item.key, header: item.header, Footer: "", }
+      }
       else if (item.type == "timestamp")
-        return { accessorKey: item.key, header: item.header, Footer: "",  }
+        return { accessorKey: item.key, header: item.header, Footer: "", }
       else if (item.type == "date")
         return {
           accessorKey: item.key,
