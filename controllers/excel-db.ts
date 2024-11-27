@@ -274,8 +274,9 @@ export const CreateExcelDBFromExcel = async (req: Request, res: Response, next: 
                 }
             }
         }
+        await SaveVisistReports(req.user)
     }
-    await SaveVisistReports(req.user)
+   
     if (result.length > 0)
         return res.status(200).json(result);
     else
