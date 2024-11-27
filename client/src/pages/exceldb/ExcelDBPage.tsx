@@ -59,6 +59,10 @@ export default function ExcelDBPage() {
                       if (cell.row.original['Account Name'])
                         //@ts-ignore
                         setObj(cell.row.original['Account Name'])
+                      //@ts-ignore
+                      else if (cell.row.original['PARTY'])
+                        //@ts-ignore
+                        setObj(cell.row.original['PARTY'])
                     }}
                   >
                     <Visibility />
@@ -77,6 +81,10 @@ export default function ExcelDBPage() {
                         if (cell.row.original['Account Name'])
                           //@ts-ignore
                           setObj(cell.row.original['Account Name'])
+                        //@ts-ignore
+                        else if (cell.row.original['PARTY'])
+                          //@ts-ignore
+                          setObj(cell.row.original['PARTY'])
                       }}
                     >
                       <Comment />
@@ -175,6 +183,7 @@ export default function ExcelDBPage() {
     enablePagination: true,
     enableColumnPinning: true,
     enableTableFooter: true,
+    enableDensityToggle:false,
     enableRowVirtualization: true,
     rowVirtualizerInstanceRef, //optional
     rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizr
@@ -212,7 +221,7 @@ export default function ExcelDBPage() {
     if (columnVisibility) {
       setColumnVisibility(JSON.parse(columnVisibility));
     }
-    
+
     if (showGlobalFilter) {
       setShowGlobalFilter(JSON.parse(showGlobalFilter));
     }
@@ -271,6 +280,7 @@ export default function ExcelDBPage() {
     localStorage.removeItem('mrt_columnSizing_table_1');
     window.location.reload();
   };
+
 
   return (
     <>
