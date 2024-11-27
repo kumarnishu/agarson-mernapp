@@ -1,10 +1,10 @@
-import { IconButton, LinearProgress, Tooltip, Typography } from '@mui/material'
+import { Button, IconButton, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
 import { DropDownDto, IColumnRowData } from '../../dtos'
 import { GetExcelDbReport } from '../../services/ExcelDbService'
 import { useParams } from 'react-router-dom'
@@ -24,13 +24,20 @@ export default function ExcelDBPage() {
   const [obj, setObj] = useState<string | undefined>()
   const { user: LoggedInUser } = useContext(UserContext)
   const { setChoice } = useContext(ChoiceContext)
-  const { id, name } = useParams()
+  const { id } = useParams()
 
   const { data: categorydata, refetch: RefetchCategory, isSuccess: isSuccessCategorydata } = useQuery<AxiosResponse<DropDownDto>, BackendError>(["key_categories"], async () => GetKeyCategoryById(id || ""), { enabled: false })
 
-  const { data, isLoading, isSuccess, refetch, isRefetching } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb"], async () => GetExcelDbReport(id || ""), { enabled: false })
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const { data, isLoading, isSuccess, refetch } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb"], async () => GetExcelDbReport(id || ""), { enabled: false })
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  const isFirstRender = useRef(true);
+
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>(
+    {},
+  );
+  const [showGlobalFilter, setShowGlobalFilter] = useState(false);
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
   let columns = useMemo<MRT_ColumnDef<IColumnRowData['columns']>[]>(
     () => reportcolumns && reportcolumns.map((item, index) => {
@@ -39,9 +46,9 @@ export default function ExcelDBPage() {
           accessorKey: item.key,
           header: item.header,
           maxSize: 70,
-          Cell: (cell) => <PopUp
+          Cell: (cell) => <PopUp key={item.key}
             element={
-              <Stack direction="row" spacing={1} key={item.key}>
+              <Stack direction="row" spacing={1} >
                 {LoggedInUser?.assigned_permissions.includes('grp_excel_view') && <Tooltip title="view remarks">
                   <IconButton color="primary"
 
@@ -95,6 +102,8 @@ export default function ExcelDBPage() {
         return {
           accessorKey: item.key, header: item.header,
           grow: true,
+          aggregationFn: 'sum',
+          AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
           Cell: (cell) => parseFloat(Number(cell.cell.getValue()).toFixed(2)),
           //@ts-ignore
           Footer: ({ table }) => <b>{index < 3 ? table.getFilteredRowModel().rows.length : table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
@@ -153,7 +162,7 @@ export default function ExcelDBPage() {
       },
     }),
     muiPaginationProps: {
-      rowsPerPageOptions: [100, 200, 500, 1000, 2000, 5000, 7000, 10000],
+      rowsPerPageOptions: [10, 100, 200, 500, 1000, 2000, 5000, 7000, 10000],
       shape: 'rounded',
       variant: 'outlined',
     },
@@ -168,11 +177,53 @@ export default function ExcelDBPage() {
     enableTableFooter: true,
     enableRowVirtualization: true,
     rowVirtualizerInstanceRef, //optional
-    rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
-    columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizer
+    rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizr
+    columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizr
+    onColumnVisibilityChange: setColumnVisibility,
+    onShowGlobalFilterChange: setShowGlobalFilter,
     onSortingChange: setSorting,
-    state: { isLoading, sorting }
+    onColumnSizingChange: setColumnSizing,
+    state: {
+      isLoading: isLoading,
+      columnVisibility,
+      showGlobalFilter,
+      sorting,
+      columnSizing: columnSizing
+    }
   });
+
+
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+    const showGlobalFilter = localStorage.getItem(
+      'mrt_showGlobalFilter_table_1',
+    );
+
+    const sorting = localStorage.getItem('mrt_sorting_table_1');
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+    
+    if (showGlobalFilter) {
+      setShowGlobalFilter(JSON.parse(showGlobalFilter));
+    }
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+    if (sorting) {
+      setSorting(JSON.parse(sorting));
+    }
+    isFirstRender.current = false;
+  }, []);
+
   useEffect(() => {
     //scroll to the top of the table when the sorting changes
     try {
@@ -182,7 +233,45 @@ export default function ExcelDBPage() {
     }
   }, [sorting]);
 
-  console.log(category)
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_showGlobalFilter_table_1',
+      JSON.stringify(showGlobalFilter),
+    );
+  }, [showGlobalFilter]);
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
+
+
+  const resetState = () => {
+    localStorage.removeItem('mrt_columnVisibility_table_1');
+    localStorage.removeItem('mrt_showGlobalFilter_table_1');
+    localStorage.removeItem('mrt_sorting_table_1');
+    localStorage.removeItem('mrt_columnSizing_table_1');
+    window.location.reload();
+  };
+
   return (
     <>
       <Stack
@@ -197,14 +286,14 @@ export default function ExcelDBPage() {
           component={'h1'}
           sx={{ pl: 1 }}
         >
-          {name || "Excel DB"}
+          {category ? category.label : "Excel DB"}
         </Typography>
+        <Button color='error' onClick={() => resetState()}>Reset</Button>
       </Stack >
       {id && obj && <CreateOrEditExcelDBRemarkDialog category={id} obj={obj} />}
       {id && obj && <ViewExcelDBRemarksDialog id={id} obj={obj} />}
 
       <MaterialReactTable table={table} />
-      {isLoading || isRefetching && <LinearProgress />}
     </>
 
   )

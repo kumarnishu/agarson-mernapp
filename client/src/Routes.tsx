@@ -285,7 +285,7 @@ function AppRoutes() {
               />
 
               {user?.assigned_permissions.includes('grp_excel_view') && <Route
-                path="ExcelDbReports/:id/:name" element={
+                path="ExcelDbReports/:id" element={
                   <ExcelDBPage />
                 }
               />}
