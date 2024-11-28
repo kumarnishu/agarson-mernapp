@@ -49,7 +49,6 @@ function SalesmanAttendancePage() {
     const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetSalesAttendanceDto[], page: number, total: number, limit: number }>, BackendError>(["attendances", userId, dates?.start_date, dates?.end_date], async () => GetSalesmanAttendances({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-    console.log(previous_date)
     const columns = useMemo<MRT_ColumnDef<GetSalesAttendanceDto>[]>(
         //column definitions...
         () => attendances && [
