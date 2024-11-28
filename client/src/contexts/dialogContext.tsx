@@ -12,7 +12,7 @@ type CheckListChoices = "create_or_edit_checklist" | "create_or_edit_checklist_c
 type KeyChoices = "create_or_edit_key" | "create_or_edit_key_category" | "delete_key" | "close_key" | "bulk_delete_key" | "delete_key_category" | "assign_categories" | "assign_keys" | "create_or_edit_excel_db_remark" | "delete_excel_db_remark" | "view_excel_db_remarks"
 
 
-type SaleChoices = "create_or_edit_visit_remark" | "delete__visit_remark" | "view_visit_remarks" | "close_sale" |"visit_history"
+type SaleChoices = "create_or_edit_visit_remark" | "delete__visit_remark" | "view_visit_remarks" | "close_sale" | "visit_history" | "create_or_edit_sale_attendance" | "delete_sale_attendance"
 
 type PaymentChoices = "create_or_edit_payment" | "create_or_edit_payment_category" | "delete_payment" | "close_payment" | "bulk_delete_payment" | "delete_payment_category" | "create_or_edit_payment_remark" | "view_payment_remarks" | "delete_payment_remark" | "assign_payment_to_users"
 
@@ -76,7 +76,8 @@ export enum SaleChoiceActions {
   delete__visit_remark = "delete__visit_remark",
   view_visit_remarks = "view_visit_remarks",
   close_sale = "close_sale",
-  visit_history ="visit_history"
+  visit_history = "visit_history",
+  create_or_edit_sale_attendance = "create_or_edit_sale_attendance", delete_sale_attendance = "delete_sale_attendance"
 
 }
 export enum CheckListChoiceActions {
@@ -264,6 +265,8 @@ function reducer(state: ChoiceState | null, action: Action) {
     case SaleChoiceActions.view_visit_remarks: return type
     case SaleChoiceActions.visit_history: return type
     case SaleChoiceActions.delete__visit_remark: return type
+    case SaleChoiceActions.create_or_edit_sale_attendance: return type
+    case SaleChoiceActions.delete_sale_attendance: return type
 
 
     //production choice actios

@@ -110,7 +110,7 @@ export default function ExcelDBPage() {
           accessorKey: item.key, header: item.header,
           aggregationFn: 'sum',
           AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
-          Cell: (cell) => parseFloat(Number(cell.cell.getValue()).toFixed(2)),
+          Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
           //@ts-ignore
           Footer: ({ table }) => <b>{index < 3 ? table.getFilteredRowModel().rows.length : table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
         }

@@ -48,6 +48,7 @@ import SalesmanLeavesReportPage from './pages/feature reports/SalesmanLeavesRepo
 import UserAssignementPage from './pages/authorization/UserAssignementPage.tsx'
 import SalesDashboard from './dashboards/SalesDashboard.tsx'
 import SalesmanVisitPage from './pages/sales/SalesmanVisitPage.tsx'
+import SalesmanAttendancePage from './pages/sales/SalesmanAttendancePage.tsx'
 
 
 function AppRoutes() {
@@ -308,6 +309,12 @@ function AppRoutes() {
               {user?.assigned_permissions.includes('salesman_visit_view') && <Route
                 path="SalesmanVisit" element={
                   <SalesmanVisitPage />
+                }
+              />}
+
+              {user?.assigned_permissions.includes('salesman_attendance_view') && <Route
+                path="SalesmanAttendance" element={
+                  <SalesmanAttendancePage />
                 }
               />}
               

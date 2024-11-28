@@ -4,6 +4,7 @@ const router = express.Router()
 export const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 * 50 } })
 
 import ArticlesRoutes from "./articles";
+import AttendancesRoutes from "./sales-attendance";
 import AuthRoutes from "./auth";
 import ChecklistCategoryRoutes from "./checklist-category";
 import ChecklistRoutes from "./checklist";
@@ -82,6 +83,7 @@ router.use(ExcelDBRoutes)
 router.use(ExcelDBRemarkRoutes)
 router.use(SalesmanVisitRoutes)
 router.use(VisitRemarkRoutes)
+router.use(AttendancesRoutes)
 
 
 export default router;

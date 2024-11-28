@@ -63,10 +63,10 @@ export function ExcelDbButtons() {
                         <>
                             <Button
                                 component="label"
-                                variant="contained"
+                                variant="outlined"
                                 fullWidth
                                 sx={{ py: 1 }}
-                                color="inherit"
+                                color="error"
                             >
                                 <Upload sx={{ mr: 2 }} /> {`  Upload Grp Excel !!`}
                                 <FileInput

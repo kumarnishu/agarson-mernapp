@@ -1040,6 +1040,31 @@ export function FetchAllPermissions() {
                         label: 'export'
                     }
                 ]
+            },
+            {
+                label: 'SalesMan Attendance',
+                permissions: [
+                    {
+                        value: 'salesman_attendance_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'salesman_attendance_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'salesman_attendance_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'salesman_attendance_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'salesman_attendance_export',
+                        label: 'export'
+                    }
+                ]
             }
         ]
     }

@@ -2,7 +2,7 @@ import { Stack } from '@mui/system'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { IconButton, TextField, Tooltip, Typography } from '@mui/material'
+import { Button, IconButton, TextField, Tooltip, Typography } from '@mui/material'
 import { GetSalesManVisitSummaryReportDto } from '../../dtos'
 import { AxiosResponse } from "axios"
 import { BackendError } from "../.."
@@ -15,6 +15,7 @@ import { ChoiceContext, SaleChoiceActions } from '../../contexts/dialogContext'
 import { Comment, Visibility } from '@mui/icons-material'
 import ViewVisitReportRemarksDialog from '../../components/dialogs/sales/ViewVisitReportRemarksDialog'
 import CreateOrEditVisitReportRemarkDialog from '../../components/dialogs/sales/CreateOrEditVisitReportRemarkDialog'
+import CreateOrEditSalesmanAttendanceDialog from '../../components/dialogs/sales/CreateOrEditSalesmanAttendanceDialog'
 
 
 export default function SalesmanVisitPage() {
@@ -50,7 +51,7 @@ export default function SalesmanVisitPage() {
       {
         accessorKey: 'action',
         header: 'Action',
-        
+
         Cell: (cell) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -85,92 +86,92 @@ export default function SalesmanVisitPage() {
       {
         accessorKey: 'employee.label',
         header: 'Employee',
-        
+
         Cell: (cell) => <Typography onClick={() => {
           setChoice({ type: SaleChoiceActions.visit_history })
           setEmployee(cell.row.original.employee.id)
         }
         } sx={{ cursor: 'pointer', '&:hover': { fontWeight: 'bold' } }}> {cell.row.original.employee && cell.row.original.employee.label}</Typography >
         ,
-        
+
       },
       {
         accessorKey: 'last_remark',
         header: 'Last Remark',
-        
-        
+
+
       },
       {
         accessorKey: 'date1',
         header: 'Date',
         size: 130,
-        
+
       },
       {
         accessorKey: 'new_visits1',
         header: 'New Visits',
         size: 130,
-        
+
       },
       {
         accessorKey: 'old_visits1',
         header: 'Old Visits',
         size: 130,
-        
+
       },
       {
         accessorKey: 'working_time1',
         header: 'Time',
         size: 130,
-        
+
       },
       {
         accessorKey: 'date2',
         header: 'Date',
         size: 130,
-        
+
       },
       {
         accessorKey: 'new_visits2',
         header: 'New Visits',
         size: 130,
-        
+
       },
       {
         accessorKey: 'old_visits2',
         header: 'Old Visits',
         size: 130,
-        
+
       },
       {
         accessorKey: 'working_time2',
         header: 'Time',
         size: 130,
-        
+
       },
       {
         accessorKey: 'date3',
         header: 'Date',
         size: 130,
-        
+
       },
       {
         accessorKey: 'new_visits3',
         header: 'New Visits',
         size: 130,
-        
+
       },
       {
         accessorKey: 'old_visits3',
         header: 'Old Visits',
         size: 130,
-        
+
       },
       {
         accessorKey: 'working_time3',
         header: 'Time',
         size: 130,
-        
+
       },
 
 
@@ -322,7 +323,14 @@ export default function SalesmanVisitPage() {
             }}
           />
 
+          {LoggedInUser?.assigned_permissions.includes('salesman_attendance_create') &&
+            <Button fullWidth variant='contained' onClick={() => {
+              setChoice({ type: SaleChoiceActions.create_or_edit_sale_attendance })
+            }}>Add Attendance</Button>
+          }
+
         </Stack >
+
       </Stack >
 
       {/* table */}
@@ -330,6 +338,7 @@ export default function SalesmanVisitPage() {
       {employee && realdate && <ViewVisitReportRemarksDialog employee={employee} visit_date={realdate} />}
       {employee && realdate && <CreateOrEditVisitReportRemarkDialog employee={employee} visit_date={realdate} />}
       {employee && <ViewVisitReportDialog employee={employee} setEmployee={setEmployee} />}
+      <CreateOrEditSalesmanAttendanceDialog />
     </>
 
   )

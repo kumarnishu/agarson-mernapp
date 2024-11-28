@@ -825,3 +825,34 @@ export type GetSalesManVisitSummaryReportDto = {
     working_time3: string,
     last_remark:string
 }
+
+
+export type GetSalesAttendanceDto = {
+    _id: string,
+    employee: DropDownDto,
+    date: string,
+    attendance: string,
+    new_visit: number,
+    old_visit: number,
+    remark: string,
+    in_time: string,
+    end_time: string,
+    station: DropDownDto,
+    created_at: string,
+    updated_at: string,
+    created_by: DropDownDto,
+    updated_by: DropDownDto
+}
+
+export type CreateOrEditSalesAttendanceDto = {
+    _id: string,
+    employee: string,
+    date: string,
+    attendance: string,
+    new_visit: number,
+    old_visit: number,
+    remark: string,
+    in_time: string,
+    end_time: string,
+    station: string
+}

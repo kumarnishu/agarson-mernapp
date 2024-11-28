@@ -1,4 +1,4 @@
-import { CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto } from "../dtos"
+import { CreateOrEditSalesAttendanceDto, CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto } from "../dtos"
 import { apiClient } from "./utils/AxiosInterceptor"
 
 
@@ -27,4 +27,27 @@ export const DeleteVisitReportRemark = async (id: string) => {
 
 export const GetVisitReportRemarksHistory = async (employee: string,date: string) => {
     return await apiClient.get(`visit/remarks/?date=${date}&employee=${employee}`)
+}
+
+
+export const GetSalesmanAttendances = async ({ limit, page, start_date, end_date, id }: { limit: number | undefined, page: number | undefined, start_date?: string, end_date?: string, id?: string }) => {
+    if (id)
+        return await apiClient.get(`attendances/?id=${id}&start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}`)
+    else
+        return await apiClient.get(`attendances/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}`)
+
+}
+
+
+export const CreateOrEditSalesmanAttendance = async ({ id, body }: {
+    body: CreateOrEditSalesAttendanceDto, id?: string
+
+}) => {
+    if (id)
+        return await apiClient.put(`attendances/${id}`, body);
+    return await apiClient.post(`attendances`, body);
+}
+
+export const DeleteSalesManAttendance= async (id: string) => {
+    return await apiClient.delete(`attendances/${id}`)
 }

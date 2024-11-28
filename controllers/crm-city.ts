@@ -1,6 +1,6 @@
 import xlsx from "xlsx"
-import { NextFunction, Request, Response } from 'express'; 
-import {  CreateOrEditCrmCity, GetCityFromExcelDto, GetCrmCityDto } from "../dtos";
+import { NextFunction, Request, Response } from 'express';
+import { CreateOrEditCrmCity, DropDownDto, GetCityFromExcelDto, GetCrmCityDto } from "../dtos";
 import { assignCRMCities } from "../utils/assignCRMCities";
 import { CRMCity, ICRMCity } from "../models/crm-city";
 import { User } from "../models/user";
@@ -11,7 +11,7 @@ import isMongoId from "validator/lib/isMongoId";
 
 
 export const AssignCRMCitiesToUsers = async (req: Request, res: Response, next: NextFunction) => {
-    const { city_ids, user_ids, flag } = req.body as { city_ids:string[], user_ids:string[], flag:number }
+    const { city_ids, user_ids, flag } = req.body as { city_ids: string[], user_ids: string[], flag: number }
 
     if (city_ids && city_ids.length === 0)
         return res.status(400).json({ message: "please select one city " })
@@ -44,10 +44,24 @@ export const GetAllCRMCities = async (req: Request, res: Response, next: NextFun
     }
     return res.status(200).json(result)
 }
-
+export const GetAllCRMCitiesForDropDown = async (req: Request, res: Response, next: NextFunction) => {
+    let result: DropDownDto[] = []
+    let state = req.query.state;
+    let cities: ICRMCity[] = []
+    if (state && state !== 'all')
+        cities = await CRMCity.find({ state: state })
+    else
+        cities = await CRMCity.find()
+    result = cities.map((c) => {
+        return {
+            id: c._id, label: c.city, value: c.city
+        }
+    })
+    return res.status(200).json(result)
+}
 
 export const CreateCRMCity = async (req: Request, res: Response, next: NextFunction) => {
-    const { state, city,alias1,alias2 } = req.body as CreateOrEditCrmCity
+    const { state, city, alias1, alias2 } = req.body as CreateOrEditCrmCity
     if (!state || !city) {
         return res.status(400).json({ message: "please provide required fields" })
     }
