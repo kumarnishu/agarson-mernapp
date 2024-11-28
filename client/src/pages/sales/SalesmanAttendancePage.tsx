@@ -108,6 +108,10 @@ function SalesmanAttendancePage() {
                 header: ' Attendance'
             },
             {
+                accessorKey: 'station.value',
+                header: ' Station'
+            },
+            {
                 accessorKey: 'in_time',
                 header: ' Work Time',
                 Cell: (cell) => <span >{cell.row.original.in_time + " - " + cell.row.original.end_time}</span>
