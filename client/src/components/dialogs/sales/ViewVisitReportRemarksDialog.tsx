@@ -32,7 +32,6 @@ function ViewVisitReportRemarksDialog({ employee, visit_date }: { employee: stri
         if (isSuccess && data)
             setRemarks(data?.data)
     }, [isSuccess, data])
-    console.log(data)
     return (
         <Dialog
             open={choice === SaleChoiceActions.view_visit_remarks ? true : false}
