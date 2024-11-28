@@ -1065,6 +1065,31 @@ export function FetchAllPermissions() {
                         label: 'export'
                     }
                 ]
+            },
+            {
+                label: 'SalesMan KPI',
+                permissions: [
+                    {
+                        value: 'salesman_kpi_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'salesman_kpi_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'salesman_kpi_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'salesman_kpi_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'salesman_kpi_export',
+                        label: 'export'
+                    }
+                ]
             }
         ]
     }

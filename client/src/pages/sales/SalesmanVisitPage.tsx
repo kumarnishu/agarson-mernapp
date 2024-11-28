@@ -256,9 +256,6 @@ export default function SalesmanVisitPage() {
     );
 
 
-
-
-
     if (columnVisibility) {
       setColumnVisibility(JSON.parse(columnVisibility));
     }

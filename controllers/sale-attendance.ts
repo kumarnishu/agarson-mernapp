@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { IUser, User } from '../models/user';
 import moment from 'moment';
 import { ISalesAttendance, SalesAttendance } from '../models/sales-attendance';
-import { CreateOrEditSalesAttendanceDto, GetSalesAttendanceDto } from '../dtos';
+import { CreateOrEditSalesAttendanceDto, GetSalesAttendanceDto, GetSalesmanKpiDto } from '../dtos';
 import isMongoId from 'validator/lib/isMongoId';
 
 
@@ -161,4 +161,59 @@ export const DeleteSalesAttendance = async (req: Request, res: Response, next: N
 
     await SalesAttendance.findByIdAndDelete(attendance._id)
     return res.status(200).json({ message: "attendance removed" })
+}
+
+export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunction) => {
+    let limit = Number(req.query.limit)
+    let page = Number(req.query.page)
+    let id = req.query.id
+    let start_date = req.query.start_date
+    let end_date = req.query.end_date
+    let result: GetSalesmanKpiDto[] = []
+    let count = 0
+    let dt1 = new Date(String(start_date))
+    let dt2 = new Date(String(end_date))
+    let user_ids = req.user?.assigned_users.map((user: IUser) => { return user._id }) || []
+    let employees=await User.find();
+    if (!Number.isNaN(limit) && !Number.isNaN(page)) {
+        if (id == 'all') {
+
+        }
+        else {
+            let current_date = new Date(dt1)
+            // while (current_date <= new Date(dt2)) {
+            //     let obj: GetSalesmanKpiDto = {
+            //         employee: DropDownDto,
+            //         date: string,
+            //         month: string,
+            //         attendance: string,
+            //         new_visit: number,
+            //         old_visit: number,
+            //         working_time: string,
+            //         new_clients: string,
+            //         station: DropDownDto,
+            //         state: DropDownDto,
+            //         sale_value: number,
+            //         collection_value: number,
+            //         ageing_above_90days: string,
+            //         sale_growth: string,
+            //         last_month_sale_current_year: number,
+            //         last_month_sale_last_year: number,
+            //         current_month_sale_current_year: number,
+            //         current_month_sale_last_year: number
+            //     }
+            //     result.push(obj)
+            //     current_date.setDate(new Date(current_date).getDate() + 1)
+            // }
+        }
+
+        return res.status(200).json({
+            result,
+            total: Math.ceil(count / limit),
+            page: page,
+            limit: limit
+        })
+    }
+    else
+        return res.status(400).json({ message: "bad request" })
 }

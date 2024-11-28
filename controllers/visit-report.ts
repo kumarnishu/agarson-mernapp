@@ -6,7 +6,6 @@ import { decimalToTimeForXlsx } from '../utils/datesHelper';
 
 
 export const GetVisitReports = async (req: Request, res: Response, next: NextFunction) => {
-
     let employee = req.query.employee
     if (!employee)
         return res.status(400).json({ message: "please select employee" })

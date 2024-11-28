@@ -14,6 +14,7 @@ function SalesDashboard() {
         let tmpfeatures: { feature: string, is_visible: boolean, url: string }[] = []
         user?.assigned_permissions.includes('salesman_visit_view') && tmpfeatures.push({ feature: 'Salesman Visits Summary', is_visible: true, url: "SalesmanVisit" })
         user?.assigned_permissions.includes('salesman_attendance_view') && tmpfeatures.push({ feature: 'Salesman Attendance', is_visible: true, url: "SalesmanAttendance" })
+        user?.assigned_permissions.includes('salesman_kpi_view') && tmpfeatures.push({ feature: 'Salesman KPI', is_visible: true, url: "SalesmanKPI" })
         tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
 
         setFeatures(tmpfeatures)

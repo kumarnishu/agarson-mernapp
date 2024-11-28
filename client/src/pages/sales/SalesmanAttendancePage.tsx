@@ -59,7 +59,7 @@ function SalesmanAttendancePage() {
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row" spacing={1}>
-                            {LoggedInUser?.assigned_permissions.includes('salesman_attendance_delete') && <Tooltip title="delete">
+                            {LoggedInUser?.is_admin && LoggedInUser?.assigned_permissions.includes('salesman_attendance_delete') && <Tooltip title="delete">
                                 <IconButton color="error"
                                     onClick={() => {
 
@@ -433,7 +433,7 @@ function SalesmanAttendancePage() {
             </Menu>
             <MaterialReactTable table={table} />
             <CreateOrEditSalesmanAttendanceDialog attendance={attendance} />
-            {attendance && <DeleteVisitSalesManAttendanceDialog />}
+            {attendance && <DeleteVisitSalesManAttendanceDialog attendance={attendance} />}
         </>
     )
 }

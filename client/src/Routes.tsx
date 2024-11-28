@@ -49,6 +49,7 @@ import UserAssignementPage from './pages/authorization/UserAssignementPage.tsx'
 import SalesDashboard from './dashboards/SalesDashboard.tsx'
 import SalesmanVisitPage from './pages/sales/SalesmanVisitPage.tsx'
 import SalesmanAttendancePage from './pages/sales/SalesmanAttendancePage.tsx'
+import SalesmanKpiPage from './pages/sales/SalesmanKpiPage.tsx'
 
 
 function AppRoutes() {
@@ -67,19 +68,19 @@ function AppRoutes() {
             <UsersPage />
           } />
 
-          {user && user?.assigned_permissions.includes('authorization_menu')  &&
+          {user && user?.assigned_permissions.includes('authorization_menu') &&
             < Route path="Authorization" >
               <Route index element={
                 <AuthorizationDashboard />
               }
               />
-             
+
               {user && <Route path="UserAssignementPage" element={
                 <UserAssignementPage />
               }
               />}
-             
-              
+
+
 
               {user?.assigned_permissions.includes('city_view') && <Route path="CitiesPage" element={
                 <CitiesPage />
@@ -102,7 +103,7 @@ function AppRoutes() {
                 }
               />}
             </Route>}
-          
+
           {user && user?.assigned_permissions.includes('feature_menu') &&
             < Route path="Features">
               <Route index
@@ -138,7 +139,7 @@ function AppRoutes() {
                 < RemindersPage />
               }
               />}
-            
+
               {user?.assigned_permissions.includes('checklist_view') && <Route path="CheckListPage" element={
                 < CheckListPage />
               }
@@ -317,8 +318,13 @@ function AppRoutes() {
                   <SalesmanAttendancePage />
                 }
               />}
-              
-            
+
+              {user?.assigned_permissions.includes('salesman_kpi_view') && <Route
+                path="SalesmanKPI" element={
+                  <SalesmanKpiPage />
+                }
+              />}
+
             </Route>}
 
         </Route>

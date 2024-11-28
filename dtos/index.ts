@@ -825,7 +825,26 @@ export type GetSalesManVisitSummaryReportDto = {
     working_time3: string,
     last_remark:string
 }
-
+export type GetSalesmanKpiDto = {
+    employee: DropDownDto,
+    date: string,
+    month:string,
+    attendance: string,
+    new_visit: number,
+    old_visit: number,
+    working_time: string,
+    new_clients: string,
+    station:DropDownDto,
+    state: DropDownDto,
+    sale_value: number,
+    collection_value: number,
+    ageing_above_90days: string,
+    sale_growth: string,
+    last_month_sale_current_year:number,
+    last_month_sale_last_year:number,
+    current_month_sale_current_year: number,
+    current_month_sale_last_year: number
+}
 
 export type GetSalesAttendanceDto = {
     _id: string,

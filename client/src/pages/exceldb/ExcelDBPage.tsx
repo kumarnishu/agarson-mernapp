@@ -112,7 +112,7 @@ export default function ExcelDBPage() {
           AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
           Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
           //@ts-ignore
-          Footer: ({ table }) => <b>{index < 3 ? table.getFilteredRowModel().rows.length : table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
+          Footer: ({ table }) => <b>{index < 2 ? table.getFilteredRowModel().rows.length : table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
         }
     })
     ,
