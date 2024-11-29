@@ -6,7 +6,6 @@ import { CreateOrEditSalesAttendanceDto, GetSalesAttendanceDto, GetSalesmanKpiDt
 import isMongoId from 'validator/lib/isMongoId';
 import { ExcelDB } from '../models/excel-db';
 import { KeyCategory } from '../models/key-category';
-import { ICRMState } from '../models/crm-state';
 
 
 export const GetSalesAttendances = async (req: Request, res: Response, next: NextFunction) => {
@@ -178,13 +177,10 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
     if (id == 'all') {
         if (req.user.assigned_users && req.user.assigned_users.length > 0) {
             let salesman = await User.find({ _id: { $in: user_ids }, assigned_permissions: 'sales_menu' })
-            console.log(salesman.length)
             let current_date = new Date(dt1)
-            let fetchAgeing = true
-            let saveAgeing = {};
             while (current_date <= new Date(dt2)) {
 
-                for (let i = 4; i < 6; i++) {
+                for (let i = 0; i < salesman.length; i++) {
                     let currdate1 = new Date(current_date)
                     let currdate2 = new Date(currdate1)
 
@@ -202,10 +198,17 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
                     let ageing_above_90days = 0;
                     //bills ageing
                     let billsageingcat = await KeyCategory.findOne({ category: 'BillsAge' })
-                    let ageingdoc = await ExcelDB.findOne({ category: billsageingcat, 'Sales Representative': new RegExp(`^${attendance?.station.state}$`, 'i') })
-                    if (ageingdoc)
-                        //@ts-ignore
-                        ageing_above_90days += ageingdoc['90-120'] + ageingdoc['> 120'];
+                    const ageingdocs = await ExcelDB.find({ category: billsageingcat, 'Sales Representative': new RegExp(`^${attendance?.station.state}$`, 'i') })
+
+                    if (ageingdocs && ageingdocs.length > 0)
+                    {
+                        console.log(attendance?.station.state)
+                        ageing_above_90days = ageingdocs.reduce((total, doc) => {
+                            //@ts-ignore
+                            return total + (doc['90-120'] || 0) + (doc['> 120'] || 0);
+                        }, 0);
+                    }
+
 
 
                     let obj: GetSalesmanKpiDto = {
@@ -222,15 +225,13 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
                         sale_value: 0,
                         collection_value: 0,
                         //@ts-ignore
-                        ageing_above_90days: saveAgeing[`${salesman[i]._id}`],
+                        ageing_above_90days: ageing_above_90days,
                         sale_growth: 0,
                         last_month_sale_growth: 0
 
                     }
                     result.push(obj)
                 }
-                fetchAgeing = false
-                console.log(saveAgeing)
                 current_date.setDate(new Date(current_date).getDate() + 1)
             }
         }
