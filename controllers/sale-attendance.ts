@@ -6,6 +6,7 @@ import { CreateOrEditSalesAttendanceDto, GetSalesAttendanceDto, GetSalesmanKpiDt
 import isMongoId from 'validator/lib/isMongoId';
 import { ExcelDB } from '../models/excel-db';
 import { KeyCategory } from '../models/key-category';
+import { currentMonth, nextMonth, previousMonth } from '../utils/datesHelper';
 
 
 export const GetSalesAttendances = async (req: Request, res: Response, next: NextFunction) => {
@@ -200,14 +201,28 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
                     let billsageingcat = await KeyCategory.findOne({ category: 'BillsAge' })
                     const ageingdocs = await ExcelDB.find({ category: billsageingcat, 'Sales Representative': new RegExp(`^${attendance?.station.state}$`, 'i') })
 
-                    if (ageingdocs && ageingdocs.length > 0)
-                    {
-                        console.log(attendance?.station.state)
+                    if (ageingdocs && ageingdocs.length > 0) {
                         ageing_above_90days = ageingdocs.reduce((total, doc) => {
                             //@ts-ignore
                             return total + (doc['90-120'] || 0) + (doc['> 120'] || 0);
                         }, 0);
                     }
+                    let cmcy = new Date()
+                    // let cmly = new Date(new Date().setFullYear(new Date().getFullYear() - 1))
+                    // let lmcy = new Date(new Date().setMonth(new Date().getMonth() - 1))
+                    // let lmly = new Date(new Date(new Date().setMonth(new Date().getMonth() - 1)).setFullYear(new Date().getFullYear() - 1))
+                    cmcy.setHours(0, 0, 0, 0)
+
+                    let salrepcat = await KeyCategory.findOne({ category: 'SalesRep' })
+
+
+                    //current month current sale
+                    const items = await ExcelDB.find({ category: salrepcat, 'Sale': 'Sale', 'Sales Representative': { $gte: currentMonth, $lt: nextMonth }})
+                    //@ts-ignore
+                    const item = items[`${String(attendance?.station.state).toUpperCase()}`]
+                    console.log(item)
+
+                    //last month last sale  
 
 
 

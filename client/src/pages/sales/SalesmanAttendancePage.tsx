@@ -29,7 +29,7 @@ function SalesmanAttendancePage() {
     const [userId, setUserId] = useState<string>('all')
     const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
         start_date: moment(new Date().setDate(new Date().getDate() - 10)).format("YYYY-MM-DD")
-        , end_date: moment(new Date().setDate(new Date().getDate() - 1)).format("YYYY-MM-DD")
+        , end_date: moment(new Date().setDate(new Date().getDate())).format("YYYY-MM-DD")
     })
 
     const isFirstRender = useRef(true);
