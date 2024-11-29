@@ -4,6 +4,9 @@ import moment from 'moment';
 import { ISalesAttendance, SalesAttendance } from '../models/sales-attendance';
 import { CreateOrEditSalesAttendanceDto, GetSalesAttendanceDto, GetSalesmanKpiDto } from '../dtos';
 import isMongoId from 'validator/lib/isMongoId';
+import { ExcelDB } from '../models/excel-db';
+import { KeyCategory } from '../models/key-category';
+import { ICRMState } from '../models/crm-state';
 
 
 export const GetSalesAttendances = async (req: Request, res: Response, next: NextFunction) => {
@@ -164,56 +167,136 @@ export const DeleteSalesAttendance = async (req: Request, res: Response, next: N
 }
 
 export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunction) => {
-    let limit = Number(req.query.limit)
-    let page = Number(req.query.page)
     let id = req.query.id
     let start_date = req.query.start_date
     let end_date = req.query.end_date
     let result: GetSalesmanKpiDto[] = []
-    let count = 0
     let dt1 = new Date(String(start_date))
     let dt2 = new Date(String(end_date))
     let user_ids = req.user?.assigned_users.map((user: IUser) => { return user._id }) || []
-    let employees=await User.find();
-    if (!Number.isNaN(limit) && !Number.isNaN(page)) {
-        if (id == 'all') {
 
+    if (id == 'all') {
+        if (req.user.assigned_users && req.user.assigned_users.length > 0) {
+            let salesman = await User.find({ _id: { $in: user_ids }, assigned_permissions: 'sales_menu' })
+            console.log(salesman.length)
+            let current_date = new Date(dt1)
+            let fetchAgeing = true
+            let saveAgeing = {};
+            while (current_date <= new Date(dt2)) {
+
+                for (let i = 4; i < 6; i++) {
+                    let currdate1 = new Date(current_date)
+                    let currdate2 = new Date(currdate1)
+
+                    currdate1.setHours(0, 0, 0, 0)
+                    currdate2.setHours(0, 0, 0, 0)
+                    currdate2.setDate(currdate1.getDate() + 1)
+
+
+
+                    let attendance = await SalesAttendance.findOne({ date: { $gte: currdate1, $lt: currdate2 }, employee: salesman[i] }).populate('station').populate('employee')
+
+                    //new clients
+                    let parttargetcat = await KeyCategory.findOne({ category: 'PartyTarget' })
+                    let newclients = await ExcelDB.find({ category: parttargetcat, 'STATE NAME': new RegExp(`^${attendance?.station.state}$`, 'i'), 'Create Date': { $gte: currdate1, $lt: currdate2 } }).countDocuments()
+                    let ageing_above_90days = 0;
+                    //bills ageing
+                    let billsageingcat = await KeyCategory.findOne({ category: 'BillsAge' })
+                    let ageingdoc = await ExcelDB.findOne({ category: billsageingcat, 'Sales Representative': new RegExp(`^${attendance?.station.state}$`, 'i') })
+                    if (ageingdoc)
+                        //@ts-ignore
+                        ageing_above_90days += ageingdoc['90-120'] + ageingdoc['> 120'];
+
+
+                    let obj: GetSalesmanKpiDto = {
+                        employee: { id: salesman[i]._id, label: salesman[i].username, value: salesman[i].username },
+                        date: moment(currdate1).format("DD/MM/YYYY"),
+                        month: moment(currdate1).format("MMMM"),
+                        attendance: attendance?.attendance,
+                        new_visit: attendance?.new_visit,
+                        old_visit: attendance?.old_visit,
+                        working_time: (attendance?.in_time || "") + "-" + (attendance?.end_time || ""),
+                        new_clients: newclients,
+                        station: attendance?.station && { id: attendance?.station._id, label: attendance?.station.city, value: attendance?.station.city },
+                        state: attendance?.station.state,
+                        sale_value: 0,
+                        collection_value: 0,
+                        //@ts-ignore
+                        ageing_above_90days: saveAgeing[`${salesman[i]._id}`],
+                        sale_growth: 0,
+                        last_month_sale_growth: 0
+
+                    }
+                    result.push(obj)
+                }
+                fetchAgeing = false
+                console.log(saveAgeing)
+                current_date.setDate(new Date(current_date).getDate() + 1)
+            }
         }
         else {
             let current_date = new Date(dt1)
-            // while (current_date <= new Date(dt2)) {
-            //     let obj: GetSalesmanKpiDto = {
-            //         employee: DropDownDto,
-            //         date: string,
-            //         month: string,
-            //         attendance: string,
-            //         new_visit: number,
-            //         old_visit: number,
-            //         working_time: string,
-            //         new_clients: string,
-            //         station: DropDownDto,
-            //         state: DropDownDto,
-            //         sale_value: number,
-            //         collection_value: number,
-            //         ageing_above_90days: string,
-            //         sale_growth: string,
-            //         last_month_sale_current_year: number,
-            //         last_month_sale_last_year: number,
-            //         current_month_sale_current_year: number,
-            //         current_month_sale_last_year: number
-            //     }
-            //     result.push(obj)
-            //     current_date.setDate(new Date(current_date).getDate() + 1)
-            // }
-        }
+            while (current_date <= new Date(dt2)) {
+                let currdate1 = new Date(current_date)
+                let currdate2 = new Date(currdate1)
+                currdate1.setHours(0, 0, 0, 0)
+                currdate2.setHours(0, 0, 0, 0)
+                currdate2.setDate(currdate1.getDate() + 1)
+                let attendance = await SalesAttendance.findOne({ date: { $gte: currdate1, $lt: currdate2 }, employee: req.user._id }).populate('station').populate('employee')
+                let obj: GetSalesmanKpiDto = {
+                    employee: { id: req.user._id, label: req.user.username, value: req.user.username },
+                    date: moment(currdate1).format("DD/MM/YYYY"),
+                    month: moment(currdate1).format("MMMM"),
+                    attendance: attendance?.attendance,
+                    new_visit: attendance?.new_visit,
+                    old_visit: attendance?.old_visit,
+                    working_time: (attendance?.in_time || "") + "-" + (attendance?.end_time || ""),
+                    new_clients: 0,
+                    station: attendance?.station && { id: attendance?.station._id, label: attendance?.station.city, value: attendance?.station.city },
+                    state: attendance?.station.state,
+                    sale_value: 0,
+                    collection_value: 0,
+                    ageing_above_90days: 0,
+                    sale_growth: 0,
+                    last_month_sale_growth: 0,
 
-        return res.status(200).json({
-            result,
-            total: Math.ceil(count / limit),
-            page: page,
-            limit: limit
-        })
+                }
+                result.push(obj)
+                current_date.setDate(new Date(current_date).getDate() + 1)
+            }
+        }
     }
-    else
-        return res.status(400).json({ message: "bad request" })
+    else {
+        let current_date = new Date(dt1)
+        while (current_date <= new Date(dt2)) {
+            let currdate1 = new Date(current_date)
+            let currdate2 = new Date(currdate1)
+            currdate1.setHours(0, 0, 0, 0)
+            currdate2.setHours(0, 0, 0, 0)
+            currdate2.setDate(currdate1.getDate() + 1)
+            let user = await User.findById(id)
+            let attendance = await SalesAttendance.findOne({ date: { $gte: currdate1, $lt: currdate2 }, employee: id }).populate('station').populate('employee')
+            let obj: GetSalesmanKpiDto = {
+                employee: user ? { id: user._id, label: user.username, value: user.username } : undefined,
+                date: moment(currdate1).format("DD/MM/YYYY"),
+                month: moment(currdate1).format("MMMM"),
+                attendance: attendance?.attendance,
+                new_visit: attendance?.new_visit,
+                old_visit: attendance?.old_visit,
+                working_time: (attendance?.in_time || "") + "-" + (attendance?.end_time || ""),
+                new_clients: 0,
+                station: attendance?.station && { id: attendance?.station._id, label: attendance?.station.city, value: attendance?.station.city },
+                state: attendance?.station.state,
+                sale_value: 0,
+                collection_value: 0,
+                ageing_above_90days: 0,
+                sale_growth: 0,
+                last_month_sale_growth: 0
+            }
+            result.push(obj)
+            current_date.setDate(new Date(current_date).getDate() + 1)
+        }
+    }
+    return res.status(200).json(result)
+
 }

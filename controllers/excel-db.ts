@@ -178,7 +178,7 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
 
 async function SaveVisistReports(user: IUser) {
     let salesman: IUser[] = []
-    salesman = await User.find({ assigned_permissions: 'salesman_visit_view' })
+    salesman = await User.find({ assigned_permissions: 'sales_menu' })
     let cat = await KeyCategory.findOne({ category: 'visitsummary' })
     for (let i = 0; i < salesman.length; i++) {
         let names = [String(salesman[i].username), String(salesman[i].alias1 || ""), String(salesman[i].alias2 || "")].filter(value => value)

@@ -28,7 +28,7 @@ export default function ExcelDBPage() {
 
   const { data: categorydata, refetch: RefetchCategory, isSuccess: isSuccessCategorydata } = useQuery<AxiosResponse<DropDownDto>, BackendError>(["key_categories"], async () => GetKeyCategoryById(id || ""), { enabled: false })
 
-  const { data, isLoading, isSuccess, refetch } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb"], async () => GetExcelDbReport(id || ""), { enabled: false })
+  const { data, isLoading, isSuccess, refetch,isRefetching } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb"], async () => GetExcelDbReport(id || ""), { enabled: false })
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
 
@@ -190,7 +190,7 @@ export default function ExcelDBPage() {
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing,
     state: {
-      isLoading: isLoading,
+      isLoading: isLoading || isRefetching,
       columnVisibility,
       sorting,
       columnSizing: columnSizing

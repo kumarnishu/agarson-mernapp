@@ -17,7 +17,7 @@ import { CreateOrEditSalesmanAttendance } from '../../../services/SalesServices'
 
 function CreateOrEditSalesAttendanceForm({ attendance }: { attendance?: GetSalesAttendanceDto }) {
     const { user } = useContext(UserContext)
-    const { data: users } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'salesman_visit_view', show_assigned_only: true }))
+    const { data: users } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'sales_menu', show_assigned_only: true }))
     const { data: cities } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("cities", async () => GetAllCRMCitiesForDropDown({ state: 'all' }))
 
     const { mutate, isLoading, isSuccess, isError, error } = useMutation

@@ -843,6 +843,23 @@ export type GetSalesAttendanceDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
+export type GetSalesmanKpiDto = {
+    employee?: DropDownDto,
+    date: string,
+    month: string,
+    attendance?: string,
+    new_visit?: number,
+    old_visit?: number,
+    working_time?: string,
+    new_clients: number,
+    station?: DropDownDto,
+    state?: string,
+    sale_value: number,
+    collection_value: number,
+    ageing_above_90days: number,
+    sale_growth: number,
+    last_month_sale_growth: number,
+}
 
 export type CreateOrEditSalesAttendanceDto = {
     employee: string,

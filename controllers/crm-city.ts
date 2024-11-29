@@ -26,9 +26,9 @@ export const GetAllCRMCities = async (req: Request, res: Response, next: NextFun
     let state = req.query.state;
     let cities: ICRMCity[] = []
     if (state && state !== 'all')
-        cities = await CRMCity.find({ state: state })
+        cities = await CRMCity.find({ state: state }).sort('city')
     else
-        cities = await CRMCity.find()
+        cities = await CRMCity.find().sort('city')
     for (let i = 0; i < cities.length; i++) {
         let users = await (await User.find({ assigned_crm_cities: cities[i]._id })).
             map((i) => { return { _id: i._id.valueOf(), username: i.username } })
@@ -49,9 +49,9 @@ export const GetAllCRMCitiesForDropDown = async (req: Request, res: Response, ne
     let state = req.query.state;
     let cities: ICRMCity[] = []
     if (state && state !== 'all')
-        cities = await CRMCity.find({ state: state })
+        cities = await CRMCity.find({ state: state }).sort('city')
     else
-        cities = await CRMCity.find()
+        cities = await CRMCity.find().sort('city')
     result = cities.map((c) => {
         return {
             id: c._id, label: c.city, value: c.city

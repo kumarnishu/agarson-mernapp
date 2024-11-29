@@ -15,7 +15,7 @@ export const GetSalesManVisitReport = async (req: Request, res: Response, next: 
     }
 
     let salesman: IUser[] = []
-    salesman = await User.find({ assigned_permissions: 'salesman_visit_view' })
+    salesman = await User.find({ assigned_permissions: 'sales_menu' })
     let dt1 = new Date(String(date))
     let dt2 = new Date(dt1)
     let dt3 = new Date(dt1)
