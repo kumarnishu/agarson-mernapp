@@ -15,7 +15,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 
 import { GetSalesmanKpis } from '../../services/SalesServices'
-import { currentMonth, nextMonth, previousYear } from '../../utils/datesHelper'
+import { previousYear } from '../../utils/datesHelper'
 
 
 function SalesmanKpiPage() {
@@ -51,12 +51,10 @@ function SalesmanKpiPage() {
       {
         accessorKey: 'date',
         header: ' Date',
-
       },
       {
         accessorKey: 'month',
         header: ' Month',
-
       },
       {
         accessorKey: 'attendance',
@@ -64,64 +62,100 @@ function SalesmanKpiPage() {
       },
       {
         accessorKey: 'employee.value',
-        header: ' Employee'
+        header: ' Employee',
       },
       {
         accessorKey: 'old_visit',
-        header: ' Old Visit'
+        header: ' Old Visit',
+        aggregationFn: 'sum',
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'new_visit',
-        header: ' New Visit'
+        header: ' New Visit',
+        aggregationFn: 'sum',
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'new_clients',
-        header: ' New Clients'
+        header: ' New Clients',
+        aggregationFn: 'sum',
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'station.value',
-        header: ' Station'
+        header: ' Station',
+        aggregationFn: 'count',
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'state',
-        header: ' State'
+        header: ' State',
+        aggregationFn: 'count',
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'working_time',
-        header: ' Work Time'
+        header: ' Work Time',
+        aggregationFn: 'count',
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'currentsale_currentyear',
-        header: moment(new Date()).format("MMM-YY") + " Sale"
+        header: moment(new Date()).format("MMM-YY") + " Sale",
+        aggregationFn: 'max',
+        AggregatedCell: (cell) => Number(cell.cell.getValue()).toFixed(2),
+        Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
       },
       {
         accessorKey: 'lastsale_currentyear',
-        header: moment(new Date().setMonth(new Date().getMonth() - 1)).format("MMM-YY") + "Sale"
+        header: moment(new Date().setMonth(new Date().getMonth() - 1)).format("MMM-YY") + "Sale",
+        aggregationFn: 'max',
+        AggregatedCell: (cell) => Number(cell.cell.getValue()).toFixed(2),
+        Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
       },
       {
         accessorKey: 'current_collection',
-        header: moment(new Date()).format("MMM-YY") + " Collection"
+        header: moment(new Date()).format("MMM-YY") + " Collection",
+        aggregationFn: 'max',
+        AggregatedCell: (cell) => Number(cell.cell.getValue()).toFixed(2),
+        Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
       },
       {
         accessorKey: 'currentsale_last_year',
-        header: moment(new Date(new Date(previousYear).setMonth(new Date().getMonth()))).format("MMM-YY") + " Sale"
+        header: moment(new Date(new Date(previousYear).setMonth(new Date().getMonth()))).format("MMM-YY") + " Sale",
+        aggregationFn: 'max',
+        AggregatedCell: (cell) => Number(cell.cell.getValue()).toFixed(2),
+        Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
       },
       {
         accessorKey: 'lastsale_lastyear',
-        header: moment(new Date(new Date(previousYear).setMonth(new Date().getMonth()-1))).format("MMM-YY")  + "Sale"
+        header: moment(new Date(new Date(previousYear).setMonth(new Date().getMonth() - 1))).format("MMM-YY") + "Sale",
+        aggregationFn: 'max',
+        AggregatedCell: (cell) => Number(cell.cell.getValue()).toFixed(2),
+        Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
       },
-     
+
       {
         accessorKey: 'ageing_above_90days',
-        header: ' Ageing>90'
+        header: ' Ageing>90',
+        aggregationFn: 'max',
+        AggregatedCell: (cell) => Number(cell.cell.getValue()).toFixed(2),
+        Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
       },
       {
         accessorKey: 'sale_growth',
-        header: ' Sale Growth'
+        header: 'Sale Growth',
+        aggregationFn: 'max',
+        AggregatedCell: (cell) => Number(cell.cell.getValue()).toFixed(2),
+        Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
       },
       {
         accessorKey: 'last_month_sale_growth',
-        header: ' Last Month Sale Growth'
+        header: ' Last Month Sale Growth',
+        aggregationFn: 'max',
+        AggregatedCell: (cell) => Number(cell.cell.getValue()).toFixed(2),
+        Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
       },
 
     ],
