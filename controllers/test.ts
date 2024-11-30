@@ -16,13 +16,17 @@ export const test = async (req: Request, res: Response, next: NextFunction) => {
 
     let salrepcat = await KeyCategory.findOne({ category: 'SalesRep' })
 
-    console.log(new Date(new Date(previousYear).setMonth(currentMonth.getMonth())))
-    console.log(new Date(new Date(previousYear).setMonth(nextMonth.getMonth())))
+    let currentmonth = new Date()
+    currentmonth.setDate(1)
+    currentmonth.setMonth(currentmonth.getMonth())
+    currentmonth.setHours(0, 0, 0, 0)
+
     //previous year
-    const lastMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: new Date(new Date(previousYear).setMonth(currentMonth.getMonth())), $lt: new Date(new Date(previousYear).setMonth(nextMonth.getMonth())) } })
-    if (lastMonthYearSale1)
+    const lastMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': currentmonth })
+    if (lastMonthYearSale1) {
         //@ts-ignore
-        // let currentsale_last_year = lastMonthYearSale1[`KARNATAKA`]
+        let currentsale_last_year = lastMonthYearSale1[`KARNATAKA`]
+    }
 
 
     return res.status(200).json(lastMonthYearSale1)

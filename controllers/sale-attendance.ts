@@ -6,7 +6,6 @@ import { CreateOrEditSalesAttendanceDto, GetSalesAttendanceDto, GetSalesmanKpiDt
 import isMongoId from 'validator/lib/isMongoId';
 import { ExcelDB } from '../models/excel-db';
 import { KeyCategory } from '../models/key-category';
-import { currentMonth, currentYear, nextMonth, nextYear, previousMonth, previousYear } from '../utils/datesHelper';
 
 
 export const GetSalesAttendances = async (req: Request, res: Response, next: NextFunction) => {
@@ -216,39 +215,53 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
                         //sale and collection
                         let salrepcat = await KeyCategory.findOne({ category: 'SalesRep' })
                         if (salrepcat) {
-                            const currentMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': currentMonth })
-
+                            let currentmonthcurrentyear = new Date()
+                            currentmonthcurrentyear.setDate(1)
+                            currentmonthcurrentyear.setHours(0, 0, 0, 0)
+                            const currentMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': currentmonthcurrentyear })
                             //current year
                             if (currentMonthYearSale1)
                                 //@ts-ignore
                                 currentsale_currentyear = currentMonthYearSale1[`${String(attendance?.station.state).toUpperCase()}`]
 
-                            const currentMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': previousMonth })
+
+
+
+                            let lastmonthcurrentyear = new Date()
+                            lastmonthcurrentyear.setDate(1)
+                            lastmonthcurrentyear.setMonth(lastmonthcurrentyear.getMonth()-1)
+                            lastmonthcurrentyear.setHours(0, 0, 0, 0)
+                            const currentMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': lastmonthcurrentyear })
                             if (currentMonthYearSale2)
                                 //@ts-ignore
                                 lastsale_currentyear = currentMonthYearSale2[`${String(attendance?.station.state).toUpperCase()}`]
 
 
-                            let currentmonthlastyear = new Date(new Date(previousYear).setMonth(currentMonth.getMonth()))
-                            let prviousmonthlastyear = new Date(new Date(previousYear).setMonth(previousMonth.getMonth()))
 
+                            let currentmonthlastyear = new Date()
+                            currentmonthlastyear.setDate(1)
+                            currentmonthlastyear.setHours(0, 0, 0, 0)
+                            currentmonthlastyear.setFullYear(currentmonthlastyear.getFullYear()-1)
                             //previous year
                             const lastMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': currentmonthlastyear })
                             if (lastMonthYearSale1)
                                 //@ts-ignore
                                 currentsale_last_year = lastMonthYearSale1[`${String(attendance?.station.state).toUpperCase()}`]
 
-                            const lastMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': prviousmonthlastyear })
 
+                            let lastmonthlastyear = new Date()
+                            lastmonthlastyear.setDate(1)
+                            lastmonthlastyear.setMonth(lastmonthlastyear.getMonth()-1)
+                            lastmonthlastyear.setHours(0, 0, 0, 0)
+                            lastmonthlastyear.setFullYear(lastmonthlastyear.getFullYear() - 1)
+                            const lastMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': lastmonthlastyear })
                             if (lastMonthYearSale2)
                                 //@ts-ignore
                                 lastsale_lastyear = lastMonthYearSale2[`${String(attendance?.station.state).toUpperCase()}`]
 
 
 
-
-
-                            const collectioncurrent = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Collection', 'Sales Representative': currentMonth })
+                            const collectioncurrent = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Collection', 'Sales Representative': currentmonthcurrentyear })
                             if (collectioncurrent)
                                 //@ts-ignore
                                 currentcollection = collectioncurrent[`${String(attendance?.station.state).toUpperCase()}`]
@@ -320,39 +333,53 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
                     //sale and collection
                     let salrepcat = await KeyCategory.findOne({ category: 'SalesRep' })
                     if (salrepcat) {
-                        const currentMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': currentMonth })
-
+                        let currentmonthcurrentyear = new Date()
+                        currentmonthcurrentyear.setDate(1)
+                        currentmonthcurrentyear.setHours(0, 0, 0, 0)
+                        const currentMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': currentmonthcurrentyear })
                         //current year
                         if (currentMonthYearSale1)
                             //@ts-ignore
                             currentsale_currentyear = currentMonthYearSale1[`${String(attendance?.station.state).toUpperCase()}`]
 
-                        const currentMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': previousMonth })
+
+
+
+                        let lastmonthcurrentyear = new Date()
+                        lastmonthcurrentyear.setDate(1)
+                        lastmonthcurrentyear.setMonth(lastmonthcurrentyear.getMonth() - 1)
+                        lastmonthcurrentyear.setHours(0, 0, 0, 0)
+                        const currentMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': lastmonthcurrentyear })
                         if (currentMonthYearSale2)
                             //@ts-ignore
                             lastsale_currentyear = currentMonthYearSale2[`${String(attendance?.station.state).toUpperCase()}`]
 
 
-                        let currentmonthlastyear = new Date(new Date(previousYear).setMonth(currentMonth.getMonth()))
-                        let prviousmonthlastyear = new Date(new Date(previousYear).setMonth(previousMonth.getMonth()))
 
+                        let currentmonthlastyear = new Date()
+                        currentmonthlastyear.setDate(1)
+                        currentmonthlastyear.setHours(0, 0, 0, 0)
+                        currentmonthlastyear.setFullYear(currentmonthlastyear.getFullYear() - 1)
                         //previous year
                         const lastMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': currentmonthlastyear })
                         if (lastMonthYearSale1)
                             //@ts-ignore
                             currentsale_last_year = lastMonthYearSale1[`${String(attendance?.station.state).toUpperCase()}`]
 
-                        const lastMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': prviousmonthlastyear })
 
+                        let lastmonthlastyear = new Date()
+                        lastmonthlastyear.setDate(1)
+                        lastmonthlastyear.setMonth(lastmonthlastyear.getMonth() - 1)
+                        lastmonthlastyear.setHours(0, 0, 0, 0)
+                        lastmonthlastyear.setFullYear(lastmonthlastyear.getFullYear() - 1)
+                        const lastMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': lastmonthlastyear })
                         if (lastMonthYearSale2)
                             //@ts-ignore
                             lastsale_lastyear = lastMonthYearSale2[`${String(attendance?.station.state).toUpperCase()}`]
 
 
 
-
-
-                        const collectioncurrent = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Collection', 'Sales Representative': currentMonth })
+                        const collectioncurrent = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Collection', 'Sales Representative': currentmonthcurrentyear })
                         if (collectioncurrent)
                             //@ts-ignore
                             currentcollection = collectioncurrent[`${String(attendance?.station.state).toUpperCase()}`]
@@ -426,39 +453,53 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
                     //sale and collection
                     let salrepcat = await KeyCategory.findOne({ category: 'SalesRep' })
                     if (salrepcat) {
-                        const currentMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': currentMonth })
-
+                        let currentmonthcurrentyear = new Date()
+                        currentmonthcurrentyear.setDate(1)
+                        currentmonthcurrentyear.setHours(0, 0, 0, 0)
+                        const currentMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': currentmonthcurrentyear })
                         //current year
                         if (currentMonthYearSale1)
                             //@ts-ignore
                             currentsale_currentyear = currentMonthYearSale1[`${String(attendance?.station.state).toUpperCase()}`]
 
-                        const currentMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': previousMonth })
+
+
+
+                        let lastmonthcurrentyear = new Date()
+                        lastmonthcurrentyear.setDate(1)
+                        lastmonthcurrentyear.setMonth(lastmonthcurrentyear.getMonth() - 1)
+                        lastmonthcurrentyear.setHours(0, 0, 0, 0)
+                        const currentMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': lastmonthcurrentyear })
                         if (currentMonthYearSale2)
                             //@ts-ignore
                             lastsale_currentyear = currentMonthYearSale2[`${String(attendance?.station.state).toUpperCase()}`]
 
 
-                        let currentmonthlastyear = new Date(new Date(previousYear).setMonth(currentMonth.getMonth()))
-                        let prviousmonthlastyear = new Date(new Date(previousYear).setMonth(previousMonth.getMonth()))
 
+                        let currentmonthlastyear = new Date()
+                        currentmonthlastyear.setDate(1)
+                        currentmonthlastyear.setHours(0, 0, 0, 0)
+                        currentmonthlastyear.setFullYear(currentmonthlastyear.getFullYear() - 1)
                         //previous year
                         const lastMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': currentmonthlastyear })
                         if (lastMonthYearSale1)
                             //@ts-ignore
                             currentsale_last_year = lastMonthYearSale1[`${String(attendance?.station.state).toUpperCase()}`]
 
-                        const lastMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': prviousmonthlastyear })
 
+                        let lastmonthlastyear = new Date()
+                        lastmonthlastyear.setDate(1)
+                        lastmonthlastyear.setMonth(lastmonthlastyear.getMonth() - 1)
+                        lastmonthlastyear.setHours(0, 0, 0, 0)
+                        lastmonthlastyear.setFullYear(lastmonthlastyear.getFullYear() - 1)
+                        const lastMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': lastmonthlastyear })
                         if (lastMonthYearSale2)
                             //@ts-ignore
                             lastsale_lastyear = lastMonthYearSale2[`${String(attendance?.station.state).toUpperCase()}`]
 
 
 
-
-
-                        const collectioncurrent = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Collection', 'Sales Representative': currentMonth })
+                        const collectioncurrent = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Collection', 'Sales Representative': currentmonthcurrentyear })
                         if (collectioncurrent)
                             //@ts-ignore
                             currentcollection = collectioncurrent[`${String(attendance?.station.state).toUpperCase()}`]
