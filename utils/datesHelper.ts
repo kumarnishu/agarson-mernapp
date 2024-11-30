@@ -4,26 +4,16 @@ const currentDate = new Date();
 
 export const previousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
 export const currentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+export const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
 
-previousMonth.setDate(1)
-previousMonth.setHours(0, 0, 0, 0)
-currentMonth.setDate(1)
-currentMonth.setHours(0, 0, 0, 0)
-// Get next month
-export const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 2);
-nextMonth.setDate(1)
-nextMonth.setHours(0, 0, 0, 0)
 
-export const previousYear = new Date(currentDate.getFullYear() - 1, currentDate.getMonth(), currentDate.getDate());
-previousYear.setDate(1)
-previousYear.setHours(0, 0, 0, 0)
-export const currentYear = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-currentYear.setDate(1)
-currentYear.setHours(0, 0, 0, 0)
+export const previousYear = new Date(currentDate.getFullYear() - 1, 1, 1);
+export const currentYear = new Date(currentDate.getFullYear(), 1, 1);
+export const nextYear = new Date(currentDate.getFullYear() + 1, 1, 1);
+
+
 export const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
-export const nextYear = new Date(currentDate.getFullYear() + 1, currentDate.getMonth(), currentDate.getDate());
-nextYear.setDate(1)
-nextYear.setHours(0, 0, 0, 0)
+
 export const today = new Date();
 today.setHours(0, 0, 0, 0);
 export const tomorrow = new Date(today);
