@@ -9,9 +9,12 @@ export const currentMonth = new Date(currentDate.getFullYear(), currentDate.getM
 export const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 2);
 
 export const previousYear = new Date(currentDate.getFullYear() - 1, currentDate.getMonth(), currentDate.getDate());
+previousYear.setDate(1)
 export const currentYear = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+currentYear.setDate(1)
 export const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
 export const nextYear = new Date(currentDate.getFullYear() + 1, currentDate.getMonth(), currentDate.getDate());
+nextYear.setDate(1)
 export const today = new Date();
 today.setHours(0, 0, 0, 0);
 export const tomorrow = new Date(today);

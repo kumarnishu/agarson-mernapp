@@ -227,7 +227,6 @@ async function SaveVisistReports(user: IUser) {
 
 
         }
-        console.log(found, notfound)
     }
 }
 

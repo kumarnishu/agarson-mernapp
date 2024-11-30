@@ -104,9 +104,9 @@ export type GetVisitSummaryReportRemarkDto = {
     employee: DropDownDto,
     visit_date: string,
     created_at: string,
-    created_by:string
+    created_by: string
 }
-export type CreateOrEditVisitSummaryRemarkDto={
+export type CreateOrEditVisitSummaryRemarkDto = {
     remark: string,
     employee: string,
     visit_date: string
@@ -823,24 +823,27 @@ export type GetSalesManVisitSummaryReportDto = {
     old_visits3: number,
     new_visits3: number,
     working_time3: string,
-    last_remark:string
+    last_remark: string
 }
 export type GetSalesmanKpiDto = {
     employee?: DropDownDto,
     date: string,
-    month:string,
+    month: string,
     attendance?: string,
     new_visit?: number,
     old_visit?: number,
     working_time?: string,
     new_clients: number,
-    station?:DropDownDto,
+    station?: DropDownDto,
     state?: string,
-    sale_value: number,
-    collection_value: number,
+    currentsale_currentyear: number,
+    currentsale_last_year: number,
+    lastsale_currentyear: number,
+    lastsale_lastyear: number,
+    current_collection: number,
     ageing_above_90days: number,
     sale_growth: number,
-    last_month_sale_growth:number,
+    last_month_sale_growth: number,
 }
 
 export type GetSalesAttendanceDto = {

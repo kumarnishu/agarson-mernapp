@@ -6,7 +6,7 @@ import { CreateOrEditSalesAttendanceDto, GetSalesAttendanceDto, GetSalesmanKpiDt
 import isMongoId from 'validator/lib/isMongoId';
 import { ExcelDB } from '../models/excel-db';
 import { KeyCategory } from '../models/key-category';
-import { currentMonth, nextMonth, previousMonth } from '../utils/datesHelper';
+import { currentMonth, currentYear, nextMonth, previousMonth, previousYear } from '../utils/datesHelper';
 
 
 export const GetSalesAttendances = async (req: Request, res: Response, next: NextFunction) => {
@@ -190,40 +190,67 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
                     currdate2.setDate(currdate1.getDate() + 1)
 
 
-
-                    let attendance = await SalesAttendance.findOne({ date: { $gte: currdate1, $lt: currdate2 }, employee: salesman[i] }).populate('station').populate('employee')
-
-                    //new clients
-                    let parttargetcat = await KeyCategory.findOne({ category: 'PartyTarget' })
-                    let newclients = await ExcelDB.find({ category: parttargetcat, 'STATE NAME': new RegExp(`^${attendance?.station.state}$`, 'i'), 'Create Date': { $gte: currdate1, $lt: currdate2 } }).countDocuments()
                     let ageing_above_90days = 0;
-                    //bills ageing
-                    let billsageingcat = await KeyCategory.findOne({ category: 'BillsAge' })
-                    const ageingdocs = await ExcelDB.find({ category: billsageingcat, 'Sales Representative': new RegExp(`^${attendance?.station.state}$`, 'i') })
+                    let newclients = 0;
+                    let currentcollection = 0;
+                    let currentsale_currentyear = 0;
+                    let lastsale_currentyear = 0;
+                    let currentsale_last_year = 0;
+                    let lastsale_lastyear = 0;
+                    let attendance = await SalesAttendance.findOne({ date: { $gte: currdate1, $lt: currdate2 }, employee: salesman[i] }).populate('station').populate('employee')
+                    if (attendance) {
+                        //new clients
+                        let parttargetcat = await KeyCategory.findOne({ category: 'PartyTarget' })
+                        newclients = await ExcelDB.find({ category: parttargetcat, 'STATE NAME': new RegExp(`^${attendance?.station.state}$`, 'i'), 'Create Date': { $gte: currdate1, $lt: currdate2 } }).countDocuments()
+                        //bills ageing
+                        let billsageingcat = await KeyCategory.findOne({ category: 'BillsAge' })
+                        const ageingdocs = await ExcelDB.find({ category: billsageingcat, 'Sales Representative': new RegExp(`^${attendance?.station.state}$`, 'i') })
 
-                    if (ageingdocs && ageingdocs.length > 0) {
-                        ageing_above_90days = ageingdocs.reduce((total, doc) => {
-                            //@ts-ignore
-                            return total + (doc['90-120'] || 0) + (doc['> 120'] || 0);
-                        }, 0);
+                        if (ageingdocs && ageingdocs.length > 0) {
+                            ageing_above_90days = ageingdocs.reduce((total, doc) => {
+                                //@ts-ignore
+                                return total + (doc['90-120'] || 0) + (doc['> 120'] || 0);
+                            }, 0);
+                        }
+
+                        //sale and collection
+                        let salrepcat = await KeyCategory.findOne({ category: 'SalesRep' })
+                        if (salrepcat) {
+                            const currentMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: currentMonth, $lt: nextMonth } })
+
+                            //current year
+                            if (currentMonthYearSale1)
+                                //@ts-ignore
+                                currentsale_currentyear = currentMonthYearSale1[`${String(attendance?.station.state).toUpperCase()}`]
+
+                            const currentMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: previousMonth, $lt: currentMonth } })
+                            if (currentMonthYearSale2)
+                                //@ts-ignore
+                                lastsale_currentyear = currentMonthYearSale2[`${String(attendance?.station.state).toUpperCase()}`]
+
+
+                            //previous year
+                            const lastMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: new Date(new Date(previousYear).setMonth(new Date().getMonth())), $lt: new Date(new Date(previousYear).setMonth(new Date().getMonth() + 1)) } })
+                            if (lastMonthYearSale1)
+                                //@ts-ignore
+                                currentsale_last_year = lastMonthYearSale1[`${String(attendance?.station.state).toUpperCase()}`]
+
+                            const lastMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: new Date(new Date(previousYear).setMonth(new Date().getMonth() - 1)), $lt: new Date(new Date(previousYear).setMonth(new Date().getMonth())) } })
+
+                            if (lastMonthYearSale2)
+                                //@ts-ignore
+                                lastsale_lastyear = lastMonthYearSale2[`${String(attendance?.station.state).toUpperCase()}`]
+
+
+
+
+
+                            const collectioncurrent = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Collection', 'Sales Representative': { $gte: currentMonth, $lt: nextMonth } })
+                            if (collectioncurrent)
+                                //@ts-ignore
+                                currentcollection = collectioncurrent[`${String(attendance?.station.state).toUpperCase()}`]
+                        }
                     }
-                    let cmcy = new Date()
-                    // let cmly = new Date(new Date().setFullYear(new Date().getFullYear() - 1))
-                    // let lmcy = new Date(new Date().setMonth(new Date().getMonth() - 1))
-                    // let lmly = new Date(new Date(new Date().setMonth(new Date().getMonth() - 1)).setFullYear(new Date().getFullYear() - 1))
-                    cmcy.setHours(0, 0, 0, 0)
-
-                    let salrepcat = await KeyCategory.findOne({ category: 'SalesRep' })
-
-
-                    //current month current sale
-                    const items = await ExcelDB.find({ category: salrepcat, 'Sale': 'Sale', 'Sales Representative': { $gte: currentMonth, $lt: nextMonth }})
-                    //@ts-ignore
-                    const item = items[`${String(attendance?.station.state).toUpperCase()}`]
-                    console.log(item)
-
-                    //last month last sale  
-
 
 
                     let obj: GetSalesmanKpiDto = {
@@ -237,12 +264,15 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
                         new_clients: newclients,
                         station: attendance?.station && { id: attendance?.station._id, label: attendance?.station.city, value: attendance?.station.city },
                         state: attendance?.station.state,
-                        sale_value: 0,
-                        collection_value: 0,
+                        currentsale_currentyear: currentsale_currentyear,
+                        lastsale_currentyear: lastsale_currentyear,
+                        currentsale_last_year: currentsale_last_year,
+                        lastsale_lastyear: lastsale_lastyear,
+                        current_collection: currentcollection,
                         //@ts-ignore
                         ageing_above_90days: ageing_above_90days,
-                        sale_growth: 0,
-                        last_month_sale_growth: 0
+                        sale_growth: currentsale_currentyear / currentsale_last_year,
+                        last_month_sale_growth: lastsale_currentyear / lastsale_lastyear
 
                     }
                     result.push(obj)
@@ -255,26 +285,95 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
             while (current_date <= new Date(dt2)) {
                 let currdate1 = new Date(current_date)
                 let currdate2 = new Date(currdate1)
+
                 currdate1.setHours(0, 0, 0, 0)
                 currdate2.setHours(0, 0, 0, 0)
                 currdate2.setDate(currdate1.getDate() + 1)
-                let attendance = await SalesAttendance.findOne({ date: { $gte: currdate1, $lt: currdate2 }, employee: req.user._id }).populate('station').populate('employee')
+
+
+                let ageing_above_90days = 0;
+                let newclients = 0;
+                let currentcollection = 0;
+                let currentsale_currentyear = 0;
+                let lastsale_currentyear = 0;
+                let currentsale_last_year = 0;
+                let lastsale_lastyear = 0;
+                let attendance = await SalesAttendance.findOne({ date: { $gte: currdate1, $lt: currdate2 }, employee: req.user._id}).populate('station').populate('employee')
+                if (attendance) {
+                    //new clients
+                    let parttargetcat = await KeyCategory.findOne({ category: 'PartyTarget' })
+                    newclients = await ExcelDB.find({ category: parttargetcat, 'STATE NAME': new RegExp(`^${attendance?.station.state}$`, 'i'), 'Create Date': { $gte: currdate1, $lt: currdate2 } }).countDocuments()
+                    //bills ageing
+                    let billsageingcat = await KeyCategory.findOne({ category: 'BillsAge' })
+                    const ageingdocs = await ExcelDB.find({ category: billsageingcat, 'Sales Representative': new RegExp(`^${attendance?.station.state}$`, 'i') })
+
+                    if (ageingdocs && ageingdocs.length > 0) {
+                        ageing_above_90days = ageingdocs.reduce((total, doc) => {
+                            //@ts-ignore
+                            return total + (doc['90-120'] || 0) + (doc['> 120'] || 0);
+                        }, 0);
+                    }
+
+                    //sale and collection
+                    let salrepcat = await KeyCategory.findOne({ category: 'SalesRep' })
+                    if (salrepcat) {
+                        const currentMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: currentMonth, $lt: nextMonth } })
+
+                        //current year
+                        if (currentMonthYearSale1)
+                            //@ts-ignore
+                            currentsale_currentyear = currentMonthYearSale1[`${String(attendance?.station.state).toUpperCase()}`]
+
+                        const currentMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: previousMonth, $lt: currentMonth } })
+                        if (currentMonthYearSale2)
+                            //@ts-ignore
+                            lastsale_currentyear = currentMonthYearSale2[`${String(attendance?.station.state).toUpperCase()}`]
+
+
+                        //previous year
+                        const lastMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: new Date(new Date(previousYear).setMonth(new Date().getMonth())), $lt: new Date(new Date(previousYear).setMonth(new Date().getMonth() + 1)) } })
+                        if (lastMonthYearSale1)
+                            //@ts-ignore
+                            currentsale_last_year = lastMonthYearSale1[`${String(attendance?.station.state).toUpperCase()}`]
+
+                        const lastMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: new Date(new Date(previousYear).setMonth(new Date().getMonth() - 1)), $lt: new Date(new Date(previousYear).setMonth(new Date().getMonth())) } })
+
+                        if (lastMonthYearSale2)
+                            //@ts-ignore
+                            lastsale_lastyear = lastMonthYearSale2[`${String(attendance?.station.state).toUpperCase()}`]
+
+
+
+
+
+                        const collectioncurrent = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Collection', 'Sales Representative': { $gte: currentMonth, $lt: nextMonth } })
+                        if (collectioncurrent)
+                            //@ts-ignore
+                            currentcollection = collectioncurrent[`${String(attendance?.station.state).toUpperCase()}`]
+                    }
+                }
+
+
                 let obj: GetSalesmanKpiDto = {
-                    employee: { id: req.user._id, label: req.user.username, value: req.user.username },
+                    employee: { id: req.user, label: req.user.username, value: req.user.username },
                     date: moment(currdate1).format("DD/MM/YYYY"),
                     month: moment(currdate1).format("MMMM"),
                     attendance: attendance?.attendance,
                     new_visit: attendance?.new_visit,
                     old_visit: attendance?.old_visit,
                     working_time: (attendance?.in_time || "") + "-" + (attendance?.end_time || ""),
-                    new_clients: 0,
+                    new_clients: newclients,
                     station: attendance?.station && { id: attendance?.station._id, label: attendance?.station.city, value: attendance?.station.city },
                     state: attendance?.station.state,
-                    sale_value: 0,
-                    collection_value: 0,
-                    ageing_above_90days: 0,
-                    sale_growth: 0,
-                    last_month_sale_growth: 0,
+                    currentsale_currentyear: currentsale_currentyear,
+                    lastsale_currentyear: lastsale_currentyear,
+                    currentsale_last_year: currentsale_last_year,
+                    lastsale_lastyear: lastsale_lastyear,
+                    current_collection: currentcollection,
+                    //@ts-ignore
+                    ageing_above_90days: ageing_above_90days,
+                    sale_growth: currentsale_currentyear / currentsale_last_year,
+                    last_month_sale_growth: lastsale_currentyear / lastsale_lastyear
 
                 }
                 result.push(obj)
@@ -283,35 +382,104 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
         }
     }
     else {
-        let current_date = new Date(dt1)
-        while (current_date <= new Date(dt2)) {
-            let currdate1 = new Date(current_date)
-            let currdate2 = new Date(currdate1)
-            currdate1.setHours(0, 0, 0, 0)
-            currdate2.setHours(0, 0, 0, 0)
-            currdate2.setDate(currdate1.getDate() + 1)
-            let user = await User.findById(id)
-            let attendance = await SalesAttendance.findOne({ date: { $gte: currdate1, $lt: currdate2 }, employee: id }).populate('station').populate('employee')
-            let obj: GetSalesmanKpiDto = {
-                employee: user ? { id: user._id, label: user.username, value: user.username } : undefined,
-                date: moment(currdate1).format("DD/MM/YYYY"),
-                month: moment(currdate1).format("MMMM"),
-                attendance: attendance?.attendance,
-                new_visit: attendance?.new_visit,
-                old_visit: attendance?.old_visit,
-                working_time: (attendance?.in_time || "") + "-" + (attendance?.end_time || ""),
-                new_clients: 0,
-                station: attendance?.station && { id: attendance?.station._id, label: attendance?.station.city, value: attendance?.station.city },
-                state: attendance?.station.state,
-                sale_value: 0,
-                collection_value: 0,
-                ageing_above_90days: 0,
-                sale_growth: 0,
-                last_month_sale_growth: 0
+        let user = await User.findById(id)
+        if(user){
+            let current_date = new Date(dt1)
+            while (current_date <= new Date(dt2)) {
+                let currdate1 = new Date(current_date)
+                let currdate2 = new Date(currdate1)
+
+                currdate1.setHours(0, 0, 0, 0)
+                currdate2.setHours(0, 0, 0, 0)
+                currdate2.setDate(currdate1.getDate() + 1)
+
+
+                let ageing_above_90days = 0;
+                let newclients = 0;
+                let currentcollection = 0;
+                let currentsale_currentyear = 0;
+                let lastsale_currentyear = 0;
+                let currentsale_last_year = 0;
+                let lastsale_lastyear = 0;
+                let attendance = await SalesAttendance.findOne({ date: { $gte: currdate1, $lt: currdate2 }, employee: id }).populate('station').populate('employee')
+                if (attendance) {
+                    //new clients
+                    let parttargetcat = await KeyCategory.findOne({ category: 'PartyTarget' })
+                    newclients = await ExcelDB.find({ category: parttargetcat, 'STATE NAME': new RegExp(`^${attendance?.station.state}$`, 'i'), 'Create Date': { $gte: currdate1, $lt: currdate2 } }).countDocuments()
+                    //bills ageing
+                    let billsageingcat = await KeyCategory.findOne({ category: 'BillsAge' })
+                    const ageingdocs = await ExcelDB.find({ category: billsageingcat, 'Sales Representative': new RegExp(`^${attendance?.station.state}$`, 'i') })
+
+                    if (ageingdocs && ageingdocs.length > 0) {
+                        ageing_above_90days = ageingdocs.reduce((total, doc) => {
+                            //@ts-ignore
+                            return total + (doc['90-120'] || 0) + (doc['> 120'] || 0);
+                        }, 0);
+                    }
+
+                    //sale and collection
+                    let salrepcat = await KeyCategory.findOne({ category: 'SalesRep' })
+                    if (salrepcat) {
+                        const currentMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: currentMonth, $lt: nextMonth } })
+
+                        //current year
+                        if (currentMonthYearSale1)
+                            //@ts-ignore
+                            currentsale_currentyear = currentMonthYearSale1[`${String(attendance?.station.state).toUpperCase()}`]
+
+                        const currentMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: previousMonth, $lt: currentMonth } })
+                        if (currentMonthYearSale2)
+                            //@ts-ignore
+                            lastsale_currentyear = currentMonthYearSale2[`${String(attendance?.station.state).toUpperCase()}`]
+
+
+                        //previous year
+                        const lastMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: new Date(new Date(previousYear).setMonth(new Date().getMonth())), $lt: new Date(new Date(previousYear).setMonth(new Date().getMonth() + 1)) } })
+                        if (lastMonthYearSale1)
+                            //@ts-ignore
+                            currentsale_last_year = lastMonthYearSale1[`${String(attendance?.station.state).toUpperCase()}`]
+
+                        const lastMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: new Date(new Date(previousYear).setMonth(new Date().getMonth() - 1)), $lt: new Date(new Date(previousYear).setMonth(new Date().getMonth())) } })
+
+                        if (lastMonthYearSale2)
+                            //@ts-ignore
+                            lastsale_lastyear = lastMonthYearSale2[`${String(attendance?.station.state).toUpperCase()}`]
+
+                        const collectioncurrent = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Collection', 'Sales Representative': { $gte: currentMonth, $lt: nextMonth } })
+                        if (collectioncurrent)
+                            //@ts-ignore
+                            currentcollection = collectioncurrent[`${String(attendance?.station.state).toUpperCase()}`]
+                    }
+                }
+
+
+                let obj: GetSalesmanKpiDto = {
+                    employee: { id: user._id, label: user.username, value: user.username },
+                    date: moment(currdate1).format("DD/MM/YYYY"),
+                    month: moment(currdate1).format("MMMM"),
+                    attendance: attendance?.attendance,
+                    new_visit: attendance?.new_visit,
+                    old_visit: attendance?.old_visit,
+                    working_time: (attendance?.in_time || "") + "-" + (attendance?.end_time || ""),
+                    new_clients: newclients,
+                    station: attendance?.station && { id: attendance?.station._id, label: attendance?.station.city, value: attendance?.station.city },
+                    state: attendance?.station.state,
+                    currentsale_currentyear: currentsale_currentyear,
+                    lastsale_currentyear: lastsale_currentyear,
+                    currentsale_last_year: currentsale_last_year,
+                    lastsale_lastyear: lastsale_lastyear,
+                    current_collection: currentcollection,
+                    //@ts-ignore
+                    ageing_above_90days: ageing_above_90days,
+                    sale_growth: currentsale_currentyear / currentsale_last_year,
+                    last_month_sale_growth: lastsale_currentyear / lastsale_lastyear
+
+                }
+                result.push(obj)
+                current_date.setDate(new Date(current_date).getDate() + 1)
             }
-            result.push(obj)
-            current_date.setDate(new Date(current_date).getDate() + 1)
         }
+       
     }
     return res.status(200).json(result)
 

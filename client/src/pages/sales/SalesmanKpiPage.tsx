@@ -15,6 +15,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 
 import { GetSalesmanKpis } from '../../services/SalesServices'
+import { currentMonth, nextMonth, previousYear } from '../../utils/datesHelper'
 
 
 function SalesmanKpiPage() {
@@ -25,7 +26,7 @@ function SalesmanKpiPage() {
   const [userId, setUserId] = useState<string>('all')
   const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
     start_date: moment(new Date(new Date().setDate(1)).setMonth(new Date().getMonth())).format("YYYY-MM-DD"),
-    end_date: moment(new Date(new Date().setDate(1)).setMonth(new Date().getMonth()+1)).format("YYYY-MM-DD")
+    end_date: moment(new Date(new Date().setDate(1)).setMonth(new Date().getMonth() + 1)).format("YYYY-MM-DD")
   })
 
   const isFirstRender = useRef(true);
@@ -90,13 +91,26 @@ function SalesmanKpiPage() {
         header: ' Work Time'
       },
       {
-        accessorKey: 'sale_value',
-        header: ' Sale'
+        accessorKey: 'currentsale_currentyear',
+        header: moment(new Date()).format("MMM-YY") + " Sale"
       },
       {
-        accessorKey: 'collection_value',
-        header: ' Collection'
+        accessorKey: 'lastsale_currentyear',
+        header: moment(new Date().setMonth(new Date().getMonth() - 1)).format("MMM-YY") + "Sale"
       },
+      {
+        accessorKey: 'current_collection',
+        header: moment(new Date()).format("MMM-YY") + " Collection"
+      },
+      {
+        accessorKey: 'currentsale_last_year',
+        header: moment(new Date(new Date(previousYear).setMonth(new Date().getMonth()))).format("MMM-YY") + " Sale"
+      },
+      {
+        accessorKey: 'lastsale_lastyear',
+        header: moment(new Date(new Date(previousYear).setMonth(new Date().getMonth()-1))).format("MMM-YY")  + "Sale"
+      },
+     
       {
         accessorKey: 'ageing_above_90days',
         header: ' Ageing>90'
