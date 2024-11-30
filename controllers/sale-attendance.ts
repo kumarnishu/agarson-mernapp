@@ -216,29 +216,30 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
                         //sale and collection
                         let salrepcat = await KeyCategory.findOne({ category: 'SalesRep' })
                         if (salrepcat) {
-                            const currentMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: currentMonth, $lt: nextMonth } })
+                            const currentMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: currentMonth, $lt: new Date(currentMonth).setDate(currentMonth.getDate() + 1) } })
 
-                            console.log(currentMonth, nextMonth)
-                            console.log(new Date() >= currentMonth)
-                            console.log(new Date() < nextMonth)
                             //current year
                             if (currentMonthYearSale1)
                                 //@ts-ignore
                                 currentsale_currentyear = currentMonthYearSale1[`${String(attendance?.station.state).toUpperCase()}`]
 
-                            const currentMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: previousMonth, $lt: currentMonth } })
+                            const currentMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: previousMonth, $lt: new Date(previousMonth).setDate(previousMonth.getDate() + 1) } })
                             if (currentMonthYearSale2)
                                 //@ts-ignore
                                 lastsale_currentyear = currentMonthYearSale2[`${String(attendance?.station.state).toUpperCase()}`]
 
 
+                            let currentmonthlastyear = new Date(new Date(previousYear).setMonth(currentMonth.getMonth()))
+                            let prviousmonthlastyear = new Date(new Date(previousYear).setMonth(currentMonth.getMonth()))
+
+
                             //previous year
-                            const lastMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: new Date(new Date(previousYear).setMonth(currentMonth.getMonth())), $lt: new Date(new Date(previousYear).setMonth(nextMonth.getMonth())) } })
+                            const lastMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: currentmonthlastyear, $lt: new Date(currentmonthlastyear).setDate(currentmonthlastyear.getDate() + 1) } })
                             if (lastMonthYearSale1)
                                 //@ts-ignore
                                 currentsale_last_year = lastMonthYearSale1[`${String(attendance?.station.state).toUpperCase()}`]
 
-                            const lastMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: new Date(new Date(previousYear).setMonth(previousMonth.getMonth())), $lt: new Date(new Date(previousYear).setMonth(currentMonth.getMonth())) } })
+                            const lastMonthYearSale2 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: prviousmonthlastyear, $lt: new Date(prviousmonthlastyear).setDate(prviousmonthlastyear.getDate() + 1) } })
 
                             if (lastMonthYearSale2)
                                 //@ts-ignore
@@ -248,7 +249,7 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
 
 
 
-                            const collectioncurrent = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Collection', 'Sales Representative': { $gte: currentMonth, $lt: nextMonth } })
+                            const collectioncurrent = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Collection', 'Sales Representative': { $gte: currentMonth, $lt: new Date(currentMonth).setDate(currentMonth.getDate() + 1) } })
                             if (collectioncurrent)
                                 //@ts-ignore
                                 currentcollection = collectioncurrent[`${String(attendance?.station.state).toUpperCase()}`]
