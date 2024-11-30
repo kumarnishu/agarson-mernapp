@@ -218,6 +218,9 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
                         if (salrepcat) {
                             const currentMonthYearSale1 = await ExcelDB.findOne({ category: salrepcat, 'SALES': 'Sales', 'Sales Representative': { $gte: currentMonth, $lt: nextMonth } })
 
+                            console.log(currentMonth, nextMonth)
+                            console.log(new Date() >= currentMonth)
+                            console.log(new Date() < nextMonth)
                             //current year
                             if (currentMonthYearSale1)
                                 //@ts-ignore
@@ -298,7 +301,7 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
                 let lastsale_currentyear = 0;
                 let currentsale_last_year = 0;
                 let lastsale_lastyear = 0;
-                let attendance = await SalesAttendance.findOne({ date: { $gte: currdate1, $lt: currdate2 }, employee: req.user._id}).populate('station').populate('employee')
+                let attendance = await SalesAttendance.findOne({ date: { $gte: currdate1, $lt: currdate2 }, employee: req.user._id }).populate('station').populate('employee')
                 if (attendance) {
                     //new clients
                     let parttargetcat = await KeyCategory.findOne({ category: 'PartyTarget' })
@@ -383,7 +386,7 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
     }
     else {
         let user = await User.findById(id)
-        if(user){
+        if (user) {
             let current_date = new Date(dt1)
             while (current_date <= new Date(dt2)) {
                 let currdate1 = new Date(current_date)
@@ -483,7 +486,7 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
                 current_date.setDate(new Date(current_date).getDate() + 1)
             }
         }
-       
+
     }
     return res.status(200).json(result)
 
