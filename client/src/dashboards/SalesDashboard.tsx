@@ -15,7 +15,7 @@ function SalesDashboard() {
        
         user?.assigned_permissions.includes('salesman_attendance_view') && tmpfeatures.push({ feature: 'Salesman Daily Visit New/old/Time - Chanchal', is_visible: true, url: "SalesmanAttendance" })
         user?.assigned_permissions.includes('salesman_attendance_auto_view') && tmpfeatures.push({ feature: 'Salesman Daily Visit New/old/Time - Auto', is_visible: true, url: "SalesmanAttendanceAuto" })
-        user?.assigned_permissions.includes('salesman_kpi_view') && tmpfeatures.push({ feature: 'Salesman KPI', is_visible: true, url: "SalesmanKPI" })
+        user?.assigned_permissions.includes('salesman_kpi_view') && tmpfeatures.push({ feature: 'Salesman KPI Report', is_visible: true, url: "SalesmanKPI" })
         user?.assigned_permissions.includes('salesman_visit_view') && tmpfeatures.push({ feature: 'Salesman Last 3 days VisitSummary', is_visible: true, url: "SalesmanVisit" })
         setFeatures(tmpfeatures)
 

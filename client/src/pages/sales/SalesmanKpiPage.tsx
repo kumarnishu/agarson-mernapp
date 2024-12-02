@@ -171,8 +171,6 @@ function SalesmanKpiPage() {
     columns, columnFilterDisplayMode: 'popover',
     data: kpis, //10,000 rows       
     enableColumnResizing: true,
-    enableRowPinning:true,
-    rowPinningDisplayMode: 'top-and-bottom',
     enableGrouping: true,
     enableColumnVirtualization: true, enableStickyFooter: true,
     muiTableFooterRowProps: () => ({

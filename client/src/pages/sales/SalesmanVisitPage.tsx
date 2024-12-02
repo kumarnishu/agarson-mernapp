@@ -309,7 +309,7 @@ export default function SalesmanVisitPage() {
           component={'h1'}
           sx={{ pl: 1 }}
         >
-          Salesman Visit New/old/Time
+          Salesman Last 3 days VisitSummary
         </Typography>
         < Stack direction="row" spacing={2}>
           < TextField
