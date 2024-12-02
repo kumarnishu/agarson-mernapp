@@ -9,13 +9,14 @@ import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
 import { GetSalesmanKpiDto, GetUserDto } from '../../dtos'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
+import { FilterAltOff, Fullscreen, FullscreenExit, ViewAgenda } from '@mui/icons-material'
 import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 
 import { GetSalesmanKpis } from '../../services/SalesServices'
 import { previousYear } from '../../utils/datesHelper'
+import { HandleNumbers } from '../../utils/IsDecimal'
 
 
 function SalesmanKpiPage() {
@@ -68,94 +69,92 @@ function SalesmanKpiPage() {
         accessorKey: 'old_visit',
         header: ' Old Visit',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+      
       },
       {
         accessorKey: 'new_visit',
         header: ' New Visit',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+       
       },
       {
         accessorKey: 'new_clients',
         header: ' New Clients',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'station.value',
         header: ' Station',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+      
       },
       {
         accessorKey: 'state',
         header: ' State',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
+     
       },
       {
         accessorKey: 'working_time',
         header: ' Work Time',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'currentsale_currentyear',
         header: moment(new Date()).format("MMM-YY") + " Sale",
         aggregationFn: 'max',
-        AggregatedCell: (cell) => Number(cell.cell.getValue()).toFixed(2),
-        Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
+        AggregatedCell:(cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) =>cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'lastsale_currentyear',
         header: moment(new Date().setMonth(new Date().getMonth() - 1)).format("MMM-YY") + "Sale",
         aggregationFn: 'max',
-        AggregatedCell: (cell) => Number(cell.cell.getValue()).toFixed(2),
-        Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
+        AggregatedCell:(cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) =>cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'current_collection',
         header: moment(new Date()).format("MMM-YY") + " Collection",
         aggregationFn: 'max',
-        AggregatedCell: (cell) => Number(cell.cell.getValue()).toFixed(2),
-        Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
+        AggregatedCell:(cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) =>cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'currentsale_last_year',
         header: moment(new Date(new Date(previousYear).setMonth(new Date().getMonth()))).format("MMM-YY") + " Sale",
         aggregationFn: 'max',
-        AggregatedCell: (cell) => Number(cell.cell.getValue()).toFixed(2),
-        Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
+        AggregatedCell:(cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) =>cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'lastsale_lastyear',
         header: moment(new Date(new Date(previousYear).setMonth(new Date().getMonth() - 1))).format("MMM-YY") + "Sale",
         aggregationFn: 'max',
-        AggregatedCell: (cell) => Number(cell.cell.getValue()).toFixed(2),
-        Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
+        AggregatedCell:(cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) =>cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
 
       {
         accessorKey: 'ageing_above_90days',
         header: ' Ageing>90',
         aggregationFn: 'max',
-        AggregatedCell: (cell) => Number(cell.cell.getValue()).toFixed(2),
-        Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
+        AggregatedCell:(cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) =>cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'sale_growth',
         header: 'Sale Growth',
         aggregationFn: 'max',
-        AggregatedCell: (cell) => Number(cell.cell.getValue()).toFixed(2),
-        Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
+        AggregatedCell:(cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) =>cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'last_month_sale_growth',
         header: ' Last Month Sale Growth',
         aggregationFn: 'max',
-        AggregatedCell: (cell) => Number(cell.cell.getValue()).toFixed(2),
-        Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
+        AggregatedCell:(cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) =>cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
 
     ],
@@ -274,7 +273,16 @@ function SalesmanKpiPage() {
                   <FilterAltOff />
                 </Button>
               </Tooltip>
-
+              <Tooltip title="Show All Columns">
+                <Button size="small" color="inherit" variant='contained'
+                  onClick={() => {
+                    table.setColumnVisibility({})
+                  }
+                  }
+                >
+                  <ViewAgenda />
+                </Button>
+              </Tooltip>
               <Tooltip title="Toogle FullScreen" >
                 <Button size="small" color="inherit" variant='contained'
                   onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)

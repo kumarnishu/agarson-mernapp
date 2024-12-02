@@ -15,6 +15,7 @@ import { Comment, Visibility } from '@mui/icons-material'
 import { GetKeyCategoryById } from '../../services/KeyServices'
 import CreateOrEditExcelDBRemarkDialog from '../../components/dialogs/excel-db/CreateOrEditExcelDBRemarkDialog'
 import ViewExcelDBRemarksDialog from '../../components/dialogs/excel-db/ViewExcelDBRemarksDialog'
+import { HandleNumbers } from '../../utils/IsDecimal'
 
 
 export default function ExcelDBPage() {
@@ -109,8 +110,8 @@ export default function ExcelDBPage() {
         return {
           accessorKey: item.key, header: item.header,
           aggregationFn: 'sum',
-          AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())}</div>,
-          Cell: (cell) => Number(cell.cell.getValue()).toFixed(2),
+          AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+          Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '', 
           //@ts-ignore
           Footer: ({ table }) => <b>{index < 2 ? table.getFilteredRowModel().rows.length : table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
         }
