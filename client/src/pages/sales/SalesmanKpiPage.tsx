@@ -9,7 +9,7 @@ import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
 import { GetSalesmanKpiDto, GetUserDto } from '../../dtos'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { FilterAltOff, Fullscreen, FullscreenExit, ViewAgenda } from '@mui/icons-material'
+import { FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
 import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
@@ -273,16 +273,7 @@ function SalesmanKpiPage() {
                   <FilterAltOff />
                 </Button>
               </Tooltip>
-              <Tooltip title="Show All Columns">
-                <Button size="small" color="inherit" variant='contained'
-                  onClick={() => {
-                    table.setColumnVisibility({})
-                  }
-                  }
-                >
-                  <ViewAgenda />
-                </Button>
-              </Tooltip>
+             
               <Tooltip title="Toogle FullScreen" >
                 <Button size="small" color="inherit" variant='contained'
                   onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
