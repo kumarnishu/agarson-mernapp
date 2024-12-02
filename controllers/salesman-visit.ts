@@ -130,7 +130,7 @@ export const GetSalesManVisitReport = async (req: Request, res: Response, next: 
 
 function checkifNewCustomer(customer: string) {
     let isCustomer = false
-    let items = ["train", 'hotel', 'election', 'shut', 'travel','leave']
+    let items = ["train", 'hotel', 'election', 'shut', 'travel','leave','office']
     if (customer.includes('*')) {
         let result=true
         for (let i = 0; i < items.length; i++) {
