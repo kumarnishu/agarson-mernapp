@@ -57,6 +57,10 @@ export const GetSalesManVisitReport = async (req: Request, res: Response, next: 
             for (let k = 0; k < data3.length; k++) {
                 if (data3[k].customer && checkifNewCustomer(data3[k].customer))
                     newvisit3 = newvisit3 + 1
+                else if (data3[k].customer && data3[k].customer.includes('*')) {
+                    oldvisit3 = oldvisit3
+                    newvisit3 = newvisit3
+                }
                 else
                     oldvisit3 = oldvisit3 + 1
 
@@ -74,6 +78,10 @@ export const GetSalesManVisitReport = async (req: Request, res: Response, next: 
             for (let k = 0; k < data2.length; k++) {
                 if (data2[k].customer && checkifNewCustomer(data2[k].customer))
                     newvisit2 = newvisit2 + 1
+                else if (data2[k].customer && data2[k].customer.includes('*')) {
+                    oldvisit2 = oldvisit2
+                    newvisit2 = newvisit2
+                }
                 else
                     oldvisit2 = oldvisit2 + 1
 
@@ -91,6 +99,10 @@ export const GetSalesManVisitReport = async (req: Request, res: Response, next: 
             for (let k = 0; k < data1.length; k++) {
                 if (data1[k].customer && checkifNewCustomer(data1[k].customer))
                     newvisit1 = newvisit1 + 1
+                else if (data1[k].customer && data1[k].customer.includes('*')) {
+                    oldvisit1 = oldvisit1
+                    newvisit1 = newvisit1
+                }
                 else
                     oldvisit1 = oldvisit1 + 1
 
@@ -130,9 +142,9 @@ export const GetSalesManVisitReport = async (req: Request, res: Response, next: 
 
 function checkifNewCustomer(customer: string) {
     let isCustomer = false
-    let items = ["train", 'hotel', 'election', 'shut', 'travel','leave','office']
+    let items = ["train", 'hotel', 'election', 'shut', 'travel', 'leave', 'office']
     if (customer.includes('*')) {
-        let result=true
+        let result = true
         for (let i = 0; i < items.length; i++) {
             if (customer && customer.toLowerCase().includes(items[i])) {
                 result = false
