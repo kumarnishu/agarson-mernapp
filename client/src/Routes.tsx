@@ -50,6 +50,7 @@ import SalesDashboard from './dashboards/SalesDashboard.tsx'
 import SalesmanVisitPage from './pages/sales/SalesmanVisitPage.tsx'
 import SalesmanAttendancePage from './pages/sales/SalesmanAttendancePage.tsx'
 import SalesmanKpiPage from './pages/sales/SalesmanKpiPage.tsx'
+import SalesmanAttendancePageAuto from './pages/sales/SalesmanVisitPageAuto.tsx'
 
 
 function AppRoutes() {
@@ -316,6 +317,12 @@ function AppRoutes() {
               {user?.assigned_permissions.includes('salesman_attendance_view') && <Route
                 path="SalesmanAttendance" element={
                   <SalesmanAttendancePage />
+                }
+              />}
+
+              {user?.assigned_permissions.includes('salesman_attendance_auto_view') && <Route
+                path="SalesmanAttendanceAuto" element={
+                  <SalesmanAttendancePageAuto />
                 }
               />}
 

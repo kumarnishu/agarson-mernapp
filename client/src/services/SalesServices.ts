@@ -14,6 +14,15 @@ export const GetSalesmanKpis = async ({  start_date, end_date, id }: { start_dat
 
 }
 
+
+export const GetSalesmanAutoVisitReports = async ({ start_date, end_date, id }: { start_date?: string, end_date?: string, id?: string }) => {
+    if (id)
+        return await apiClient.get(`visit/auto-reports/?id=${id}&start_date=${start_date}&end_date=${end_date}`)
+    else
+        return await apiClient.get(`visit/auto-reports/?start_date=${start_date}&end_date=${end_date}`)
+
+}
+
 export const GetVisitReports = async ({ employee }: { employee: string }) => {
     return await apiClient.get(`visit-reports/?employee=${employee}`)
 }

@@ -875,3 +875,10 @@ export type CreateOrEditSalesAttendanceDto = {
     end_time: string,
     station: string
 }
+export type GetSalesAttendancesAuto = {
+    employee: DropDownDto,
+    date: string,
+    new_visit: number,
+    old_visit: number,
+    worktime: string,
+}

@@ -863,6 +863,14 @@ export type GetSalesAttendanceDto = {
     updated_by: DropDownDto
 }
 
+export type GetSalesAttendancesAuto={
+    employee: DropDownDto,
+    date: string,
+    new_visit: number,
+    old_visit: number,
+    worktime: string,
+}
+
 export type CreateOrEditSalesAttendanceDto = {
     _id: string,
     employee: string,

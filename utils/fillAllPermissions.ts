@@ -1042,7 +1042,7 @@ export function FetchAllPermissions() {
                 ]
             },
             {
-                label: 'SalesMan Attendance',
+                label: 'Salesman Daily Visit New/old/Time - Chanchal',
                 permissions: [
                     {
                         value: 'salesman_attendance_view',
@@ -1062,6 +1062,31 @@ export function FetchAllPermissions() {
                     },
                     {
                         value: 'salesman_attendance_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Salesman Daily Visit New/old/Time - Auto',
+                permissions: [
+                    {
+                        value: 'salesman_attendance_auto_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'salesman_attendance_auto_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'salesman_attendance_auto_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'salesman_attendance_auto_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'salesman_attendance_auto_export',
                         label: 'export'
                     }
                 ]

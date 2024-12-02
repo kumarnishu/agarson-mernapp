@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { IUser, User } from '../models/user';
 import moment from 'moment';
 import { ISalesAttendance, SalesAttendance } from '../models/sales-attendance';
-import { CreateOrEditSalesAttendanceDto, GetSalesAttendanceDto, GetSalesmanKpiDto } from '../dtos';
+import { CreateOrEditSalesAttendanceDto, GetSalesAttendanceDto,  GetSalesmanKpiDto } from '../dtos';
 import isMongoId from 'validator/lib/isMongoId';
 import { ExcelDB } from '../models/excel-db';
 import { KeyCategory } from '../models/key-category';
@@ -319,7 +319,7 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
                     result.push(obj)
                 }
                 current_date.setDate(new Date(current_date).getDate() + 1)
-            }
+            }``
         }
         else {
             let current_date = new Date(dt1)
@@ -611,3 +611,4 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
     return res.status(200).json(result)
 
 }
+

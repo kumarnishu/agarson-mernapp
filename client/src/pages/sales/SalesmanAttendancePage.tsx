@@ -188,7 +188,7 @@ function SalesmanAttendancePage() {
         renderTopToolbarCustomActions: ({ table }) => (
             <Box minWidth={'100vw'} >
                 <Stack sx={{ p: 1 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
-                    <Typography variant='h6'>Salesman Visit New/old/Time Chanchal Report</Typography>
+                    <Typography variant='h6'>Salesman Daily Visit New/old/Time - Chanchal</Typography>
                     <Stack
                         pt={1}
                         direction="row"
