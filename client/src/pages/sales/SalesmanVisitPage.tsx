@@ -16,6 +16,7 @@ import { Comment, Visibility } from '@mui/icons-material'
 import ViewVisitReportRemarksDialog from '../../components/dialogs/sales/ViewVisitReportRemarksDialog'
 import CreateOrEditVisitReportRemarkDialog from '../../components/dialogs/sales/CreateOrEditVisitReportRemarkDialog'
 import CreateOrEditSalesmanAttendanceDialog from '../../components/dialogs/sales/CreateOrEditSalesmanAttendanceDialog'
+import { HandleNumbers } from '../../utils/IsDecimal'
 
 
 export default function SalesmanVisitPage() {
@@ -104,73 +105,77 @@ export default function SalesmanVisitPage() {
       {
         accessorKey: 'date1',
         header: 'Date',
-        size: 130,
 
       },
       {
         accessorKey: 'new_visits1',
         header: 'New Visits',
-        size: 130,
+        aggregationFn: 'sum',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
 
       },
       {
         accessorKey: 'old_visits1',
         header: 'Old Visits',
-        size: 130,
+        aggregationFn: 'sum',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
 
       },
       {
         accessorKey: 'working_time1',
         header: 'Time',
-        size: 130,
 
       },
       {
         accessorKey: 'date2',
         header: 'Date',
-        size: 130,
 
       },
       {
         accessorKey: 'new_visits2',
         header: 'New Visits',
-        size: 130,
-
+        aggregationFn: 'sum',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'old_visits2',
         header: 'Old Visits',
-        size: 130,
-
+        aggregationFn: 'sum',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'working_time2',
         header: 'Time',
-        size: 130,
 
       },
       {
         accessorKey: 'date3',
         header: 'Date',
-        size: 130,
 
       },
       {
         accessorKey: 'new_visits3',
         header: 'New Visits',
-        size: 130,
+        aggregationFn: 'sum',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
 
       },
       {
         accessorKey: 'old_visits3',
         header: 'Old Visits',
-        size: 130,
+        aggregationFn: 'sum',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
 
       },
       {
         accessorKey: 'working_time3',
         header: 'Time',
-        size: 130,
 
       },
 

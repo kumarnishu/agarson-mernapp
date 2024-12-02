@@ -18,6 +18,7 @@ import CreateOrEditSalesmanAttendanceDialog from '../../components/dialogs/sales
 import DeleteVisitSalesManAttendanceDialog from '../../components/dialogs/sales/DeleteSalesManAttendanceDialog'
 import { ChoiceContext, SaleChoiceActions } from '../../contexts/dialogContext'
 import { GetSalesmanAttendances } from '../../services/SalesServices'
+import { HandleNumbers } from '../../utils/IsDecimal'
 
 
 function SalesmanAttendancePage() {
@@ -104,24 +105,37 @@ function SalesmanAttendancePage() {
             },
             {
                 accessorKey: 'attendance',
-                header: ' Attendance'
+                header: ' Attendance',
+                aggregationFn:'count',
+             
             },
             {
                 accessorKey: 'station.value',
-                header: ' Station'
+                header: ' Station',
+                aggregationFn: 'count'
+
             },
             {
                 accessorKey: 'in_time',
                 header: ' Work Time',
+                aggregationFn: 'count',
+
                 Cell: (cell) => <span >{cell.row.original.in_time + " - " + cell.row.original.end_time}</span>
             },
             {
                 accessorKey: 'new_visit',
-                header: ' New Visit'
+                header: ' New Visit',
+                aggregationFn: 'sum',
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+
             },
             {
                 accessorKey: 'old_visit',
-                header: ' Old Visit'
+                header: ' Old Visit',
+                aggregationFn: 'sum',
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
             },
             {
                 accessorKey: 'remark',

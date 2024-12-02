@@ -69,18 +69,24 @@ function SalesmanKpiPage() {
         accessorKey: 'old_visit',
         header: ' Old Visit',
         aggregationFn: 'sum',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       
       },
       {
         accessorKey: 'new_visit',
         header: ' New Visit',
         aggregationFn: 'sum',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
        
       },
       {
         accessorKey: 'new_clients',
         header: ' New Clients',
         aggregationFn: 'sum',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'station.value',
