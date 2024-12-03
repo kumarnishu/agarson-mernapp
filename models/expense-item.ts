@@ -9,6 +9,7 @@ export type IExpenseItem = {
     item: string,
     unit: IItemUnit,
     stock: number,
+    to_maintain_stock:boolean,
     category: IExpenseCategory
     created_at: Date,
     updated_at: Date,
@@ -28,6 +29,10 @@ const ExpenseItemSchema = new mongoose.Schema<IExpenseItem, mongoose.Model<IExpe
         type: mongoose.Schema.Types.ObjectId,
         ref: 'ItemUnit',
         required: true
+    },
+    to_maintain_stock: {
+        type: Boolean,
+        default: true
     },
     stock: {
         type: Number, default: 0

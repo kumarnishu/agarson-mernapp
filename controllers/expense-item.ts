@@ -5,6 +5,7 @@ import isMongoId from "validator/lib/isMongoId";
 import { ExpenseItem, IExpenseItem } from "../models/expense-item";
 import { ExpenseCategory } from "../models/expense-category";
 import { ItemUnit } from "../models/item-unit";
+import ConvertJsonToExcel from "../utils/ConvertJsonToExcel";
 
 export const GetAllExpenseItems = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetExpenseItemDto[] = []
@@ -15,6 +16,7 @@ export const GetAllExpenseItems = async (req: Request, res: Response, next: Next
             _id: item._id,
             item: item.item,
             stock: item.stock,
+            to_maintain_stock:item.to_maintain_stock,
             unit: { id: item.unit._id, label: item.unit.unit, value: item.unit.unit },
             category: { id: item.category._id, label: item.category.category, value: item.category.category },
         }
@@ -37,7 +39,7 @@ export const GetAllExpenseItemsForDropDown = async (req: Request, res: Response,
 }
 
 export const CreateExpenseItem = async (req: Request, res: Response, next: NextFunction) => {
-    const { item, unit, category, stock } = req.body as CreateOrEditExpenseItem
+    const { item, unit, category, stock, to_maintain_stock } = req.body as CreateOrEditExpenseItem
     if (!item || !unit || !category) {
         return res.status(400).json({ message: "please provide required fields" })
     }
@@ -49,6 +51,7 @@ export const CreateExpenseItem = async (req: Request, res: Response, next: NextF
         unit,
         stock,
         category,
+        to_maintain_stock,
         created_at: new Date(),
         created_by: req.user,
         updated_at: new Date(),
@@ -118,6 +121,7 @@ export const BulkCreateAndUpdateExpenseItemFromExcel = async (req: Request, res:
             let unit: string | null = String(data.unit)
             let stock: number | null = data.unit && Number(data.unit) || 0
             let category: string | null = String(data.category)
+            let to_maintain_stock: boolean | null = data.to_maintain_stock
             let isValidated = true;
             if (!category) {
                 statusText = "category required"
@@ -145,7 +149,8 @@ export const BulkCreateAndUpdateExpenseItemFromExcel = async (req: Request, res:
                             if (!await ExpenseItem.findOne({ item: item.toLowerCase(), category: cat })) {
 
                                 olditem.item = item
-                                olditem.stock = stock
+                                // olditem.to_maintain_stock = to_maintain_stock
+                                // olditem.stock = stock
                                 if (cat)
                                     olditem.category = cat
                                 if (un)
@@ -167,6 +172,7 @@ export const BulkCreateAndUpdateExpenseItemFromExcel = async (req: Request, res:
                             item: item,
                             category: cat,
                             unit: un,
+                            to_maintain_stock,
                             stock: stock,
                             created_by: req.user,
                             updated_by: req.user,
@@ -193,42 +199,26 @@ export const BulkCreateAndUpdateExpenseItemFromExcel = async (req: Request, res:
     return res.status(200).json(result);
 }
 
-// export const DownloadExcelTemplateForCreateExpenseItem = async (req: Request, res: Response, next: NextFunction) => {
-//     let checklists: GetExpenseItemDto[] = [{
-//         _id: "umc3m9344343vn934",
-//         serial_no: '1',
-//         category: 'maintenance',
-//         work_title: 'machine work',
-//         work_description: 'please check all the parts',
-//         link: 'http://www.bo.agarson.in',
-//         assigned_users: 'sujata,pawan',
-//         frequency: "daily"
-//     }]
+export const DownloadExcelTemplateForCreateExpenseItem = async (req: Request, res: Response, next: NextFunction) => {
+    let checklists: GetExpenseItemFromExcelDto[] = [{
+        _id: 'hwhii',
+        item: 'belt',
+        unit: 'kg',
+        to_maintain_stock:false,
+        category: 'GUMBOOT',
+        stock: 5
+    }]
 
 
-//     let users = (await User.find()).map((u) => { return { name: u.username } })
-//     let categories = (await ChecklistCategory.find()).map((u) => { return { name: u.category } })
-//     let categoriesids = await ChecklistCategory.find()
-//     let dt = await Checklist.find({ category: { $in: categoriesids } }).populate('category').populate('assigned_users')
-//     if (dt && dt.length > 0)
-//         checklists = dt.map((ch) => {
-//             return {
-//                 _id: ch._id.valueOf(),
-//                 serial_no: ch.serial_no,
-//                 category: ch.category && ch.category.category || "",
-//                 work_title: ch.work_title,
-//                 work_description: ch.work_description,
-//                 link: ch.link,
-//                 assigned_users: ch.assigned_users.map((a) => { return a.username }).toString(),
-//                 frequency: ch.frequency
-//             }
-//         })
-//     let template: { sheet_name: string, data: any[] }[] = []
-//     template.push({ sheet_name: 'template', data: checklists })
-//     template.push({ sheet_name: 'categories', data: categories })
-//     template.push({ sheet_name: 'users', data: users })
-//     template.push({ sheet_name: 'frequency', data: [{ frequency: "daily" }, { frequency: "weekly" }, { frequency: "monthly" }, { frequency: "yearly" }] })
-//     ConvertJsonToExcel(template)
-//     let fileName = "CreateChecklistTemplate.xlsx"
-//     return res.download("./file", fileName)
-// }
+    let categories = (await ExpenseCategory.find()).map((u) => { return { name: u.category } })
+    let units = (await ItemUnit.find()).map((i) => { return { unit: i.unit } })
+
+    let template: { sheet_name: string, data: any[] }[] = []
+    template.push({ sheet_name: 'template', data: checklists })
+    template.push({ sheet_name: 'categories', data: categories })
+    template.push({ sheet_name: 'unit', data: units })
+  
+    ConvertJsonToExcel(template)
+    let fileName = "CreateExpenseItemTemplate.xlsx"
+    return res.download("./file", fileName)
+}

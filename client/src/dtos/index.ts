@@ -166,6 +166,27 @@ export type GetCrmCityDto = {
     state: string;
     assigned_users: string;
 }
+export type GetExpenseItemDto = {
+    _id: string,
+    item: string;
+    category: DropDownDto,
+    unit: DropDownDto;
+    to_maintain_stock: boolean,
+    stock: number
+}
+export type GetExpenseTransactionDto = {
+    _id: string,
+    item: DropDownDto,
+    category: DropDownDto,
+    unit: DropDownDto,
+    movement: string,
+    from: string,
+    to: string,
+    qty: number,
+    created_by: DropDownDto,
+    created_at: string
+}
+
 export type GetKeyDto = {
     _id: string,
     serial_no: number,
@@ -211,12 +232,29 @@ export type GetCityFromExcelDto = {
     status?: string
 }
 
+export type GetExpenseItemFromExcelDto = {
+    _id: string,
+    item: string,
+    unit: string,
+    category: string,
+    to_maintain_stock: boolean,
+    stock: number,
+    status?: string
+}
+
 export type CreateOrEditCrmCity = {
     _id: string,
     state: string,
     alias1: string;
     alias2: string;
     city: string
+}
+export type CreateOrEditExpenseItem = {
+    item: string,
+    unit: string;
+    stock: number,
+    to_maintain_stock: boolean,
+    category: string
 }
 
 
@@ -825,7 +863,26 @@ export type GetSalesManVisitSummaryReportDto = {
     working_time3: string,
     last_remark: string
 }
-
+export type GetSalesmanKpiDto = {
+    employee?: DropDownDto,
+    date: string,
+    month: string,
+    attendance?: string,
+    new_visit?: number,
+    old_visit?: number,
+    working_time?: string,
+    new_clients: number,
+    station?: DropDownDto,
+    state?: string,
+    currentsale_currentyear: number,
+    currentsale_last_year: number,
+    lastsale_currentyear: number,
+    lastsale_lastyear: number,
+    current_collection: number,
+    ageing_above_90days: number,
+    sale_growth: number,
+    last_month_sale_growth: number,
+}
 
 export type GetSalesAttendanceDto = {
     _id: string,
@@ -843,28 +900,17 @@ export type GetSalesAttendanceDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-export type GetSalesmanKpiDto = {
-    employee?: DropDownDto,
+
+export type GetSalesAttendancesAuto = {
+    employee: DropDownDto,
     date: string,
-    month: string,
-    attendance?: string,
-    new_visit?: number,
-    old_visit?: number,
-    working_time?: string,
-    new_clients: number,
-    station?: DropDownDto,
-    state?: string,
-    currentsale_currentyear: number,
-    lastsale_currentyear: number,
-    currentsale_last_year: number,
-    lastsale_lastyear: number,
-    current_collection: number,
-    ageing_above_90days: number,
-    sale_growth: number,
-    last_month_sale_growth: number,
+    new_visit: number,
+    old_visit: number,
+    worktime: string,
 }
 
 export type CreateOrEditSalesAttendanceDto = {
+    _id: string,
     employee: string,
     date: string,
     attendance: string,
@@ -874,11 +920,4 @@ export type CreateOrEditSalesAttendanceDto = {
     in_time: string,
     end_time: string,
     station: string
-}
-export type GetSalesAttendancesAuto = {
-    employee: DropDownDto,
-    date: string,
-    new_visit: number,
-    old_visit: number,
-    worktime: string,
 }
