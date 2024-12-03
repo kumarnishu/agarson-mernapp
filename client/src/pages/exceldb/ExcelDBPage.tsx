@@ -147,7 +147,11 @@ export default function ExcelDBPage() {
     columns, columnFilterDisplayMode: 'popover',
     data: reports ? reports : [], //10,000 rows       
     enableColumnResizing: true,
-    enableColumnVirtualization: true, enableStickyFooter: true,
+    enableRowVirtualization: true,
+    rowVirtualizerInstanceRef, //optional
+    // , //optionally customize the row virtualizr
+    // columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizr
+    enableStickyFooter: true,
     muiTableFooterRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',
@@ -183,10 +187,7 @@ export default function ExcelDBPage() {
     enableColumnPinning: true,
     enableTableFooter: true,
     enableDensityToggle: false,
-    enableRowVirtualization: true,
-    rowVirtualizerInstanceRef, //optional
-    rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizr
-    columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizr
+  
     onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing,

@@ -323,8 +323,7 @@ function SalesmanAttendancePage() {
         onSortingChange: setSorting,
         enableTableFooter: true,
         enableRowVirtualization: true,
-        onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
-        rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
+        onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //
         columnVirtualizerOptions: { overscan: 2 },
         onColumnSizingChange: setColumnSizing, state: {
             isLoading: isLoading,

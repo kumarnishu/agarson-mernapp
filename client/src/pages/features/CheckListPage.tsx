@@ -420,8 +420,7 @@ function ChecklistPage() {
     enableTableFooter: true,
     enableRowVirtualization: true,
     onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
-    rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
-    columnVirtualizerOptions: { overscan: 2 },
+   
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,

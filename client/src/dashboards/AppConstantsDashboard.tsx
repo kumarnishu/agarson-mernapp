@@ -21,7 +21,10 @@ function AppConstantsDashboard() {
         user?.assigned_permissions.includes('dye_view') && tmpfeatures.push({ feature: 'Dyes ', is_visible: true, url: "DyePage" })
         user?.assigned_permissions.includes('checklist_category_view') && tmpfeatures.push({ feature: 'Checklist category ', is_visible: true, url: "ChecklistCategoriesPage" })
         user?.assigned_permissions.includes('payment_category_view') && tmpfeatures.push({ feature: 'Payment category ', is_visible: true, url: "PaymentCategoriesPage" })
-       
+        tmpfeatures.push({ feature: 'expense category ', is_visible: true, url: "PaymentCategoriesPage" })
+        tmpfeatures.push({ feature: 'expense item ', is_visible: true, url: "PaymentCategoriesPage" })
+        tmpfeatures.push({ feature: 'expense location ', is_visible: true, url: "PaymentCategoriesPage" })
+        tmpfeatures.push({ feature: 'Item unit ', is_visible: true, url: "PaymentCategoriesPage" })
        
 
         setFeatures(tmpfeatures)

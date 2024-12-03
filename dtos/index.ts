@@ -166,6 +166,26 @@ export type GetCrmCityDto = {
     state: string;
     assigned_users: string;
 }
+export type GetExpenseItemDto = {
+    _id: string,
+    item: string;
+    category:DropDownDto,
+    unit: DropDownDto;
+    stock:number
+}
+export type GetExpenseTransactionDto={
+    _id:string,
+    item:DropDownDto,
+    category: DropDownDto,
+    unit: DropDownDto,
+    movement:string,
+    from:string,
+    to:string,
+    qty:number,
+    created_by:DropDownDto,
+    created_at:string
+}
+
 export type GetKeyDto = {
     _id: string,
     serial_no: number,
@@ -211,12 +231,26 @@ export type GetCityFromExcelDto = {
     status?: string
 }
 
+export type GetExpenseItemFromExcelDto = {
+    _id: string,
+    item: string,
+    unit: string,
+    category: string,
+    status?: string
+}
+
 export type CreateOrEditCrmCity = {
     _id: string,
     state: string,
     alias1: string;
     alias2: string;
     city: string
+}
+export type CreateOrEditExpenseItem = {
+    item: string,
+    unit: string;
+    stock:number,
+    category:string
 }
 
 

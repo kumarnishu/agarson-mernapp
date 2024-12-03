@@ -231,8 +231,7 @@ export default function SalesmanVisitPage() {
     enableTableFooter: true,
     enableRowVirtualization: true,
     onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
-    rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
-    columnVirtualizerOptions: { overscan: 2 },
+   
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,

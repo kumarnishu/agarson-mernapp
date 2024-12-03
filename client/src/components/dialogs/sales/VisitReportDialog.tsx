@@ -125,8 +125,7 @@ function VisitReportPage({ employee }: { employee: string }) {
         enableTableFooter: true,
         enableRowVirtualization: true,
         rowVirtualizerInstanceRef, //optional
-        rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
-        columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizer
+       
         onColumnVisibilityChange: setColumnVisibility,
         onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing,

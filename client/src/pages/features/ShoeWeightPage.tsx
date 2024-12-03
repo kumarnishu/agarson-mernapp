@@ -439,8 +439,7 @@ export default function ShoeWeightPage() {
     enableTableFooter: true,
     enableRowVirtualization: true,
     onColumnVisibilityChange: setColumnVisibility, //optional
-    rowVirtualizerOptions: { overscan: 5 }, //optionally customize the row virtualizer
-    columnVirtualizerOptions: { overscan: 2 },
+   
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
