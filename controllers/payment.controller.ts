@@ -1,17 +1,92 @@
-import xlsx from "xlsx"
+// External Libraries
 import { NextFunction, Request, Response } from 'express';
-import {  CreateOrEditPaymentDto, GetPaymentsFromExcelDto, GetPaymentDto, CreateOrEditChecklistRemarkDto, CreateOrEditPaymentDocumentDto } from "../dtos";
-import moment from "moment";
-import { Asset, User } from "../models/user";
-import { uploadFileToCloud } from "../utils/uploadFileToCloud";
-import { destroyCloudFile } from "../utils/destroyCloudFile";
-import isMongoId from "validator/lib/isMongoId";
-import ConvertJsonToExcel from "../utils/ConvertJsonToExcel";
-import { PaymentCategory } from "../models/payment-category";
-import { IPayment, Payment } from "../models/payment";
-import { PaymentDocument } from "../models/payment-document";
-import { isDate } from "util/types";
-import { dateToExcelFormat, extractDateFromExcel, parseExcelDate } from "../utils/datesHelper";
+import moment from 'moment';
+import xlsx from 'xlsx';
+import isMongoId from 'validator/lib/isMongoId';
+import { isDate } from 'util/types';
+
+// Models
+import { PaymentCategory } from '../models/payment-category';
+import { IPayment, Payment } from '../models/payment';
+import { PaymentDocument } from '../models/payment-document';
+import { User } from '../models/user';
+
+// DTOs
+import {
+    DropDownDto,
+    CreateOrEditPaymentDto,
+    GetPaymentsFromExcelDto,
+    GetPaymentDto,
+    CreateOrEditPaymentDocumentDto,
+} from '../dtos';
+
+// Utilities
+import { destroyCloudFile } from '../utils/destroyCloudFile';
+import ConvertJsonToExcel from '../utils/ConvertJsonToExcel';
+import {
+
+    parseExcelDate,
+} from '../utils/datesHelper';
+
+
+export const GetAllPaymentCategory = async (req: Request, res: Response, next: NextFunction) => {
+    let result = await PaymentCategory.find();
+    let data: DropDownDto[];
+    data = result.map((r) => { return { id: r._id, label: r.category, value: r.category } });
+    return res.status(200).json(data)
+}
+
+export const CreatePaymentCategory = async (req: Request, res: Response, next: NextFunction) => {
+    const { key } = req.body as { key: string }
+    if (!key) {
+        return res.status(400).json({ message: "please fill all reqired fields" })
+    }
+    if (await PaymentCategory.findOne({ category: key.toLowerCase() }))
+        return res.status(400).json({ message: "already exists this category" })
+    let result = await new PaymentCategory({
+        category: key,
+        updated_at: new Date(),
+        created_by: req.user,
+        updated_by: req.user
+    }).save()
+    return res.status(201).json(result)
+
+}
+
+export const UpdatePaymentCategory = async (req: Request, res: Response, next: NextFunction) => {
+    const { key } = req.body as {
+        key: string,
+    }
+    if (!key) {
+        return res.status(400).json({ message: "please fill all reqired fields" })
+    }
+    const id = req.params.id
+    let oldlocation = await PaymentCategory.findById(id)
+    if (!oldlocation)
+        return res.status(404).json({ message: "category not found" })
+    console.log(key, oldlocation.category)
+    if (key !== oldlocation.category)
+        if (await PaymentCategory.findOne({ category: key.toLowerCase() }))
+            return res.status(400).json({ message: "already exists this category" })
+    oldlocation.category = key
+    oldlocation.updated_at = new Date()
+    if (req.user)
+        oldlocation.updated_by = req.user
+    await oldlocation.save()
+    return res.status(200).json(oldlocation)
+
+}
+export const DeletePaymentCategory = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    if (!isMongoId(id)) return res.status(403).json({ message: "category id not valid" })
+    let category = await PaymentCategory.findById(id);
+    if (!category) {
+        return res.status(404).json({ message: "category not found" })
+    }
+    await category.remove();
+    return res.status(200).json({ message: "category deleted successfully" })
+}
+
 
 
 export const GetPaymentsTopBarDetails = async (req: Request, res: Response, next: NextFunction) => {
@@ -462,7 +537,7 @@ export const DownloadExcelTemplateForCreatePayments = async (req: Request, res: 
     return res.download("./file", fileName)
 }
 export const AssignPaymentsToUsers = async (req: Request, res: Response, next: NextFunction) => {
-    const { payment_ids, user_ids, flag } = req.body as { payment_ids:string[], user_ids:string[], flag:number }
+    const { payment_ids, user_ids, flag } = req.body as { payment_ids: string[], user_ids: string[], flag: number }
     if (payment_ids && payment_ids.length === 0)
         return res.status(400).json({ message: "please select one payment " })
     if (user_ids && user_ids.length === 0)

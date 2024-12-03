@@ -1,12 +1,33 @@
 import { NextFunction, Request, Response } from 'express';
-import { IUser, User } from '../models/user';
 import moment from 'moment';
+import { IUser, User } from '../models/user';
 import { ISalesAttendance, SalesAttendance } from '../models/sales-attendance';
-import { CreateOrEditSalesAttendanceDto, GetSalesAttendanceDto,  GetSalesmanKpiDto } from '../dtos';
+import { VisitReport } from '../models/visit-report';
+import { VisitRemark, IVisitRemark } from '../models/visit_remark';
+import { SalesmanLeaves, SalesmanLeavesColumns } from '../models/salesman-leaves';
+import { KeyCategory } from '../models/key-category';
+import xlsx from 'xlsx';
+
+import { 
+    CreateOrEditSalesAttendanceDto, 
+    GetSalesAttendanceDto, 
+    GetSalesmanKpiDto, 
+    GetSalesAttendancesAuto, 
+    GetVisitReportDto, 
+    GetSalesManVisitSummaryReportDto, 
+    CreateOrEditVisitSummaryRemarkDto, 
+    GetVisitSummaryReportRemarkDto, 
+    IColumnRowData, 
+    IRowData 
+} from '../dtos';
+
+import { toTitleCase } from '../utils/trimText';
+import { decimalToTimeForXlsx } from '../utils/datesHelper';
+import ConvertJsonToExcel from '../utils/ConvertJsonToExcel';
 import isMongoId from 'validator/lib/isMongoId';
 import { ExcelDB } from '../models/excel-db';
-import { KeyCategory } from '../models/key-category';
-import { toTitleCase } from '../utils/trimText';
+
+
 
 
 export const GetSalesAttendances = async (req: Request, res: Response, next: NextFunction) => {
@@ -612,3 +633,521 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
 
 }
 
+
+
+export const GetSalesmanLeavesReport = async (req: Request, res: Response, next: NextFunction) => {
+    let result: IColumnRowData = {
+        columns: [],
+        rows: []
+    };
+    let rawdata: any[] = []
+    let fixedData = await SalesmanLeaves.findOne().sort('-created_at')
+    if (req.user.is_admin) {
+        rawdata = await SalesmanLeaves.find().sort('-created_at')
+    }
+    else {
+        rawdata.push(fixedData)
+        let data = await SalesmanLeaves.find({ 'EMPLOYEE': req.user.username })
+        rawdata = rawdata.concat(data)
+    }
+
+
+    let columns = await SalesmanLeavesColumns.find()
+    for (let k = 0; k < columns.length; k++) {
+        let c = columns[k]
+        result.columns.push({ key: c.name, header: c.name, type: "string" })
+    }
+    for (let k = 0; k < rawdata.length; k++) {
+        let obj: IRowData = {}
+        let dt = rawdata[k]
+        if (dt) {
+            for (let i = 0; i < columns.length; i++) {
+                if (dt[columns[i].name]) {
+                    obj[columns[i].name] = String(dt[columns[i].name])
+                }
+                else {
+                    obj[columns[i].name] = ""
+                }
+            }
+        }
+        result.rows.push(obj)
+    }
+
+    return res.status(200).json(result)
+}
+
+export const CreateSalesmanLeavesFromExcel = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.file)
+        return res.status(400).json({
+            message: "please provide an Excel file",
+        });
+    if (req.file) {
+        const allowedFiles = ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv"];
+        if (!allowedFiles.includes(req.file.mimetype))
+            return res.status(400).json({ message: `${req.file.originalname} is not valid, only excel and csv are allowed to upload` })
+        if (req.file.size > 100 * 1024 * 1024)
+            return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
+        const workbook = xlsx.read(req.file.buffer);
+        let workbook_sheet = workbook.SheetNames;
+        let workbook_response: any[] = xlsx.utils.sheet_to_json(
+            workbook.Sheets[workbook_sheet[0]]
+        );
+        if (workbook_response.length > 3000) {
+            return res.status(400).json({ message: "Maximum 3000 records allowed at one time" })
+        }
+        let data = workbook_response[0];
+        let keys: string[] = Object.keys(data);
+        console.log("keys", keys)
+        await SalesmanLeaves.deleteMany({})
+        await SalesmanLeavesColumns.deleteMany({})
+        for (let i = 0; i < keys.length; i++) {
+            await new SalesmanLeavesColumns({ name: keys[i] }).save()
+        }
+
+        for (let i = 0; i < workbook_response.length; i++) {
+            let checklist = workbook_response[i]
+            await new SalesmanLeaves(checklist).save()
+        }
+    }
+    return res.status(200).json({ message: "success" });
+}
+
+export const DownloadExcelTemplateForCreateSalesmanLeavesReport = async (req: Request, res: Response, next: NextFunction) => {
+    let checklist: any[]=[
+        {
+            "S NO": "*",
+            "EMPLOYEE LEAVE BALANCE": "*",
+            "EMPLOYEE": "*"
+        }
+    ]
+    let users = (await User.find()).map((u) => { return { name: u.username } })
+    let template: { sheet_name: string, data: any[] }[] = []
+    template.push({ sheet_name: 'template', data:checklist })
+    template.push({ sheet_name: 'users', data: users })
+    ConvertJsonToExcel(template)
+    let fileName = "CreateSalesmanLeavesTemplate.xlsx"
+    return res.download("./file", fileName)
+}
+
+
+
+export const GetSalesManVisitReport = async (req: Request, res: Response, next: NextFunction) => {
+    let result: GetSalesManVisitSummaryReportDto[] = []
+    let date = req.query.date
+    if (!date) {
+        return res.status(400).json({ error: "Date  is required." });
+    }
+
+    let salesman: IUser[] = []
+    salesman = await User.find({ assigned_permissions: 'sales_menu' })
+    let dt1 = new Date(String(date))
+    let dt2 = new Date(dt1)
+    let dt3 = new Date(dt1)
+    let dt4 = new Date(dt1)
+    dt1.setHours(0, 0, 0, 0)
+    dt2.setHours(0, 0, 0, 0)
+    dt3.setHours(0, 0, 0, 0)
+    dt4.setHours(0, 0, 0, 0)
+
+    dt2.setDate(dt1.getDate())
+    dt3.setDate(dt1.getDate() - 1)
+    dt4.setDate(dt1.getDate() - 2)
+    dt1.setDate(dt1.getDate() + 1)
+
+
+    for (let i = 0; i < salesman.length; i++) {
+        let rremark = await VisitRemark.findOne({ employee: salesman[i], visit_date: { $gte: dt2, $lt: dt1 } }).sort('-created_at')
+        let lastremark = ""
+        if (rremark)
+            lastremark = rremark?.remark
+        let oldvisit1 = 0
+        let newvisit1 = 0
+        let worktime1 = ''
+        let oldvisit2 = 0
+        let newvisit2 = 0
+        let worktime2 = ''
+        let oldvisit3 = 0
+        let newvisit3 = 0
+        let worktime3 = ''
+
+
+        let data1 = await VisitReport.find({ employee: salesman[i], visit_date: { $gte: dt2, $lt: dt1 } })
+        let data2 = await VisitReport.find({ employee: salesman[i], visit_date: { $gte: dt3, $lt: dt2 } })
+        let data3 = await VisitReport.find({ employee: salesman[i], visit_date: { $gte: dt4, $lt: dt3 } })
+
+        if (data3) {
+            let start = ""
+            let end = ""
+            for (let k = 0; k < data3.length; k++) {
+                if (data3[k].customer && checkifNewCustomer(data3[k].customer))
+                    newvisit3 = newvisit3 + 1
+                else if (data3[k].customer && data3[k].customer.includes('*')) {
+                    oldvisit3 = oldvisit3
+                    newvisit3 = newvisit3
+                }
+                else
+                    oldvisit3 = oldvisit3 + 1
+
+                if (k == 0) {
+                    start = decimalToTimeForXlsx(data3[k].intime)
+                }
+                end = decimalToTimeForXlsx(data3[k].outtime)
+
+            }
+            worktime3 = start + " - " + end
+        }
+        if (data2) {
+            let start = ""
+            let end = ""
+            for (let k = 0; k < data2.length; k++) {
+                if (data2[k].customer && checkifNewCustomer(data2[k].customer))
+                    newvisit2 = newvisit2 + 1
+                else if (data2[k].customer && data2[k].customer.includes('*')) {
+                    oldvisit2 = oldvisit2
+                    newvisit2 = newvisit2
+                }
+                else
+                    oldvisit2 = oldvisit2 + 1
+
+                if (k == 0) {
+                    start = decimalToTimeForXlsx(data2[k].intime)
+                }
+                end = decimalToTimeForXlsx(data2[k].outtime)
+
+            }
+            worktime2 = start + " - " + end
+        }
+        if (data1) {
+            let start = ""
+            let end = ""
+            for (let k = 0; k < data1.length; k++) {
+                if (data1[k].customer && checkifNewCustomer(data1[k].customer))
+                    newvisit1 = newvisit1 + 1
+                else if (data1[k].customer && data1[k].customer.includes('*')) {
+                    oldvisit1 = oldvisit1
+                    newvisit1 = newvisit1
+                }
+                else
+                    oldvisit1 = oldvisit1 + 1
+
+                if (k == 0) {
+                    start = decimalToTimeForXlsx(data1[k].intime)
+                }
+                end = decimalToTimeForXlsx(data1[k].outtime)
+
+            }
+            worktime1 = start + " - " + end
+        }
+        let names = [String(salesman[i].username), String(salesman[i].alias1 || ""), String(salesman[i].alias2 || "")].filter(value => value)
+        result.push({
+            employee: {
+                id: salesman[i]._id, label: names.toString(), value: salesman[i]
+                    .username
+            },
+            date1: moment(dt2).format("DD/MM/YYYY"),
+            old_visits1: oldvisit1,
+            new_visits1: newvisit1,
+            working_time1: worktime1,
+            date2: moment(dt3).format("DD/MM/YYYY"),
+            old_visits2: oldvisit2,
+            new_visits2: newvisit2,
+            working_time2: worktime2,
+            date3: moment(dt4).format("DD/MM/YYYY"),
+            old_visits3: oldvisit3,
+            new_visits3: newvisit3,
+            working_time3: worktime3,
+            last_remark: lastremark
+        })
+
+    }
+    return res.status(200).json(result)
+}
+
+
+export const UpdateVisitRemark = async (req: Request, res: Response, next: NextFunction) => {
+    const { remark } = req.body as CreateOrEditVisitSummaryRemarkDto
+    if (!remark) return res.status(403).json({ message: "please fill required fields" })
+
+    const id = req.params.id;
+    if (!isMongoId(id)) return res.status(403).json({ message: "id not valid" })
+    let rremark = await VisitRemark.findById(id)
+    if (!rremark) {
+        return res.status(404).json({ message: "remark not found" })
+    }
+    rremark.remark = remark
+    await rremark.save()
+    return res.status(200).json({ message: "remark updated successfully" })
+}
+
+export const DeleteVisitRemark = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    if (!isMongoId(id)) return res.status(403).json({ message: "id not valid" })
+    let rremark = await VisitRemark.findById(id)
+    if (!rremark) {
+        return res.status(404).json({ message: "remark not found" })
+    }
+    await rremark.remove()
+    return res.status(200).json({ message: " remark deleted successfully" })
+}
+
+export const GetVisitSummaryReportRemarkHistory = async (req: Request, res: Response, next: NextFunction) => {
+    const date = req.query.date;
+    const employee = req.query.employee;
+    if (!date || !employee) return res.status(403).json({ message: "please fill required fields" })
+    let remarks: IVisitRemark[] = []
+    let dt1 = new Date(String(date))
+    let dt2 = new Date(dt1)
+    dt1.setHours(0, 0, 0, 0)
+    dt2.setHours(0, 0, 0, 0)
+    dt2.setDate(dt1.getDate() + 1)
+
+    let result: GetVisitSummaryReportRemarkDto[] = []
+    remarks = await VisitRemark.find({ employee: employee, visit_date: { $gte: dt1, $lt: dt2 } }).populate('created_by').populate('employee').sort('-created_at')
+
+
+    result = remarks.map((r) => {
+        return {
+            _id: r._id,
+            remark: r.remark,
+            employee: { id: r.created_by._id, value: r.created_by.username, label: r.created_by.username },
+            created_at: r.created_at.toString(),
+            visit_date: r.visit_date.toString(),
+            created_by: r.created_by.username
+        }
+    })
+    return res.json(result)
+}
+
+
+export const NewVisitRemark = async (req: Request, res: Response, next: NextFunction) => {
+    const { remark, employee, visit_date } = req.body as CreateOrEditVisitSummaryRemarkDto
+    if (!remark || !employee || !visit_date) return res.status(403).json({ message: "please fill required fields" })
+
+    await new VisitRemark({
+        remark,
+        employee,
+        visit_date: new Date(visit_date),
+        created_at: new Date(Date.now()),
+        created_by: req.user,
+        updated_at: new Date(Date.now()),
+        updated_by: req.user
+    }).save()
+    return res.status(200).json({ message: "remark added successfully" })
+}
+
+
+export const GetVisitReports = async (req: Request, res: Response, next: NextFunction) => {
+    let employee = req.query.employee
+    if (!employee)
+        return res.status(400).json({ message: "please select employee" })
+    let reports: GetVisitReportDto[] = (await VisitReport.find({ employee: employee }).populate('employee').populate('created_by').populate('updated_by').sort('-visit_date')).map((i) => {
+        return {
+            _id: i._id,
+            employee: i.employee.username,
+            visit_date: moment(i.visit_date).format("DD/MM/YYYY"),
+            customer: i.customer,
+            intime: decimalToTimeForXlsx(i.intime),
+            outtime: decimalToTimeForXlsx(i.outtime),
+            visitInLocation: i.visitInLocation,
+            visitOutLocation: i.visitOutLocation,
+            remarks: i.remarks,
+            created_by: i.created_by.username,
+            updated_by: i.updated_by.username,
+            created_at: moment(i.created_at).format("DD/MM/YYYY"),
+            updated_at: moment(i.updated_at).format("DD/MM/YYYY")
+        }
+    })
+    return res.status(200).json(reports);
+}
+
+
+function checkifNewCustomer(customer: string) {
+    let isCustomer = false
+    let items = ["train", 'hotel', 'election', 'shut', 'travel', 'leave', 'office', 'close', 'sunday', 'home']
+    if (customer.includes('*')) {
+        let result = true
+        for (let i = 0; i < items.length; i++) {
+            if (customer && customer.toLowerCase().includes(items[i])) {
+                result = false
+                break;
+            }
+        }
+        isCustomer = result
+    }
+
+    return isCustomer
+}
+
+export const GetSalesAttendancesAutoReport = async (req: Request, res: Response, next: NextFunction) => {
+    let id = req.query.id
+    let result: GetSalesAttendancesAuto[] = []
+    let start_date = req.query.start_date
+    let end_date = req.query.end_date
+    let dt1 = new Date(String(start_date))
+    let dt2 = new Date(String(end_date))
+    let user_ids = req.user?.assigned_users.map((user: IUser) => { return user._id }) || []
+
+    if (id == 'all') {
+        if (req.user.assigned_users && req.user.assigned_users.length > 0) {
+            let salesman = await User.find({ _id: { $in: user_ids }, assigned_permissions: 'sales_menu' })
+            let current_date = new Date(dt1)
+            while (current_date <= new Date(dt2)) {
+
+                for (let i = 0; i < salesman.length; i++) {
+                    let oldvisit1 = 0
+                    let newvisit1 = 0
+                    let worktime1 = ''
+                    let currdate1 = new Date(current_date)
+                    let currdate2 = new Date(currdate1)
+                    currdate1.setHours(0, 0, 0, 0)
+                    currdate2.setHours(0, 0, 0, 0)
+                    currdate2.setDate(currdate1.getDate() + 1)
+
+                    let data = await VisitReport.find({ employee: salesman[i], visit_date: { $gte: currdate1, $lt: currdate2 } })
+                    if (data) {
+                        let start = ""
+                        let end = ""
+                        for (let k = 0; k < data.length; k++) {
+                            if (data[k].customer && checkifNewCustomer(data[k].customer))
+                                newvisit1 = newvisit1 + 1
+                            else if (data[k].customer && data[k].customer.includes('*')) {
+                                oldvisit1 = oldvisit1
+                                newvisit1 = newvisit1
+                            }
+                            else
+                                oldvisit1 = oldvisit1 + 1
+
+                            if (k == 0) {
+                                start = decimalToTimeForXlsx(data[k].intime)
+                            }
+                            end = decimalToTimeForXlsx(data[k].outtime)
+
+                        }
+                        worktime1 = start + " - " + end
+                    }
+
+                    let names = [String(salesman[i].username), String(salesman[i].alias1 || ""), String(salesman[i].alias2 || "")].filter(value => value)
+                    result.push({
+                        employee: {
+                            id: salesman[i]._id, label: names.toString(), value: salesman[i]
+                                .username
+                        },
+                        date: moment(current_date).format("DD/MM/YYYY"),
+                        old_visit: oldvisit1,
+                        new_visit: newvisit1,
+                        worktime: worktime1,
+                    })
+
+                }
+                current_date.setDate(new Date(current_date).getDate() + 1)
+            }
+        }
+        else {
+            let current_date = new Date(dt1)
+            while (current_date <= new Date(dt2)) {
+
+                let oldvisit1 = 0
+                let newvisit1 = 0
+                let worktime1 = ''
+                let currdate1 = new Date(current_date)
+                let currdate2 = new Date(currdate1)
+                currdate1.setHours(0, 0, 0, 0)
+                currdate2.setHours(0, 0, 0, 0)
+                currdate2.setDate(currdate1.getDate() + 1)
+
+                let data = await VisitReport.find({ employee: req.user, visit_date: { $gte: currdate1, $lt: currdate2 } })
+                if (data) {
+                    let start = ""
+                    let end = ""
+                    for (let k = 0; k < data.length; k++) {
+                        if (data[k].customer && checkifNewCustomer(data[k].customer))
+                            newvisit1 = newvisit1 + 1
+                        else if (data[k].customer && data[k].customer.includes('*')) {
+                            oldvisit1 = oldvisit1
+                            newvisit1 = newvisit1
+                        }
+                        else
+                            oldvisit1 = oldvisit1 + 1
+
+                        if (k == 0) {
+                            start = decimalToTimeForXlsx(data[k].intime)
+                        }
+                        end = decimalToTimeForXlsx(data[k].outtime)
+
+                    }
+                    worktime1 = start + " - " + end
+                }
+
+                let names = [String(req.user.username), String(req.user.alias1 || ""), String(req.user.alias2 || "")].filter(value => value)
+                result.push({
+                    employee: {
+                        id: req.user._id, label: names.toString(), value: req.user
+                            .username
+                    },
+                    date: moment(current_date).format("DD/MM/YYYY"),
+                    old_visit: oldvisit1,
+                    new_visit: newvisit1,
+                    worktime: worktime1,
+                })
+
+                current_date.setDate(new Date(current_date).getDate() + 1)
+            }
+        }
+    }
+    else {
+        let user = await User.findById(id)
+        if (user) {
+            let current_date = new Date(dt1)
+            while (current_date <= new Date(dt2)) {
+
+                let oldvisit1 = 0
+                let newvisit1 = 0
+                let worktime1 = ''
+                let currdate1 = new Date(current_date)
+                let currdate2 = new Date(currdate1)
+                currdate1.setHours(0, 0, 0, 0)
+                currdate2.setHours(0, 0, 0, 0)
+                currdate2.setDate(currdate1.getDate() + 1)
+
+                let data = await VisitReport.find({ employee: user, visit_date: { $gte: currdate1, $lt: currdate2 } })
+                if (data) {
+                    let start = ""
+                    let end = ""
+                    for (let k = 0; k < data.length; k++) {
+                        if (data[k].customer && checkifNewCustomer(data[k].customer))
+                            newvisit1 = newvisit1 + 1
+                        else if (data[k].customer && data[k].customer.includes('*')) {
+                            oldvisit1 = oldvisit1
+                            newvisit1 = newvisit1
+                        }
+                        else
+                            oldvisit1 = oldvisit1 + 1
+
+                        if (k == 0) {
+                            start = decimalToTimeForXlsx(data[k].intime)
+                        }
+                        end = decimalToTimeForXlsx(data[k].outtime)
+
+                    }
+                    worktime1 = start + " - " + end
+                }
+
+                let names = [String(user.username), String(user.alias1 || ""), String(user.alias2 || "")].filter(value => value)
+                result.push({
+                    employee: {
+                        id: user._id, label: names.toString(), value: user
+                            .username
+                    },
+                    date: moment(current_date).format("DD/MM/YYYY"),
+                    old_visit: oldvisit1,
+                    new_visit: newvisit1,
+                    worktime: worktime1,
+                })
+                current_date.setDate(new Date(current_date).getDate() + 1)
+            }
+        }
+
+    }
+    return res.status(200).json(result)
+
+}

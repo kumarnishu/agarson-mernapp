@@ -1,50 +1,16 @@
 import multer from "multer";
 import express from "express";
+import { BulkUploadArticle, BulkUploadDye, BulkUploadMachine, CreateArticle, CreateDye, CreateDyeLocation, CreateMachine, CreateMachineCategory, CreateProduction, CreateShoeWeight, CreateSoleThickness, CreateSpareDye, DeleteMachineCategory, DeleteProduction, DeleteShoeWeight, DeleteSoleThickness, DeleteSpareDye, GetAllDyeLocations, GetArticles, GetCategoryWiseProductionReports, GetDyeById, GetDyes, GetDyeStatusReport, GetMachineCategories, GetMachines, GetMachineWiseProductionReports, GetMyTodayProductions, GetMyTodayShoeWeights, GetMyTodaySoleThickness, GetMyTodaySpareDye, GetProductions, GetShoeWeightDifferenceReports, GetShoeWeights, GetSoleThickness, GetSpareDyes, GetThekedarWiseProductionReports, ToogleArticle, ToogleDye, ToogleDyeLocation, ToogleMachine, UpdateArticle, UpdateDye, UpdateDyeLocation, UpdateMachine, UpdateMachineCategory, UpdateProduction, UpdateShoeWeight1, UpdateShoeWeight2, UpdateShoeWeight3, UpdateSoleThickness, UpdateSpareDye, ValidateShoeWeight, ValidateSpareDye } from "../controllers/production.controller";
+import { MakeAdmin, AllowMultiLogin, BlockMultiLogin, BlockUser, UnBlockUser, RemoveAdmin, Login, Logout, updatePassword, resetUserPassword, ResetPassword, VerifyEmail, GetAllPermissions, AssignPermissionsToUsers, AssignPermissionsToOneUser, SendVerifyEmail, SendPasswordResetMail, SignUp, GetUsers, NewUser, GetUsersForAssignmentPage, UpdateUser, AssignUsers, GetProfile, UpdateProfile } from "../controllers/auth.controller";
+import { GetAllChecklistCategory, CreateChecklistCategory, UpdateChecklistCategory, DeleteChecklistCategory, GetChecklists, CreateChecklist, GetChecklistsReport, GetMobileChecklists, EditChecklist, DeleteChecklist, ChangeNextDate, CreateChecklistFromExcel, DownloadExcelTemplateForCreatechecklists, AssignChecklistToUsers, BulkDeleteChecklists, GetChecklistTopBarDetails, NewChecklistRemark, GetChecklistBoxRemarkHistory, GetChecklistRemarkHistory, UpdateChecklistRemark, DeleteChecklistRemark } from "../controllers/checklistcontroller";
+import { CreateBill, UpdateBill, DeleteBill, GetLeadPartyBillsHistory, GetReferPartyBillsHistory, GetRemarkHistory, GetReferRemarkHistory, GetActivities, NewRemark, UpdateRemark, DeleteRemark, GetAssignedRefers, GetNewRefers, GetActivitiesTopBarDetails, GetMyReminders, GetAllCRMLeadSources, CreateCRMLeadSource, UpdateCRMLeadSource, DeleteCRMLeadSource, GetAllCRMLeadTypes, CreateCRMLeadTypes, UpdateCRMLeadTypes, DeleteCRMLeadType, GetAllCRMLeadStages, CreateCRMLeadStages, UpdateCRMLeadStages, DeleteCRMLeadStage, FindUnknownCrmStages, GetLeads, CreateLead, UpdateLead, DeleteLead, BulkLeadUpdateFromExcel, FuzzySearchLeads, ConvertLeadToRefer, BulkDeleteUselessLeads, GetAssignedReferrals, ReferLead, RemoveLeadReferral, MergeTwoLeads, GetRefers, GetPaginatedRefers, FuzzySearchRefers, CreateReferParty, UpdateReferParty, DeleteReferParty, BulkReferUpdateFromExcel, MergeTwoRefers, ToogleReferPartyConversion, GetAllCRMCities, CreateCRMCity, UpdateCRMCity, DeleteCRMCity, BulkCreateAndUpdateCRMCityFromExcel, AssignCRMCitiesToUsers, FindUnknownCrmCities, GetAllCRMCitiesForDropDown, GetAllCRMStates, CreateCRMState, UpdateCRMState, DeleteCRMState, BulkCreateAndUpdateCRMStatesFromExcel, AssignCRMStatesToUsers, FindUnknownCrmSates } from "../controllers/crm.controller";
+import { GetAllKey, CreateKey, UpdateKey, DeleteKey, AssignKeysToUsers, CreateKeysFromExcel, DownloadExcelTemplateForCreateKeys, AssignKeyCategoriesToUsers, GetAllKeyCategoryForDropDown, GetAllKeyCategory, CreateKeyCategory, GetKeyCategoryById, UpdateKeyCategory, DeleteKeyCategory, GetExcelDbReport, CreateExcelDBFromExcel, NewExcelDBRemark, GetExcelDBRemarkHistory, UpdateExcelDBRemark, DeleteExcelDBRemark } from "../controllers/exceldb.controller";
+import { GetAllPaymentCategory, CreatePaymentCategory, UpdatePaymentCategory, DeletePaymentCategory, GetPayments, CreatePayment, GetMobilePayments, EditPayment, DeletePayment, ChangeDueDate, CreatePaymentFromExcel, DownloadExcelTemplateForCreatePayments, AssignPaymentsToUsers, BulkDeletePayments, GetPaymentsTopBarDetails } from "../controllers/payment.controller";
+import { GetVisitReports, GetSalesmanLeavesReport, CreateSalesmanLeavesFromExcel, DownloadExcelTemplateForCreateSalesmanLeavesReport, GetSalesManVisitReport, GetSalesAttendancesAutoReport, NewVisitRemark, UpdateVisitRemark, DeleteVisitRemark, GetVisitSummaryReportRemarkHistory, GetSalesManKpi, GetSalesAttendances, CreateSalesAttendance, UpdateSalesAttendance, DeleteSalesAttendance } from "../controllers/sales.controller";
+import { test } from "../controllers/test.controller";
+import { isAuthenticatedUser, isAdmin, isProfileAuthenticated } from "../middlewares/auth.middleware";
 const router = express.Router()
 export const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 * 50 } })
-import { GetArticles, CreateArticle, UpdateArticle, ToogleArticle, BulkUploadArticle } from "../controllers/articles";
-import { CreateSalesAttendance, DeleteSalesAttendance, GetSalesAttendances, GetSalesManKpi, UpdateSalesAttendance } from "../controllers/sale-attendance";
-import { isAdmin, isAuthenticatedUser, isProfileAuthenticated } from "../middlewares/auth.middleware";
-import { MakeAdmin, AllowMultiLogin, BlockMultiLogin, BlockUser, UnBlockUser, RemoveAdmin, Login, Logout, updatePassword, resetUserPassword, ResetPassword, VerifyEmail, GetAllPermissions, AssignPermissionsToUsers, AssignPermissionsToOneUser } from "../controllers/auth";
-import { GetAllChecklistCategory, CreateChecklistCategory, UpdateChecklistCategory, DeleteChecklistCategory } from "../controllers/checklist-category";
-import { GetChecklists, CreateChecklist, EditChecklist, DeleteChecklist, CreateChecklistFromExcel, DownloadExcelTemplateForCreatechecklists, ChangeNextDate, AssignChecklistToUsers, GetMobileChecklists, GetChecklistsReport, BulkDeleteChecklists, GetChecklistTopBarDetails } from "../controllers/checklist";
-import { CreateBill, UpdateBill, DeleteBill, GetLeadPartyBillsHistory, GetReferPartyBillsHistory } from "../controllers/crm-bills";
-import { GetAllCRMCities, CreateCRMCity, UpdateCRMCity, DeleteCRMCity, BulkCreateAndUpdateCRMCityFromExcel, AssignCRMCitiesToUsers, FindUnknownCrmCities, GetAllCRMCitiesForDropDown } from "../controllers/crm-city";
-import { GetRemarkHistory, GetReferRemarkHistory, GetActivities, NewRemark, UpdateRemark, DeleteRemark, GetActivitiesTopBarDetails } from "../controllers/crm-remarks";
-import { GetAllCRMStates, CreateCRMState, UpdateCRMState, DeleteCRMState, BulkCreateAndUpdateCRMStatesFromExcel, AssignCRMStatesToUsers, FindUnknownCrmSates } from "../controllers/crm-states";
-import { GetAssignedRefers, GetNewRefers, GetMyReminders } from "../controllers/crm.reports";
-import { GetAllDyeLocations, CreateDyeLocation, UpdateDyeLocation, ToogleDyeLocation } from "../controllers/dye-location";
-import { GetDyeStatusReport } from "../controllers/dye-status-report";
-import { SendPasswordResetMail, SendVerifyEmail } from "../controllers/email";
-import { AssignUsers, GetProfile, GetUsers, GetUsersForAssignmentPage, NewUser, SignUp, UpdateProfile, UpdateUser } from "../controllers/user";
-import { NewChecklistRemark, GetChecklistBoxRemarkHistory, GetChecklistRemarkHistory, UpdateChecklistRemark, DeleteChecklistRemark } from "../controllers/checklist-remark";
-import { GetDyes, CreateDye, UpdateDye, GetDyeById, ToogleDye, BulkUploadDye } from "../controllers/dye";
-import { GetExcelDbReport, CreateExcelDBFromExcel } from "../controllers/excel-db";
-import { NewExcelDBRemark, GetExcelDBRemarkHistory, UpdateExcelDBRemark, DeleteExcelDBRemark } from "../controllers/exceldb-remark";
-import { AssignKeyCategoriesToUsers, GetAllKeyCategoryForDropDown, GetAllKeyCategory, CreateKeyCategory, GetKeyCategoryById, UpdateKeyCategory, DeleteKeyCategory } from "../controllers/key-category";
-import { GetAllKey, CreateKey, UpdateKey, DeleteKey, AssignKeysToUsers, CreateKeysFromExcel, DownloadExcelTemplateForCreateKeys } from "../controllers/keys";
-import { GetLeads, CreateLead, UpdateLead, DeleteLead, BulkLeadUpdateFromExcel, FuzzySearchLeads, ConvertLeadToRefer, BulkDeleteUselessLeads, GetAssignedReferrals, ReferLead, RemoveLeadReferral, MergeTwoLeads } from "../controllers/lead";
-import { GetAllCRMLeadSources, CreateCRMLeadSource, UpdateCRMLeadSource, DeleteCRMLeadSource } from "../controllers/lead-source";
-import { GetAllCRMLeadStages, CreateCRMLeadStages, UpdateCRMLeadStages, DeleteCRMLeadStage, FindUnknownCrmStages } from "../controllers/lead-stage";
-import { GetAllCRMLeadTypes, CreateCRMLeadTypes, UpdateCRMLeadTypes, DeleteCRMLeadType } from "../controllers/lead-types";
-import { GetMachines, CreateMachine, UpdateMachine, ToogleMachine, BulkUploadMachine } from "../controllers/machine";
-import { GetMachineCategories, CreateMachineCategory, UpdateMachineCategory, DeleteMachineCategory } from "../controllers/machine-categories";
-import { GetPayments, CreatePayment, GetMobilePayments, EditPayment, DeletePayment, ChangeDueDate, CreatePaymentFromExcel, DownloadExcelTemplateForCreatePayments, AssignPaymentsToUsers, BulkDeletePayments, GetPaymentsTopBarDetails } from "../controllers/payment";
-import { GetAllPaymentCategory, CreatePaymentCategory, UpdatePaymentCategory, DeletePaymentCategory } from "../controllers/payment-category";
-import { GetMyTodayProductions, GetProductions, CreateProduction, UpdateProduction, DeleteProduction } from "../controllers/production";
-import { GetCategoryWiseProductionReports, GetMachineWiseProductionReports, GetThekedarWiseProductionReports } from "../controllers/production-report";
-import { GetRefers, GetPaginatedRefers, FuzzySearchRefers, CreateReferParty, UpdateReferParty, DeleteReferParty, BulkReferUpdateFromExcel, MergeTwoRefers, ToogleReferPartyConversion } from "../controllers/refer";
-import { GetSalesmanLeavesReport, CreateSalesmanLeavesFromExcel, DownloadExcelTemplateForCreateSalesmanLeavesReport } from "../controllers/salesman-leaves";
-import { GetSalesManVisitReport } from "../controllers/salesman-visit";
-import { GetMyTodayShoeWeights, GetShoeWeights, CreateShoeWeight, UpdateShoeWeight1, DeleteShoeWeight, UpdateShoeWeight2, UpdateShoeWeight3, ValidateShoeWeight, ValidateSpareDye } from "../controllers/shoe-weight";
-import { GetShoeWeightDifferenceReports } from "../controllers/shoe-weight-report";
-import { GetSoleThickness, CreateSoleThickness, GetMyTodaySoleThickness, DeleteSoleThickness, UpdateSoleThickness } from "../controllers/sole-thickness";
-import { GetMyTodaySpareDye, GetSpareDyes, CreateSpareDye, UpdateSpareDye, DeleteSpareDye } from "../controllers/spare-dye";
-import { test } from "../controllers/test";
-import { NewVisitRemark, UpdateVisitRemark, DeleteVisitRemark, GetVisitSummaryReportRemarkHistory } from "../controllers/visit-remark";
-import { GetVisitReports, GetSalesAttendancesAutoReport } from "../controllers/visit-report";
-
-
 
 
 
