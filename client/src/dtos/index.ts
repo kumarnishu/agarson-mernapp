@@ -910,7 +910,6 @@ export type GetSalesAttendancesAuto = {
 }
 
 export type CreateOrEditSalesAttendanceDto = {
-    _id: string,
     employee: string,
     date: string,
     attendance: string,

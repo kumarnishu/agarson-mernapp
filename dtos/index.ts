@@ -169,22 +169,22 @@ export type GetCrmCityDto = {
 export type GetExpenseItemDto = {
     _id: string,
     item: string;
-    category:DropDownDto,
+    category: DropDownDto,
     unit: DropDownDto;
-    to_maintain_stock:boolean,
-    stock:number
+    to_maintain_stock: boolean,
+    stock: number
 }
-export type GetExpenseTransactionDto={
-    _id:string,
-    item:DropDownDto,
+export type GetExpenseTransactionDto = {
+    _id: string,
+    item: DropDownDto,
     category: DropDownDto,
     unit: DropDownDto,
-    movement:string,
-    from:string,
-    to:string,
-    qty:number,
-    created_by:DropDownDto,
-    created_at:string
+    movement: string,
+    from: string,
+    to: string,
+    qty: number,
+    created_by: DropDownDto,
+    created_at: string
 }
 
 export type GetKeyDto = {
@@ -237,8 +237,8 @@ export type GetExpenseItemFromExcelDto = {
     item: string,
     unit: string,
     category: string,
-    to_maintain_stock:boolean,
-    stock:number,
+    to_maintain_stock: boolean,
+    stock: number,
     status?: string
 }
 
@@ -252,9 +252,9 @@ export type CreateOrEditCrmCity = {
 export type CreateOrEditExpenseItem = {
     item: string,
     unit: string;
-    stock:number,
-    to_maintain_stock:boolean,
-    category:string
+    stock: number,
+    to_maintain_stock: boolean,
+    category: string
 }
 
 
@@ -901,7 +901,7 @@ export type GetSalesAttendanceDto = {
     updated_by: DropDownDto
 }
 
-export type GetSalesAttendancesAuto={
+export type GetSalesAttendancesAuto = {
     employee: DropDownDto,
     date: string,
     new_visit: number,
@@ -910,7 +910,6 @@ export type GetSalesAttendancesAuto={
 }
 
 export type CreateOrEditSalesAttendanceDto = {
-    _id: string,
     employee: string,
     date: string,
     attendance: string,
