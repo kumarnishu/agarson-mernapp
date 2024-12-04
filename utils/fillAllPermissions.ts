@@ -1,4 +1,4 @@
-import { IMenu } from "../dtos";
+import { IMenu } from "../dtos/dropdown.dto";
 
 export function FetchAllPermissions() {
     let permissions: IMenu[] = [];

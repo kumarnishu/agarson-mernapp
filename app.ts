@@ -6,14 +6,14 @@ import cookieParser from 'cookie-parser';
 import cors from "cors";
 import { MulterError } from 'multer';
 import { connectDatabase } from './config/db';
-import AppRoutes from "./routes";
+import AppRoutes from "./routes/index.routes";
 
 import path from 'path';
 import { Server } from "socket.io";
 import { getCurrentUser, userJoin, userLeave } from "./utils/handleSocketUsers";
 import { Storage } from '@google-cloud/storage';
 import morgan from 'morgan';
-import { activateChecklist } from './utils/activateChecklist';
+import { activateChecklist } from './services/activateChecklist';
 
 const app = express()
 const server = createServer(app)
