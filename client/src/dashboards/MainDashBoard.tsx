@@ -13,7 +13,7 @@ import LogoutButton from '../components/buttons/LogoutButton';
 import { toTitleCase } from '../utils/TitleCase';
 import { ProfileMenu } from '../components/logo/ProfileLogo';
 
-function MainDashBoardPage() {
+function MainDashBoard() {
   const navigate = useNavigate()
   const { feature, setFeature } = useContext(FeatureContext)
   const [open, setOpen] = useState(false);
@@ -148,4 +148,4 @@ function MainDashBoardPage() {
 }
 
 
-export default MainDashBoardPage
+export default MainDashBoard

@@ -5,7 +5,7 @@ import { UserContext } from "../contexts/userContext";
 import { ButtonLogo } from "../components/logo/Agarson";
 import { toTitleCase } from "../utils/TitleCase";
 
-function AppFeatureDashboard() {
+function FeatureDashboard() {
     const [features, setFeatures] = useState<{ feature: string, is_visible: boolean, url: string }[]>([])
     const { user } = useContext(UserContext)
 
@@ -89,4 +89,4 @@ function AppFeatureDashboard() {
 }
 
 
-export default AppFeatureDashboard
+export default FeatureDashboard
