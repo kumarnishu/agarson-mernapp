@@ -9,6 +9,7 @@ import { GetAllPaymentCategory, CreatePaymentCategory, UpdatePaymentCategory, De
 import { GetVisitReports, GetSalesmanLeavesReport, CreateSalesmanLeavesFromExcel, DownloadExcelTemplateForCreateSalesmanLeavesReport, GetSalesManVisitReport, GetSalesAttendancesAutoReport, NewVisitRemark, UpdateVisitRemark, DeleteVisitRemark, GetVisitSummaryReportRemarkHistory, GetSalesManKpi, GetSalesAttendances, CreateSalesAttendance, UpdateSalesAttendance, DeleteSalesAttendance } from "../controllers/sales.controller";
 import { test } from "../controllers/test.controller";
 import { isAuthenticatedUser, isAdmin, isProfileAuthenticated } from "../middlewares/auth.middleware";
+import { CreateExpenseCategory, CreateExpenseLocation, CreateItemUnit, DeleteExpenseCategory, DeleteExpenseItem, DeleteExpenseLocation, DeleteItemUnit, GetAllExpenseCategory, GetAllExpenseLocation, GetAllItemUnit, UpdateExpenseCategory, UpdateExpenseLocation, UpdateItemUnit } from "../controllers/expense.controller";
 const router = express.Router()
 export const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 * 50 } })
 
@@ -245,7 +246,11 @@ router.route("/excel-db/remarks/:id").get(isAuthenticatedUser, GetExcelDBRemarkH
 router.route("/excel-db/remarks/:id").put(isAuthenticatedUser, UpdateExcelDBRemark)
 router.route("/excel-db/remarks/:id").delete(isAuthenticatedUser, DeleteExcelDBRemark)
 
-
-
+router.route("/expense/locations").get(isAuthenticatedUser, GetAllExpenseLocation).post(isAuthenticatedUser, CreateExpenseLocation)
+router.route("/expense/locations/:id").put(isAuthenticatedUser, UpdateExpenseLocation).delete(isAuthenticatedUser, DeleteExpenseLocation)
+router.route("/expense/categories").get(isAuthenticatedUser, GetAllExpenseCategory).post(isAuthenticatedUser, CreateExpenseCategory)
+router.route("/expense/categories/:id").put(isAuthenticatedUser, UpdateExpenseCategory).delete(isAuthenticatedUser, DeleteExpenseCategory)
+router.route("/item/unit").get(isAuthenticatedUser, GetAllItemUnit).post(isAuthenticatedUser, CreateItemUnit)
+router.route("/item/unit/:id").put(isAuthenticatedUser, UpdateItemUnit).delete(isAuthenticatedUser, DeleteItemUnit)
 export default router;
 
