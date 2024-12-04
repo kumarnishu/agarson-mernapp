@@ -1,17 +1,22 @@
-import { Button,  CircularProgress,  Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { CheckListChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
 import { DropDownDto } from '../../../dtos';
-import { CreateOrEditCheckCategory } from '../../../services/CheckListServices';
+import { CreateOrEditExpenseCategory } from '../../../services/ExpenseServices';
 
-function CreateOrEditExpenseCategoryForm({ category }: { category?: DropDownDto}) {
+type props = {
+    category?: DropDownDto,
+    dialog: string | undefined
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+}
+
+function CreateOrEditExpenseCategoryForm({ category, setDialog }: props) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
@@ -19,14 +24,13 @@ function CreateOrEditExpenseCategoryForm({ category }: { category?: DropDownDto}
             },
             id?: string
         }>
-        (CreateOrEditCheckCategory, {
+        (CreateOrEditExpenseCategory, {
             onSuccess: () => {
                 queryClient.invalidateQueries('check_categories')
             }
         })
-  
 
-    const { setChoice } = useContext(ChoiceContext)
+
 
     const formik = useFormik<{
         category: string
@@ -34,14 +38,14 @@ function CreateOrEditExpenseCategoryForm({ category }: { category?: DropDownDto}
         initialValues: {
             category: category ? category.value : ""
         },
-        validationSchema:yup.object({
-            category:yup.string().required()
+        validationSchema: yup.object({
+            category: yup.string().required()
         }),
         onSubmit: (values: {
             category: string,
         }) => {
             mutate({
-                id:category?.id,
+                id: category?.id,
                 body: {
                     key: values.category
                 }
@@ -51,10 +55,10 @@ function CreateOrEditExpenseCategoryForm({ category }: { category?: DropDownDto}
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: CheckListChoiceActions.close_checklist })
-           
+            setDialog(undefined)
+
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack
@@ -75,8 +79,8 @@ function CreateOrEditExpenseCategoryForm({ category }: { category?: DropDownDto}
                     }
                     {...formik.getFieldProps('category')}
                 />
-              
-               
+
+
 
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}

@@ -24,7 +24,9 @@ function AppConstantsDashboard() {
         tmpfeatures.push({ feature: 'expense category ', is_visible: true, url: "PaymentCategoriesPage" })
         tmpfeatures.push({ feature: 'expense item ', is_visible: true, url: "PaymentCategoriesPage" })
         tmpfeatures.push({ feature: 'expense location ', is_visible: true, url: "PaymentCategoriesPage" })
-        tmpfeatures.push({ feature: 'Item unit ', is_visible: true, url: "PaymentCategoriesPage" })
+
+        
+        user?.assigned_permissions.includes('item_unit_view') &&  tmpfeatures.push({ feature: 'Item unit ', is_visible: true, url: "ItemUnitPage" })
        
 
         setFeatures(tmpfeatures)

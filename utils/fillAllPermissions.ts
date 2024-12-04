@@ -677,7 +677,8 @@ export function FetchAllPermissions() {
                         label: 'export'
                     }
                 ]
-            }, {
+            }, 
+            {
                 label: 'Checklist Category',
                 permissions: [
                     {
@@ -723,6 +724,81 @@ export function FetchAllPermissions() {
                     },
                     {
                         value: 'payment_category_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Expense Location',
+                permissions: [
+                    {
+                        value: 'expense_location_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'expense_location_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'expense_location_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'expense_location_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'expense_location_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Item Unit',
+                permissions: [
+                    {
+                        value: 'item_unit_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'item_unit_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'item_unit_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'item_unit_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'item_unit_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Expense Category',
+                permissions: [
+                    {
+                        value: 'expense_category_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'expense_category_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'expense_category_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'expense_category_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'expense_category_export',
                         label: 'export'
                     }
                 ]
@@ -1118,6 +1194,7 @@ export function FetchAllPermissions() {
             }
         ]
     }
+
     permissions.push(dashboardMenu)
     permissions.push(authorizationMenu)
     permissions.push(featureMenu)

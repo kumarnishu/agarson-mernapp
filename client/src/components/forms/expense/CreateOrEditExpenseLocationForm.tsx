@@ -1,17 +1,23 @@
-import { Button,  CircularProgress,  Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { CheckListChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
 import { DropDownDto } from '../../../dtos';
-import { CreateOrEditCheckCategory } from '../../../services/CheckListServices';
+import { CreateOrEditExpenseLocation } from '../../../services/ExpenseServices';
 
-function CreateOrEditExpenseLocationForm({ category }: { category?: DropDownDto}) {
+
+type props = {
+    location?: DropDownDto,
+    dialog: string | undefined
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+}
+
+function CreateOrEditExpenseLocationForm({ location, setDialog }: props) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
@@ -19,31 +25,30 @@ function CreateOrEditExpenseLocationForm({ category }: { category?: DropDownDto}
             },
             id?: string
         }>
-        (CreateOrEditCheckCategory, {
+        (CreateOrEditExpenseLocation, {
             onSuccess: () => {
-                queryClient.invalidateQueries('check_categories')
+                queryClient.invalidateQueries('exp_locations')
             }
         })
-  
 
-    const { setChoice } = useContext(ChoiceContext)
+
 
     const formik = useFormik<{
-        category: string
+        location: string
     }>({
         initialValues: {
-            category: category ? category.value : ""
+            location: location ? location.value : ""
         },
-        validationSchema:yup.object({
-            category:yup.string().required()
+        validationSchema: yup.object({
+            location: yup.string().required()
         }),
         onSubmit: (values: {
-            category: string,
+            location: string,
         }) => {
             mutate({
-                id:category?.id,
+                id: location?.id,
                 body: {
-                    key: values.category
+                    key: values.location
                 }
             })
         }
@@ -51,10 +56,10 @@ function CreateOrEditExpenseLocationForm({ category }: { category?: DropDownDto}
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: CheckListChoiceActions.close_checklist })
-           
+            setDialog(undefined)
+
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack
@@ -64,23 +69,23 @@ function CreateOrEditExpenseLocationForm({ category }: { category?: DropDownDto}
                 <TextField
                     required
                     error={
-                        formik.touched.category && formik.errors.category ? true : false
+                        formik.touched.location && formik.errors.location ? true : false
                     }
                     autoFocus
-                    id="category"
-                    label="Category"
+                    id="location"
+                    label="Location"
                     fullWidth
                     helperText={
-                        formik.touched.category && formik.errors.category ? formik.errors.category : ""
+                        formik.touched.location && formik.errors.location ? formik.errors.location : ""
                     }
-                    {...formik.getFieldProps('category')}
+                    {...formik.getFieldProps('location')}
                 />
-              
-               
+
+
 
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
-                    fullWidth>{Boolean(isLoading) ? <CircularProgress /> : !category ? "Add Category" : "Update Category"}
+                    fullWidth>{Boolean(isLoading) ? <CircularProgress /> : !location ? "Add Location" : "Update Location"}
                 </Button>
             </Stack>
 
@@ -94,7 +99,7 @@ function CreateOrEditExpenseLocationForm({ category }: { category?: DropDownDto}
             {
                 isSuccess ? (
                     <>
-                        {!category ? <AlertBar message="new category created" color="success" /> : <AlertBar message="category updated" color="success" />}
+                        {!location ? <AlertBar message="new location created" color="success" /> : <AlertBar message="location updated" color="success" />}
                     </>
                 ) : null
             }

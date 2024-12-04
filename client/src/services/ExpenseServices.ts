@@ -1,5 +1,8 @@
 import { apiClient } from "./utils/AxiosInterceptor"
 
+export const GetAllExpenseCategories=async () => {
+    return await apiClient.get(`expense/categories`)
+}
 
 export const CreateOrEditExpenseCategory = async ({ body, id }: {
     body: { key: string }
@@ -16,6 +19,10 @@ export const DeleteExpenseCategory = async (id: string) => {
 
 
 
+export const GetAllExpenseLocations=async () => {
+    return await apiClient.get(`expense/locations`)
+}
+
 export const CreateOrEditExpenseLocation = async ({ body, id }: {
     body: { key: string }
     id?: string
@@ -27,6 +34,11 @@ export const CreateOrEditExpenseLocation = async ({ body, id }: {
 }
 export const DeleteExpenseLocation = async (id: string) => {
     return await apiClient.delete(`expense/locations/${id}`)
+}
+
+
+export const GetAllItemUnits=async () => {
+    return await apiClient.get(`item/unit`)
 }
 
 

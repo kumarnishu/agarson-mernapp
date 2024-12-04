@@ -51,6 +51,7 @@ import SalesmanVisitPage from './pages/sales/SalesmanVisitPage.tsx'
 import SalesmanAttendancePage from './pages/sales/SalesmanAttendancePage.tsx'
 import SalesmanKpiPage from './pages/sales/SalesmanKpiPage.tsx'
 import SalesmanAttendancePageAuto from './pages/sales/SalesmanVisitPageAuto.tsx'
+import ItemUnitPage from './pages/dropdowns/ItemUnitPage.tsx'
 
 
 function AppRoutes() {
@@ -274,6 +275,11 @@ function AppRoutes() {
               {user?.assigned_permissions.includes('payment_category_view') && <Route
                 path="PaymentCategoriesPage" element={
                   <PaymentCategoriesPage />
+                }
+              />}
+              {user?.assigned_permissions.includes('item_unit_view') && <Route
+                path="ItemUnitPage" element={
+                  <ItemUnitPage />
                 }
               />}
 

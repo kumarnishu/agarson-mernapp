@@ -1,17 +1,24 @@
-import { Button,  CircularProgress,  Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { CheckListChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
 import { DropDownDto } from '../../../dtos';
-import { CreateOrEditCheckCategory } from '../../../services/CheckListServices';
+import { CreateOrEditItemUnit } from '../../../services/ExpenseServices';
 
-function CreateOrEditItemUnitForm({ category }: { category?: DropDownDto}) {
+
+type props = {
+    unit?: DropDownDto,
+    dialog: string | undefined
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+}
+
+
+function CreateOrEditItemUnitForm({ unit, setDialog }: props) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
@@ -19,31 +26,30 @@ function CreateOrEditItemUnitForm({ category }: { category?: DropDownDto}) {
             },
             id?: string
         }>
-        (CreateOrEditCheckCategory, {
+        (CreateOrEditItemUnit, {
             onSuccess: () => {
-                queryClient.invalidateQueries('check_categories')
+                queryClient.invalidateQueries('units')
             }
         })
-  
 
-    const { setChoice } = useContext(ChoiceContext)
+
 
     const formik = useFormik<{
-        category: string
+        unit: string
     }>({
         initialValues: {
-            category: category ? category.value : ""
+            unit: unit ? unit.value : ""
         },
-        validationSchema:yup.object({
-            category:yup.string().required()
+        validationSchema: yup.object({
+            unit: yup.string().required()
         }),
         onSubmit: (values: {
-            category: string,
+            unit: string,
         }) => {
             mutate({
-                id:category?.id,
+                id: unit?.id,
                 body: {
-                    key: values.category
+                    key: values.unit
                 }
             })
         }
@@ -51,10 +57,10 @@ function CreateOrEditItemUnitForm({ category }: { category?: DropDownDto}) {
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: CheckListChoiceActions.close_checklist })
-           
+            setDialog(undefined)
+
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack
@@ -64,23 +70,23 @@ function CreateOrEditItemUnitForm({ category }: { category?: DropDownDto}) {
                 <TextField
                     required
                     error={
-                        formik.touched.category && formik.errors.category ? true : false
+                        formik.touched.unit && formik.errors.unit ? true : false
                     }
                     autoFocus
-                    id="category"
-                    label="Category"
+                    id="unit"
+                    label="Unit"
                     fullWidth
                     helperText={
-                        formik.touched.category && formik.errors.category ? formik.errors.category : ""
+                        formik.touched.unit && formik.errors.unit ? formik.errors.unit : ""
                     }
-                    {...formik.getFieldProps('category')}
+                    {...formik.getFieldProps('unit')}
                 />
-              
-               
+
+
 
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
-                    fullWidth>{Boolean(isLoading) ? <CircularProgress /> : !category ? "Add Category" : "Update Category"}
+                    fullWidth>{Boolean(isLoading) ? <CircularProgress /> : !unit ? "Add Unit" : "Update Unit"}
                 </Button>
             </Stack>
 
@@ -94,7 +100,7 @@ function CreateOrEditItemUnitForm({ category }: { category?: DropDownDto}) {
             {
                 isSuccess ? (
                     <>
-                        {!category ? <AlertBar message="new category created" color="success" /> : <AlertBar message="category updated" color="success" />}
+                        {!unit ? <AlertBar message="new unit created" color="success" /> : <AlertBar message="unit updated" color="success" />}
                     </>
                 ) : null
             }
