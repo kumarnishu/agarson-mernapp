@@ -12,7 +12,11 @@ import { useFormik } from 'formik';
 import * as Yup from "yup"
 import { GetUserDto } from '../../../dtos/user.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 
 function AssignUsersDialog({ user, setUser }: { user: GetUserDto, setUser: React.Dispatch<React.SetStateAction<GetUserDto | undefined>> }) {
     const [users, setUsers] = useState<DropDownDto[]>(user.assigned_users)

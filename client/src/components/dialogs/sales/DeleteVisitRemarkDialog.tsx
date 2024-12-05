@@ -9,7 +9,11 @@ import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { DeleteVisitReportRemark } from '../../../services/SalesServices';
 import { GetVisitSummaryReportRemarkDto } from '../../../dtos/visit_remark.dto';
+type Props = {
+  dialog: string | undefined,
+  setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 
 function DeleteVisitRemarkDialog({ remark, display, setDisplay }: { remark: GetVisitSummaryReportRemarkDto, display: boolean, setDisplay: React.Dispatch<React.SetStateAction<boolean>> }) {
   const { choice, setChoice } = useContext(ChoiceContext)

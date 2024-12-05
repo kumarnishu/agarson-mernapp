@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogActions, IconButton, DialogTitle, Stack, Checkbox, Button } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
-import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
+import { useEffect, useState } from 'react'
 import { Cancel } from '@mui/icons-material'
 import { STable, STableBody, STableCell, STableHead, STableHeadCell, STableRow } from '../../styled/STyledTable'
 import { MergeTwoLeads } from '../../../services/LeadsServices'
@@ -10,10 +9,13 @@ import { BackendError } from '../../..'
 import { queryClient } from '../../../main'
 import AlertBar from '../../snacks/AlertBar'
 import { GetLeadDto, CreateOrEditMergeLeadsDto } from '../../../dtos/lead.dto'
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+    leads: GetLeadDto[], removeSelectedLeads: () => void
+}
 
-
-function MergeTwoLeadsDialog({ leads, removeSelectedLeads }: { leads: GetLeadDto[], removeSelectedLeads: () => void }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+function MergeTwoLeadsDialog({ leads, removeSelectedLeads, dialog, setDialog }: Props) {
     const [mobiles, setMobiles] = useState<string[]>([]);
     const [targetLead, setTartgetLead] = useState<CreateOrEditMergeLeadsDto>({
         name: leads[0].name,
@@ -55,8 +57,8 @@ function MergeTwoLeadsDialog({ leads, removeSelectedLeads }: { leads: GetLeadDto
 
     return (
         <Dialog fullScreen
-            open={choice === LeadChoiceActions.merge_leads ? true : false}
-            onClose={() => setChoice({ type: LeadChoiceActions.close_lead })}
+            open={dialog === "MergeTwoLeadsDialog"}
+            onClose={() => setDialog(undefined)}
         >
             {
                 isError ? (
@@ -72,7 +74,7 @@ function MergeTwoLeadsDialog({ leads, removeSelectedLeads }: { leads: GetLeadDto
                     </>
                 ) : null
             }
-            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: LeadChoiceActions.close_lead })}>
+            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ textAlign: 'center', minWidth: '350px' }}>{`Merging Source into Target Lead `}</DialogTitle>
@@ -435,7 +437,7 @@ function MergeTwoLeadsDialog({ leads, removeSelectedLeads }: { leads: GetLeadDto
                             alert("one mobile is required at least")
                         }
                         mutate({ id: leads[0]._id, body: targetLead })
-                        setChoice({ type: LeadChoiceActions.close_lead })
+                        setDialog(undefined)
                     }} fullWidth variant='contained'>
                     Save
                 </Button>

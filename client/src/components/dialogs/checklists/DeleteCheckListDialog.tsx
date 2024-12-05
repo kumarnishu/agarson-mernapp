@@ -1,6 +1,5 @@
-import { Dialog, DialogTitle, DialogContent, IconButton,  Stack, Button, CircularProgress, Typography } from '@mui/material';
-import { useContext, useEffect } from 'react';
-import { ChoiceContext, CheckListChoiceActions } from '../../../contexts/dialogContext';
+import { Dialog, DialogTitle, DialogContent, IconButton, Stack, Button, CircularProgress, Typography } from '@mui/material';
+import { useEffect } from 'react';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { useMutation } from 'react-query';
@@ -10,8 +9,12 @@ import { DeleteCheckList } from '../../../services/CheckListServices';
 import { queryClient } from '../../../main';
 import { GetChecklistDto } from '../../../dtos/checklist.dto';
 
-function DeleteCheckListDialog({ checklist }: { checklist: GetChecklistDto }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+    checklist: GetChecklistDto
+}
+function DeleteCheckListDialog({ checklist, dialog, setDialog }: Props) {
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
         (DeleteCheckList, {
@@ -22,15 +25,15 @@ function DeleteCheckListDialog({ checklist }: { checklist: GetChecklistDto }) {
 
     useEffect(() => {
         if (isSuccess)
-            setChoice({ type: CheckListChoiceActions.close_checklist })
-    }, [setChoice, isSuccess])
+            setDialog(undefined)
+    }, [isSuccess])
 
     return (
         <>
-            <Dialog fullWidth open={choice === CheckListChoiceActions.delete_checklist ? true : false}
-                onClose={() => setChoice({ type: CheckListChoiceActions.close_checklist })}
+            <Dialog fullWidth open={dialog === 'DeleteCheckListDialog'}
+                onClose={() => setDialog(undefined)}
             >
-                <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: CheckListChoiceActions.close_checklist })}>
+                <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                     <Cancel fontSize='large' />
                 </IconButton>
 
@@ -63,7 +66,6 @@ function DeleteCheckListDialog({ checklist }: { checklist: GetChecklistDto }) {
                 >
                     <Button fullWidth variant="outlined" color="error"
                         onClick={() => {
-                            setChoice({ type: CheckListChoiceActions.delete_checklist })
                             mutate(checklist._id)
                         }}
                         disabled={isLoading}

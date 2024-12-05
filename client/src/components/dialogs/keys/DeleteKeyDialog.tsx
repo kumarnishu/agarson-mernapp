@@ -9,7 +9,11 @@ import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { DeleteKey } from '../../../services/KeyServices';
 import { GetKeyDto } from '../../../dtos/keys.dto';
+type Props = {
+  dialog: string | undefined,
+  setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 
 function DeleteKeyDialog({ item }: { item: GetKeyDto }) {
   const { choice, setChoice } = useContext(ChoiceContext)

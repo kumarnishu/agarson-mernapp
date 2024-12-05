@@ -5,7 +5,11 @@ import UpdateUserPasswordForm from '../../forms/user/UpdateUserPasswordForm';
 import { Cancel } from '@mui/icons-material';
 import { GetUserDto } from '../../../dtos/user.dto';
 
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function UpdateUsePasswordDialog({ user }: { user: GetUserDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (

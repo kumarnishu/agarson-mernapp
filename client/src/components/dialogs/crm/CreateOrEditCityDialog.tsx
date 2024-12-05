@@ -1,19 +1,20 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
-import { useContext } from 'react'
-import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditCityForm from '../../forms/crm/CreateOrEditCityForm'
 import { CreateOrEditCrmCity } from '../../../dtos/crm-city.dto'
-
-function CreateOrEditCityDialog({ city }: { city?: CreateOrEditCrmCity }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+    city?: CreateOrEditCrmCity
+}
+function CreateOrEditCityDialog({ city, dialog, setDialog }: Props) {
 
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
-            open={choice === LeadChoiceActions.create_or_edit_city ? true : false}
+            open={dialog === 'CreateOrEditCityDialog'}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                setChoice({ type: LeadChoiceActions.close_lead })
+                setDialog(undefined)
             }
             }>
                 <Cancel fontSize='large' />

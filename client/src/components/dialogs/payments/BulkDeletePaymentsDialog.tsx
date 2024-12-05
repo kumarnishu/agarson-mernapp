@@ -8,7 +8,11 @@ import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
 import { ChoiceContext, PaymentsChoiceActions } from '../../../contexts/dialogContext';
 import { BulkDeletePaymentss } from '../../../services/PaymentsService';
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function BulkDeletePaymentsDialog({ ids, clearIds }: { ids: string[],clearIds:()=>any }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation

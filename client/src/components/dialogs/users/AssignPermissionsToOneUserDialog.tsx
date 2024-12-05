@@ -11,7 +11,11 @@ import { AssignPermissionsToOneUser, GetPermissions } from '../../../services/Us
 import { IMenu, IPermission } from '../../../dtos/permission.dto';
 import { GetUserDto } from '../../../dtos/user.dto';
 
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 
 
 function RenderTree({ permissiontree, permissions, setPermissions }: { permissiontree: any, permissions: string[], setPermissions: React.Dispatch<React.SetStateAction<string[]>> }) {

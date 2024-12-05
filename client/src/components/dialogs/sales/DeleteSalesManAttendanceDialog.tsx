@@ -9,7 +9,11 @@ import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { DeleteSalesManAttendance } from '../../../services/SalesServices';
 import { GetSalesAttendanceDto } from '../../../dtos/sales-attendance.dto';
+type Props = {
+  dialog: string | undefined,
+  setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 
 function DeleteSalesManAttendanceDialog({ attendance }: {
   attendance?: GetSalesAttendanceDto,

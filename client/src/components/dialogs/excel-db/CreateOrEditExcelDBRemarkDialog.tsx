@@ -1,31 +1,27 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
-import { useContext } from 'react'
-import { ChoiceContext, KeyChoiceActions } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditExcelDBRemarkForm from '../../forms/exceldb/CreateOrEditExcelDBRemarkForm'
 import { GetExcelDBRemarksDto } from '../../../dtos/excel-db-remark.dto'
-
-function CreateOrEditExcelDBRemarkDialog({ category, obj, remark, display, setDisplay }: {
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
     obj: string,
-    category: string, remark?: GetExcelDBRemarksDto, display?: boolean, setDisplay?: React.Dispatch<React.SetStateAction<boolean>>
-}) {
-    const { choice, setChoice } = useContext(ChoiceContext)
-    console.log(category, obj)
+    category: string, remark?: GetExcelDBRemarksDto,
+}
+function CreateOrEditExcelDBRemarkDialog({ category, obj, remark, dialog, setDialog }: Props) {
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
-            open={choice === KeyChoiceActions.create_or_edit_excel_db_remark || display ? true : false}
+            open={dialog === 'CreateOrEditExcelDBRemarkDialog'}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                !remark && !display && setChoice({ type: KeyChoiceActions.close_key })
-                setDisplay && setDisplay(false)
+                setDialog(undefined)
             }
             }>
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!remark ? "New Remark" : "Edit Remark"}</DialogTitle>
             <DialogContent>
-                {remark && display && category && obj && <CreateOrEditExcelDBRemarkForm category={category} remark={remark} obj={obj} setDisplay={setDisplay} />}
-                {!remark && !display && category && obj && <CreateOrEditExcelDBRemarkForm obj={obj} category={category}  setDisplay={setDisplay} />}
+                <CreateOrEditExcelDBRemarkForm category={category} remark={remark} obj={obj} setDisplay={setDialog} />
             </DialogContent>
         </Dialog>
     )

@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, IconButton, DialogTitle, Stack } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
-import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import DeleteRemarkDialog from './DeleteRemarkDialog'
 import CreateOrEditRemarkDialog from './CreateOrEditRemarkDialog'
@@ -12,11 +11,13 @@ import { BackendError } from '../../..'
 import { GetRemarksHistory } from '../../../services/LeadsServices'
 import { GetRemarksDto } from '../../../dtos/crm-remarks.dto'
 
-
-function ViewRemarksDialog({ id }: { id: string }) {
-    const [display, setDisplay] = useState<boolean>(false)
-    const [display2, setDisplay2] = useState<boolean>(false)
-    const { choice, setChoice } = useContext(ChoiceContext)
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+    id: string
+}
+function ViewRemarksDialog({ id, dialog, setDialog }: Props) {
+    const [dialog1, setDialog1] = useState<string | undefined>()
     const [remark, setRemark] = useState<GetRemarksDto>()
     const [remarks, setRemarks] = useState<GetRemarksDto[]>()
 
@@ -35,10 +36,10 @@ function ViewRemarksDialog({ id }: { id: string }) {
 
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
-            open={choice === LeadChoiceActions.view_remarks ? true : false}
-            onClose={() => setChoice({ type: LeadChoiceActions.close_lead })}
+            open={dialog === 'ViewRemarksDialog'}
+            onClose={() => setDialog(undefined)}
         >
-            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: LeadChoiceActions.close_lead })}>
+            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>
@@ -59,13 +60,13 @@ function ViewRemarksDialog({ id }: { id: string }) {
                                     <Stack justifyContent={'end'} direction="row" gap={0} pt={2}>
                                         {user?.assigned_permissions.includes('activities_delete') && <IconButton size="small" color="error" onClick={() => {
                                             setRemark(item)
-                                            setDisplay(true)
+                                            setDialog1('')
                                         }}>
                                             Delete</IconButton>}
-                                        {user && item.remark && user?.username === item.created_by.label && new Date(item.created_date) > new Date(previous_date) &&user?.assigned_permissions.includes('activities_edit') && <IconButton size="small" color="success"
+                                        {user && item.remark && user?.username === item.created_by.label && new Date(item.created_date) > new Date(previous_date) && user?.assigned_permissions.includes('activities_edit') && <IconButton size="small" color="success"
                                             onClick={() => {
                                                 setRemark(item)
-                                                setDisplay2(true)
+                                                setDialog1('')
 
                                             }}
                                         >Edit</IconButton>}
@@ -76,8 +77,8 @@ function ViewRemarksDialog({ id }: { id: string }) {
                         )
                     })}
                 </Stack>
-                {remark && <DeleteRemarkDialog display={display} setDisplay={setDisplay} remark={remark} />}
-                {remark && <CreateOrEditRemarkDialog remark={remark} display={display2} setDisplay={setDisplay2} />}
+                {remark && <DeleteRemarkDialog dialog={dialog1} setDialog={setDialog1} remark={remark} />}
+                {remark && <CreateOrEditRemarkDialog remark={remark} dialog={dialog1} setDialog={setDialog1} />}
             </DialogContent>
 
         </Dialog>

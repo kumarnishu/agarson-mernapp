@@ -5,6 +5,12 @@ import { Cancel } from '@mui/icons-material'
 import CreateOrEditSalesAttendanceForm from '../../forms/sales/CreateOrEditSalesAttendanceForm'
 import { GetSalesAttendanceDto } from '../../../dtos/sales-attendance.dto'
 
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+
+}
+
 function CreateOrEditSalesmanAttendanceDialog({ attendance }: {
     attendance?: GetSalesAttendanceDto,
 }) {

@@ -9,7 +9,11 @@ import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { AssignPermissionsToUsers, GetPermissions } from '../../../services/UserServices';
 import { IMenu, IPermission } from '../../../dtos/permission.dto';
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 
 function AssignPermissionsToUsersDialog({ user_ids, flag }: { user_ids: string[], flag: number }) {
     const [permissiontree, setPermissiontree] = useState<IMenu>()

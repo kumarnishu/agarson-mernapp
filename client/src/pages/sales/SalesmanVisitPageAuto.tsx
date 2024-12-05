@@ -16,6 +16,7 @@ import { DropDownDto } from '../../dtos/dropdown.dto'
 
 
 export default function SalesmanVisitPageAuto() {
+    
     const { user: LoggedInUser } = useContext(UserContext)
     const [userId, setUserId] = useState<string>('all')
     const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({

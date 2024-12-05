@@ -10,7 +10,11 @@ import { onlyUnique } from '../../../utils/UniqueArray'
 import { Cancel } from '@mui/icons-material'
 import { ChoiceContext, SaleChoiceActions } from '../../../contexts/dialogContext'
 import { GetVisitReportDto } from '../../../dtos/visit-report.dto'
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 
 function VisitReportPage({ employee }: { employee: string }) {
     const [reports, setReports] = useState<GetVisitReportDto[]>([])

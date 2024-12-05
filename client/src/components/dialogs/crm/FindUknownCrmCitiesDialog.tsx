@@ -1,48 +1,51 @@
-import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button} from '@mui/material'
-import { useContext, useEffect } from 'react';
-import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
+import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button } from '@mui/material'
+import { useEffect } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
-import {  FindUnknownCrmCities } from '../../../services/LeadsServices';
+import { FindUnknownCrmCities } from '../../../services/LeadsServices';
 
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
-function FindUknownCrmCitiesDialog() {
-    const { choice, setChoice } = useContext(ChoiceContext)
-    const { mutate,  isSuccess, isError, error } = useMutation
+}
+
+function FindUknownCrmCitiesDialog({ dialog, setDialog }: Props) {
+    const { mutate, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError>
         (FindUnknownCrmCities, {
             onSuccess: () => {
                 queryClient.invalidateQueries('crm_cities')
             }
         })
-   
+
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: LeadChoiceActions.close_lead });
+            setDialog(undefined)
         }
     }, [isSuccess])
     return (
         <Dialog
             fullWidth
-            open={choice === LeadChoiceActions.find_unknown_cities ? true : false}
+            open={dialog === 'FindUknownCrmCitiesDialog'}
             onClose={() => {
-                setChoice({ type: LeadChoiceActions.close_lead });
-               
+                setDialog(undefined)
+
             }}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                setChoice({ type: LeadChoiceActions.close_lead });
-               
+                setDialog(undefined)
+
             }}>
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
-               Find Unknown Cities
+                Find Unknown Cities
             </DialogTitle>
             <DialogContent>
                 <Stack
@@ -50,10 +53,10 @@ function FindUknownCrmCitiesDialog() {
                 >
                     <Typography variant="body1" color="error">
 
-                      Donot forgot to assign unknown city to the users ?
+                        Donot forgot to assign unknown city to the users ?
                     </Typography>
                     <Button variant='outlined' color='error' onClick={() => mutate()}>Submit</Button>
-                   
+
                 </Stack>
                 {
                     isError ? (

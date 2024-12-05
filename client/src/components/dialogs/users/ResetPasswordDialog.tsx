@@ -4,7 +4,11 @@ import { useParams } from 'react-router-dom';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import ResetPasswordForm from '../../forms/user/ResetPasswordForm';
 import { Cancel } from '@mui/icons-material';
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function ResetPasswordDialog() {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { token } = useParams()

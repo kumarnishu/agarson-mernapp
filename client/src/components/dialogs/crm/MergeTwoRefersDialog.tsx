@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogActions, IconButton, DialogTitle, Stack, Checkbox, Button } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
-import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext'
+import { useEffect, useState } from 'react'
 import { Cancel } from '@mui/icons-material'
 import { STable, STableBody, STableCell, STableHead, STableHeadCell, STableRow } from '../../styled/STyledTable'
 import { AxiosResponse } from 'axios'
@@ -10,10 +9,13 @@ import { queryClient } from '../../../main'
 import AlertBar from '../../snacks/AlertBar'
 import { MergeTwoRefers } from '../../../services/LeadsServices'
 import { GetReferDto, CreateOrEditMergeRefersDto } from '../../../dtos/refer.dto'
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+    refers: GetReferDto[], removeSelectedRefers: () => void
+}
 
-
-function MergeTwoRefersDialog({ refers, removeSelectedRefers }: { refers: GetReferDto[], removeSelectedRefers: () => void }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+function MergeTwoRefersDialog({ refers, removeSelectedRefers, dialog, setDialog }: Props) {
     const [mobiles, setMobiles] = useState<string[]>([]);
     const [targetRefer, setTartgetRefer] = useState<CreateOrEditMergeRefersDto>({
         name: refers[0].name,
@@ -52,8 +54,8 @@ function MergeTwoRefersDialog({ refers, removeSelectedRefers }: { refers: GetRef
 
     return (
         <Dialog fullScreen
-            open={choice === LeadChoiceActions.merge_refers ? true : false}
-            onClose={() => setChoice({ type: LeadChoiceActions.close_lead })}
+            open={dialog === "MergeTwoRefersDialog"}
+            onClose={() => setDialog(undefined)}
         >
             {
                 isError ? (
@@ -69,7 +71,7 @@ function MergeTwoRefersDialog({ refers, removeSelectedRefers }: { refers: GetRef
                     </>
                 ) : null
             }
-            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: LeadChoiceActions.close_lead })}>
+            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ textAlign: 'center', minWidth: '350px' }}>{`Merging Source into Target Refer `}</DialogTitle>
@@ -362,7 +364,7 @@ function MergeTwoRefersDialog({ refers, removeSelectedRefers }: { refers: GetRef
                             alert("one mobile is required at least")
                         }
                         mutate({ id: refers[0]._id, body: targetRefer })
-                        setChoice({ type: LeadChoiceActions.close_lead })
+                        setDialog(undefined)
                     }} fullWidth variant='contained'>
                     Save
                 </Button>

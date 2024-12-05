@@ -13,7 +13,11 @@ import { AssignKeyCategoryToUsers } from '../../../services/KeyServices';
 import { GetKeyCategoryDto } from '../../../dtos/key-category.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 
 function AssignKeyCategoriesDialog({ categories, flag }: { categories: GetKeyCategoryDto[], flag: number }) {
 

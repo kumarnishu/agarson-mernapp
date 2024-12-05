@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, IconButton, DialogTitle, Stack } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
-import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel, Photo } from '@mui/icons-material'
 import { UserContext } from '../../../contexts/userContext'
 import { toTitleCase } from '../../../utils/TitleCase'
@@ -14,11 +13,14 @@ import ViewBillPhotoDialog from './ViewBillPhotoDialog'
 import { GetBillDto } from '../../../dtos/crm-bill.dto'
 
 
-function ViewLeadsBillHistoryDialog({ id }: { id: string }) {
-    const [display, setDisplay] = useState<boolean>(false)
-    const [display2, setDisplay2] = useState<boolean>(false)
-    const [display3, setDisplay3] = useState<boolean>(false)
-    const { choice, setChoice } = useContext(ChoiceContext)
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+    id: string
+}
+
+function ViewLeadsBillHistoryDialog({ id, dialog, setDialog }: Props) {
+    const [dialog1, setDialog1] = useState<string | undefined>()
     const [bill, setBill] = useState<GetBillDto>()
     const [bills, setBills] = useState<GetBillDto[]>()
 
@@ -37,10 +39,10 @@ function ViewLeadsBillHistoryDialog({ id }: { id: string }) {
 
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
-            open={choice === LeadChoiceActions.view_bills ? true : false}
-            onClose={() => setChoice({ type: LeadChoiceActions.close_lead })}
+            open={dialog === "ViewLeadsBillHistoryDialog"}
+            onClose={() => setDialog(undefined)}
         >
-            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: LeadChoiceActions.close_lead })}>
+            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>
@@ -55,27 +57,27 @@ function ViewLeadsBillHistoryDialog({ id }: { id: string }) {
                             <div key={index} style={{ borderRadius: '1px 3px', padding: '5px', background: 'lightblue', paddingLeft: '20px', border: '1px solid grey' }}>
 
                                 {
-                                     <Stack
+                                    <Stack
                                         justifyContent={'space-between'} direction="row" gap={0} alignItems={'center'}>
                                         <p>{toTitleCase(item.bill_no)} - {item.bill_date} </p>
 
                                         {item?.billphoto !== "" && user?.assigned_permissions.includes('view_lead_bills') && <IconButton size="small" color="error" onClick={() => {
                                             setBill(item)
-                                            setDisplay3(true)
+                                            setDialog1('ViewBillPhotoDialog')
                                         }}>
                                             <Photo /></IconButton>}
-                                            
-                                       <div>
-                                            
+
+                                        <div>
+
                                             {user?.assigned_permissions.includes('delete_lead_bills') && <IconButton size="small" color="error" onClick={() => {
                                                 setBill(item)
-                                                setDisplay(true)
+                                                setDialog1('DeleteBillDialog')
                                             }}>
                                                 Delete</IconButton>}
-                                            { user && item && user?.username === item.created_by.label && new Date(item.created_at) > new Date(previous_date) &&user?.assigned_permissions.includes('edit_lead_bills') && <IconButton size="small" color="success"
+                                            {user && item && user?.username === item.created_by.label && new Date(item.created_at) > new Date(previous_date) && user?.assigned_permissions.includes('edit_lead_bills') && <IconButton size="small" color="success"
                                                 onClick={() => {
                                                     setBill(item)
-                                                    setDisplay2(true)
+                                                    setDialog1('CreateOrEditBillDialog')
 
                                                 }}
                                             >Edit</IconButton>}
@@ -87,9 +89,9 @@ function ViewLeadsBillHistoryDialog({ id }: { id: string }) {
                         )
                     })}
                 </Stack>
-                {bill && <DeleteBillDialog display={display} setDisplay={setDisplay} bill={bill} />}
-                {bill && <CreateOrEditBillDialog bill={bill} display={display2} setDisplay={setDisplay2} />}
-                {bill && <ViewBillPhotoDialog bill={bill} display={display3} setDisplay={setDisplay3} />}
+                {bill && <DeleteBillDialog dialog={dialog1} setDialog={setDialog1} bill={bill} />}
+                {bill && <CreateOrEditBillDialog bill={bill} dialog={dialog1} setDialog={setDialog1} />}
+                {bill && <ViewBillPhotoDialog bill={bill} dialog={dialog1} setDialog={setDialog1} />}
             </DialogContent>
 
         </Dialog>

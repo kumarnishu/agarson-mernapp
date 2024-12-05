@@ -3,7 +3,11 @@ import { useContext } from 'react';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
 import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function ViewShoeWeightPhotoDialog({ weight }: { weight: GetShoeWeightDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (

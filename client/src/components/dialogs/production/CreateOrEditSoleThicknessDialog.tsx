@@ -5,7 +5,11 @@ import { Cancel } from '@mui/icons-material';
 import CreateOrEditSoleThicknessForm from '../../forms/production/CreateOrEditSoleThicknessForm.tsx';
 import { GetSoleThicknessDto } from '../../../dtos/sole-thickness.dto.ts';
 
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function CreateOrEditSoleThicknessDialog({ thickness }: { thickness?: GetSoleThicknessDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (

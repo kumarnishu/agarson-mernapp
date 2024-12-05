@@ -7,7 +7,11 @@ import UpdateShoeWeightForm3 from '../../forms/production/UpdateShoeWeightForm3'
 import CreateOrEditShoeWeightForm from '../../forms/production/CreateOrEditShoeWeightForm';
 import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
 
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function CreateOrEditShoeWeightDialog({ shoe_weight }: { shoe_weight?: GetShoeWeightDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (

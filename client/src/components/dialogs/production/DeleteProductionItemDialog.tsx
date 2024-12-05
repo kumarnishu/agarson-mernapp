@@ -14,7 +14,11 @@ import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
 import { GetSoleThicknessDto } from '../../../dtos/sole-thickness.dto';
 import { GetSpareDyeDto } from '../../../dtos/spare-dye.dto';
 
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function DeleteProductionItemDialog({ category, weight, thickness, spare_dye, production }: { category?: DropDownDto, weight?: GetShoeWeightDto, thickness?: GetSoleThicknessDto, spare_dye?: GetSpareDyeDto, production?: GetProductionDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation

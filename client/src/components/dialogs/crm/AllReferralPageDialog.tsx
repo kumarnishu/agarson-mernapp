@@ -1,6 +1,5 @@
 import { Box, Button, Dialog, DialogContent, DialogTitle, IconButton, LinearProgress } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
-import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { UserContext } from '../../../contexts/userContext'
 import AlertBar from '../../snacks/AlertBar'
 import ExportToExcel from '../../../utils/ExportToExcel'
@@ -14,12 +13,15 @@ import { BackendError } from '../../..'
 import { GetActivitiesOrRemindersDto } from '../../../dtos/crm-remarks.dto'
 import { GetLeadFromExcelDto } from '../../../dtos/lead.dto'
 import { GetReferDto } from '../../../dtos/refer.dto'
-
-function AllReferralPageDialog({ refer }: { refer: GetReferDto }) {
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+    refer: GetReferDto
+}
+function AllReferralPageDialog({ refer, dialog, setDialog }: Props) {
     const [selectedData, setSelectedData] = useState<GetLeadFromExcelDto[]>([])
     const { user: LoggedInUser } = useContext(UserContext)
     const [sent, setSent] = useState(false)
-    const { choice, setChoice } = useContext(ChoiceContext)
     const [leads, setLeads] = useState<GetActivitiesOrRemindersDto[]>([])
 
     const { data, isLoading, isSuccess, refetch } = useQuery<AxiosResponse<GetActivitiesOrRemindersDto[]>, BackendError>(["assigned_leads", refer], async () => GetAllReferrals({ refer: refer }))
@@ -80,12 +82,12 @@ function AllReferralPageDialog({ refer }: { refer: GetReferDto }) {
 
     return (
         <Dialog fullScreen
-            open={choice === LeadChoiceActions.view_referrals ? true : false}
-            onClose={() => setChoice({ type: LeadChoiceActions.close_lead })}
+            open={dialog === 'AllReferralPageDialog'}
+            onClose={() => setDialog(undefined)}
         >
             {isLoading && <LinearProgress />}
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                setChoice({ type: LeadChoiceActions.close_lead })
+                setDialog(undefined)
             }}>
                 <Cancel fontSize='large' />
             </IconButton>
@@ -98,11 +100,11 @@ function AllReferralPageDialog({ refer }: { refer: GetReferDto }) {
                 >     Export To Excel</Button>}
             </DialogTitle>
             <DialogContent>
-            
+
 
                 {sent && <AlertBar message="File Exported Successfuly" color="success" />}
 
-             
+
                 <Box sx={{
                     overflow: "auto",
                     height: '70vh'
@@ -309,7 +311,7 @@ function AllReferralPageDialog({ refer }: { refer: GetReferDto }) {
                                 </STableHeadCell>
 
 
-                              
+
 
                                 <STableHeadCell
                                 >
@@ -455,7 +457,7 @@ function AllReferralPageDialog({ refer }: { refer: GetReferDto }) {
                                             </STableCell>
 
 
-                                        
+
                                             <STableCell
                                                 title="double click to download"
                                                 onDoubleClick={() => {

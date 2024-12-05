@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, IconButton, DialogTitle, Stack, Button, Typography } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
-import { CheckListChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import { UserContext } from '../../../contexts/userContext'
 import { toTitleCase } from '../../../utils/TitleCase'
@@ -15,11 +14,14 @@ import { GetChecklistBoxDto } from '../../../dtos/checklist-box.dto'
 import { GetChecklistRemarksDto } from '../../../dtos/checklist-remark.dto'
 import { GetChecklistDto } from '../../../dtos/checklist.dto'
 
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+    checklist: GetChecklistDto, checklist_box: GetChecklistBoxDto
+}
 
-function ViewChecklistBoxRemarksDialog({ checklist_box, checklist }: { checklist: GetChecklistDto, checklist_box: GetChecklistBoxDto }) {
-    const [display, setDisplay] = useState<boolean>(false)
-    const [display2, setDisplay2] = useState<boolean>(false)
-    const { choice, setChoice } = useContext(ChoiceContext)
+function ViewChecklistBoxRemarksDialog({ checklist_box, checklist, dialog, setDialog }: Props) {
+    const [dialog1, setDialog1] = useState<string | undefined>()
     const [remark, setRemark] = useState<GetChecklistRemarksDto>()
     const [remarks, setRemarks] = useState<GetChecklistRemarksDto[]>()
 
@@ -36,21 +38,20 @@ function ViewChecklistBoxRemarksDialog({ checklist_box, checklist }: { checklist
             setRemarks(data?.data)
     }, [isSuccess, data])
 
-    console.log(choice)
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
-            open={choice === CheckListChoiceActions.view_checklist_box_remarks ? true : false}
-            onClose={() => setChoice({ type: CheckListChoiceActions.close_checklist })}
+            open={dialog == 'ViewChecklistBoxRemarksDialog'}
+            onClose={() => setDialog(undefined)}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() =>
-                setChoice({ type: CheckListChoiceActions.close_checklist })}>
+                setDialog(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>
-            
-            <Typography sx={{ textAlign: 'center', pt:2,fontWeight: 600 }}>{moment(new Date(checklist_box.date)).format("DD/MM/YYYY")}</Typography>
-            <Typography sx={{ textAlign: 'center', px: 2, mx: 2, fontWeight: 600, minWidth: 300 }}>{checklist.work_title.slice(0,70)}</Typography>
+
+            <Typography sx={{ textAlign: 'center', pt: 2, fontWeight: 600 }}>{moment(new Date(checklist_box.date)).format("DD/MM/YYYY")}</Typography>
+            <Typography sx={{ textAlign: 'center', px: 2, mx: 2, fontWeight: 600, minWidth: 300 }}>{checklist.work_title.slice(0, 70)}</Typography>
             <DialogContent>
-                
+
                 <Stack direction="column" gap={2} >
                     {remarks && remarks.map((item, index) => {
                         return (
@@ -63,13 +64,13 @@ function ViewChecklistBoxRemarksDialog({ checklist_box, checklist }: { checklist
                                     <Stack justifyContent={'end'} direction="row" gap={0} pt={2}>
                                         {user?.assigned_permissions.includes('checklist_delete') && <IconButton size="small" color="error" onClick={() => {
                                             setRemark(item)
-                                            setDisplay(true)
+                                            setDialog1('DeleteChecklistRemarkDialog')
                                         }}>
                                             Delete</IconButton>}
                                         {user && item.remark && user?.username === item.created_by.label && new Date(item.created_date) > new Date(previous_date) && user?.assigned_permissions.includes('checklist_edit') && <IconButton size="small" color="success"
                                             onClick={() => {
                                                 setRemark(item)
-                                                setDisplay2(true)
+                                                setDialog1('CreateOrEditChecklistRemarkDialog')
 
                                             }}
                                         >Edit</IconButton>}
@@ -87,18 +88,15 @@ function ViewChecklistBoxRemarksDialog({ checklist_box, checklist }: { checklist
                 {(checklist_box.stage !== 'done' || user?.is_admin) && <Button variant='contained'
                     fullWidth
                     onClick={() => {
-                        setDisplay2(true)
+                        setDialog1('CreateOrEditChecklistRemarkDialog')
                         setRemark(undefined)
                     }}>Add Remark</Button>}
             </DialogTitle>
-            {remark && display && <DeleteChecklistRemarkDialog display={display} setDisplay={setDisplay} remark={remark} />}
-            {!remark && display2 && <CreateOrEditChecklistRemarkDialog
-                checklist={checklist} checklist_box={checklist_box}
-                display={display2} setDisplay={setDisplay2} />}
-            {remark && display2 && <CreateOrEditChecklistRemarkDialog
+            {remark && dialog1 && <DeleteChecklistRemarkDialog dialog={dialog1} setDialog={setDialog1} remark={remark} />}
+            <CreateOrEditChecklistRemarkDialog
                 checklist={checklist} checklist_box={checklist_box}
                 remark={remark}
-                display={display2} setDisplay={setDisplay2} />}
+                dialog={dialog1} setDialog={setDialog1} />
         </Dialog>
     )
 }

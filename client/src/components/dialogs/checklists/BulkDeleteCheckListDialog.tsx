@@ -1,6 +1,5 @@
 import { Dialog, DialogTitle, DialogContent, IconButton, Stack, Button, CircularProgress, Typography } from '@mui/material';
-import { useContext, useEffect } from 'react';
-import { ChoiceContext, CheckListChoiceActions } from '../../../contexts/dialogContext';
+import { useEffect } from 'react';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { useMutation } from 'react-query';
@@ -8,9 +7,14 @@ import { BackendError } from '../../..';
 import { AxiosResponse } from 'axios';
 import { BulkDeleteChecklists } from '../../../services/CheckListServices';
 import { queryClient } from '../../../main';
+type Props = {
+    dialog: string | undefined,
+    ids: string[],
+    clearIds: () => any
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
-function BulkDeleteCheckListDialog({ ids, clearIds }: { ids: string[],clearIds:()=>any }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+}
+function BulkDeleteCheckListDialog({ ids, clearIds, dialog, setDialog }: Props) {
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, { ids: string[] }>
         (BulkDeleteChecklists, {
@@ -21,17 +25,17 @@ function BulkDeleteCheckListDialog({ ids, clearIds }: { ids: string[],clearIds:(
 
     useEffect(() => {
         if (isSuccess)
-            setChoice({ type: CheckListChoiceActions.close_checklist })
-    }, [setChoice, isSuccess])
+            setDialog(undefined)
+    }, [isSuccess])
 
     return (
         <>
-            <Dialog fullWidth open={choice === CheckListChoiceActions.bulk_delete_checklist ? true : false}
-                onClose={() => setChoice({ type: CheckListChoiceActions.close_checklist })}
+            <Dialog fullWidth open={dialog == 'BulkDeleteCheckListDialog'}
+                onClose={() => setDialog(undefined)}
             >
                 <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                    
-                    setChoice({ type: CheckListChoiceActions.close_checklist })
+
+                    setDialog(undefined)
                     clearIds();
                 }
                 }>

@@ -13,7 +13,11 @@ import { AssignKeysToUsers } from '../../../services/KeyServices';
 import { GetKeyDto } from '../../../dtos/keys.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 
 function AssignKeysDialog({ keys, flag }: { keys: GetKeyDto[], flag: number }) {
     const [users, setUsers] = useState<DropDownDto[]>([])

@@ -1,6 +1,5 @@
-import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button,   InputLabel, Select, OutlinedInput, MenuItem, Checkbox, ListItemText } from '@mui/material'
-import { useContext, useEffect, useState } from 'react';
-import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
+import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, InputLabel, Select, OutlinedInput, MenuItem, Checkbox, ListItemText } from '@mui/material'
+import { useEffect, useState } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { useMutation, useQuery } from 'react-query';
@@ -14,15 +13,18 @@ import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 
-
-function AssignCrmStatesDialog({ states, flag }: { states: GetCrmStateDto[], flag: number }) {
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+    states: GetCrmStateDto[], flag: number
+}
+function AssignCrmStatesDialog({ states, flag, dialog, setDialog }: Props) {
 
     const [users, setUsers] = useState<DropDownDto[]>([])
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
 
 
 
-    const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
@@ -73,21 +75,21 @@ function AssignCrmStatesDialog({ states, flag }: { states: GetCrmStateDto[], fla
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: LeadChoiceActions.close_lead });
+            setDialog(undefined)
             formik.setValues({ user_ids: [], state_ids: [] });
         }
     }, [isSuccess])
     return (
         <Dialog
             fullWidth
-            open={choice === LeadChoiceActions.bulk_assign_crm_states ? true : false}
+            open={dialog === 'AssignCrmStatesDialog'}
             onClose={() => {
-                setChoice({ type: LeadChoiceActions.close_lead });
+                setDialog(undefined)
                 formik.setValues({ user_ids: [], state_ids: [] });
             }}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                setChoice({ type: LeadChoiceActions.close_lead });
+                setDialog(undefined)
                 formik.setValues({ user_ids: [], state_ids: [] });
             }}>
                 <Cancel fontSize='large' />
@@ -119,7 +121,7 @@ function AssignCrmStatesDialog({ states, flag }: { states: GetCrmStateDto[], fla
                             renderValue={() => `${formik.values.user_ids.length} users`}
                             {...formik.getFieldProps('user_ids')}
                         >
-                             {users.map((user) => (
+                            {users.map((user) => (
                                 <MenuItem key={user.id} value={user.id}>
                                     <Checkbox checked={formik.values.user_ids.includes(user.id)} />
                                     <ListItemText primary={user.label} />
@@ -127,27 +129,27 @@ function AssignCrmStatesDialog({ states, flag }: { states: GetCrmStateDto[], fla
                             ))}
                         </Select>
 
-                   
-                    <Button style={{ padding: 10, marginTop: 10 }} variant="contained" color={flag != 0 ? "primary" : "error"} type="submit"
-                        disabled={Boolean(isLoading)}
-                        fullWidth>
-                        {flag == 0 ? 'Remove ' : "Assign"}
-                    </Button>
-                </form>
+
+                        <Button style={{ padding: 10, marginTop: 10 }} variant="contained" color={flag != 0 ? "primary" : "error"} type="submit"
+                            disabled={Boolean(isLoading)}
+                            fullWidth>
+                            {flag == 0 ? 'Remove ' : "Assign"}
+                        </Button>
+                    </form>
 
 
-            </Stack>
-            {
-                isError ? (
-                    <AlertBar message={error?.response.data.message} color="error" />
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <AlertBar message="successfull" color="success" />
-                ) : null
-            }
-        </DialogContent>
+                </Stack>
+                {
+                    isError ? (
+                        <AlertBar message={error?.response.data.message} color="error" />
+                    ) : null
+                }
+                {
+                    isSuccess ? (
+                        <AlertBar message="successfull" color="success" />
+                    ) : null
+                }
+            </DialogContent>
         </Dialog >
     )
 }

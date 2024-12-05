@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, IconButton, DialogTitle, Stack } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
-import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
+import { useEffect, useState } from 'react'
 import { Cancel } from '@mui/icons-material'
 import { toTitleCase } from '../../../utils/TitleCase'
 import { AxiosResponse } from 'axios'
@@ -9,10 +8,13 @@ import { BackendError } from '../../..'
 import { GetReferRemarksHistory } from '../../../services/LeadsServices'
 import { GetRemarksDto } from '../../../dtos/crm-remarks.dto'
 
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+    id: string
+}
 
-
-function ViewReferRemarksDialog({ id }: { id: string }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+function ViewReferRemarksDialog({ id, dialog, setDialog }: Props) {
     const [remarks, setRemarks] = useState<GetRemarksDto[]>()
 
     const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", id], async () => GetReferRemarksHistory({ id: id }))
@@ -28,9 +30,9 @@ function ViewReferRemarksDialog({ id }: { id: string }) {
     }, [isSuccess])
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
-            open={choice === LeadChoiceActions.view_refer_remarks ? true : false}
+            open={dialog === 'ViewReferRemarksDialog'}
         >
-            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: LeadChoiceActions.close_lead })}>
+            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>
@@ -47,7 +49,7 @@ function ViewReferRemarksDialog({ id }: { id: string }) {
                                 <p>{item.remind_date && `Remind Date : ${item.remind_date}`} </p>
                                 <br></br>
                                 <p>{item.created_date}</p>
-                               
+
                             </div>
 
                         )

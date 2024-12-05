@@ -1,17 +1,21 @@
-import { Dialog, DialogTitle, DialogContent, IconButton,  Stack, Button, CircularProgress, Typography } from '@mui/material';
-import { useContext, useEffect } from 'react';
-import { ChoiceContext, CheckListChoiceActions } from '../../../contexts/dialogContext';
+import { Dialog, DialogTitle, DialogContent, IconButton, Stack, Button, CircularProgress, Typography } from '@mui/material';
+import { useEffect } from 'react';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { AxiosResponse } from 'axios';
-import {  DeleteChecklistCategory } from '../../../services/CheckListServices';
+import { DeleteChecklistCategory } from '../../../services/CheckListServices';
 import { queryClient } from '../../../main';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 
-function DeleteCheckListCategoryDialog({ category }: { category: DropDownDto }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>,
+    category: DropDownDto
+}
+function DeleteCheckListCategoryDialog({ category, dialog, setDialog }: Props) {
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
         (DeleteChecklistCategory, {
@@ -22,15 +26,15 @@ function DeleteCheckListCategoryDialog({ category }: { category: DropDownDto }) 
 
     useEffect(() => {
         if (isSuccess)
-            setChoice({ type: CheckListChoiceActions.close_checklist })
-    }, [setChoice, isSuccess])
+            setDialog(undefined)
+    }, [isSuccess])
 
     return (
         <>
-            <Dialog fullWidth open={choice === CheckListChoiceActions.delete_checklist_category ? true : false}
-                onClose={() => setChoice({ type: CheckListChoiceActions.close_checklist })}
+            <Dialog fullWidth open={dialog == 'DeleteCheckListCategoryDialog'}
+                onClose={() => setDialog(undefined)}
             >
-                <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: CheckListChoiceActions.close_checklist })}>
+                <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                     <Cancel fontSize='large' />
                 </IconButton>
 
@@ -63,7 +67,6 @@ function DeleteCheckListCategoryDialog({ category }: { category: DropDownDto }) 
                 >
                     <Button fullWidth variant="outlined" color="error"
                         onClick={() => {
-                            setChoice({ type: CheckListChoiceActions.delete_checklist })
                             mutate(category.id)
                         }}
                         disabled={isLoading}

@@ -5,7 +5,11 @@ import { Cancel } from '@mui/icons-material';
 
 import CreateorEditCheckListForm from '../../forms/checklists/CreateorEditCheckListForm';
 import { GetChecklistDto } from '../../../dtos/checklist.dto';
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function CreateOrEditCheckListDialog({ checklist, setChecklist }: { checklist?: GetChecklistDto, setChecklist: React.Dispatch<React.SetStateAction<GetChecklistDto | undefined>> }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (

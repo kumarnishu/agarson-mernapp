@@ -4,7 +4,11 @@ import {  ChoiceContext, PaymentsChoiceActions } from '../../../contexts/dialogC
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditCategoryForm from '../../forms/payments/CreateOrEditPaymentCategoryForm'
 import { DropDownDto } from '../../../dtos/dropdown.dto'
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function CreateOrEditPaymentCategoryDialog({ category }: { category?: DropDownDto}) {
     const { choice, setChoice } = useContext(ChoiceContext)
     

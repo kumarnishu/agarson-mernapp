@@ -1,18 +1,20 @@
 import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, CircularProgress, IconButton } from '@mui/material'
 import { AxiosResponse } from 'axios';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { KeyChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { DeleteExcelDBRemark } from '../../../services/ExcelDbService';
 import { GetExcelDBRemarksDto } from '../../../dtos/excel-db-remark.dto';
+type Props = {
+  dialog: string | undefined,
+  setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+  remark: GetExcelDBRemarksDto
+}
 
-
-function DeleteExcelDBRemarkDialog({ remark, display, setDisplay }: { remark: GetExcelDBRemarksDto, display: boolean, setDisplay: React.Dispatch<React.SetStateAction<boolean>> }) {
-  const { choice, setChoice } = useContext(ChoiceContext)
+function DeleteExcelDBRemarkDialog({ remark, dialog, setDialog }: Props) {
   const { mutate, isLoading, isSuccess, error, isError } = useMutation
     <AxiosResponse<any>, BackendError, string>
     (DeleteExcelDBRemark, {
@@ -23,20 +25,16 @@ function DeleteExcelDBRemarkDialog({ remark, display, setDisplay }: { remark: Ge
 
   useEffect(() => {
     if (isSuccess) {
-      setDisplay(false)
-      setChoice({ type: KeyChoiceActions.close_key })
+      setDialog(undefined)
     }
 
   }, [isSuccess])
 
   return (
-    <Dialog open={choice === KeyChoiceActions.delete_excel_db_remark || display ? true : false}
+    <Dialog open={dialog === 'DeleteExcelDBRemarkDialog'}
     >
       <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-        if (!display)
-          setChoice({ type: KeyChoiceActions.close_key })
-        else
-          setDisplay(false)
+        setDialog(undefined)
       }}>
         <Cancel fontSize='large' />
       </IconButton>
@@ -76,7 +74,7 @@ function DeleteExcelDBRemarkDialog({ remark, display, setDisplay }: { remark: Ge
         </Button>
         <Button fullWidth variant="contained" color="info"
           onClick={() => {
-            setDisplay(false)
+            setDialog(undefined)
           }}
           disabled={isLoading}
         >

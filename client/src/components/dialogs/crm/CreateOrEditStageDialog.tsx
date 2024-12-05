@@ -1,24 +1,28 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
-import { useContext } from 'react'
-import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditLeadStageForm from '../../forms/crm/CreateOrEditLeadStageForm'
 import { DropDownDto } from '../../../dtos/dropdown.dto'
 
-function CreateOrEditStageDialog({ stage }: { stage?: DropDownDto}) {
-    const { choice, setChoice } = useContext(ChoiceContext)
-    
+
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+    stage?: DropDownDto
+}
+
+function CreateOrEditStageDialog({ stage, dialog, setDialog }: Props) {
+
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
-            open={choice === LeadChoiceActions.create_or_edit_stage  ? true : false}
+            open={dialog === 'CreateOrEditStageDialog'}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                setChoice({ type: LeadChoiceActions.close_lead })
+                setDialog(undefined)
             }
             }>
                 <Cancel fontSize='large' />
             </IconButton>
-            <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!stage ?"New Stage":"Edit Stage"}</DialogTitle>
+            <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!stage ? "New Stage" : "Edit Stage"}</DialogTitle>
             <DialogContent>
                 <CreateOrEditLeadStageForm stage={stage} />
             </DialogContent>

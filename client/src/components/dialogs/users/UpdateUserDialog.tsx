@@ -4,7 +4,11 @@ import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContex
 import UpdateUserForm from '../../forms/user/UpdateUserForm'
 import { Cancel } from '@mui/icons-material'
 import { GetUserDto } from '../../../dtos/user.dto'
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function UpdateUserDialog({ user }: { user: GetUserDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)
 

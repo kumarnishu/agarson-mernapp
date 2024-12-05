@@ -1,18 +1,20 @@
 import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, CircularProgress, IconButton } from '@mui/material'
 import { AxiosResponse } from 'axios';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
-import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { BulkDeleteUselessLeads } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { GetLeadDto } from '../../../dtos/lead.dto';
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+    selectedLeads: GetLeadDto[], removeSelectedLeads: () => void
+}
 
-
-function BulkDeleteUselessLeadsDialog({ selectedLeads, removeSelectedLeads }: { selectedLeads: GetLeadDto[], removeSelectedLeads: () => void }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+function BulkDeleteUselessLeadsDialog({ selectedLeads, removeSelectedLeads, dialog, setDialog }: Props) {
     const [leadsIds, setLeadsIds] = useState<string[]>()
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, { leads_ids: string[] }>
@@ -36,15 +38,15 @@ function BulkDeleteUselessLeadsDialog({ selectedLeads, removeSelectedLeads }: { 
     useEffect(() => {
         if (isSuccess)
             setTimeout(() => {
-                setChoice({ type: LeadChoiceActions.close_lead })
+                setDialog(undefined)
             }, 1000)
-    }, [setChoice, isSuccess])
+    }, [isSuccess])
 
     return (
-        <Dialog open={choice === LeadChoiceActions.bulk_delete_useless_leads ? true : false}
-            onClose={() => setChoice({ type: LeadChoiceActions.close_lead })}
+        <Dialog open={dialog === 'BulkDeleteUselessLeadsDialog'}
+            onClose={() => setDialog(undefined)}
         >
-            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: LeadChoiceActions.close_lead })}>
+            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
@@ -74,7 +76,6 @@ function BulkDeleteUselessLeadsDialog({ selectedLeads, removeSelectedLeads }: { 
             >
                 <Button fullWidth variant="outlined" color="error"
                     onClick={() => {
-                        setChoice({ type: LeadChoiceActions.bulk_delete_useless_leads })
                         if (leadsIds && leadsIds.length > 0)
                             mutate({ leads_ids: leadsIds })
                     }}

@@ -4,7 +4,11 @@ import { ChoiceContext, SaleChoiceActions, } from '../../../contexts/dialogConte
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditVisitReportRemarkForm from '../../forms/sales/CreateOrEditVisitReportRemarkForm'
 import { GetVisitSummaryReportRemarkDto } from '../../../dtos/visit_remark.dto'
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function CreateOrEditVisitReportRemarkDialog({ employee, visit_date, remark, display, setDisplay }: {
     employee: string,
     visit_date: string, remark?: GetVisitSummaryReportRemarkDto, display?: boolean, setDisplay?: React.Dispatch<React.SetStateAction<boolean>>

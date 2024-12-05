@@ -1,8 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, CircularProgress, IconButton } from '@mui/material'
 import { AxiosResponse } from 'axios';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { DeleteBill } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
@@ -10,9 +9,13 @@ import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { GetBillDto } from '../../../dtos/crm-bill.dto';
 
+type Props = {
+  dialog: string | undefined,
+  setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+  bill: GetBillDto,
+}
 
-function DeleteBillDialog({ bill, display, setDisplay }: { bill: GetBillDto, display: boolean, setDisplay: React.Dispatch<React.SetStateAction<boolean>> }) {
-  const {  setChoice } = useContext(ChoiceContext)
+function DeleteBillDialog({ bill, dialog, setDialog }: Props) {
   const { mutate, isLoading, isSuccess, error, isError } = useMutation
     <AxiosResponse<any>, BackendError, string>
     (DeleteBill, {
@@ -23,20 +26,16 @@ function DeleteBillDialog({ bill, display, setDisplay }: { bill: GetBillDto, dis
 
   useEffect(() => {
     if (isSuccess) {
-      setDisplay(false)
-      setChoice({ type: LeadChoiceActions.close_lead })
+      setDialog(undefined)
     }
 
   }, [isSuccess])
 
   return (
-    <Dialog open={display ? true : false}
+    <Dialog open={dialog == 'DeleteBillDialog'}
     >
       <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-        if (!display)
-          setChoice({ type: LeadChoiceActions.close_lead })
-        else
-          setDisplay(false)
+        setDialog(undefined)
       }}>
         <Cancel fontSize='large' />
       </IconButton>
@@ -76,7 +75,7 @@ function DeleteBillDialog({ bill, display, setDisplay }: { bill: GetBillDto, dis
         </Button>
         <Button fullWidth variant="contained" color="info"
           onClick={() => {
-            setDisplay(false)
+            setDialog(undefined)
           }}
           disabled={isLoading}
         >

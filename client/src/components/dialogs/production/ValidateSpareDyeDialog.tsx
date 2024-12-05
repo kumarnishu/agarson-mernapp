@@ -10,7 +10,11 @@ import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialog
 import { ValidateSpareDye } from '../../../services/ProductionServices';
 import { GetUserDto } from '../../../dtos/user.dto';
 import { GetSpareDyeDto } from '../../../dtos/spare-dye.dto';
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function ValidateSpareDyeDialog({ sparedye }: { sparedye: GetSpareDyeDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, isError, error } = useMutation

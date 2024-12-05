@@ -4,7 +4,11 @@ import { ProductionChoiceActions, ChoiceContext } from '../../../contexts/dialog
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditMachinecategoryForm from '../../forms/production/CreateOrEditMachinecategoryForm'
 import { DropDownDto } from '../../../dtos/dropdown.dto'
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function CreateOrEditMachineCategoryDialog({ machine_category }: { machine_category?: DropDownDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)
 

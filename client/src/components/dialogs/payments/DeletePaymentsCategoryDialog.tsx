@@ -9,7 +9,11 @@ import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
 import { DeletePaymentsCategory } from '../../../services/PaymentsService';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function DeletePaymentsCategoryDialog({ category }: { category: DropDownDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation

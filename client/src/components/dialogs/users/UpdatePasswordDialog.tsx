@@ -4,7 +4,11 @@ import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContex
 import UpdatePasswordForm from '../../forms/user/UpdatePasswordForm';
 import { Cancel } from '@mui/icons-material';
 
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function UpdatePasswordDialog() {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (

@@ -9,7 +9,11 @@ import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { ToogleMachine } from '../../../services/ProductionServices';
 import { GetMachineDto } from '../../../dtos/machine.dto';
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function ToogleMachineDialog({ machine }: { machine: GetMachineDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation

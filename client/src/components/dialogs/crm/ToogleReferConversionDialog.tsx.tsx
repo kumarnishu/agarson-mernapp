@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Button, CircularProgress } from '@mui/material'
-import { useContext, useEffect } from 'react';
-import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import { useEffect } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { BackendError } from '../../..';
@@ -9,10 +8,13 @@ import { queryClient } from '../../../main';
 import { useMutation } from 'react-query';
 import AlertBar from '../../snacks/AlertBar';
 import { GetReferDto } from '../../../dtos/refer.dto';
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+    refer: GetReferDto
+}
 
-
-function ToogleReferConversionDialog({ refer }: { refer: GetReferDto }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+function ToogleReferConversionDialog({ refer, dialog, setDialog }: Props) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<GetReferDto>, BackendError, string>
         (ToogleReferPartyConversion, {
@@ -20,20 +22,20 @@ function ToogleReferConversionDialog({ refer }: { refer: GetReferDto }) {
                 queryClient.invalidateQueries('refers')
                 queryClient.invalidateQueries('fuzzyrefers')
                 queryClient.invalidateQueries('new_refer_reports')
-                
+
             }
         })
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: LeadChoiceActions.close_lead })
+            setDialog(undefined)
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
-        <Dialog open={choice === LeadChoiceActions.toogle_refer ? true : false}
-            onClose={() => setChoice({ type: LeadChoiceActions.close_lead })}
+        <Dialog open={dialog === "ToogleReferConversionDialog"}
+            onClose={() => setDialog(undefined)}
         >
-            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: LeadChoiceActions.close_lead })}>
+            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">

@@ -4,8 +4,11 @@ import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialog
 import { Cancel } from '@mui/icons-material';
 import CreateOrEditProductionForm from '../../forms/production/CreateOrEditProductionForm.tsx';
 import { GetProductionDto } from '../../../dtos/production.dto.ts';
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
-
+}
 function CreateOrEditProductionDialog({ production }: { production?: GetProductionDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (

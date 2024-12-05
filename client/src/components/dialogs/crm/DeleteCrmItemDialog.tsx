@@ -1,9 +1,8 @@
-import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, CircularProgress,  IconButton } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, CircularProgress, IconButton } from '@mui/material'
 import { AxiosResponse } from 'axios';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import {  DeleteCrmItem } from '../../../services/LeadsServices';
+import { DeleteCrmItem } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
@@ -12,15 +11,19 @@ import { GetCrmCityDto } from '../../../dtos/crm-city.dto';
 import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+    refer?: DropDownDto, lead?: DropDownDto, state?: GetCrmStateDto, city?: GetCrmCityDto, type?: DropDownDto, source?: DropDownDto, stage?: DropDownDto
+}
 
-function DeleteCrmItemDialog({ refer, lead, state, city, type, source, stage }: { refer?: DropDownDto, lead?: DropDownDto, state?: GetCrmStateDto, city?: GetCrmCityDto, type?: DropDownDto, source?: DropDownDto, stage?: DropDownDto }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+function DeleteCrmItemDialog({ refer, lead, state, city, type, source, stage, dialog, setDialog }: Props) {
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, { refer?: DropDownDto, lead?: DropDownDto, state?: GetCrmStateDto, city?: GetCrmCityDto, type?: DropDownDto, source?: DropDownDto, stage?: DropDownDto }>
         (DeleteCrmItem, {
             onSuccess: () => {
-                if(refer)
-                queryClient.invalidateQueries('refers')
+                if (refer)
+                    queryClient.invalidateQueries('refers')
                 if (state)
                     queryClient.invalidateQueries('crm_states')
                 if (lead)
@@ -29,7 +32,7 @@ function DeleteCrmItemDialog({ refer, lead, state, city, type, source, stage }: 
                     queryClient.invalidateQueries('crm_sources')
                 if (type)
                     queryClient.invalidateQueries('crm_types')
-                if(city)
+                if (city)
                     queryClient.invalidateQueries('crm_cities')
                 if (stage)
                     queryClient.invalidateQueries('crm_stages')
@@ -38,18 +41,18 @@ function DeleteCrmItemDialog({ refer, lead, state, city, type, source, stage }: 
 
     useEffect(() => {
         if (isSuccess)
-            setChoice({ type: LeadChoiceActions.close_lead })
-    }, [setChoice, isSuccess])
+            setDialog(undefined)
+    }, [isSuccess])
 
     return (
-        <Dialog   open={choice === LeadChoiceActions.delete_crm_item ? true : false}
+        <Dialog open={dialog === 'DeleteCrmItemDialog'}
         >
-            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: LeadChoiceActions.close_lead })}>
+            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>
-            <DialogTitle sx={{ minWidth: '350px',fontSize:'20px' }} textAlign="center">
+            <DialogTitle sx={{ minWidth: '350px', fontSize: '20px' }} textAlign="center">
 
-                {refer&&'Delete Refer'}
+                {refer && 'Delete Refer'}
                 {state && 'Delete State'}
                 {lead && 'Delete Lead'}
                 {type && 'Delete Lead Type'}
@@ -69,7 +72,7 @@ function DeleteCrmItemDialog({ refer, lead, state, city, type, source, stage }: 
             }
             <DialogContent>
                 <Typography variant="h4" color="error">
-                   Are you sure to permanently delete this item ?
+                    Are you sure to permanently delete this item ?
 
                 </Typography>
             </DialogContent>
@@ -90,7 +93,7 @@ function DeleteCrmItemDialog({ refer, lead, state, city, type, source, stage }: 
                 </Button>
                 <Button fullWidth variant="contained" color="info"
                     onClick={() => {
-                        setChoice({ type: LeadChoiceActions.close_lead })
+                        setDialog(undefined)
                     }}
                     disabled={isLoading}
                 >

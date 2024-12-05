@@ -4,7 +4,11 @@ import { ProductionChoiceActions, ChoiceContext } from '../../../contexts/dialog
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditDyeLocationForm from '../../forms/production/CreateOrEditDyeLocationForm'
 import { GetDyeLocationDto } from '../../../dtos/dye-location.dto'
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function CreateOrEditDyeLocationDialog({ location }: { location?: GetDyeLocationDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)
 

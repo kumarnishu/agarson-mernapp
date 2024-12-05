@@ -11,7 +11,11 @@ import { GetVisitReportRemarksHistory } from '../../../services/SalesServices'
 import DeleteVisitRemarkDialog from './DeleteVisitRemarkDialog'
 import CreateOrEditVisitReportRemarkDialog from './CreateOrEditVisitReportRemarkDialog'
 import { GetVisitSummaryReportRemarkDto } from '../../../dtos/visit_remark.dto'
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 
 function ViewVisitReportRemarksDialog({ employee, visit_date }: { employee: string, visit_date: string }) {
     const [display, setDisplay] = useState<boolean>(false)

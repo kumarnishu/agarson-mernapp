@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, CircularProgress, IconButton } from '@mui/material'
 import { AxiosResponse } from 'axios';
-import {  useEffect } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
@@ -9,8 +9,13 @@ import AlertBar from '../../snacks/AlertBar';
 import { DeleteCheckListRemark } from '../../../services/CheckListServices';
 import { GetChecklistRemarksDto } from '../../../dtos/checklist-remark.dto';
 
+type Props = {
+  dialog: string | undefined,
+  setDialog: React.Dispatch<React.SetStateAction<string | undefined>>,
+  remark: GetChecklistRemarksDto,
+}
 
-function DeleteChecklistRemarkDialog({ remark, display, setDisplay }: { remark: GetChecklistRemarksDto, display: boolean, setDisplay: React.Dispatch<React.SetStateAction<boolean>> }) {
+function DeleteChecklistRemarkDialog({ remark, dialog, setDialog }: Props) {
   const { mutate, isLoading, isSuccess, error, isError } = useMutation
     <AxiosResponse<any>, BackendError, string>
     (DeleteCheckListRemark, {
@@ -22,16 +27,16 @@ function DeleteChecklistRemarkDialog({ remark, display, setDisplay }: { remark: 
 
   useEffect(() => {
     if (isSuccess) {
-      setDisplay(false)
+      setDialog(undefined)
     }
 
   }, [isSuccess])
 
   return (
-    <Dialog open={display ? true : false}
+    <Dialog open={dialog == 'DeleteChecklistRemarkDialog'}
     >
       <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-          setDisplay(false)
+        setDialog(undefined)
       }}>
         <Cancel fontSize='large' />
       </IconButton>
@@ -71,7 +76,7 @@ function DeleteChecklistRemarkDialog({ remark, display, setDisplay }: { remark: 
         </Button>
         <Button fullWidth variant="contained" color="info"
           onClick={() => {
-            setDisplay(false)
+            setDialog(undefined)
           }}
           disabled={isLoading}
         >

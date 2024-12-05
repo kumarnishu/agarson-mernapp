@@ -10,7 +10,11 @@ import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialog
 import { ValidateShoeWeight } from '../../../services/ProductionServices';
 import { GetUserDto } from '../../../dtos/user.dto';
 import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function ValidateShoeWeightDialog({ weight }: { weight: GetShoeWeightDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, isError, error } = useMutation

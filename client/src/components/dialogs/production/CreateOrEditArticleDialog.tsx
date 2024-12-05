@@ -5,7 +5,11 @@ import { Cancel } from '@mui/icons-material';
 import CreateOrEditArticleForm from '../../forms/production/CreateOrEditArticleForm';
 import { GetArticleDto } from '../../../dtos/article.dto';
 
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function CreateOrEditArticleDialog({ article }: { article?: GetArticleDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (

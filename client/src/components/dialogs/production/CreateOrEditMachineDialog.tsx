@@ -5,7 +5,11 @@ import { Cancel } from '@mui/icons-material';
 import CreateOrEditMachineForm from '../../forms/production/CreateOrEditMachineForm';
 import { GetMachineDto } from '../../../dtos/machine.dto';
 
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function CreateOrEditMachineDialog({ machine }: { machine?: GetMachineDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     return (

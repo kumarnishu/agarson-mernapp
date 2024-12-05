@@ -9,7 +9,11 @@ import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { ToogleDyeLocation } from '../../../services/ProductionServices';
 import { GetDyeLocationDto } from '../../../dtos/dye-location.dto';
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function ToogleDyeLocationDialog({ location }: { location: GetDyeLocationDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation

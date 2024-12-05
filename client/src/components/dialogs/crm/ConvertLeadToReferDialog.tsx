@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Button, CircularProgress, TextField } from '@mui/material'
-import { useContext, useEffect, useState } from 'react';
-import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import { useEffect, useState } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { BackendError } from '../../..';
@@ -11,12 +10,15 @@ import AlertBar from '../../snacks/AlertBar';
 import { GetLeadDto } from '../../../dtos/lead.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
 
-
-function ConvertLeadToReferDialog({ lead }: { lead: GetLeadDto }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
-    const [remark,setRemark]=useState("")
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+    lead: GetLeadDto
+}
+function ConvertLeadToReferDialog({ lead, dialog, setDialog }: Props) {
+    const [remark, setRemark] = useState("")
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
-        <AxiosResponse<GetReferDto>, BackendError, {id:string,body:{remark:string} }>
+        <AxiosResponse<GetReferDto>, BackendError, { id: string, body: { remark: string } }>
         (ConvertLeadToRefer, {
             onSuccess: () => {
                 queryClient.invalidateQueries('leads')
@@ -25,14 +27,14 @@ function ConvertLeadToReferDialog({ lead }: { lead: GetLeadDto }) {
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: LeadChoiceActions.close_lead })
+            setDialog(undefined)
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
-        <Dialog open={choice === LeadChoiceActions.convert_lead_to_refer ? true : false}
-            onClose={() => setChoice({ type: LeadChoiceActions.close_lead })}
+        <Dialog open={dialog === 'ConvertLeadToReferDialog'}
+            onClose={() => setDialog(undefined)}
         >
-            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: LeadChoiceActions.close_lead })}>
+            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
@@ -48,28 +50,28 @@ function ConvertLeadToReferDialog({ lead }: { lead: GetLeadDto }) {
                     <AlertBar message="lead converted successfully" color="success" />
                 ) : null
             }
-            <DialogContent sx={{gap:2}}>
-               
+            <DialogContent sx={{ gap: 2 }}>
+
                 <TextField
                     autoFocus
                     required
                     fullWidth
-                    sx={{mt:2}}
+                    sx={{ mt: 2 }}
                     multiline
                     minRows={4}
                     id="remark"
                     label="Remarks"
                     value={remark}
-                    onChange={(e)=>setRemark(e.target.value)}
+                    onChange={(e) => setRemark(e.target.value)}
                 />
                 <Typography variant="body1" color="error">
                     {`This will make a new Customer with the selected lead data.`}
                 </Typography>
                 {lead &&
                     <>
-                       
+
                         <Button variant="contained" color="primary" onClick={() => {
-                            if(remark)
+                            if (remark)
                                 mutate({
                                     id: lead._id,
                                     body: { remark: remark }

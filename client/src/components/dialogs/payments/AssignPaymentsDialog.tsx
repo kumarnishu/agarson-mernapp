@@ -13,7 +13,11 @@ import { AssignPaymentssToUsers } from '../../../services/PaymentsService';
 import { GetPaymentDto } from '../../../dtos/payment.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 
 function AssignPaymentsDialog({ payments, flag }: { payments: GetPaymentDto[], flag:number }) {
 

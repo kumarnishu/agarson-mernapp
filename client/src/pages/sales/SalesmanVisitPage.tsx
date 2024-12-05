@@ -27,7 +27,7 @@ export default function SalesmanVisitPage() {
   const [reports, setReports] = useState<GetSalesManVisitSummaryReportDto[]>([])
   const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetSalesManVisitSummaryReportDto[]>, BackendError>(["visits", date], async () => GetSalesmanVisit({ date: date }))
   const [employee, setEmployee] = useState<string>()
-
+  const [dialog, setDialog] = useState<string | undefined>()
   const isFirstRender = useRef(true);
 
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});

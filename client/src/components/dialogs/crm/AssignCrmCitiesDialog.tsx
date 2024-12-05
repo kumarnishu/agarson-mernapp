@@ -1,6 +1,5 @@
-import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button,  InputLabel, Select, OutlinedInput, MenuItem, Checkbox, ListItemText } from '@mui/material'
-import { useContext, useEffect, useState } from 'react';
-import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
+import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, InputLabel, Select, OutlinedInput, MenuItem, Checkbox, ListItemText } from '@mui/material'
+import {  useEffect, useState } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { useMutation, useQuery } from 'react-query';
@@ -13,15 +12,16 @@ import { AssignCRMCitiesToUsers } from '../../../services/LeadsServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
 
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+    cities: DropDownDto[], flag: number
+}
 
-function AssignCrmCitiesDialog({ cities, flag }: { cities: DropDownDto[], flag: number }) {
+function AssignCrmCitiesDialog({ cities, flag, dialog, setDialog }: Props) {
 
     const [users, setUsers] = useState<DropDownDto[]>([])
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
-
-
-
-    const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
@@ -72,21 +72,21 @@ function AssignCrmCitiesDialog({ cities, flag }: { cities: DropDownDto[], flag: 
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: LeadChoiceActions.close_lead });
+            setDialog(undefined)
             formik.setValues({ user_ids: [], city_ids: [] });
         }
     }, [isSuccess])
     return (
         <Dialog
             fullWidth
-            open={choice === LeadChoiceActions.bulk_assign_crm_cities ? true : false}
+            open={dialog ==='AssignCrmCitiesDialog'}
             onClose={() => {
-                setChoice({ type: LeadChoiceActions.close_lead });
+                setDialog(undefined)
                 formik.setValues({ user_ids: [], city_ids: [] });
             }}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                setChoice({ type: LeadChoiceActions.close_lead });
+                setDialog(undefined)
                 formik.setValues({ user_ids: [], city_ids: [] });
             }}>
                 <Cancel fontSize='large' />

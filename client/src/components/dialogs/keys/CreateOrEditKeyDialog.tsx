@@ -4,7 +4,11 @@ import { ChoiceContext, KeyChoiceActions } from '../../../contexts/dialogContext
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditKeyForm from '../../forms/keys/CreateOrEditKeyForm'
 import { GetKeyDto } from '../../../dtos/keys.dto'
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function CreateOrEditKeyDialog({ keyitm }: { keyitm?: GetKeyDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)
 

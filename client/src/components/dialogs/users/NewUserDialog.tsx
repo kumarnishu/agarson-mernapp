@@ -3,7 +3,11 @@ import { useContext} from 'react';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import NewUserForm from '../../forms/user/NewUserForm';
 import { Cancel } from '@mui/icons-material';
+type Props = {
+  dialog: string | undefined,
+  setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function NewUserDialog() {
   const { choice, setChoice } = useContext(ChoiceContext)
   return (

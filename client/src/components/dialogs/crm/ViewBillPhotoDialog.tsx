@@ -3,15 +3,20 @@ import { Cancel } from '@mui/icons-material';
 import { DownloadFile } from '../../../utils/DownloadFile';
 import { GetBillDto } from '../../../dtos/crm-bill.dto';
 
-function ViewBillPhotoDialog({ bill, display, setDisplay }: { bill: GetBillDto, display: boolean, setDisplay: React.Dispatch<React.SetStateAction<boolean>> }) {
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+    bill: GetBillDto
+}
+function ViewBillPhotoDialog({ bill, dialog, setDialog }: Props) {
     return (
         <>
-            <Dialog fullScreen open={display}
+            <Dialog fullScreen open={dialog == "ViewBillPhotoDialog"}
                 onClose={() => {
-                    setDisplay(false)
+                    setDialog(undefined)
                 }}
             > <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                setDisplay(false)
+                setDialog(undefined)
             }}>
                     <Cancel fontSize='large' />
                 </IconButton>
@@ -24,7 +29,7 @@ function ViewBillPhotoDialog({ bill, display, setDisplay }: { bill: GetBillDto, 
                                 DownloadFile(bill.billphoto, bill.bill_no)
                             }
                         }}>
-                            <iframe src={bill.billphoto} height={600} />
+                        <iframe src={bill.billphoto} height={600} />
                     </Stack>
                 </DialogContent>
             </Dialog>

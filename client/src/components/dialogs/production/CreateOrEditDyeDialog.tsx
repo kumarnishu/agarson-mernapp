@@ -5,7 +5,11 @@ import { Cancel } from '@mui/icons-material';
 
 import CreateOrEditDyeForm from '../../forms/production/CreateOrEditDyeForm';
 import { GetDyeDto } from '../../../dtos/dye.dto';
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 
 function CreateOrEditDyeDialog({ dye }: { dye?: GetDyeDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

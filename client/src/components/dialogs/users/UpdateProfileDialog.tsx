@@ -5,7 +5,11 @@ import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContex
 import { UserContext } from '../../../contexts/userContext'
 import UpdateProfileForm from '../../forms/user/UpdateProfileForm'
 import { Cancel } from '@mui/icons-material'
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
+}
 function UpdateProfileDialog() {
     const [isEditing, setIsEditing] = useState(false)
     const { choice, setChoice } = useContext(ChoiceContext)
