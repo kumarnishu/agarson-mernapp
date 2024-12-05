@@ -1,8 +1,6 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
-
 import { decimalToTimeForXlsx, excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
-
 import moment from "moment";
 import { IColumnRowData, IRowData } from "../dtos/table.dto";
 import { ICRMState } from "../models/crm-state.model";
@@ -11,6 +9,7 @@ import { IKeyCategory, KeyCategory } from "../models/key-category.model";
 import { Key } from "../models/keys.model";
 import { User, IUser } from "../models/user.model";
 import { VisitReport } from "../models/visit-report.model";
+import { ExcelDBRemark } from "../models/excel-db-remark.model";
 
 export const GetExcelDbReport = async (req: Request, res: Response, next: NextFunction) => {
     const category = req.query.category

@@ -60,7 +60,7 @@ function CrmActivitiesReportPage() {
             {
                 accessorKey: 'actions',
                 header: '',
-                
+
                 enableColumnFilter: false,
                 Footer: <b></b>,
                 Cell: ({ cell }) => <PopUp
@@ -102,39 +102,39 @@ function CrmActivitiesReportPage() {
             {
                 accessorKey: 'remark',
                 header: ' Last Remark',
-        
+
                 Cell: (cell) => <>{cell.row.original.remark ? cell.row.original.remark : ""}</>
             },
             {
                 accessorKey: 'created_by.label',
                 header: 'Creator',
-             
+
                 Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
             },
             {
                 accessorKey: 'created_at',
                 header: 'TimeStamp',
-              
+
                 Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
             },
             {
                 accessorKey: 'stage',
                 header: 'Stage',
-              
+
                 Cell: (cell) => <>{cell.row.original.stage ? cell.row.original.stage : ""}</>
             },
 
             {
                 accessorKey: 'remind_date',
                 header: 'Next Call',
-             
+
                 Cell: (cell) => <>{cell.row.original.remind_date ? cell.row.original.remind_date : ""}</>
             },
 
             {
                 accessorKey: 'name',
                 header: 'Name',
-               
+
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
                 filterSelectOptions: remarks && remarks.map((i) => {
@@ -146,43 +146,43 @@ function CrmActivitiesReportPage() {
             {
                 accessorKey: 'mobile',
                 header: 'Mobile1',
-              
+
                 Cell: (cell) => <>{cell.row.original.mobile ? cell.row.original.mobile : ""}</>
             }, {
                 accessorKey: 'alternate_mobile1',
                 header: 'Mobile2',
-               
+
                 Cell: (cell) => <>{cell.row.original.alternate_mobile1 ? cell.row.original.alternate_mobile1 : ""}</>
             }, {
                 accessorKey: 'alternate_mobile2',
                 header: 'Mobile3',
-               
+
                 Cell: (cell) => <>{cell.row.original.alternate_mobile2 ? cell.row.original.alternate_mobile2 : ""}</>
             },
 
             {
                 accessorKey: 'referred_party_name',
                 header: 'Refer Party',
-               
+
                 Cell: (cell) => <>{cell.row.original.referred_party_name ? cell.row.original.referred_party_name : ""}</>
             },
             {
                 accessorKey: 'referred_party_mobile',
                 header: 'Refer Mobile',
-              
+
                 Cell: (cell) => <>{cell.row.original.referred_party_mobile ? cell.row.original.referred_party_mobile : ""}</>
             },
             {
                 accessorKey: 'referred_date',
                 header: 'Refer Date',
-               
+
                 Cell: (cell) => <>{cell.row.original.referred_date ? cell.row.original.referred_date : ""}</>
             },
             {
                 accessorKey: 'city',
                 header: 'City',
                 filterVariant: 'multi-select',
-              
+
                 Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
                 filterSelectOptions: remarks && remarks.map((i) => {
                     return i.city;
@@ -192,7 +192,7 @@ function CrmActivitiesReportPage() {
                 accessorKey: 'state',
                 header: 'State',
                 filterVariant: 'multi-select',
-               
+
                 Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
                 filterSelectOptions: remarks && remarks.map((i) => {
                     return i.state;
@@ -203,13 +203,13 @@ function CrmActivitiesReportPage() {
             {
                 accessorKey: 'customer_name',
                 header: 'Customer',
-               
+
                 Cell: (cell) => <>{cell.row.original.customer_name ? cell.row.original.customer_name : ""}</>
             }
             , {
                 accessorKey: 'customer_designation',
                 header: 'Designitaion',
-               
+
                 Cell: (cell) => <>{cell.row.original.customer_designation ? cell.row.original.customer_designation : ""}</>
             }
 
@@ -217,14 +217,14 @@ function CrmActivitiesReportPage() {
             {
                 accessorKey: 'email',
                 header: 'Email',
-               
+
                 Cell: (cell) => <>{cell.row.original.email ? cell.row.original.email : ""}</>
             }
             ,
             {
                 accessorKey: 'alternate_email',
                 header: 'Email2',
-               
+
                 Cell: (cell) => <>{cell.row.original.alternate_email ? cell.row.original.alternate_email : ""}</>
             }
             ,
@@ -232,31 +232,31 @@ function CrmActivitiesReportPage() {
             {
                 accessorKey: 'address',
                 header: 'Address',
-               
+
                 Cell: (cell) => <>{cell.row.original.address ? cell.row.original.address : ""}</>
             },
             {
                 accessorKey: 'source',
                 header: 'Lead Source',
-               
+
                 Cell: (cell) => <>{cell.row.original.lead_source ? cell.row.original.lead_source : ""}</>
             },
             {
                 accessorKey: 'type',
                 header: 'Lead Type',
-               
+
                 Cell: (cell) => <>{cell.row.original.lead_type ? cell.row.original.lead_type : ""}</>
             },
             {
                 accessorKey: 'country',
                 header: 'Country',
-               
+
                 Cell: (cell) => <>{cell.row.original.country ? cell.row.original.country : ""}</>
             },
             {
                 accessorKey: 'visiting_card',
                 header: 'Visiting Card',
-                
+
                 Cell: (cell) => <span onDoubleClick={() => {
                     if (cell.row.original.visiting_card && cell.row.original.visiting_card) {
                         DownloadFile(cell.row.original.visiting_card, 'visiting card')
@@ -293,7 +293,7 @@ function CrmActivitiesReportPage() {
             <Box sx={{ width: '100%' }}>
                 <Stack direction={'row'} gap={1} sx={{ maxWidth: '100vw', height: 40, background: 'whitesmoke', p: 1, borderRadius: 1 }} className='scrollable-stack'>
                     {activitiesTopBarData && activitiesTopBarData.data && activitiesTopBarData.data.map((stage, index) => (
-                        <span key={index} style={{ paddingLeft: '10px', fontSize: 11 }}>{toTitleCase(stage.stage)}</span>
+                        <Typography variant='h6' key={index} style={{ paddingLeft: '10px', fontSize: 11 }}>{toTitleCase(stage.stage)} - {stage.value}</Typography>
                     ))}
                 </Stack>
                 <Stack

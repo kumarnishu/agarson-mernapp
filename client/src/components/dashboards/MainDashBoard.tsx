@@ -27,24 +27,23 @@ function MainDashBoard() {
       <Grid container sx={{ pt: 2 }} >
         {features.map((feat, index) => {
           return (
-            <Grid key={index} item xs={12} md={4} lg={3} sx={{ p: 1 }}>
+            <Grid key={index} item xs={12} md={4} lg={4} sx={{ p: 1 }}>
               <Link to={feat.url} style={{ textDecoration: 'none' }}>
                 <Paper
-                  sx={{
-                    p: 2,
-                    m: 0,
-                    height: 60,
-                    borderRadius: 3,
-                    position: 'relative',
-                    overflow: 'hidden',
-                    backdropFilter: 'blur(10px)', // Blurry effect
-                    backgroundColor: 'rgba(255, 255, 255, 0.6)', // Semi-transparent blue
-                    transition: '0.3s',
-                    '&:hover': {
+                 sx={{
+                  p: 2,
+                  m: 0,
+                  minHeight: 60,
+                  position: 'relative',
+                  overflow: 'hidden',
+                  backdropFilter: 'blur(10px)', // Blurry effect
+                  backgroundColor: 'rgba(255, 255, 255, 0.6)', // Semi-transparent blue
+                  transition: '0.3s',
+                  '&:hover': {
                       transform: 'translateY(-2px)',
                       backgroundColor: 'rgba(70, 130, 180, 0.7)', // Darken on hover
-                    },
-                  }}
+                  },
+              }}
                 >
                   <Stack
                     flexDirection="row"

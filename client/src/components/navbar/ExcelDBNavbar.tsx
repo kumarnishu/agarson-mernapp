@@ -1,4 +1,4 @@
-import { Avatar, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { Avatar,  Paper, Stack, Typography } from '@mui/material';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { useContext, useState } from 'react';
@@ -15,51 +15,47 @@ function ExcelDBNavbar() {
     return (
         <>
 
-            <Paper sx={{ bgcolor: 'grey', width: '100vw' }}>
-                {/* parent stack */}
-                <Stack direction="row" sx={{
-                    justifyContent: "space-between", alignItems: "center"
-                }}
-                >
-                    <Stack direction="row" gap={2} pl={1} justifyContent={'center'} alignItems={'center'}>
+<Paper sx={{ bgcolor: 'grey', width: '100vw' }}>
+        {/* parent stack */}
+        <Stack direction="row" sx={{
+          px:1,
+          justifyContent: "space-between", alignItems: "center"
+        }}
+        >
+          <Stack direction={'row'} justifyContent={'left'} alignItems={'center'} sx={{ cursor: 'pointer' }} onClick={(e) => {
+            if (e.currentTarget)
+              setAnchorEl(e.currentTarget)
+          }}>
+            <Avatar
+              sx={{ width: 20, height: 20 }}
+              alt="img1" src={user?.dp} />
+            <Typography variant='h5' sx={{ color: 'white', pl: 1 }}> {toTitleCase(user?.username || "")}</Typography>
+          </Stack>
 
-                        <Stack direction={'row'} justifyContent={'left'} alignItems={'center'} sx={{ cursor: 'pointer' }} onClick={(e) => {
-                            if (e.currentTarget)
-                                setAnchorEl(e.currentTarget)
-                        }}>
-                            <Avatar
-                                sx={{ width: 20, height: 20 }}
-                                alt="img1" src={user?.dp} />
-                            <Typography variant='h5' sx={{ color: 'white', pl: 1 }}> {toTitleCase(user?.username || "")}</Typography>
-                        </Stack>
-                    </Stack>
-
-                    <Stack
-                        direction="row"
-                        justifyContent={"center"}
-                        alignItems="center"
-                        gap={2}
-                    >
-                        <Link to={"/ExcelDB"} title="Double-click to access the main dashboard, or single-click to return." onDoubleClick={() => navigate("/")} replace={true} style={{ textDecoration: 'none' }}>
-                            <Paper sx={{ ml: 2, p: 0.5, bgcolor: 'white', boxShadow: 1, borderRadius: 1, borderColor: 'white' }}>
-                                <Stack flexDirection={"row"} gap={2} sx={{ alignItems: 'center' }}>
-                                    <ButtonLogo title="" height={20} width={20} />
-                                    <Typography variant="button" sx={{ fontSize: 12 }} component="div">
-                                        Excel Reports
-                                    </Typography>
-                                </Stack>
-                            </Paper>
-                        </Link>
-
-                        <IconButton onClick={(e) => {
-                            if (e.currentTarget)
-                                setAnchorEl(e.currentTarget)
-                        }} size='small'>
-                            < MenuIcon sx={{ width: 35, height: 35, color: 'white' }} />
-                        </IconButton>
-                    </Stack>
+          <Stack
+            direction="row"
+            justifyContent={"center"}
+            alignItems="center"
+            gap={2}
+          >
+            <Link to={"/ExcelDB"} title="Double-click to access the main dashboard, or single-click to return." onDoubleClick={() => navigate("/")} replace={true} style={{ textDecoration: 'none' }}>
+              <Paper sx={{ ml: 2, p: 0.5, bgcolor: 'white', boxShadow: 1, borderRadius: 1, borderColor: 'white' }}>
+                <Stack flexDirection={"row"} gap={2} sx={{ alignItems: 'center' }}>
+                  <ButtonLogo title="" height={20} width={20} />
+                  <Typography variant="button" sx={{ fontSize: 12 }} component="div">
+                    Excel Reports
+                  </Typography>
                 </Stack>
-            </Paper >
+              </Paper>
+            </Link>
+
+            < MenuIcon onClick={(e) => {
+              if (e.currentTarget)
+                setAnchorEl(e.currentTarget)
+            }} sx={{ width: 35, height: 35, color: 'white',cursor:'pointer' }} />
+          </Stack>
+        </Stack>
+      </Paper >
             <Outlet />
             <ProfileMenu anchorEl={anchorEl} setAnchorEl={setAnchorEl} />
         </>
