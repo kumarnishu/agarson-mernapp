@@ -8,8 +8,9 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
-import { DropDownDto } from '../../../dtos';
-import { GetCrmCityDto, GetCrmStateDto } from '../../../dtos';
+import { GetCrmCityDto } from '../../../dtos/crm-city.dto';
+import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
 
 
 function DeleteCrmItemDialog({ refer, lead, state, city, type, source, stage }: { refer?: DropDownDto, lead?: DropDownDto, state?: GetCrmStateDto, city?: GetCrmCityDto, type?: DropDownDto, source?: DropDownDto, stage?: DropDownDto }) {

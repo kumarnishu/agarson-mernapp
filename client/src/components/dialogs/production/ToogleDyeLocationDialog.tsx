@@ -7,8 +7,8 @@ import { BackendError } from '../../..';
 import { useMutation } from 'react-query';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
-import { GetDyeLocationDto } from '../../../dtos';
 import { ToogleDyeLocation } from '../../../services/ProductionServices';
+import { GetDyeLocationDto } from '../../../dtos/dye-location.dto';
 
 function ToogleDyeLocationDialog({ location }: { location: GetDyeLocationDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

@@ -2,8 +2,8 @@ import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
 import { useContext } from 'react';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
-import { GetSpareDyeDto } from '../../../dtos';
 import CreateOrEditSpareDyeForm from '../../forms/production/CreateOrEditSpareDyeForm';
+import { GetSpareDyeDto } from '../../../dtos/spare-dye.dto';
 
 
 function CreateOrEditSpareDyeDialog({ sparedye }: { sparedye?: GetSpareDyeDto }) {

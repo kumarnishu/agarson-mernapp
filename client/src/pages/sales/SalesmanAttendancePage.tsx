@@ -4,10 +4,8 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { Box, Button, Fade, IconButton, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
-import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
-import { GetSalesAttendanceDto, GetUserDto } from '../../dtos'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import PopUp from '../../components/popup/PopUp'
 import { Delete, Edit, FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
@@ -19,6 +17,9 @@ import DeleteVisitSalesManAttendanceDialog from '../../components/dialogs/sales/
 import { ChoiceContext, SaleChoiceActions } from '../../contexts/dialogContext'
 import { GetSalesmanAttendances } from '../../services/SalesServices'
 import { HandleNumbers } from '../../utils/IsDecimal'
+import { GetSalesAttendanceDto } from '../../dtos/sales-attendance.dto'
+import { GetUserDto } from '../../dtos/user.dto'
+import { GetUsersForDropdown } from '../../services/UserServices'
 
 
 function SalesmanAttendancePage() {
@@ -46,7 +47,7 @@ function SalesmanAttendancePage() {
     let day = previous_date.getDate() - 4
     previous_date.setDate(day)
     previous_date.setHours(0, 0, 0, 0)
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'sales_menu', show_assigned_only: false }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: false }))
     const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetSalesAttendanceDto[], page: number, total: number, limit: number }>, BackendError>(["attendances", userId, dates?.start_date, dates?.end_date], async () => GetSalesmanAttendances({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -99,9 +100,9 @@ function SalesmanAttendancePage() {
 
             },
             {
-                accessorKey: 'employee.value',
+                accessorKey: 'employee.label',
                 header: ' Employee',
-                Cell: (cell) => <span title={cell.row.original.remark && cell.row.original.remark}>{cell.row.original.employee && cell.row.original.employee.value}</span>
+                Cell: (cell) => <span title={cell.row.original.remark && cell.row.original.remark}>{cell.row.original.employee && cell.row.original.employee.label}</span>
             },
             {
                 accessorKey: 'attendance',
@@ -149,10 +150,10 @@ function SalesmanAttendancePage() {
                 Cell: (cell) => <>{cell.row.original.updated_at}</>
             },
             {
-                accessorKey: 'updated_by.value',
+                accessorKey: 'updated_by.label',
                 header: 'Last Updated By',
 
-                Cell: (cell) => <>{cell.row.original.updated_by.value}</>
+                Cell: (cell) => <>{cell.row.original.updated_by.label}</>
             },
         ],
         [attendances, data],

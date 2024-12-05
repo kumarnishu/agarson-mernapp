@@ -8,7 +8,9 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { AssignPermissionsToOneUser, GetPermissions } from '../../../services/UserServices';
-import { GetUserDto, IMenu, IPermission } from '../../../dtos';
+import { IMenu, IPermission } from '../../../dtos/permission.dto';
+import { GetUserDto } from '../../../dtos/user.dto';
+
 
 
 

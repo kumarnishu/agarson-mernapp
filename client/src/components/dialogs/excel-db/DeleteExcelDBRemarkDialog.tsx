@@ -7,8 +7,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
-import {  GetExcelDBRemarksDto } from '../../../dtos';
 import { DeleteExcelDBRemark } from '../../../services/ExcelDbService';
+import { GetExcelDBRemarksDto } from '../../../dtos/excel-db-remark.dto';
 
 
 function DeleteExcelDBRemarkDialog({ remark, display, setDisplay }: { remark: GetExcelDBRemarksDto, display: boolean, setDisplay: React.Dispatch<React.SetStateAction<boolean>> }) {

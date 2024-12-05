@@ -9,7 +9,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { GetRefers, ReferLead } from '../../../services/LeadsServices';
 import AlertBar from '../../snacks/AlertBar';
-import { GetLeadDto, GetReferDto } from '../../../dtos';
+import { GetLeadDto } from '../../../dtos/lead.dto';
+import { GetReferDto } from '../../../dtos/refer.dto';
 
 
 

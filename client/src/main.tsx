@@ -8,7 +8,6 @@ import { BrowserRouter } from "react-router-dom";
 import { LoadingProvider } from './contexts/loaderContext.tsx';
 import { AlertProvider } from './contexts/alertContext.tsx';
 import { ChoiceProvider } from './contexts/dialogContext.tsx';
-import { FeatureProvider } from './contexts/featureContext.tsx';
 
 
 export const queryClient = new QueryClient({
@@ -24,17 +23,15 @@ export const queryClient = new QueryClient({
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
-      <UserProvider>
-        <LoadingProvider>
+      <LoadingProvider>
+        <UserProvider>
           <AlertProvider>
             <ChoiceProvider>
-              <FeatureProvider>
-                <App />
-              </FeatureProvider>
+              <App />
             </ChoiceProvider>
           </AlertProvider>
-        </LoadingProvider>
-      </UserProvider>
+        </UserProvider>
+      </LoadingProvider>
     </BrowserRouter>
   </QueryClientProvider>
 )

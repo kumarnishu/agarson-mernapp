@@ -8,10 +8,10 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtua
 import moment from 'moment'
 import { GetproductionMachineWise } from '../../services/ProductionServices'
 import { onlyUnique } from '../../utils/UniqueArray'
-import { IColumnRowData } from '../../dtos'
 import { UserContext } from '../../contexts/userContext'
 import ExportToExcel from '../../utils/ExportToExcel'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import { IColumnRowData } from '../../dtos/table.dto'
 
 export default function MachineWiseProductionReportPage() {
   const [reports, setReports] = useState<IColumnRowData['rows']>([])

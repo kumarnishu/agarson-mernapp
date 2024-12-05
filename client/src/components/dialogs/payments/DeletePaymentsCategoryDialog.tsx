@@ -7,8 +7,8 @@ import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
-import { DropDownDto } from '../../../dtos';
 import { DeletePaymentsCategory } from '../../../services/PaymentsService';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
 
 function DeletePaymentsCategoryDialog({ category }: { category: DropDownDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

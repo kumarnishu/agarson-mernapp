@@ -12,7 +12,7 @@ import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/mate
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { DropDownDto } from '../../dtos'
+import { DropDownDto } from '../../dtos/dropdown.dto'
 import { GetMachineCategories } from '../../services/ProductionServices'
 import DeleteProductionItemDialog from '../../components/dialogs/production/DeleteProductionItemDialog'
 import CreateOrEditMachineCategoryDialog from '../../components/dialogs/production/CreateOrEditCategoryDialog'
@@ -86,9 +86,9 @@ export default function MachineCategoryPage() {
                 header: 'Category',
               
                 filterVariant: 'multi-select',
-                Cell: (cell) => <>{cell.row.original.value ? cell.row.original.value : ""}</>,
+                Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
                 filterSelectOptions: categories && categories.map((i) => {
-                    return i.value;
+                    return i.label;
                 }).filter(onlyUnique)
             }
         ],

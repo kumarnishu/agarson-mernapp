@@ -7,8 +7,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
-import { GetVisitSummaryReportRemarkDto } from '../../../dtos';
 import { DeleteVisitReportRemark } from '../../../services/SalesServices';
+import { GetVisitSummaryReportRemarkDto } from '../../../dtos/visit_remark.dto';
 
 
 function DeleteVisitRemarkDialog({ remark, display, setDisplay }: { remark: GetVisitSummaryReportRemarkDto, display: boolean, setDisplay: React.Dispatch<React.SetStateAction<boolean>> }) {

@@ -2,8 +2,8 @@ import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { useContext } from 'react'
 import { ChoiceContext, SaleChoiceActions, } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
-import { GetVisitSummaryReportRemarkDto } from '../../../dtos'
 import CreateOrEditVisitReportRemarkForm from '../../forms/sales/CreateOrEditVisitReportRemarkForm'
+import { GetVisitSummaryReportRemarkDto } from '../../../dtos/visit_remark.dto'
 
 function CreateOrEditVisitReportRemarkDialog({ employee, visit_date, remark, display, setDisplay }: {
     employee: string,

@@ -4,8 +4,8 @@ import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialog
 import { Cancel } from '@mui/icons-material';
 import UpdateShoeWeightForm2 from '../../forms/production/UpdateShoeWeightForm2';
 import UpdateShoeWeightForm3 from '../../forms/production/UpdateShoeWeightForm3';
-import { GetShoeWeightDto } from '../../../dtos';
 import CreateOrEditShoeWeightForm from '../../forms/production/CreateOrEditShoeWeightForm';
+import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
 
 
 function CreateOrEditShoeWeightDialog({ shoe_weight }: { shoe_weight?: GetShoeWeightDto }) {

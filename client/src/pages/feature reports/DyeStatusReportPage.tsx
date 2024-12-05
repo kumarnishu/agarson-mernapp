@@ -8,10 +8,10 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
-import { GetDyeStatusReportDto } from '../../dtos'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { GetDyeStatusReport } from '../../services/ProductionServices'
 import { UserContext } from '../../contexts/userContext'
+import { GetDyeStatusReportDto } from '../../dtos/dye.dto'
 
 
 export default function DyeStatusReportPage() {
@@ -138,9 +138,9 @@ export default function DyeStatusReportPage() {
         aggregationFn: 'count',
         filterVariant: 'multi-select',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
-        Cell: (cell) => <>{cell.row.original.created_by.value.toString() || ""}</>,
+        Cell: (cell) => <>{cell.row.original.created_by.label.toString() || ""}</>,
         filterSelectOptions: reports && reports.map((i) => {
-          return i.created_by.value.toString() || "";
+          return i.created_by.label.toString() || "";
         }).filter(onlyUnique)
       },
 

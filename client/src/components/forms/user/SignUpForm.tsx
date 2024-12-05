@@ -11,7 +11,7 @@ import { UserContext } from '../../../contexts/userContext';
 import { Signup } from '../../../services/UserServices';
 import { BackendError, Target } from '../../..';
 import AlertBar from '../../snacks/AlertBar';
-import { GetUserDto } from '../../../dtos';
+import { GetUserDto } from '../../../dtos/user.dto';
 
 type TFormData = {
   username: string,

@@ -9,7 +9,7 @@ import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
 import { CreateOrEditMachineCategory } from '../../../services/ProductionServices';
-import { DropDownDto } from '../../../dtos';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
 
 function CreateOrEditMachinecategoryForm({ machine_category }: { machine_category?: DropDownDto }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
@@ -31,7 +31,7 @@ function CreateOrEditMachinecategoryForm({ machine_category }: { machine_categor
         category: string
     }>({
         initialValues: {
-            category: machine_category ? machine_category.value : ""
+            category: machine_category ? machine_category.label : ""
         },
         validationSchema: yup.object({
             category: yup.string().required()

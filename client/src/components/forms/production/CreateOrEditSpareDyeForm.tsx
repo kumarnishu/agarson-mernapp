@@ -10,8 +10,10 @@ import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { CreateOrEditSpareDye, GetAllDyeLocations, GetDyes } from '../../../services/ProductionServices';
 import UploadFileButton from '../../buttons/UploadFileButton';
-import { GetUserDto } from '../../../dtos';
-import { GetDyeDto, GetDyeLocationDto,  GetSpareDyeDto, } from '../../../dtos';
+import { GetUserDto } from '../../../dtos/user.dto';
+import { GetDyeLocationDto } from '../../../dtos/dye-location.dto';
+import { GetDyeDto } from '../../../dtos/dye.dto';
+import { GetSpareDyeDto } from '../../../dtos/spare-dye.dto';
 
 
 function CreateOrEditSpareDyeForm({ sparedye }: { sparedye?: GetSpareDyeDto }) {

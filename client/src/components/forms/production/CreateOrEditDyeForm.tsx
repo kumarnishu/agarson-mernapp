@@ -9,7 +9,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { CreateOrEditDye, GetArticles } from '../../../services/ProductionServices';
-import { CreateOrEditDyeDTo, GetArticleDto, GetDyeDto } from '../../../dtos';
+import { GetArticleDto } from '../../../dtos/article.dto';
+import { GetDyeDto, CreateOrEditDyeDTo } from '../../../dtos/dye.dto';
 
 
 

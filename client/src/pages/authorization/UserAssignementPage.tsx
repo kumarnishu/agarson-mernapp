@@ -7,7 +7,6 @@ import { BackendError } from '../..'
    import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { Assignment, KeyOffOutlined } from '@mui/icons-material'
-import { GetUserDto } from '../../dtos'
 import { UserContext } from '../../contexts/userContext'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { DownloadFile } from '../../utils/DownloadFile'
@@ -28,6 +27,7 @@ import UpdateUsePasswordDialog from '../../components/dialogs/users/UpdateUsePas
 import AssignUsersDialog from '../../components/dialogs/users/AssignUsersDialog'
 import AssignPermissionsToOneUserDialog from '../../components/dialogs/users/AssignPermissionsToOneUserDialog'
 import ExportToExcel from '../../utils/ExportToExcel'
+import { GetUserDto } from '../../dtos/user.dto'
 
 export default function UserAssignementPage() {
   const [user, setUser] = useState<GetUserDto>()
@@ -147,7 +147,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
         accessorKey: 'assigned_users',
         header: 'Assigned Users',
         
-        Cell: (cell) => <Stack title={String(cell.row.original.assigned_users.length || 0)+" users"} className="scrollable-stack" direction={'row'} >{cell.row.original.assigned_users && cell.row.original.assigned_users.map((u) => { return u.value }).toString()}</Stack>
+        Cell: (cell) => <Stack title={String(cell.row.original.assigned_users.length || 0)+" users"} className="scrollable-stack" direction={'row'} >{cell.row.original.assigned_users && cell.row.original.assigned_users.map((u) => { return u.label }).toString()}</Stack>
       },
     ],
     [users],

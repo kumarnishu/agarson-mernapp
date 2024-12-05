@@ -9,15 +9,15 @@ import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { useFormik } from 'formik';
 import * as Yup from "yup"
-import { GetUsers } from '../../../services/UserServices';
-import {  GetKeyDto } from '../../../dtos';
-import { GetUserDto } from '../../../dtos';
+import { GetUserDto } from '../../../dtos/user.dto';
 import { AssignKeysToUsers } from '../../../services/KeyServices';
+import { GetKeyDto } from '../../../dtos/keys.dto';
+import { GetUsersForDropdown } from '../../../services/UserServices';
 
 
 function AssignKeysDialog({ keys, flag }: { keys: GetKeyDto[], flag: number }) {
     const [users, setUsers] = useState<GetUserDto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', show_assigned_only: false }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
 
 
     const { choice, setChoice } = useContext(ChoiceContext)

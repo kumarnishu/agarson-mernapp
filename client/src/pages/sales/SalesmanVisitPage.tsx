@@ -3,7 +3,6 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { Button, IconButton, TextField, Tooltip, Typography } from '@mui/material'
-import { GetSalesManVisitSummaryReportDto } from '../../dtos'
 import { AxiosResponse } from "axios"
 import { BackendError } from "../.."
 import { GetSalesmanVisit } from '../../services/SalesServices'
@@ -17,6 +16,7 @@ import ViewVisitReportRemarksDialog from '../../components/dialogs/sales/ViewVis
 import CreateOrEditVisitReportRemarkDialog from '../../components/dialogs/sales/CreateOrEditVisitReportRemarkDialog'
 import CreateOrEditSalesmanAttendanceDialog from '../../components/dialogs/sales/CreateOrEditSalesmanAttendanceDialog'
 import { HandleNumbers } from '../../utils/IsDecimal'
+import { GetSalesManVisitSummaryReportDto } from '../../dtos/visit-report.dto'
 
 
 export default function SalesmanVisitPage() {

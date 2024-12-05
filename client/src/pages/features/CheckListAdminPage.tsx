@@ -4,10 +4,8 @@ import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { Box, Button, Fade, IconButton, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
-import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
-import { GetChecklistFromExcelDto, GetUserDto } from '../../dtos'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { CheckListChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import PopUp from '../../components/popup/PopUp'
@@ -17,7 +15,6 @@ import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import { ChangeChecklistNextDate, GetChecklistReports, GetChecklistTopBarDetails } from '../../services/CheckListServices'
-import { GetChecklistBoxDto, GetChecklistDto } from '../../dtos'
 import DeleteCheckListDialog from '../../components/dialogs/checklists/DeleteCheckListDialog'
 import CreateOrEditCheckListDialog from '../../components/dialogs/checklists/CreateOrEditCheckListDialog'
 import { queryClient } from '../../main'
@@ -27,6 +24,10 @@ import AssignChecklistsDialog from '../../components/dialogs/checklists/AssignCh
 import BulkDeleteCheckListDialog from '../../components/dialogs/checklists/BulkDeleteCheckListDialog'
 import ViewChecklistBoxRemarksDialog from '../../components/dialogs/checklists/ViewChecklistBoxRemarksDialog'
 import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
+import { GetChecklistBoxDto } from '../../dtos/checklist-box.dto'
+import { GetChecklistDto, GetChecklistFromExcelDto } from '../../dtos/checklist.dto'
+import { GetUserDto } from '../../dtos/user.dto'
+import { GetUsersForDropdown } from '../../services/UserServices'
 
 
 function CheckListAdminPage() {
@@ -62,7 +63,7 @@ function CheckListAdminPage() {
   let previous_date = new Date()
   let day = previous_date.getDate() - 3
   previous_date.setDate(day)
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'checklist_view', show_assigned_only: false }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'checklist_view', show_assigned_only: false }))
   const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date, stage], async () => GetChecklistReports({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date, stage: stage }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { mutate: changedate } = useMutation
@@ -153,12 +154,12 @@ function CheckListAdminPage() {
        
         filter: 'custom',
         enableColumnFilter: true,
-        Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.value }).toString() || ""}</>,
+        Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.label }).toString() || ""}</>,
         filterFn: (row, columnId, filterValue) => {
           console.log(columnId)
           if (!Array.isArray(row.original.assigned_users)) return false;
           return row.original.assigned_users.some((user) =>
-            user.value.toLowerCase().includes(filterValue.toLowerCase())
+            user.label.toLowerCase().includes(filterValue.toLowerCase())
           );
         },
       },
@@ -337,7 +338,7 @@ function CheckListAdminPage() {
       },
 
       {
-        accessorKey: 'category.value',
+        accessorKey: 'category.label',
         header: ' Category',
        
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
@@ -390,7 +391,7 @@ function CheckListAdminPage() {
         accessorKey: 'updated_by',
         header: 'Last Updated By',
      
-        Cell: (cell) => <>{cell.row.original.updated_by ? cell.row.original.updated_by.value : ""}</>
+        Cell: (cell) => <>{cell.row.original.updated_by ? cell.row.original.updated_by.label : ""}</>
       },
     ],
     [checklists, data],
@@ -749,10 +750,10 @@ function CheckListAdminPage() {
               serial_no: row.original.serial_no,
               work_title: row.original.work_title,
               work_description: row.original.work_description,
-              category: row.original.category.value,
+              category: row.original.category.label,
               frequency: row.original.frequency,
               link: row.original.link,
-              assigned_users: row.original.assigned_users.map((u) => { return u.value }).toString(),
+              assigned_users: row.original.assigned_users.map((u) => { return u.label }).toString(),
               status: ""
             }
           })
@@ -768,10 +769,10 @@ function CheckListAdminPage() {
               serial_no: row.original.serial_no,
               work_title: row.original.work_title,
               work_description: row.original.work_description,
-              category: row.original.category.value,
+              category: row.original.category.label,
               frequency: row.original.frequency,
               link: row.original.link,
-              assigned_users: row.original.assigned_users.map((u) => { return u.value }).toString(),
+              assigned_users: row.original.assigned_users.map((u) => { return u.label }).toString(),
               status: ""
             }
           }

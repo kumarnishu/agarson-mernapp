@@ -14,7 +14,7 @@ import { Fade, IconButton, Menu, MenuItem,  Tooltip, Typography } from '@mui/mat
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { DropDownDto } from '../../dtos'
+import { DropDownDto } from '../../dtos/dropdown.dto'
 import { GetAllStages } from '../../services/LeadsServices'
 import FindUknownCrmStagesDialog from '../../components/dialogs/crm/FindUknownCrmStagesDialog'
 
@@ -88,9 +88,9 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
         header: 'Stage',
       
         filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.value ? cell.row.original.value : ""}</>,
+        Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
         filterSelectOptions: stages && stages.map((i) => {
-          return i.value;
+          return i.label;
         }).filter(onlyUnique)
       }
     ],
@@ -284,7 +284,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
               stage ?
                 <>
 
-                  <DeleteCrmItemDialog stage={stage ? { id: stage.id, label: stage.label, value: stage.value } : undefined} />
+                  <DeleteCrmItemDialog stage={stage ? { id: stage.id, label: stage.label } : undefined} />
                   <CreateOrEditStageDialog stage={stage} />
                   <DeleteCrmItemDialog stage={stage} />
                 </>

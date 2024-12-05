@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import ReferLeadForm from '../../forms/crm/ReferLeadForm'
 import { Cancel } from '@mui/icons-material'
-import { GetLeadDto } from '../../../dtos'
+import { GetLeadDto } from '../../../dtos/lead.dto'
 
 function ReferLeadDialog({ lead }: { lead: GetLeadDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

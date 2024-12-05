@@ -10,7 +10,8 @@ import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
 import { toTitleCase } from '../../../utils/TitleCase';
-import { CreateOrEditCrmCity, GetCrmStateDto } from '../../../dtos';
+import { CreateOrEditCrmCity } from '../../../dtos/crm-city.dto';
+import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
 
 function CreateOrEditCityForm({ city }: { city?: CreateOrEditCrmCity }) {
     const [states, setStates] = useState<GetCrmStateDto[]>([])

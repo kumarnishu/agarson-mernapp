@@ -7,7 +7,6 @@ import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { Assignment, Block, DeviceHubOutlined, Edit, GroupAdd, GroupRemove, Key, KeyOffOutlined, RemoveCircle, Restore } from '@mui/icons-material'
-import { GetUserDto } from '../../dtos'
 import { UserContext } from '../../contexts/userContext'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { DownloadFile } from '../../utils/DownloadFile'
@@ -28,12 +27,13 @@ import UpdateUsePasswordDialog from '../../components/dialogs/users/UpdateUsePas
 import AssignUsersDialog from '../../components/dialogs/users/AssignUsersDialog'
 import AssignPermissionsToOneUserDialog from '../../components/dialogs/users/AssignPermissionsToOneUserDialog'
 import ExportToExcel from '../../utils/ExportToExcel'
+import { GetUserDto } from '../../dtos/user.dto'
 
 export default function UsersPage() {
-    const [hidden, setHidden] = useState('false')
+    const [hidden, setHidden] = useState(false)
     const [user, setUser] = useState<GetUserDto>()
     const [users, setUsers] = useState<GetUserDto[]>([])
-    const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>(["users", hidden], async () => GetUsers({ hidden: hidden, show_assigned_only: false }))
+    const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>(["users", hidden], async () => GetUsers({ hidden: hidden }))
     const { user: LoggedInUser } = useContext(UserContext)
     const { setChoice } = useContext(ChoiceContext)
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -51,7 +51,7 @@ export default function UsersPage() {
             {
                 accessorKey: 'actions',
                 header: '',
-                
+
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row">
@@ -245,7 +245,7 @@ export default function UsersPage() {
             {
                 accessorKey: 'dp',
                 header: 'DP',
-              
+
                 Cell: (cell) => <Avatar
                     title="double click to download"
                     sx={{ width: 16, height: 16 }}
@@ -260,7 +260,7 @@ export default function UsersPage() {
             {
                 accessorKey: 'username',
                 header: 'Name',
-               
+
                 Cell: (cell) => <>{[cell.row.original.username, String(cell.row.original.alias1 || ""), String(cell.row.original.alias2 || "")].filter(value => value)
                     .join(", ")}</>,
                 filterVariant: 'multi-select',
@@ -269,7 +269,7 @@ export default function UsersPage() {
             {
                 accessorKey: 'is_admin',
                 header: 'Role',
-               
+
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.is_admin ? "admin" : "user"}</>,
                 filterSelectOptions: data && users.map((i) => {
@@ -280,19 +280,19 @@ export default function UsersPage() {
             {
                 accessorKey: 'email',
                 header: 'Email',
-               
+
                 Cell: (cell) => <>{cell.row.original.email || ""}</>
             },
             {
                 accessorKey: 'mobile',
                 header: 'Mobile',
-                
+
                 Cell: (cell) => <>{cell.row.original.mobile || ""}</>
             },
             {
                 accessorKey: 'is_active',
                 header: 'Status',
-               
+
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.is_active ? "active" : "blocked"}</>,
                 filterSelectOptions: data && users.map((i) => {
@@ -303,7 +303,7 @@ export default function UsersPage() {
             {
                 accessorKey: 'password',
                 header: 'Password',
-                
+
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.orginal_password}</>,
                 filterSelectOptions: data && users.map((i) => {
@@ -313,14 +313,14 @@ export default function UsersPage() {
             {
                 accessorKey: 'assigned_permissions',
                 header: 'Permissions',
-                
+
                 Cell: (cell) => <>{cell.row.original.assigned_permissions.length || 0}</>
             },
 
             {
                 accessorKey: 'is_multi_login',
                 header: 'Multi Device',
-                
+
                 Cell: (cell) => <>{cell.row.original.is_multi_login ? "Allowed" : "Blocked"}</>
             },
             {
@@ -331,7 +331,7 @@ export default function UsersPage() {
             {
                 accessorKey: 'last_login',
                 header: 'Last Active',
-               
+
                 Cell: (cell) => <>{cell.row.original.last_login || ""}</>
             },
 
@@ -481,13 +481,7 @@ export default function UsersPage() {
 
                     < Stack direction="row" spacing={2}>
                         <Stack direction={'row'} alignItems={'center'}>
-                            <input type='checkbox' onChange={(e) => {
-                                if (e.target.checked) {
-                                    setHidden('true')
-                                }
-                                else
-                                    setHidden('false')
-                            }} /> <span style={{ paddingLeft: '5px' }}>Blocked</span>
+                            <input type='checkbox' onChange={() => setHidden(!hidden)} /> <span style={{ paddingLeft: '5px' }}>Blocked</span>
                         </Stack >
 
                     </Stack >

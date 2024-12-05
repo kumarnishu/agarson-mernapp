@@ -9,15 +9,16 @@ import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { useFormik } from 'formik';
 import * as Yup from "yup"
-import { GetUsers } from '../../../services/UserServices';
-import {  GetPaymentDto, GetUserDto } from '../../../dtos';
 import { AssignPaymentssToUsers } from '../../../services/PaymentsService';
+import { GetPaymentDto } from '../../../dtos/payment.dto';
+import { GetUserDto } from '../../../dtos/user.dto';
+import { GetUsersForDropdown } from '../../../services/UserServices';
 
 
 function AssignPaymentsDialog({ payments, flag }: { payments: GetPaymentDto[], flag:number }) {
 
     const [users, setUsers] = useState<GetUserDto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'payments_view', show_assigned_only: false }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'payments_view', show_assigned_only: false }))
 
 
 

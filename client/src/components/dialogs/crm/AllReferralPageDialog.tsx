@@ -11,7 +11,9 @@ import { GetAllReferrals } from '../../../services/LeadsServices'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
-import { GetLeadFromExcelDto, GetActivitiesOrRemindersDto, GetReferDto } from '../../../dtos'
+import { GetActivitiesOrRemindersDto } from '../../../dtos/crm-remarks.dto'
+import { GetLeadFromExcelDto } from '../../../dtos/lead.dto'
+import { GetReferDto } from '../../../dtos/refer.dto'
 
 function AllReferralPageDialog({ refer }: { refer: GetReferDto }) {
     const [selectedData, setSelectedData] = useState<GetLeadFromExcelDto[]>([])

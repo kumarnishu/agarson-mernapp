@@ -15,9 +15,9 @@ import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { GetAllStates } from '../../services/LeadsServices'
 import FindUknownCrmStatesDialog from '../../components/dialogs/crm/FindUknownCrmStatesDialog'
-import { GetCrmStateDto } from '../../dtos'
 import AssignCrmStatesDialog from '../../components/dialogs/crm/AssignCrmStatesDialog'
 import ExportToExcel from '../../utils/ExportToExcel'
+import { GetCrmStateDto } from '../../dtos/crm-state.dto'
 
 
 export default function CrmStatesPage() {

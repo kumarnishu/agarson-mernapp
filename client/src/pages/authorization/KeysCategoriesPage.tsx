@@ -12,10 +12,10 @@ import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { GetKeyCategoryDto } from '../../dtos'
 import { GetAllKeyCategories } from '../../services/KeyServices'
 import CreateOrEditKeyCategoryDialog from '../../components/dialogs/keys/CreateOrEditKeyCategoryDialog'
 import AssignKeyCategoriesDialog from '../../components/dialogs/keys/AssignKeyCategoriesDialog'
+import { GetKeyCategoryDto } from '../../dtos/key-category.dto'
 
 
 export default function KeysCategoriesPage() {

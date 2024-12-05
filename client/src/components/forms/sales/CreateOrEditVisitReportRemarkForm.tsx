@@ -8,8 +8,8 @@ import { ChoiceContext,  KeyChoiceActions } from '../../../contexts/dialogContex
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
-import {  CreateOrEditVisitSummaryRemarkDto,  GetVisitSummaryReportRemarkDto } from '../../../dtos';
 import { CreateOrEditVisitReportRemark } from '../../../services/SalesServices';
+import { GetVisitSummaryReportRemarkDto, CreateOrEditVisitSummaryRemarkDto } from '../../../dtos/visit_remark.dto';
 
 
 function CreateOrEditVisitReportRemarkForm({ employee, visit_date, remark, setDisplay }: {

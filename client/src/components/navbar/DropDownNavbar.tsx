@@ -1,0 +1,71 @@
+import { Avatar,  IconButton, Paper, Stack, Typography } from '@mui/material';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Menu as MenuIcon } from '@mui/icons-material';
+import  { useContext,  useState } from 'react';
+import { UserContext } from '../../contexts/userContext';
+import { toTitleCase } from '../../utils/TitleCase';
+import { ButtonLogo } from '../logo/Agarson';
+import { ProfileMenu } from '../logo/ProfileLogo';
+
+
+function DropDownNavbar() {
+  const { user } = useContext(UserContext)
+  const [anchorEl, setAnchorEl] = useState<Element | null>(null);
+  const navigate = useNavigate()
+  return (
+    <>
+
+      <Paper sx={{ bgcolor: 'grey', width: '100vw' }}>
+        {/* parent stack */}
+        <Stack direction="row" sx={{
+          justifyContent: "space-between", alignItems: "center"
+        }}
+        >
+          <Stack direction="row" gap={2} pl={1} justifyContent={'center'} alignItems={'center'}>
+
+            <Stack direction={'row'} justifyContent={'left'} alignItems={'center'} sx={{ cursor: 'pointer' }} onClick={(e) => {
+              if (e.currentTarget)
+                setAnchorEl(e.currentTarget)
+            }}>
+              <Avatar
+                sx={{ width: 20, height: 20 }}
+                alt="img1" src={user?.dp} />
+              <Typography variant='h5' sx={{ color: 'white', pl: 1 }}> {toTitleCase(user?.username || "")}</Typography>
+            </Stack>
+          </Stack>
+
+          <Stack
+            direction="row"
+            justifyContent={"center"}
+            alignItems="center"
+            gap={2}
+          >
+            <Link title="Double-click to access the main dashboard, or single-click to return."to={"/DropDown"}  onDoubleClick={() => navigate("/")} replace={true} style={{ textDecoration: 'none' }}>
+              <Paper sx={{ ml: 2, p: 0.5, bgcolor: 'white', boxShadow: 1, borderRadius: 1, borderColor: 'white' }}>
+                <Stack flexDirection={"row"} gap={2} sx={{ alignItems: 'center' }}>
+                  <ButtonLogo title="" height={20} width={20} />
+                  <Typography variant="button" sx={{ fontSize: 12 }} component="div">
+                  DropDown
+                  </Typography>
+                </Stack>
+              </Paper>
+            </Link>
+
+            <IconButton onClick={(e) => {
+              if (e.currentTarget)
+                setAnchorEl(e.currentTarget)
+            }} size='small'>
+              < MenuIcon sx={{ width: 35, height: 35, color: 'white' }} />
+            </IconButton>
+          </Stack>
+        </Stack>
+      </Paper >
+      <Outlet />
+      <ProfileMenu anchorEl={anchorEl} setAnchorEl={setAnchorEl} />
+    </>
+
+  )
+}
+
+
+export default DropDownNavbar

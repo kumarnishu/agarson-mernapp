@@ -10,7 +10,7 @@ import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
 import { GetExcelDBRemarksHistory } from '../../../services/ExcelDbService'
-import { GetExcelDBRemarksDto } from '../../../dtos'
+import { GetExcelDBRemarksDto } from '../../../dtos/excel-db-remark.dto'
 
 
 function ViewExcelDBRemarksDialog({ id, obj }: { id: string, obj: string }) {

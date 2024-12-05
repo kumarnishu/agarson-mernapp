@@ -6,8 +6,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
-import { GetChecklistRemarksDto } from '../../../dtos';
 import { DeleteCheckListRemark } from '../../../services/CheckListServices';
+import { GetChecklistRemarksDto } from '../../../dtos/checklist-remark.dto';
 
 
 function DeleteChecklistRemarkDialog({ remark, display, setDisplay }: { remark: GetChecklistRemarksDto, display: boolean, setDisplay: React.Dispatch<React.SetStateAction<boolean>> }) {

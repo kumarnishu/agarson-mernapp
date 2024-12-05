@@ -10,7 +10,6 @@ import { BackendError } from '../..'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
 import CreateOrEditReferDialog from '../../components/dialogs/crm/CreateOrEditReferDialog'
-import { GetReferDto } from '../../dtos'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import PopUp from '../../components/popup/PopUp'
 import { onlyUnique } from '../../utils/UniqueArray'
@@ -23,6 +22,7 @@ import ViewRefersBillHistoryDialog from '../../components/dialogs/crm/ViewRefers
 import MergeTwoRefersDialog from '../../components/dialogs/crm/MergeTwoRefersDialog'
 import ExportToExcel from '../../utils/ExportToExcel'
 import ToogleReferConversionDialog from '../../components/dialogs/crm/ToogleReferConversionDialog.tsx'
+import { GetReferDto } from '../../dtos/refer.dto.ts'
 
 
 export default function RefersPage() {
@@ -559,7 +559,7 @@ export default function RefersPage() {
           refer ?
             <>
 
-              <DeleteCrmItemDialog refer={refer ? { id: refer._id, label: refer.name, value: refer.name } : undefined} />
+              <DeleteCrmItemDialog refer={refer ? { id: refer._id, label: refer.name } : undefined} />
               <AllReferralPageDialog refer={refer} />
               <ViewReferRemarksDialog id={refer._id} />
               <CreateOrEditBillDialog refer={refer} bill={undefined} />

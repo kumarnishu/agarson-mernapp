@@ -11,8 +11,10 @@ import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { toTitleCase } from '../../../utils/TitleCase';
-import { GetCrmCityDto, GetCrmStateDto, GetLeadDto } from '../../../dtos';
-import { DropDownDto } from '../../../dtos';
+import { GetCrmCityDto } from '../../../dtos/crm-city.dto';
+import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { GetLeadDto } from '../../../dtos/lead.dto';
 
 
 function CreateOrEditLeadForm({ lead }: { lead?: GetLeadDto }) {
@@ -462,7 +464,7 @@ function CreateOrEditLeadForm({ lead }: { lead?: GetLeadDto }) {
                     </option>
                     {
                         types.map(type => {
-                            return (<option key={type.id} value={type.value}>
+                            return (<option key={type.id} value={type.label}>
                                 {toTitleCase(type.label)}
                             </option>)
                         })
@@ -494,7 +496,7 @@ function CreateOrEditLeadForm({ lead }: { lead?: GetLeadDto }) {
                     </option>
                     {
                         sources.map(source => {
-                            return (<option key={source.id} value={source.value}>
+                            return (<option key={source.id} value={source.label}>
                                 {toTitleCase(source.label)}
                             </option>)
                         })

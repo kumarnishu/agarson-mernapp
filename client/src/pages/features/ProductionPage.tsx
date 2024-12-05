@@ -12,13 +12,13 @@ import { Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Menu
 import DBPagination from '../../components/pagination/DBpagination'
 import ExportToExcel from '../../utils/ExportToExcel'
 import PopUp from '../../components/popup/PopUp'
-import { GetProductionDto } from '../../dtos'
 import { GetProductions } from '../../services/ProductionServices'
-import { GetUserDto } from '../../dtos'
-import { GetUsers } from '../../services/UserServices'
 import DeleteProductionItemDialog from '../../components/dialogs/production/DeleteProductionItemDialog'
 import moment from 'moment'
 import CreateOrEditProductionDialog from '../../components/dialogs/production/CreateOrEditProductionDialog'
+import { GetProductionDto } from '../../dtos/production.dto'
+import { GetUserDto } from '../../dtos/user.dto'
+import { GetUsersForDropdown } from '../../services/UserServices'
 
 
 export default function ProductionPage() {
@@ -43,7 +43,7 @@ export default function ProductionPage() {
   })
   const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetProductionDto[], page: number, total: number, limit: number }>, BackendError>(["productions", userId, dates?.start_date, dates?.end_date], async () => GetProductions({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'production_view', show_assigned_only: true }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'production_view', show_assigned_only: true }))
 
   useEffect(() => {
     if (isUsersSuccess)
@@ -120,9 +120,9 @@ export default function ProductionPage() {
         header: 'Articles',
         
         filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.articles.toString() ? cell.row.original.articles.map((a) => { return a.value }).toString() : ""}</>,
+        Cell: (cell) => <>{cell.row.original.articles.toString() ? cell.row.original.articles.map((a) => { return a.label }).toString() : ""}</>,
         filterSelectOptions: production && production.articles.map((i) => {
-          return i.value.toString();
+          return i.label.toString();
         }).filter(onlyUnique)
       },
       {
@@ -130,9 +130,9 @@ export default function ProductionPage() {
         header: 'Machine',
        
         filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.machine.value.toString() || "" ? cell.row.original.machine.value.toString() || "" : ""}</>,
+        Cell: (cell) => <>{cell.row.original.machine.label.toString() || "" ? cell.row.original.machine.label.toString() || "" : ""}</>,
         filterSelectOptions: productions && productions.map((i) => {
-          return i.machine.value.toString() || "";
+          return i.machine.label.toString() || "";
         }).filter(onlyUnique)
       },
       {
@@ -140,9 +140,9 @@ export default function ProductionPage() {
         header: 'Thekedar',
        
         filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.thekedar.value.toString() || "" ? cell.row.original.thekedar.value.toString() || "" : ""}</>,
+        Cell: (cell) => <>{cell.row.original.thekedar.label.toString() || "" ? cell.row.original.thekedar.label.toString() || "" : ""}</>,
         filterSelectOptions: productions && productions.map((i) => {
-          return i.thekedar.value.toString() || "";
+          return i.thekedar.label.toString() || "";
         }).filter(onlyUnique)
       },
       {
@@ -192,9 +192,9 @@ export default function ProductionPage() {
         header: 'Creator',
        
         filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.created_by.value.toString() || "" ? cell.row.original.created_by.value.toString() || "" : ""}</>,
+        Cell: (cell) => <>{cell.row.original.created_by.label.toString() || "" ? cell.row.original.created_by.label.toString() || "" : ""}</>,
         filterSelectOptions: productions && productions.map((i) => {
-          return i.created_by.value.toString() || "";
+          return i.created_by.label.toString() || "";
         }).filter(onlyUnique)
       },
     ],

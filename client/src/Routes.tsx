@@ -5,9 +5,6 @@ import LoginPage from './pages/LoginPage.tsx'
 import UsersPage from './pages/authorization/UsersPage.tsx'
 import EmailVerifyPage from './pages/EmailVerifyPage.tsx'
 import ResetPasswordDialog from './components/dialogs/users/ResetPasswordDialog.tsx'
-import ReportDashboard from './dashboards/FeatureReportsDashboard.tsx'
-import DropDownDashboard from './dashboards/DropDownDashboard.tsx'
-import MainDashBoardPage from './dashboards/MainDashBoard.tsx'
 import RemindersPage from './pages/features/CrmRemindersPage.tsx'
 import CitiesPage from './pages/authorization/CitiesPage.tsx'
 import CrmStatesPage from './pages/authorization/CrmStatesPage.tsx'
@@ -35,43 +32,62 @@ import CheckListPage from './pages/features/CheckListPage.tsx'
 import SpareDyesPage from './pages/features/SpareDyesPage.tsx'
 import SoleThicknessPage from './pages/features/SoleThicknessPage.tsx'
 import DyeLocationPage from './pages/dropdowns/DyeLocationPage.tsx'
-import FeatureDashboard from './dashboards/FeatureDashboard.tsx'
 import CheckListAdminPage from './pages/features/CheckListAdminPage.tsx'
 import PaymentsPage from './pages/features/PaymentsPage.tsx'
 import PaymentCategoriesPage from './pages/dropdowns/PaymentCategoriesPage.tsx'
 import KeysCategoriesPage from './pages/authorization/KeysCategoriesPage.tsx'
 import KeysPage from './pages/authorization/KeysPage.tsx'
 import ExcelDBPage from './pages/excel reports/ExcelDBPage.tsx'
-import AuthorizationDashboard from './dashboards/AuthorizationDashboard.tsx'
-import ExcelDBDashboard from './dashboards/ExcelDBDashboard.tsx'
 import SalesmanLeavesReportPage from './pages/feature reports/SalesmanLeavesReportPage.tsx'
 import UserAssignementPage from './pages/authorization/UserAssignementPage.tsx'
-import SalesDashboard from './dashboards/SalesDashboard.tsx'
 import SalesmanVisitPage from './pages/sales/SalesmanVisitPage.tsx'
 import SalesmanAttendancePage from './pages/sales/SalesmanAttendancePage.tsx'
 import SalesmanKpiPage from './pages/sales/SalesmanKpiPage.tsx'
 import SalesmanAttendancePageAuto from './pages/sales/SalesmanVisitPageAuto.tsx'
 import ItemUnitPage from './pages/dropdowns/ItemUnitPage.tsx'
+import MainNavbar from './components/navbar/MainNavbar.tsx'
+import AuthorizationNavbar from './components/navbar/AuthorizationNavbar.tsx'
+import FeatureNavbar from './components/navbar/FeatureNavbar.tsx'
+import FeatureReportsNavbar from './components/navbar/FeatureReportsNavbar.tsx'
+import DropDownNavbar from './components/navbar/DropDownNavbar.tsx'
+import ExcelDBNavbar from './components/navbar/ExcelDBNavbar.tsx'
+import SalesNavbar from './components/navbar/SalesNavbar.tsx'
+import MainDashBoard from './components/dashboards/MainDashBoard.tsx'
+import AuthorizationDashboard from './components/dashboards/AuthorizationDashboard.tsx'
+import DropDownDashboard from './components/dashboards/DropDownDashboard.tsx'
+import ExcelDBDashboard from './components/dashboards/ExcelDBDashboard.tsx'
+import FeatureDashboard from './components/dashboards/FeatureDashboard.tsx'
+import SalesDashboard from './components/dashboards/SalesDashboard.tsx'
+import FeatureReportsDashboard from './components/dashboards/FeatureReportsDashboard.tsx'
+import UsersNavbar from './components/navbar/UsersNavbar.tsx'
 
 
 function AppRoutes() {
   const { user } = useContext(UserContext)
-
   return (
     <Routes >
       {
         !user && <Route path="/Login" element={<LoginPage />} />}
       {
-        user && <Route path="/"
-          element={
-            <MainDashBoardPage />
+        user &&
+        <Route>
+          < Route path="/" element={<MainNavbar />
           }>
+            <Route
+              index
+              element={
+                <MainDashBoard />
+              }
+            />
+          </Route>
           < Route path="/Users" element={
-            <UsersPage />
-          } />
+            <UsersNavbar />
+          } >
+            <Route index element={<UsersPage />} />
+          </Route>
 
           {user && user?.assigned_permissions.includes('authorization_menu') &&
-            < Route path="Authorization" >
+            < Route path="/Authorization" element={<AuthorizationNavbar />} >
               <Route index element={
                 <AuthorizationDashboard />
               }
@@ -107,7 +123,7 @@ function AppRoutes() {
             </Route>}
 
           {user && user?.assigned_permissions.includes('feature_menu') &&
-            < Route path="Features">
+            < Route path="/Features" element={<FeatureNavbar />}>
               <Route index
                 element={
                   <FeatureDashboard />
@@ -172,10 +188,10 @@ function AppRoutes() {
             </Route>}
 
           {user && user?.assigned_permissions.includes('report_menu') &&
-            < Route path="Reports">
+            < Route path="/FeatureReports" element={<FeatureReportsNavbar />}>
               <Route index
                 element={
-                  <ReportDashboard />
+                  <FeatureReportsDashboard />
                 }
               />
               {user?.assigned_permissions.includes('activities_view') && <Route path="CrmActivitiesPage" element={
@@ -220,7 +236,7 @@ function AppRoutes() {
             </Route>}
 
           {user && user?.assigned_permissions.includes('dropdown_menu') &&
-            < Route path="DropDown" >
+            < Route path="/DropDown" element={<DropDownNavbar />}>
               <Route index element={
                 <DropDownDashboard />
               }
@@ -286,7 +302,7 @@ function AppRoutes() {
             </Route>}
 
           {user && user?.assigned_permissions.includes('excel_db_menu') &&
-            < Route path="ExcelDB" >
+            < Route path="/ExcelDB" element={<ExcelDBNavbar />}>
               <Route index
                 element={
                   <ExcelDBDashboard />
@@ -307,7 +323,7 @@ function AppRoutes() {
             </Route>}
 
           {user && user?.assigned_permissions.includes('sales_menu') &&
-            < Route path="Sales">
+            < Route path="/Sales" element={<SalesNavbar />}>
               <Route index
                 element={
                   <SalesDashboard />

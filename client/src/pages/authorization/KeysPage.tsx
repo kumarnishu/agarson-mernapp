@@ -12,13 +12,14 @@ import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { DropDownDto, GetKeyDto } from '../../dtos'
 import { GetAllKeyCategoriesForDropdown, GetAllKeys } from '../../services/KeyServices'
 import CreateOrEditKeyDialog from '../../components/dialogs/keys/CreateOrEditKeyDialog'
 import AssignKeysDialog from '../../components/dialogs/keys/AssignKeysDialog'
 import { toTitleCase } from '../../utils/TitleCase'
 import { KeyExcelButton } from '../../components/buttons/KeyExcelButton'
 import DeleteKeyDialog from '../../components/dialogs/keys/DeleteKeyDialog'
+import { DropDownDto } from '../../dtos/dropdown.dto'
+import { GetKeyDto } from '../../dtos/keys.dto'
 
 
 export default function KeysPage() {
@@ -112,10 +113,10 @@ export default function KeysPage() {
                 }).filter(onlyUnique)
             },
             {
-                accessorKey: 'category.value',
+                accessorKey: 'category.label',
                 header: 'Category',
                
-                Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.value : ""}</>
+                Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
 
             },
             {
@@ -319,7 +320,7 @@ export default function KeysPage() {
                         {
                             categories && categories.map(cat => {
                                 return (<option key={cat.id} value={cat.id}>
-                                    {cat && toTitleCase(cat.value || "")}
+                                    {cat && toTitleCase(cat.label || "")}
                                 </option>)
                             })
                         }

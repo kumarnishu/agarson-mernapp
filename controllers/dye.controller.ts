@@ -20,8 +20,8 @@ export const GetDyeById = async (req: Request, res: Response, next: NextFunction
         stdshoe_weight: dye.stdshoe_weight,
         created_at: dye.created_at && moment(dye.created_at).format("DD/MM/YYYY"),
         updated_at: dye.updated_at && moment(dye.updated_at).format("DD/MM/YYYY"),
-        created_by: { id: dye.created_by._id, value: dye.created_by.username, label: dye.created_by.username },
-        updated_by: { id: dye.updated_by._id, value: dye.updated_by.username, label: dye.updated_by.username }
+        created_by: { id: dye.created_by._id, label: dye.created_by.username },
+        updated_by: { id: dye.updated_by._id, label: dye.updated_by.username }
     }
     return res.status(200).json(result)
 }

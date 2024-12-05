@@ -27,7 +27,7 @@ export const GetKeyCategoryById = async (req: Request, res: Response, next: Next
     let category = await KeyCategory.findById(id)
     let result: DropDownDto | null = null;
     if (category)
-        result = { id: category._id, label: category.display_name, value: category.category }
+        result = { id: category._id, label: category.display_name }
     return res.status(200).json(result)
 }
 

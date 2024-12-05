@@ -4,17 +4,14 @@ import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { Box, Button, Fade, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
-import { GetUsers } from '../../services/UserServices'
+import { GetUsersForDropdown } from '../../services/UserServices'
 import moment from 'moment'
-import { GetChecklistFromExcelDto, GetUserDto } from '../../dtos'
-import { DropDownDto } from '../../dtos'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { CheckListChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import { FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
 import { DownloadFile } from '../../utils/DownloadFile'
 import DBPagination from '../../components/pagination/DBpagination'
 import { ChangeChecklistNextDate, GetAllCheckCategories, GetChecklists } from '../../services/CheckListServices'
-import { GetChecklistBoxDto, GetChecklistDto } from '../../dtos'
 import { queryClient } from '../../main'
 import { currentYear, getNextMonday, getPrevMonday, nextMonth, nextYear, previousMonth, previousYear } from '../../utils/datesHelper'
 import { toTitleCase } from '../../utils/TitleCase'
@@ -22,6 +19,10 @@ import ViewChecklistBoxRemarksDialog from '../../components/dialogs/checklists/V
 import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
+import { GetChecklistBoxDto } from '../../dtos/checklist-box.dto'
+import { GetChecklistDto, GetChecklistFromExcelDto } from '../../dtos/checklist.dto'
+import { DropDownDto } from '../../dtos/dropdown.dto'
+import { GetUserDto } from '../../dtos/user.dto'
 
 
 function ChecklistPage() {
@@ -53,7 +54,7 @@ function ChecklistPage() {
   let day = previous_date.getDate() - 1
   previous_date.setDate(day)
   previous_date.setHours(0, 0, 0, 0)
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'checklist_view', show_assigned_only: true }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'checklist_view', show_assigned_only: true }))
   const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, stage], async () => GetChecklists({ limit: paginationData?.limit, page: paginationData?.page, id: userId, stage: stage }))
   const { mutate: changedate } = useMutation
     <AxiosResponse<any>, BackendError, { id: string, next_date: string }>
@@ -76,12 +77,12 @@ function ChecklistPage() {
       {
         accessorKey: 'serial_no',
         header: ' #',
-       
+
       },
       {
         accessorKey: 'last_checked_box',
         header: 'Stage',
-        
+
         Cell: (cell) => <Tooltip title={cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}>
           <Button onClick={() => {
             setChecklist(cell.row.original)
@@ -92,7 +93,7 @@ function ChecklistPage() {
       {
         accessorKey: 'work_title',
         header: ' Work Title',
-        
+
         Cell: (cell) => <span title={cell.row.original.work_description} >
           {cell.row.original.link && cell.row.original.link != "" ?
             <a style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
@@ -107,22 +108,22 @@ function ChecklistPage() {
       {
         accessorKey: 'assigned_users.value',
         header: 'Responsible',
-       
+
         enableColumnFilter: true,
-        Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.value }).toString() || ""}</>,
+        Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.label }).toString() || ""}</>,
         filter: 'custom',
         filterFn: (row, columnId, filterValue) => {
           console.log(columnId)
           if (!Array.isArray(row.original.assigned_users)) return false;
           return row.original.assigned_users.some((user) =>
-            user.value.toLowerCase().includes(filterValue.toLowerCase())
+            user.label.toLowerCase().includes(filterValue.toLowerCase())
           );
         },
       },
       {
         accessorKey: 'last_10_boxes',
         header: 'Filtered Dates',
-       
+
         filter: 'custom',
         enableColumnFilter: true,
         filterFn: (row, columnId, filterValue) => {
@@ -232,15 +233,15 @@ function ChecklistPage() {
       },
 
       {
-        accessorKey: 'category.value',
+        accessorKey: 'category.label',
         header: ' Category',
-       
+
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
       },
       {
         accessorKey: 'frequency',
         header: ' Frequency',
-        
+
         Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
       },
 
@@ -248,7 +249,7 @@ function ChecklistPage() {
       {
         accessorKey: 'next_date',
         header: 'Next Check Date',
-       
+
         Cell: (cell) => <>
           < input
             type="date"
@@ -267,7 +268,7 @@ function ChecklistPage() {
       {
         accessorKey: 'photo',
         header: 'Photo',
-       
+
         Cell: (cell) => <span onDoubleClick={() => {
           if (cell.row.original.photo && cell.row.original.photo) {
             DownloadFile(cell.row.original.photo, 'photo')
@@ -420,7 +421,7 @@ function ChecklistPage() {
     enableTableFooter: true,
     enableRowVirtualization: true,
     onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
-   
+
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
@@ -531,10 +532,10 @@ function ChecklistPage() {
               serial_no: row.original.serial_no,
               work_title: row.original.work_title,
               work_description: row.original.work_description,
-              category: row.original.category.value,
+              category: row.original.category.label,
               frequency: row.original.frequency,
               link: row.original.link,
-              assigned_users: row.original.assigned_users.map((u) => { return u.value }).toString(),
+              assigned_users: row.original.assigned_users.map((u) => { return u.label }).toString(),
               status: ""
             }
           })
@@ -550,10 +551,10 @@ function ChecklistPage() {
               serial_no: row.original.serial_no,
               work_title: row.original.work_title,
               work_description: row.original.work_description,
-              category: row.original.category.value,
+              category: row.original.category.label,
               frequency: row.original.frequency,
               link: row.original.link,
-              assigned_users: row.original.assigned_users.map((u) => { return u.value }).toString(),
+              assigned_users: row.original.assigned_users.map((u) => { return u.label }).toString(),
               status: ""
             }
           }

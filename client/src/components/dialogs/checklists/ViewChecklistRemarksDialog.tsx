@@ -4,13 +4,14 @@ import { CheckListChoiceActions, ChoiceContext } from '../../../contexts/dialogC
 import { Cancel } from '@mui/icons-material'
 import { UserContext } from '../../../contexts/userContext'
 import { toTitleCase } from '../../../utils/TitleCase'
-import { GetChecklistDto, GetChecklistRemarksDto } from '../../../dtos'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
 import { GetCheckListRemarksHistory } from '../../../services/CheckListServices'
 import DeleteChecklistRemarkDialog from './DeleteChecklistRemarkDialog'
 import moment from 'moment'
+import { GetChecklistRemarksDto } from '../../../dtos/checklist-remark.dto'
+import { GetChecklistDto } from '../../../dtos/checklist.dto'
 
 
 function ViewChecklistRemarksDialog({ checklist }: { checklist: GetChecklistDto }) {
@@ -51,7 +52,7 @@ function ViewChecklistRemarksDialog({ checklist }: { checklist: GetChecklistDto 
                         return (
 
                             <div key={index} style={{ borderRadius: '1px 10px', padding: '10px',  paddingLeft: '20px', border: '1px solid grey' }}>
-                                <p>{toTitleCase(item.created_by.value)} : {item.remark} </p>
+                                <p>{toTitleCase(item.created_by.label)} : {item.remark} </p>
                                 <br></br>
                                 <p>{moment(item.created_date).format('lll')}</p>
                                 {

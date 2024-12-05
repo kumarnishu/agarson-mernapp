@@ -4,10 +4,8 @@ import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { Button, Fade, IconButton, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
-import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
-import { GetPaymentDto, GetPaymentsFromExcelDto, GetUserDto } from '../../dtos'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { PaymentsChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import PopUp from '../../components/popup/PopUp'
@@ -20,6 +18,9 @@ import { ChangePaymentsDueDate, ChangePaymentsNextDate, GetPaymentss, GetPayment
 import { PaymentsExcelButtons } from '../../components/buttons/PaymentsExcelButtons'
 import AssignPaymentsDialog from '../../components/dialogs/payments/AssignPaymentsDialog'
 import BulkDeletePaymentsDialog from '../../components/dialogs/payments/BulkDeletePaymentsDialog'
+import { GetPaymentDto, GetPaymentsFromExcelDto } from '../../dtos/payment.dto'
+import { GetUserDto } from '../../dtos/user.dto'
+import { GetUsersForDropdown } from '../../services/UserServices'
 
 
 function PaymentsPage() {
@@ -34,7 +35,7 @@ function PaymentsPage() {
   const [userId, setUserId] = useState<string>()
   const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<{ category: string, count: number }[]>, BackendError>("payments", GetPaymentsTopBarDetails)
   const { setChoice } = useContext(ChoiceContext)
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'payments_view', show_assigned_only: false }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'payments_view', show_assigned_only: false }))
 
 
   const isFirstRender = useRef(true);
@@ -120,17 +121,17 @@ function PaymentsPage() {
         
         filter: 'custom',
         enableColumnFilter: true,
-        Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.value }).toString() || ""}</>,
+        Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.label }).toString() || ""}</>,
         filterFn: (row, columnId, filterValue) => {
           console.log(columnId)
           if (!Array.isArray(row.original.assigned_users)) return false;
           return row.original.assigned_users.some((user) =>
-            user.value.toLowerCase().includes(filterValue.toLowerCase())
+            user.label.toLowerCase().includes(filterValue.toLowerCase())
           );
         },
       },
       {
-        accessorKey: 'category.value',
+        accessorKey: 'category.label',
         header: ' Category',
         
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
@@ -183,7 +184,7 @@ function PaymentsPage() {
         accessorKey: 'updated_by',
         header: 'Last Updated By',
         
-        Cell: (cell) => <>{cell.row.original.updated_by ? cell.row.original.updated_by.value : ""}</>
+        Cell: (cell) => <>{cell.row.original.updated_by ? cell.row.original.updated_by.label : ""}</>
       },
     ],
     [payments, data],
@@ -428,11 +429,11 @@ function PaymentsPage() {
               _id: row.original._id,
               payment_title: row.original.payment_title,
               payment_description: row.original.payment_description,
-              category: row.original.category.value,
+              category: row.original.category.label,
               duedate: row.original.due_date,
               frequency: row.original.frequency,
               link: row.original.link,
-              assigned_users: row.original.assigned_users.map((u) => { return u.value }).toString(),
+              assigned_users: row.original.assigned_users.map((u) => { return u.label }).toString(),
               status: ""
             }
           })
@@ -447,11 +448,11 @@ function PaymentsPage() {
               _id: row.original._id,
               payment_title: row.original.payment_title,
               payment_description: row.original.payment_description,
-              category: row.original.category.value,
+              category: row.original.category.label,
               duedate: row.original.due_date,
               frequency: row.original.frequency,
               link: row.original.link,
-              assigned_users: row.original.assigned_users.map((u) => { return u.value }).toString(),
+              assigned_users: row.original.assigned_users.map((u) => { return u.label }).toString(),
               status: ""
             }
           }

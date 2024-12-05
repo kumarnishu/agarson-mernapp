@@ -31,7 +31,7 @@ export const GetAllKey = async (req: Request, res: Response, next: NextFunction)
                 serial_no: data[i].serial_no,
                 key: data[i].key,
                 type: data[i].type,
-                category: { id: data[i].category._id, label: data[i].category.category, value: data[i].category.category },
+                category: { id: data[i].category._id, label: data[i].category.category },
                 is_date_key: data[i].is_date_key,
                 map_to_state: data[i].map_to_state,
                 map_to_username: data[i].map_to_username,

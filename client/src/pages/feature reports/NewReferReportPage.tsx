@@ -7,7 +7,6 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtua
 import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
 import { GetNewRefers } from '../../services/LeadsServices'
-import { GetReferDto } from '../../dtos'
 import CreateOrEditReferDialog from '../../components/dialogs/crm/CreateOrEditReferDialog'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
 import AllReferralPageDialog from '../../components/dialogs/crm/AllReferralPageDialog'
@@ -22,6 +21,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import CreateOrEditBillDialog from '../../components/dialogs/crm/CreateOrEditBillDialog'
 import ViewRefersBillHistoryDialog from '../../components/dialogs/crm/ViewRefersBillHistoryDialog'
 import ToogleReferConversionDialog from '../../components/dialogs/crm/ToogleReferConversionDialog.tsx'
+import { GetReferDto } from '../../dtos/refer.dto.ts'
 
 
 
@@ -462,7 +462,7 @@ export default function NewReferReportPage() {
               refer ?
                 <>
 
-                  <DeleteCrmItemDialog refer={refer ? { id: refer._id, label: refer.name, value: refer.name } : undefined} />
+                  <DeleteCrmItemDialog refer={refer ? { id: refer._id, label: refer.name } : undefined} />
                   <AllReferralPageDialog refer={refer} />
                   <ViewReferRemarksDialog id={refer._id} />
                   <CreateOrEditBillDialog refer={refer} bill={undefined} />

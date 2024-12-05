@@ -7,8 +7,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
-import { GetKeyDto } from '../../../dtos';
 import { DeleteKey } from '../../../services/KeyServices';
+import { GetKeyDto } from '../../../dtos/keys.dto';
 
 
 function DeleteKeyDialog({ item }: { item: GetKeyDto }) {

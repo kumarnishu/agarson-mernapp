@@ -1,7 +1,9 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
-import { GetChecklistBoxDto, GetChecklistDto, GetChecklistRemarksDto } from '../../../dtos'
 import CreateOrEditChecklistRemarkForm from '../../forms/checklists/CreateOrEditChecklistRemarkForm'
+import { GetChecklistBoxDto } from '../../../dtos/checklist-box.dto'
+import { GetChecklistRemarksDto } from '../../../dtos/checklist-remark.dto'
+import { GetChecklistDto } from '../../../dtos/checklist.dto'
 
 function CreateOrEditChecklistRemarkDialog({ remark, display, checklist, checklist_box, setDisplay }: { checklist: GetChecklistDto, checklist_box: GetChecklistBoxDto, remark?: GetChecklistRemarksDto, display: boolean, setDisplay?: React.Dispatch<React.SetStateAction<boolean>> }) {
 

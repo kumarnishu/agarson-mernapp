@@ -35,7 +35,7 @@ export const GetDyeStatusReport = async (req: Request, res: Response, next: Next
                 repair_required: dye.repair_required ? "Need repair" : "no Need",
                 remarks: dye.remarks,
                 created_at: dye.created_at && moment(dye.created_at).format("DD/MM/YYYY"),
-                created_by: { id: dye.created_by._id, value: dye.created_by.username, label: dye.created_by.username }
+                created_by: { id: dye.created_by._id,  label: dye.created_by.username }
             })
         }
     }
@@ -52,7 +52,7 @@ export const GetDyeStatusReport = async (req: Request, res: Response, next: Next
                 repair_required: "",
                 remarks: "",
                 created_at: dye.created_at && moment(dye.created_at).format("DD/MM/YYYY"),
-                created_by: { id: dye.created_by._id, value: dye.created_by.username, label: dye.created_by.username }
+                created_by: { id: dye.created_by._id,  label: dye.created_by.username }
             })
         }
     }

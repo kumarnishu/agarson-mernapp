@@ -5,7 +5,6 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
-import { DropDownDto, IColumnRowData } from '../../dtos'
 import { GetExcelDbReport } from '../../services/ExcelDbService'
 import { useParams } from 'react-router-dom'
 import PopUp from '../../components/popup/PopUp'
@@ -16,6 +15,8 @@ import { GetKeyCategoryById } from '../../services/KeyServices'
 import CreateOrEditExcelDBRemarkDialog from '../../components/dialogs/excel-db/CreateOrEditExcelDBRemarkDialog'
 import ViewExcelDBRemarksDialog from '../../components/dialogs/excel-db/ViewExcelDBRemarksDialog'
 import { HandleNumbers } from '../../utils/IsDecimal'
+import { DropDownDto } from '../../dtos/dropdown.dto'
+import { IColumnRowData } from '../../dtos/table.dto'
 
 
 export default function ExcelDBPage() {

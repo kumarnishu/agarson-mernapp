@@ -8,12 +8,13 @@ import { ChoiceContext, PaymentsChoiceActions } from '../../../contexts/dialogCo
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
-import { GetUsers } from '../../../services/UserServices';
-import { CreateOrEditPaymentDto, GetPaymentDto, GetUserDto } from '../../../dtos';
-import { DropDownDto } from '../../../dtos';
 import Select from '@mui/material/Select';
 import { CreateOrEditPayment, GetAllPaymentCategories } from '../../../services/PaymentsService';
 import moment from 'moment';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { GetPaymentDto, CreateOrEditPaymentDto } from '../../../dtos/payment.dto';
+import { GetUserDto } from '../../../dtos/user.dto';
+import { GetUsersForDropdown } from '../../../services/UserServices';
 
 
 function CreateorEditPaymentForm({ payment }: { payment?: GetPaymentDto }) {
@@ -28,7 +29,7 @@ function CreateorEditPaymentForm({ payment }: { payment?: GetPaymentDto }) {
         })
 
 
-    const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', show_assigned_only: false }))
+    const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
     const { data: categoriesData, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("payment_categories", GetAllPaymentCategories)
     const { setChoice } = useContext(ChoiceContext)
 

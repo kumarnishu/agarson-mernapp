@@ -9,7 +9,7 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
-import { DropDownDto } from '../../../dtos';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
 
 function CreateOrEditLeadStageForm({ stage }: { stage?: DropDownDto}) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
@@ -31,7 +31,7 @@ function CreateOrEditLeadStageForm({ stage }: { stage?: DropDownDto}) {
         stage: string
     }>({
         initialValues: {
-            stage: stage ? stage.value : ""
+            stage: stage ? stage.label : ""
         },
         validationSchema:yup.object({
             stage:yup.string().required()

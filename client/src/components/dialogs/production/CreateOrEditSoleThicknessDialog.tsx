@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext.tsx';
 import { Cancel } from '@mui/icons-material';
 import CreateOrEditSoleThicknessForm from '../../forms/production/CreateOrEditSoleThicknessForm.tsx';
-import { GetSoleThicknessDto } from '../../../dtos/index.ts';
+import { GetSoleThicknessDto } from '../../../dtos/sole-thickness.dto.ts';
 
 
 function CreateOrEditSoleThicknessDialog({ thickness }: { thickness?: GetSoleThicknessDto }) {

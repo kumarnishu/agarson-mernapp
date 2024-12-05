@@ -5,12 +5,8 @@ import { GetActivitiesTopBarDeatils, GetAllStages, GetRemarks } from '../../serv
 import { BackendError } from '../..'
 import { Box, Button, Fade, IconButton, LinearProgress, Menu, MenuItem, Select, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
-import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
-import { GetUserDto } from '../../dtos'
-import { DropDownDto } from '../../dtos'
-import { GetActivitiesOrRemindersDto, GetActivitiesTopBarDetailsDto } from '../../dtos'
 import ViewRemarksDialog from '../../components/dialogs/crm/ViewRemarksDialog'
 import CreateOrEditRemarkDialog from '../../components/dialogs/crm/CreateOrEditRemarkDialog'
 import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
@@ -22,6 +18,10 @@ import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { GetActivitiesOrRemindersDto, GetActivitiesTopBarDetailsDto } from '../../dtos/crm-remarks.dto'
+import { DropDownDto } from '../../dtos/dropdown.dto'
+import { GetUserDto } from '../../dtos/user.dto'
+import { GetUsersForDropdown } from '../../services/UserServices'
 
 function CrmActivitiesReportPage() {
     const { user } = useContext(UserContext)
@@ -44,7 +44,7 @@ function CrmActivitiesReportPage() {
     let previous_date = new Date()
     let day = previous_date.getDate() - 1
     previous_date.setDate(day)
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'leads_view', show_assigned_only: true }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'leads_view', show_assigned_only: true }))
     const { data, isLoading, refetch: ReftechRemarks, isRefetching } = useQuery<AxiosResponse<{ result: GetActivitiesOrRemindersDto[], page: number, total: number, limit: number }>, BackendError>(["activities", stage, userId, dates?.start_date, dates?.end_date], async () => GetRemarks({ stage: stage, limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
     const { setChoice } = useContext(ChoiceContext)
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -294,7 +294,7 @@ function CrmActivitiesReportPage() {
             <Box sx={{ width: '100%' }}>
                 <Stack direction={'row'} gap={1} sx={{ maxWidth: '100vw', height: 40, background: 'whitesmoke', p: 1, borderRadius: 1 }} className='scrollable-stack'>
                     {activitiesTopBarData && activitiesTopBarData.data && activitiesTopBarData.data.map((stage, index) => (
-                        <span key={index} style={{ paddingLeft: '10px', fontSize: 11 }}>{toTitleCase(stage.stage)} - {stage.value}</span>
+                        <span key={index} style={{ paddingLeft: '10px', fontSize: 11 }}>{toTitleCase(stage.stage)}</span>
                     ))}
                 </Stack>
                 <Stack
@@ -363,7 +363,7 @@ function CrmActivitiesReportPage() {
                             {stages.map((stage, index) => (
                                 <MenuItem
                                     key={index}
-                                    value={stage.value}
+                                    value={stage.label}
                                 >
                                     {toTitleCase(stage.label)}
                                 </MenuItem>

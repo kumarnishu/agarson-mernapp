@@ -8,16 +8,18 @@ import { ChoiceContext, SaleChoiceActions } from '../../../contexts/dialogContex
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
-import { GetUsers } from '../../../services/UserServices';
 import { UserContext } from '../../../contexts/userContext';
 import moment from 'moment';
-import { CreateOrEditSalesAttendanceDto, DropDownDto, GetSalesAttendanceDto, GetUserDto } from '../../../dtos';
 import { GetAllCRMCitiesForDropDown } from '../../../services/LeadsServices';
 import { CreateOrEditSalesmanAttendance } from '../../../services/SalesServices';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { GetSalesAttendanceDto, CreateOrEditSalesAttendanceDto } from '../../../dtos/sales-attendance.dto';
+import { GetUserDto } from '../../../dtos/user.dto';
+import { GetUsersForDropdown } from '../../../services/UserServices';
 
 function CreateOrEditSalesAttendanceForm({ attendance }: { attendance?: GetSalesAttendanceDto }) {
     const { user } = useContext(UserContext)
-    const { data: users } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'sales_menu', show_assigned_only: true }))
+    const { data: users } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: true }))
     const { data: cities } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("cities", async () => GetAllCRMCitiesForDropDown({ state: 'all' }))
 
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
@@ -159,7 +161,7 @@ function CreateOrEditSalesAttendanceForm({ attendance }: { attendance?: GetSales
                     {
                         cities && cities.data && cities.data.map((station, index) => {
                             return (<option key={index} value={station.id}>
-                                {station.value}
+                                {station.label}
                             </option>)
 
                         })

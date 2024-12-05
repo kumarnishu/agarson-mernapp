@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
 import RemoveLeadReferForm from '../../forms/crm/RemoveLeadReferForm';
-import { GetLeadDto } from '../../../dtos';
+import { GetLeadDto } from '../../../dtos/lead.dto';
 
 
 function RemoveLeadReferralDialog({ lead }: { lead: GetLeadDto }) {

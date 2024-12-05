@@ -11,9 +11,11 @@ import AlertBar from '../../snacks/AlertBar';
 import { GetDyeById, GetDyes, GetMachines, UpdateShoeWeight3 } from '../../../services/ProductionServices';
 import { months } from '../../../utils/months';
 import UploadFileButton from '../../buttons/UploadFileButton';
-import { GetUserDto } from '../../../dtos';
-import { GetDyeDto, GetMachineDto, GetShoeWeightDto } from '../../../dtos';
-import { DropDownDto } from '../../../dtos';
+import { GetUserDto } from '../../../dtos/user.dto';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { GetDyeDto } from '../../../dtos/dye.dto';
+import { GetMachineDto } from '../../../dtos/machine.dto';
+import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
 
 
 function UpdateShoeWeightForm3({ shoe_weight }: { shoe_weight: GetShoeWeightDto }) {
@@ -95,7 +97,7 @@ function UpdateShoeWeightForm3({ shoe_weight }: { shoe_weight: GetShoeWeightDto 
 
     useEffect(() => {
         if (isDyeSuccess && dyedata && dyedata.data) {
-            let tmp = dyedata.data.articles && dyedata.data.articles.map((a) => { return { id: a.id, label: a.label, value: a.value } })
+            let tmp = dyedata.data.articles && dyedata.data.articles.map((a) => { return { id: a.id, label: a.label, value: a.label } })
             setArticles(tmp)
             dyedata.data.stdshoe_weight && formik.setValues({ ...formik.values, std_weigtht: dyedata.data.stdshoe_weight })        }
         else {

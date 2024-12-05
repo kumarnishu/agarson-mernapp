@@ -7,9 +7,12 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
-import { DropDownDto } from '../../../dtos';
 import { DeleteProductionItem } from '../../../services/ProductionServices';
-import { GetProductionDto, GetShoeWeightDto, GetSoleThicknessDto, GetSpareDyeDto } from '../../../dtos';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { GetProductionDto } from '../../../dtos/production.dto';
+import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
+import { GetSoleThicknessDto } from '../../../dtos/sole-thickness.dto';
+import { GetSpareDyeDto } from '../../../dtos/spare-dye.dto';
 
 
 function DeleteProductionItemDialog({ category, weight, thickness, spare_dye, production }: { category?: DropDownDto, weight?: GetShoeWeightDto, thickness?: GetSoleThicknessDto, spare_dye?: GetSpareDyeDto, production?: GetProductionDto }) {

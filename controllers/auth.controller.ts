@@ -79,8 +79,8 @@ export const Login = async (req: Request, res: Response, next: NextFunction) => 
         assigned_permissions: user.assigned_permissions,
         created_at: moment(user.created_at).format("DD/MM/YYYY"),
         updated_at: moment(user.updated_at).format("DD/MM/YYYY"),
-        created_by: { id: user.created_by._id, label: user.created_by.username, value: user.created_by.username },
-        updated_by: { id: user.updated_by._id, label: user.updated_by.username, value: user.updated_by.username },
+        created_by: { id: user.created_by._id, label: user.created_by.username },
+        updated_by: { id: user.updated_by._id, label: user.updated_by.username},
     }
     res.status(200).json({ user: result, token: token })
 }

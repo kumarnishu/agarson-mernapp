@@ -12,16 +12,16 @@ import { Check, Delete, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Men
 import DBPagination from '../../components/pagination/DBpagination'
 import ExportToExcel from '../../utils/ExportToExcel'
 import PopUp from '../../components/popup/PopUp'
-import { GetUsers } from '../../services/UserServices'
+import { GetUsersForDropdown } from '../../services/UserServices'
 import moment from 'moment'
-import { GetShoeWeightDto } from '../../dtos'
-import { GetUserDto } from '../../dtos'
 import { GetShoeWeights } from '../../services/ProductionServices'
 import CreateOrEditShoeWeightDialog from '../../components/dialogs/production/CreateOrEditShoeWeightDialog'
 import DeleteProductionItemDialog from '../../components/dialogs/production/DeleteProductionItemDialog'
 import ValidateShoeWeightDialog from '../../components/dialogs/production/ValidateShoeWeightDialog'
 import { months } from '../../utils/months'
 import ViewShoeWeightPhotoDialog from '../../components/dialogs/production/ViewShoeWeightPhotoDialog'
+import { GetShoeWeightDto } from '../../dtos/shoe-weight.dto'
+import { GetUserDto } from '../../dtos/user.dto'
 
 
 export default function ShoeWeightPage() {
@@ -46,7 +46,7 @@ export default function ShoeWeightPage() {
   })
   const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetShoeWeightDto[], page: number, total: number, limit: number }>, BackendError>(["shoe_weights", userId, dates?.start_date, dates?.end_date], async () => GetShoeWeights({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'shoe_weight_view', show_assigned_only: true }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'shoe_weight_view', show_assigned_only: true }))
 
   useEffect(() => {
     if (isUsersSuccess)
@@ -73,9 +73,9 @@ export default function ShoeWeightPage() {
       {
         accessorKey: 'actions',
         header: '',
-        
+
         enableColumnFilter: false,
-        
+
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -141,8 +141,8 @@ export default function ShoeWeightPage() {
       {
         accessorKey: 'shoe_photo1',
         header: 'Photos',
-       
-        
+
+
         Cell: (cell) => <>
           {cell.row.original.shoe_photo1 && <Photo onClick={() => {
             setWeight(cell.row.original)
@@ -164,11 +164,11 @@ export default function ShoeWeightPage() {
       {
         accessorKey: 'machine',
         header: 'Machine',
-      
+
         filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.machine.value.toString() || ""}</>,
+        Cell: (cell) => <>{cell.row.original.machine.label.toString() || ""}</>,
         filterSelectOptions: weights && weights.map((i) => {
-          return i.machine.value.toString() || "";
+          return i.machine.label.toString() || "";
         }).filter(onlyUnique)
       },
       {
@@ -180,101 +180,101 @@ export default function ShoeWeightPage() {
       {
         accessorKey: 'dye',
         header: 'Dye',
-        
+
         filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.dye.value.toString() || ""}</>,
+        Cell: (cell) => <>{cell.row.original.dye.label.toString() || ""}</>,
         filterSelectOptions: weights && weights.map((i) => {
-          return i.dye.value.toString() || "";
+          return i.dye.label.toString() || "";
         }).filter(onlyUnique)
       },
       {
         accessorKey: 'article',
         header: 'Article',
         filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.article.value.toString() || ""}</>,
+        Cell: (cell) => <>{cell.row.original.article.label.toString() || ""}</>,
         filterSelectOptions: weights && weights.map((i) => {
-          return i.article.value.toString() || "";
+          return i.article.label.toString() || "";
         }).filter(onlyUnique)
       },
       {
         accessorKey: 'size',
         header: 'Size',
-        
+
         Cell: (cell) => <>{cell.row.original.size.toString() || ""}</>
       },
       {
         accessorKey: 'std_weigtht',
         header: 'Std Sole Weight',
-        
+
         Cell: (cell) => <>{cell.row.original.std_weigtht.toString() || ""}</>
       },
       {
         accessorKey: 'upper_weight1',
         header: 'Upper Weight1',
-        
+
         Cell: (cell) => <>{cell.row.original.upper_weight1.toString() || ""}</>
       },
       {
         accessorKey: 'shoe_weight1',
         header: 'Shoe Weight1',
-        
+
         Cell: (cell) => <>{cell.row.original.shoe_weight1.toString() || ""}</>
       },
       {
         accessorKey: 'weighttime1',
         header: 'Weight Time1',
-        
+
         Cell: (cell) => <>{cell.row.original.weighttime1.toString() || ""}</>
       },
       {
         accessorKey: 'upper_weight2',
         header: 'Upper Weight2',
-        
+
         Cell: (cell) => <>{cell.row.original.upper_weight2 && cell.row.original.upper_weight2.toString() || ""}</>
       },
       {
         accessorKey: 'shoe_weight2',
         header: 'Shoe Weight2',
-      
+
         Cell: (cell) => <>{cell.row.original.shoe_weight2 && cell.row.original.shoe_weight2.toString() || ""}</>
       },
       {
         accessorKey: 'weighttime2',
         header: 'Weight Time2',
-      
+
         Cell: (cell) => <>{cell.row.original.weighttime2 && cell.row.original.weighttime2.toString() || ""}</>
       },
       {
         accessorKey: 'upper_weight3',
         header: 'Upper Weight3',
-      
+
         Cell: (cell) => <>{cell.row.original.upper_weight3 && cell.row.original.upper_weight3.toString() || ""}</>
       },
       {
         accessorKey: 'shoe_weight3',
         header: 'Shoe Weight3',
-      
+
         Cell: (cell) => <>{cell.row.original.shoe_weight3 && cell.row.original.shoe_weight3.toString() || ""}</>
       },
       {
         accessorKey: 'weighttime3',
         header: 'Weight Time3',
-      
+
         Cell: (cell) => <>{cell.row.original.weighttime3 && cell.row.original.weighttime3.toString() || ""}</>
       }, {
         accessorKey: 'created_at',
         header: 'Created At',
-        
+
         Cell: (cell) => <>{cell.row.original.created_at || ""}</>
       },
       {
         accessorKey: 'created_by',
         header: 'Creator',
-        
+
         filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.created_by.value.toString() || "" ? cell.row.original.created_by.value.toString() || "" : ""}</>,
+        Cell: (cell) => <>{cell.row.original.created_by.label.toString() || "" ? cell.row.original.created_by.label.toString() || "" : ""}</>,
         filterSelectOptions: weights && weights.map((i) => {
-          return i.created_by.value.toString() || "";
+          return i.created_by.label.toString() || "";
         }).filter(onlyUnique)
       },
     ],
@@ -439,7 +439,7 @@ export default function ShoeWeightPage() {
     enableTableFooter: true,
     enableRowVirtualization: true,
     onColumnVisibilityChange: setColumnVisibility, //optional
-   
+
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,

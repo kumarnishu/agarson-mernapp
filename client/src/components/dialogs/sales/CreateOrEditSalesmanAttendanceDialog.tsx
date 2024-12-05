@@ -2,8 +2,8 @@ import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { useContext } from 'react'
 import { ChoiceContext, SaleChoiceActions, } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
-import { GetSalesAttendanceDto } from '../../../dtos'
 import CreateOrEditSalesAttendanceForm from '../../forms/sales/CreateOrEditSalesAttendanceForm'
+import { GetSalesAttendanceDto } from '../../../dtos/sales-attendance.dto'
 
 function CreateOrEditSalesmanAttendanceDialog({ attendance }: {
     attendance?: GetSalesAttendanceDto,

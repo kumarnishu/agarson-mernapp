@@ -8,8 +8,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
-import { GetKeyCategoryDto } from '../../../dtos';
 import { CreateOrEditKeyCategory } from '../../../services/KeyServices';
+import { GetKeyCategoryDto } from '../../../dtos/key-category.dto';
 
 function CreateOrEditKeyCategoryForm({ category }: { category?: GetKeyCategoryDto}) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation

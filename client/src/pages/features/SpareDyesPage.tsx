@@ -12,15 +12,15 @@ import { Check, Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExi
 import DBPagination from '../../components/pagination/DBpagination'
 import ExportToExcel from '../../utils/ExportToExcel'
 import PopUp from '../../components/popup/PopUp'
-import { GetUsers } from '../../services/UserServices'
+import { GetUsersForDropdown } from '../../services/UserServices'
 import moment from 'moment'
-import { GetSpareDyeDto } from '../../dtos'
-import { GetUserDto } from '../../dtos'
 import DeleteProductionItemDialog from '../../components/dialogs/production/DeleteProductionItemDialog'
 import { GetSpareDyes } from '../../services/ProductionServices'
 import ValidateSpareDyeDialog from '../../components/dialogs/production/ValidateSpareDyeDialog'
 import CreateOrEditSpareDyeDialog from '../../components/dialogs/production/CreateOrEditSpareDyeDialog'
 import ViewSpareDyePhotoDialog from '../../components/dialogs/production/ViewSpareDyePhotoDialog'
+import { GetSpareDyeDto } from '../../dtos/spare-dye.dto'
+import { GetUserDto } from '../../dtos/user.dto'
 
 
 export default function SpareDyesPage() {
@@ -46,7 +46,7 @@ export default function SpareDyesPage() {
     })
     const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetSpareDyeDto[], page: number, total: number, limit: number }>, BackendError>(["spare_dyes", userId, dates?.start_date, dates?.end_date], async () => GetSpareDyes({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'spare_dye_view', show_assigned_only: true }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'spare_dye_view', show_assigned_only: true }))
 
     useEffect(() => {
         if (isUsersSuccess)
@@ -121,7 +121,7 @@ export default function SpareDyesPage() {
             {
                 accessorKey: 'dye_photo',
                 header: 'Photo',
-              
+
                 Cell: (cell) => <>
                     {cell.row.original.dye_photo && <IconButton
                         disabled={!LoggedInUser?.assigned_permissions.includes('spare_dye_view')}
@@ -137,55 +137,55 @@ export default function SpareDyesPage() {
             {
                 accessorKey: 'photo_time',
                 header: 'Photo Time',
-               
+
                 Cell: (cell) => <>{cell.row.original.photo_time || ""}</>
             },
             {
                 accessorKey: 'dye',
                 header: 'Dye',
-               
+
                 filterVariant: 'multi-select',
-                Cell: (cell) => <>{cell.row.original.dye.value.toString() || "" ? cell.row.original.dye.value.toString() || "" : ""}</>,
+                Cell: (cell) => <>{cell.row.original.dye.label.toString() || "" ? cell.row.original.dye.label.toString() || "" : ""}</>,
                 filterSelectOptions: spareDyes && spareDyes.map((i) => {
-                    return i.dye.value.toString() || "";
+                    return i.dye.label.toString() || "";
                 }).filter(onlyUnique)
             },
             {
                 accessorKey: 'location',
                 header: 'Dye Location',
-               
+
                 filterVariant: 'multi-select',
-                Cell: (cell) => <>{cell.row.original.location.value.toString() || "" ? cell.row.original.location.value.toString() || "" : ""}</>,
+                Cell: (cell) => <>{cell.row.original.location.label.toString() || "" ? cell.row.original.location.label.toString() || "" : ""}</>,
                 filterSelectOptions: spareDyes && spareDyes.map((i) => {
-                    return i.location.value.toString() || "";
+                    return i.location.label.toString() || "";
                 }).filter(onlyUnique)
             },
             {
                 accessorKey: 'repair_required',
                 header: 'Repair Required',
-               
+
                 Cell: (cell) => <>{cell.row.original.repair_required ? "Yes" : "No"}</>
             },
             {
                 accessorKey: 'remarks',
                 header: 'remarks',
-               
+
                 Cell: (cell) => <>{cell.row.original.remarks || ""}</>
             },
             {
                 accessorKey: 'created_at',
                 header: 'Created At',
-               
+
                 Cell: (cell) => <>{cell.row.original.created_at || ""}</>
             },
             {
                 accessorKey: 'created_by',
                 header: 'Creator',
-               
+
                 filterVariant: 'multi-select',
-                Cell: (cell) => <>{cell.row.original.created_by.value.toString() || "" ? cell.row.original.created_by.value.toString() || "" : ""}</>,
+                Cell: (cell) => <>{cell.row.original.created_by.label.toString() || "" ? cell.row.original.created_by.label.toString() || "" : ""}</>,
                 filterSelectOptions: spareDyes && spareDyes.map((i) => {
-                    return i.created_by.value.toString() || "";
+                    return i.created_by.label.toString() || "";
                 }).filter(onlyUnique)
             },
         ],
@@ -275,7 +275,7 @@ export default function SpareDyesPage() {
                             native: true,
                         }}
                         onChange={(e) => {
-                            setUserId(e.target.value)
+                            setUserId(e.target.id)
                         }}
                         required
                         id="spareDye_owner"

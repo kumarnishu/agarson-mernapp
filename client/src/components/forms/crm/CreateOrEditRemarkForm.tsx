@@ -10,9 +10,9 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { toTitleCase } from '../../../utils/TitleCase';
-import { GetRemarksDto } from '../../../dtos';
-import { DropDownDto } from '../../../dtos';
 import moment from 'moment';
+import { GetRemarksDto } from '../../../dtos/crm-remarks.dto';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
 
 
 function CreateOrEditRemarkForm({ lead, remark, setDisplay2 }: { lead?: { _id: string, has_card?: boolean, stage: string }, remark?: GetRemarksDto, setDisplay2?: React.Dispatch<React.SetStateAction<boolean>> }) {
@@ -179,10 +179,10 @@ function CreateOrEditRemarkForm({ lead, remark, setDisplay2 }: { lead?: { _id: s
                             </option>}
                             {
                                 stages.map(stage => {
-                                    if (stage.value === "refer")
+                                    if (stage.label === "refer")
                                         return null
                                     else
-                                        return (<option key={stage.id} value={stage.value}>
+                                        return (<option key={stage.id} value={stage.label}>
                                             {toTitleCase(stage.label)}
                                         </option>)
                                 })

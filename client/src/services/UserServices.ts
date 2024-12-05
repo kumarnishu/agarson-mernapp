@@ -35,12 +35,8 @@ export const Logout = async () => {
 // get users
 
 
-export const GetUsers = async ({ hidden, permission, show_assigned_only }: { hidden?: string, show_assigned_only: boolean, permission?: string }) => {
-  if (hidden && !permission)
-    return await apiClient.get(`users/?hidden=${hidden ? hidden : 'false'}&show_assigned_only=${show_assigned_only}`)
-  else if (permission && hidden)
-    return await apiClient.get(`users/?permission=${permission}&hidden=${hidden ? hidden : 'false'}&show_assigned_only=${show_assigned_only}`)
-  return await apiClient.get(`users`)
+export const GetUsersForDropdown = async ({ hidden, permission, show_assigned_only }: { hidden?: boolean, show_assigned_only?: boolean, permission?: string }) => {
+  return await apiClient.get(`users/dropdown/?permission=${permission}&hidden=${hidden}&show_assigned_only=${show_assigned_only}`)
 }
 
 
@@ -48,6 +44,9 @@ export const GetUsersForAssignment = async () => {
   return await apiClient.get(`users/assignment`)
 }
 
+export const GetUsers = async ({ hidden }: { hidden?: boolean }) => {
+  return await apiClient.get(`users/?hidden=${hidden}`)
+}
 
 export const GetPermissions = async () => {
   return await apiClient.get(`permissions`)

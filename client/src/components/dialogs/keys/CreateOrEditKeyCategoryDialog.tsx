@@ -2,8 +2,8 @@ import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { useContext } from 'react'
 import { ChoiceContext, KeyChoiceActions } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
-import { GetKeyCategoryDto } from '../../../dtos'
 import CreateOrEditKeyCategoryForm from '../../forms/keys/CreateOrEditKeyCategoryForm'
+import { GetKeyCategoryDto } from '../../../dtos/key-category.dto'
 
 function CreateOrEditKeyCategoryDialog({ category }: { category?: GetKeyCategoryDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

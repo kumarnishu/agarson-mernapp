@@ -9,7 +9,7 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
-import { GetCrmStateDto } from '../../../dtos';
+import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
 
 function CreateOrEditStateForm({ state }: { state?: GetCrmStateDto}) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation

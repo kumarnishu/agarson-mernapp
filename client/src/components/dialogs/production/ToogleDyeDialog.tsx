@@ -8,7 +8,7 @@ import { useMutation } from 'react-query';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { ToogleDye } from '../../../services/ProductionServices';
-import { GetDyeDto } from '../../../dtos';
+import { GetDyeDto } from '../../../dtos/dye.dto';
 
 function ToogleDyeDialog({ dye }: { dye: GetDyeDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

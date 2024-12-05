@@ -2,8 +2,8 @@ import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { useContext } from 'react'
 import { ChoiceContext, KeyChoiceActions } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
-import { GetKeyDto } from '../../../dtos'
 import CreateOrEditKeyForm from '../../forms/keys/CreateOrEditKeyForm'
+import { GetKeyDto } from '../../../dtos/keys.dto'
 
 function CreateOrEditKeyDialog({ keyitm }: { keyitm?: GetKeyDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

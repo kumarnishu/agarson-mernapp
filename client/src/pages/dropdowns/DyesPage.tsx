@@ -10,7 +10,6 @@ import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Tooltip, Ty
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { GetDyeDto } from '../../dtos'
 import { GetDyes } from '../../services/ProductionServices'
 import ToogleDyeDialog from '../../components/dialogs/production/ToogleDyeDialog'
 import CreateOrEditDyeDialog from '../../components/dialogs/production/CreateOrEditDyeDialog'
@@ -23,6 +22,7 @@ import { BackendError } from "../.."
 import { Button, CircularProgress, Snackbar } from "@mui/material"
 import { Upload } from "@mui/icons-material"
 import { BulkUploadDyes } from "../../services/ProductionServices"
+import { GetDyeDto } from '../../dtos/dye.dto'
 
 const FileInput = styled.input`
 background:none;
@@ -199,7 +199,7 @@ export default function DyePage() {
         header: 'Articles',
       
         filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.articles.toString() ? cell.row.original.articles.map((a) => { return a.value }).toString() : ""}</>,
+        Cell: (cell) => <>{cell.row.original.articles.toString() ? cell.row.original.articles.map((a) => { return a.label }).toString() : ""}</>,
         filterSelectOptions: dyes && dyes.map((i) => {
           return i.articles.toString();
         }).filter(onlyUnique)
@@ -391,7 +391,7 @@ export default function DyePage() {
                   dye: row.original.dye_number,
                   size: row.original.size,
                   st_weight: row.original.stdshoe_weight,
-                  articles: row.original.articles ? row.original.articles.map((a) => { return a.value }).toString() : ""
+                  articles: row.original.articles ? row.original.articles.map((a) => { return a.label }).toString() : ""
                 }
               })
               ExportToExcel(data, "Exported Data")
@@ -407,7 +407,7 @@ export default function DyePage() {
                   dye: row.original.dye_number,
                   size: row.original.size,
                   st_weight: row.original.stdshoe_weight,
-                  articles: row.original.articles ? row.original.articles.map((a) => { return a.value }).toString() : ""
+                  articles: row.original.articles ? row.original.articles.map((a) => { return a.label }).toString() : ""
                 }
               })
 

@@ -13,12 +13,12 @@ import DBPagination from '../../components/pagination/DBpagination'
 import ExportToExcel from '../../utils/ExportToExcel'
 import PopUp from '../../components/popup/PopUp'
 import { GetSoleThickness } from '../../services/ProductionServices'
-import { GetUserDto } from '../../dtos'
-import { GetUsers } from '../../services/UserServices'
+import {  GetUsersForDropdown } from '../../services/UserServices'
 import moment from 'moment'
-import { GetSoleThicknessDto } from '../../dtos'
 import CreateOrEditSoleThicknessDialog from '../../components/dialogs/production/CreateOrEditSoleThicknessDialog'
 import DeleteProductionItemDialog from '../../components/dialogs/production/DeleteProductionItemDialog'
+import { GetSoleThicknessDto } from '../../dtos/sole-thickness.dto'
+import { GetUserDto } from '../../dtos/user.dto'
 
 
 export default function SoleThicknessPage() {
@@ -44,7 +44,7 @@ export default function SoleThicknessPage() {
     })
     const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetSoleThicknessDto[], page: number, total: number, limit: number }>, BackendError>(["thickness", userId, dates?.start_date, dates?.end_date], async () => GetSoleThickness({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'sole_thickness_view', show_assigned_only: true }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'sole_thickness_view', show_assigned_only: true }))
 
     useEffect(() => {
         if (isUsersSuccess)
@@ -111,9 +111,9 @@ export default function SoleThicknessPage() {
                 header: 'Dye',
               
                 filterVariant: 'multi-select',
-                Cell: (cell) => <>{cell.row.original.dye && cell.row.original.dye.value.toString() || "" ? cell.row.original.dye.value.toString() || "" : ""}</>,
+                Cell: (cell) => <>{cell.row.original.dye && cell.row.original.dye.label.toString() || "" ? cell.row.original.dye.label.toString() || "" : ""}</>,
                 filterSelectOptions: thicknesses && thicknesses.map((i) => {
-                    return i.dye && i.dye.value.toString() || "";
+                    return i.dye && i.dye.label.toString() || "";
                 }).filter(onlyUnique)
             },
             {
@@ -121,9 +121,9 @@ export default function SoleThicknessPage() {
                 header: 'Article',
                
                 filterVariant: 'multi-select',
-                Cell: (cell) => <>{cell.row.original.article && cell.row.original.article.value || "" ? cell.row.original.article.value || "" : ""}</>,
+                Cell: (cell) => <>{cell.row.original.article && cell.row.original.article.label || "" ? cell.row.original.article.label || "" : ""}</>,
                 filterSelectOptions: thicknesses && thicknesses.map((i) => {
-                    return i.article && i.article.value || "";
+                    return i.article && i.article.label || "";
                 }).filter(onlyUnique)
             },
             {
@@ -158,9 +158,9 @@ export default function SoleThicknessPage() {
                 header: 'Creator',
               
                 filterVariant: 'multi-select',
-                Cell: (cell) => <>{cell.row.original.created_by.value.toString() || "" ? cell.row.original.created_by.value.toString() || "" : ""}</>,
+                Cell: (cell) => <>{cell.row.original.created_by.label.toString() || "" ? cell.row.original.created_by.label.toString() || "" : ""}</>,
                 filterSelectOptions: thicknesses && thicknesses.map((i) => {
-                    return i.created_by.value.toString() || "";
+                    return i.created_by.label.toString() || "";
                 }).filter(onlyUnique)
             },
         ],

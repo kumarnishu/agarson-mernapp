@@ -11,7 +11,7 @@ import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { DropDownDto } from '../../dtos'
+import { DropDownDto } from '../../dtos/dropdown.dto'
 import { GetAllItemUnits } from '../../services/ExpenseServices'
 import CreateOrEditItemUnitDialog from '../../components/dialogs/expense/CreateOrEditItemUnitDialog copy'
 

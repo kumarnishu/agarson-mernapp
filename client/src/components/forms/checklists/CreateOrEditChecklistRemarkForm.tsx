@@ -8,8 +8,10 @@ import { ChoiceContext, CheckListChoiceActions } from '../../../contexts/dialogC
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
-import { CreateOrEditChecklistRemarkDto, GetChecklistBoxDto, GetChecklistDto, GetChecklistRemarksDto } from '../../../dtos';
 import { CreateOrEditChecklistRemark } from '../../../services/CheckListServices';
+import { GetChecklistBoxDto } from '../../../dtos/checklist-box.dto';
+import { GetChecklistRemarksDto, CreateOrEditChecklistRemarkDto } from '../../../dtos/checklist-remark.dto';
+import { GetChecklistDto } from '../../../dtos/checklist.dto';
 
 
 function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box, setDisplay }: { checklist: GetChecklistDto, checklist_box: GetChecklistBoxDto, remark?: GetChecklistRemarksDto, setDisplay?: React.Dispatch<React.SetStateAction<boolean>> }) {

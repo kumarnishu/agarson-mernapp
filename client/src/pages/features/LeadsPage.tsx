@@ -6,8 +6,6 @@ import { useQuery } from 'react-query'
 import { FuzzySearchLeads, GetAllStages, GetLeads } from '../../services/LeadsServices'
 import { UserContext } from '../../contexts/userContext'
 import { toTitleCase } from '../../utils/TitleCase'
-import { GetLeadDto } from '../../dtos'
-import { DropDownDto } from '../../dtos'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import CreateOrEditLeadDialog from '../../components/dialogs/crm/CreateOrEditLeadDialog'
@@ -29,6 +27,8 @@ import { AxiosResponse } from "axios"
 import { BackendError } from "../.."
 import { Button, Tooltip } from "@mui/material"
 import ExportToExcel from "../../utils/ExportToExcel"
+import { DropDownDto } from '../../dtos/dropdown.dto'
+import { GetLeadDto } from '../../dtos/lead.dto'
 
 
 
@@ -64,10 +64,10 @@ export default function LeadsPage() {
       let tmp: DropDownDto[] = stagedata.data;
 
       if (!LoggedInUser?.assigned_permissions.includes('show_leads_useless')) {
-        tmp = tmp.filter((stage) => { return stage.value !== 'useless' })
+        tmp = tmp.filter((stage) => { return stage.label !== 'useless' })
       }
       if (!LoggedInUser?.assigned_permissions.includes('show_refer_leads')) {
-        tmp = tmp.filter((stage) => { return stage.value !== 'refer' })
+        tmp = tmp.filter((stage) => { return stage.label !== 'refer' })
       }
       setStages(tmp)
     }
@@ -387,8 +387,8 @@ export default function LeadsPage() {
         Cell: (cell) => <>{cell.row.original.updated_at ? cell.row.original.updated_at : ""}</>
       },
       {
-        accessorKey: 'created_by.value',
-        accessorFn: (row) => { return row.created_by.value },
+        accessorKey: 'created_by.label',
+        accessorFn: (row) => { return row.created_by.label },
         header: 'Creator',
         
         Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
@@ -501,7 +501,7 @@ export default function LeadsPage() {
           {stages.map((stage, index) => (
             <MenuItem
               key={index}
-              value={stage.value}
+              value={stage.label}
             >
               {toTitleCase(stage.label)}
             </MenuItem>
@@ -718,7 +718,7 @@ export default function LeadsPage() {
               has_card: lead.has_card,
               stage: lead.stage
             } : undefined} />
-            <DeleteCrmItemDialog lead={lead ? { id: lead._id, value: lead.name, label: lead.name } : undefined} />
+            <DeleteCrmItemDialog lead={lead ? { id: lead._id,  label: lead.name } : undefined} />
             <ViewRemarksDialog id={lead._id} />
             <ReferLeadDialog lead={lead} />
             <RemoveLeadReferralDialog lead={lead} />

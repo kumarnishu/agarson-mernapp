@@ -8,8 +8,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
-import { DropDownDto } from '../../../dtos';
 import { CreateOrEditCheckCategory } from '../../../services/CheckListServices';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
 
 function CreateOrEditCategoryForm({ category }: { category?: DropDownDto}) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
@@ -32,7 +32,7 @@ function CreateOrEditCategoryForm({ category }: { category?: DropDownDto}) {
         category: string
     }>({
         initialValues: {
-            category: category ? category.value : ""
+            category: category ? category.label : ""
         },
         validationSchema:yup.object({
             category:yup.string().required()

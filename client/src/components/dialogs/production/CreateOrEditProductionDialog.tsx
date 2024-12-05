@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext.tsx';
 import { Cancel } from '@mui/icons-material';
 import CreateOrEditProductionForm from '../../forms/production/CreateOrEditProductionForm.tsx';
-import { GetProductionDto } from '../../../dtos/index.ts';
+import { GetProductionDto } from '../../../dtos/production.dto.ts';
 
 
 function CreateOrEditProductionDialog({ production }: { production?: GetProductionDto }) {

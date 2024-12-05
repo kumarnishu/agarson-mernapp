@@ -12,7 +12,7 @@ import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { DropDownDto } from '../../dtos'
+import { DropDownDto } from '../../dtos/dropdown.dto'
 import CreateOrEditPaymentCategoryDialog from '../../components/dialogs/payments/CreateOrEditPaymentCategoryDialog'
 import { GetAllPaymentCategories } from '../../services/PaymentsService'
 
@@ -70,9 +70,9 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
         header: 'Category',
       
         filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.value ? cell.row.original.value : ""}</>,
+        Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
         filterSelectOptions: categories && categories.map((i) => {
-          return i.value;
+          return i.label;
         }).filter(onlyUnique)
       },
      

@@ -3,15 +3,16 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { TextField, Typography } from '@mui/material'
-import { GetSalesAttendancesAuto, GetUserDto } from '../../dtos'
 import { AxiosResponse } from "axios"
 import { BackendError } from "../.."
 import { GetSalesmanAutoVisitReports } from '../../services/SalesServices'
 import moment from 'moment'
 import { UserContext } from '../../contexts/userContext'
 import { HandleNumbers } from '../../utils/IsDecimal'
-import { GetUsers } from '../../services/UserServices'
 import { toTitleCase } from '../../utils/TitleCase'
+import { GetUserDto } from '../../dtos/user.dto'
+import { GetSalesAttendancesAuto } from '../../dtos/visit-report.dto'
+import { GetUsersForDropdown } from '../../services/UserServices'
 
 
 export default function SalesmanVisitPageAuto() {
@@ -23,7 +24,7 @@ export default function SalesmanVisitPageAuto() {
     })
     const [users, setUsers] = useState<GetUserDto[]>([])
     const [reports, setReports] = useState<GetSalesAttendancesAuto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'sales_menu', show_assigned_only: false }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: false }))
     const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetSalesAttendancesAuto[]>, BackendError>(["visits-auto", userId, dates?.start_date, dates?.end_date], async () => GetSalesmanAutoVisitReports({ id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
     const isFirstRender = useRef(true);
 

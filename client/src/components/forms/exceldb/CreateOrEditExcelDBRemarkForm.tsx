@@ -8,9 +8,9 @@ import { ChoiceContext,  KeyChoiceActions } from '../../../contexts/dialogContex
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
-import { CreateOrEditExcelDbRemarkDto, GetExcelDBRemarksDto } from '../../../dtos';
 import moment from 'moment';
 import { CreateOrEditExcelDbRemark } from '../../../services/ExcelDbService';
+import { GetExcelDBRemarksDto, CreateOrEditExcelDbRemarkDto } from '../../../dtos/excel-db-remark.dto';
 
 
 function CreateOrEditExcelDBRemarkForm({ category, obj, remark, setDisplay }: {

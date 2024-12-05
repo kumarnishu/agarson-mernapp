@@ -297,7 +297,7 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
 
 
                     let obj: GetSalesmanKpiDto = {
-                        employee: { id: salesman[i]._id, label: salesman[i].username, value: salesman[i].username },
+                        employee: { id: salesman[i]._id, label: salesman[i].username},
                         date: moment(currdate1).format("DD/MM/YYYY"),
                         month: moment(currdate1).format("MMMM"),
                         attendance: attendance?.attendance,
@@ -305,7 +305,7 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
                         old_visit: attendance?.old_visit,
                         working_time: (attendance?.in_time || "") + "-" + (attendance?.end_time || ""),
                         new_clients: newclients,
-                        station: attendance?.station && { id: attendance?.station._id, label: attendance?.station.city, value: attendance?.station.city },
+                        station: attendance?.station && { id: attendance?.station._id, label: attendance?.station.city },
                         state: attendance?.station.state,
                         currentsale_currentyear: currentsale_currentyear,
                         lastsale_currentyear: lastsale_currentyear,
@@ -439,7 +439,7 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
 
 
                 let obj: GetSalesmanKpiDto = {
-                    employee: { id: req.user, label: req.user.username, value: req.user.username },
+                    employee: { id: req.user, label: req.user.username },
                     date: moment(currdate1).format("DD/MM/YYYY"),
                     month: moment(currdate1).format("MMMM"),
                     attendance: attendance?.attendance,
@@ -447,7 +447,7 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
                     old_visit: attendance?.old_visit,
                     working_time: (attendance?.in_time || "") + "-" + (attendance?.end_time || ""),
                     new_clients: newclients,
-                    station: attendance?.station && { id: attendance?.station._id, label: attendance?.station.city, value: attendance?.station.city },
+                    station: attendance?.station && { id: attendance?.station._id, label: attendance?.station.city},
                     state: attendance?.station.state,
                     currentsale_currentyear: currentsale_currentyear,
                     lastsale_currentyear: lastsale_currentyear,
@@ -583,7 +583,7 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
 
 
                 let obj: GetSalesmanKpiDto = {
-                    employee: { id: user._id, label: user.username, value: user.username },
+                    employee: { id: user._id, label: user.username},
                     date: moment(currdate1).format("DD/MM/YYYY"),
                     month: moment(currdate1).format("MMMM"),
                     attendance: attendance?.attendance,
@@ -591,7 +591,7 @@ export const GetSalesManKpi = async (req: Request, res: Response, next: NextFunc
                     old_visit: attendance?.old_visit,
                     working_time: (attendance?.in_time || "") + "-" + (attendance?.end_time || ""),
                     new_clients: newclients,
-                    station: attendance?.station && { id: attendance?.station._id, label: attendance?.station.city, value: attendance?.station.city },
+                    station: attendance?.station && { id: attendance?.station._id, label: attendance?.station.city },
                     state: attendance?.station.state,
                     currentsale_currentyear: currentsale_currentyear,
                     lastsale_currentyear: lastsale_currentyear,

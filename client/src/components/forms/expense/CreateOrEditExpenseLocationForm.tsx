@@ -7,8 +7,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
-import { DropDownDto } from '../../../dtos';
 import { CreateOrEditExpenseLocation } from '../../../services/ExpenseServices';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
 
 
 type props = {
@@ -37,7 +37,7 @@ function CreateOrEditExpenseLocationForm({ location, setDialog }: props) {
         location: string
     }>({
         initialValues: {
-            location: location ? location.value : ""
+            location: location ? location.label : ""
         },
         validationSchema: yup.object({
             location: yup.string().required()

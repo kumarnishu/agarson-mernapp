@@ -9,13 +9,13 @@ import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
 import { Comment, Visibility } from '@mui/icons-material'
 import { IconButton, Tooltip } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
-import { GetActivitiesOrRemindersDto } from '../../dtos'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { DownloadFile } from '../../utils/DownloadFile'
 import ViewRemarksDialog from '../../components/dialogs/crm/ViewRemarksDialog'
 import CreateOrEditRemarkDialog from '../../components/dialogs/crm/CreateOrEditRemarkDialog'
+import { GetActivitiesOrRemindersDto } from '../../dtos/crm-remarks.dto'
 
 function CrmReminderPage() {
   const [remarks, setRemarks] = useState<GetActivitiesOrRemindersDto[]>([])

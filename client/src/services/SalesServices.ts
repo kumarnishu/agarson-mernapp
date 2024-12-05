@@ -1,4 +1,5 @@
-import { CreateOrEditSalesAttendanceDto, CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto } from "../dtos"
+import { CreateOrEditSalesAttendanceDto } from "../dtos/sales-attendance.dto"
+import { CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto } from "../dtos/visit_remark.dto"
 import { apiClient } from "./utils/AxiosInterceptor"
 
 

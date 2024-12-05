@@ -7,10 +7,10 @@ import { toTitleCase } from '../../../utils/TitleCase'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
-import { GetVisitSummaryReportRemarkDto } from '../../../dtos'
 import { GetVisitReportRemarksHistory } from '../../../services/SalesServices'
 import DeleteVisitRemarkDialog from './DeleteVisitRemarkDialog'
 import CreateOrEditVisitReportRemarkDialog from './CreateOrEditVisitReportRemarkDialog'
+import { GetVisitSummaryReportRemarkDto } from '../../../dtos/visit_remark.dto'
 
 
 function ViewVisitReportRemarksDialog({ employee, visit_date }: { employee: string, visit_date: string }) {

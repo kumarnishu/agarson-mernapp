@@ -13,7 +13,7 @@ import { Login } from '../../../services/UserServices';
 import { BackendError } from '../../..';
 import AlertBar from '../../snacks/AlertBar';
 import { Navigate } from "react-router-dom";
-import { GetUserDto } from '../../../dtos';
+import { GetUserDto } from '../../../dtos/user.dto';
 
 function LoginForm() {
   const goto = useNavigate()

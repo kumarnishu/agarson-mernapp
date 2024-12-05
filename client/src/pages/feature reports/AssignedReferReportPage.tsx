@@ -7,7 +7,6 @@ import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
-import { GetLeadDto } from '../../dtos'
 import PopUp from '../../components/popup/PopUp'
 import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
 import { BuildOutlined, Comment, Delete, Edit, Share, Upload, Visibility } from '@mui/icons-material'
@@ -26,6 +25,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import CreateOrEditBillDialog from '../../components/dialogs/crm/CreateOrEditBillDialog'
 import ViewLeadsBillHistoryDialog from '../../components/dialogs/crm/ViewLeadsBillHistoryDialog'
 import CreateOrEditLeadDialog from '../../components/dialogs/crm/CreateOrEditLeadDialog'
+import { GetLeadDto } from '../../dtos/lead.dto'
 
 export default function AssignedReferReportPage() {
   const [leads, setLeads] = useState<GetLeadDto[]>([])
@@ -578,7 +578,7 @@ export default function AssignedReferReportPage() {
               has_card: lead.has_card,
               stage: lead.stage
             } : undefined} />
-            <DeleteCrmItemDialog lead={lead ? { id: lead._id, value: lead.name, label: lead.name } : undefined} />
+            <DeleteCrmItemDialog lead={lead ? { id: lead._id, label: lead.name } : undefined} />
             <ViewRemarksDialog id={lead._id} />
             <ReferLeadDialog lead={lead} />
             <RemoveLeadReferralDialog lead={lead} />

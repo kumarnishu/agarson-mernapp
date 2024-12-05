@@ -2,8 +2,8 @@ import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { useContext } from 'react'
 import { ChoiceContext, KeyChoiceActions } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
-import { GetExcelDBRemarksDto } from '../../../dtos'
 import CreateOrEditExcelDBRemarkForm from '../../forms/exceldb/CreateOrEditExcelDBRemarkForm'
+import { GetExcelDBRemarksDto } from '../../../dtos/excel-db-remark.dto'
 
 function CreateOrEditExcelDBRemarkDialog({ category, obj, remark, display, setDisplay }: {
     obj: string,

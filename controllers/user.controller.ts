@@ -8,6 +8,7 @@ import { sendUserToken } from '../middlewares/auth.middleware';
 import { User, Asset, IUser } from '../models/user.model';
 import { destroyCloudFile } from '../services/destroyCloudFile';
 import { uploadFileToCloud } from '../services/uploadFileToCloud';
+import { DropDownDto } from '../dtos/dropdown.dto';
 
 
 export const SignUp = async (req: Request, res: Response, next: NextFunction) => {
@@ -16,7 +17,7 @@ export const SignUp = async (req: Request, res: Response, next: NextFunction) =>
     if (users.length > 0)
         return res.status(400).json({ message: "not allowed" })
 
-    let { username, email, password, mobile,alias1,alias2 } = req.body as createOrEditUserDto
+    let { username, email, password, mobile, alias1, alias2 } = req.body as createOrEditUserDto
     // validations
     if (!username || !email || !password || !mobile)
         return res.status(400).json({ message: "fill all the required fields" });
@@ -49,7 +50,7 @@ export const SignUp = async (req: Request, res: Response, next: NextFunction) =>
     let owner = new User({
         username,
         password,
-        alias1,alias2,
+        alias1, alias2,
         email,
         mobile,
         is_admin: true,
@@ -92,13 +93,13 @@ export const SignUp = async (req: Request, res: Response, next: NextFunction) =>
         assigned_permissions: owner.assigned_permissions,
         created_at: moment(owner.created_at).format("DD/MM/YYYY"),
         updated_at: moment(owner.updated_at).format("DD/MM/YYYY"),
-        created_by: { id: owner.created_by._id, label: owner.created_by.username, value: owner.created_by.username },
-        updated_by: { id: owner.updated_by._id, label: owner.updated_by.username, value: owner.updated_by.username },
+        created_by: { id: owner.created_by._id, label: owner.created_by.username },
+        updated_by: { id: owner.updated_by._id, label: owner.updated_by.username },
     }
     res.status(201).json({ user: result, token: token })
 }
 export const NewUser = async (req: Request, res: Response, next: NextFunction) => {
-    let { username, email, password, mobile,alias1,alias2 } = req.body as createOrEditUserDto;
+    let { username, email, password, mobile, alias1, alias2 } = req.body as createOrEditUserDto;
     // validations
     if (!username || !email || !password || !mobile)
         return res.status(400).json({ message: "fill all the required fields" });
@@ -131,7 +132,7 @@ export const NewUser = async (req: Request, res: Response, next: NextFunction) =
     let user = new User({
         username,
         password,
-        email,alias1,alias2,
+        email, alias1, alias2,
         mobile,
         is_admin: false,
         dp,
@@ -157,7 +158,7 @@ export const UpdateUser = async (req: Request, res: Response, next: NextFunction
     if (!user) {
         return res.status(404).json({ message: "user not found" })
     }
-    let { email, username, mobile,alias1,alias2 } = req.body as createOrEditUserDto;
+    let { email, username, mobile, alias1, alias2 } = req.body as createOrEditUserDto;
     if (!username || !email || !mobile)
         return res.status(400).json({ message: "fill all the required fields" });
     //check username
@@ -203,7 +204,7 @@ export const UpdateUser = async (req: Request, res: Response, next: NextFunction
     if (mobile !== user.mobile)
         mobileverified = false
     await User.findByIdAndUpdate(user.id, {
-        username,alias1,alias2,
+        username, alias1, alias2,
         email,
         mobile,
         email_verified: emaileverified,
@@ -295,22 +296,9 @@ export const AssignUsers = async (req: Request, res: Response, next: NextFunctio
 }
 export const GetUsers = async (req: Request, res: Response, next: NextFunction) => {
     let showhidden = req.query.hidden
-    let perm = req.query.permission
-    let show_assigned_only = req.query.show_assigned_only
     let result: GetUserDto[] = []
-    let users: IUser[] = [];
+    let users: IUser[] = await User.find({ is_active: showhidden == 'false' }).populate("created_by").populate("updated_by").populate('assigned_users').sort('username')
 
-    if (show_assigned_only == 'true') {
-        let ids: string[] = []
-        ids = req.user?.assigned_users.map((id: { _id: string }) => { return id._id })
-        users = await User.find({ is_active: true, _id: { $in: ids } }).populate("created_by").populate("updated_by").populate('assigned_users').sort('username')
-    }
-    else {
-        users = await User.find({ is_active: showhidden == 'false' }).populate("created_by").populate("updated_by").populate('assigned_users').sort('username')
-    }
-    if (perm) {
-        users = users.filter((u) => { return u.assigned_permissions.includes(String(perm)) })
-    }
     result = users.map((u) => {
         return {
             _id: u._id,
@@ -346,6 +334,32 @@ export const GetUsers = async (req: Request, res: Response, next: NextFunction) 
     return res.status(200).json(result)
 }
 
+export const GetUsersForDropdown = async (req: Request, res: Response, next: NextFunction) => {
+    let showhidden = req.query.hidden
+    let perm = req.query.permission
+    let show_assigned_only = req.query.show_assigned_only
+    let result: DropDownDto[] = []
+    let users: IUser[] = [];
+
+    if (show_assigned_only == 'true') {
+        let ids: string[] = []
+        ids = req.user?.assigned_users.map((id: { _id: string }) => { return id._id })
+        users = await User.find({ is_active: true, _id: { $in: ids } }).sort('username')
+    }
+    else {
+        users = await User.find({ is_active: showhidden == 'false' }).sort('username')
+    }
+    if (perm) {
+        users = users.filter((u) => { return u.assigned_permissions.includes(String(perm)) })
+    }
+    result = users.map((u) => {
+        return {
+            id: u._id,
+            label: u.username,
+        }
+    })
+    return res.status(200).json(result)
+}
 export const GetUsersForAssignmentPage = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetUserDto[] = []
     let users = await User.find({ is_admin: false }).populate("created_by").populate("updated_by").populate('assigned_users').sort('username')
@@ -414,8 +428,8 @@ export const GetProfile = async (req: Request, res: Response, next: NextFunction
             assigned_permissions: user.assigned_permissions,
             created_at: moment(user.created_at).format("DD/MM/YYYY"),
             updated_at: moment(user.updated_at).format("DD/MM/YYYY"),
-            created_by: { id: user.created_by._id, label: user.created_by.username, value: user.created_by.username },
-            updated_by: { id: user.updated_by._id, label: user.updated_by.username, value: user.updated_by.username },
+            created_by: { id: user.created_by._id, label: user.created_by.username },
+            updated_by: { id: user.updated_by._id, label: user.updated_by.username },
         }
     res.status(200).json({ user: result, token: req.cookies.accessToken })
 }

@@ -9,8 +9,8 @@ import { saveAs } from 'file-saver';
 import ExportToExcel from "../../utils/ExportToExcel"
 import { queryClient } from "../../main"
 import { CreateKeysFromExcel } from "../../services/KeyServices"
-import { GetKeyFromExcelDto } from "../../dtos"
 import { convertDateToExcelFormat } from "../../utils/datesHelper"
+import { GetKeyFromExcelDto } from "../../dtos/keys.dto"
 
 
 const FileInput = styled.input`

@@ -9,7 +9,7 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
-import { DropDownDto } from '../../../dtos';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
 
 function CreateOrEditLeadTypeForm({ type }: { type?: DropDownDto}) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
@@ -31,7 +31,7 @@ function CreateOrEditLeadTypeForm({ type }: { type?: DropDownDto}) {
         type: string
     }>({
         initialValues: {
-            type: type ? type.value : ""
+            type: type ? type.label : ""
         },
         validationSchema:yup.object({
             type:yup.string().required()

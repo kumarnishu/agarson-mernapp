@@ -3,11 +3,11 @@ import { useContext, useEffect, useState } from 'react'
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import { toTitleCase } from '../../../utils/TitleCase'
-import { GetRemarksDto } from '../../../dtos'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
 import { GetReferRemarksHistory } from '../../../services/LeadsServices'
+import { GetRemarksDto } from '../../../dtos/crm-remarks.dto'
 
 
 
@@ -43,7 +43,7 @@ function ViewReferRemarksDialog({ id }: { id: string }) {
                         return (
 
                             <div key={index} style={{ borderRadius: '1px 10px', padding: '10px', background: 'lightblue', paddingLeft: '20px', border: '1px solid grey' }}>
-                                <p>{toTitleCase(item.created_by.value)} : {item.remark} </p>
+                                <p>{toTitleCase(item.created_by.label)} : {item.remark} </p>
                                 <p>{item.remind_date && `Remind Date : ${item.remind_date}`} </p>
                                 <br></br>
                                 <p>{item.created_date}</p>

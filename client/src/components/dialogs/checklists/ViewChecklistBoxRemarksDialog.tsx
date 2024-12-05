@@ -4,7 +4,6 @@ import { CheckListChoiceActions, ChoiceContext } from '../../../contexts/dialogC
 import { Cancel } from '@mui/icons-material'
 import { UserContext } from '../../../contexts/userContext'
 import { toTitleCase } from '../../../utils/TitleCase'
-import { GetChecklistBoxDto, GetChecklistDto, GetChecklistRemarksDto } from '../../../dtos'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
@@ -12,6 +11,9 @@ import { GetCheckListBoxRemarksHistory } from '../../../services/CheckListServic
 import DeleteChecklistRemarkDialog from './DeleteChecklistRemarkDialog'
 import CreateOrEditChecklistRemarkDialog from './CreateOrEditChecklistRemarkDialog'
 import moment from 'moment'
+import { GetChecklistBoxDto } from '../../../dtos/checklist-box.dto'
+import { GetChecklistRemarksDto } from '../../../dtos/checklist-remark.dto'
+import { GetChecklistDto } from '../../../dtos/checklist.dto'
 
 
 function ViewChecklistBoxRemarksDialog({ checklist_box, checklist }: { checklist: GetChecklistDto, checklist_box: GetChecklistBoxDto }) {
@@ -54,7 +56,7 @@ function ViewChecklistBoxRemarksDialog({ checklist_box, checklist }: { checklist
                         return (
 
                             <div key={index} style={{ borderRadius: '1px 10px', padding: '10px', background: 'lightblue', paddingLeft: '20px', border: '1px solid grey' }}>
-                                <p>{toTitleCase(item.created_by.value)} : {item.remark} </p>
+                                <p>{toTitleCase(item.created_by.label)} : {item.remark} </p>
                                 <br></br>
                                 <p>{moment(item.created_date).format('lll')}</p>
                                 {
@@ -64,7 +66,7 @@ function ViewChecklistBoxRemarksDialog({ checklist_box, checklist }: { checklist
                                             setDisplay(true)
                                         }}>
                                             Delete</IconButton>}
-                                        {user && item.remark && user?.username === item.created_by.value && new Date(item.created_date) > new Date(previous_date) && user?.assigned_permissions.includes('checklist_edit') && <IconButton size="small" color="success"
+                                        {user && item.remark && user?.username === item.created_by.label && new Date(item.created_date) > new Date(previous_date) && user?.assigned_permissions.includes('checklist_edit') && <IconButton size="small" color="success"
                                             onClick={() => {
                                                 setRemark(item)
                                                 setDisplay2(true)

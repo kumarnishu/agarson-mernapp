@@ -9,8 +9,9 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { CreateOrEditSoleThickness, GetDyeById, GetDyes } from '../../../services/ProductionServices';
-import { CreateOrEditSoleThicknessDto, GetDyeDto, GetSoleThicknessDto } from '../../../dtos';
-import { DropDownDto } from '../../../dtos';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { GetDyeDto } from '../../../dtos/dye.dto';
+import { GetSoleThicknessDto, CreateOrEditSoleThicknessDto } from '../../../dtos/sole-thickness.dto';
 
 function CreateOrEditSoleThicknessForm({ thickness }: { thickness?: GetSoleThicknessDto }) {
     const { data: dyes } = useQuery<AxiosResponse<GetDyeDto[]>, BackendError>("dyes", async () => GetDyes())
@@ -74,7 +75,7 @@ function CreateOrEditSoleThicknessForm({ thickness }: { thickness?: GetSoleThick
 
     useEffect(() => {
         if (isDyeSuccess && dyedata && dyedata.data) {
-            let tmp = dyedata.data.articles && dyedata.data.articles.map((a) => { return { id: a.id, label: a.label, value: a.value } })
+            let tmp = dyedata.data.articles && dyedata.data.articles.map((a) => { return { id: a.id, label: a.label, value: a.label } })
             setArticles(tmp)
             dyedata.data.size && formik.setValues({ ...formik.values, size: dyedata.data.size })
         }
@@ -173,7 +174,7 @@ function CreateOrEditSoleThicknessForm({ thickness }: { thickness?: GetSoleThick
                     {
                         articles && articles.map((article, index) => {
                             return (<option key={index} value={article.id}>
-                                {article.value}
+                                {article.label}
                             </option>)
                         })
                     }

@@ -8,7 +8,7 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
-import {  GetRemarksDto } from '../../../dtos';
+import { GetRemarksDto } from '../../../dtos/crm-remarks.dto';
 
 
 function DeleteRemarkDialog({ remark, display, setDisplay }: { remark: GetRemarksDto, display: boolean, setDisplay: React.Dispatch<React.SetStateAction<boolean>> }) {

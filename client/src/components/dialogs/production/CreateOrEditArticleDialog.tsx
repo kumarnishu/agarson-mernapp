@@ -2,8 +2,8 @@ import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
 import { useContext } from 'react';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
-import { GetArticleDto } from '../../../dtos';
 import CreateOrEditArticleForm from '../../forms/production/CreateOrEditArticleForm';
+import { GetArticleDto } from '../../../dtos/article.dto';
 
 
 function CreateOrEditArticleDialog({ article }: { article?: GetArticleDto }) {

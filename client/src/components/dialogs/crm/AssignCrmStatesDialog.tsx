@@ -9,16 +9,16 @@ import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { useFormik } from 'formik';
 import * as Yup from "yup"
-import { GetUsers } from '../../../services/UserServices';
 import { AssignCRMStatesToUsers } from '../../../services/LeadsServices';
-import { GetUserDto } from '../../../dtos';
-import { GetCrmStateDto } from '../../../dtos';
+import { GetUserDto } from '../../../dtos/user.dto';
+import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
+import { GetUsersForDropdown } from '../../../services/UserServices';
 
 
 function AssignCrmStatesDialog({ states, flag }: { states: GetCrmStateDto[], flag: number }) {
 
     const [users, setUsers] = useState<GetUserDto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', show_assigned_only: false }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
 
 
 

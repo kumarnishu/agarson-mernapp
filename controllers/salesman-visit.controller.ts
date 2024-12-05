@@ -106,8 +106,7 @@ export const GetSalesManVisitReport = async (req: Request, res: Response, next: 
         let names = [String(salesman[i].username), String(salesman[i].alias1 || ""), String(salesman[i].alias2 || "")].filter(value => value)
         result.push({
             employee: {
-                id: salesman[i]._id, label: names.toString(), value: salesman[i]
-                    .username
+                id: salesman[i]._id, label: names.toString()
             },
             date1: moment(dt2).format("DD/MM/YYYY"),
             old_visits1: oldvisit1,

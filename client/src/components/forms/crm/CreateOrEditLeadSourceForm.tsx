@@ -9,7 +9,7 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
-import { DropDownDto } from '../../../dtos';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
 
 function CreateOrEditLeadSourceForm({ source }: { source?: DropDownDto}) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
@@ -31,7 +31,7 @@ function CreateOrEditLeadSourceForm({ source }: { source?: DropDownDto}) {
         source: string
     }>({
         initialValues: {
-            source: source ? source.value : ""
+            source: source ? source.label : ""
         },
         validationSchema:yup.object({
             source:yup.string().required()

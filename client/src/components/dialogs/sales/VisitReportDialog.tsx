@@ -4,12 +4,12 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { GetVisitReportDto } from '../../../dtos'
 import { GetVisitReports } from '../../../services/SalesServices'
 import { BackendError } from '../../..'
 import { onlyUnique } from '../../../utils/UniqueArray'
 import { Cancel } from '@mui/icons-material'
 import { ChoiceContext, SaleChoiceActions } from '../../../contexts/dialogContext'
+import { GetVisitReportDto } from '../../../dtos/visit-report.dto'
 
 
 function VisitReportPage({ employee }: { employee: string }) {

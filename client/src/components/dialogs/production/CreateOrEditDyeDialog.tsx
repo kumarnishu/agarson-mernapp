@@ -2,8 +2,9 @@ import { Dialog, DialogContent, DialogTitle, Stack, IconButton } from '@mui/mate
 import { useContext } from 'react';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
-import { GetDyeDto } from '../../../dtos';
+
 import CreateOrEditDyeForm from '../../forms/production/CreateOrEditDyeForm';
+import { GetDyeDto } from '../../../dtos/dye.dto';
 
 
 function CreateOrEditDyeDialog({ dye }: { dye?: GetDyeDto }) {

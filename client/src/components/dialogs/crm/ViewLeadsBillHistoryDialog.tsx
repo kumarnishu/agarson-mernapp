@@ -9,9 +9,9 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
 import { GetLeadBillHistory } from '../../../services/LeadsServices'
 import DeleteBillDialog from './DeleteBillDialog'
-import { GetBillDto } from '../../../dtos'
 import CreateOrEditBillDialog from './CreateOrEditBillDialog'
 import ViewBillPhotoDialog from './ViewBillPhotoDialog'
+import { GetBillDto } from '../../../dtos/crm-bill.dto'
 
 
 function ViewLeadsBillHistoryDialog({ id }: { id: string }) {
@@ -72,7 +72,7 @@ function ViewLeadsBillHistoryDialog({ id }: { id: string }) {
                                                 setDisplay(true)
                                             }}>
                                                 Delete</IconButton>}
-                                            { user && item && user?.username === item.created_by.value && new Date(item.created_at) > new Date(previous_date) &&user?.assigned_permissions.includes('edit_lead_bills') && <IconButton size="small" color="success"
+                                            { user && item && user?.username === item.created_by.label && new Date(item.created_at) > new Date(previous_date) &&user?.assigned_permissions.includes('edit_lead_bills') && <IconButton size="small" color="success"
                                                 onClick={() => {
                                                     setBill(item)
                                                     setDisplay2(true)

@@ -8,9 +8,10 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
-import { DropDownDto, GetKeyDto } from '../../../dtos';
 import { CreateOrEditKey, GetAllKeyCategoriesForDropdown } from '../../../services/KeyServices';
 import { toTitleCase } from '../../../utils/TitleCase';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { GetKeyDto } from '../../../dtos/keys.dto';
 
 function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
     const [categories, setCategories] = useState<DropDownDto[]>([])
@@ -161,7 +162,7 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
                     {
                         categories && categories.map(state => {
                             return (<option key={state.id} value={state.id}>
-                                {state.value && state.value.toUpperCase()}
+                                {state.label && state.label.toUpperCase()}
                             </option>)
                         })
                     }

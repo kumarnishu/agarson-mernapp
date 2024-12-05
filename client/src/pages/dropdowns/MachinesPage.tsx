@@ -12,7 +12,6 @@ import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Tooltip, Ty
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { GetMachineDto } from '../../dtos'
 import { GetMachines } from '../../services/ProductionServices'
 import CreateOrEditMachineDialog from '../../components/dialogs/production/CreateOrEditMachineDialog'
 import ToogleMachineDialog from '../../components/dialogs/production/ToogleMachineDialog'
@@ -23,6 +22,7 @@ import { styled } from "styled-components"
 import { Button, CircularProgress, Snackbar } from "@mui/material"
 import { Upload } from "@mui/icons-material"
 import { BulkUploadMachines } from "../../services/ProductionServices"
+import { GetMachineDto } from '../../dtos/machine.dto'
 
 const FileInput = styled.input`
 background:none;

@@ -8,7 +8,7 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
-import {  GetBillDto } from '../../../dtos';
+import { GetBillDto } from '../../../dtos/crm-bill.dto';
 
 
 function DeleteBillDialog({ bill, display, setDisplay }: { bill: GetBillDto, display: boolean, setDisplay: React.Dispatch<React.SetStateAction<boolean>> }) {

@@ -9,9 +9,9 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
 import { GetReferBillHistory } from '../../../services/LeadsServices'
 import DeleteBillDialog from './DeleteBillDialog'
-import { GetBillDto } from '../../../dtos'
 import CreateOrEditBillDialog from './CreateOrEditBillDialog'
 import ViewBillPhotoDialog from './ViewBillPhotoDialog'
+import { GetBillDto } from '../../../dtos/crm-bill.dto'
 
 
 function ViewRefersBillHistoryDialog({ id }: { id: string }) {
@@ -60,7 +60,7 @@ function ViewRefersBillHistoryDialog({ id }: { id: string }) {
                                             setDisplay3(true)
                                         }}>
                                             <Photo /></IconButton>}
-                                        {user && item && user?.username === item.created_by.value && new Date(item.created_at) > new Date(previous_date) &&<div>
+                                        {user && item && user?.username === item.created_by.label && new Date(item.created_at) > new Date(previous_date) &&<div>
                                            
                                             {user?.assigned_permissions.includes('delete_refer_bills') && <IconButton size="small" color="error" onClick={() => {
                                                 setBill(item)

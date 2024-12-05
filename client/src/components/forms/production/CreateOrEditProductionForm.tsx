@@ -9,15 +9,17 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { CreateOrEditProduction, GetArticles, GetMachines } from '../../../services/ProductionServices';
-import { GetUsers } from '../../../services/UserServices';
 import { UserContext } from '../../../contexts/userContext';
 import moment from 'moment';
-import { GetUserDto } from '../../../dtos';
-import { CreateOrEditProductionDto, GetArticleDto, GetMachineDto, GetProductionDto } from '../../../dtos';
+import { GetUserDto } from '../../../dtos/user.dto';
+import { GetArticleDto } from '../../../dtos/article.dto';
+import { GetMachineDto } from '../../../dtos/machine.dto';
+import { GetProductionDto, CreateOrEditProductionDto } from '../../../dtos/production.dto';
+import { GetUsersForDropdown } from '../../../services/UserServices';
 
 function CreateOrEditProductionForm({ production }: { production?: GetProductionDto }) {
     const { user } = useContext(UserContext)
-    const { data: users } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'production_view', show_assigned_only: true }))
+    const { data: users } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'production_view', show_assigned_only: true }))
     const { data: machines } = useQuery<AxiosResponse<GetMachineDto[]>, BackendError>("machines", async () => GetMachines())
     const { data: articles } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>("articles", async () => GetArticles())
     const { mutate, isLoading, isSuccess, isError, error } = useMutation

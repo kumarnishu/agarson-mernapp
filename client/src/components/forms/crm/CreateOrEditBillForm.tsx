@@ -10,11 +10,14 @@ import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { toTitleCase } from '../../../utils/TitleCase';
-import { CreateOrEditBillItemDto, GetBillDto, GetLeadDto, GetReferDto } from '../../../dtos';
 import moment from 'moment';
 import { GetArticles } from '../../../services/ProductionServices';
 import { Delete } from '@mui/icons-material';
-import { GetArticleDto } from '../../../dtos';
+import { GetArticleDto } from '../../../dtos/article.dto';
+import { CreateOrEditBillItemDto } from '../../../dtos/bill-item.dto';
+import { GetBillDto } from '../../../dtos/crm-bill.dto';
+import { GetLeadDto } from '../../../dtos/lead.dto';
+import { GetReferDto } from '../../../dtos/refer.dto';
 
 
 function CreateOrEditBillForm({ lead, refer, setDisplay2, bill }: { lead?: GetLeadDto, refer?: GetReferDto, bill?: GetBillDto, setDisplay2?: React.Dispatch<React.SetStateAction<boolean>> }) {

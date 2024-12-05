@@ -9,15 +9,16 @@ import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { useFormik } from 'formik';
 import * as Yup from "yup"
-import { GetUsers } from '../../../services/UserServices';
-import { GetKeyCategoryDto, GetUserDto } from '../../../dtos';
 import { AssignKeyCategoryToUsers } from '../../../services/KeyServices';
+import { GetKeyCategoryDto } from '../../../dtos/key-category.dto';
+import { GetUserDto } from '../../../dtos/user.dto';
+import { GetUsersForDropdown } from '../../../services/UserServices';
 
 
 function AssignKeyCategoriesDialog({ categories, flag }: { categories: GetKeyCategoryDto[], flag: number }) {
 
     const [users, setUsers] = useState<GetUserDto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', show_assigned_only: false }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
 
 
 

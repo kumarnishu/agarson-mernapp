@@ -4,7 +4,7 @@ import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContex
 
 import { Cancel } from '@mui/icons-material';
 import CreateOrEditLeadForm from '../../forms/crm/CreateOrEditLeadForm';
-import { GetLeadDto } from '../../../dtos';
+import { GetLeadDto } from '../../../dtos/lead.dto';
 
 function CreateOrEditLeadDialog({lead}:{lead?:GetLeadDto}) {
   const { choice, setChoice } = useContext(ChoiceContext);

@@ -7,8 +7,8 @@ import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
-import { GetChecklistDto } from '../../../dtos';
 import { DeletePayment } from '../../../services/PaymentsService';
+import { GetChecklistDto } from '../../../dtos/checklist.dto';
 
 function DeletePaymentDialog({ payment }: { payment: GetChecklistDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

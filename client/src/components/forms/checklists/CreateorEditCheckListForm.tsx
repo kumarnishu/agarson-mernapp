@@ -9,11 +9,11 @@ import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { CreateOrEditCheckList, GetAllCheckCategories } from '../../../services/CheckListServices';
-import { GetUserDto } from '../../../dtos';
-import { GetUsers } from '../../../services/UserServices';
-import { CreateOrEditChecklistDto, GetChecklistDto } from '../../../dtos';
-import { DropDownDto } from '../../../dtos';
+import { GetUserDto } from '../../../dtos/user.dto';
 import Select from '@mui/material/Select';
+import { GetChecklistDto, CreateOrEditChecklistDto } from '../../../dtos/checklist.dto';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { GetUsersForDropdown } from '../../../services/UserServices';
 
 
 function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto }) {
@@ -28,7 +28,7 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
         })
 
 
-    const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', show_assigned_only: false }))
+    const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
     const { data: categoriesData, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("check_categories", GetAllCheckCategories)
     const { setChoice } = useContext(ChoiceContext)
 

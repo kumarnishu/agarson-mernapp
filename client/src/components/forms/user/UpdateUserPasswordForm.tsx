@@ -10,7 +10,7 @@ import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContex
 import { UpdateUserPassword } from '../../../services/UserServices';
 import { BackendError } from '../../..';
 import AlertBar from '../../snacks/AlertBar';
-import { GetUserDto } from '../../../dtos';
+import { GetUserDto } from '../../../dtos/user.dto';
 
 
 function UpdateUserPasswordForm({ user }: { user: GetUserDto }) {

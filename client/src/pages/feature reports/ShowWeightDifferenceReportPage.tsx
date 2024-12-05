@@ -9,9 +9,9 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
-import { GetShoeWeightDiffReportDto } from '../../dtos'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { GetShoeWeightDiffReports } from '../../services/ProductionServices'
+import { GetShoeWeightDiffReportDto } from '../../dtos/shoe-weight.dto'
 
 
 export default function ShowWeightDifferenceReportPage() {

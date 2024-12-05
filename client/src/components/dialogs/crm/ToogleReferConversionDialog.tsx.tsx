@@ -8,7 +8,7 @@ import { ToogleReferPartyConversion } from '../../../services/LeadsServices';
 import { queryClient } from '../../../main';
 import { useMutation } from 'react-query';
 import AlertBar from '../../snacks/AlertBar';
-import {  GetReferDto } from '../../../dtos';
+import { GetReferDto } from '../../../dtos/refer.dto';
 
 
 function ToogleReferConversionDialog({ refer }: { refer: GetReferDto }) {

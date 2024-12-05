@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import UpdateUserForm from '../../forms/user/UpdateUserForm'
 import { Cancel } from '@mui/icons-material'
-import { GetUserDto } from '../../../dtos'
+import { GetUserDto } from '../../../dtos/user.dto'
 
 function UpdateUserDialog({ user }: { user: GetUserDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

@@ -1,4 +1,4 @@
-import { CreateOrEditChecklistRemarkDto, GetChecklistRemarksDto } from "../dtos";
+import { CreateOrEditChecklistRemarkDto, GetChecklistRemarksDto } from "../dtos/checklist-remark.dto";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 

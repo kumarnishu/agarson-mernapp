@@ -8,7 +8,7 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
-import { GetLeadDto } from '../../../dtos';
+import { GetLeadDto } from '../../../dtos/lead.dto';
 
 
 function BulkDeleteUselessLeadsDialog({ selectedLeads, removeSelectedLeads }: { selectedLeads: GetLeadDto[], removeSelectedLeads: () => void }) {

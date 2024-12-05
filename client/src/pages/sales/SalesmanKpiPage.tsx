@@ -4,10 +4,8 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { Box, Button, Fade, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
-import { GetUsers } from '../../services/UserServices'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
-import { GetSalesmanKpiDto, GetUserDto } from '../../dtos'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
 import DBPagination from '../../components/pagination/DBpagination'
@@ -17,6 +15,9 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { GetSalesmanKpis } from '../../services/SalesServices'
 import { previousYear } from '../../utils/datesHelper'
 import { HandleNumbers } from '../../utils/IsDecimal'
+import { GetSalesmanKpiDto } from '../../dtos/sales-attendance.dto'
+import { GetUserDto } from '../../dtos/user.dto'
+import { GetUsersForDropdown } from '../../services/UserServices'
 
 
 function SalesmanKpiPage() {
@@ -42,7 +43,7 @@ function SalesmanKpiPage() {
   let day = previous_date.getDate() - 4
   previous_date.setDate(day)
   previous_date.setHours(0, 0, 0, 0)
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', permission: 'sales_menu', show_assigned_only: false }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: false }))
   const { data, isLoading, refetch } = useQuery<AxiosResponse<GetSalesmanKpiDto[]>, BackendError>(["salesmankpis", userId, dates?.start_date, dates?.end_date], async () => GetSalesmanKpis({ id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 

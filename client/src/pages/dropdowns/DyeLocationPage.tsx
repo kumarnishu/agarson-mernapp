@@ -13,9 +13,9 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import { GetAllDyeLocations } from '../../services/ProductionServices'
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { GetDyeLocationDto } from '../../dtos'
 import CreateOrEditDyeLocationDialog from '../../components/dialogs/production/CreateOrEditDyeLocationDialog'
 import ToogleDyeLocationDialog from '../../components/dialogs/production/ToogleDyeLocationDialog'
+import { GetDyeLocationDto } from '../../dtos/dye-location.dto'
 
 
 
@@ -111,13 +111,13 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
         }).filter(onlyUnique)
       },
       {
-        accessorKey: 'created_by.value',
+        accessorKey: 'created_by.label',
         header: 'Created By',
       
         filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.created_by.value ? cell.row.original.created_by.value : ""}</>,
+        Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>,
         filterSelectOptions: dyelocations && dyelocations.map((i) => {
-          return i.created_by.value;
+          return i.created_by.label;
         }).filter(onlyUnique)
       }
     ],

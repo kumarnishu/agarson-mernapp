@@ -3,8 +3,8 @@ import { useContext } from 'react';
 import { ChoiceContext, CheckListChoiceActions } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
 
-import { GetChecklistDto } from '../../../dtos';
 import CreateorEditCheckListForm from '../../forms/checklists/CreateorEditCheckListForm';
+import { GetChecklistDto } from '../../../dtos/checklist.dto';
 
 function CreateOrEditCheckListDialog({ checklist, setChecklist }: { checklist?: GetChecklistDto, setChecklist: React.Dispatch<React.SetStateAction<GetChecklistDto | undefined>> }) {
     const { choice, setChoice } = useContext(ChoiceContext)

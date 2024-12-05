@@ -7,8 +7,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
-import { GetSalesAttendanceDto } from '../../../dtos';
 import { DeleteSalesManAttendance } from '../../../services/SalesServices';
+import { GetSalesAttendanceDto } from '../../../dtos/sales-attendance.dto';
 
 
 function DeleteSalesManAttendanceDialog({ attendance }: {

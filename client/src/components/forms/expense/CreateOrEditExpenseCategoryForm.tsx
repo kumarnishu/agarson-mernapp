@@ -7,8 +7,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
-import { DropDownDto } from '../../../dtos';
 import { CreateOrEditExpenseCategory } from '../../../services/ExpenseServices';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
 
 type props = {
     category?: DropDownDto,
@@ -36,7 +36,7 @@ function CreateOrEditExpenseCategoryForm({ category, setDialog }: props) {
         category: string
     }>({
         initialValues: {
-            category: category ? category.value : ""
+            category: category ? category.label : ""
         },
         validationSchema: yup.object({
             category: yup.string().required()

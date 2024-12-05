@@ -13,9 +13,9 @@ import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/mate
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { DropDownDto } from '../../dtos'
 import CreateOrEditLeadSourceDialog from '../../components/dialogs/crm/CreateOrEditLeadSourceDialog'
 import { GetAllSources } from '../../services/LeadsServices'
+import { DropDownDto } from '../../dtos/dropdown.dto'
 
 
 
@@ -86,9 +86,9 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
         accessorKey: 'label',
         header: 'Source',
         filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.value ? cell.row.original.value : ""}</>,
+        Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
         filterSelectOptions: sources && sources.map((i) => {
-          return i.value;
+          return i.label;
         }).filter(onlyUnique)
       }
     ],

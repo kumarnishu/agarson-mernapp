@@ -206,7 +206,7 @@ export const GetReferPartyBillsHistory = async (req: Request, res: Response, nex
         result.push({
             _id: bill._id,
             bill_no: bill.bill_no,
-            refer: { id: refer && refer._id, value: refer && refer.name, label: refer && refer.name },
+            refer: { id: refer && refer._id,  label: refer && refer.name },
             remarks: bill.remarks,
             billphoto: bill.billphoto?.public_url || "",
             items: billItems.map((i) => {
@@ -220,8 +220,8 @@ export const GetReferPartyBillsHistory = async (req: Request, res: Response, nex
             bill_date: bill.bill_date && moment(bill.bill_date).format("DD/MM/YYYY"),
             created_at: bill.created_at,
             updated_at: bill.updated_at,
-            created_by: { id: bill.created_by._id, value: bill.created_by.username, label: bill.created_by.username },
-            updated_by: { id: bill.updated_by._id, value: bill.updated_by.username, label: bill.updated_by.username }
+            created_by: { id: bill.created_by._id,  label: bill.created_by.username },
+            updated_by: { id: bill.updated_by._id, label: bill.updated_by.username }
         })
     }
     return res.json(result)
@@ -244,7 +244,7 @@ export const GetLeadPartyBillsHistory = async (req: Request, res: Response, next
         result.push({
             _id: bill._id,
             bill_no: bill.bill_no,
-            lead: { id: lead && lead._id, value: lead && lead.name, label: lead && lead.name },
+            lead: { id: lead && lead._id,  label: lead && lead.name },
             billphoto: bill.billphoto?.public_url || "",
             remarks: bill.remarks,
             items: billItems.map((i) => {
@@ -258,8 +258,8 @@ export const GetLeadPartyBillsHistory = async (req: Request, res: Response, next
             bill_date: bill.bill_date && moment(bill.bill_date).format("DD/MM/YYYY"),
             created_at: bill.created_at,
             updated_at: bill.updated_at,
-            created_by: { id: bill.created_by._id, value: bill.created_by.username, label: bill.created_by.username },
-            updated_by: { id: bill.updated_by._id, value: bill.updated_by.username, label: bill.updated_by.username }
+            created_by: { id: bill.created_by._id,  label: bill.created_by.username },
+            updated_by: { id: bill.updated_by._id,  label: bill.updated_by.username }
         })
     }
     return res.json(result)

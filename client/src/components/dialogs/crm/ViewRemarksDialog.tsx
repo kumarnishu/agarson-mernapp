@@ -6,11 +6,11 @@ import DeleteRemarkDialog from './DeleteRemarkDialog'
 import CreateOrEditRemarkDialog from './CreateOrEditRemarkDialog'
 import { UserContext } from '../../../contexts/userContext'
 import { toTitleCase } from '../../../utils/TitleCase'
-import { GetRemarksDto } from '../../../dtos'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
 import { GetRemarksHistory } from '../../../services/LeadsServices'
+import { GetRemarksDto } from '../../../dtos/crm-remarks.dto'
 
 
 function ViewRemarksDialog({ id }: { id: string }) {
@@ -51,7 +51,7 @@ function ViewRemarksDialog({ id }: { id: string }) {
                         return (
 
                             <div key={index} style={{ borderRadius: '1px 10px', padding: '10px', background: 'lightblue', paddingLeft: '20px', border: '1px solid grey' }}>
-                                <p>{toTitleCase(item.created_by.value)} : {item.remark} </p>
+                                <p>{toTitleCase(item.created_by.label)} : {item.remark} </p>
                                 <p>{item.remind_date && `Remind Date : ${item.remind_date}`} </p>
                                 <br></br>
                                 <p>{item.created_date}</p>
@@ -62,7 +62,7 @@ function ViewRemarksDialog({ id }: { id: string }) {
                                             setDisplay(true)
                                         }}>
                                             Delete</IconButton>}
-                                        {user && item.remark && user?.username === item.created_by.value && new Date(item.created_date) > new Date(previous_date) &&user?.assigned_permissions.includes('activities_edit') && <IconButton size="small" color="success"
+                                        {user && item.remark && user?.username === item.created_by.label && new Date(item.created_date) > new Date(previous_date) &&user?.assigned_permissions.includes('activities_edit') && <IconButton size="small" color="success"
                                             onClick={() => {
                                                 setRemark(item)
                                                 setDisplay2(true)

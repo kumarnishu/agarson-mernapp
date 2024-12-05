@@ -2,8 +2,10 @@ import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { useContext } from 'react'
 import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
-import { GetBillDto, GetLeadDto, GetReferDto } from '../../../dtos'
 import CreateOrEditBillForm from '../../forms/crm/CreateOrEditBillForm'
+import { GetBillDto } from '../../../dtos/crm-bill.dto'
+import { GetLeadDto } from '../../../dtos/lead.dto'
+import { GetReferDto } from '../../../dtos/refer.dto'
 
 function CreateOrEditBillDialog({ lead, refer, setDisplay, bill, display }: { lead?: GetLeadDto, refer?: GetReferDto, bill?: GetBillDto, display?: boolean, setDisplay?: React.Dispatch<React.SetStateAction<boolean>> }) {
     const { choice, setChoice } = useContext(ChoiceContext)

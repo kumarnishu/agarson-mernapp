@@ -2,8 +2,8 @@ import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { useContext } from 'react'
 import {  ChoiceContext, PaymentsChoiceActions } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
-import { DropDownDto } from '../../../dtos'
 import CreateOrEditCategoryForm from '../../forms/payments/CreateOrEditPaymentCategoryForm'
+import { DropDownDto } from '../../../dtos/dropdown.dto'
 
 function CreateOrEditPaymentCategoryDialog({ category }: { category?: DropDownDto}) {
     const { choice, setChoice } = useContext(ChoiceContext)

@@ -10,7 +10,7 @@ import { NewUser } from '../../../services/UserServices';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
-import { GetUserDto } from '../../../dtos';
+import { GetUserDto } from '../../../dtos/user.dto';
 
 
 type TformData = {

@@ -1,22 +1,22 @@
-import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, CircularProgress, MenuItem, Select,  InputLabel, OutlinedInput, Checkbox, ListItemText, } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, CircularProgress, MenuItem, Select, InputLabel, OutlinedInput, Checkbox, ListItemText, } from '@mui/material'
 import { useContext, useEffect, useState } from 'react';
 import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { useMutation, useQuery } from 'react-query';
 import { BackendError } from '../../..';
-import { AssignUsers, GetUsers } from '../../../services/UserServices';
+import { AssignUsers, GetUsersForDropdown } from '../../../services/UserServices';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import { useFormik } from 'formik';
 import * as Yup from "yup"
-import { GetUserDto } from '../../../dtos';
-import { DropDownDto } from '../../../dtos';
+import { GetUserDto } from '../../../dtos/user.dto';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
 
 
 function AssignUsersDialog({ user, setUser }: { user: GetUserDto, setUser: React.Dispatch<React.SetStateAction<GetUserDto | undefined>> }) {
     const [users, setUsers] = useState<DropDownDto[]>(user.assigned_users)
-    const { data, isSuccess: isUserSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsers({ hidden: 'false', show_assigned_only: false }))
+    const { data, isSuccess: isUserSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
     const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
@@ -105,7 +105,7 @@ function AssignUsersDialog({ user, setUser }: { user: GetUserDto, setUser: React
                             {users.map((user) => (
                                 <MenuItem key={user.id} value={user.id}>
                                     <Checkbox checked={formik.values.ids.includes(user.id)} />
-                                    <ListItemText primary={user.value} />
+                                    <ListItemText primary={user.label} />
                                 </MenuItem>
                             ))}
                         </Select>

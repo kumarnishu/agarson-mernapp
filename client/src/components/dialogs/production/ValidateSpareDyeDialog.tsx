@@ -8,8 +8,8 @@ import { useMutation } from 'react-query';
 import AlertBar from '../../snacks/AlertBar';
 import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { ValidateSpareDye } from '../../../services/ProductionServices';
-import { GetUserDto } from '../../../dtos';
-import { GetSpareDyeDto } from '../../../dtos';
+import { GetUserDto } from '../../../dtos/user.dto';
+import { GetSpareDyeDto } from '../../../dtos/spare-dye.dto';
 
 function ValidateSpareDyeDialog({ sparedye }: { sparedye: GetSpareDyeDto }) {
     const { choice, setChoice } = useContext(ChoiceContext)

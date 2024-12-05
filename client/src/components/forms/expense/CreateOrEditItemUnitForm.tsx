@@ -7,8 +7,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
-import { DropDownDto } from '../../../dtos';
 import { CreateOrEditItemUnit } from '../../../services/ExpenseServices';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
 
 
 type props = {
@@ -38,7 +38,7 @@ function CreateOrEditItemUnitForm({ unit, setDialog }: props) {
         unit: string
     }>({
         initialValues: {
-            unit: unit ? unit.value : ""
+            unit: unit ? unit.label : ""
         },
         validationSchema: yup.object({
             unit: yup.string().required()
