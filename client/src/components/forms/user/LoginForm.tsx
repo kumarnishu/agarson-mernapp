@@ -12,7 +12,6 @@ import { UserContext } from '../../../contexts/userContext';
 import { Login } from '../../../services/UserServices';
 import { BackendError } from '../../..';
 import AlertBar from '../../snacks/AlertBar';
-import { Navigate } from "react-router-dom";
 import { GetUserDto } from '../../../dtos/user.dto';
 
 function LoginForm({ setDialog }: { setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
@@ -65,17 +64,14 @@ function LoginForm({ setDialog }: { setDialog: React.Dispatch<React.SetStateActi
 
   return (
     <>
-      {isSuccess && <Navigate to="/" replace={true} />}
       <form onSubmit={formik.handleSubmit}>
-
         <Stack
           direction="column"
           p={2}
           gap={2}
-          sx={{ minWidth: '300px' }}
+          sx={{ minWidth: '300px',borderRadius:20 }}
         >
           <TextField
-            variant="filled"
             fullWidth
             required
             focused
@@ -90,7 +86,6 @@ function LoginForm({ setDialog }: { setDialog: React.Dispatch<React.SetStateActi
             {...formik.getFieldProps('username')}
           />
           <TextField
-            variant="filled"
             required
             focused
             error={
