@@ -60,13 +60,13 @@ function ViewRemarksDialog({ id, dialog, setDialog }: Props) {
                                     <Stack justifyContent={'end'} direction="row" gap={0} pt={2}>
                                         {user?.assigned_permissions.includes('activities_delete') && <IconButton size="small" color="error" onClick={() => {
                                             setRemark(item)
-                                            setDialog1('')
+                                            setDialog1('DeleteRemarkDialog')
                                         }}>
                                             Delete</IconButton>}
                                         {user && item.remark && user?.username === item.created_by.label && new Date(item.created_date) > new Date(previous_date) && user?.assigned_permissions.includes('activities_edit') && <IconButton size="small" color="success"
                                             onClick={() => {
                                                 setRemark(item)
-                                                setDialog1('')
+                                                setDialog1('CreateOrEditRemarkDialog')
 
                                             }}
                                         >Edit</IconButton>}
