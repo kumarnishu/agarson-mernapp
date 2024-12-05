@@ -7,7 +7,6 @@ import { UserContext } from '../../contexts/userContext'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
-import { ChoiceContext, ProductionChoiceActions } from '../../contexts/dialogContext'
 import { Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Menu as MenuIcon } from '@mui/icons-material';
 import DBPagination from '../../components/pagination/DBpagination'
 import ExportToExcel from '../../utils/ExportToExcel'
@@ -27,7 +26,7 @@ export default function ProductionPage() {
   const [production, setProduction] = useState<GetProductionDto>()
   const [productions, setProductions] = useState<GetProductionDto[]>([])
   const [users, setUsers] = useState<DropDownDto[]>([])
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const isFirstRender = useRef(true);
 
@@ -70,7 +69,7 @@ export default function ProductionPage() {
       {
         accessorKey: 'actions',
         header: '',
-        
+
         enableColumnFilter: false,
         Cell: ({ cell }) => <PopUp
           element={
@@ -81,7 +80,7 @@ export default function ProductionPage() {
                   <IconButton color="info"
 
                     onClick={() => {
-                      setChoice({ type: ProductionChoiceActions.create_or_edit_production })
+                      setDialog('CreateOrEditProductionDialog')
                       setProduction(cell.row.original)
                     }}
                   >
@@ -92,7 +91,7 @@ export default function ProductionPage() {
                   <IconButton color="error"
 
                     onClick={() => {
-                      setChoice({ type: ProductionChoiceActions.delete_production_item })
+                      setDialog('DeleteProductionItemDialog')
                       setProduction(cell.row.original)
                     }}
                   >
@@ -108,7 +107,7 @@ export default function ProductionPage() {
       {
         accessorKey: 'date',
         header: 'Production Date',
-       
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.date.toString() || "" ? cell.row.original.date.toString() || "" : ""}</>,
         filterSelectOptions: productions && productions.map((i) => {
@@ -118,7 +117,7 @@ export default function ProductionPage() {
       {
         accessorKey: 'articles',
         header: 'Articles',
-        
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.articles.toString() ? cell.row.original.articles.map((a) => { return a.label }).toString() : ""}</>,
         filterSelectOptions: production && production.articles.map((i) => {
@@ -128,7 +127,7 @@ export default function ProductionPage() {
       {
         accessorKey: 'machine',
         header: 'Machine',
-       
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.machine.label.toString() || "" ? cell.row.original.machine.label.toString() || "" : ""}</>,
         filterSelectOptions: productions && productions.map((i) => {
@@ -138,7 +137,7 @@ export default function ProductionPage() {
       {
         accessorKey: 'thekedar',
         header: 'Thekedar',
-       
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.thekedar.label.toString() || "" ? cell.row.original.thekedar.label.toString() || "" : ""}</>,
         filterSelectOptions: productions && productions.map((i) => {
@@ -148,49 +147,49 @@ export default function ProductionPage() {
       {
         accessorKey: 'production',
         header: 'Production',
-        
+
         Cell: (cell) => <>{cell.row.original.production.toString() || "" ? cell.row.original.production.toString() || "" : ""}</>,
       },
       {
         accessorKey: 'production_hours',
         header: 'Production Hours',
-       
+
         Cell: (cell) => <>{cell.row.original.production_hours.toString() || "" ? cell.row.original.production_hours.toString() || "" : ""}</>,
       },
       {
         accessorKey: 'manpower',
         header: 'Man Power',
-       
+
         Cell: (cell) => <>{cell.row.original.manpower.toString() || "" ? cell.row.original.manpower.toString() || "" : ""}</>,
       },
       {
         accessorKey: 'small_repair',
         header: 'Small Repair',
-       
+
         Cell: (cell) => <>{cell.row.original.small_repair.toString() || "" ? cell.row.original.small_repair.toString() || "" : ""}</>,
       },
       {
         accessorKey: 'big_repair',
         header: 'Big Repair',
-       
+
         Cell: (cell) => <>{cell.row.original.big_repair.toString() || "" ? cell.row.original.big_repair.toString() || "" : ""}</>,
       },
       {
         accessorKey: 'upper_damage',
         header: 'Upper Damage',
-       
+
         Cell: (cell) => <>{cell.row.original.upper_damage.toString() || "" ? cell.row.original.upper_damage.toString() || "" : ""}</>,
       },
       {
         accessorKey: 'created_at',
         header: 'Created At',
-       
+
         Cell: (cell) => <>{cell.row.original.created_at || ""}</>
       },
       {
         accessorKey: 'created_by',
         header: 'Creator',
-       
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.created_by.label.toString() || "" ? cell.row.original.created_by.label.toString() || "" : ""}</>,
         filterSelectOptions: productions && productions.map((i) => {
@@ -453,7 +452,7 @@ export default function ProductionPage() {
         >
           {LoggedInUser?.assigned_permissions.includes('production_create') && <MenuItem
             onClick={() => {
-              setChoice({ type: ProductionChoiceActions.create_or_edit_production })
+              setDialog('CreateOrEditProductionDialog')
               setProduction(undefined);
               setAnchorEl(null)
             }}
@@ -469,13 +468,13 @@ export default function ProductionPage() {
           >Export Selected</MenuItem>}
 
         </Menu >
-        <CreateOrEditProductionDialog production={production} />
+        <CreateOrEditProductionDialog dialog={dialog} setDialog={setDialog} production={production} />
       </>
       {
         production ?
           <>
 
-            <DeleteProductionItemDialog production={production} />
+            <DeleteProductionItemDialog dialog={dialog} setDialog={setDialog} production={production} />
           </>
           : null
       }

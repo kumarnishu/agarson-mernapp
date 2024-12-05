@@ -1,20 +1,19 @@
 import { Dialog, DialogTitle, DialogContent, IconButton, Stack, Button, CircularProgress, Typography } from '@mui/material';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
-import { ChoiceContext, PaymentsChoiceActions } from '../../../contexts/dialogContext';
 import { BulkDeletePaymentss } from '../../../services/PaymentsService';
+
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+    ids: string[], clearIds: () => any
 }
-function BulkDeletePaymentsDialog({ ids, clearIds }: { ids: string[],clearIds:()=>any }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+function BulkDeletePaymentsDialog({ ids, clearIds, dialog, setDialog }: Props) {
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, { ids: string[] }>
         (BulkDeletePaymentss, {
@@ -25,17 +24,17 @@ function BulkDeletePaymentsDialog({ ids, clearIds }: { ids: string[],clearIds:()
 
     useEffect(() => {
         if (isSuccess)
-            setChoice({ type: PaymentsChoiceActions.close_payment })
-    }, [setChoice, isSuccess])
+            setDialog(undefined)
+    }, [isSuccess])
 
     return (
         <>
-            <Dialog fullWidth open={choice === PaymentsChoiceActions.bulk_delete_payment ? true : false}
-                onClose={() => setChoice({ type: PaymentsChoiceActions.close_payment })}
+            <Dialog fullWidth open={dialog === "BulkDeletePaymentsDialog"}
+                onClose={() => setDialog(undefined)}
             >
                 <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                    
-                    setChoice({ type: PaymentsChoiceActions.close_payment })
+
+                    setDialog(undefined)
                     clearIds();
                 }
                 }>

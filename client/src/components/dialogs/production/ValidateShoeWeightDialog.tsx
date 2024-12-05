@@ -1,22 +1,21 @@
 import { Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
 import { BackendError } from '../../..';
 import { useMutation } from 'react-query';
 import AlertBar from '../../snacks/AlertBar';
-import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { ValidateShoeWeight } from '../../../services/ProductionServices';
 import { GetUserDto } from '../../../dtos/user.dto';
 import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
+
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+    weight: GetShoeWeightDto
 }
-function ValidateShoeWeightDialog({ weight }: { weight: GetShoeWeightDto }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+function ValidateShoeWeightDialog({ weight, dialog, setDialog }: Props) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<GetUserDto>, BackendError, string>
         (ValidateShoeWeight, {
@@ -27,10 +26,10 @@ function ValidateShoeWeightDialog({ weight }: { weight: GetShoeWeightDto }) {
     useEffect(() => {
         if (isSuccess) {
             setTimeout(() => {
-                setChoice({ type: ProductionChoiceActions.close_production })
+                setDialog(undefined)
             }, 1000)
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
         <>
             {
@@ -44,8 +43,8 @@ function ValidateShoeWeightDialog({ weight }: { weight: GetShoeWeightDto }) {
                 ) : null
             }
 
-            <Dialog open={choice === ProductionChoiceActions.validate_weight ? true : false}
-            > <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: ProductionChoiceActions.close_production })}>
+            <Dialog open={dialog === "ValidateShoeWeightDialog"}
+            > <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                     <Cancel fontSize='large' />
                 </IconButton>
                 <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>Validate Shoe Weight</DialogTitle>

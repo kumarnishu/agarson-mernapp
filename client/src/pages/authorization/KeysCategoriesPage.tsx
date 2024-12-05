@@ -5,7 +5,6 @@ import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
-import { KeyChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import { Edit } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
@@ -26,7 +25,7 @@ export default function KeysCategoriesPage() {
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetKeyCategoryDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategories())
 
 
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog,setDialog]=useState<string|undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
@@ -51,7 +50,7 @@ export default function KeysCategoriesPage() {
 
                     onClick={() => {
                       setKeyCategory(cell.row.original)
-                      setChoice({ type: KeyChoiceActions.create_or_edit_key_category })
+                      setDialog('CreateOrEditKeyCategoryDialog')
                     }}
 
                   >
@@ -266,7 +265,7 @@ export default function KeysCategoriesPage() {
               onClick={() => {
                 setKeyCategory(undefined)
                 setAnchorEl(null)
-                setChoice({ type: KeyChoiceActions.create_or_edit_key_category })
+                setDialog('CreateOrEditKeyCategoryDialog')
               }}
 
             > Add New</MenuItem>}
@@ -277,7 +276,7 @@ export default function KeysCategoriesPage() {
                   alert("select some key_category")
                 }
                 else {
-                  setChoice({ type: KeyChoiceActions.assign_categories })
+                  setDialog('AssignKeyCategoriesDialog')
                   setKeyCategory(undefined)
                   setFlag(1)
                 }
@@ -291,7 +290,7 @@ export default function KeysCategoriesPage() {
                   alert("select some key_category")
                 }
                 else {
-                  setChoice({ type: KeyChoiceActions.assign_categories })
+                  setDialog('AssignKeyCategoriesDialog')
                   setKeyCategory(undefined)
                   setFlag(0)
                 }
@@ -308,8 +307,8 @@ export default function KeysCategoriesPage() {
             >Export Selected</MenuItem>}
 
           </Menu >
-          <CreateOrEditKeyCategoryDialog category={category} />
-          {<AssignKeyCategoriesDialog flag={flag} categories={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
+          <CreateOrEditKeyCategoryDialog dialog={dialog} setDialog={setDialog} category={category} />
+          {<AssignKeyCategoriesDialog dialog={dialog} setDialog={setDialog} flag={flag} categories={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
         </>
 
 

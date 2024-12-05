@@ -1,9 +1,8 @@
-import { Button,  CircularProgress,  Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { CheckListChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -11,7 +10,12 @@ import * as yup from 'yup';
 import { CreateOrEditCheckCategory } from '../../../services/CheckListServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 
-function CreateOrEditCategoryForm({ category }: { category?: DropDownDto}) {
+
+
+function CreateOrEditCategoryForm({ category, setDialog }: {
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>,
+    category?: DropDownDto
+}) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
@@ -24,9 +28,8 @@ function CreateOrEditCategoryForm({ category }: { category?: DropDownDto}) {
                 queryClient.invalidateQueries('check_categories')
             }
         })
-  
 
-    const { setChoice } = useContext(ChoiceContext)
+
 
     const formik = useFormik<{
         category: string
@@ -34,14 +37,14 @@ function CreateOrEditCategoryForm({ category }: { category?: DropDownDto}) {
         initialValues: {
             category: category ? category.label : ""
         },
-        validationSchema:yup.object({
-            category:yup.string().required()
+        validationSchema: yup.object({
+            category: yup.string().required()
         }),
         onSubmit: (values: {
             category: string,
         }) => {
             mutate({
-                id:category?.id,
+                id: category?.id,
                 body: {
                     key: values.category
                 }
@@ -51,10 +54,10 @@ function CreateOrEditCategoryForm({ category }: { category?: DropDownDto}) {
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: CheckListChoiceActions.close_checklist })
-           
+            setDialog(undefined)
+
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack
@@ -75,8 +78,8 @@ function CreateOrEditCategoryForm({ category }: { category?: DropDownDto}) {
                     }
                     {...formik.getFieldProps('category')}
                 />
-              
-               
+
+
 
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}

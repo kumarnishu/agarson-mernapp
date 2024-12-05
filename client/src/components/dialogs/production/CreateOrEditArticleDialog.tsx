@@ -1,6 +1,4 @@
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
-import { useContext } from 'react';
-import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
 import CreateOrEditArticleForm from '../../forms/production/CreateOrEditArticleForm';
 import { GetArticleDto } from '../../../dtos/article.dto';
@@ -8,15 +6,14 @@ import { GetArticleDto } from '../../../dtos/article.dto';
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+    article?: GetArticleDto
 }
-function CreateOrEditArticleDialog({ article }: { article?: GetArticleDto }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+function CreateOrEditArticleDialog({ article, dialog, setDialog }: Props) {
     return (
-        <Dialog fullScreen={Boolean(window.screen.width < 500)} open={choice === ProductionChoiceActions.create_or_edit_article ? true : false}
-            onClose={() => setChoice({ type: ProductionChoiceActions.close_production })}
+        <Dialog fullScreen={Boolean(window.screen.width < 500)} open={dialog === "CreateOrEditArticleDialog"}
+            onClose={() => setDialog(undefined)}
         >
-            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: ProductionChoiceActions.close_production })}>
+            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">

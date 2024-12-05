@@ -7,13 +7,12 @@ import { UserContext } from '../../contexts/userContext'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
-import { ChoiceContext, ProductionChoiceActions } from '../../contexts/dialogContext'
 import { Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Menu as MenuIcon } from '@mui/icons-material';
 import DBPagination from '../../components/pagination/DBpagination'
 import ExportToExcel from '../../utils/ExportToExcel'
 import PopUp from '../../components/popup/PopUp'
 import { GetSoleThickness } from '../../services/ProductionServices'
-import {  GetUsersForDropdown } from '../../services/UserServices'
+import { GetUsersForDropdown } from '../../services/UserServices'
 import moment from 'moment'
 import CreateOrEditSoleThicknessDialog from '../../components/dialogs/production/CreateOrEditSoleThicknessDialog'
 import DeleteProductionItemDialog from '../../components/dialogs/production/DeleteProductionItemDialog'
@@ -27,7 +26,7 @@ export default function SoleThicknessPage() {
     const [thickness, setThickness] = useState<GetSoleThicknessDto>()
     const [thicknesses, setProductions] = useState<GetSoleThicknessDto[]>([])
     const [users, setUsers] = useState<DropDownDto[]>([])
-    const { setChoice } = useContext(ChoiceContext)
+    const [dialog, setDialog] = useState<string | undefined>()
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     const isFirstRender = useRef(true);
@@ -81,7 +80,7 @@ export default function SoleThicknessPage() {
                                     <IconButton color="info"
 
                                         onClick={() => {
-                                            setChoice({ type: ProductionChoiceActions.create_or_edit_thickness })
+                                            setDialog('CreateOrEditSoleThicknessDialog')
                                             setThickness(cell.row.original)
                                         }}
                                     >
@@ -92,7 +91,7 @@ export default function SoleThicknessPage() {
                                     <IconButton color="error"
 
                                         onClick={() => {
-                                            setChoice({ type: ProductionChoiceActions.delete_production_item })
+                                            setDialog('DeleteProductionItemDialog')
                                             setThickness(cell.row.original)
                                         }}
                                     >
@@ -109,7 +108,7 @@ export default function SoleThicknessPage() {
             {
                 accessorKey: 'dye',
                 header: 'Dye',
-              
+
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.dye && cell.row.original.dye.label.toString() || "" ? cell.row.original.dye.label.toString() || "" : ""}</>,
                 filterSelectOptions: thicknesses && thicknesses.map((i) => {
@@ -119,7 +118,7 @@ export default function SoleThicknessPage() {
             {
                 accessorKey: 'article',
                 header: 'Article',
-               
+
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.article && cell.row.original.article.label || "" ? cell.row.original.article.label || "" : ""}</>,
                 filterSelectOptions: thicknesses && thicknesses.map((i) => {
@@ -129,7 +128,7 @@ export default function SoleThicknessPage() {
             {
                 accessorKey: 'size',
                 header: 'Size',
-              
+
                 Cell: (cell) => <>{cell.row.original.size && cell.row.original.size.toString() || "" ? cell.row.original.size.toString() || "" : ""}</>,
 
             },
@@ -137,26 +136,26 @@ export default function SoleThicknessPage() {
             {
                 accessorKey: 'left_thickness',
                 header: 'Left Thickness',
-              
+
                 Cell: (cell) => <>{cell.row.original.right_thickness && cell.row.original.right_thickness.toString() || "" ? cell.row.original.right_thickness.toString() || "" : ""}</>,
 
             },
             {
                 accessorKey: 'right_thickness',
                 header: 'Right Thickness',
-              
+
                 Cell: (cell) => <>{cell.row.original.right_thickness && cell.row.original.right_thickness.toString() || "" ? cell.row.original.right_thickness.toString() || "" : ""}</>
             },
             {
                 accessorKey: 'created_at',
                 header: 'Created At',
-              
+
                 Cell: (cell) => <>{cell.row.original.created_at || ""}</>
             },
             {
                 accessorKey: 'created_by',
                 header: 'Creator',
-              
+
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.created_by.label.toString() || "" ? cell.row.original.created_by.label.toString() || "" : ""}</>,
                 filterSelectOptions: thicknesses && thicknesses.map((i) => {
@@ -424,7 +423,7 @@ export default function SoleThicknessPage() {
                 >
                     {LoggedInUser?.assigned_permissions.includes('production_create') && <MenuItem
                         onClick={() => {
-                            setChoice({ type: ProductionChoiceActions.create_or_edit_thickness })
+                            setDialog('CreateOrEditSoleThicknessDialog')
                             setThickness(undefined);
                             setAnchorEl(null)
                         }}
@@ -440,13 +439,13 @@ export default function SoleThicknessPage() {
                     >Export Selected</MenuItem>}
 
                 </Menu >
-                <CreateOrEditSoleThicknessDialog thickness={thickness} />
+                <CreateOrEditSoleThicknessDialog dialog={dialog} setDialog={setDialog} thickness={thickness} />
             </>
             {
                 thickness ?
                     <>
 
-                        <DeleteProductionItemDialog thickness={thickness} />
+                        <DeleteProductionItemDialog dialog={dialog} setDialog={setDialog} thickness={thickness} />
                     </>
                     : null
             }

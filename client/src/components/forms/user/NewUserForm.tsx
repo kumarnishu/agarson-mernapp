@@ -2,10 +2,10 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {  Button, CircularProgress, IconButton, InputAdornment, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext, useState } from 'react';
+import { useEffect,  useState } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
-import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+
 import { NewUser } from '../../../services/UserServices';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
@@ -23,7 +23,7 @@ type TformData = {
     dp: string | Blob | File
 }
 
-function NewUserForm() {
+function NewUserForm({setDialog}:{setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<GetUserDto>, BackendError, FormData>
         (NewUser,{
@@ -32,7 +32,6 @@ function NewUserForm() {
             }
         })
 
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<TformData>({
         initialValues: {
@@ -112,9 +111,9 @@ function NewUserForm() {
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: UserChoiceActions.close_user })
+          setDialog(undefined)
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
 
     return (
         <form onSubmit={formik.handleSubmit}>

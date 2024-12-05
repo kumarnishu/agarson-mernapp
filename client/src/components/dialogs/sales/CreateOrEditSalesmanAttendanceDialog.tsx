@@ -1,6 +1,4 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
-import { useContext } from 'react'
-import { ChoiceContext, SaleChoiceActions, } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditSalesAttendanceForm from '../../forms/sales/CreateOrEditSalesAttendanceForm'
 import { GetSalesAttendanceDto } from '../../../dtos/sales-attendance.dto'
@@ -8,19 +6,16 @@ import { GetSalesAttendanceDto } from '../../../dtos/sales-attendance.dto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+    attendance?: GetSalesAttendanceDto,
 }
 
-function CreateOrEditSalesmanAttendanceDialog({ attendance }: {
-    attendance?: GetSalesAttendanceDto,
-}) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+function CreateOrEditSalesmanAttendanceDialog({ attendance, dialog, setDialog }: Props) {
     return (
         <Dialog
-            open={choice === SaleChoiceActions.create_or_edit_sale_attendance ? true : false}
+            open={dialog === "CreateOrEditSalesmanAttendanceDialog"}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                setChoice({ type: SaleChoiceActions.close_sale })
+                setDialog(undefined)
             }
             }>
                 <Cancel fontSize='large' />

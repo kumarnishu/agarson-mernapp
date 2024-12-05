@@ -1,10 +1,9 @@
-import {  Button, CircularProgress, Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { UpdateProfile } from '../../../services/UserServices';
-import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { AxiosResponse } from 'axios';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
@@ -18,7 +17,7 @@ type TformData = {
   dp: string | Blob | File
 }
 
-function UpdateProfileForm({ user }: { user: GetUserDto }) {
+function UpdateProfileForm({ user, setDialog }: { user: GetUserDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<GetUserDto>, BackendError, FormData>
     (UpdateProfile, {
@@ -26,7 +25,6 @@ function UpdateProfileForm({ user }: { user: GetUserDto }) {
         queryClient.invalidateQueries('users')
       }
     })
-  const { setChoice } = useContext(ChoiceContext)
 
   const formik = useFormik<TformData>({
     initialValues: {
@@ -76,9 +74,9 @@ function UpdateProfileForm({ user }: { user: GetUserDto }) {
   });
   useEffect(() => {
     if (isSuccess) {
-      setChoice({ type: UserChoiceActions.close_user })
+      setDialog(undefined)
     }
-  }, [isSuccess, setChoice])
+  }, [isSuccess])
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -88,7 +86,7 @@ function UpdateProfileForm({ user }: { user: GetUserDto }) {
         gap={2}
         pt={2}>
         <TextField
-          
+
 
           required
           fullWidth
@@ -103,7 +101,7 @@ function UpdateProfileForm({ user }: { user: GetUserDto }) {
           {...formik.getFieldProps('email')}
         />
         <TextField
-          
+
           type="number"
           required
           fullWidth
@@ -127,7 +125,7 @@ function UpdateProfileForm({ user }: { user: GetUserDto }) {
           }
           label="Display Picture"
           focused
-          
+
           type="file"
           name="dp"
           onBlur={formik.handleBlur}

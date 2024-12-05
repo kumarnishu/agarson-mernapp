@@ -5,7 +5,6 @@ import { useQuery } from 'react-query'
    import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
-import { CheckListChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import { Edit } from '@mui/icons-material'
 import { Fade,  IconButton, Menu, MenuItem,  Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
@@ -25,7 +24,7 @@ export default function ChecklistCategoriesPage() {
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["check_categories"], async () => GetAllCheckCategories())
 
 
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog,setDialog]=useState<string|undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
    const isFirstRender = useRef(true);
@@ -51,7 +50,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
                     onClick={() => {
                       setChecklistCategory(cell.row.original)
-                      setChoice({ type: CheckListChoiceActions.create_or_edit_checklist_category })
+                      setDialog('CreateOrEditChecklistCategoryDialog')
                     }}
 
                   >
@@ -253,7 +252,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
               onClick={() => {
                 setChecklistCategory(undefined)
                 setAnchorEl(null)
-                setChoice({ type: CheckListChoiceActions.create_or_edit_checklist_category })
+                setDialog('CreateOrEditChecklistCategoryDialog')
               }}
 
             > Add New</MenuItem>}
@@ -265,7 +264,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
             >Export Selected</MenuItem>}
 
           </Menu >
-          <CreateOrEditChecklistCategoryDialog category={category} />
+          <CreateOrEditChecklistCategoryDialog dialog={dialog} setDialog={setDialog} category={category} />
         </>
 
 

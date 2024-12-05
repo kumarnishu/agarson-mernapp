@@ -1,20 +1,17 @@
 import { Dialog, DialogContent, IconButton, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
-import { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { GetVisitReports } from '../../../services/SalesServices'
 import { BackendError } from '../../..'
 import { onlyUnique } from '../../../utils/UniqueArray'
 import { Cancel } from '@mui/icons-material'
-import { ChoiceContext, SaleChoiceActions } from '../../../contexts/dialogContext'
 import { GetVisitReportDto } from '../../../dtos/visit-report.dto'
-type Props = {
-    dialog: string | undefined,
-    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
-}
+
+
 
 function VisitReportPage({ employee }: { employee: string }) {
     const [reports, setReports] = useState<GetVisitReportDto[]>([])
@@ -129,7 +126,7 @@ function VisitReportPage({ employee }: { employee: string }) {
         enableTableFooter: true,
         enableRowVirtualization: true,
         rowVirtualizerInstanceRef, //optional
-       
+
         onColumnVisibilityChange: setColumnVisibility,
         onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing,
@@ -245,12 +242,17 @@ function VisitReportPage({ employee }: { employee: string }) {
 
 }
 
+type Props = {
+    dialog: string | undefined,
+    setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+    employee: string, setEmployee: React.Dispatch<React.SetStateAction<string | undefined>>
+}
 
-function ViewVisitReportDialog({ employee, setEmployee }: { employee: string, setEmployee: React.Dispatch<React.SetStateAction<string | undefined>> }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+
+function ViewVisitReportDialog({ employee, setEmployee, dialog, setDialog }: Props) {
     return (
-        <Dialog open={choice === SaleChoiceActions.visit_history ? true : false} fullScreen
-            onClose={() => setChoice({ type: SaleChoiceActions.close_sale })}
+        <Dialog open={dialog === "ViewVisitReportDialog"} fullScreen
+            onClose={() => setDialog(undefined)}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setEmployee(undefined)}>
                 <Cancel fontSize='large' />

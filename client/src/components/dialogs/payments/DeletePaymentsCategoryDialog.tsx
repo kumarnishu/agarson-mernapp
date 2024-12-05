@@ -1,6 +1,5 @@
-import { Dialog, DialogTitle, DialogContent, IconButton,  Stack, Button, CircularProgress, Typography } from '@mui/material';
-import { useContext, useEffect } from 'react';
-import { ChoiceContext, PaymentsChoiceActions } from '../../../contexts/dialogContext';
+import { Dialog, DialogTitle, DialogContent, IconButton, Stack, Button, CircularProgress, Typography } from '@mui/material';
+import { useEffect } from 'react';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { useMutation } from 'react-query';
@@ -9,13 +8,14 @@ import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
 import { DeletePaymentsCategory } from '../../../services/PaymentsService';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+
+
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+    category: DropDownDto
 }
-function DeletePaymentsCategoryDialog({ category }: { category: DropDownDto }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+function DeletePaymentsCategoryDialog({ category, dialog, setDialog }: Props) {
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
         (DeletePaymentsCategory, {
@@ -26,15 +26,15 @@ function DeletePaymentsCategoryDialog({ category }: { category: DropDownDto }) {
 
     useEffect(() => {
         if (isSuccess)
-            setChoice({ type: PaymentsChoiceActions.close_payment })
-    }, [setChoice, isSuccess])
+            setDialog(undefined)
+    }, [isSuccess])
 
     return (
         <>
-            <Dialog fullWidth open={choice === PaymentsChoiceActions.delete_payment_category ? true : false}
-                onClose={() => setChoice({ type: PaymentsChoiceActions.close_payment })}
+            <Dialog fullWidth open={dialog === "DeletePaymentsCategoryDialog"}
+                onClose={() => setDialog(undefined)}
             >
-                <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: PaymentsChoiceActions.close_payment })}>
+                <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                     <Cancel fontSize='large' />
                 </IconButton>
 
@@ -67,7 +67,7 @@ function DeletePaymentsCategoryDialog({ category }: { category: DropDownDto }) {
                 >
                     <Button fullWidth variant="outlined" color="error"
                         onClick={() => {
-                            setChoice({ type: PaymentsChoiceActions.delete_payment })
+                            setDialog(undefined)
                             mutate(category.id)
                         }}
                         disabled={isLoading}

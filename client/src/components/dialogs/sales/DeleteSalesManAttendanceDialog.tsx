@@ -1,24 +1,21 @@
 import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, CircularProgress, IconButton } from '@mui/material'
 import { AxiosResponse } from 'axios';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { SaleChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { DeleteSalesManAttendance } from '../../../services/SalesServices';
 import { GetSalesAttendanceDto } from '../../../dtos/sales-attendance.dto';
+
 type Props = {
   dialog: string | undefined,
   setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+  attendance?: GetSalesAttendanceDto,
 }
 
-function DeleteSalesManAttendanceDialog({ attendance }: {
-  attendance?: GetSalesAttendanceDto,
-}) {
-  const { choice, setChoice } = useContext(ChoiceContext)
+function DeleteSalesManAttendanceDialog({ attendance, dialog, setDialog }: Props) {
   const { mutate, isLoading, isSuccess, error, isError } = useMutation
     <AxiosResponse<any>, BackendError, string>
     (DeleteSalesManAttendance, {
@@ -29,16 +26,16 @@ function DeleteSalesManAttendanceDialog({ attendance }: {
 
   useEffect(() => {
     if (isSuccess) {
-      setChoice({ type: SaleChoiceActions.close_sale })
+      setDialog(undefined)
     }
 
   }, [isSuccess])
 
   return (
-    <Dialog open={choice === SaleChoiceActions.delete_sale_attendance  ? true : false}
+    <Dialog open={dialog ==="DeleteSalesManAttendanceDialog"}
     >
       <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-        setChoice({ type: SaleChoiceActions.close_sale })
+        setDialog(undefined)
       }}>
         <Cancel fontSize='large' />
       </IconButton>
@@ -79,7 +76,7 @@ function DeleteSalesManAttendanceDialog({ attendance }: {
         </Button>
         <Button fullWidth variant="contained" color="info"
           onClick={() => {
-            setChoice({ type: SaleChoiceActions.close_sale })
+            setDialog(undefined)
           }}
           disabled={isLoading}
         >

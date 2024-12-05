@@ -1,23 +1,21 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
-import { useContext } from 'react'
-import { ChoiceContext, KeyChoiceActions } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditKeyForm from '../../forms/keys/CreateOrEditKeyForm'
 import { GetKeyDto } from '../../../dtos/keys.dto'
+
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+    keyitm?: GetKeyDto
 }
-function CreateOrEditKeyDialog({ keyitm }: { keyitm?: GetKeyDto }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+function CreateOrEditKeyDialog({ keyitm, dialog, setDialog }: Props) {
 
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
-            open={choice === KeyChoiceActions.create_or_edit_key ? true : false}
+            open={dialog === 'CreateOrEditKeyDialog'}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                setChoice({ type: KeyChoiceActions.close_key })
+                setDialog(undefined)
             }
             }>
                 <Cancel fontSize='large' />

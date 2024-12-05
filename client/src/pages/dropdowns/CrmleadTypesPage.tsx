@@ -7,7 +7,6 @@ import { BackendError } from '../..'
 import { onlyUnique } from '../../utils/UniqueArray'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
 import { UserContext } from '../../contexts/userContext'
-import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
 import { Delete, Edit } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem,  Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
@@ -27,7 +26,7 @@ export default function CrmTypesPage() {
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["types"], async () => GetAllLeadTypes())
 
 
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog,setDialog]=useState<string|undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
    const isFirstRender = useRef(true);
@@ -55,7 +54,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
                     <IconButton color="error"
 
                       onClick={() => {
-                        setChoice({ type: LeadChoiceActions.delete_crm_item })
+                        setDialog('DeleteCrmItemDialog')
                         setType(cell.row.original)
 
                       }}
@@ -69,7 +68,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
                     onClick={() => {
                       setType(cell.row.original)
-                      setChoice({ type: LeadChoiceActions.create_or_edit_leadtype })
+                      setDialog('CreateOrEditLeadTypeDialog')
                     }}
 
                   >
@@ -253,7 +252,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
           >
             {LoggedInUser?.assigned_permissions.includes("leadtype_create") && <MenuItem
               onClick={() => {
-                setChoice({ type: LeadChoiceActions.create_or_edit_leadtype })
+                setDialog('CreateOrEditLeadTypeDialog')
                 setType(undefined)
                 setAnchorEl(null)
               }}
@@ -267,12 +266,12 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
             >Export Selected</MenuItem>}
 
           </Menu >
-          <CreateOrEditLeadTypeDialog type={type} />
+          <CreateOrEditLeadTypeDialog dialog={dialog} setDialog={setDialog} type={type} />
           <>
             {
               type ?
                 <>
-                  <DeleteCrmItemDialog type={type} />
+                  <DeleteCrmItemDialog dialog={dialog} setDialog={setDialog} type={type} />
                 </>
                 : null
             }

@@ -1,6 +1,4 @@
 import { Dialog, DialogContent, DialogTitle, Typography, Stack, IconButton } from '@mui/material';
-import { useContext } from 'react';
-import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import SignUpForm from '../../forms/user/SignUpForm';
 import { Cancel } from '@mui/icons-material';
 
@@ -9,19 +7,15 @@ type Props = {
   setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
 }
-type Props = {
-  dialog: string | undefined,
-  setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-}
+
 function SignUpDialog({ dialog, setDialog }: Props) {
-  const { choice, setChoice } = useContext(ChoiceContext)
   return (
     <>
-      <Dialog open={choice === UserChoiceActions.signup ? true : false}
-        onClose={() => setChoice({ type: UserChoiceActions.close_user })}
+      <Dialog open={dialog === "SignUpDialog"}
+        onClose={() => setDialog(undefined)}
         scroll="paper"
       >
-        <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: UserChoiceActions.close_user })}>
+        <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
           <Cancel fontSize='large' />
         </IconButton>
 
@@ -41,7 +35,7 @@ function SignUpDialog({ dialog, setDialog }: Props) {
             variant="body1"
             sx={{ cursor: "pointer" }}
             component="span"
-            onClick={() => setChoice({ type: UserChoiceActions.close_user })}
+            onClick={() => setDialog(undefined)}
           >
             <b>Close</b>
           </Typography >
@@ -50,7 +44,6 @@ function SignUpDialog({ dialog, setDialog }: Props) {
             variant="body1"
             sx={{ cursor: "pointer" }}
             component="span"
-            onClick={() => setChoice({ type: UserChoiceActions.reset_password_mail })}
           >
             Forgot Password
           </Typography >

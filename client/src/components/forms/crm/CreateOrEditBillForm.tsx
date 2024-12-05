@@ -1,11 +1,10 @@
 import { Button, CircularProgress, Divider, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext, useState } from 'react';
+import { useEffect,  useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { CreateOrEditBill } from '../../../services/LeadsServices';
-import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -20,7 +19,7 @@ import { GetLeadDto } from '../../../dtos/lead.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
 
 
-function CreateOrEditBillForm({ lead, refer, setDisplay2, bill }: { lead?: GetLeadDto, refer?: GetReferDto, bill?: GetBillDto, setDisplay2?: React.Dispatch<React.SetStateAction<boolean>> }) {
+function CreateOrEditBillForm({ lead, refer, setDialog, bill }: { lead?: GetLeadDto, refer?: GetReferDto, bill?: GetBillDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const [items, setItems] = useState<CreateOrEditBillItemDto[]>(bill?.items || [])
     const [item, setItem] = useState<CreateOrEditBillItemDto>()
     const [articles, setArticles] = useState<GetArticleDto[]>([])
@@ -39,7 +38,6 @@ function CreateOrEditBillForm({ lead, refer, setDisplay2, bill }: { lead?: GetLe
         })
 
 
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<{
         lead?: string,
@@ -129,11 +127,10 @@ function CreateOrEditBillForm({ lead, refer, setDisplay2, bill }: { lead?: GetLe
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: LeadChoiceActions.close_lead })
-            if (setDisplay2)
-                setDisplay2(false);
+          setDialog(undefined) 
+         
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack

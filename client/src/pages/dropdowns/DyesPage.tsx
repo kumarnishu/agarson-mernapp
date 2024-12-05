@@ -4,7 +4,6 @@ import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
-import { ChoiceContext, ProductionChoiceActions } from '../../contexts/dialogContext'
 import { Edit, RestartAlt } from '@mui/icons-material'
 import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
@@ -101,7 +100,7 @@ export default function DyePage() {
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetDyeDto[]>, BackendError>(["dyes", hidden], async () => GetDyes(String(hidden)))
 
 
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
@@ -116,7 +115,7 @@ export default function DyePage() {
       {
         accessorKey: 'actions',
         header: '',
-        
+
         enableColumnFilter: false,
         Cell: ({ cell }) => <PopUp
           element={
@@ -128,7 +127,7 @@ export default function DyePage() {
 
                     onClick={() => {
                       setDye(cell.row.original)
-                      setChoice({ type: ProductionChoiceActions.toogle_dye })
+                      setDialog('ToogleDyeDialog')
 
                     }}
                   >
@@ -141,7 +140,7 @@ export default function DyePage() {
 
                     onClick={() => {
                       setDye(cell.row.original)
-                      setChoice({ type: ProductionChoiceActions.create_or_edit_dye })
+                      setDialog('CreateOrEditDyeDialog')
                     }}
 
                   >
@@ -157,7 +156,7 @@ export default function DyePage() {
       {
         accessorKey: 'active',
         header: 'Status',
-      
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.active ? "active" : "inactive"}</>,
         filterSelectOptions: dyes && dyes.map((i) => {
@@ -167,7 +166,7 @@ export default function DyePage() {
       {
         accessorKey: 'dye_number',
         header: 'Dye',
-      
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.dye_number.toString() || "" ? cell.row.original.dye_number.toString() || "" : ""}</>,
         filterSelectOptions: dyes && dyes.map((i) => {
@@ -177,7 +176,7 @@ export default function DyePage() {
       {
         accessorKey: 'size',
         header: 'Size',
-       
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.size ? cell.row.original.size : ""}</>,
         filterSelectOptions: dyes && dyes.map((i) => {
@@ -187,7 +186,7 @@ export default function DyePage() {
       {
         accessorKey: 'stdshoe_weight',
         header: 'St. Weight',
-        
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.stdshoe_weight ? cell.row.original.stdshoe_weight : ""}</>,
         filterSelectOptions: dyes && dyes.map((i) => {
@@ -197,7 +196,7 @@ export default function DyePage() {
       {
         accessorKey: 'articles',
         header: 'Articles',
-      
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.articles.toString() ? cell.row.original.articles.map((a) => { return a.label }).toString() : ""}</>,
         filterSelectOptions: dyes && dyes.map((i) => {
@@ -252,7 +251,7 @@ export default function DyePage() {
     enableTableFooter: true,
     enableRowVirtualization: true,
     onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
-   
+
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
@@ -378,7 +377,7 @@ export default function DyePage() {
               onClick={() => {
                 setDye(undefined)
                 setAnchorEl(null)
-                setChoice({ type: ProductionChoiceActions.create_or_edit_dye })
+                setDialog('CreateOrEditDyeDialog')
               }}
 
             > Add New</MenuItem>}
@@ -420,11 +419,11 @@ export default function DyePage() {
           </Menu >
         </Stack>
 
-        <CreateOrEditDyeDialog dye={dye} />
+        <CreateOrEditDyeDialog dialog={dialog} setDialog={setDialog} dye={dye} />
         {
           dye ?
             <>
-              <ToogleDyeDialog dye={dye} />
+              <ToogleDyeDialog dialog={dialog} setDialog={setDialog} dye={dye} />
             </>
             : null
         }

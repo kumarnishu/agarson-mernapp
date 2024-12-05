@@ -13,7 +13,6 @@ import { DownloadFile } from '../../utils/DownloadFile'
 import {  GetUsersForAssignment } from '../../services/UserServices'
 import NewUserDialog from '../../components/dialogs/users/NewUserDialog'
 import AssignPermissionsToUsersDialog from '../../components/dialogs/users/AssignPermissionsToUsersDialog'
-import { ChoiceContext, UserChoiceActions } from '../../contexts/dialogContext'
 import PopUp from '../../components/popup/PopUp'
 import UpdateUserDialog from '../../components/dialogs/users/UpdateUserDialog'
 import ResetMultiLoginDialog from '../../components/dialogs/users/ResetMultiLogin'
@@ -34,7 +33,7 @@ export default function UserAssignementPage() {
   const [users, setUsers] = useState<GetUserDto[]>([])
   const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>(["users"], async () => GetUsersForAssignment())
   const { user: LoggedInUser } = useContext(UserContext)
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog,setDialog]=useState<string|undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag, setFlag] = useState(1);
 
@@ -60,7 +59,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
                         color="success"
                         size="medium"
                         onClick={() => {
-                          setChoice({ type: UserChoiceActions.assign_users })
+                          setDialog('AssignUsersDialog')
                           setUser(cell.row.original)
                         }}>
                         <Assignment />
@@ -72,7 +71,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
                 <IconButton
                   color="info"
                   onClick={() => {
-                    setChoice({ type: UserChoiceActions.assign_permissions })
+                    setDialog('AssignPermissionsToOneUserDialog')
                     setUser(cell.row.original)
 
                   }}>
@@ -311,12 +310,12 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
               {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') &&<MenuItem
 
                 onClick={() => {
-                  setChoice({ type: UserChoiceActions.close_user })
+                  setDialog('AssignPermissionsToUsersDialog')
                   if (!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()) {
                     alert("select some users")
                   }
                   else {
-                    setChoice({ type: UserChoiceActions.bulk_assign_permissions })
+                    setDialog('AssignPermissionsToUsersDialog')
                     setFlag(1)
                   }
                   setAnchorEl(null)
@@ -326,15 +325,15 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
               {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') &&<MenuItem
 
                 onClick={() => {
-                  setChoice({ type: UserChoiceActions.close_user })
+                  setDialog('AssignPermissionsToUsersDialog')
                   if (!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()) {
                     alert("select some users")
                   }
                   else {
-                    setChoice({ type: UserChoiceActions.bulk_assign_permissions })
+                    setDialog('AssignPermissionsToUsersDialog')
                     setFlag(0)
                   }
-                  setAnchorEl(null)
+                  setAnchorEl(null) 
                 }}
               >Remove Permissions</MenuItem>}
 
@@ -343,8 +342,8 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
               {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') &&<MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
               >Export Selected</MenuItem>}
             </Menu>
-            <NewUserDialog />
-            <AssignPermissionsToUsersDialog flag={flag} user_ids={table.getSelectedRowModel().rows.map((I) => { return I.original._id })} />
+            <NewUserDialog dialog={dialog} setDialog={setDialog} />
+            <AssignPermissionsToUsersDialog  dialog={dialog} setDialog={setDialog}flag={flag} user_ids={table.getSelectedRowModel().rows.map((I) => { return I.original._id })} />
           </>
         </Stack >
       </Stack >
@@ -354,17 +353,17 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
       {
         user ?
           <>
-            <UpdateUserDialog user={user} />
-            <ResetMultiLoginDialog id={user._id} />
-            <BlockMultiLoginDialog id={user._id} />
-            <UpdatePasswordDialog />
-            <BlockUserDialog id={user._id} />
-            <UnBlockUserDialog id={user._id} />
-            <MakeAdminDialog id={user._id} />
-            <RemoveAdminDialog id={user._id} />
-            <UpdateUsePasswordDialog user={user} />
-            <AssignUsersDialog user={user} setUser={setUser} />
-            <AssignPermissionsToOneUserDialog user={user} />
+            <UpdateUserDialog dialog={dialog} setDialog={setDialog} user={user} />
+            <ResetMultiLoginDialog dialog={dialog} setDialog={setDialog} id={user._id} />
+            <BlockMultiLoginDialog dialog={dialog} setDialog={setDialog} id={user._id} />
+            <UpdatePasswordDialog dialog={dialog} setDialog={setDialog} />
+            <BlockUserDialog dialog={dialog} setDialog={setDialog} id={user._id} />
+            <UnBlockUserDialog dialog={dialog} setDialog={setDialog} id={user._id} />
+            <MakeAdminDialog dialog={dialog} setDialog={setDialog} id={user._id} />
+            <RemoveAdminDialog dialog={dialog} setDialog={setDialog} id={user._id} />
+            <UpdateUsePasswordDialog dialog={dialog} setDialog={setDialog} user={user} />
+            <AssignUsersDialog dialog={dialog} setDialog={setDialog} user={user} setUser={setUser} />
+            <AssignPermissionsToOneUserDialog dialog={dialog} setDialog={setDialog} user={user} />
           </>
           : null
       }

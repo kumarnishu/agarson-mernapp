@@ -7,7 +7,6 @@ import { UserContext } from '../../contexts/userContext'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { CheckListChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import PopUp from '../../components/popup/PopUp'
 import { Delete, Edit, FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
 import { DownloadFile } from '../../utils/DownloadFile'
@@ -59,7 +58,7 @@ function CheckListAdminPage() {
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
   const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<{ category: string, count: number }[]>, BackendError>("checklists", GetChecklistTopBarDetails)
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog, setDialog] = useState<string | undefined>()
   let previous_date = new Date()
   let day = previous_date.getDate() - 3
   previous_date.setDate(day)
@@ -82,7 +81,7 @@ function CheckListAdminPage() {
       {
         accessorKey: 'actions',
         header: '',
-        
+
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -90,11 +89,8 @@ function CheckListAdminPage() {
                 <IconButton color="error"
 
                   onClick={() => {
-
-                    setChoice({ type: CheckListChoiceActions.delete_checklist })
+                    setDialog('DeleteCheckListDialog')
                     setChecklist(cell.row.original)
-
-
                   }}
                 >
                   <Delete />
@@ -106,7 +102,7 @@ function CheckListAdminPage() {
 
                     onClick={() => {
 
-                      setChoice({ type: CheckListChoiceActions.create_or_edit_checklist })
+                      setDialog('CreateOrEditCheckListDialog')
                       setChecklist(cell.row.original)
 
                     }}
@@ -121,23 +117,23 @@ function CheckListAdminPage() {
       {
         accessorKey: 'serial_no',
         header: ' No',
-        
+
       },
       {
         accessorKey: 'last_checked_box',
         header: 'Stage',
-        
+
         Cell: (cell) => <Tooltip title={cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}>
           <Button onClick={() => {
             setChecklist(cell.row.original)
-            setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
+            setDialog('ViewChecklistRemarksDialog')
           }} size="small" sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0, p: 0.5 }} color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? toTitleCase(cell.row.original.last_checked_box.stage) : "Open"}</Button>
         </Tooltip>
       },
       {
         accessorKey: 'work_title',
         header: ' Work Title',
-        
+
         Cell: (cell) => <span title={cell.row.original.work_description} >
           {cell.row.original.link && cell.row.original.link != "" ?
             <a style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
@@ -151,7 +147,7 @@ function CheckListAdminPage() {
       {
         accessorKey: 'assigned_users.value',
         header: 'Responsible',
-       
+
         filter: 'custom',
         enableColumnFilter: true,
         Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.label }).toString() || ""}</>,
@@ -167,7 +163,7 @@ function CheckListAdminPage() {
       {
         accessorKey: 'last_10_boxes',
         header: 'Filtered Dates',
-      
+
         Cell: (cell) => <>
           {userId == "all" ?
             <Stack direction="row" className="scrollable-stack" sx={{ height: '20px' }}>
@@ -180,7 +176,7 @@ function CheckListAdminPage() {
                         onClick={() => {
                           setChecklistBox(b);
                           setChecklist(cell.row.original)
-                          setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
+                          setDialog('ViewChecklistBoxRemarksDialog')
                         }}
                         size="small"
                         disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) > new Date()}
@@ -198,7 +194,7 @@ function CheckListAdminPage() {
                         onClick={() => {
                           setChecklistBox(b);
                           setChecklist(cell.row.original)
-                          setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
+                          setDialog('ViewChecklistBoxRemarksDialog')
                         }}
                         size="small"
                         disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= new Date(getNextMonday())}
@@ -216,7 +212,7 @@ function CheckListAdminPage() {
                         onClick={() => {
                           setChecklistBox(b);
                           setChecklist(cell.row.original)
-                          setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
+                          setDialog('ViewChecklistBoxRemarksDialog')
 
                         }}
                         size="small"
@@ -237,7 +233,7 @@ function CheckListAdminPage() {
                           console.log(new Date(previous_date))
                           setChecklistBox(b);
                           setChecklist(cell.row.original)
-                          setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
+                          setDialog('ViewChecklistBoxRemarksDialog')
                         }}
                         size="small"
                         disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) > currentYear}
@@ -262,7 +258,7 @@ function CheckListAdminPage() {
                         onClick={() => {
                           setChecklistBox(b);
                           setChecklist(cell.row.original)
-                          setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
+                          setDialog('ViewChecklistBoxRemarksDialog')
                         }}
                         size="small"
                         disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) > new Date()}
@@ -280,7 +276,7 @@ function CheckListAdminPage() {
                         onClick={() => {
                           setChecklistBox(b);
                           setChecklist(cell.row.original)
-                          setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
+                          setDialog('ViewChecklistBoxRemarksDialog')
                         }}
                         size="small"
                         disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= new Date(getNextMonday())}
@@ -298,7 +294,7 @@ function CheckListAdminPage() {
                         onClick={() => {
                           setChecklistBox(b);
                           setChecklist(cell.row.original)
-                          setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
+                          setDialog('ViewChecklistBoxRemarksDialog')
 
                         }}
                         size="small"
@@ -319,7 +315,7 @@ function CheckListAdminPage() {
                           console.log(new Date(previous_date))
                           setChecklistBox(b);
                           setChecklist(cell.row.original)
-                          setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
+                          setDialog('ViewChecklistBoxRemarksDialog')
                         }}
                         size="small"
                         disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) > currentYear}
@@ -340,13 +336,13 @@ function CheckListAdminPage() {
       {
         accessorKey: 'category.label',
         header: ' Category',
-       
+
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
       },
       {
         accessorKey: 'frequency',
         header: ' Frequency',
-       
+
         Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
       },
 
@@ -354,7 +350,7 @@ function CheckListAdminPage() {
       {
         accessorKey: 'next_date',
         header: 'Next Check Date',
-       
+
         Cell: (cell) => <>
           < input
             type="date"
@@ -373,7 +369,7 @@ function CheckListAdminPage() {
       {
         accessorKey: 'photo',
         header: 'Photo',
-       
+
         Cell: (cell) => <span onDoubleClick={() => {
           if (cell.row.original.photo && cell.row.original.photo) {
             DownloadFile(cell.row.original.photo, 'photo')
@@ -384,13 +380,13 @@ function CheckListAdminPage() {
       {
         accessorKey: 'updated_at',
         header: 'Last Updated At',
-     
+
         Cell: (cell) => <>{cell.row.original.updated_at ? moment(cell.row.original.updated_at).format("DD/MM/YYYY") : ""}</>
       },
       {
         accessorKey: 'updated_by',
         header: 'Last Updated By',
-     
+
         Cell: (cell) => <>{cell.row.original.updated_by ? cell.row.original.updated_by.label : ""}</>
       },
     ],
@@ -545,7 +541,7 @@ function CheckListAdminPage() {
                     if (data.length == 0)
                       alert("select some checklists")
                     else
-                      setChoice({ type: CheckListChoiceActions.bulk_delete_checklist })
+                      setDialog('BulkDeleteCheckListDialog')
                   }}
                 >
                   <Delete sx={{ width: 15, height: 15 }} />
@@ -602,7 +598,7 @@ function CheckListAdminPage() {
     enableTableFooter: true,
     enableRowVirtualization: true,
     onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
-   
+
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
@@ -708,7 +704,7 @@ function CheckListAdminPage() {
         {LoggedInUser?.assigned_permissions.includes('checklist_admin_create') && <MenuItem
 
           onClick={() => {
-            setChoice({ type: CheckListChoiceActions.create_or_edit_checklist })
+            setDialog('CreateOrEditCheckListDialog')
             setChecklist(undefined)
             setAnchorEl(null)
           }}
@@ -720,7 +716,7 @@ function CheckListAdminPage() {
               alert("select some checklists")
             }
             else {
-              setChoice({ type: CheckListChoiceActions.assign_checklist_to_users })
+              setDialog('AssignChecklistsDialog')
               setChecklist(undefined)
               setFlag(1)
             }
@@ -734,7 +730,7 @@ function CheckListAdminPage() {
               alert("select some checklists")
             }
             else {
-              setChoice({ type: CheckListChoiceActions.assign_checklist_to_users })
+              setDialog('AssignChecklistsDialog')
               setChecklist(undefined)
               setFlag(0)
             }
@@ -783,14 +779,14 @@ function CheckListAdminPage() {
         >Export Selected</MenuItem>}
       </Menu>
 
-      <CreateOrEditCheckListDialog checklist={checklist} setChecklist={setChecklist} />
-      {checklist && <DeleteCheckListDialog checklist={checklist} />}
-      {checklist && <CreateOrEditCheckListDialog checklist={checklist} setChecklist={setChecklist} />}
-      {checklist && checklistBox && <ViewChecklistBoxRemarksDialog checklist={checklist} checklist_box={checklistBox} />}
-      {checklist && <ViewChecklistRemarksDialog checklist={checklist} />}
+      <CreateOrEditCheckListDialog dialog={dialog} setDialog={setDialog} checklist={checklist} setChecklist={setChecklist} />
+      {checklist && <DeleteCheckListDialog dialog={dialog} setDialog={setDialog} checklist={checklist} />}
+      {checklist && <CreateOrEditCheckListDialog dialog={dialog} setDialog={setDialog} checklist={checklist} setChecklist={setChecklist} />}
+      {checklist && checklistBox && <ViewChecklistBoxRemarksDialog dialog={dialog} setDialog={setDialog} checklist={checklist} checklist_box={checklistBox} />}
+      {checklist && <ViewChecklistRemarksDialog dialog={dialog} setDialog={setDialog} checklist={checklist} />}
       <MaterialReactTable table={table} />
-      {<AssignChecklistsDialog flag={flag} checklists={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
-      {table.getSelectedRowModel().rows && table.getSelectedRowModel().rows.length > 0 && <BulkDeleteCheckListDialog ids={table.getSelectedRowModel().rows.map((l) => { return l.original._id })} clearIds={() => { table.resetRowSelection() }} />}
+      {<AssignChecklistsDialog dialog={dialog} setDialog={setDialog} flag={flag} checklists={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
+      {table.getSelectedRowModel().rows && table.getSelectedRowModel().rows.length > 0 && <BulkDeleteCheckListDialog dialog={dialog} setDialog={setDialog} ids={table.getSelectedRowModel().rows.map((l) => { return l.original._id })} clearIds={() => { table.resetRowSelection() }} />}
     </>
   )
 }

@@ -1,10 +1,9 @@
 import { Button, Checkbox, CircularProgress,  InputLabel, ListItemText, MenuItem, OutlinedInput, Select, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
-import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -17,7 +16,7 @@ import { GetMachineDto } from '../../../dtos/machine.dto';
 import { GetProductionDto, CreateOrEditProductionDto } from '../../../dtos/production.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
 
-function CreateOrEditProductionForm({ production }: { production?: GetProductionDto }) {
+function CreateOrEditProductionForm({ production,setDialog }: { production?: GetProductionDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const { user } = useContext(UserContext)
     const { data: users } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'production_view', show_assigned_only: true }))
     const { data: machines } = useQuery<AxiosResponse<GetMachineDto[]>, BackendError>("machines", async () => GetMachines())
@@ -33,7 +32,6 @@ function CreateOrEditProductionForm({ production }: { production?: GetProduction
             }
         })
 
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik({
         initialValues: {
@@ -86,9 +84,9 @@ function CreateOrEditProductionForm({ production }: { production?: GetProduction
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: ProductionChoiceActions.close_production })
+          setDialog(undefined) 
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
 
     return (
         <form onSubmit={formik.handleSubmit}>

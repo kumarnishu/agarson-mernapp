@@ -1,10 +1,9 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext, useState } from 'react';
+import { useEffect,  useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
-import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { CreateOrUpdateLead, GetAllCities, GetAllLeadTypes, GetAllSources, GetAllStates } from '../../../services/LeadsServices';
 import { Countries } from '../../../utils/countries';
 import { BackendError, Target } from '../../..';
@@ -17,7 +16,7 @@ import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetLeadDto } from '../../../dtos/lead.dto';
 
 
-function CreateOrEditLeadForm({ lead }: { lead?: GetLeadDto }) {
+function CreateOrEditLeadForm({ lead,setDialog }: { lead?: GetLeadDto , setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const [states, setStates] = useState<GetCrmStateDto[]>([])
     const [cities, setCities] = useState<GetCrmCityDto[]>([])
     const [state, setState] = useState<string>();
@@ -39,7 +38,6 @@ function CreateOrEditLeadForm({ lead }: { lead?: GetLeadDto }) {
     const { data: citydata, isSuccess: isCitySuccess } = useQuery<AxiosResponse<GetCrmCityDto[]>, BackendError>(["crm_cities", state], async () => GetAllCities({ state: state }))
 
 
-    const { setChoice } = useContext(ChoiceContext)
     const formik = useFormik({
         initialValues: {
             name: lead ? lead.name : "",
@@ -178,9 +176,9 @@ function CreateOrEditLeadForm({ lead }: { lead?: GetLeadDto }) {
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: LeadChoiceActions.close_lead })
+          setDialog(undefined) 
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
 
     return (
         <form onSubmit={formik.handleSubmit}>

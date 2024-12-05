@@ -1,6 +1,5 @@
-import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button,  InputLabel, OutlinedInput, MenuItem, Checkbox, ListItemText, Select } from '@mui/material'
-import { useContext, useEffect, useState } from 'react';
-import { ChoiceContext, PaymentsChoiceActions } from '../../../contexts/dialogContext';
+import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, InputLabel, OutlinedInput, MenuItem, Checkbox, ListItemText, Select } from '@mui/material'
+import { useEffect, useState } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { useMutation, useQuery } from 'react-query';
@@ -16,23 +15,21 @@ import { DropDownDto } from '../../../dtos/dropdown.dto';
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+    payments: GetPaymentDto[], flag: number
 }
 
-function AssignPaymentsDialog({ payments, flag }: { payments: GetPaymentDto[], flag:number }) {
-
+function AssignPaymentsDialog({ payments, flag, dialog, setDialog }: Props) {
     const [users, setUsers] = useState<DropDownDto[]>([])
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'payments_view', show_assigned_only: false }))
 
 
 
-    const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 user_ids: string[],
                 payment_ids: string[],
-                flag:number
+                flag: number
             }
         }>
         (AssignPaymentssToUsers, {
@@ -62,10 +59,10 @@ function AssignPaymentsDialog({ payments, flag }: { payments: GetPaymentDto[], f
                 body: {
                     user_ids: values.user_ids,
                     payment_ids: payments.map((item) => { return item._id }),
-                    flag:flag
+                    flag: flag
                 }
             })
-            
+
         }
     });
 
@@ -77,27 +74,27 @@ function AssignPaymentsDialog({ payments, flag }: { payments: GetPaymentDto[], f
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: PaymentsChoiceActions.close_payment });
-            formik.setValues({ user_ids: [], payment_ids: [] }) ;
+            setDialog(undefined)
+            formik.setValues({ user_ids: [], payment_ids: [] });
         }
     }, [isSuccess])
     return (
         <Dialog
             fullWidth
-            open={choice === PaymentsChoiceActions.assign_payment_to_users ? true : false}
+            open={dialog === "AssignPaymentsDialog"}
             onClose={() => {
-                setChoice({ type: PaymentsChoiceActions.close_payment });
+                setDialog(undefined)
                 formik.setValues({ user_ids: [], payment_ids: [] });
             }}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                setChoice({ type: PaymentsChoiceActions.close_payment });
+                setDialog(undefined)
                 formik.setValues({ user_ids: [], payment_ids: [] });
             }}>
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
-                {flag === 0 ?'Remove Users':'Assign Users'}
+                {flag === 0 ? 'Remove Users' : 'Assign Users'}
             </DialogTitle>
             <DialogContent>
                 <Stack
@@ -105,8 +102,8 @@ function AssignPaymentsDialog({ payments, flag }: { payments: GetPaymentDto[], f
                 >
                     <Typography variant="body1" color="error">
 
-                        {flag === 1&&`Warning ! This will assign ${payments.length} Users to the ${formik.values.user_ids.length} Users.`}
-                        {flag === 0&&`Warning ! This will remove  ${payments.length} Users from  ${formik.values.user_ids.length} Users.`}
+                        {flag === 1 && `Warning ! This will assign ${payments.length} Users to the ${formik.values.user_ids.length} Users.`}
+                        {flag === 0 && `Warning ! This will remove  ${payments.length} Users from  ${formik.values.user_ids.length} Users.`}
 
                     </Typography>
                     <Button onClick={() => formik.setValues({ user_ids: [], payment_ids: payments.map((item) => { return item._id }) })}>Remove Selection</Button>
@@ -116,26 +113,26 @@ function AssignPaymentsDialog({ payments, flag }: { payments: GetPaymentDto[], f
                         <Select
                             label="Users"
                             fullWidth
-                                labelId="demo-multiple-checkbox-label"
-                                id="demo-multiple-checkbox"
-                                multiple
-                                input={<OutlinedInput label="User" />}
-                                renderValue={() => `${formik.values.user_ids.length} users`}
-                                {...formik.getFieldProps('user_ids')}
-                            >
-                                {users.map((user) => (
-                                    <MenuItem key={user.id} value={user.id}>
-                                        <Checkbox checked={formik.values.user_ids.includes(user.id)} />
-                                        <ListItemText primary={user.label} />
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                       
+                            labelId="demo-multiple-checkbox-label"
+                            id="demo-multiple-checkbox"
+                            multiple
+                            input={<OutlinedInput label="User" />}
+                            renderValue={() => `${formik.values.user_ids.length} users`}
+                            {...formik.getFieldProps('user_ids')}
+                        >
+                            {users.map((user) => (
+                                <MenuItem key={user.id} value={user.id}>
+                                    <Checkbox checked={formik.values.user_ids.includes(user.id)} />
+                                    <ListItemText primary={user.label} />
+                                </MenuItem>
+                            ))}
+                        </Select>
 
-                        <Button style={{ padding: 10, marginTop: 10 }} variant="contained" color={flag != 0 ? "primary":"error"} type="submit"
+
+                        <Button style={{ padding: 10, marginTop: 10 }} variant="contained" color={flag != 0 ? "primary" : "error"} type="submit"
                             disabled={Boolean(isLoading)}
                             fullWidth>
-                            {flag==0 ? 'Remove ' : "Assign"}
+                            {flag == 0 ? 'Remove ' : "Assign"}
                         </Button>
                     </form>
 

@@ -1,10 +1,9 @@
 import { Button,  CircularProgress,  Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
-import { ChoiceContext, CheckListChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -14,7 +13,7 @@ import { GetChecklistRemarksDto, CreateOrEditChecklistRemarkDto } from '../../..
 import { GetChecklistDto } from '../../../dtos/checklist.dto';
 
 
-function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box, setDisplay }: { checklist: GetChecklistDto, checklist_box: GetChecklistBoxDto, remark?: GetChecklistRemarksDto, setDisplay?: React.Dispatch<React.SetStateAction<boolean>> }) {
+function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box ,setDialog }: { checklist: GetChecklistDto, checklist_box: GetChecklistBoxDto, remark?: GetChecklistRemarksDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: CreateOrEditChecklistRemarkDto,
@@ -27,7 +26,6 @@ function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box, set
             }
         })
 
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<{
         remark: string,
@@ -76,11 +74,10 @@ function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box, set
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: CheckListChoiceActions.close_checklist })
-            if (setDisplay)
-                setDisplay(false);
+          setDialog(undefined)
+            
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack

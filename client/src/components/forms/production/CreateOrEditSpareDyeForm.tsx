@@ -1,10 +1,9 @@
 import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
-import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -16,7 +15,7 @@ import { GetDyeDto } from '../../../dtos/dye.dto';
 import { GetSpareDyeDto } from '../../../dtos/spare-dye.dto';
 
 
-function CreateOrEditSpareDyeForm({ sparedye }: { sparedye?: GetSpareDyeDto }) {
+function CreateOrEditSpareDyeForm({ sparedye, setDialog }: { sparedye?: GetSpareDyeDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { data: dyes } = useQuery<AxiosResponse<GetDyeDto[]>, BackendError>("dyes", async () => GetDyes('false'))
     const { data: locations } = useQuery<AxiosResponse<GetDyeLocationDto[]>, BackendError>("locations", async () => GetAllDyeLocations())
     const [file, setFile] = useState<File>()
@@ -32,7 +31,6 @@ function CreateOrEditSpareDyeForm({ sparedye }: { sparedye?: GetSpareDyeDto }) {
             }
         })
 
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik({
         initialValues: {
@@ -83,10 +81,10 @@ function CreateOrEditSpareDyeForm({ sparedye }: { sparedye?: GetSpareDyeDto }) {
     useEffect(() => {
         if (isSuccess) {
             setTimeout(() => {
-                setChoice({ type: ProductionChoiceActions.close_production })
+                setDialog(undefined)
             }, 1000)
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack sx={{ direction: { xs: 'column', md: 'row' } }}>

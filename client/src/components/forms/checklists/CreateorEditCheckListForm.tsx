@@ -1,10 +1,9 @@
 import { Button, Checkbox, CircularProgress, InputLabel, ListItemText, MenuItem, OutlinedInput, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext, useState } from 'react';
+import { useEffect,  useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
-import { ChoiceContext, CheckListChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -15,7 +14,7 @@ import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
 
 
-function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto }) {
+function CreateorEditCheckListForm({ checklist,setDialog }: { checklist?: GetChecklistDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const [categories, setCategories] = useState<DropDownDto[]>([])
     const [users, setUsers] = useState<DropDownDto[]>([])
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
@@ -29,7 +28,6 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
 
     const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
     const { data: categoriesData, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("check_categories", GetAllCheckCategories)
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<CreateOrEditChecklistDto>({
         initialValues: {
@@ -114,9 +112,9 @@ function CreateorEditCheckListForm({ checklist }: { checklist?: GetChecklistDto 
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: CheckListChoiceActions.close_checklist })
+          setDialog(undefined)
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
 
 
     return (

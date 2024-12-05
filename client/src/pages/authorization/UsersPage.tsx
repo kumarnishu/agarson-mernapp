@@ -13,7 +13,6 @@ import { DownloadFile } from '../../utils/DownloadFile'
 import { GetUsers } from '../../services/UserServices'
 import NewUserDialog from '../../components/dialogs/users/NewUserDialog'
 import AssignPermissionsToUsersDialog from '../../components/dialogs/users/AssignPermissionsToUsersDialog'
-import { ChoiceContext, UserChoiceActions } from '../../contexts/dialogContext'
 import PopUp from '../../components/popup/PopUp'
 import UpdateUserDialog from '../../components/dialogs/users/UpdateUserDialog'
 import ResetMultiLoginDialog from '../../components/dialogs/users/ResetMultiLogin'
@@ -35,7 +34,7 @@ export default function UsersPage() {
     const [users, setUsers] = useState<GetUserDto[]>([])
     const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>(["users", hidden], async () => GetUsers({ hidden: hidden }))
     const { user: LoggedInUser } = useContext(UserContext)
-    const { setChoice } = useContext(ChoiceContext)
+    const [dialog, setDialog] = useState<string | undefined>()
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [flag, setFlag] = useState(1);
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
@@ -63,7 +62,7 @@ export default function UsersPage() {
                                         color="success"
                                         size="medium"
                                         onClick={() => {
-                                            setChoice({ type: UserChoiceActions.update_user })
+                                            setDialog('UpdateUserDialog')
                                             setUser(cell.row.original)
                                         }}>
                                         <Edit />
@@ -75,7 +74,7 @@ export default function UsersPage() {
                                         color="success"
                                         size="medium"
                                         onClick={() => {
-                                            setChoice({ type: UserChoiceActions.update_user })
+                                            setDialog('UpdateUserDialog')
                                             setUser(cell.row.original)
                                         }}>
                                         <Edit />
@@ -89,7 +88,7 @@ export default function UsersPage() {
                                         color="success"
                                         size="medium"
                                         onClick={() => {
-                                            setChoice({ type: UserChoiceActions.assign_users })
+                                            setDialog('AssignUsersDialog')
                                             setUser(cell.row.original)
                                         }}>
                                         <Assignment />
@@ -101,7 +100,7 @@ export default function UsersPage() {
                                         color="success"
                                         size="medium"
                                         onClick={() => {
-                                            setChoice({ type: UserChoiceActions.assign_users })
+                                            setDialog('AssignUsersDialog')
                                             setUser(cell.row.original)
                                         }}>
                                         <Assignment />
@@ -117,7 +116,7 @@ export default function UsersPage() {
                                             disabled={cell.row.original?.created_by.id === cell.row.original._id}
                                             color="error"
                                             onClick={() => {
-                                                setChoice({ type: UserChoiceActions.remove_admin })
+                                                setDialog('RemoveAdminDialog')
                                                 setUser(cell.row.original)
 
                                             }}>
@@ -128,7 +127,7 @@ export default function UsersPage() {
                                         <Tooltip title="make admin"><IconButton size="medium"
                                             disabled={cell.row.original?.created_by.id === cell.row.original._id}
                                             onClick={() => {
-                                                setChoice({ type: UserChoiceActions.make_admin })
+                                                setDialog('MakeAdminDialog')
                                                 setUser(cell.row.original)
 
                                             }}>
@@ -149,7 +148,7 @@ export default function UsersPage() {
                                                 color="error"
                                                 disabled={cell.row.original?.created_by.id === cell.row.original._id}
                                                 onClick={() => {
-                                                    setChoice({ type: UserChoiceActions.block_multi_login })
+                                                    setDialog('BlockMultiLoginDialog')
                                                     setUser(cell.row.original)
 
                                                 }}
@@ -162,7 +161,7 @@ export default function UsersPage() {
                                                     disabled={cell.row.original?.created_by.id === cell.row.original._id}
                                                     size="medium"
                                                     onClick={() => {
-                                                        setChoice({ type: UserChoiceActions.reset_multi_login })
+                                                        setDialog('ResetMultiLoginDialog')
                                                         setUser(cell.row.original)
 
                                                     }}
@@ -185,7 +184,7 @@ export default function UsersPage() {
                                             size="medium"
                                             disabled={cell.row.original?.created_by.id === cell.row.original._id}
                                             onClick={() => {
-                                                setChoice({ type: UserChoiceActions.block_user })
+                                                setDialog('BlockUserDialog')
                                                 setUser(cell.row.original)
 
                                             }}
@@ -200,7 +199,7 @@ export default function UsersPage() {
                                                 disabled={cell.row.original?.created_by.id === cell.row.original._id}
                                                 size="medium"
                                                 onClick={() => {
-                                                    setChoice({ type: UserChoiceActions.unblock_user })
+                                                    setDialog('UnBlockUserDialog')
                                                     setUser(cell.row.original)
 
                                                 }}>
@@ -218,7 +217,7 @@ export default function UsersPage() {
                                     <IconButton
                                         disabled={cell.row.original?.created_by.id === cell.row.original._id} size="medium"
                                         onClick={() => {
-                                            setChoice({ type: UserChoiceActions.update_user_password })
+                                            setDialog('UpdateUsePasswordDialog')
                                             setUser(cell.row.original)
 
                                         }}>
@@ -230,7 +229,7 @@ export default function UsersPage() {
                                 <IconButton
                                     color="info"
                                     onClick={() => {
-                                        setChoice({ type: UserChoiceActions.assign_permissions })
+                                        setDialog('AssignPermissionsToOneUserDialog')
                                         setUser(cell.row.original)
 
                                     }}>
@@ -508,7 +507,7 @@ export default function UsersPage() {
                             {
 
                                 <MenuItem onClick={() => {
-                                    setChoice({ type: UserChoiceActions.new_user })
+                                    setDialog('NewUserDialog')
                                     setAnchorEl(null)
                                 }}
                                 >New User</MenuItem>}
@@ -517,12 +516,11 @@ export default function UsersPage() {
                             <MenuItem
 
                                 onClick={() => {
-                                    setChoice({ type: UserChoiceActions.close_user })
                                     if (!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()) {
                                         alert("select some users")
                                     }
                                     else {
-                                        setChoice({ type: UserChoiceActions.bulk_assign_permissions })
+                                        setDialog('AssignPermissionsToUsersDialog')
                                         setFlag(1)
                                     }
                                     setAnchorEl(null)
@@ -532,12 +530,11 @@ export default function UsersPage() {
                             <MenuItem
 
                                 onClick={() => {
-                                    setChoice({ type: UserChoiceActions.close_user })
                                     if (!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()) {
                                         alert("select some users")
                                     }
                                     else {
-                                        setChoice({ type: UserChoiceActions.bulk_assign_permissions })
+                                        setDialog('AssignPermissionsToUsersDialog')
                                         setFlag(0)
                                     }
                                     setAnchorEl(null)
@@ -549,8 +546,8 @@ export default function UsersPage() {
                             <MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
                             >Export Selected</MenuItem>
                         </Menu>
-                        <NewUserDialog />
-                        <AssignPermissionsToUsersDialog flag={flag} user_ids={table.getSelectedRowModel().rows.map((I) => { return I.original._id })} />
+                        <NewUserDialog dialog={dialog} setDialog={setDialog} />
+                        <AssignPermissionsToUsersDialog dialog={dialog} setDialog={setDialog} flag={flag} user_ids={table.getSelectedRowModel().rows.map((I) => { return I.original._id })} />
                     </>
                 </Stack >
             </Stack >
@@ -560,17 +557,17 @@ export default function UsersPage() {
             {
                 user ?
                     <>
-                        <UpdateUserDialog user={user} />
-                        <ResetMultiLoginDialog id={user._id} />
-                        <BlockMultiLoginDialog id={user._id} />
-                        <UpdatePasswordDialog />
-                        <BlockUserDialog id={user._id} />
-                        <UnBlockUserDialog id={user._id} />
-                        <MakeAdminDialog id={user._id} />
-                        <RemoveAdminDialog id={user._id} />
-                        <UpdateUsePasswordDialog user={user} />
-                        <AssignUsersDialog user={user} setUser={setUser} />
-                        <AssignPermissionsToOneUserDialog user={user} />
+                        <UpdateUserDialog dialog={dialog} setDialog={setDialog} user={user} />
+                        <ResetMultiLoginDialog dialog={dialog} setDialog={setDialog} id={user._id} />
+                        <BlockMultiLoginDialog dialog={dialog} setDialog={setDialog} id={user._id} />
+                        <UpdatePasswordDialog dialog={dialog} setDialog={setDialog} />
+                        <BlockUserDialog dialog={dialog} setDialog={setDialog} id={user._id} />
+                        <UnBlockUserDialog dialog={dialog} setDialog={setDialog} id={user._id} />
+                        <MakeAdminDialog dialog={dialog} setDialog={setDialog} id={user._id} />
+                        <RemoveAdminDialog dialog={dialog} setDialog={setDialog} id={user._id} />
+                        <UpdateUsePasswordDialog dialog={dialog} setDialog={setDialog} user={user} />
+                        <AssignUsersDialog dialog={dialog} setDialog={setDialog} user={user} setUser={setUser} />
+                        <AssignPermissionsToOneUserDialog dialog={dialog} setDialog={setDialog} user={user} />
                     </>
                     : null
             }

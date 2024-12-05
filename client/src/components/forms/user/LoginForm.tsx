@@ -7,7 +7,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+
 import { UserContext } from '../../../contexts/userContext';
 import { Login } from '../../../services/UserServices';
 import { BackendError } from '../../..';
@@ -15,7 +15,7 @@ import AlertBar from '../../snacks/AlertBar';
 import { Navigate } from "react-router-dom";
 import { GetUserDto } from '../../../dtos/user.dto';
 
-function LoginForm() {
+function LoginForm({setDialog}:{setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
   const goto = useNavigate()
   const { mutate, data, isSuccess, isLoading, isError, error } = useMutation
     <AxiosResponse<{ user: GetUserDto, token: string }>,
@@ -23,7 +23,6 @@ function LoginForm() {
       { username: string, password: string, multi_login_token?: string }
     >(Login)
 
-  const { setChoice } = useContext(ChoiceContext)
   const { setUser } = useContext(UserContext)
   const formik = useFormik({
     initialValues: {
@@ -60,9 +59,9 @@ function LoginForm() {
   useEffect(() => {
     if (isSuccess) {
       setUser(data.data.user)
-      setChoice({ type: UserChoiceActions.close_user })
+    setDialog(undefined) 
     }
-  }, [setUser, goto, setChoice, isSuccess, data])
+  }, [setUser, goto,  isSuccess, data])
 
   return (
     <>

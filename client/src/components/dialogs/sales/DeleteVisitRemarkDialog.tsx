@@ -1,8 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, CircularProgress, IconButton } from '@mui/material'
 import { AxiosResponse } from 'axios';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { SaleChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
@@ -12,11 +11,10 @@ import { GetVisitSummaryReportRemarkDto } from '../../../dtos/visit_remark.dto';
 type Props = {
   dialog: string | undefined,
   setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+  remark: GetVisitSummaryReportRemarkDto
 }
 
-function DeleteVisitRemarkDialog({ remark, display, setDisplay }: { remark: GetVisitSummaryReportRemarkDto, display: boolean, setDisplay: React.Dispatch<React.SetStateAction<boolean>> }) {
-  const { choice, setChoice } = useContext(ChoiceContext)
+function DeleteVisitRemarkDialog({ remark, dialog, setDialog }: Props) {
   const { mutate, isLoading, isSuccess, error, isError } = useMutation
     <AxiosResponse<any>, BackendError, string>
     (DeleteVisitReportRemark, {
@@ -27,20 +25,16 @@ function DeleteVisitRemarkDialog({ remark, display, setDisplay }: { remark: GetV
 
   useEffect(() => {
     if (isSuccess) {
-      setDisplay(false)
-      setChoice({ type: SaleChoiceActions.close_sale })
+      setDialog(undefined)
     }
 
   }, [isSuccess])
 
   return (
-    <Dialog open={choice === SaleChoiceActions.delete__visit_remark || display ? true : false}
+    <Dialog open={dialog === "DeleteVisitRemarkDialog"}
     >
       <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-        if (!display)
-          setChoice({ type: SaleChoiceActions.close_sale })
-        else
-          setDisplay(false)
+        setDialog(undefined)
       }}>
         <Cancel fontSize='large' />
       </IconButton>
@@ -80,7 +74,7 @@ function DeleteVisitRemarkDialog({ remark, display, setDisplay }: { remark: GetV
         </Button>
         <Button fullWidth variant="contained" color="info"
           onClick={() => {
-            setDisplay(false)
+            setDialog(undefined)
           }}
           disabled={isLoading}
         >

@@ -6,7 +6,6 @@ import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
-import { ChoiceContext, ProductionChoiceActions } from '../../contexts/dialogContext'
 import { Edit, RestartAlt } from '@mui/icons-material'
 import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
@@ -107,7 +106,7 @@ export default function MachinePage() {
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const columns = useMemo<MRT_ColumnDef<GetMachineDto>[]>(
@@ -116,7 +115,7 @@ export default function MachinePage() {
       {
         accessorKey: 'actions',
         header: '',
-        
+
         enableColumnFilter: false,
         Cell: ({ cell }) => <PopUp
           element={
@@ -128,7 +127,7 @@ export default function MachinePage() {
 
                     onClick={() => {
                       setMachine(cell.row.original)
-                      setChoice({ type: ProductionChoiceActions.toogle_machine })
+                      setDialog('ToogleMachineDialog')
 
                     }}
                   >
@@ -141,7 +140,7 @@ export default function MachinePage() {
 
                     onClick={() => {
                       setMachine(cell.row.original)
-                      setChoice({ type: ProductionChoiceActions.create_or_edit_machine })
+                      setDialog('CreateOrEditMachineDialog')
                     }}
 
                   >
@@ -157,7 +156,7 @@ export default function MachinePage() {
       {
         accessorKey: 'serialno',
         header: 'Serial No',
-        
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.serial_no.toString() || "" ? cell.row.original.serial_no.toString() || "" : ""}</>,
         filterSelectOptions: machines && machines.map((i) => {
@@ -167,7 +166,7 @@ export default function MachinePage() {
       {
         accessorKey: 'active',
         header: 'Status',
-       
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.active ? "active" : "inactive"}</>,
         filterSelectOptions: machines && machines.map((i) => {
@@ -177,7 +176,7 @@ export default function MachinePage() {
       {
         accessorKey: 'name',
         header: 'Name',
-       
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
         filterSelectOptions: machines && machines.map((i) => {
@@ -187,7 +186,7 @@ export default function MachinePage() {
       {
         accessorKey: 'display_name',
         header: 'Display Name',
-      
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.display_name ? cell.row.original.display_name : ""}</>,
         filterSelectOptions: machines && machines.map((i) => {
@@ -199,7 +198,7 @@ export default function MachinePage() {
       {
         accessorKey: 'category',
         header: 'Category',
-     
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category : ""}</>,
         filterSelectOptions: machines && machines.map((i) => {
@@ -254,7 +253,7 @@ export default function MachinePage() {
     enableTableFooter: true,
     enableRowVirtualization: true,
     onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
-   
+
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
@@ -380,7 +379,7 @@ export default function MachinePage() {
               onClick={() => {
                 setMachine(undefined)
                 setAnchorEl(null)
-                setChoice({ type: ProductionChoiceActions.create_or_edit_machine })
+                setDialog('CreateOrEditMachineDialog')
               }}
 
             > Add New</MenuItem>}
@@ -394,11 +393,11 @@ export default function MachinePage() {
           </Menu >
         </Stack>
 
-        <CreateOrEditMachineDialog machine={machine} />
+        <CreateOrEditMachineDialog dialog={dialog} setDialog={setDialog} machine={machine} />
         {
           machine ?
             <>
-              <ToogleMachineDialog machine={machine} />
+              <ToogleMachineDialog dialog={dialog} setDialog={setDialog} machine={machine} />
             </>
             : null
         }

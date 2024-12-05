@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, CircularProgress, MenuItem, Select, InputLabel, OutlinedInput, Checkbox, ListItemText, } from '@mui/material'
-import { useContext, useEffect, useState } from 'react';
-import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+import { useEffect, useState } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { useMutation, useQuery } from 'react-query';
@@ -12,16 +11,17 @@ import { useFormik } from 'formik';
 import * as Yup from "yup"
 import { GetUserDto } from '../../../dtos/user.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+
+
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+    user: GetUserDto, setUser: React.Dispatch<React.SetStateAction<GetUserDto | undefined>>
 }
 
-function AssignUsersDialog({ user, setUser }: { user: GetUserDto, setUser: React.Dispatch<React.SetStateAction<GetUserDto | undefined>> }) {
+function AssignUsersDialog({ user, setUser, dialog, setDialog }: Props) {
     const [users, setUsers] = useState<DropDownDto[]>(user.assigned_users)
     const { data, isSuccess: isUserSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
-    const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             id: string,
@@ -66,20 +66,20 @@ function AssignUsersDialog({ user, setUser }: { user: GetUserDto, setUser: React
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: UserChoiceActions.close_user })
+            setDialog(undefined)
             setUser(undefined)
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
         <Dialog
             fullWidth
-            open={choice === UserChoiceActions.assign_users ? true : false}
+            open={dialog === 'AssignUsersDialog'}
             onClose={() => {
                 setUser(undefined)
-                setChoice({ type: UserChoiceActions.close_user })
+                setDialog(undefined)
             }}
         >
-            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => { setUser(undefined); setChoice({ type: UserChoiceActions.close_user }) }}>
+            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => { setUser(undefined); setDialog(undefined) }}>
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">

@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogTitle, Button, DialogActions, CircularProgress, IconButton } from '@mui/material';
-import { useContext, useEffect } from 'react';
-import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
+import { useEffect } from 'react';
 import { queryClient } from '../../../main';
 import { AxiosResponse } from 'axios';
 import { BackendError } from '../../..';
@@ -9,13 +8,15 @@ import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { ToogleDyeLocation } from '../../../services/ProductionServices';
 import { GetDyeLocationDto } from '../../../dtos/dye-location.dto';
+
+
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+    location: GetDyeLocationDto
 }
-function ToogleDyeLocationDialog({ location }: { location: GetDyeLocationDto }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+
+function ToogleDyeLocationDialog({ location, dialog, setDialog }: Props) {
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
         (ToogleDyeLocation, {
@@ -26,12 +27,12 @@ function ToogleDyeLocationDialog({ location }: { location: GetDyeLocationDto }) 
 
     useEffect(() => {
         if (isSuccess)
-            setChoice({ type: ProductionChoiceActions.close_production })
-    }, [setChoice, isSuccess])
+            setDialog(undefined)
+    }, [isSuccess])
     return (
         <>
-            <Dialog open={choice === ProductionChoiceActions.toogle_dye_location ? true : false}
-                onClose={() => setChoice({ type: ProductionChoiceActions.close_production })}
+            <Dialog open={dialog === "ToogleDyeLocationDialog"}
+                onClose={() => setDialog(undefined)}
             >
                 {
                     isError ? (
@@ -43,7 +44,7 @@ function ToogleDyeLocationDialog({ location }: { location: GetDyeLocationDto }) 
                         <AlertBar message="success" color="success" />
                     ) : null
                 }
-                <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: ProductionChoiceActions.close_production })}>
+                <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                     <Cancel fontSize='large' />
                 </IconButton>
                 <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>Toogle Location</DialogTitle>
@@ -53,7 +54,6 @@ function ToogleDyeLocationDialog({ location }: { location: GetDyeLocationDto }) 
                 <DialogActions sx={{ p: 2 }}>
                     <Button fullWidth variant="outlined" color="error"
                         onClick={() => {
-                            setChoice({ type: ProductionChoiceActions.toogle_dye_location })
                             mutate(location._id)
                         }}
                         disabled={isLoading}

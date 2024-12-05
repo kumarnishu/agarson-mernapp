@@ -9,7 +9,6 @@ import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
 import ViewRemarksDialog from '../../components/dialogs/crm/ViewRemarksDialog'
 import CreateOrEditRemarkDialog from '../../components/dialogs/crm/CreateOrEditRemarkDialog'
-import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
 import PopUp from '../../components/popup/PopUp'
 import { Comment, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Visibility } from '@mui/icons-material'
 import { onlyUnique } from '../../utils/UniqueArray'
@@ -45,7 +44,7 @@ function CrmActivitiesReportPage() {
     previous_date.setDate(day)
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'leads_view', show_assigned_only: true }))
     const { data, isLoading, refetch: ReftechRemarks, isRefetching } = useQuery<AxiosResponse<{ result: GetActivitiesOrRemindersDto[], page: number, total: number, limit: number }>, BackendError>(["activities", stage, userId, dates?.start_date, dates?.end_date], async () => GetRemarks({ stage: stage, limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
-    const { setChoice } = useContext(ChoiceContext)
+    const [dialog, setDialog] = useState<string | undefined>()
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const isFirstRender = useRef(true);
@@ -71,7 +70,7 @@ function CrmActivitiesReportPage() {
 
                                     onClick={() => {
 
-                                        setChoice({ type: LeadChoiceActions.view_remarks })
+                                        setDialog('ViewRemarksDialog')
                                         setRemark(cell.row.original)
 
 
@@ -87,7 +86,7 @@ function CrmActivitiesReportPage() {
                                         color="success"
                                         onClick={() => {
 
-                                            setChoice({ type: LeadChoiceActions.create_or_edt_remark })
+                                            setDialog('CreateOrEditRemarkDialog')
                                             setRemark(cell.row.original)
 
                                         }}
@@ -568,8 +567,8 @@ function CrmActivitiesReportPage() {
                 >Export Selected</MenuItem>}
             </Menu>
 
-            {remark && <ViewRemarksDialog id={remark.lead_id} />}
-            {remark && <CreateOrEditRemarkDialog lead={remark ? {
+            {remark && <ViewRemarksDialog dialog={dialog} setDialog={setDialog} id={remark.lead_id} />}
+            {remark && <CreateOrEditRemarkDialog dialog={dialog} setDialog={setDialog} lead={remark ? {
                 _id: remark.lead_id,
                 has_card: remark.has_card,
                 stage: remark.stage

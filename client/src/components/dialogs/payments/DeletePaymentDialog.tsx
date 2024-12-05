@@ -1,6 +1,5 @@
-import { Dialog, DialogTitle, DialogContent, IconButton,  Stack, Button, CircularProgress, Typography } from '@mui/material';
-import { useContext, useEffect } from 'react';
-import { ChoiceContext, PaymentsChoiceActions } from '../../../contexts/dialogContext';
+import { Dialog, DialogTitle, DialogContent, IconButton, Stack, Button, CircularProgress, Typography } from '@mui/material';
+import { useEffect } from 'react';
 import { Cancel } from '@mui/icons-material';
 import AlertBar from '../../snacks/AlertBar';
 import { useMutation } from 'react-query';
@@ -9,13 +8,15 @@ import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
 import { DeletePayment } from '../../../services/PaymentsService';
 import { GetChecklistDto } from '../../../dtos/checklist.dto';
+
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+    payment: GetChecklistDto
 }
-function DeletePaymentDialog({ payment }: { payment: GetChecklistDto }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+
+
+function DeletePaymentDialog({ payment, dialog, setDialog }: Props) {
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
         (DeletePayment, {
@@ -26,15 +27,15 @@ function DeletePaymentDialog({ payment }: { payment: GetChecklistDto }) {
 
     useEffect(() => {
         if (isSuccess)
-            setChoice({ type: PaymentsChoiceActions.close_payment })
-    }, [setChoice, isSuccess])
+            setDialog(undefined)
+    }, [isSuccess])
 
     return (
         <>
-            <Dialog fullWidth open={choice === PaymentsChoiceActions.delete_payment ? true : false}
-                onClose={() => setChoice({ type: PaymentsChoiceActions.close_payment })}
+            <Dialog fullWidth open={dialog === "DeletePaymentDialog"}
+                onClose={() => setDialog(undefined)}
             >
-                <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: PaymentsChoiceActions.close_payment })}>
+                <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                     <Cancel fontSize='large' />
                 </IconButton>
 
@@ -67,7 +68,6 @@ function DeletePaymentDialog({ payment }: { payment: GetChecklistDto }) {
                 >
                     <Button fullWidth variant="outlined" color="error"
                         onClick={() => {
-                            setChoice({ type: PaymentsChoiceActions.delete_payment })
                             mutate(payment._id)
                         }}
                         disabled={isLoading}

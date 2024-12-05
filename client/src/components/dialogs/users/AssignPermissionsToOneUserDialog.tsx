@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, CircularProgress } from '@mui/material'
-import { useContext, useEffect, useState } from 'react';
-import { ChoiceContext, UserChoiceActions } from '../../../contexts/dialogContext';
+import { useEffect, useState } from 'react';
 import { Cancel, CheckBoxOutlineBlank, CheckCircleOutline } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { useMutation, useQuery } from 'react-query';
@@ -14,7 +13,7 @@ import { GetUserDto } from '../../../dtos/user.dto';
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+    user: GetUserDto
 }
 
 
@@ -32,20 +31,20 @@ function RenderTree({ permissiontree, permissions, setPermissions }: { permissio
                                     <CheckCircleOutline color='success' onClick={() => {
                                         let perms = permissions.filter((i) => { return i !== perm.value })
                                         setPermissions(perms);
-                                       
+
                                     }} />
 
                                     :
-                                    <CheckBoxOutlineBlank 
+                                    <CheckBoxOutlineBlank
                                         onClick={() => {
                                             let perms = permissions.filter((i) => { return i !== perm.value })
                                             perms.push(perm.value);
                                             setPermissions(perms);
-                                            
+
                                         }}
                                     />}
 
-                               
+
                                 <span style={{ paddingLeft: 5 }}>{perm.label}</span>
                             </Stack>
                         ))}
@@ -58,10 +57,9 @@ function RenderTree({ permissiontree, permissions, setPermissions }: { permissio
     else return null
 }
 
-function AssignPermissionsToOneUserDialog({ user }: { user: GetUserDto }) {
+function AssignPermissionsToOneUserDialog({ user, dialog, setDialog }: Props) {
     const [permissiontree, setPermissiontree] = useState<IMenu>()
     const [permissions, setPermissions] = useState<string[]>(user.assigned_permissions)
-    const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
@@ -93,27 +91,27 @@ function AssignPermissionsToOneUserDialog({ user }: { user: GetUserDto }) {
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: UserChoiceActions.close_user });
+            setDialog(undefined);
         }
     }, [isSuccess])
     return (
         <Dialog
             fullWidth
             fullScreen
-            open={choice === UserChoiceActions.assign_permissions ? true : false}
+            open={dialog === "AssignPermissionsToOneUserDialog"}
             onClose={() => {
-                setChoice({ type: UserChoiceActions.close_user });
+                setDialog(undefined)
             }}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                setChoice({ type: UserChoiceActions.close_user });
+                setDialog(undefined)
             }}>
                 <Cancel fontSize='large' />
             </IconButton>
-            <DialogTitle sx={{ minWidth: '350px',justifyContent:'space-around' }} textAlign="center">
-                Assign Permissions 
-            
-                <Button sx={{ml:4}} variant='text' onClick={()=>{setPermissions([])}}>Clear All</Button>
+            <DialogTitle sx={{ minWidth: '350px', justifyContent: 'space-around' }} textAlign="center">
+                Assign Permissions
+
+                <Button sx={{ ml: 4 }} variant='text' onClick={() => { setPermissions([]) }}>Clear All</Button>
             </DialogTitle>
             <DialogContent>
                 <Stack

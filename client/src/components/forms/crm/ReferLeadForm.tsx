@@ -1,10 +1,9 @@
 import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext, useState } from 'react';
+import { useEffect,  useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
-import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { GetRefers, ReferLead } from '../../../services/LeadsServices';
@@ -14,7 +13,7 @@ import { GetReferDto } from '../../../dtos/refer.dto';
 
 
 
-function ReferLeadForm({ lead }: { lead: GetLeadDto }) {
+function ReferLeadForm({ lead,setDialog }: { lead: GetLeadDto , setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const [display, setDisplay] = useState(false)
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<GetReferDto>, BackendError, { id: string, body: { party_id: string, remark: string, remind_date?: string } }>
@@ -26,7 +25,6 @@ function ReferLeadForm({ lead }: { lead: GetLeadDto }) {
         })
     const { data, isSuccess: isReferSuccess } = useQuery<AxiosResponse<GetReferDto[]>, BackendError>("refers", GetRefers)
 
-    const { setChoice } = useContext(ChoiceContext)
     const [refers, setRefers] = useState<GetReferDto[]>()
     const formik = useFormik({
         initialValues: {
@@ -66,9 +64,9 @@ function ReferLeadForm({ lead }: { lead: GetLeadDto }) {
     }, [isReferSuccess, data])
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: LeadChoiceActions.close_lead })
+          setDialog(undefined) 
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
 
     return (
         <form onSubmit={formik.handleSubmit}>

@@ -1,17 +1,16 @@
 import { Button,  CircularProgress,  Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
 import {  CreateOrEditLeadType } from '../../../services/LeadsServices';
-import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 import * as yup from 'yup';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 
-function CreateOrEditLeadTypeForm({ type }: { type?: DropDownDto}) {
+function CreateOrEditLeadTypeForm({ type ,setDialog}: { type?: DropDownDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
@@ -25,7 +24,6 @@ function CreateOrEditLeadTypeForm({ type }: { type?: DropDownDto}) {
             }
         })
 
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<{
         type: string
@@ -50,10 +48,10 @@ function CreateOrEditLeadTypeForm({ type }: { type?: DropDownDto}) {
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: LeadChoiceActions.close_lead })
+          setDialog(undefined) 
            
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack

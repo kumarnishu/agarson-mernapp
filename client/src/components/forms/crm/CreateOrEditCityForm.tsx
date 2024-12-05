@@ -1,10 +1,9 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext, useState } from 'react';
+import { useEffect,  useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { CreateOrEditCity, GetAllStates } from '../../../services/LeadsServices';
-import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -13,7 +12,7 @@ import { toTitleCase } from '../../../utils/TitleCase';
 import { CreateOrEditCrmCity } from '../../../dtos/crm-city.dto';
 import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
 
-function CreateOrEditCityForm({ city }: { city?: CreateOrEditCrmCity }) {
+function CreateOrEditCityForm({ city ,setDialog}: { city?: CreateOrEditCrmCity, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const [states, setStates] = useState<GetCrmStateDto[]>([])
     const { data, isSuccess: isStateSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>("crm_states", GetAllStates)
 
@@ -34,7 +33,6 @@ function CreateOrEditCityForm({ city }: { city?: CreateOrEditCrmCity }) {
         })
 
 
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<{
         city: string,
@@ -74,10 +72,10 @@ function CreateOrEditCityForm({ city }: { city?: CreateOrEditCrmCity }) {
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: LeadChoiceActions.close_lead })
+          setDialog(undefined) 
 
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
 
     useEffect(() => {
         if (isStateSuccess) {

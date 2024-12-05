@@ -1,23 +1,20 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
-import { useContext } from 'react'
-import { ProductionChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditMachinecategoryForm from '../../forms/production/CreateOrEditMachinecategoryForm'
 import { DropDownDto } from '../../../dtos/dropdown.dto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+    machine_category?: DropDownDto
 }
-function CreateOrEditMachineCategoryDialog({ machine_category }: { machine_category?: DropDownDto }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+function CreateOrEditMachineCategoryDialog({ machine_category, dialog, setDialog }: Props) {
 
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
-            open={choice === ProductionChoiceActions.create_or_edit_machine_category ? true : false}
+            open={dialog === "CreateOrEditMachineCategoryDialog"}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                setChoice({ type: ProductionChoiceActions.close_production })
+                setDialog(undefined)
             }
             }>
                 <Cancel fontSize='large' />

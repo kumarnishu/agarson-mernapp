@@ -11,7 +11,6 @@ import { onlyUnique } from '../../utils/UniqueArray'
 import CreateOrEditLeadDialog from '../../components/dialogs/crm/CreateOrEditLeadDialog'
 import MergeTwoLeadsDialog from '../../components/dialogs/crm/MergeTwoLeadsDialog'
 import BulkDeleteUselessLeadsDialog from '../../components/dialogs/crm/BulkDeleteUselessLeadsDialog'
-import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import DBPagination from '../../components/pagination/DBpagination'
 import PopUp from '../../components/popup/PopUp'
@@ -42,7 +41,7 @@ export default function LeadsPage() {
   const [preFilteredPaginationData, setPreFilteredPaginationData] = useState({ limit: 100, page: 1, total: 1 });
   const [stage, setStage] = useState<string>("open");
   const [stages, setStages] = useState<DropDownDto[]>([])
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null); const { data, isLoading, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetLeadDto[], page: number, total: number, limit: number }>, BackendError>(["leads"], async () => GetLeads({ limit: paginationData?.limit, page: paginationData?.page, stage: stage }))
 
@@ -124,7 +123,7 @@ export default function LeadsPage() {
       {
         accessorKey: 'actions',
         header: '',
-        
+
         enableColumnFilter: false,
         Cell: ({ cell }) => <PopUp
           element={
@@ -135,8 +134,7 @@ export default function LeadsPage() {
                   <IconButton color="error"
 
                     onClick={() => {
-
-                      setChoice({ type: LeadChoiceActions.remove_referral })
+                      setDialog('RemoveLeadReferralDialog')
                       setLead(cell.row.original)
 
                     }}
@@ -149,8 +147,7 @@ export default function LeadsPage() {
                   <IconButton color="primary"
 
                     onClick={() => {
-
-                      setChoice({ type: LeadChoiceActions.refer_lead })
+                      setDialog('ReferLeadDialog')
                       setLead(cell.row.original)
 
                     }}
@@ -164,8 +161,7 @@ export default function LeadsPage() {
                   <IconButton color="primary"
 
                     onClick={() => {
-
-                      setChoice({ type: LeadChoiceActions.convert_lead_to_refer })
+                      setDialog('ConvertLeadToReferDialog')
                       setLead(cell.row.original)
 
                     }}
@@ -179,7 +175,7 @@ export default function LeadsPage() {
                 <IconButton color="error"
 
                   onClick={() => {
-                    setChoice({ type: LeadChoiceActions.delete_crm_item })
+                    setDialog('DeleteCrmItemDialog')
                     setLead(cell.row.original)
 
                   }}
@@ -200,8 +196,7 @@ export default function LeadsPage() {
                   <IconButton color="secondary"
 
                     onClick={() => {
-
-                      setChoice({ type: LeadChoiceActions.create_or_edit_lead })
+                      setDialog('CreateOrEditLeadDialog')
                       setLead(cell.row.original)
                     }}
 
@@ -216,7 +211,7 @@ export default function LeadsPage() {
 
                   onClick={() => {
 
-                    setChoice({ type: LeadChoiceActions.view_remarks })
+                    setDialog('ViewRemarksDialog')
                     setLead(cell.row.original)
 
 
@@ -232,10 +227,8 @@ export default function LeadsPage() {
 
                     color="success"
                     onClick={() => {
-
-                      setChoice({ type: LeadChoiceActions.create_or_edt_remark })
+                      setDialog('CreateOrEditRemarkDialog')
                       setLead(cell.row.original)
-
                     }}
                   >
                     <Comment />
@@ -249,7 +242,7 @@ export default function LeadsPage() {
       {
         accessorKey: 'name',
         header: 'Name',
-        
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
         filterSelectOptions: leads && leads.map((i) => {
@@ -260,7 +253,7 @@ export default function LeadsPage() {
         accessorKey: 'city',
         header: 'City',
         filterVariant: 'multi-select',
-        
+
         Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
         filterSelectOptions: leads && leads.map((i) => {
           return i.city;
@@ -270,7 +263,7 @@ export default function LeadsPage() {
         accessorKey: 'state',
         header: 'State',
         filterVariant: 'multi-select',
-        
+
         Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
         filterSelectOptions: leads && leads.map((i) => {
           return i.state;
@@ -279,73 +272,73 @@ export default function LeadsPage() {
       {
         accessorKey: 'stage',
         header: 'Stage',
-        
+
         Cell: (cell) => <>{cell.row.original.stage ? cell.row.original.stage : ""}</>
       },
       {
         accessorKey: 'mobile',
         header: 'Mobile1',
-        
+
         Cell: (cell) => <>{cell.row.original.mobile ? cell.row.original.mobile : ""}</>
       }, {
         accessorKey: 'alternate_mobile1',
         header: 'Mobile2',
-        
+
         Cell: (cell) => <>{cell.row.original.alternate_mobile1 ? cell.row.original.alternate_mobile1 : ""}</>
       }, {
         accessorKey: 'alternate_mobile2',
         header: 'Mobile3',
-        
+
         Cell: (cell) => <>{cell.row.original.alternate_mobile2 ? cell.row.original.alternate_mobile2 : ""}</>
       },
       {
         accessorKey: 'last_remark',
         header: 'Last Remark',
-        
+
         Cell: (cell) => <>{cell.row.original.last_remark ? cell.row.original.last_remark : ""}</>
       },
       {
         accessorKey: 'customer_name',
         header: 'Customer',
-        
+
         Cell: (cell) => <>{cell.row.original.customer_name ? cell.row.original.customer_name : ""}</>
       }
       , {
         accessorKey: 'customer_designation',
         header: 'Designitaion',
-        
+
         Cell: (cell) => <>{cell.row.original.customer_designation ? cell.row.original.customer_designation : ""}</>
       },
       {
         accessorKey: 'referred_party_name',
         header: 'Refer Party',
-        
+
         Cell: (cell) => <>{cell.row.original.referred_party_name ? cell.row.original.referred_party_name : ""}</>
       },
       {
         accessorKey: 'referred_party_mobile',
         header: 'Refer Mobile',
-        
+
         Cell: (cell) => <>{cell.row.original.referred_party_mobile ? cell.row.original.referred_party_mobile : ""}</>
       },
       {
         accessorKey: 'referred_date',
         header: 'Refer Date',
-        
+
         Cell: (cell) => <>{cell.row.original.referred_date ? cell.row.original.referred_date : ""}</>
       }
       ,
       {
         accessorKey: 'email',
         header: 'Email',
-        
+
         Cell: (cell) => <>{cell.row.original.email ? cell.row.original.email : ""}</>
       }
       ,
       {
         accessorKey: 'alternate_email',
         header: 'Email2',
-        
+
         Cell: (cell) => <>{cell.row.original.alternate_email ? cell.row.original.alternate_email : ""}</>
       }
       ,
@@ -353,56 +346,56 @@ export default function LeadsPage() {
       {
         accessorKey: 'address',
         header: 'Address',
-       
+
         Cell: (cell) => <>{cell.row.original.address ? cell.row.original.address : ""}</>
       },
       {
         accessorKey: 'source',
         header: 'Lead Source',
-        
+
         Cell: (cell) => <>{cell.row.original.lead_source ? cell.row.original.lead_source : ""}</>
       },
       {
         accessorKey: 'type',
         header: 'Lead Type',
-        
+
         Cell: (cell) => <>{cell.row.original.lead_type ? cell.row.original.lead_type : ""}</>
       },
       {
         accessorKey: 'country',
         header: 'Country',
-        
+
         Cell: (cell) => <>{cell.row.original.country ? cell.row.original.country : ""}</>
       },
       {
         accessorKey: 'created_at',
         header: 'Created on',
-        
+
         Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
       },
       {
         accessorKey: 'updated_at',
         header: 'Updated on',
-        
+
         Cell: (cell) => <>{cell.row.original.updated_at ? cell.row.original.updated_at : ""}</>
       },
       {
         accessorKey: 'created_by.label',
         accessorFn: (row) => { return row.created_by.label },
         header: 'Creator',
-        
+
         Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
       },
       {
         accessorKey: 'updated_by.label',
         header: 'Updated By',
-        
+
         Cell: (cell) => <>{cell.row.original.updated_by.label ? cell.row.original.updated_by.label : ""}</>
       },
       {
         accessorKey: 'visiting_card',
         header: 'Visiting Card',
-        
+
         Cell: (cell) => <span onDoubleClick={() => {
           if (cell.row.original.visiting_card && cell.row.original.visiting_card) {
             DownloadFile(cell.row.original.visiting_card, 'visiting card')
@@ -517,7 +510,7 @@ export default function LeadsPage() {
                 if (data.length == 0)
                   alert("select some useless leads")
                 else
-                  setChoice({ type: LeadChoiceActions.bulk_delete_useless_leads })
+                  setDialog('BulkDeleteUselessLeadsDialog')
               }}
             >
               <Delete />
@@ -676,7 +669,7 @@ export default function LeadsPage() {
         >
           {LoggedInUser?.assigned_permissions.includes('leads_create') && <MenuItem
             onClick={() => {
-              setChoice({ type: LeadChoiceActions.create_or_edit_lead })
+              setDialog('CreateOrEditLeadDialog')
               setLead(undefined);
               setAnchorEl(null)
             }}
@@ -686,7 +679,7 @@ export default function LeadsPage() {
           {LoggedInUser?.assigned_permissions.includes('leads_merge') && <MenuItem
             onClick={() => {
               if (table.getSelectedRowModel().rows.length == 2) {
-                setChoice({ type: LeadChoiceActions.merge_leads })
+                setDialog('MergeTwoLeadsDialog')
                 setLead(undefined);
                 setAnchorEl(null)
               } else {
@@ -706,23 +699,23 @@ export default function LeadsPage() {
           >Export Selected</MenuItem>}
 
         </Menu >
-        <CreateOrEditLeadDialog lead={lead} />
-        {table.getSelectedRowModel().rows.length == 2 && <MergeTwoLeadsDialog leads={table.getSelectedRowModel().rows.map((l) => { return l.original })} removeSelectedLeads={() => { table.resetRowSelection() }} />}
-        {table.getSelectedRowModel().rows && table.getSelectedRowModel().rows.length > 0 && <BulkDeleteUselessLeadsDialog selectedLeads={table.getSelectedRowModel().rows.map((l) => { return l.original })} removeSelectedLeads={() => { table.resetRowSelection() }} />}
+        <CreateOrEditLeadDialog dialog={dialog} setDialog={setDialog} lead={lead} />
+        {table.getSelectedRowModel().rows.length == 2 && <MergeTwoLeadsDialog dialog={dialog} setDialog={setDialog} leads={table.getSelectedRowModel().rows.map((l) => { return l.original })} removeSelectedLeads={() => { table.resetRowSelection() }} />}
+        {table.getSelectedRowModel().rows && table.getSelectedRowModel().rows.length > 0 && <BulkDeleteUselessLeadsDialog dialog={dialog} setDialog={setDialog} selectedLeads={table.getSelectedRowModel().rows.map((l) => { return l.original })} removeSelectedLeads={() => { table.resetRowSelection() }} />}
       </>
       {
         lead ?
           <>
-            <CreateOrEditRemarkDialog lead={lead ? {
+            <CreateOrEditRemarkDialog dialog={dialog} setDialog={setDialog} lead={lead ? {
               _id: lead._id,
               has_card: lead.has_card,
               stage: lead.stage
             } : undefined} />
-            <DeleteCrmItemDialog lead={lead ? { id: lead._id,  label: lead.name } : undefined} />
-            <ViewRemarksDialog id={lead._id} />
-            <ReferLeadDialog lead={lead} />
-            <RemoveLeadReferralDialog lead={lead} />
-            <ConvertLeadToReferDialog lead={lead} />
+            <DeleteCrmItemDialog dialog={dialog} setDialog={setDialog} lead={lead ? { id: lead._id, label: lead.name } : undefined} />
+            <ViewRemarksDialog dialog={dialog} setDialog={setDialog} id={lead._id} />
+            <ReferLeadDialog dialog={dialog} setDialog={setDialog} lead={lead} />
+            <RemoveLeadReferralDialog dialog={dialog} setDialog={setDialog} lead={lead} />
+            <ConvertLeadToReferDialog dialog={dialog} setDialog={setDialog} lead={lead} />
 
           </>
           : null

@@ -1,10 +1,9 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
-import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -14,7 +13,7 @@ import { GetArticleDto, CreateOrEditArticleDto } from '../../../dtos/article.dto
 
 
 
-function CreateOrEditArticleForm({ article }: { article?: GetArticleDto }) {
+function CreateOrEditArticleForm({ article,setDialog }: { article?: GetArticleDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<GetArticleDto>, BackendError, {
             body: CreateOrEditArticleDto, id?: string
@@ -25,7 +24,6 @@ function CreateOrEditArticleForm({ article }: { article?: GetArticleDto }) {
             }
         })
 
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik({
         initialValues: {
@@ -53,9 +51,9 @@ function CreateOrEditArticleForm({ article }: { article?: GetArticleDto }) {
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: ProductionChoiceActions.close_production })
+          setDialog(undefined) 
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
 
     return (
         <form onSubmit={formik.handleSubmit}>

@@ -8,7 +8,6 @@ import { onlyUnique } from '../../utils/UniqueArray'
 import CreateOrEditStateDialog from '../../components/dialogs/crm/CreateOrEditStateDialog'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
 import { UserContext } from '../../contexts/userContext'
-import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
 import { Delete, Edit } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
@@ -28,7 +27,7 @@ export default function CrmStatesPage() {
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>(["crm_states"], async () => GetAllStates())
 
 
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog,setDialog]=useState<string|undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
@@ -55,7 +54,7 @@ export default function CrmStatesPage() {
                     <IconButton color="error"
 
                       onClick={() => {
-                        setChoice({ type: LeadChoiceActions.delete_crm_item })
+                        setDialog('DeleteCrmItemDialog')
                         setState(cell.row.original)
 
                       }}
@@ -69,7 +68,7 @@ export default function CrmStatesPage() {
 
                     onClick={() => {
                       setState(cell.row.original)
-                      setChoice({ type: LeadChoiceActions.create_or_edit_state })
+                      setDialog('CreateOrEditStateDialog')
                     }}
 
                   >
@@ -266,7 +265,7 @@ export default function CrmStatesPage() {
             {LoggedInUser?.assigned_permissions.includes('states_create') && <MenuItem
 
               onClick={() => {
-                setChoice({ type: LeadChoiceActions.create_or_edit_state })
+                setDialog('CreateOrEditStateDialog')
                 setState(undefined)
                 setAnchorEl(null)
               }}
@@ -278,7 +277,7 @@ export default function CrmStatesPage() {
                   alert("select some states")
                 }
                 else {
-                  setChoice({ type: LeadChoiceActions.bulk_assign_crm_states })
+                  setDialog('AssignCrmStatesDialog')
                   setState(undefined)
                   setFlag(1)
                 }
@@ -292,7 +291,7 @@ export default function CrmStatesPage() {
                   alert("select some states")
                 }
                 else {
-                  setChoice({ type: LeadChoiceActions.bulk_assign_crm_states })
+                  setDialog('AssignCrmStatesDialog')
                   setState(undefined)
                   setFlag(0)
                 }
@@ -303,7 +302,7 @@ export default function CrmStatesPage() {
               sx={{ color: 'red' }}
 
               onClick={() => {
-                setChoice({ type: LeadChoiceActions.find_unknown_states })
+                setDialog('FindUknownCrmStatesDialog')
                 setState(undefined)
                 setAnchorEl(null)
               }}
@@ -316,17 +315,16 @@ export default function CrmStatesPage() {
             >Export Selected</MenuItem>}
 
           </Menu >
-          <CreateOrEditStateDialog />
-          {LoggedInUser?.is_admin && <FindUknownCrmStatesDialog />}
-          {<AssignCrmStatesDialog flag={flag} states={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
+          <CreateOrEditStateDialog  dialog={dialog} setDialog={setDialog}/>
+          {LoggedInUser?.is_admin && <FindUknownCrmStatesDialog  dialog={dialog} setDialog={setDialog}/>}
+          {<AssignCrmStatesDialog  dialog={dialog} setDialog={setDialog}flag={flag} states={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
           <>
             {
               state ?
                 <>
 
-                  <DeleteCrmItemDialog state={state} />
-                  <CreateOrEditStateDialog state={state} />
-                  <DeleteCrmItemDialog state={state} />
+                  <CreateOrEditStateDialog  dialog={dialog} setDialog={setDialog}state={state} />
+                  <DeleteCrmItemDialog  dialog={dialog} setDialog={setDialog}state={state} />
                 </>
                 : null
             }

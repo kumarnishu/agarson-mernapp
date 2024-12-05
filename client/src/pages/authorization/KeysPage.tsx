@@ -5,7 +5,6 @@ import { useQuery } from 'react-query'
    import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_RowVirtualizer,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
-import { KeyChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import { Delete, Edit } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, TextField, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
@@ -30,7 +29,7 @@ export default function KeysPage() {
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetKeyDto[]>, BackendError>(["keys", category], async () => GetAllKeys({ category: category }))
     const [flag, setFlag] = useState(1);
     const [categories, setKeyCategorys] = useState<DropDownDto[]>([])
-    const { setChoice } = useContext(ChoiceContext)
+    const [dialog,setDialog]=useState<string|undefined>()
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     const isFirstRender = useRef(true);
@@ -58,7 +57,7 @@ export default function KeysPage() {
 
                                         onClick={() => {
                                             setkey(cell.row.original)
-                                            setChoice({ type: KeyChoiceActions.create_or_edit_key })
+                                            setDialog('CreateOrEditKeyDialog')
                                         }}
 
                                     >
@@ -70,7 +69,7 @@ export default function KeysPage() {
 
                                         onClick={() => {
                                             setkey(cell.row.original)
-                                            setChoice({ type: KeyChoiceActions.delete_key })
+                                            setDialog('DeleteKeyDialog')
                                         }}
 
                                     >
@@ -349,7 +348,7 @@ export default function KeysPage() {
                             onClick={() => {
                                 setkey(undefined)
                                 setAnchorEl(null)
-                                setChoice({ type: KeyChoiceActions.create_or_edit_key })
+                                setDialog('CreateOrEditKeyDialog')
                             }}
 
                         > Add New</MenuItem>}
@@ -361,7 +360,7 @@ export default function KeysPage() {
                                     alert("select some keys")
                                 }
                                 else {
-                                    setChoice({ type: KeyChoiceActions.assign_keys })
+                                    setDialog('AssignKeysDialog')
                                     setkey(undefined)
                                     setFlag(1)
                                 }
@@ -375,7 +374,7 @@ export default function KeysPage() {
                                     alert("select some keys")
                                 }
                                 else {
-                                    setChoice({ type: KeyChoiceActions.assign_keys })
+                                    setDialog('AssignKeysDialog')
                                     setkey(undefined)
                                     setFlag(0)
                                 }
@@ -391,12 +390,12 @@ export default function KeysPage() {
                         >Export Selected</MenuItem>}
 
                     </Menu >
-                    <CreateOrEditKeyDialog keyitm={key} />
+                    <CreateOrEditKeyDialog dialog={dialog} setDialog={setDialog} keyitm={key} />
                 </Stack>
 
-                {<AssignKeysDialog flag={flag} keys={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
+                {<AssignKeysDialog dialog={dialog} setDialog={setDialog} flag={flag} keys={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
             </Stack >
-            {key && <DeleteKeyDialog item={key} />}
+            {key && <DeleteKeyDialog dialog={dialog} setDialog={setDialog} item={key} />}
 
             {/* table */}
             <MaterialReactTable table={table} />

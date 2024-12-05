@@ -3,23 +3,23 @@ import {  Button, CircularProgress, IconButton, InputAdornment, TextField } from
 import { Stack } from '@mui/system';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import React, { useContext, useEffect, useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from 'yup';
-import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+
 import { UpdatePassword } from '../../../services/UserServices';
 import { BackendError } from '../../..';
 import AlertBar from '../../snacks/AlertBar';
 
 
-function UpdatePasswordForm() {
+function UpdatePasswordForm({setDialog}:{setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { mutate, isSuccess, isLoading, isError, error } = useMutation
         <AxiosResponse<string>,
             BackendError,
             { oldPassword: string, newPassword: string, confirmPassword: string }
         >(UpdatePassword)
 
-    const { setChoice } = useContext(ChoiceContext)
+
     const formik = useFormik({
         initialValues: {
             oldPassword: "",
@@ -62,9 +62,9 @@ function UpdatePasswordForm() {
     };
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: UserChoiceActions.close_user })
+            setDialog(undefined)
         }
-    }, [setChoice, isSuccess,])
+    }, [ isSuccess,])
 
     return (
         <form onSubmit={formik.handleSubmit}>

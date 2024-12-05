@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, CircularProgress } from '@mui/material'
-import { useContext, useEffect, useState } from 'react';
-import { ChoiceContext, UserChoiceActions } from '../../../contexts/dialogContext';
+import { useEffect, useState } from 'react';
 import { Cancel, CheckBoxOutlineBlank, CheckCircleOutline } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { useMutation, useQuery } from 'react-query';
@@ -12,13 +11,12 @@ import { IMenu, IPermission } from '../../../dtos/permission.dto';
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+    user_ids: string[], flag: number
 }
 
-function AssignPermissionsToUsersDialog({ user_ids, flag }: { user_ids: string[], flag: number }) {
+function AssignPermissionsToUsersDialog({ user_ids, flag, dialog, setDialog }: Props) {
     const [permissiontree, setPermissiontree] = useState<IMenu>()
     const [permissions, setPermissions] = useState<string[]>([])
-    const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
@@ -83,20 +81,20 @@ function AssignPermissionsToUsersDialog({ user_ids, flag }: { user_ids: string[]
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: UserChoiceActions.close_user });
+            setDialog(undefined)
         }
     }, [isSuccess])
     return (
         <Dialog
             fullWidth
             fullScreen
-            open={choice === UserChoiceActions.bulk_assign_permissions ? true : false}
+            open={dialog === 'AssignPermissionsToUsersDialog'}
             onClose={() => {
-                setChoice({ type: UserChoiceActions.close_user });
+                setDialog(undefined)
             }}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                setChoice({ type: UserChoiceActions.close_user });
+                setDialog(undefined)
             }}>
                 <Cancel fontSize='large' />
             </IconButton>

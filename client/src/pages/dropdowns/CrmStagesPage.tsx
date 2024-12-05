@@ -3,14 +3,13 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-   import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import CreateOrEditStageDialog from '../../components/dialogs/crm/CreateOrEditStageDialog'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
 import { UserContext } from '../../contexts/userContext'
-import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
 import { Delete, Edit } from '@mui/icons-material'
-import { Fade, IconButton, Menu, MenuItem,  Tooltip, Typography } from '@mui/material'
+import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
@@ -28,13 +27,13 @@ export default function CrmStagesPage() {
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["stages"], async () => GetAllStages())
 
 
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
-const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
-   const isFirstRender = useRef(true);
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  const isFirstRender = useRef(true);
 
-    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-  
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const columns = useMemo<MRT_ColumnDef<DropDownDto>[]>(
@@ -43,7 +42,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
       {
         accessorKey: 'actions',
         header: '',
-        
+
         Footer: <b></b>,
         Cell: ({ cell }) => <PopUp
           element={
@@ -55,7 +54,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
                     <IconButton color="error"
 
                       onClick={() => {
-                        setChoice({ type: LeadChoiceActions.delete_crm_item })
+                        setDialog('DeleteCrmItemDialog')
                         setStage(cell.row.original)
 
                       }}
@@ -69,7 +68,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
                     onClick={() => {
                       setStage(cell.row.original)
-                      setChoice({ type: LeadChoiceActions.create_or_edit_stage })
+                      setDialog('CreateOrEditStageDialog')
                     }}
 
                   >
@@ -86,7 +85,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
       {
         accessorKey: 'label',
         header: 'Stage',
-      
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
         filterSelectOptions: stages && stages.map((i) => {
@@ -100,7 +99,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
 
   const table = useMaterialReactTable({
-    columns, columnFilterDisplayMode: 'popover', 
+    columns, columnFilterDisplayMode: 'popover',
     data: stages, //10,000 rows       
     enableColumnResizing: true,
     enableColumnVirtualization: true, enableStickyFooter: true,
@@ -139,14 +138,14 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     enableRowNumbers: true,
     enableColumnPinning: true,
     enableTableFooter: true,
-      enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility,rowVirtualizerInstanceRef, //
-        columnVirtualizerOptions: { overscan: 2 },
+    enableRowVirtualization: true,
+    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //
+    columnVirtualizerOptions: { overscan: 2 },
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
-      
+
       sorting,
       columnSizing: columnSizing
     }
@@ -168,7 +167,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const columnSizing = localStorage.getItem(
       'mrt_columnSizing_table_1',
     );
-    
+
 
 
 
@@ -177,10 +176,10 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
       setColumnVisibility(JSON.parse(columnVisibility));
     }
 
-    
+
     if (columnSizing)
       setColumnSizing(JSON.parse(columnSizing))
-    
+
     isFirstRender.current = false;
   }, []);
 
@@ -192,7 +191,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     );
   }, [columnVisibility]);
 
- 
+
 
 
   useEffect(() => {
@@ -254,7 +253,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
           >
             {LoggedInUser?.assigned_permissions.includes('leadstage_create') && <MenuItem
               onClick={() => {
-                setChoice({ type: LeadChoiceActions.create_or_edit_stage })
+                setDialog('CreateOrEditStageDialog')
                 setStage(undefined)
                 setAnchorEl(null)
               }}
@@ -263,7 +262,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
             {LoggedInUser?.assigned_permissions.includes('leadstage_create') && <MenuItem
               onClick={() => {
-                setChoice({ type: LeadChoiceActions.find_unknown_stages })
+                setDialog('FindUknownCrmStagesDialog')
                 setStage(undefined)
                 setAnchorEl(null)
               }}
@@ -277,16 +276,16 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
             >Export Selected</MenuItem>}
 
           </Menu >
-          <FindUknownCrmStagesDialog />
-          <CreateOrEditStageDialog stage={stage} />
+          <FindUknownCrmStagesDialog dialog={dialog} setDialog={setDialog} />
+          <CreateOrEditStageDialog dialog={dialog} setDialog={setDialog} stage={stage} />
           <>
             {
               stage ?
                 <>
 
-                  <DeleteCrmItemDialog stage={stage ? { id: stage.id, label: stage.label } : undefined} />
-                  <CreateOrEditStageDialog stage={stage} />
-                  <DeleteCrmItemDialog stage={stage} />
+                  <DeleteCrmItemDialog dialog={dialog} setDialog={setDialog} stage={stage ? { id: stage.id, label: stage.label } : undefined} />
+                  <CreateOrEditStageDialog dialog={dialog} setDialog={setDialog} stage={stage} />
+                  <DeleteCrmItemDialog dialog={dialog} setDialog={setDialog} stage={stage} />
                 </>
                 : null
             }

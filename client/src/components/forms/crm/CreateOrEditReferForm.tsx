@@ -4,7 +4,6 @@ import { useFormik } from 'formik';
 import { useEffect, useContext, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
-import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { CreateOrUpdateRefer, GetAllCities, GetAllStates } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
@@ -15,7 +14,7 @@ import { GetCrmCityDto } from '../../../dtos/crm-city.dto';
 import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
 
-function CreateOrEditReferForm({ refer }: { refer?: GetReferDto }) {
+function CreateOrEditReferForm({ refer,setDialog }: { refer?: GetReferDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const { user } = useContext(UserContext);
     const [states, setStates] = useState<GetCrmStateDto[]>([])
     const [cities, setCities] = useState<GetCrmCityDto[]>([])
@@ -32,7 +31,6 @@ function CreateOrEditReferForm({ refer }: { refer?: GetReferDto }) {
             }
         })
 
-    const { setChoice } = useContext(ChoiceContext)
     const formik = useFormik({
         initialValues: {
             name: refer ? refer.name : "",
@@ -100,9 +98,9 @@ function CreateOrEditReferForm({ refer }: { refer?: GetReferDto }) {
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: LeadChoiceActions.close_lead })
+          setDialog(undefined) 
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack

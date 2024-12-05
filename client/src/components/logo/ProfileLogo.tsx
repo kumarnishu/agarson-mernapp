@@ -1,7 +1,6 @@
 import { Avatar, Menu, MenuItem, Stack, Typography } from '@mui/material'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { ChoiceContext, UserChoiceActions } from '../../contexts/dialogContext';
 import NewUserDialog from '../dialogs/users/NewUserDialog';
 import EmailVerifySendMailDialog from '../dialogs/users/EmailVerifySendMailDialog';
 import UpdateProfileDialog from '../dialogs/users/UpdateProfileDialog';
@@ -15,12 +14,12 @@ import { toTitleCase } from '../../utils/TitleCase';
 
 export function ProfileMenu({ anchorEl, setAnchorEl }: { anchorEl: Element | null, setAnchorEl: React.Dispatch<React.SetStateAction<Element | null>> }) {
     const { user } = useContext(UserContext)
-    const { setChoice } = useContext(ChoiceContext)
+    const [dialog, setDialog] = useState<string | undefined>()
     const goto = useNavigate()
 
     return (
         <>
-            <NewUserDialog />
+            <NewUserDialog dialog={dialog} setDialog={setDialog} />
             <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
@@ -36,47 +35,46 @@ export function ProfileMenu({ anchorEl, setAnchorEl }: { anchorEl: Element | nul
 
                 <MenuItem
                     onClick={() => {
-                        setChoice({ type: UserChoiceActions.view_profile })
+                        setDialog(undefined)
                         setAnchorEl(null)
-                    }
-                    }
-
+                    }}
                 >View Profile</MenuItem>
                 <MenuItem
                     onClick={() => {
-                        setChoice({ type: UserChoiceActions.update_profile })
+                        setDialog(undefined)
                         setAnchorEl(null)
-                    }
-                    }
+                    }}
 
-                >Update Profile</MenuItem>
+                >Update Profile</MenuItem >
 
                 <MenuItem onClick={() => {
-                    setChoice({ type: UserChoiceActions.update_password })
+                    setDialog(undefined)
                     setAnchorEl(null)
+
                 }}>
                     Update Password
-                </MenuItem>
+                </MenuItem >
 
                 {
                     !user?.email_verified ?
 
                         <MenuItem onClick={() => {
-                            setChoice({ type: UserChoiceActions.verify_email })
+                            setDialog(undefined) 
                             setAnchorEl(null)
+
                         }}>
                             Verify Email
-                        </MenuItem>
+                        </MenuItem >
                         : null
                 }
                 <MenuItem>
                     <LogoutButton />
                 </MenuItem>
-            </Menu>
-            <EmailVerifySendMailDialog />
-            <UpdateProfileDialog />
-            <UpdatePasswordDialog />
-            {user && <ProfileDialog profile={user} />}
+            </Menu >
+            <EmailVerifySendMailDialog dialog={dialog} setDialog={setDialog} />
+            <UpdateProfileDialog dialog={dialog} setDialog={setDialog} />
+            <UpdatePasswordDialog dialog={dialog} setDialog={setDialog} />
+            {user && <ProfileDialog dialog={dialog} setDialog={setDialog} profile={user} />}
         </>
     )
 }

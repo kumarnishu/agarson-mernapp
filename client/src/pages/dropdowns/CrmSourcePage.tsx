@@ -7,7 +7,6 @@ import { BackendError } from '../..'
 import { onlyUnique } from '../../utils/UniqueArray'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
 import { UserContext } from '../../contexts/userContext'
-import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
 import { Delete, Edit } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
@@ -27,7 +26,7 @@ export default function CrmLeadSourcesPage() {
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["sources"], async () => GetAllSources())
 
 
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog,setDialog]=useState<string|undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
    const isFirstRender = useRef(true);
@@ -54,7 +53,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
                     <IconButton color="error"
 
                       onClick={() => {
-                        setChoice({ type: LeadChoiceActions.delete_crm_item })
+                        setDialog('DeleteCrmItemDialog')
                         setSource(cell.row.original)
 
                       }}
@@ -68,7 +67,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
                     onClick={() => {
                       setSource(cell.row.original)
-                      setChoice({ type: LeadChoiceActions.create_or_edit_source })
+                      setDialog('CreateOrEditLeadSourceDialog')
                     }}
 
                   >
@@ -252,7 +251,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
           >
             {LoggedInUser?.assigned_permissions.includes("lead_source_create") && <MenuItem
               onClick={() => {
-                setChoice({ type: LeadChoiceActions.create_or_edit_source })
+                setDialog('CreateOrEditLeadSourceDialog')
                 setSource(undefined)
                 setAnchorEl(null)
               }}
@@ -266,12 +265,12 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
             >Export Selected</MenuItem>}
 
           </Menu >
-          <CreateOrEditLeadSourceDialog source={source} />
+          <CreateOrEditLeadSourceDialog dialog={dialog} setDialog={setDialog} source={source} />
           <>
             {
               source ?
                 <>
-                  <DeleteCrmItemDialog source={source} />
+                  <DeleteCrmItemDialog dialog={dialog} setDialog={setDialog} source={source} />
                 </>
                 : null
             }

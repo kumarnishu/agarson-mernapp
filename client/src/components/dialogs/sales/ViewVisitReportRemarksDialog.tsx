@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, IconButton, DialogTitle, Stack } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
-import { SaleChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import { UserContext } from '../../../contexts/userContext'
 import { toTitleCase } from '../../../utils/TitleCase'
@@ -14,13 +13,11 @@ import { GetVisitSummaryReportRemarkDto } from '../../../dtos/visit_remark.dto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+    employee: string, visit_date: string
 }
 
-function ViewVisitReportRemarksDialog({ employee, visit_date }: { employee: string, visit_date: string }) {
-    const [display, setDisplay] = useState<boolean>(false)
-    const [display2, setDisplay2] = useState<boolean>(false)
-    const { choice, setChoice } = useContext(ChoiceContext)
+function ViewVisitReportRemarksDialog({ employee, visit_date, dialog, setDialog }: Props) {
+    const [dialog2, setdialog2] = useState<string | undefined>()
     const [remark, setRemark] = useState<GetVisitSummaryReportRemarkDto>()
     const [remarks, setRemarks] = useState<GetVisitSummaryReportRemarkDto[]>()
 
@@ -38,10 +35,10 @@ function ViewVisitReportRemarksDialog({ employee, visit_date }: { employee: stri
     }, [isSuccess, data])
     return (
         <Dialog
-            open={choice === SaleChoiceActions.view_visit_remarks ? true : false}
-            onClose={() => setChoice({ type: SaleChoiceActions.close_sale })}
+            open={dialog === "ViewVisitReportRemarksDialog"}
+            onClose={() => setDialog(undefined)}
         >
-            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: SaleChoiceActions.close_sale })}>
+            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>
@@ -54,19 +51,19 @@ function ViewVisitReportRemarksDialog({ employee, visit_date }: { employee: stri
 
                             <div key={index} style={{ borderRadius: '1px 10px', padding: '10px', background: 'lightblue', paddingLeft: '20px', border: '1px solemployee grey' }}>
                                 <p>{toTitleCase(item.created_by)} : {item.remark} </p>
-                               
+
                                 {item.created_at && <p>{new Date(item.created_at).toLocaleString()}</p>}
                                 {
                                     <Stack justifyContent={'end'} direction="row" gap={0} pt={2}>
                                         {user?.assigned_permissions.includes('activities_delete') && <IconButton size="small" color="error" onClick={() => {
                                             setRemark(item)
-                                            setDisplay(true)
+                                            setdialog2('DeleteVisitRemarkDialog')
                                         }}>
                                             Delete</IconButton>}
                                         {user && item.remark && user?.username === item.created_by && new Date(item.created_at) > new Date(previous_date) && user?.assigned_permissions.includes('activities_edit') && <IconButton size="small" color="success"
                                             onClick={() => {
                                                 setRemark(item)
-                                                setDisplay2(true)
+                                                setdialog2('CreateOrEditVisitReportRemarkDialog')
 
                                             }}
                                         >Edit</IconButton>}
@@ -77,8 +74,8 @@ function ViewVisitReportRemarksDialog({ employee, visit_date }: { employee: stri
                         )
                     })}
                 </Stack>
-                {remark && <DeleteVisitRemarkDialog display={display} setDisplay={setDisplay} remark={remark} />}
-                {remark && <CreateOrEditVisitReportRemarkDialog visit_date={visit_date} employee={employee} remark={remark} display={display2} setDisplay={setDisplay2} />}
+                {remark && <DeleteVisitRemarkDialog dialog={dialog2} setDialog={setdialog2} remark={remark} />}
+                {remark && <CreateOrEditVisitReportRemarkDialog visit_date={visit_date} employee={employee} remark={remark} dialog={dialog2} setDialog={setdialog2} />}
             </DialogContent>
 
         </Dialog>

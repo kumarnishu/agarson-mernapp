@@ -1,9 +1,8 @@
 import { Button,  CircularProgress,  Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { CheckListChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -11,7 +10,7 @@ import * as yup from 'yup';
 import { CreateOrEditKeyCategory } from '../../../services/KeyServices';
 import { GetKeyCategoryDto } from '../../../dtos/key-category.dto';
 
-function CreateOrEditKeyCategoryForm({ category }: { category?: GetKeyCategoryDto}) {
+function CreateOrEditKeyCategoryForm({ category,setDialog }: { category?: GetKeyCategoryDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
@@ -28,7 +27,6 @@ function CreateOrEditKeyCategoryForm({ category }: { category?: GetKeyCategoryDt
         })
   
 
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<{
         category: string,
@@ -61,10 +59,10 @@ function CreateOrEditKeyCategoryForm({ category }: { category?: GetKeyCategoryDt
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: CheckListChoiceActions.close_checklist })
+          setDialog(undefined)
            
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack

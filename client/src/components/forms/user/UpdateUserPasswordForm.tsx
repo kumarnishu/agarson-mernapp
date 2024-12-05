@@ -1,26 +1,24 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import {  Button, CircularProgress, IconButton, InputAdornment, TextField } from '@mui/material';
+import { Button, CircularProgress, IconButton, InputAdornment, TextField } from '@mui/material';
 import { Stack } from '@mui/system';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from 'yup';
-import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UpdateUserPassword } from '../../../services/UserServices';
 import { BackendError } from '../../..';
 import AlertBar from '../../snacks/AlertBar';
 import { GetUserDto } from '../../../dtos/user.dto';
 
 
-function UpdateUserPasswordForm({ user }: { user: GetUserDto }) {
+function UpdateUserPasswordForm({ user, setDialog }: { user: GetUserDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { mutate, isSuccess, isLoading, isError, error } = useMutation
         <AxiosResponse<string>,
             BackendError,
             { id: string, body: { newPassword: string, confirmPassword: string } }
         >(UpdateUserPassword)
 
-    const { setChoice } = useContext(ChoiceContext)
     const formik = useFormik({
         initialValues: {
             newPassword: "",
@@ -59,9 +57,9 @@ function UpdateUserPasswordForm({ user }: { user: GetUserDto }) {
     };
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: UserChoiceActions.close_user })
+            setDialog(undefined)
         }
-    }, [setChoice, isSuccess,])
+    }, [isSuccess,])
 
     return (
         <form onSubmit={formik.handleSubmit}>
@@ -77,7 +75,7 @@ function UpdateUserPasswordForm({ user }: { user: GetUserDto }) {
                         formik.touched.newPassword && formik.errors.newPassword ? true : false
                     }
                     id="newPassword"
-                    
+
                     label="New Password"
                     fullWidth
                     helperText={
@@ -104,7 +102,7 @@ function UpdateUserPasswordForm({ user }: { user: GetUserDto }) {
                         formik.touched.confirmPassword && formik.errors.confirmPassword ? true : false
                     }
                     id="confirmPassword"
-                    
+
                     label="Confirm Password"
                     fullWidth
                     helperText={
@@ -125,7 +123,7 @@ function UpdateUserPasswordForm({ user }: { user: GetUserDto }) {
                     }}
                     {...formik.getFieldProps('confirmPassword')}
                 />
-              
+
                 {
                     isError ? (
                         <AlertBar message={error?.response.data.message} color="error" />

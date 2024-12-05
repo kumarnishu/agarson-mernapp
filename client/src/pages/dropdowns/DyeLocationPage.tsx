@@ -5,7 +5,6 @@ import { useQuery } from 'react-query'
    import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
-import { ChoiceContext, ProductionChoiceActions } from '../../contexts/dialogContext'
 import { Edit, RestartAltRounded } from '@mui/icons-material'
 import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
@@ -27,7 +26,7 @@ export default function DyeLocationPage() {
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetDyeLocationDto[]>, BackendError>(["dyelocations", hidden], async () => GetAllDyeLocations(String(hidden)))
 
 
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog,setDialog]=useState<string|undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
    const isFirstRender = useRef(true);
@@ -53,7 +52,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
                     <IconButton color="error"
 
                       onClick={() => {
-                        setChoice({ type: ProductionChoiceActions.toogle_dye_location })
+                      setDialog('ToogleDyeLocationDialog')
                         setDyeLocation(cell.row.original)
 
                       }}
@@ -67,7 +66,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
                     onClick={() => {
                       setDyeLocation(cell.row.original)
-                      setChoice({ type: ProductionChoiceActions.create_or_edit_location })
+                   setDialog('CreateOrEditDyeLocationDialog')
                     }}
 
                   >
@@ -290,7 +289,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
               onClick={() => {
                 setDyeLocation(undefined)
                 setAnchorEl(null)
-                setChoice({ type: ProductionChoiceActions.create_or_edit_location })
+                setDialog('CreateOrEditDyeLocationDialog')
               }}
 
             > Add New</MenuItem>}
@@ -302,12 +301,12 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
             >Export Selected</MenuItem>}
 
           </Menu >
-          <CreateOrEditDyeLocationDialog location={dyelocation} />
+          <CreateOrEditDyeLocationDialog dialog={dialog} setDialog={setDialog} location={dyelocation} />
           <>
             {
               dyelocation ?
                 <>
-                  <ToogleDyeLocationDialog location={dyelocation} />
+                  <ToogleDyeLocationDialog dialog={dialog} setDialog={setDialog} location={dyelocation} />
                 </>
                 : null
             }

@@ -1,10 +1,9 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
-import { ChoiceContext, SaleChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -17,7 +16,7 @@ import { GetSalesAttendanceDto, CreateOrEditSalesAttendanceDto } from '../../../
 import { GetUserDto } from '../../../dtos/user.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
 
-function CreateOrEditSalesAttendanceForm({ attendance }: { attendance?: GetSalesAttendanceDto }) {
+function CreateOrEditSalesAttendanceForm({ attendance,setDialog }: { attendance?: GetSalesAttendanceDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const { user } = useContext(UserContext)
     const { data: users } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: true }))
     const { data: cities } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("cities", async () => GetAllCRMCitiesForDropDown({ state: 'all' }))
@@ -33,7 +32,6 @@ function CreateOrEditSalesAttendanceForm({ attendance }: { attendance?: GetSales
             }
         })
 
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik({
         initialValues: {
@@ -80,7 +78,7 @@ function CreateOrEditSalesAttendanceForm({ attendance }: { attendance?: GetSales
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: SaleChoiceActions.close_sale })
+          setDialog(undefined) 
         }
     }, [isSuccess])
 

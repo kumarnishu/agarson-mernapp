@@ -7,7 +7,6 @@ import { UserContext } from '../../contexts/userContext'
 import { GetUsersForDropdown } from '../../services/UserServices'
 import moment from 'moment'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { CheckListChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import { FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
 import { DownloadFile } from '../../utils/DownloadFile'
 import DBPagination from '../../components/pagination/DBpagination'
@@ -46,7 +45,7 @@ function ChecklistPage() {
 
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("checklist_categories", GetAllCheckCategories)
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog, setDialog] = useState<string | undefined>()
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   let previous_date = new Date()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -85,7 +84,7 @@ function ChecklistPage() {
         Cell: (cell) => <Tooltip title={cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}>
           <Button onClick={() => {
             setChecklist(cell.row.original)
-            setChoice({ type: CheckListChoiceActions.view_checklist_remarks });
+            setDialog('ViewChecklistRemarksDialog')
           }} size="small" sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0, p: 0.5 }} color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? toTitleCase(cell.row.original.last_checked_box.stage) : "Open"}</Button>
         </Tooltip>
       },
@@ -152,7 +151,7 @@ function ChecklistPage() {
                         if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) > new Date(previous_date)) {
                           setChecklistBox(b);
                           setChecklist(cell.row.original)
-                          setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
+                          setDialog('ViewChecklistBoxRemarksDialog')
                         }
                       }}
                       size="small"
@@ -172,7 +171,7 @@ function ChecklistPage() {
                         if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) < new Date(getNextMonday()) && new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= new Date(getPrevMonday())) {
                           setChecklistBox(b);
                           setChecklist(cell.row.original)
-                          setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
+                          setDialog('ViewChecklistBoxRemarksDialog')
                         }
                       }}
                       size="small"
@@ -193,7 +192,7 @@ function ChecklistPage() {
 
                           setChecklistBox(b);
                           setChecklist(cell.row.original)
-                          setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
+                          setDialog('ViewChecklistBoxRemarksDialog')
                         }
                       }}
                       size="small"
@@ -213,7 +212,7 @@ function ChecklistPage() {
                         if (b && new Date(new Date(b.date).setHours(0, 0, 0, 0)) > previousYear && new Date(new Date(b.date).setHours(0, 0, 0, 0)) < nextYear) {
                           setChecklistBox(b);
                           setChecklist(cell.row.original)
-                          setChoice({ type: CheckListChoiceActions.view_checklist_box_remarks });
+                          setDialog('ViewChecklistBoxRemarksDialog')
                         }
                       }}
                       size="small"
@@ -564,8 +563,8 @@ function ChecklistPage() {
         >Export Selected</MenuItem>}
       </Menu>
       <MaterialReactTable table={table} />
-      {checklist && checklistBox && <ViewChecklistBoxRemarksDialog checklist={checklist} checklist_box={checklistBox} />}
-      {checklist && <ViewChecklistRemarksDialog checklist={checklist} />}
+      {checklist && checklistBox && <ViewChecklistBoxRemarksDialog dialog={dialog} setDialog={setDialog} checklist={checklist} checklist_box={checklistBox} />}
+      {checklist && <ViewChecklistRemarksDialog dialog={dialog} setDialog={setDialog} checklist={checklist} />}
     </>
   )
 }

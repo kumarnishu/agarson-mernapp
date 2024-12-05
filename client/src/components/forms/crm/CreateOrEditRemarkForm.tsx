@@ -1,11 +1,10 @@
 import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext, useState } from 'react';
+import { useEffect,  useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { CreateOrEditRemark, GetAllStages } from '../../../services/LeadsServices';
-import { ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -15,7 +14,7 @@ import { GetRemarksDto } from '../../../dtos/crm-remarks.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 
 
-function CreateOrEditRemarkForm({ lead, remark, setDisplay2 }: { lead?: { _id: string, has_card?: boolean, stage: string }, remark?: GetRemarksDto, setDisplay2?: React.Dispatch<React.SetStateAction<boolean>> }) {
+function CreateOrEditRemarkForm({ lead, remark, setDialog }: { lead?: { _id: string, has_card?: boolean, stage: string }, remark?: GetRemarksDto,  setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const [display, setDisplay] = useState(Boolean(remark?.remind_date))
     const [card, setCard] = useState(Boolean(lead?.has_card))
     const [stages, setStages] = useState<DropDownDto[]>([])
@@ -39,7 +38,6 @@ function CreateOrEditRemarkForm({ lead, remark, setDisplay2 }: { lead?: { _id: s
         }})
     const { data: stagedata, isSuccess: stageSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("crm_stages", GetAllStages)
 
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<{
         remark: string,
@@ -93,12 +91,11 @@ function CreateOrEditRemarkForm({ lead, remark, setDisplay2 }: { lead?: { _id: s
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: LeadChoiceActions.close_lead })
-            if (setDisplay2)
-                setDisplay2(false);
+          setDialog(undefined) 
+            
             setCard(false)
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack

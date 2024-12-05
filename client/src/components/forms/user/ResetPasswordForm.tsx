@@ -3,19 +3,18 @@ import {  Button, CircularProgress, IconButton, InputAdornment, TextField } from
 import { Stack } from '@mui/system';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import React, { useContext, useEffect, useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+
 import { ResetPassword } from '../../../services/UserServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
 
 
-function ResetPasswordForm({ token }: { token: string }) {
-  const { setChoice } = useContext(ChoiceContext)
+function ResetPasswordForm({ token,setDialog }: { token: string,setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
   const goto = useNavigate()
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<string>,
@@ -65,10 +64,10 @@ function ResetPasswordForm({ token }: { token: string }) {
 
   useEffect(() => {
     if (isSuccess) {
-      setChoice({ type: UserChoiceActions.close_user })
+    setDialog(undefined)
       goto("/")
     }
-  }, [goto, setChoice, isSuccess])
+  }, [goto,  isSuccess])
 
   return (
 

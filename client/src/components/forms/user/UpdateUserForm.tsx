@@ -1,10 +1,9 @@
-import {  Button, CircularProgress, Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
-import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { UpdateUser } from '../../../services/UserServices';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
@@ -21,9 +20,10 @@ type TformData = {
   dp: string | Blob | File
 }
 type Props = {
-  user: GetUserDto
+  user: GetUserDto,
+  setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 }
-function UpdateUserForm({ user }: Props) {
+function UpdateUserForm({ user, setDialog }: Props) {
   const { mutate, isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<GetUserDto>, BackendError, { id: string, body: FormData }>
     (UpdateUser, {
@@ -31,7 +31,7 @@ function UpdateUserForm({ user }: Props) {
         queryClient.invalidateQueries('users')
       }
     })
-  const { setChoice } = useContext(ChoiceContext)
+
   const formik = useFormik<TformData>({
     initialValues: {
       username: user.username || "",
@@ -96,9 +96,9 @@ function UpdateUserForm({ user }: Props) {
 
   useEffect(() => {
     if (isSuccess) {
-      setChoice({ type: UserChoiceActions.close_user })
+      setDialog(undefined)
     }
-  }, [isSuccess, setChoice])
+  }, [isSuccess])
 
   return (
     <>

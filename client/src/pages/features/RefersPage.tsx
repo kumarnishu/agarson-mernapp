@@ -8,7 +8,6 @@ import { UserContext } from '../../contexts/userContext'
 import DBPagination from '../../components/pagination/DBpagination';
 import { BackendError } from '../..'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
 import CreateOrEditReferDialog from '../../components/dialogs/crm/CreateOrEditReferDialog'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import PopUp from '../../components/popup/PopUp'
@@ -50,7 +49,7 @@ export default function RefersPage() {
   })
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
@@ -109,7 +108,7 @@ export default function RefersPage() {
         accessorKey: 'actions',
         header: '',
         enableColumnFilter: false,
-        
+
         Footer: <b></b>,
         Cell: ({ cell }) => <PopUp
           element={
@@ -120,7 +119,7 @@ export default function RefersPage() {
                   <IconButton color="error"
 
                     onClick={() => {
-                      setChoice({ type: LeadChoiceActions.delete_crm_item })
+                      setDialog('DeleteCrmItemDialog')
                       setRefer(cell.row.original)
 
                     }}
@@ -133,7 +132,7 @@ export default function RefersPage() {
                 <IconButton color="error"
 
                   onClick={() => {
-                    setChoice({ type: LeadChoiceActions.create_or_edit_bill })
+                    setDialog('CreateOrEditBillDialog')
                     setRefer(cell.row.original)
 
                   }}
@@ -145,7 +144,7 @@ export default function RefersPage() {
                 <IconButton color="error"
 
                   onClick={() => {
-                    setChoice({ type: LeadChoiceActions.toogle_refer })
+                    setDialog('ToogleReferConversionDialog')
                     setRefer(cell.row.original)
 
                   }}
@@ -159,7 +158,7 @@ export default function RefersPage() {
 
                   onClick={() => {
 
-                    setChoice({ type: LeadChoiceActions.view_bills })
+                    setDialog('ViewRefersBillHistoryDialog')
                     setRefer(cell.row.original)
                   }}
                 >
@@ -171,7 +170,7 @@ export default function RefersPage() {
 
                   onClick={() => {
 
-                    setChoice({ type: LeadChoiceActions.create_or_edit_refer })
+                    setDialog('CreateOrEditReferDialog')
                     setRefer(cell.row.original)
                   }}
 
@@ -181,11 +180,11 @@ export default function RefersPage() {
               </Tooltip>}
 
 
-              {LoggedInUser?.assigned_permissions.includes('refer_view') && <Tooltip title="view all refer refers">
+              {LoggedInUser?.assigned_permissions.includes('refer_view') && <Tooltip title="view all referred parties">
                 <IconButton color="inherit"
 
                   onClick={() => {
-                    setChoice({ type: LeadChoiceActions.view_referrals })
+                    setDialog('AllReferralPageDialog')
                     setRefer(cell.row.original)
                   }}
                 >
@@ -196,7 +195,7 @@ export default function RefersPage() {
                 <IconButton color="primary"
 
                   onClick={() => {
-                    setChoice({ type: LeadChoiceActions.view_refer_remarks })
+                    setDialog('ViewReferRemarksDialog')
                     setRefer(cell.row.original)
                   }}
                 >
@@ -211,7 +210,7 @@ export default function RefersPage() {
       {
         accessorKey: 'name',
         header: 'Name',
-        
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
@@ -222,7 +221,7 @@ export default function RefersPage() {
         accessorKey: 'city',
         header: 'City',
         filterVariant: 'multi-select',
-       
+
         Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
           return i.city;
@@ -232,7 +231,7 @@ export default function RefersPage() {
         accessorKey: 'state',
         header: 'State',
         filterVariant: 'multi-select',
-       
+
         Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
           return i.state;
@@ -241,31 +240,31 @@ export default function RefersPage() {
       {
         accessorKey: 'mobile',
         header: 'Mobile1',
-       
+
         Cell: (cell) => <>{cell.row.original.mobile ? cell.row.original.mobile : ""}</>
       }, {
         accessorKey: 'mobile2',
         header: 'Mobile2',
-       
+
         Cell: (cell) => <>{cell.row.original.mobile2 ? cell.row.original.mobile2 : ""}</>
       }, {
         accessorKey: 'mobile3',
         header: 'Mobile3',
-       
+
         Cell: (cell) => <>{cell.row.original.mobile3 ? cell.row.original.mobile3 : ""}</>
       },
 
       {
         accessorKey: 'last_remark',
         header: 'Remark',
-        
+
         Cell: (cell) => <>{cell.row.original.last_remark ? cell.row.original.last_remark : ""}</>,
       },
 
       {
         accessorKey: 'refers',
         header: 'Refers',
-     
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.refers ? cell.row.original.refers.toString() : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
@@ -275,7 +274,7 @@ export default function RefersPage() {
       {
         accessorKey: 'customer_name',
         header: 'Customer Name',
-      
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.customer_name ? cell.row.original.customer_name : ""}</>,
         filterSelectOptions: refers && refers.map((i) => {
@@ -285,28 +284,28 @@ export default function RefersPage() {
       {
         accessorKey: 'gst',
         header: 'GST',
-       
+
         Cell: (cell) => <>{cell.row.original.gst ? cell.row.original.gst : ""}</>
       },
 
       {
         accessorKey: 'address',
         header: 'Address',
-       
+
         Cell: (cell) => <>{cell.row.original.address ? cell.row.original.address : ""}</>
       },
 
       {
         accessorKey: 'created_at',
         header: 'Created on',
-       
+
         Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
       },
 
       {
         accessorKey: 'created_by.label',
         header: 'Creator',
-       
+
         Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
       }
     ],
@@ -427,7 +426,7 @@ export default function RefersPage() {
     enableTableFooter: true,
     enableRowVirtualization: true,
     onColumnVisibilityChange: setColumnVisibility, //optional
-   
+
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
@@ -522,7 +521,7 @@ export default function RefersPage() {
       >
         {LoggedInUser?.assigned_permissions.includes('refer_create') && <MenuItem
           onClick={() => {
-            setChoice({ type: LeadChoiceActions.create_or_edit_refer })
+            setDialog('CreateOrEditReferDialog')
             setRefer(undefined);
             setAnchorEl(null)
           }}
@@ -531,7 +530,7 @@ export default function RefersPage() {
         {LoggedInUser?.assigned_permissions.includes('refers_merge') && <MenuItem
           onClick={() => {
             if (table.getSelectedRowModel().rows.length == 2) {
-              setChoice({ type: LeadChoiceActions.merge_refers })
+              setDialog('MergeTwoRefersDialog')
               setRefer(undefined);
               setAnchorEl(null)
             } else {
@@ -551,20 +550,20 @@ export default function RefersPage() {
         >Export Selected</MenuItem>}
       </Menu>
 
-      <CreateOrEditReferDialog refer={refer} />
-      {table.getSelectedRowModel().rows.length == 2 && <MergeTwoRefersDialog refers={table.getSelectedRowModel().rows.map((l) => { return l.original })} removeSelectedRefers={() => { table.resetRowSelection() }} />}
+      <CreateOrEditReferDialog dialog={dialog} setDialog={setDialog} refer={refer} />
+      {table.getSelectedRowModel().rows.length == 2 && <MergeTwoRefersDialog dialog={dialog} setDialog={setDialog} refers={table.getSelectedRowModel().rows.map((l) => { return l.original })} removeSelectedRefers={() => { table.resetRowSelection() }} />}
       <>
 
         {
           refer ?
             <>
 
-              <DeleteCrmItemDialog refer={refer ? { id: refer._id, label: refer.name } : undefined} />
-              <AllReferralPageDialog refer={refer} />
-              <ViewReferRemarksDialog id={refer._id} />
-              <CreateOrEditBillDialog refer={refer} bill={undefined} />
-              <ViewRefersBillHistoryDialog id={refer._id} />
-              <ToogleReferConversionDialog refer={refer} />
+              <DeleteCrmItemDialog dialog={dialog} setDialog={setDialog} refer={refer ? { id: refer._id, label: refer.name } : undefined} />
+              <AllReferralPageDialog dialog={dialog} setDialog={setDialog} refer={refer} />
+              <ViewReferRemarksDialog dialog={dialog} setDialog={setDialog} id={refer._id} />
+              <CreateOrEditBillDialog dialog={dialog} setDialog={setDialog} refer={refer} bill={undefined} />
+              <ViewRefersBillHistoryDialog dialog={dialog} setDialog={setDialog} id={refer._id} />
+              <ToogleReferConversionDialog dialog={dialog} setDialog={setDialog} refer={refer} />
             </>
             : null
         }

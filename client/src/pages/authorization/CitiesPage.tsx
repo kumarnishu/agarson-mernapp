@@ -5,7 +5,6 @@ import { useQuery } from 'react-query'
 import CreateOrEditCityDialog from '../../components/dialogs/crm/CreateOrEditCityDialog'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
 import { UserContext } from '../../contexts/userContext'
-import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
 import { Delete, Edit } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, TextField, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
@@ -31,7 +30,7 @@ export default function CrmCitiesPage() {
   const { data: citiesdata, isSuccess, isLoading } = useQuery<AxiosResponse<GetCrmCityDto[]>, BackendError>(["crm_cities", state], async () => GetAllCities({ state: state }))
   const { data, isSuccess: isStateSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>("crm_cities", GetAllStates)
 
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog,setDialog]=useState<string|undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
@@ -83,7 +82,7 @@ export default function CrmCitiesPage() {
                     <IconButton color="error"
 
                       onClick={() => {
-                        setChoice({ type: LeadChoiceActions.delete_crm_item })
+                        setDialog('DeleteCrmItemDialog')
                         setCity(cell.row.original)
 
                       }}
@@ -97,7 +96,7 @@ export default function CrmCitiesPage() {
 
                     onClick={() => {
                       setCity(cell.row.original)
-                      setChoice({ type: LeadChoiceActions.create_or_edit_city })
+                      setDialog('CreateOrEditCityDialog')
                     }}
 
                   >
@@ -320,7 +319,7 @@ export default function CrmCitiesPage() {
             {LoggedInUser?.assigned_permissions.includes('city_create') && <MenuItem
 
               onClick={() => {
-                setChoice({ type: LeadChoiceActions.create_or_edit_city })
+                setDialog('CreateOrEditCityDialog')
                 setCity(undefined)
                 setAnchorEl(null)
               }}
@@ -332,7 +331,7 @@ export default function CrmCitiesPage() {
                   alert("select some cities")
                 }
                 else {
-                  setChoice({ type: LeadChoiceActions.bulk_assign_crm_cities })
+                  setDialog('AssignCrmCitiesDialog')
                   setCity(undefined)
                   setFlag(1)
                 }
@@ -346,7 +345,7 @@ export default function CrmCitiesPage() {
                   alert("select some cities")
                 }
                 else {
-                  setChoice({ type: LeadChoiceActions.bulk_assign_crm_cities })
+                  setDialog('AssignCrmCitiesDialog')
                   setCity(undefined)
                   setFlag(0)
                 }
@@ -357,7 +356,7 @@ export default function CrmCitiesPage() {
               sx={{ color: 'red' }}
 
               onClick={() => {
-                setChoice({ type: LeadChoiceActions.find_unknown_cities })
+                setDialog('FindUknownCrmCitiesDialog')
                 setCity(undefined)
                 setAnchorEl(null)
               }}
@@ -371,17 +370,17 @@ export default function CrmCitiesPage() {
 
 
           </Menu >
-          <CreateOrEditCityDialog />
-          {LoggedInUser?.is_admin && <FindUknownCrmCitiesDialog />}
-          {<AssignCrmCitiesDialog flag={flag} cities={table.getSelectedRowModel().rows.map((item) => { return { id: item.original._id, label: item.original.city, value: item.original.city } })} />}
+          <CreateOrEditCityDialog  dialog={dialog} setDialog={setDialog}/>
+          {LoggedInUser?.is_admin && <FindUknownCrmCitiesDialog  dialog={dialog} setDialog={setDialog}/>}
+          {<AssignCrmCitiesDialog  dialog={dialog} setDialog={setDialog}flag={flag} cities={table.getSelectedRowModel().rows.map((item) => { return { id: item.original._id, label: item.original.city, value: item.original.city } })} />}
           <>
             {
               city ?
                 <>
 
-                  <DeleteCrmItemDialog city={city} />
-                  <CreateOrEditCityDialog city={city} />
-                  <DeleteCrmItemDialog city={city} />
+                  <DeleteCrmItemDialog  dialog={dialog} setDialog={setDialog}city={city} />
+                  <CreateOrEditCityDialog  dialog={dialog} setDialog={setDialog}city={city} />
+                  <DeleteCrmItemDialog  dialog={dialog} setDialog={setDialog}city={city} />
                 </>
                 : null
             }

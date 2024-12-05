@@ -1,9 +1,8 @@
 import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext, useState } from 'react';
+import { useEffect,  useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { CheckListChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -13,7 +12,7 @@ import { toTitleCase } from '../../../utils/TitleCase';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetKeyDto } from '../../../dtos/keys.dto';
 
-function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
+function CreateOrEditKeyForm({ keyitm,setDialog }: { keyitm?: GetKeyDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const [categories, setCategories] = useState<DropDownDto[]>([])
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
@@ -35,7 +34,6 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
         })
     const { data, isSuccess: isSuccesskeysData } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategoriesForDropdown({ show_assigned_only: false }))
 
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<{
         category: string,
@@ -96,10 +94,10 @@ function CreateOrEditKeyForm({ keyitm }: { keyitm?: GetKeyDto }) {
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: CheckListChoiceActions.close_checklist })
+          setDialog(undefined)
 
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
 
     console.log(formik.errors)
     return (

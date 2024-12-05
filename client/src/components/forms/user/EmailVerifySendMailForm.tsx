@@ -6,7 +6,7 @@ import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+
 import { SendVerifyEmail } from '../../../services/UserServices';
 import { UserContext } from '../../../contexts/userContext';
 import { queryClient } from '../../../main';
@@ -14,7 +14,7 @@ import { BackendError } from '../../..';
 import AlertBar from '../../snacks/AlertBar';
 
 
-function EmailVerifySendMailForm() {
+function EmailVerifySendMailForm({setDialog}:{setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
   const goto = useNavigate()
   const { user } = useContext(UserContext)
   const { mutate, isSuccess, isLoading, isError, error } = useMutation
@@ -26,7 +26,6 @@ function EmailVerifySendMailForm() {
         queryClient.invalidateQueries('users')
       }
     })
-  const { setChoice } = useContext(ChoiceContext)
 
   const formik = useFormik({
     initialValues: {
@@ -46,10 +45,10 @@ function EmailVerifySendMailForm() {
 
   useEffect(() => {
     if (isSuccess) {
-      setChoice({ type: UserChoiceActions.close_user })
+    setDialog(undefined) 
       goto("/")
     }
-  }, [setChoice, goto, isSuccess])
+  }, [ goto, isSuccess])
 
   return (
     <>

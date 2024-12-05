@@ -1,9 +1,8 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -11,7 +10,7 @@ import * as yup from 'yup';
 import { CreateOrEditMachineCategory } from '../../../services/ProductionServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 
-function CreateOrEditMachinecategoryForm({ machine_category }: { machine_category?: DropDownDto }) {
+function CreateOrEditMachinecategoryForm({ machine_category,setDialog }: { machine_category?: DropDownDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
@@ -25,7 +24,6 @@ function CreateOrEditMachinecategoryForm({ machine_category }: { machine_categor
             }
         })
 
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<{
         category: string
@@ -46,10 +44,10 @@ function CreateOrEditMachinecategoryForm({ machine_category }: { machine_categor
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: ProductionChoiceActions.close_production })
+          setDialog(undefined) 
 
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack

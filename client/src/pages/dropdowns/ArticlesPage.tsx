@@ -6,7 +6,6 @@ import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
-import { ChoiceContext, ProductionChoiceActions } from '../../contexts/dialogContext'
 import { Edit, RestartAlt } from '@mui/icons-material'
 import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
@@ -103,7 +102,7 @@ export default function ArticlePage() {
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>(["articles", hidden], async () => GetArticles(String(hidden)))
 
 
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
@@ -118,9 +117,9 @@ export default function ArticlePage() {
       {
         accessorKey: 'actions',
         header: '',
-        
+
         enableColumnFilter: false,
-    
+
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -131,8 +130,7 @@ export default function ArticlePage() {
 
                     onClick={() => {
                       setArticle(cell.row.original)
-                      setChoice({ type: ProductionChoiceActions.toogle_article })
-
+                      setDialog('ToogleArticleDialog')
                     }}
                   >
                     <RestartAlt />
@@ -144,7 +142,7 @@ export default function ArticlePage() {
 
                     onClick={() => {
                       setArticle(cell.row.original)
-                      setChoice({ type: ProductionChoiceActions.create_or_edit_article })
+                      setDialog('CreateOrEditArticleDialog')
                     }}
 
                   >
@@ -161,7 +159,7 @@ export default function ArticlePage() {
       {
         accessorKey: 'active',
         header: 'Status',
-       
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.active ? "active" : "inactive"}</>,
         filterSelectOptions: articles && articles.map((i) => {
@@ -171,7 +169,7 @@ export default function ArticlePage() {
       {
         accessorKey: 'name',
         header: 'Name',
-       
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
         filterSelectOptions: articles && articles.map((i) => {
@@ -181,7 +179,7 @@ export default function ArticlePage() {
       {
         accessorKey: 'display_name',
         header: 'Display Name',
-       
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.display_name ? cell.row.original.display_name : ""}</>,
         filterSelectOptions: articles && articles.map((i) => {
@@ -236,7 +234,7 @@ export default function ArticlePage() {
     enableTableFooter: true,
     enableRowVirtualization: true,
     onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
-   
+
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
@@ -362,7 +360,7 @@ export default function ArticlePage() {
               onClick={() => {
                 setArticle(undefined)
                 setAnchorEl(null)
-                setChoice({ type: ProductionChoiceActions.create_or_edit_article })
+                setDialog('CreateOrEditArticleDialog')
               }}
 
             > Add New</MenuItem>}
@@ -376,9 +374,9 @@ export default function ArticlePage() {
           </Menu >
         </Stack>
 
-        <CreateOrEditArticleDialog article={article} />
+        <CreateOrEditArticleDialog dialog={dialog} setDialog={setDialog} article={article} />
 
-        {article && <ToogleArticleDialog article={article} />}
+        {article && <ToogleArticleDialog dialog={dialog} setDialog={setDialog} article={article} />}
 
       </Stack >
 

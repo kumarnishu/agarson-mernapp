@@ -1,8 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, CircularProgress,  IconButton } from '@mui/material'
 import { AxiosResponse } from 'axios';
-import { useContext, useEffect } from 'react';
+import {  useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
 import { BlockUser } from '../../../services/UserServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
@@ -12,10 +11,9 @@ import AlertBar from '../../snacks/AlertBar';
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+    id: string
 }
-function BlockUserDialog({ id }: { id: string }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+function BlockUserDialog({ id ,dialog,setDialog}:Props) {
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
         (BlockUser,{
@@ -26,14 +24,14 @@ function BlockUserDialog({ id }: { id: string }) {
 
     useEffect(() => {
         if (isSuccess)
-            setChoice({ type: UserChoiceActions.close_user })
-    }, [setChoice, isSuccess])
+            setDialog(undefined)
+    }, [ isSuccess])
 
     return (
-        <Dialog open={choice === UserChoiceActions.block_user ? true : false}
-            onClose={() => setChoice({ type: UserChoiceActions.close_user })}
+        <Dialog open={dialog === "BlockUserDialog"}
+            onClose={() => setDialog(undefined)}
         >
-            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: UserChoiceActions.close_user })}>
+            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>
             
@@ -64,7 +62,6 @@ function BlockUserDialog({ id }: { id: string }) {
             >
                 <Button fullWidth variant="outlined" color="error"
                     onClick={() => {
-                        setChoice({ type: UserChoiceActions.block_user })
                         mutate(id)
                     }}
                     disabled={isLoading}

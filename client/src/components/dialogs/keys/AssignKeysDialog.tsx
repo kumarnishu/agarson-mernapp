@@ -1,6 +1,5 @@
-import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button,  InputLabel, Select, OutlinedInput, MenuItem, Checkbox, ListItemText } from '@mui/material'
-import { useContext, useEffect, useState } from 'react';
-import { ChoiceContext, KeyChoiceActions } from '../../../contexts/dialogContext';
+import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, InputLabel, Select, OutlinedInput, MenuItem, Checkbox, ListItemText } from '@mui/material'
+import { useEffect, useState } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { useMutation, useQuery } from 'react-query';
@@ -13,18 +12,19 @@ import { AssignKeysToUsers } from '../../../services/KeyServices';
 import { GetKeyDto } from '../../../dtos/keys.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+
+
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+    keys: GetKeyDto[], flag: number
 }
 
-function AssignKeysDialog({ keys, flag }: { keys: GetKeyDto[], flag: number }) {
+function AssignKeysDialog({ keys, flag, dialog, setDialog }: Props) {
     const [users, setUsers] = useState<DropDownDto[]>([])
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
 
 
-    const { choice, setChoice } = useContext(ChoiceContext)
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
@@ -75,21 +75,21 @@ function AssignKeysDialog({ keys, flag }: { keys: GetKeyDto[], flag: number }) {
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: KeyChoiceActions.close_key });
+            setDialog(undefined)
             formik.setValues({ user_ids: [], key_ids: [] });
         }
     }, [isSuccess])
     return (
         <Dialog
             fullWidth
-            open={choice === KeyChoiceActions.assign_keys ? true : false}
+            open={dialog === "AssignKeysDialog"}
             onClose={() => {
-                setChoice({ type: KeyChoiceActions.close_key });
+                setDialog(undefined)
                 formik.setValues({ user_ids: [], key_ids: [] });
             }}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
-                setChoice({ type: KeyChoiceActions.close_key });
+                setDialog(undefined)
                 formik.setValues({ user_ids: [], key_ids: [] });
             }}>
                 <Cancel fontSize='large' />
@@ -120,7 +120,7 @@ function AssignKeysDialog({ keys, flag }: { keys: GetKeyDto[], flag: number }) {
                             renderValue={() => `${formik.values.user_ids.length} users`}
                             {...formik.getFieldProps('user_ids')}
                         >
-                             {users.map((user) => (
+                            {users.map((user) => (
                                 <MenuItem key={user.id} value={user.id}>
                                     <Checkbox checked={formik.values.user_ids.includes(user.id)} />
                                     <ListItemText primary={user.label} />

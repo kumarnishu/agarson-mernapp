@@ -1,10 +1,9 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
-import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -14,7 +13,7 @@ import { GetDyeDto, CreateOrEditDyeDTo } from '../../../dtos/dye.dto';
 
 
 
-function CreateOrEditDyeForm({ dye }: { dye?: GetDyeDto }) {
+function CreateOrEditDyeForm({ dye,setDialog }: { dye?: GetDyeDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<GetDyeDto>, BackendError, {
             body: CreateOrEditDyeDTo, id?: string
@@ -25,7 +24,6 @@ function CreateOrEditDyeForm({ dye }: { dye?: GetDyeDto }) {
             }
         })
     const { data: articles, isLoading: articleLoading } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>("articles", async () => GetArticles())
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik({
         initialValues: {
@@ -72,9 +70,9 @@ function CreateOrEditDyeForm({ dye }: { dye?: GetDyeDto }) {
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: ProductionChoiceActions.close_production })
+          setDialog(undefined) 
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
 
     return (
         <form onSubmit={formik.handleSubmit}>

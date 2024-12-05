@@ -1,22 +1,21 @@
 import { Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
 import { BackendError } from '../../..';
 import { useMutation } from 'react-query';
 import AlertBar from '../../snacks/AlertBar';
-import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { ValidateSpareDye } from '../../../services/ProductionServices';
 import { GetUserDto } from '../../../dtos/user.dto';
 import { GetSpareDyeDto } from '../../../dtos/spare-dye.dto';
+
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+    sparedye: GetSpareDyeDto
 }
-function ValidateSpareDyeDialog({ sparedye }: { sparedye: GetSpareDyeDto }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+function ValidateSpareDyeDialog({ sparedye, dialog, setDialog }: Props) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<GetUserDto>, BackendError, string>
         (ValidateSpareDye, {
@@ -27,10 +26,10 @@ function ValidateSpareDyeDialog({ sparedye }: { sparedye: GetSpareDyeDto }) {
     useEffect(() => {
         if (isSuccess) {
             setTimeout(() => {
-                setChoice({ type: ProductionChoiceActions.close_production })
+                setDialog(undefined)
             }, 1000)
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
         <>
             {
@@ -44,8 +43,8 @@ function ValidateSpareDyeDialog({ sparedye }: { sparedye: GetSpareDyeDto }) {
                 ) : null
             }
 
-            <Dialog open={choice === ProductionChoiceActions.validate_spareDye ? true : false}
-            > <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: ProductionChoiceActions.close_production })}>
+            <Dialog open={dialog === 'ValidateSpareDyeDialog'}
+            > <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                     <Cancel fontSize='large' />
                 </IconButton>
                 <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>Validate Spare Dye</DialogTitle>

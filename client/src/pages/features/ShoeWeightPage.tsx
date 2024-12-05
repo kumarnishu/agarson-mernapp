@@ -7,7 +7,6 @@ import { UserContext } from '../../contexts/userContext'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
-import { ChoiceContext, ProductionChoiceActions } from '../../contexts/dialogContext'
 import { Check, Delete, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Menu as MenuIcon, Photo } from '@mui/icons-material';
 import DBPagination from '../../components/pagination/DBpagination'
 import ExportToExcel from '../../utils/ExportToExcel'
@@ -30,7 +29,7 @@ export default function ShoeWeightPage() {
   const [weight, setWeight] = useState<GetShoeWeightDto>()
   const [weights, setWeights] = useState<GetShoeWeightDto[]>([])
   const [users, setUsers] = useState<DropDownDto[]>([])
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
@@ -84,7 +83,7 @@ export default function ShoeWeightPage() {
                 {LoggedInUser?.assigned_permissions.includes('shoe_weight_edit') && <>
                   <IconButton color="info"
                     onClick={() => {
-                      setChoice({ type: ProductionChoiceActions.create_or_edit_shoe_weight })
+                      setDialog('CreateOrEditShoeWeightDialog')
                       setWeight(cell.row.original)
                     }}
 
@@ -93,7 +92,7 @@ export default function ShoeWeightPage() {
                   </IconButton>
                   <IconButton color="info"
                     onClick={() => {
-                      setChoice({ type: ProductionChoiceActions.update_shoe_weight2 })
+                      setDialog('CreateOrEditShoeWeightDialog2')
                       setWeight(cell.row.original)
                     }}
 
@@ -102,7 +101,7 @@ export default function ShoeWeightPage() {
                   </IconButton>
                   <IconButton color="info"
                     onClick={() => {
-                      setChoice({ type: ProductionChoiceActions.update_shoe_weight3 })
+                    setDialog('CreateOrEditShoeWeightDialog3')
                       setWeight(cell.row.original)
                     }}
 
@@ -113,7 +112,7 @@ export default function ShoeWeightPage() {
                 {LoggedInUser?.assigned_permissions.includes('shoe_weight_edit') && <Tooltip title="validate">
                   <IconButton color="error"
                     onClick={() => {
-                      setChoice({ type: ProductionChoiceActions.validate_weight })
+                      setDialog('ValidateShoeWeightDialog')
                       setWeight(cell.row.original)
                     }}
                   >
@@ -124,7 +123,7 @@ export default function ShoeWeightPage() {
                   <IconButton color="error"
 
                     onClick={() => {
-                      setChoice({ type: ProductionChoiceActions.delete_production_item })
+                      setDialog('DeleteProductionItemDialog')
                       setWeight(cell.row.original)
                     }}
                   >
@@ -146,17 +145,17 @@ export default function ShoeWeightPage() {
         Cell: (cell) => <>
           {cell.row.original.shoe_photo1 && <Photo onClick={() => {
             setWeight(cell.row.original)
-            setChoice({ type: ProductionChoiceActions.view_shoe_photo })
+            setDialog('ViewShoeWeightPhotoDialog')
           }} sx={{ height: 15, width: 15, color: 'grey', cursor: 'pointer' }} />
           }
           {cell.row.original.shoe_photo2 && <Photo onClick={() => {
             setWeight(cell.row.original)
-            setChoice({ type: ProductionChoiceActions.view_shoe_photo2 })
+            setDialog('ViewShoeWeightPhotoDialog2')
           }} sx={{ height: 15, width: 15, color: 'grey', cursor: 'pointer' }} />
           }
           {cell.row.original.shoe_photo3 && <Photo onClick={() => {
             setWeight(cell.row.original)
-            setChoice({ type: ProductionChoiceActions.view_shoe_photo3 })
+            setDialog('ViewShoeWeightPhotoDialog3')
           }} sx={{ height: 15, width: 15, color: 'grey', cursor: 'pointer' }} />
           }
         </>
@@ -534,7 +533,7 @@ export default function ShoeWeightPage() {
         >
           {LoggedInUser?.assigned_permissions.includes('shoe_weight_create') && <MenuItem
             onClick={() => {
-              setChoice({ type: ProductionChoiceActions.create_or_edit_shoe_weight })
+              setDialog('CreateOrEditShoeWeightDialog')
               setWeight(undefined);
               setAnchorEl(null)
             }}
@@ -550,15 +549,15 @@ export default function ShoeWeightPage() {
           >Export Selected</MenuItem>}
 
         </Menu >
-        <CreateOrEditShoeWeightDialog shoe_weight={weight} />
+        <CreateOrEditShoeWeightDialog dialog={dialog} setDialog={setDialog} shoe_weight={weight} />
       </>
       {
         weight ?
           <>
 
-            <DeleteProductionItemDialog weight={weight} />
-            <ViewShoeWeightPhotoDialog weight={weight} />
-            <ValidateShoeWeightDialog weight={weight} />
+            <DeleteProductionItemDialog dialog={dialog} setDialog={setDialog} weight={weight} />
+            <ViewShoeWeightPhotoDialog dialog={dialog} setDialog={setDialog} weight={weight} />
+            <ValidateShoeWeightDialog dialog={dialog} setDialog={setDialog} weight={weight} />
           </>
           : null
       }

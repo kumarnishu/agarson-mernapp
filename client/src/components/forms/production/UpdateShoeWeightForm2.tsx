@@ -1,10 +1,9 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext, useState } from 'react';
+import { useEffect,  useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
-import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -18,7 +17,7 @@ import { GetMachineDto } from '../../../dtos/machine.dto';
 import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
 
 
-function UpdateShoeWeightForm2({ shoe_weight }: { shoe_weight: GetShoeWeightDto }) {
+function UpdateShoeWeightForm2({ shoe_weight,setDialog }: { shoe_weight: GetShoeWeightDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const { data: dyes } = useQuery<AxiosResponse<GetDyeDto[]>, BackendError>("dyes", async () => GetDyes())
     const [dyeid, setDyeid] = useState<string>('');
     const [articles, setArticles] = useState<DropDownDto[]>([])
@@ -37,7 +36,6 @@ function UpdateShoeWeightForm2({ shoe_weight }: { shoe_weight: GetShoeWeightDto 
             }
         })
 
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik({
         initialValues: {
@@ -115,10 +113,10 @@ function UpdateShoeWeightForm2({ shoe_weight }: { shoe_weight: GetShoeWeightDto 
     useEffect(() => {
         if (isSuccess) {
             setTimeout(() => {
-                setChoice({ type: ProductionChoiceActions.close_production })
+              setDialog(undefined) 
             }, 1000)
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
 
     return (
         <form onSubmit={formik.handleSubmit}>

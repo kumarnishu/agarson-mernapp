@@ -14,7 +14,6 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import CreateOrEditSalesmanAttendanceDialog from '../../components/dialogs/sales/CreateOrEditSalesmanAttendanceDialog'
 import DeleteVisitSalesManAttendanceDialog from '../../components/dialogs/sales/DeleteSalesManAttendanceDialog'
-import { ChoiceContext, SaleChoiceActions } from '../../contexts/dialogContext'
 import { GetSalesmanAttendances } from '../../services/SalesServices'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { GetSalesAttendanceDto } from '../../dtos/sales-attendance.dto'
@@ -42,7 +41,7 @@ function SalesmanAttendancePage() {
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
-    const { setChoice } = useContext(ChoiceContext)
+    const [dialog, setDialog] = useState<string | undefined>()
     let previous_date = new Date()
     let day = previous_date.getDate() - 4
     previous_date.setDate(day)
@@ -65,7 +64,7 @@ function SalesmanAttendancePage() {
                                 <IconButton color="error"
                                     onClick={() => {
 
-                                        setChoice({ type: SaleChoiceActions.delete_sale_attendance })
+                                        setDialog('DeleteVisitSalesManAttendanceDialog')
                                         setAttendance(cell.row.original)
 
 
@@ -80,7 +79,7 @@ function SalesmanAttendancePage() {
                                         disabled={new Date(cell.row.original.date) < previous_date}
                                         onClick={() => {
 
-                                            setChoice({ type: SaleChoiceActions.create_or_edit_sale_attendance })
+                                            setDialog('CreateOrEditSalesmanAttendanceDialog')
                                             setAttendance(cell.row.original)
 
                                         }}
@@ -107,8 +106,8 @@ function SalesmanAttendancePage() {
             {
                 accessorKey: 'attendance',
                 header: ' Attendance',
-                aggregationFn:'count',
-             
+                aggregationFn: 'count',
+
             },
             {
                 accessorKey: 'station.value',
@@ -267,7 +266,7 @@ function SalesmanAttendancePage() {
                                         if (data.length == 0)
                                             alert("select some attendances")
                                         else
-                                            setChoice({ type: SaleChoiceActions.delete_sale_attendance })
+                                            setDialog('DeleteVisitSalesManAttendanceDialog')
                                     }}
                                 >
                                     <Delete sx={{ width: 15, height: 15 }} />
@@ -424,7 +423,7 @@ function SalesmanAttendancePage() {
                 {LoggedInUser?.assigned_permissions.includes('salesman_attendance_create') && <MenuItem
 
                     onClick={() => {
-                        setChoice({ type: SaleChoiceActions.create_or_edit_sale_attendance })
+                        setDialog('CreateOrEditSalesmanAttendanceDialog')
                         setAttendance(undefined)
                         setAnchorEl(null)
                     }}
@@ -446,8 +445,8 @@ function SalesmanAttendancePage() {
                 >Export Selected</MenuItem>}
             </Menu>
             <MaterialReactTable table={table} />
-            <CreateOrEditSalesmanAttendanceDialog attendance={attendance} />
-            {attendance && <DeleteVisitSalesManAttendanceDialog attendance={attendance} />}
+            <CreateOrEditSalesmanAttendanceDialog dialog={dialog} setDialog={setDialog} attendance={attendance} />
+            {attendance && <DeleteVisitSalesManAttendanceDialog dialog={dialog} setDialog={setDialog} attendance={attendance} />}
         </>
     )
 }

@@ -8,7 +8,6 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtua
 import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
 import PopUp from '../../components/popup/PopUp'
-import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
 import { BuildOutlined, Comment, Delete, Edit, Share, Upload, Visibility } from '@mui/icons-material'
 import { UserContext } from '../../contexts/userContext'
 import CreateOrEditRemarkDialog from '../../components/dialogs/crm/CreateOrEditRemarkDialog'
@@ -34,7 +33,7 @@ export default function AssignedReferReportPage() {
     start_date: moment(new Date(new Date().setDate(1)).setFullYear(2023)).format("YYYY-MM-DD")
     , end_date: moment(new Date().setDate(30)).format("YYYY-MM-DD")
   })
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog, setDialog] = useState<string | undefined>()
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetLeadDto[]>, BackendError>(["assign_refer_reports", dates.start_date, dates.end_date], async () => GetAssignedRefers({ start_date: dates.start_date, end_date: dates.end_date }))
   const { user: LoggedInUser } = useContext(UserContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -51,7 +50,7 @@ export default function AssignedReferReportPage() {
       {
         accessorKey: 'actions',
         header: '',
-        
+
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -62,7 +61,7 @@ export default function AssignedReferReportPage() {
 
                     onClick={() => {
 
-                      setChoice({ type: LeadChoiceActions.remove_referral })
+                      setDialog('')
                       setLead(cell.row.original)
 
                     }}
@@ -76,7 +75,7 @@ export default function AssignedReferReportPage() {
 
                     onClick={() => {
 
-                      setChoice({ type: LeadChoiceActions.refer_lead })
+                      setDialog('CreateOrEditLeadDialog')
                       setLead(cell.row.original)
 
                     }}
@@ -91,7 +90,7 @@ export default function AssignedReferReportPage() {
 
                     onClick={() => {
 
-                      setChoice({ type: LeadChoiceActions.convert_lead_to_refer })
+                      setDialog('ConvertLeadToReferDialog')
                       setLead(cell.row.original)
 
                     }}
@@ -105,7 +104,7 @@ export default function AssignedReferReportPage() {
                 <IconButton color="error"
 
                   onClick={() => {
-                    setChoice({ type: LeadChoiceActions.delete_crm_item })
+                    setDialog('DeleteCrmItemDialog')
                     setLead(cell.row.original)
 
                   }}
@@ -119,7 +118,7 @@ export default function AssignedReferReportPage() {
                 <IconButton color="error"
 
                   onClick={() => {
-                    setChoice({ type: LeadChoiceActions.create_or_edit_bill })
+                    setDialog('CreateOrEditBillDialog')
                     setLead(cell.row.original)
 
                   }}
@@ -133,7 +132,7 @@ export default function AssignedReferReportPage() {
 
                   onClick={() => {
 
-                    setChoice({ type: LeadChoiceActions.view_bills })
+                    setDialog('ViewLeadsBillHistoryDialog')
                     setLead(cell.row.original)
                   }}
                 >
@@ -146,7 +145,7 @@ export default function AssignedReferReportPage() {
 
                     onClick={() => {
 
-                      setChoice({ type: LeadChoiceActions.create_or_edit_lead })
+                      setDialog('CreateOrEditLeadDialog')
                       setLead(cell.row.original)
                     }}
 
@@ -161,7 +160,7 @@ export default function AssignedReferReportPage() {
 
                   onClick={() => {
 
-                    setChoice({ type: LeadChoiceActions.view_remarks })
+                    setDialog('ViewRemarksDialog')
                     setLead(cell.row.original)
 
 
@@ -177,7 +176,7 @@ export default function AssignedReferReportPage() {
                     color="success"
                     onClick={() => {
 
-                      setChoice({ type: LeadChoiceActions.create_or_edt_remark })
+                      setDialog('CreateOrEditRemarkDialog')
                       setLead(cell.row.original)
 
                     }}
@@ -193,7 +192,7 @@ export default function AssignedReferReportPage() {
       {
         accessorKey: 'name',
         header: 'Name',
-        
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
         filterSelectOptions: leads && leads.map((i) => {
@@ -203,55 +202,55 @@ export default function AssignedReferReportPage() {
       {
         accessorKey: 'mobile',
         header: 'Mobile1',
-        
+
         Cell: (cell) => <>{cell.row.original.mobile ? cell.row.original.mobile : ""}</>
       }, {
         accessorKey: 'alternate_mobile1',
         header: 'Mobile2',
-       
+
         Cell: (cell) => <>{cell.row.original.alternate_mobile1 ? cell.row.original.alternate_mobile1 : ""}</>
       }, {
         accessorKey: 'alternate_mobile2',
         header: 'Mobile3',
-       
+
         Cell: (cell) => <>{cell.row.original.alternate_mobile2 ? cell.row.original.alternate_mobile2 : ""}</>
       },
       {
         accessorKey: 'uploaded_bills',
         header: 'Uploaded Bills',
-       
+
         Cell: (cell) => <>{cell.row.original.uploaded_bills ? cell.row.original.uploaded_bills : ""}</>
       },
 
       {
         accessorKey: 'last_remark',
         header: 'Remark',
-       
+
         Cell: (cell) => <>{cell.row.original.last_remark ? cell.row.original.last_remark : ""}</>
       },
       {
         accessorKey: 'referred_party_name',
         header: 'Refer Party',
-       
+
         Cell: (cell) => <>{cell.row.original.referred_party_name ? cell.row.original.referred_party_name : ""}</>
       },
       {
         accessorKey: 'referred_party_mobile',
         header: 'Refer Mobile',
-       
+
         Cell: (cell) => <>{cell.row.original.referred_party_mobile ? cell.row.original.referred_party_mobile : ""}</>
       },
       {
         accessorKey: 'referred_date',
         header: 'Refer Date',
-       
+
         Cell: (cell) => <>{cell.row.original.referred_date ? cell.row.original.referred_date : ""}</>
       },
       {
         accessorKey: 'city',
         header: 'City',
         filterVariant: 'multi-select',
-       
+
         Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
         filterSelectOptions: leads && leads.map((i) => {
           return i.city;
@@ -261,7 +260,7 @@ export default function AssignedReferReportPage() {
         accessorKey: 'state',
         header: 'State',
         filterVariant: 'multi-select',
-       
+
         Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
         filterSelectOptions: leads && leads.map((i) => {
           return i.state;
@@ -270,7 +269,7 @@ export default function AssignedReferReportPage() {
       {
         accessorKey: 'stage',
         header: 'Stage',
-       
+
         Cell: (cell) => <>{cell.row.original.stage ? cell.row.original.stage : ""}</>
       },
 
@@ -278,13 +277,13 @@ export default function AssignedReferReportPage() {
       {
         accessorKey: 'customer_name',
         header: 'Customer',
-       
+
         Cell: (cell) => <>{cell.row.original.customer_name ? cell.row.original.customer_name : ""}</>
       }
       , {
         accessorKey: 'customer_designation',
         header: 'Designitaion',
-       
+
         Cell: (cell) => <>{cell.row.original.customer_designation ? cell.row.original.customer_designation : ""}</>
       }
 
@@ -292,14 +291,14 @@ export default function AssignedReferReportPage() {
       {
         accessorKey: 'email',
         header: 'Email',
-       
+
         Cell: (cell) => <>{cell.row.original.email ? cell.row.original.email : ""}</>
       }
       ,
       {
         accessorKey: 'alternate_email',
         header: 'Email2',
-       
+
         Cell: (cell) => <>{cell.row.original.alternate_email ? cell.row.original.alternate_email : ""}</>
       }
       ,
@@ -307,55 +306,55 @@ export default function AssignedReferReportPage() {
       {
         accessorKey: 'address',
         header: 'Address',
-       
+
         Cell: (cell) => <>{cell.row.original.address ? cell.row.original.address : ""}</>
       },
       {
         accessorKey: 'source',
         header: 'Lead Source',
-       
+
         Cell: (cell) => <>{cell.row.original.lead_source ? cell.row.original.lead_source : ""}</>
       },
       {
         accessorKey: 'type',
         header: 'Lead Type',
-       
+
         Cell: (cell) => <>{cell.row.original.lead_type ? cell.row.original.lead_type : ""}</>
       },
       {
         accessorKey: 'country',
         header: 'Country',
-       
+
         Cell: (cell) => <>{cell.row.original.country ? cell.row.original.country : ""}</>
       },
       {
         accessorKey: 'created_at',
         header: 'Created on',
-       
+
         Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
       },
       {
         accessorKey: 'updated_at',
         header: 'Updated on',
-       
+
         Cell: (cell) => <>{cell.row.original.updated_at ? cell.row.original.updated_at : ""}</>
       },
       {
         accessorKey: 'created_by.label',
         header: 'Creator',
-       
+
         Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
       },
       {
         accessorKey: 'updated_by.label',
         header: 'Updated By',
-       
+
         Cell: (cell) => <>{cell.row.original.updated_by.label ? cell.row.original.updated_by.label : ""}</>
       },
       {
         accessorKey: 'visiting_card',
         header: 'Visiting Card',
-       
+
         Cell: (cell) => <span onDoubleClick={() => {
           if (cell.row.original.visiting_card && cell.row.original.visiting_card) {
             DownloadFile(cell.row.original.visiting_card, 'visiting card')
@@ -472,7 +471,7 @@ export default function AssignedReferReportPage() {
     enableTableFooter: true,
     enableRowVirtualization: true,
     onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
-   
+
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
@@ -573,19 +572,19 @@ export default function AssignedReferReportPage() {
       {
         lead ?
           <>
-            <CreateOrEditRemarkDialog lead={lead ? {
+            <CreateOrEditRemarkDialog dialog={dialog} setDialog={setDialog} lead={lead ? {
               _id: lead._id,
               has_card: lead.has_card,
               stage: lead.stage
             } : undefined} />
-            <DeleteCrmItemDialog lead={lead ? { id: lead._id, label: lead.name } : undefined} />
-            <ViewRemarksDialog id={lead._id} />
-            <ReferLeadDialog lead={lead} />
-            <RemoveLeadReferralDialog lead={lead} />
-            <CreateOrEditLeadDialog lead={lead} />
-            <ConvertLeadToReferDialog lead={lead} />
-            <CreateOrEditBillDialog lead={lead} bill={undefined} />
-            <ViewLeadsBillHistoryDialog id={lead._id} />
+            <DeleteCrmItemDialog dialog={dialog} setDialog={setDialog} lead={lead ? { id: lead._id, label: lead.name } : undefined} />
+            <ViewRemarksDialog dialog={dialog} setDialog={setDialog} id={lead._id} />
+            <ReferLeadDialog dialog={dialog} setDialog={setDialog} lead={lead} />
+            <RemoveLeadReferralDialog dialog={dialog} setDialog={setDialog} lead={lead} />
+            <CreateOrEditLeadDialog dialog={dialog} setDialog={setDialog} lead={lead} />
+            <ConvertLeadToReferDialog dialog={dialog} setDialog={setDialog} lead={lead} />
+            <CreateOrEditBillDialog dialog={dialog} setDialog={setDialog} lead={lead} bill={undefined} />
+            <ViewLeadsBillHistoryDialog dialog={dialog} setDialog={setDialog} id={lead._id} />
           </>
           : null
       }

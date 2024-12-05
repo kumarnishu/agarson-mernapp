@@ -1,4 +1,4 @@
-import {  Button, CircularProgress, TextField } from '@mui/material';
+import { Button, CircularProgress, TextField } from '@mui/material';
 import { Stack } from '@mui/system';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
@@ -6,7 +6,7 @@ import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+
 import { ResetPasswordSendMail } from '../../../services/UserServices';
 import { UserContext } from '../../../contexts/userContext';
 import { BackendError } from '../../..';
@@ -14,7 +14,7 @@ import AlertBar from '../../snacks/AlertBar';
 
 
 
-function ResetPasswordSendMailForm() {
+function ResetPasswordSendMailForm({ setDialog }: { setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
   const goto = useNavigate()
   const { user } = useContext(UserContext)
 
@@ -25,7 +25,6 @@ function ResetPasswordSendMailForm() {
     >
     (ResetPasswordSendMail)
 
-  const { setChoice } = useContext(ChoiceContext)
   const formik = useFormik({
     initialValues: {
       email: user?.email || ""
@@ -43,10 +42,10 @@ function ResetPasswordSendMailForm() {
   });
   useEffect(() => {
     if (isSuccess) {
-      setChoice({ type: UserChoiceActions.close_user })
+      setDialog(undefined)
       goto("/")
     }
-  }, [setChoice, goto, isSuccess])
+  }, [goto, isSuccess])
   return (
     <form onSubmit={formik.handleSubmit}>
 
@@ -80,7 +79,7 @@ function ResetPasswordSendMailForm() {
             <AlertBar message="reset password link sent to your provided email" color="success" />
           ) : null
         }
-        
+
         <Button variant="contained"
           disabled={Boolean(isLoading)}
           color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Send"}

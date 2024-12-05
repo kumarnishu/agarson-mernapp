@@ -1,10 +1,9 @@
 import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext, useState } from 'react';
+import { useEffect,  useState } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
-import { ChoiceContext,  KeyChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -13,8 +12,8 @@ import { CreateOrEditExcelDbRemark } from '../../../services/ExcelDbService';
 import { GetExcelDBRemarksDto, CreateOrEditExcelDbRemarkDto } from '../../../dtos/excel-db-remark.dto';
 
 
-function CreateOrEditExcelDBRemarkForm({ category, obj, remark, setDisplay }: {
-    category: string, obj: string, remark?: GetExcelDBRemarksDto, setDisplay?: React.Dispatch<React.SetStateAction<boolean>>
+function CreateOrEditExcelDBRemarkForm({ category, obj, remark, setDialog }: {
+    category: string, obj: string, remark?: GetExcelDBRemarksDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> 
 }) {
     const [show, setShow] = useState(Boolean(remark?.next_date))
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
@@ -31,7 +30,6 @@ function CreateOrEditExcelDBRemarkForm({ category, obj, remark, setDisplay }: {
         })
 
 
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<{
         remark: string,
@@ -76,11 +74,10 @@ function CreateOrEditExcelDBRemarkForm({ category, obj, remark, setDisplay }: {
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: KeyChoiceActions.close_key })
-            if (setDisplay)
-                setDisplay(false);
+          setDialog(undefined) 
+            
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack

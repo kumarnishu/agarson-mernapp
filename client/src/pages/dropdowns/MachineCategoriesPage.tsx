@@ -3,10 +3,9 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-   import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
-import { ChoiceContext, ProductionChoiceActions } from '../../contexts/dialogContext'
 import { Delete, Edit } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
@@ -27,13 +26,13 @@ export default function MachineCategoryPage() {
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["machine_categories"], async () => GetMachineCategories())
 
 
-     const isFirstRender = useRef(true);
+    const isFirstRender = useRef(true);
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-    
+
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-    const { setChoice } = useContext(ChoiceContext)
+    const [dialog, setDialog] = useState<string | undefined>()
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     const columns = useMemo<MRT_ColumnDef<DropDownDto>[]>(
@@ -42,7 +41,7 @@ export default function MachineCategoryPage() {
             {
                 accessorKey: 'actions',
                 header: '',
-                
+
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row">
@@ -53,7 +52,7 @@ export default function MachineCategoryPage() {
                                         <IconButton color="error"
 
                                             onClick={() => {
-                                                setChoice({ type: ProductionChoiceActions.delete_production_item })
+                                                setDialog('DeletePaymentsCategoryDialog')
                                                 setCategory(cell.row.original)
 
                                             }}
@@ -67,7 +66,7 @@ export default function MachineCategoryPage() {
 
                                         onClick={() => {
                                             setCategory(cell.row.original)
-                                            setChoice({ type: ProductionChoiceActions.create_or_edit_machine_category })
+                                            setDialog('CreateOrEditMachineCategoryDialog')
                                         }}
 
                                     >
@@ -84,7 +83,7 @@ export default function MachineCategoryPage() {
             {
                 accessorKey: 'label',
                 header: 'Category',
-              
+
                 filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
                 filterSelectOptions: categories && categories.map((i) => {
@@ -98,7 +97,7 @@ export default function MachineCategoryPage() {
 
 
     const table = useMaterialReactTable({
-        columns, columnFilterDisplayMode: 'popover', 
+        columns, columnFilterDisplayMode: 'popover',
         data: categories, //10,000 rows       
         enableColumnResizing: true,
         enableColumnVirtualization: true, enableStickyFooter: true,
@@ -140,13 +139,13 @@ export default function MachineCategoryPage() {
         enableRowVirtualization: true,
         onSortingChange: setSorting,
         onColumnVisibilityChange: setColumnVisibility,
-    onColumnSizingChange: setColumnSizing, state: {
-      isLoading: isLoading,
-      columnVisibility,
-      
-      sorting,
-      columnSizing: columnSizing
-    }
+        onColumnSizingChange: setColumnSizing, state: {
+            isLoading: isLoading,
+            columnVisibility,
+
+            sorting,
+            columnSizing: columnSizing
+        }
     });
 
 
@@ -172,11 +171,11 @@ export default function MachineCategoryPage() {
         const columnSizing = localStorage.getItem(
             'mrt_columnSizing_table_1',
         );
-        
-    
 
 
-         const sorting = localStorage.getItem('mrt_sorting_table_1');
+
+
+        const sorting = localStorage.getItem('mrt_sorting_table_1');
 
 
         if (columnVisibility) {
@@ -184,7 +183,7 @@ export default function MachineCategoryPage() {
         }
 
 
-       
+
         if (columnSizing)
             setColumnSizing(JSON.parse(columnSizing))
         if (sorting) {
@@ -201,7 +200,7 @@ export default function MachineCategoryPage() {
         );
     }, [columnVisibility]);
 
-     
+
     useEffect(() => {
         if (isFirstRender.current) return;
         localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
@@ -256,7 +255,7 @@ export default function MachineCategoryPage() {
                             onClick={() => {
                                 setCategory(undefined)
                                 setAnchorEl(null)
-                                setChoice({ type: ProductionChoiceActions.create_or_edit_machine_category })
+                                setDialog('CreateOrEditMachineCategoryDialog')
                             }}
 
                         > Add New</MenuItem>}
@@ -268,12 +267,12 @@ export default function MachineCategoryPage() {
                         >Export Selected</MenuItem>}
 
                     </Menu >
-                    <CreateOrEditMachineCategoryDialog machine_category={category} />
+                    <CreateOrEditMachineCategoryDialog dialog={dialog} setDialog={setDialog} machine_category={category} />
                     <>
                         {
                             category ?
                                 <>
-                                    <DeleteProductionItemDialog category={category} />
+                                    <DeleteProductionItemDialog dialog={dialog} setDialog={setDialog} category={category} />
                                 </>
                                 : null
                         }

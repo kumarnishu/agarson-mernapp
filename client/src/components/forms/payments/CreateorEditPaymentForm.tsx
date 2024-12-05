@@ -1,10 +1,9 @@
 import { Button, Checkbox, CircularProgress, InputLabel, ListItemText, MenuItem, OutlinedInput, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext, useState } from 'react';
+import { useEffect,  useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
-import { ChoiceContext, PaymentsChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -16,7 +15,7 @@ import { GetPaymentDto, CreateOrEditPaymentDto } from '../../../dtos/payment.dto
 import { GetUsersForDropdown } from '../../../services/UserServices';
 
 
-function CreateorEditPaymentForm({ payment }: { payment?: GetPaymentDto }) {
+function CreateorEditPaymentForm({ payment,setDialog }: { payment?: GetPaymentDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const [categories, setCategories] = useState<DropDownDto[]>([])
     const [users, setUsers] = useState<DropDownDto[]>([])
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
@@ -30,7 +29,6 @@ function CreateorEditPaymentForm({ payment }: { payment?: GetPaymentDto }) {
 
     const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
     const { data: categoriesData, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("payment_categories", GetAllPaymentCategories)
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik({
         initialValues: {
@@ -83,9 +81,9 @@ function CreateorEditPaymentForm({ payment }: { payment?: GetPaymentDto }) {
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: PaymentsChoiceActions.close_payment })
+          setDialog(undefined) 
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
 
 
     return (

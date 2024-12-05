@@ -9,7 +9,6 @@ import { GetExcelDbReport } from '../../services/ExcelDbService'
 import { useParams } from 'react-router-dom'
 import PopUp from '../../components/popup/PopUp'
 import { UserContext } from '../../contexts/userContext'
-import { ChoiceContext, KeyChoiceActions } from '../../contexts/dialogContext'
 import { Comment, Visibility } from '@mui/icons-material'
 import { GetKeyCategoryById } from '../../services/KeyServices'
 import CreateOrEditExcelDBRemarkDialog from '../../components/dialogs/excel-db/CreateOrEditExcelDBRemarkDialog'
@@ -25,12 +24,12 @@ export default function ExcelDBPage() {
   const [category, setCategory] = useState<DropDownDto>()
   const [obj, setObj] = useState<string | undefined>()
   const { user: LoggedInUser } = useContext(UserContext)
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog, setDialog] = useState<string | undefined>()
   const { id } = useParams()
 
   const { data: categorydata, refetch: RefetchCategory, isSuccess: isSuccessCategorydata } = useQuery<AxiosResponse<DropDownDto>, BackendError>(["key_categories"], async () => GetKeyCategoryById(id || ""), { enabled: false })
 
-  const { data, isLoading, isSuccess, refetch,isRefetching } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb"], async () => GetExcelDbReport(id || ""), { enabled: false })
+  const { data, isLoading, isSuccess, refetch, isRefetching } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb"], async () => GetExcelDbReport(id || ""), { enabled: false })
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
 
@@ -53,7 +52,7 @@ export default function ExcelDBPage() {
 
                     onClick={() => {
 
-                      setChoice({ type: KeyChoiceActions.view_excel_db_remarks })
+                      setDialog('ViewExcelDBRemarksDialog')
                       //@ts-ignore
                       if (cell.row.original['Account Name'])
                         //@ts-ignore
@@ -75,7 +74,7 @@ export default function ExcelDBPage() {
                       color="success"
                       onClick={() => {
 
-                        setChoice({ type: KeyChoiceActions.create_or_edit_excel_db_remark })
+                        setDialog('CreateOrEditExcelDBRemarkDialog')
                         //@ts-ignore
                         if (cell.row.original['Account Name'])
                           //@ts-ignore
@@ -112,7 +111,7 @@ export default function ExcelDBPage() {
           accessorKey: item.key, header: item.header,
           aggregationFn: 'sum',
           AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-          Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '', 
+          Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
           //@ts-ignore
           Footer: ({ table }) => <b>{index < 2 ? table.getFilteredRowModel().rows.length : table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
         }
@@ -188,7 +187,7 @@ export default function ExcelDBPage() {
     enableColumnPinning: true,
     enableTableFooter: true,
     enableDensityToggle: false,
-  
+
     onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing,
@@ -269,8 +268,8 @@ export default function ExcelDBPage() {
           {category ? category.label : "Excel DB"}
         </Typography>
       </Stack >
-      {id && obj && <CreateOrEditExcelDBRemarkDialog category={id} obj={obj} />}
-      {id && obj && <ViewExcelDBRemarksDialog id={id} obj={obj} />}
+      {id && obj && <CreateOrEditExcelDBRemarkDialog dialog={dialog} setDialog={setDialog} category={id} obj={obj} />}
+      {id && obj && <ViewExcelDBRemarksDialog dialog={dialog} setDialog={setDialog} id={id} obj={obj} />}
 
       <MaterialReactTable table={table} />
     </>

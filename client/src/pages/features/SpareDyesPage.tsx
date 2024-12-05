@@ -7,7 +7,6 @@ import { UserContext } from '../../contexts/userContext'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
-import { ChoiceContext, ProductionChoiceActions } from '../../contexts/dialogContext'
 import { Check, Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Menu as MenuIcon, Photo } from '@mui/icons-material';
 import DBPagination from '../../components/pagination/DBpagination'
 import ExportToExcel from '../../utils/ExportToExcel'
@@ -29,7 +28,7 @@ export default function SpareDyesPage() {
     const [spareDye, setSpareDye] = useState<GetSpareDyeDto>()
     const [spareDyes, setSpareDyes] = useState<GetSpareDyeDto[]>([])
     const [users, setUsers] = useState<DropDownDto[]>([])
-    const { setChoice } = useContext(ChoiceContext)
+    const [dialog, setDialog] = useState<string | undefined>()
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     const isFirstRender = useRef(true);
@@ -82,7 +81,7 @@ export default function SpareDyesPage() {
                                 {LoggedInUser?.assigned_permissions.includes('spare_dye_edit') && <>
                                     <IconButton color="info"
                                         onClick={() => {
-                                            setChoice({ type: ProductionChoiceActions.create_or_edit_spareDye })
+                                           setDialog('CreateOrEditSpareDyeDialog')
                                             setSpareDye(cell.row.original)
                                         }}
 
@@ -94,7 +93,7 @@ export default function SpareDyesPage() {
                                 {LoggedInUser?.assigned_permissions.includes('spare_dye_edit') && <Tooltip title="validate">
                                     <IconButton color="error"
                                         onClick={() => {
-                                            setChoice({ type: ProductionChoiceActions.validate_spareDye })
+                                            setDialog('ValidateSpareDyeDialog')
                                             setSpareDye(cell.row.original)
                                         }}
                                     >
@@ -105,7 +104,7 @@ export default function SpareDyesPage() {
                                     <IconButton color="error"
 
                                         onClick={() => {
-                                            setChoice({ type: ProductionChoiceActions.delete_production_item })
+                                            setDialog('DeleteProductionItemDialog')
                                             setSpareDye(cell.row.original)
                                         }}
                                     >
@@ -127,7 +126,7 @@ export default function SpareDyesPage() {
                         disabled={!LoggedInUser?.assigned_permissions.includes('spare_dye_view')}
                         onClick={() => {
                             setSpareDye(cell.row.original)
-                            setChoice({ type: ProductionChoiceActions.view_spare_dye_photo })
+                            setDialog('ViewSpareDyePhotoDialog')
                         }}
 
                     ><Photo />
@@ -446,7 +445,7 @@ export default function SpareDyesPage() {
                 >
                     {LoggedInUser?.assigned_permissions.includes('spare_dye_create') && <MenuItem
                         onClick={() => {
-                            setChoice({ type: ProductionChoiceActions.create_or_edit_spareDye })
+                            setDialog('CreateOrEditSpareDyeDialog')
                             setSpareDye(undefined);
                             setAnchorEl(null)
                         }}
@@ -462,15 +461,15 @@ export default function SpareDyesPage() {
                     >Export Selected</MenuItem>}
 
                 </Menu >
-                <CreateOrEditSpareDyeDialog sparedye={spareDye} />
+                <CreateOrEditSpareDyeDialog dialog={dialog} setDialog={setDialog} sparedye={spareDye} />
             </>
             {
                 spareDye ?
                     <>
 
-                        <DeleteProductionItemDialog spare_dye={spareDye} />
-                        <ValidateSpareDyeDialog sparedye={spareDye} />
-                        <ViewSpareDyePhotoDialog spare_dye={spareDye} />
+                        <DeleteProductionItemDialog dialog={dialog} setDialog={setDialog} spare_dye={spareDye} />
+                        <ValidateSpareDyeDialog dialog={dialog} setDialog={setDialog} sparedye={spareDye} />
+                        <ViewSpareDyePhotoDialog dialog={dialog} setDialog={setDialog} spare_dye={spareDye} />
                     </>
                     : null
             }

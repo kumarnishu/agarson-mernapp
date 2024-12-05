@@ -6,7 +6,7 @@ import { useEffect, useContext, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from "yup"
-import { UserChoiceActions, ChoiceContext } from '../../../contexts/dialogContext';
+
 import { UserContext } from '../../../contexts/userContext';
 import { Signup } from '../../../services/UserServices';
 import { BackendError, Target } from '../../..';
@@ -23,13 +23,12 @@ type TFormData = {
   dp: string | Blob | File
 }
 
-function OwnerSignUpForm() {
+function OwnerSignUpForm({setDialog}:{setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
   const goto = useNavigate()
   const { setUser } = useContext(UserContext)
   const { mutate, data, isLoading, isSuccess, isError, error } = useMutation
     <AxiosResponse<{ user: GetUserDto, token: string }>, BackendError, FormData>
     (Signup)
-  const { setChoice } = useContext(ChoiceContext)
 
   const formik = useFormik<TFormData>({
     initialValues: {
@@ -116,10 +115,10 @@ function OwnerSignUpForm() {
   useEffect(() => {
     if (isSuccess) {
       setUser(data.data.user)
-      setChoice({ type: UserChoiceActions.close_user })
+      setDialog(undefined)
       goto("/")
     }
-  }, [isSuccess, setUser, goto, data, setChoice])
+  }, [isSuccess, setUser, goto, data])
 
   return (
     <form onSubmit={formik.handleSubmit}>

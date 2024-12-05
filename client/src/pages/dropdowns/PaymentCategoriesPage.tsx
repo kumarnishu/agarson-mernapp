@@ -2,12 +2,11 @@ import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
-   import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
-import {  ChoiceContext, PaymentsChoiceActions } from '../../contexts/dialogContext'
 import { Edit } from '@mui/icons-material'
-import { Fade,  IconButton, Menu, MenuItem,  Tooltip, Typography } from '@mui/material'
+import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
@@ -25,23 +24,23 @@ export default function PaymentCategoriesPage() {
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["payment_categories"], async () => GetAllPaymentCategories())
 
 
-   const isFirstRender = useRef(true);
+  const isFirstRender = useRef(true);
 
-    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-  
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const columns = useMemo<MRT_ColumnDef<DropDownDto>[]>(
     //column definitions...
     () => categories && [
       {
         accessorKey: 'actions',
         header: '',
-        
-        grow:false,
+
+        grow: false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -51,7 +50,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
                     onClick={() => {
                       setPaymentCategory(cell.row.original)
-                      setChoice({ type: PaymentsChoiceActions.create_or_edit_payment_category })
+                      setDialog('CreateOrEditPaymentCategoryDialog')
                     }}
 
                   >
@@ -64,18 +63,18 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
             </Stack>}
         />
       },
-      
+
       {
         accessorKey: 'value',
         header: 'Category',
-      
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
         filterSelectOptions: categories && categories.map((i) => {
           return i.label;
         }).filter(onlyUnique)
       },
-     
+
       {
         accessorKey: 'label',
         header: 'Display Name',
@@ -85,7 +84,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
           return i.label;
         }).filter(onlyUnique)
       },
-     
+
     ],
     [categories],
     //end
@@ -93,7 +92,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
 
   const table = useMaterialReactTable({
-    columns, columnFilterDisplayMode: 'popover', 
+    columns, columnFilterDisplayMode: 'popover',
     data: categories, //10,000 rows       
     enableColumnResizing: true,
     enableColumnVirtualization: true, enableStickyFooter: true,
@@ -132,14 +131,14 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     enableRowNumbers: true,
     enableColumnPinning: true,
     enableTableFooter: true,
-      enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility,rowVirtualizerInstanceRef, //
-        columnVirtualizerOptions: { overscan: 2 },
+    enableRowVirtualization: true,
+    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //
+    columnVirtualizerOptions: { overscan: 2 },
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
-      
+
       sorting,
       columnSizing: columnSizing
     }
@@ -169,7 +168,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const columnSizing = localStorage.getItem(
       'mrt_columnSizing_table_1',
     );
-    
+
 
 
 
@@ -178,10 +177,10 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
       setColumnVisibility(JSON.parse(columnVisibility));
     }
 
-    
+
     if (columnSizing)
       setColumnSizing(JSON.parse(columnSizing))
-    
+
     isFirstRender.current = false;
   }, []);
 
@@ -193,7 +192,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     );
   }, [columnVisibility]);
 
- 
+
 
 
   useEffect(() => {
@@ -228,7 +227,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
 
         <>
-          
+
           <IconButton size="small" color="primary"
             onClick={(e) => setAnchorEl(e.currentTarget)
             }
@@ -252,7 +251,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
               onClick={() => {
                 setPaymentCategory(undefined)
                 setAnchorEl(null)
-                setChoice({ type: PaymentsChoiceActions.create_or_edit_payment_category })
+                setDialog('CreateOrEditPaymentCategoryDialog')
               }}
 
             > Add New</MenuItem>}
@@ -264,7 +263,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
             >Export Selected</MenuItem>}
 
           </Menu >
-          <CreateOrEditPaymentCategoryDialog category={category} />
+          <CreateOrEditPaymentCategoryDialog dialog={dialog} setDialog={setDialog} category={category} />
         </>
 
 

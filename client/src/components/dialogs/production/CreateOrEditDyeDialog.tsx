@@ -1,6 +1,4 @@
 import { Dialog, DialogContent, DialogTitle, Stack, IconButton } from '@mui/material'
-import { useContext } from 'react';
-import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { Cancel } from '@mui/icons-material';
 
 import CreateOrEditDyeForm from '../../forms/production/CreateOrEditDyeForm';
@@ -8,16 +6,15 @@ import { GetDyeDto } from '../../../dtos/dye.dto';
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-
+    dye?: GetDyeDto
 }
 
-function CreateOrEditDyeDialog({ dye }: { dye?: GetDyeDto }) {
-    const { choice, setChoice } = useContext(ChoiceContext)
+function CreateOrEditDyeDialog({ dye, setDialog, dialog }: Props) {
     return (
-        <Dialog fullScreen={Boolean(window.screen.width < 500)} open={choice === ProductionChoiceActions.create_or_edit_dye ? true : false}
-            onClose={() => setChoice({ type: ProductionChoiceActions.close_production })}
+        <Dialog fullScreen={Boolean(window.screen.width < 500)} open={dialog === "CreateOrEditDyeDialog"}
+            onClose={() => setDialog(undefined)}
         >
-            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setChoice({ type: ProductionChoiceActions.close_production })}>
+            <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">

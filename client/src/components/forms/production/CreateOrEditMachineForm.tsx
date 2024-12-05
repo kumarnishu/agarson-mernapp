@@ -1,10 +1,9 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
-import { ChoiceContext, ProductionChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -13,7 +12,7 @@ import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetMachineDto, CreateOrEditMachineDto } from '../../../dtos/machine.dto';
 
 
-function CreateOrEditMachineForm({ machine }: { machine?: GetMachineDto }) {
+function CreateOrEditMachineForm({ machine,setDialog }: { machine?: GetMachineDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<GetMachineDto>, BackendError, {
             body: CreateOrEditMachineDto, id?: string
@@ -26,7 +25,6 @@ function CreateOrEditMachineForm({ machine }: { machine?: GetMachineDto }) {
     const { data: catgeories } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("machine_catgeories", GetMachineCategories, {
         staleTime: 10000
     })
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik({
         initialValues: {
@@ -61,9 +59,9 @@ function CreateOrEditMachineForm({ machine }: { machine?: GetMachineDto }) {
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: ProductionChoiceActions.close_production })
+          setDialog(undefined) 
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     console.log(formik.errors)
     return (
         <form onSubmit={formik.handleSubmit}>

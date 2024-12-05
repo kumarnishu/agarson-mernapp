@@ -1,10 +1,9 @@
 import { Button,  CircularProgress,  Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
-import { ChoiceContext,  KeyChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -12,9 +11,9 @@ import { CreateOrEditVisitReportRemark } from '../../../services/SalesServices';
 import { GetVisitSummaryReportRemarkDto, CreateOrEditVisitSummaryRemarkDto } from '../../../dtos/visit_remark.dto';
 
 
-function CreateOrEditVisitReportRemarkForm({ employee, visit_date, remark, setDisplay }: {
+function CreateOrEditVisitReportRemarkForm({ employee, visit_date, remark, setDialog }: {
     employee: string,
-    visit_date: string, remark?: GetVisitSummaryReportRemarkDto, setDisplay?: React.Dispatch<React.SetStateAction<boolean>>
+    visit_date: string, remark?: GetVisitSummaryReportRemarkDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> 
 }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
@@ -30,7 +29,6 @@ function CreateOrEditVisitReportRemarkForm({ employee, visit_date, remark, setDi
         })
 
 
-    const { setChoice } = useContext(ChoiceContext)
 
     const formik = useFormik<{
         remark: string
@@ -60,11 +58,9 @@ function CreateOrEditVisitReportRemarkForm({ employee, visit_date, remark, setDi
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: KeyChoiceActions.close_key })
-            if (setDisplay)
-                setDisplay(false);
+          setDialog(undefined) 
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
     return (
         <form onSubmit={formik.handleSubmit}>
             <Stack

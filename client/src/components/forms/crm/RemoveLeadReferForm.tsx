@@ -1,10 +1,9 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
-import {  ChoiceContext, LeadChoiceActions } from '../../../contexts/dialogContext';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import AlertBar from '../../snacks/AlertBar';
@@ -13,7 +12,7 @@ import { GetLeadDto } from '../../../dtos/lead.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
 
 
-function RemoveLeadReferForm({ lead }: { lead: GetLeadDto }) {
+function RemoveLeadReferForm({ lead ,setDialog}: { lead: GetLeadDto , setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<GetReferDto>, BackendError, { id: string, body: { remark: string } }>
         (RemoveReferLead, {
@@ -21,7 +20,6 @@ function RemoveLeadReferForm({ lead }: { lead: GetLeadDto }) {
                 queryClient.invalidateQueries('leads')
             }
         })
-    const { setChoice } = useContext(ChoiceContext)
     const formik = useFormik({
         initialValues: {
             remark: ""
@@ -44,9 +42,9 @@ function RemoveLeadReferForm({ lead }: { lead: GetLeadDto }) {
 
     useEffect(() => {
         if (isSuccess) {
-            setChoice({ type: LeadChoiceActions.close_lead })
+          setDialog(undefined) 
         }
-    }, [isSuccess, setChoice])
+    }, [isSuccess])
 
     return (
         <form onSubmit={formik.handleSubmit}>

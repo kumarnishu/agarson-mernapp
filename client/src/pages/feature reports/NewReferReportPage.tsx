@@ -12,7 +12,6 @@ import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialo
 import AllReferralPageDialog from '../../components/dialogs/crm/AllReferralPageDialog'
 import ViewReferRemarksDialog from '../../components/dialogs/crm/ViewReferRemarksDialog'
 import { UserContext } from '../../contexts/userContext'
-import { ChoiceContext, LeadChoiceActions } from '../../contexts/dialogContext'
 import { Delete, Edit, Recycling, Upload, Visibility } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, TextField, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
@@ -36,7 +35,7 @@ export default function NewReferReportPage() {
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferDto[]>, BackendError>(["new_refer_reports", dates.start_date, dates.end_date], async () => GetNewRefers({ start_date: dates.start_date, end_date: dates.end_date }))
 
 
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
@@ -59,7 +58,7 @@ export default function NewReferReportPage() {
                 <IconButton color="error"
 
                   onClick={() => {
-                    setChoice({ type: LeadChoiceActions.create_or_edit_bill })
+                    setDialog('CreateOrEditBillDialog')
                     setRefer(cell.row.original)
 
                   }}
@@ -73,7 +72,7 @@ export default function NewReferReportPage() {
 
                   onClick={() => {
 
-                    setChoice({ type: LeadChoiceActions.view_bills })
+                    setDialog('ViewRefersBillHistoryDialog')
                     setRefer(cell.row.original)
                   }}
                 >
@@ -84,7 +83,7 @@ export default function NewReferReportPage() {
                 <IconButton color="error"
 
                   onClick={() => {
-                    setChoice({ type: LeadChoiceActions.toogle_refer })
+                    setDialog('ToogleReferConversionDialog')
                     setRefer(cell.row.original)
 
                   }}
@@ -97,7 +96,7 @@ export default function NewReferReportPage() {
                   <IconButton color="error"
 
                     onClick={() => {
-                      setChoice({ type: LeadChoiceActions.delete_crm_item })
+                      setDialog('DeleteCrmItemDialog')
                       setRefer(cell.row.original)
 
                     }}
@@ -111,7 +110,7 @@ export default function NewReferReportPage() {
 
                   onClick={() => {
 
-                    setChoice({ type: LeadChoiceActions.create_or_edit_refer })
+                    setDialog('CreateOrEditReferDialog')
                     setRefer(cell.row.original)
                   }}
 
@@ -125,7 +124,7 @@ export default function NewReferReportPage() {
                 <IconButton color="inherit"
 
                   onClick={() => {
-                    setChoice({ type: LeadChoiceActions.view_referrals })
+                    setDialog('AllReferralPageDialog')
                     setRefer(cell.row.original)
                   }}
                 >
@@ -136,7 +135,7 @@ export default function NewReferReportPage() {
                 <IconButton color="primary"
 
                   onClick={() => {
-                    setChoice({ type: LeadChoiceActions.view_refer_remarks })
+                    setDialog('ViewReferRemarksDialog')
                     setRefer(cell.row.original)
                   }}
                 >
@@ -302,7 +301,7 @@ export default function NewReferReportPage() {
     enableTableFooter: true,
     enableRowVirtualization: true,
     onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
-   
+
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
@@ -456,18 +455,18 @@ export default function NewReferReportPage() {
             >Export Selected</MenuItem>}
 
           </Menu >
-          <CreateOrEditReferDialog refer={refer} />
+          <CreateOrEditReferDialog dialog={dialog} setDialog={setDialog} refer={refer} />
           <>
             {
               refer ?
                 <>
 
-                  <DeleteCrmItemDialog refer={refer ? { id: refer._id, label: refer.name } : undefined} />
-                  <AllReferralPageDialog refer={refer} />
-                  <ViewReferRemarksDialog id={refer._id} />
-                  <CreateOrEditBillDialog refer={refer} bill={undefined} />
-                  <ViewRefersBillHistoryDialog id={refer._id} />
-                  <ToogleReferConversionDialog refer={refer} />
+                  <DeleteCrmItemDialog dialog={dialog} setDialog={setDialog} refer={refer ? { id: refer._id, label: refer.name } : undefined} />
+                  <AllReferralPageDialog dialog={dialog} setDialog={setDialog} refer={refer} />
+                  <ViewReferRemarksDialog dialog={dialog} setDialog={setDialog} id={refer._id} />
+                  <CreateOrEditBillDialog dialog={dialog} setDialog={setDialog} refer={refer} bill={undefined} />
+                  <ViewRefersBillHistoryDialog dialog={dialog} setDialog={setDialog} id={refer._id} />
+                  <ToogleReferConversionDialog dialog={dialog} setDialog={setDialog} refer={refer} />
                 </>
                 : null
             }

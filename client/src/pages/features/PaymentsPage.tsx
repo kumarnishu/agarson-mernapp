@@ -7,7 +7,6 @@ import { UserContext } from '../../contexts/userContext'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { PaymentsChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
 import PopUp from '../../components/popup/PopUp'
 import { Delete, Edit, FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
 import DBPagination from '../../components/pagination/DBpagination'
@@ -34,7 +33,7 @@ function PaymentsPage() {
   const [categoriesData, setCategoriesData] = useState<{ category: string, count: number }[]>([])
   const [userId, setUserId] = useState<string>()
   const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<{ category: string, count: number }[]>, BackendError>("payments", GetPaymentsTopBarDetails)
-  const { setChoice } = useContext(ChoiceContext)
+  const [dialog, setDialog] = useState<string | undefined>()
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'payments_view', show_assigned_only: false }))
 
 
@@ -68,7 +67,7 @@ function PaymentsPage() {
       {
         accessorKey: 'actions',
         header: '',
-        
+
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
@@ -77,7 +76,6 @@ function PaymentsPage() {
 
                   onClick={() => {
 
-                    setChoice({ type: PaymentsChoiceActions.delete_payment })
                     setPayment(cell.row.original)
 
 
@@ -92,7 +90,6 @@ function PaymentsPage() {
 
                     onClick={() => {
 
-                      setChoice({ type: PaymentsChoiceActions.create_or_edit_payment })
                       setPayment(cell.row.original)
 
                     }}
@@ -107,7 +104,7 @@ function PaymentsPage() {
       {
         accessorKey: 'payment_title',
         header: ' Payment Title',
-        
+
         Cell: (cell) => <>{!cell.row.original.link ? <Tooltip title={cell.row.original.payment_description}><span>{cell.row.original.payment_title ? cell.row.original.payment_title : ""}</span></Tooltip> :
           <Tooltip title={cell.row.original.payment_description}>
             <a style={{ fontSize: 11, fontWeight: 'bold', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.payment_title}</a>
@@ -118,7 +115,7 @@ function PaymentsPage() {
       {
         accessorKey: 'assigned_users.value',
         header: 'Responsible',
-        
+
         filter: 'custom',
         enableColumnFilter: true,
         Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.label }).toString() || ""}</>,
@@ -133,19 +130,19 @@ function PaymentsPage() {
       {
         accessorKey: 'category.label',
         header: ' Category',
-        
+
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
       },
       {
         accessorKey: 'frequency',
         header: ' Frequency',
-        
+
         Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
       },
       {
         accessorKey: 'due_date',
         header: 'Due Date',
-        
+
         Cell: (cell) => <>
           < input
             type="date"
@@ -164,7 +161,7 @@ function PaymentsPage() {
       {
         accessorKey: 'next_date',
         header: 'Next Check Date',
-        
+
         Cell: (cell) => <>
           < input
             type="date"
@@ -183,7 +180,7 @@ function PaymentsPage() {
       {
         accessorKey: 'updated_by',
         header: 'Last Updated By',
-        
+
         Cell: (cell) => <>{cell.row.original.updated_by ? cell.row.original.updated_by.label : ""}</>
       },
     ],
@@ -278,7 +275,7 @@ function PaymentsPage() {
     enableTableFooter: true,
     enableRowVirtualization: true,
     onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
-   
+
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
@@ -388,7 +385,6 @@ function PaymentsPage() {
         {LoggedInUser?.assigned_permissions.includes('payments_create') && <MenuItem
 
           onClick={() => {
-            setChoice({ type: PaymentsChoiceActions.create_or_edit_payment })
             setPayment(undefined)
             setAnchorEl(null)
           }}
@@ -400,7 +396,7 @@ function PaymentsPage() {
               alert("select some payments")
             }
             else {
-              setChoice({ type: PaymentsChoiceActions.assign_payment_to_users })
+              setDialog('AssignPaymentsDialog')
               setPayment(undefined)
               setFlag(1)
             }
@@ -414,7 +410,7 @@ function PaymentsPage() {
               alert("select some payments")
             }
             else {
-              setChoice({ type: PaymentsChoiceActions.assign_payment_to_users })
+              setDialog('AssignPaymentsDialog')
               setPayment(undefined)
               setFlag(0)
             }
@@ -474,7 +470,7 @@ function PaymentsPage() {
                 if (data.length == 0)
                   alert("select some payments")
                 else
-                  setChoice({ type: PaymentsChoiceActions.bulk_delete_payment })
+                  setDialog('BulkDeletePaymentsDialog')
               }}
             >
               <Delete />
@@ -546,8 +542,8 @@ function PaymentsPage() {
       {payment && <CreateOrEditCheckListDialog payment={payment} setPayment={setPayment} />}
       {payment && paymentBox && <ViewpaymentRemarksDialog payment={payment} payment_box={paymentBox} />} */}
 
-      {<AssignPaymentsDialog flag={flag} payments={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
-      {table.getSelectedRowModel().rows && table.getSelectedRowModel().rows.length > 0 && <BulkDeletePaymentsDialog ids={table.getSelectedRowModel().rows.map((l) => { return l.original._id })} clearIds={() => { table.resetRowSelection() }} />}
+      {<AssignPaymentsDialog dialog={dialog} setDialog={setDialog} flag={flag} payments={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
+      {table.getSelectedRowModel().rows && table.getSelectedRowModel().rows.length > 0 && <BulkDeletePaymentsDialog dialog={dialog} setDialog={setDialog} ids={table.getSelectedRowModel().rows.map((l) => { return l.original._id })} clearIds={() => { table.resetRowSelection() }} />}
 
     </>
   )
