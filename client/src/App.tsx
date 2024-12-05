@@ -4,9 +4,12 @@ import { LoadingContext } from "./contexts/loaderContext";
 import { createTheme, LinearProgress, ThemeProvider, useTheme } from "@mui/material";
 import { v4 as uuidv4 } from 'uuid';
 import { useMemo } from 'react';
+import AlertBar from "./components/snacks/AlertBar";
+import { AlertContext } from "./contexts/alertContext";
 
 function App() {
   const { loading } = useContext(LoadingContext)
+  const { alert } = useContext(AlertContext)
   if (!localStorage.getItem('multi_login_token'))
     localStorage.setItem('multi_login_token', uuidv4())
 
@@ -50,6 +53,7 @@ function App() {
   return (
     <>
       <ThemeProvider theme={tableTheme}>
+        {alert && <AlertBar message={alert.message} color={alert.color} variant={alert.variant} />}
         {!loading && < AppRoutes />}
         {loading && <LinearProgress />}
       </ThemeProvider>

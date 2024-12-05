@@ -1,24 +1,25 @@
 import { Alert, Snackbar } from '@mui/material'
-import { useState } from 'react'
+import { useContext } from 'react'
+import { AlertContext } from '../../contexts/alertContext'
 
 
 type Props = {
     message: string,
-    color: "error" | "warning" | "success",
+    color: "error" | "warning" | "success" | "info",
     variant?: "filled" | "outlined"
 }
 function AlertBar({ message, color, variant }: Props) {
-    const [sent, setSent] = useState(Boolean(message))
+    const { alert, setAlert } = useContext(AlertContext)
     return (
         <Snackbar
-            open={sent}
+            open={alert ? true : false}
             color={color}
             autoHideDuration={6000}
-            onClose={() => setSent(false)}
+            onClose={() => setAlert(undefined)}
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             message={message}
         >
-            <Alert variant={variant || "filled"} onClose={() => setSent(false)} severity={color} sx={{ width: '100%' }}>
+            <Alert variant={variant || "filled"} onClose={() => setAlert(undefined)} severity={color} sx={{ width: '100%' }}>
                 {message}
             </Alert>
         </Snackbar>

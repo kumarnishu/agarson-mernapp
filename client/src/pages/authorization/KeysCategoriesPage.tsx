@@ -2,7 +2,7 @@ import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
-   import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import { KeyChoiceActions, ChoiceContext } from '../../contexts/dialogContext'
@@ -28,16 +28,16 @@ export default function KeysCategoriesPage() {
 
   const { setChoice } = useContext(ChoiceContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
-   const isFirstRender = useRef(true);
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  const isFirstRender = useRef(true);
 
-    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-  
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const columns = useMemo<MRT_ColumnDef<GetKeyCategoryDto>[]>(
     //column definitions...
-    () => categories && [
+    () => [
       {
         accessorKey: 'actions',
         header: '',
@@ -68,7 +68,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
       {
         accessorKey: 'category',
         header: 'Category',
-        
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category : ""}</>,
         filterSelectOptions: categories && categories.map((i) => {
@@ -78,7 +78,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
       {
         accessorKey: 'display_name',
         header: 'Display Name',
-        
+
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.display_name ? cell.row.original.display_name : ""}</>,
         filterSelectOptions: categories && categories.map((i) => {
@@ -88,20 +88,20 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
       {
         accessorKey: 'skip_bottom_rows',
         header: 'Skip Bottom Rows',
-  
+
         Cell: (cell) => <>{cell.row.original.skip_bottom_rows ? cell.row.original.skip_bottom_rows.toString() || "" : ""}</>,
       },
 
       {
         accessorKey: 'assigned_users',
         header: 'Assigned Users',
-        
+
         Cell: (cell) => <span title={cell.row.original.assigned_users}>{cell.row.original.assigned_users ? cell.row.original.assigned_users : ""}</span>,
 
       },
 
     ],
-    [categories],
+    [],
     //end
   );
 
@@ -146,14 +146,14 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     enableRowNumbers: true,
     enableColumnPinning: true,
     enableTableFooter: true,
-      enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility,rowVirtualizerInstanceRef, //
-        columnVirtualizerOptions: { overscan: 2 },
+    enableRowVirtualization: true,
+    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //
+    columnVirtualizerOptions: { overscan: 2 },
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
-      
+
       sorting,
       columnSizing: columnSizing
     }
@@ -183,7 +183,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const columnSizing = localStorage.getItem(
       'mrt_columnSizing_table_1',
     );
-    
+
 
 
 
@@ -192,10 +192,10 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
       setColumnVisibility(JSON.parse(columnVisibility));
     }
 
-    
+
     if (columnSizing)
       setColumnSizing(JSON.parse(columnSizing))
-    
+
     isFirstRender.current = false;
   }, []);
 
@@ -207,7 +207,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     );
   }, [columnVisibility]);
 
- 
+
 
 
   useEffect(() => {
