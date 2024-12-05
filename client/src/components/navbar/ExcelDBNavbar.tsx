@@ -1,19 +1,19 @@
-import { Avatar,  Paper, Stack, Typography } from '@mui/material';
+import { Avatar, Paper, Stack, Typography } from '@mui/material';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { useContext, useState } from 'react';
 import { UserContext } from '../../contexts/userContext';
 import { toTitleCase } from '../../utils/TitleCase';
-import { ButtonLogo } from '../logo/Agarson';
+import { AssignmentOutlined } from "@mui/icons-material";
 import { ProfileMenu } from '../logo/ProfileLogo';
 
 
 function ExcelDBNavbar() {
-    const { user } = useContext(UserContext)
-    const [anchorEl, setAnchorEl] = useState<Element | null>(null);
-    const navigate = useNavigate()
-    return (
-        <>
+  const { user } = useContext(UserContext)
+  const [anchorEl, setAnchorEl] = useState<Element | null>(null);
+  const navigate = useNavigate()
+  return (
+    <>
 
 <Paper sx={{ bgcolor: 'grey', width: '100vw' }}>
         {/* parent stack */}
@@ -41,9 +41,9 @@ function ExcelDBNavbar() {
             <Link to={"/ExcelDB"} title="Double-click to access the main dashboard, or single-click to return." onDoubleClick={() => navigate("/")} replace={true} style={{ textDecoration: 'none' }}>
               <Paper sx={{ ml: 2, p: 0.5, bgcolor: 'white', boxShadow: 1, borderRadius: 1, borderColor: 'white' }}>
                 <Stack flexDirection={"row"} gap={2} sx={{ alignItems: 'center' }}>
-                  <ButtonLogo title="" height={20} width={20} />
+                  <AssignmentOutlined />
                   <Typography variant="button" sx={{ fontSize: 12 }} component="div">
-                    Excel Reports
+                    Excel DB
                   </Typography>
                 </Stack>
               </Paper>
@@ -56,11 +56,11 @@ function ExcelDBNavbar() {
           </Stack>
         </Stack>
       </Paper >
-            <Outlet />
-            <ProfileMenu anchorEl={anchorEl} setAnchorEl={setAnchorEl} />
-        </>
+      <Outlet />
+      <ProfileMenu anchorEl={anchorEl} setAnchorEl={setAnchorEl} />
+    </>
 
-    )
+  )
 }
 
 

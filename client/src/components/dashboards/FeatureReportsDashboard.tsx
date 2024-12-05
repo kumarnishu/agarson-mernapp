@@ -2,7 +2,7 @@ import { Grid, Paper, Stack, Typography } from "@mui/material"
 import { Link, Outlet } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../contexts/userContext";
-import { ButtonLogo } from "../logo/Agarson";
+import { AssignmentOutlined } from "@mui/icons-material";
 
 function FeatureReportsDashboard() {
     const [features, setFeatures] = useState<{ feature: string, is_visible: boolean, url: string }[]>([])
@@ -28,7 +28,7 @@ function FeatureReportsDashboard() {
 
     return (
         <>
-          <Grid container sx={{ pt: 2 }} >
+          <Grid container  >
             {features.map((feat, index) => {
               return (
                 <Grid key={index} item xs={12} md={4} lg={4} sx={{ p: 1 }}>
@@ -54,7 +54,7 @@ function FeatureReportsDashboard() {
                         gap={2}
                         sx={{ alignItems: 'center' }}
                       >
-                        <ButtonLogo title="" height={20} width={20} />
+                        <AssignmentOutlined />
                         <Typography
                           variant="h6"
                           component="div"

@@ -6,8 +6,8 @@ import { useQuery } from "react-query";
 import { BackendError } from "../..";
 import { UserContext } from "../../contexts/userContext";
 import { GetAllKeyCategoriesForDropdown } from "../../services/KeyServices";
-import { ButtonLogo } from "../logo/Agarson";
 import { DropDownDto } from "../../dtos/dropdown.dto";
+import { AssignmentOutlined } from "@mui/icons-material";
 
 function ExcelDBDashboard() {
     const [features, setFeatures] = useState<{ feature: string, display_name: string, is_visible: boolean, url: string }[]>([])
@@ -31,33 +31,32 @@ function ExcelDBDashboard() {
 
     return (
         <>
-            <Grid container sx={{ pt: 2 }} >
+            <Grid container  >
                 {features.map((feat, index) => {
                     return (
                         <Grid key={index} item xs={12} md={4} lg={4} sx={{ p: 1 }}>
                             <Link title={feat.display_name} to={feat.url} style={{ textDecoration: 'none' }}>
                                 <Paper
-                                   sx={{
-                                    p: 2,
-                                    m: 0,
-                                    minHeight: 60,
-                                    position: 'relative',
-                                    overflow: 'hidden',
-                                    backdropFilter: 'blur(10px)', // Blurry effect
-                                    backgroundColor: 'rgba(255, 255, 255, 0.6)', // Semi-transparent blue
-                                    transition: '0.3s',
-                                    '&:hover': {
-                                        transform: 'translateY(-2px)',
-                                        backgroundColor: 'rgba(70, 130, 180, 0.7)', // Darken on hover
-                                    },
-                                }}
+                                    sx={{
+                                        m: 0,
+                                        minHeight: 60,
+                                        position: 'relative',
+                                        overflow: 'hidden',
+                                        backdropFilter: 'blur(10px)', // Blurry effect
+                                        backgroundColor: 'rgba(255, 255, 255, 0.6)', // Semi-transparent blue
+                                        transition: '0.3s',
+                                        '&:hover': {
+                                            transform: 'translateY(-2px)',
+                                            backgroundColor: 'rgba(70, 130, 180, 0.7)', // Darken on hover
+                                        },
+                                    }}
                                 >
                                     <Stack
                                         flexDirection="row"
                                         gap={2}
                                         sx={{ alignItems: 'center' }}
                                     >
-                                        <ButtonLogo title="" height={20} width={20} />
+                                        <AssignmentOutlined />
                                         <Typography
                                             variant="h6"
                                             component="div"

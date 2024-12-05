@@ -1,10 +1,10 @@
-import { Avatar,   Paper, Stack, Typography } from '@mui/material';
+import { Avatar, Paper, Stack, Typography } from '@mui/material';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { Menu as MenuIcon } from '@mui/icons-material';
-import  { useContext,  useState } from 'react';
+import { useContext, useState } from 'react';
 import { UserContext } from '../../contexts/userContext';
 import { toTitleCase } from '../../utils/TitleCase';
-import { ButtonLogo } from '../logo/Agarson';
+import { AssignmentOutlined } from "@mui/icons-material";
 import { ProfileMenu } from '../logo/ProfileLogo';
 
 
@@ -15,10 +15,10 @@ function DropDownNavbar() {
   return (
     <>
 
-<Paper sx={{ bgcolor: 'grey', width: '100vw' }}>
+      <Paper sx={{ bgcolor: 'grey', width: '100vw' }}>
         {/* parent stack */}
         <Stack direction="row" sx={{
-          px:1,
+          px: 1,
           justifyContent: "space-between", alignItems: "center"
         }}
         >
@@ -41,7 +41,7 @@ function DropDownNavbar() {
             <Link to={"/DropDown"} title="Double-click to access the main dashboard, or single-click to return." onDoubleClick={() => navigate("/")} replace={true} style={{ textDecoration: 'none' }}>
               <Paper sx={{ ml: 2, p: 0.5, bgcolor: 'white', boxShadow: 1, borderRadius: 1, borderColor: 'white' }}>
                 <Stack flexDirection={"row"} gap={2} sx={{ alignItems: 'center' }}>
-                  <ButtonLogo title="" height={20} width={20} />
+                  <AssignmentOutlined />
                   <Typography variant="button" sx={{ fontSize: 12 }} component="div">
                     DropDown
                   </Typography>
@@ -52,7 +52,7 @@ function DropDownNavbar() {
             < MenuIcon onClick={(e) => {
               if (e.currentTarget)
                 setAnchorEl(e.currentTarget)
-            }} sx={{ width: 35, height: 35, color: 'white',cursor:'pointer' }} />
+            }} sx={{ width: 35, height: 35, color: 'white', cursor: 'pointer' }} />
           </Stack>
         </Stack>
       </Paper >
