@@ -22,13 +22,13 @@ export const queryClient = new QueryClient({
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
-      <LoadingProvider>
-        <UserProvider>
+      <UserProvider>
+        <LoadingProvider>
           <AlertProvider>
             <App />
           </AlertProvider>
-        </UserProvider>
-      </LoadingProvider>
+        </LoadingProvider>
+      </UserProvider>
     </BrowserRouter>
   </QueryClientProvider>
 )
