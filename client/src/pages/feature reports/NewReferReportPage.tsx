@@ -271,7 +271,7 @@ export default function NewReferReportPage() {
       }
     }),
     muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '68vh' }
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '65vh' }
     }),
     muiTableHeadRowProps: () => ({
       sx: {

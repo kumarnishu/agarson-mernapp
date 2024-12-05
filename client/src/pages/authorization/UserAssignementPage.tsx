@@ -166,7 +166,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
       }
     }),
     muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '68vh' }
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '65vh' }
     }),
     muiTableHeadRowProps: () => ({
       sx: {

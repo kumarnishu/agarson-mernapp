@@ -153,7 +153,7 @@ export default function CrmCitiesPage() {
       }
     }),
     muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '68vh' }
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '65vh' }
     }),
     muiTableHeadRowProps: () => ({
       sx: {
