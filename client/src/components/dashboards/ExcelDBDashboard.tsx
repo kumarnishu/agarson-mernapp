@@ -8,6 +8,7 @@ import { UserContext } from "../../contexts/userContext";
 import { GetAllKeyCategoriesForDropdown } from "../../services/KeyServices";
 import { DropDownDto } from "../../dtos/dropdown.dto";
 import { AssignmentOutlined } from "@mui/icons-material";
+import { toTitleCase } from "../../utils/TitleCase";
 
 function ExcelDBDashboard() {
     const [features, setFeatures] = useState<{ feature: string, display_name: string, is_visible: boolean, url: string }[]>([])
@@ -64,7 +65,7 @@ function ExcelDBDashboard() {
                                                 fontWeight: 'medium', fontSize: 14
                                             }}
                                         >
-                                            {feat.feature}
+                                            {toTitleCase(feat.feature || "")}
                                         </Typography>
                                     </Stack>
                                 </Paper>
