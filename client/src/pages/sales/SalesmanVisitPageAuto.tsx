@@ -10,9 +10,9 @@ import moment from 'moment'
 import { UserContext } from '../../contexts/userContext'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { toTitleCase } from '../../utils/TitleCase'
-import { GetUserDto } from '../../dtos/user.dto'
 import { GetSalesAttendancesAuto } from '../../dtos/visit-report.dto'
 import { GetUsersForDropdown } from '../../services/UserServices'
+import { DropDownDto } from '../../dtos/dropdown.dto'
 
 
 export default function SalesmanVisitPageAuto() {
@@ -22,9 +22,9 @@ export default function SalesmanVisitPageAuto() {
         start_date: moment(new Date().setDate(new Date().getDate() - 10)).format("YYYY-MM-DD")
         , end_date: moment(new Date().setDate(new Date().getDate())).format("YYYY-MM-DD")
     })
-    const [users, setUsers] = useState<GetUserDto[]>([])
+    const [users, setUsers] = useState<DropDownDto[]>([])
     const [reports, setReports] = useState<GetSalesAttendancesAuto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: false }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: false }))
     const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetSalesAttendancesAuto[]>, BackendError>(["visits-auto", userId, dates?.start_date, dates?.end_date], async () => GetSalesmanAutoVisitReports({ id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
     const isFirstRender = useRef(true);
 
@@ -268,8 +268,8 @@ export default function SalesmanVisitPageAuto() {
                             {
                                 users.map((user, index) => {
 
-                                    return (<option key={index} value={user._id}>
-                                        {toTitleCase(user.username)}
+                                    return (<option key={index} value={user.id}>
+                                        {toTitleCase(user.label)}
                                     </option>)
 
                                 })

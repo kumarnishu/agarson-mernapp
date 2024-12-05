@@ -19,13 +19,13 @@ import { PaymentsExcelButtons } from '../../components/buttons/PaymentsExcelButt
 import AssignPaymentsDialog from '../../components/dialogs/payments/AssignPaymentsDialog'
 import BulkDeletePaymentsDialog from '../../components/dialogs/payments/BulkDeletePaymentsDialog'
 import { GetPaymentDto, GetPaymentsFromExcelDto } from '../../dtos/payment.dto'
-import { GetUserDto } from '../../dtos/user.dto'
 import { GetUsersForDropdown } from '../../services/UserServices'
+import { DropDownDto } from '../../dtos/dropdown.dto'
 
 
 function PaymentsPage() {
   const { user: LoggedInUser } = useContext(UserContext)
-  const [users, setUsers] = useState<GetUserDto[]>([])
+  const [users, setUsers] = useState<DropDownDto[]>([])
   const [payment, setPayment] = useState<GetPaymentDto>()
   const [payments, setPayments] = useState<GetPaymentDto[]>([])
   const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
@@ -35,7 +35,7 @@ function PaymentsPage() {
   const [userId, setUserId] = useState<string>()
   const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<{ category: string, count: number }[]>, BackendError>("payments", GetPaymentsTopBarDetails)
   const { setChoice } = useContext(ChoiceContext)
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'payments_view', show_assigned_only: false }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'payments_view', show_assigned_only: false }))
 
 
   const isFirstRender = useRef(true);
@@ -529,8 +529,8 @@ function PaymentsPage() {
               {
                 users.map((user, index) => {
 
-                  return (<option key={index} value={user._id}>
-                    {user.username}
+                  return (<option key={index} value={user.id}>
+                    {user.label}
                   </option>)
 
                 })

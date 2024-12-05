@@ -21,7 +21,7 @@ import ValidateShoeWeightDialog from '../../components/dialogs/production/Valida
 import { months } from '../../utils/months'
 import ViewShoeWeightPhotoDialog from '../../components/dialogs/production/ViewShoeWeightPhotoDialog'
 import { GetShoeWeightDto } from '../../dtos/shoe-weight.dto'
-import { GetUserDto } from '../../dtos/user.dto'
+import { DropDownDto } from '../../dtos/dropdown.dto'
 
 
 export default function ShoeWeightPage() {
@@ -29,7 +29,7 @@ export default function ShoeWeightPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const [weight, setWeight] = useState<GetShoeWeightDto>()
   const [weights, setWeights] = useState<GetShoeWeightDto[]>([])
-  const [users, setUsers] = useState<GetUserDto[]>([])
+  const [users, setUsers] = useState<DropDownDto[]>([])
   const { setChoice } = useContext(ChoiceContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
@@ -46,7 +46,7 @@ export default function ShoeWeightPage() {
   })
   const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetShoeWeightDto[], page: number, total: number, limit: number }>, BackendError>(["shoe_weights", userId, dates?.start_date, dates?.end_date], async () => GetShoeWeights({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'shoe_weight_view', show_assigned_only: true }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'shoe_weight_view', show_assigned_only: true }))
 
   useEffect(() => {
     if (isUsersSuccess)
@@ -378,8 +378,8 @@ export default function ShoeWeightPage() {
             {
               users.map((user, index) => {
 
-                return (<option key={index} value={user._id}>
-                  {user.username}
+                return (<option key={index} value={user.id}>
+                  {user.label}
                 </option>)
 
               })

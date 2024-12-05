@@ -26,13 +26,13 @@ import ViewChecklistBoxRemarksDialog from '../../components/dialogs/checklists/V
 import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
 import { GetChecklistBoxDto } from '../../dtos/checklist-box.dto'
 import { GetChecklistDto, GetChecklistFromExcelDto } from '../../dtos/checklist.dto'
-import { GetUserDto } from '../../dtos/user.dto'
 import { GetUsersForDropdown } from '../../services/UserServices'
+import { DropDownDto } from '../../dtos/dropdown.dto'
 
 
 function CheckListAdminPage() {
   const { user: LoggedInUser } = useContext(UserContext)
-  const [users, setUsers] = useState<GetUserDto[]>([])
+  const [users, setUsers] = useState<DropDownDto[]>([])
   const [checklist, setChecklist] = useState<GetChecklistDto>()
   const [checklists, setChecklists] = useState<GetChecklistDto[]>([])
   const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
@@ -63,7 +63,7 @@ function CheckListAdminPage() {
   let previous_date = new Date()
   let day = previous_date.getDate() - 3
   previous_date.setDate(day)
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'checklist_view', show_assigned_only: false }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'checklist_view', show_assigned_only: false }))
   const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date, stage], async () => GetChecklistReports({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date, stage: stage }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { mutate: changedate } = useMutation
@@ -530,8 +530,8 @@ function CheckListAdminPage() {
                   {
                     users.map((user, index) => {
 
-                      return (<option key={index} value={user._id}>
-                        {toTitleCase(user.username)}
+                      return (<option key={index} value={user.id}>
+                        {toTitleCase(user.label)}
                       </option>)
 
                     })

@@ -20,7 +20,7 @@ import ValidateSpareDyeDialog from '../../components/dialogs/production/Validate
 import CreateOrEditSpareDyeDialog from '../../components/dialogs/production/CreateOrEditSpareDyeDialog'
 import ViewSpareDyePhotoDialog from '../../components/dialogs/production/ViewSpareDyePhotoDialog'
 import { GetSpareDyeDto } from '../../dtos/spare-dye.dto'
-import { GetUserDto } from '../../dtos/user.dto'
+import { DropDownDto } from '../../dtos/dropdown.dto'
 
 
 export default function SpareDyesPage() {
@@ -28,7 +28,7 @@ export default function SpareDyesPage() {
     const { user: LoggedInUser } = useContext(UserContext)
     const [spareDye, setSpareDye] = useState<GetSpareDyeDto>()
     const [spareDyes, setSpareDyes] = useState<GetSpareDyeDto[]>([])
-    const [users, setUsers] = useState<GetUserDto[]>([])
+    const [users, setUsers] = useState<DropDownDto[]>([])
     const { setChoice } = useContext(ChoiceContext)
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -46,7 +46,7 @@ export default function SpareDyesPage() {
     })
     const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetSpareDyeDto[], page: number, total: number, limit: number }>, BackendError>(["spare_dyes", userId, dates?.start_date, dates?.end_date], async () => GetSpareDyes({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'spare_dye_view', show_assigned_only: true }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'spare_dye_view', show_assigned_only: true }))
 
     useEffect(() => {
         if (isUsersSuccess)
@@ -288,8 +288,8 @@ export default function SpareDyesPage() {
                         {
                             users.map((user, index) => {
 
-                                return (<option key={index} value={user._id}>
-                                    {user.username}
+                                return (<option key={index} value={user.id}>
+                                    {user.label}
                                 </option>)
 
                             })

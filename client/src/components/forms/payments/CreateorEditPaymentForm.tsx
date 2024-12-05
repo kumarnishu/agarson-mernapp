@@ -13,13 +13,12 @@ import { CreateOrEditPayment, GetAllPaymentCategories } from '../../../services/
 import moment from 'moment';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetPaymentDto, CreateOrEditPaymentDto } from '../../../dtos/payment.dto';
-import { GetUserDto } from '../../../dtos/user.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
 
 
 function CreateorEditPaymentForm({ payment }: { payment?: GetPaymentDto }) {
     const [categories, setCategories] = useState<DropDownDto[]>([])
-    const [users, setUsers] = useState<GetUserDto[]>([])
+    const [users, setUsers] = useState<DropDownDto[]>([])
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, { body: CreateOrEditPaymentDto, id?: string }>
         (CreateOrEditPayment, {
@@ -29,7 +28,7 @@ function CreateorEditPaymentForm({ payment }: { payment?: GetPaymentDto }) {
         })
 
 
-    const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
+    const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
     const { data: categoriesData, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("payment_categories", GetAllPaymentCategories)
     const { setChoice } = useContext(ChoiceContext)
 
@@ -226,10 +225,10 @@ function CreateorEditPaymentForm({ payment }: { payment?: GetPaymentDto }) {
                     renderValue={() => `${formik.values.assigned_users.length} users`}
                     {...formik.getFieldProps('assigned_users')}
                 >
-                    {users.map((user) => (
-                        <MenuItem key={user._id} value={user._id}>
-                            <Checkbox checked={formik.values.assigned_users.includes(user._id)} />
-                            <ListItemText primary={user.username} />
+                     {users.map((user) => (
+                        <MenuItem key={user.id} value={user.id}>
+                            <Checkbox checked={formik.values.assigned_users.includes(user.id)} />
+                            <ListItemText primary={user.label} />
                         </MenuItem>
                     ))}
                 </Select>

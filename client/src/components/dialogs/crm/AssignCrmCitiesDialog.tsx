@@ -10,15 +10,14 @@ import AlertBar from '../../snacks/AlertBar';
 import { useFormik } from 'formik';
 import * as Yup from "yup"
 import { AssignCRMCitiesToUsers } from '../../../services/LeadsServices';
-import { GetUserDto } from '../../../dtos/user.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
 
 
 function AssignCrmCitiesDialog({ cities, flag }: { cities: DropDownDto[], flag: number }) {
 
-    const [users, setUsers] = useState<GetUserDto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
+    const [users, setUsers] = useState<DropDownDto[]>([])
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
 
 
 
@@ -119,9 +118,9 @@ function AssignCrmCitiesDialog({ cities, flag }: { cities: DropDownDto[], flag: 
                             {...formik.getFieldProps('user_ids')}
                         >
                             {users.map((user) => (
-                                <MenuItem key={user._id} value={user._id}>
-                                    <Checkbox checked={formik.values.user_ids.includes(user._id)} />
-                                    <ListItemText primary={user.username} />
+                                <MenuItem key={user.id} value={user.id}>
+                                    <Checkbox checked={formik.values.user_ids.includes(user.id)} />
+                                    <ListItemText primary={user.label} />
                                 </MenuItem>
                             ))}
                         </Select>

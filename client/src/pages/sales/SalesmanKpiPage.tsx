@@ -16,13 +16,13 @@ import { GetSalesmanKpis } from '../../services/SalesServices'
 import { previousYear } from '../../utils/datesHelper'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { GetSalesmanKpiDto } from '../../dtos/sales-attendance.dto'
-import { GetUserDto } from '../../dtos/user.dto'
 import { GetUsersForDropdown } from '../../services/UserServices'
+import { DropDownDto } from '../../dtos/dropdown.dto'
 
 
 function SalesmanKpiPage() {
   const { user: LoggedInUser } = useContext(UserContext)
-  const [users, setUsers] = useState<GetUserDto[]>([])
+  const [users, setUsers] = useState<DropDownDto[]>([])
   const [kpis, setKpis] = useState<GetSalesmanKpiDto[]>([])
   const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
   const [userId, setUserId] = useState<string>('all')
@@ -43,7 +43,7 @@ function SalesmanKpiPage() {
   let day = previous_date.getDate() - 4
   previous_date.setDate(day)
   previous_date.setHours(0, 0, 0, 0)
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: false }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: false }))
   const { data, isLoading, refetch } = useQuery<AxiosResponse<GetSalesmanKpiDto[]>, BackendError>(["salesmankpis", userId, dates?.start_date, dates?.end_date], async () => GetSalesmanKpis({ id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -261,8 +261,8 @@ function SalesmanKpiPage() {
                   {
                     users.map((user, index) => {
 
-                      return (<option key={index} value={user._id}>
-                        {toTitleCase(user.username)}
+                      return (<option key={index} value={user.id}>
+                        {toTitleCase(user.label)}
                       </option>)
 
                     })

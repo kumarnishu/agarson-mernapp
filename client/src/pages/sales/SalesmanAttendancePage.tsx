@@ -18,13 +18,13 @@ import { ChoiceContext, SaleChoiceActions } from '../../contexts/dialogContext'
 import { GetSalesmanAttendances } from '../../services/SalesServices'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { GetSalesAttendanceDto } from '../../dtos/sales-attendance.dto'
-import { GetUserDto } from '../../dtos/user.dto'
 import { GetUsersForDropdown } from '../../services/UserServices'
+import { DropDownDto } from '../../dtos/dropdown.dto'
 
 
 function SalesmanAttendancePage() {
     const { user: LoggedInUser } = useContext(UserContext)
-    const [users, setUsers] = useState<GetUserDto[]>([])
+    const [users, setUsers] = useState<DropDownDto[]>([])
     const [attendance, setAttendance] = useState<GetSalesAttendanceDto>()
     const [attendances, setAttendances] = useState<GetSalesAttendanceDto[]>([])
     const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
@@ -47,7 +47,7 @@ function SalesmanAttendancePage() {
     let day = previous_date.getDate() - 4
     previous_date.setDate(day)
     previous_date.setHours(0, 0, 0, 0)
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: false }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: false }))
     const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetSalesAttendanceDto[], page: number, total: number, limit: number }>, BackendError>(["attendances", userId, dates?.start_date, dates?.end_date], async () => GetSalesmanAttendances({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -252,8 +252,8 @@ function SalesmanAttendancePage() {
                                     {
                                         users.map((user, index) => {
 
-                                            return (<option key={index} value={user._id}>
-                                                {toTitleCase(user.username)}
+                                            return (<option key={index} value={user.id}>
+                                                {toTitleCase(user.label)}
                                             </option>)
 
                                         })

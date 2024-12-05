@@ -17,8 +17,8 @@ import DeleteProductionItemDialog from '../../components/dialogs/production/Dele
 import moment from 'moment'
 import CreateOrEditProductionDialog from '../../components/dialogs/production/CreateOrEditProductionDialog'
 import { GetProductionDto } from '../../dtos/production.dto'
-import { GetUserDto } from '../../dtos/user.dto'
 import { GetUsersForDropdown } from '../../services/UserServices'
+import { DropDownDto } from '../../dtos/dropdown.dto'
 
 
 export default function ProductionPage() {
@@ -26,7 +26,7 @@ export default function ProductionPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const [production, setProduction] = useState<GetProductionDto>()
   const [productions, setProductions] = useState<GetProductionDto[]>([])
-  const [users, setUsers] = useState<GetUserDto[]>([])
+  const [users, setUsers] = useState<DropDownDto[]>([])
   const { setChoice } = useContext(ChoiceContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const isFirstRender = useRef(true);
@@ -43,7 +43,7 @@ export default function ProductionPage() {
   })
   const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetProductionDto[], page: number, total: number, limit: number }>, BackendError>(["productions", userId, dates?.start_date, dates?.end_date], async () => GetProductions({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'production_view', show_assigned_only: true }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'production_view', show_assigned_only: true }))
 
   useEffect(() => {
     if (isUsersSuccess)
@@ -298,8 +298,8 @@ export default function ProductionPage() {
             {
               users.map((user, index) => {
 
-                return (<option key={index} value={user._id}>
-                  {user.username}
+                return (<option key={index} value={user.id}>
+                  {user.label}
                 </option>)
 
               })

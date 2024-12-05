@@ -22,12 +22,11 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { GetChecklistBoxDto } from '../../dtos/checklist-box.dto'
 import { GetChecklistDto, GetChecklistFromExcelDto } from '../../dtos/checklist.dto'
 import { DropDownDto } from '../../dtos/dropdown.dto'
-import { GetUserDto } from '../../dtos/user.dto'
 
 
 function ChecklistPage() {
   const { user: LoggedInUser } = useContext(UserContext)
-  const [users, setUsers] = useState<GetUserDto[]>([])
+  const [users, setUsers] = useState<DropDownDto[]>([])
   const [stage, setStage] = useState('open')
   const [checklist, setChecklist] = useState<GetChecklistDto>()
   const [checklists, setChecklists] = useState<GetChecklistDto[]>([])
@@ -54,7 +53,7 @@ function ChecklistPage() {
   let day = previous_date.getDate() - 1
   previous_date.setDate(day)
   previous_date.setHours(0, 0, 0, 0)
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'checklist_view', show_assigned_only: true }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'checklist_view', show_assigned_only: true }))
   const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, stage], async () => GetChecklists({ limit: paginationData?.limit, page: paginationData?.page, id: userId, stage: stage }))
   const { mutate: changedate } = useMutation
     <AxiosResponse<any>, BackendError, { id: string, next_date: string }>
@@ -362,8 +361,8 @@ function ChecklistPage() {
                   {
                     users.map((user, index) => {
 
-                      return (<option key={index} value={user._id}>
-                        {toTitleCase(user.username)}
+                      return (<option key={index} value={user.id}>
+                        {toTitleCase(user.label)}
                       </option>)
 
                     })

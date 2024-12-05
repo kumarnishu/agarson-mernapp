@@ -20,12 +20,11 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { GetActivitiesOrRemindersDto, GetActivitiesTopBarDetailsDto } from '../../dtos/crm-remarks.dto'
 import { DropDownDto } from '../../dtos/dropdown.dto'
-import { GetUserDto } from '../../dtos/user.dto'
 import { GetUsersForDropdown } from '../../services/UserServices'
 
 function CrmActivitiesReportPage() {
     const { user } = useContext(UserContext)
-    const [users, setUsers] = useState<GetUserDto[]>([])
+    const [users, setUsers] = useState<DropDownDto[]>([])
     const [paginationData, setPaginationData] = useState({ limit: 5000, page: 1, total: 1 });
     const [stage, setStage] = useState<string>('all');
     const [stages, setStages] = useState<DropDownDto[]>([])
@@ -44,7 +43,7 @@ function CrmActivitiesReportPage() {
     let previous_date = new Date()
     let day = previous_date.getDate() - 1
     previous_date.setDate(day)
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'leads_view', show_assigned_only: true }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'leads_view', show_assigned_only: true }))
     const { data, isLoading, refetch: ReftechRemarks, isRefetching } = useQuery<AxiosResponse<{ result: GetActivitiesOrRemindersDto[], page: number, total: number, limit: number }>, BackendError>(["activities", stage, userId, dates?.start_date, dates?.end_date], async () => GetRemarks({ stage: stage, limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
     const { setChoice } = useContext(ChoiceContext)
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -394,8 +393,8 @@ function CrmActivitiesReportPage() {
                                 {
                                     users.map((user, index) => {
 
-                                        return (<option key={index} value={user._id}>
-                                            {user.username}
+                                        return (<option key={index} value={user.id}>
+                                            {user.label}
                                         </option>)
 
                                     })

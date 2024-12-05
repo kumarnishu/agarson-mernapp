@@ -11,14 +11,14 @@ import { useFormik } from 'formik';
 import * as Yup from "yup"
 import { AssignKeyCategoryToUsers } from '../../../services/KeyServices';
 import { GetKeyCategoryDto } from '../../../dtos/key-category.dto';
-import { GetUserDto } from '../../../dtos/user.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
 
 
 function AssignKeyCategoriesDialog({ categories, flag }: { categories: GetKeyCategoryDto[], flag: number }) {
 
-    const [users, setUsers] = useState<GetUserDto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
+    const [users, setUsers] = useState<DropDownDto[]>([])
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
 
 
 
@@ -119,10 +119,10 @@ function AssignKeyCategoriesDialog({ categories, flag }: { categories: GetKeyCat
                             renderValue={() => `${formik.values.user_ids.length} users`}
                             {...formik.getFieldProps('user_ids')}
                         >
-                            {users.map((user) => (
-                                <MenuItem key={user._id} value={user._id}>
-                                    <Checkbox checked={formik.values.user_ids.includes(user._id)} />
-                                    <ListItemText primary={user.username} />
+                             {users.map((user) => (
+                                <MenuItem key={user.id} value={user.id}>
+                                    <Checkbox checked={formik.values.user_ids.includes(user.id)} />
+                                    <ListItemText primary={user.label} />
                                 </MenuItem>
                             ))}
                         </Select>

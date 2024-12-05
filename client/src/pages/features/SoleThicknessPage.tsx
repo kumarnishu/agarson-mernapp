@@ -18,7 +18,7 @@ import moment from 'moment'
 import CreateOrEditSoleThicknessDialog from '../../components/dialogs/production/CreateOrEditSoleThicknessDialog'
 import DeleteProductionItemDialog from '../../components/dialogs/production/DeleteProductionItemDialog'
 import { GetSoleThicknessDto } from '../../dtos/sole-thickness.dto'
-import { GetUserDto } from '../../dtos/user.dto'
+import { DropDownDto } from '../../dtos/dropdown.dto'
 
 
 export default function SoleThicknessPage() {
@@ -26,7 +26,7 @@ export default function SoleThicknessPage() {
     const { user: LoggedInUser } = useContext(UserContext)
     const [thickness, setThickness] = useState<GetSoleThicknessDto>()
     const [thicknesses, setProductions] = useState<GetSoleThicknessDto[]>([])
-    const [users, setUsers] = useState<GetUserDto[]>([])
+    const [users, setUsers] = useState<DropDownDto[]>([])
     const { setChoice } = useContext(ChoiceContext)
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -44,7 +44,7 @@ export default function SoleThicknessPage() {
     })
     const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetSoleThicknessDto[], page: number, total: number, limit: number }>, BackendError>(["thickness", userId, dates?.start_date, dates?.end_date], async () => GetSoleThickness({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'sole_thickness_view', show_assigned_only: true }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'sole_thickness_view', show_assigned_only: true }))
 
     useEffect(() => {
         if (isUsersSuccess)
@@ -266,8 +266,8 @@ export default function SoleThicknessPage() {
                         {
                             users.map((user, index) => {
 
-                                return (<option key={index} value={user._id}>
-                                    {user.username}
+                                return (<option key={index} value={user.id}>
+                                    {user.label}
                                 </option>)
 
                             })
