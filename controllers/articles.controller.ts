@@ -3,6 +3,7 @@ import moment from 'moment';
 import xlsx from "xlsx";
 import { GetArticleDto, CreateOrEditArticleDto } from '../dtos/article.dto';
 import { IArticle, Article } from '../models/article.model';
+import { DropDownDto } from '../dtos/dropdown.dto';
 
 export const GetArticles = async (req: Request, res: Response, next: NextFunction) => {
     let hidden = String(req.query.hidden)
@@ -22,6 +23,24 @@ export const GetArticles = async (req: Request, res: Response, next: NextFunctio
             updated_at: m.updated_at && moment(m.updated_at).format("DD/MM/YYYY"),
             created_by: { id: m.created_by._id, value: m.created_by.username, label: m.created_by.username },
             updated_by: { id: m.updated_by._id, value: m.updated_by.username, label: m.updated_by.username }
+        }
+    })
+    return res.status(200).json(result)
+}
+
+
+export const GetArticlesForDropdown = async (req: Request, res: Response, next: NextFunction) => {
+    let hidden = String(req.query.hidden)
+    let result: DropDownDto[] = []
+    let articles: IArticle[] = []
+    if (hidden === "true") {
+        articles = await Article.find({ active: false }).populate('created_by').populate('updated_by').sort('name')
+    } else
+        articles = await Article.find({ active: true }).populate('created_by').populate('updated_by').sort('name')
+    result = articles.map((m) => {
+        return {
+            id: m._id,
+            label: m.name
         }
     })
     return res.status(200).json(result)

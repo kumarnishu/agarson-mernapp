@@ -4,6 +4,7 @@ import moment from "moment";
 import { GetDyeDto, GetDyeDtoFromExcel, CreateOrEditDyeDTo } from "../dtos/dye.dto";
 import { IArticle, Article } from "../models/article.model";
 import { Dye, IDye } from "../models/dye.model";
+import { DropDownDto } from "../dtos/dropdown.dto";
 
 export const GetDyeById = async (req: Request, res: Response, next: NextFunction) => {
     let id = req.params.id;
@@ -50,6 +51,24 @@ export const GetDyes = async (req: Request, res: Response, next: NextFunction) =
     })
     return res.status(200).json(result)
 }
+export const GetDyeForDropdown = async (req: Request, res: Response, next: NextFunction) => {
+    let hidden = String(req.query.hidden)
+    let dyes: IDye[] = []
+    let result: DropDownDto[] = []
+    if (hidden === "true") {
+        dyes = await Dye.find({ active: false }).populate('articles').populate('created_by').populate('updated_by').sort('dye_number')
+    } else
+        dyes = await Dye.find({ active: true }).populate('articles').populate('created_by').populate('updated_by').sort('dye_number')
+    result = dyes.map((dye) => {
+        return {
+            id: dye._id,
+            label: String(dye.dye_number),
+
+        }
+    })
+    return res.status(200).json(result)
+}
+
 export const BulkUploadDye = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.file)
         return res.status(400).json({

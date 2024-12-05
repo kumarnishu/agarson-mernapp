@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from 'express';
 import moment from "moment";
 import { GetMachineDto, CreateOrEditMachineDto } from "../dtos/machine.dto";
 import { IMachine, Machine } from "../models/machine.model";
+import { DropDownDto } from "../dtos/dropdown.dto";
 
 export const GetMachines = async (req: Request, res: Response, next: NextFunction) => {
     let hidden = String(req.query.hidden)
@@ -29,6 +30,23 @@ export const GetMachines = async (req: Request, res: Response, next: NextFunctio
     })
     return res.status(200).json(result)
 }
+export const GetMachinesForDropDown = async (req: Request, res: Response, next: NextFunction) => {
+    let hidden = String(req.query.hidden)
+    let machines: IMachine[] = []
+    let result: DropDownDto[] = []
+    if (hidden === "true") {
+        machines = await Machine.find({ active: false }).populate('created_by').populate('updated_by').sort('serial_no')
+    } else
+        machines = await Machine.find({ active: true }).populate('created_by').populate('updated_by').sort('serial_no')
+    result = machines.map((m) => {
+        return {
+            id: m._id,
+            label: m.name
+        }
+    })
+    return res.status(200).json(result)
+}
+
 export const CreateMachine = async (req: Request, res: Response, next: NextFunction) => {
     const { name, display_name, category, serial_no } = req.body as CreateOrEditMachineDto
     if (!name || !display_name || !category || !serial_no) {

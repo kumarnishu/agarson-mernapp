@@ -5,6 +5,7 @@ import moment from "moment";
 import isMongoId from "validator/lib/isMongoId";
 import { GetDyeLocationDto, CreateOrEditDyeLocationDto } from "../dtos/dye-location.dto";
 import { IDyeLocation, DyeLocation } from "../models/dye-location.model";
+import { DropDownDto } from "../dtos/dropdown.dto";
 
 export const GetAllDyeLocations = async (req: Request, res: Response, next: NextFunction) => {
     let hidden = String(req.query.hidden)
@@ -26,6 +27,24 @@ export const GetAllDyeLocations = async (req: Request, res: Response, next: Next
             updated_at: l.updated_at && moment(l.updated_at).format("DD/MM/YYYY"),
             created_by: { id: l.created_by._id, value: l.created_by.username, label: l.created_by.username },
             updated_by: { id: l.updated_by._id, value: l.updated_by.username, label: l.updated_by.username }
+        }
+    })
+    return res.status(200).json(result)
+}
+export const GetAllDyeLocationsForDropdown = async (req: Request, res: Response, next: NextFunction) => {
+    let hidden = String(req.query.hidden)
+    let result: DropDownDto[] = []
+    let locations: IDyeLocation[] = []
+    if (hidden === "true") {
+        locations = await DyeLocation.find({ active: false }).populate('created_by').populate('updated_by')
+    } else
+        locations = await DyeLocation.find({ active: true }).populate('created_by').populate('updated_by')
+
+
+    result = locations.map((l) => {
+        return {
+            id: l._id,
+            label: l.name
         }
     })
     return res.status(200).json(result)

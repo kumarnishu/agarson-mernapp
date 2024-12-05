@@ -31,6 +31,12 @@ export const GetMachines = async (hidden?: string) => {
     }
     return await apiClient.get(`machines`);
 };
+export const GetMachinesForDropdown = async (hidden?: string) => {
+    if (hidden) {
+        return await apiClient.get(`dropdown/machines?hidden=${hidden}`);
+    }
+    return await apiClient.get(`dropdown/machines`);
+};
 
 export const BulkUploadMachines = async (body: FormData) => {
     return await apiClient.put(`machines/upload/bulk`, body);
@@ -47,11 +53,6 @@ export const CreateOrEditMachineCategory = async ({ body, id }: {
     }
     return await apiClient.post(`machine/categories`, body)
 }
-
-
-
-
-
 
 
 
@@ -73,6 +74,9 @@ export const ToogleDyeLocation = async (id: string) => {
 
 export const GetAllDyeLocations = async (hidden?: string) => {
     return await apiClient.get(`dye/locations/?hidden=${hidden}`)
+}
+export const GetAllDyeLocationsForDropdown = async (hidden?: string) => {
+    return await apiClient.get(`dropdown/dye/locations/?hidden=${hidden}`)
 }
 export const BulkUploadDyes = async (body: FormData) => {
     return await apiClient.put(`dyes/upload/bulk`, body);
@@ -96,7 +100,12 @@ export const GetDyes = async (hidden?: string) => {
     else
         return await apiClient.get(`dyes`);
 };
-
+export const GetDyesForDropdown = async (hidden?: string) => {
+    if (hidden)
+        return await apiClient.get(`dropdown/dyes?hidden=${hidden}`);
+    else
+        return await apiClient.get(`dropdown/dyes`);
+};
 export const CreateOrEditArticle = async ({ body, id }: { body: CreateOrEditArticleDto, id?: string }) => {
     if (id)
         return await apiClient.put(`articles/${id}`, body);
@@ -113,18 +122,16 @@ export const GetArticles = async (hidden?: string) => {
     else
         return await apiClient.get(`articles`);
 };
-
+export const GetArticlesForDropdown = async (hidden?: string) => {
+    if (hidden)
+        return await apiClient.get(`dropdown/articles?hidden=${hidden}`);
+    else
+        return await apiClient.get(`dropdown/articles`);
+};
 
 export const BulkUploadArticles = async (body: FormData) => {
     return await apiClient.put(`articles/upload/bulk`, body);
 }
-
-
-
-
-
-
-
 
 export const CreateOrEditProduction = async ({ id, body }: {
     body: CreateOrEditProductionDto, id?: string
