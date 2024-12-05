@@ -28,7 +28,7 @@ function UpdateProfileDialog({ dialog, setDialog }: Props) {
             <DialogContent>
                 {
                     (isEditing && user) ?
-                        <UpdateProfileForm user={user} />
+                        <UpdateProfileForm setDialog={setDialog}user={user} />
                         :
                         null
                 }

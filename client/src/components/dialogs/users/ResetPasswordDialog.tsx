@@ -22,7 +22,7 @@ function ResetPasswordDialog({ dialog, setDialog }: Props) {
 
                 <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">Reset Password</DialogTitle>
                 <DialogContent>
-                    <ResetPasswordForm token={token || ""} />
+                    <ResetPasswordForm setDialog={setDialog} token={token || ""} />
                 </DialogContent>
 
             </Dialog >

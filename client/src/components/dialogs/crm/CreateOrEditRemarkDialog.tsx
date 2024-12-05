@@ -1,6 +1,4 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
-import { useContext } from 'react'
-import { LeadChoiceActions, ChoiceContext } from '../../../contexts/dialogContext'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditRemarkForm from '../../forms/crm/CreateOrEditRemarkForm'
 import { GetRemarksDto } from '../../../dtos/crm-remarks.dto'
@@ -28,7 +26,9 @@ function CreateOrEditRemarkDialog({ lead, remark, dialog, setDialog }: Props) {
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!remark ? "New Remark" : "Edit Remark"}</DialogTitle>
             <DialogContent>
-                <CreateOrEditRemarkForm lead={lead} remark={remark} setDisplay2={setDialog} />
+                <CreateOrEditRemarkForm setDialog={
+                    setDialog
+                }  lead={lead} remark={remark}  />
             </DialogContent>
         </Dialog>
     )

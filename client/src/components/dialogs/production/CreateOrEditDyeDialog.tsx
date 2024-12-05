@@ -22,7 +22,9 @@ function CreateOrEditDyeDialog({ dye, setDialog, dialog }: Props) {
             </DialogTitle>
 
             <DialogContent>
-                <CreateOrEditDyeForm dye={dye} />
+                <CreateOrEditDyeForm setDialog={
+                    setDialog
+                }dye={dye} />
             </DialogContent>
             <Stack
                 direction="column"

@@ -22,7 +22,9 @@ function CreateOrEditPaymentCategoryDialog({ category, dialog, setDialog }: Prop
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!category ? "New Category" : "Edit Category"}</DialogTitle>
             <DialogContent>
-                <CreateOrEditCategoryForm category={category} />
+                <CreateOrEditCategoryForm setDialog={
+                    setDialog
+                }category={category} />
             </DialogContent>
         </Dialog>
     )

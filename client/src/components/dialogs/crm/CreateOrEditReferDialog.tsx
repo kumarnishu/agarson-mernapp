@@ -21,7 +21,9 @@ function CreateOrEditReferDialog({ refer, dialog, setDialog }: Props) {
         </IconButton>
         <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{refer ? 'Update Refer' : 'New Refer'}</DialogTitle>
         <DialogContent>
-          <CreateOrEditReferForm refer={refer} />
+          <CreateOrEditReferForm setDialog={
+                    setDialog
+                }  refer={refer} />
 
         </DialogContent>
       </Dialog>

@@ -21,7 +21,7 @@ function CreateOrEditVisitReportRemarkDialog({ employee, visit_date, remark, dia
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!remark ? "New Remark" : "Edit Remark"}</DialogTitle>
             <DialogContent>
-            <CreateOrEditVisitReportRemarkForm employee={employee} remark={remark} visit_date={visit_date} setDisplay={setDialog} />
+            <CreateOrEditVisitReportRemarkForm employee={employee} remark={remark} visit_date={visit_date} setDialog={setDialog} />
             </DialogContent>
         </Dialog>
     )

@@ -24,7 +24,9 @@ function CreateOrEditCheckListDialog({ checklist, setChecklist, dialog, setDialo
                 <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}> {!checklist ? "New Checklist" : "Edit Checklist"}
                 </DialogTitle>
                 <DialogContent sx={{ p: 2 }}>
-                    <CreateorEditCheckListForm checklist={checklist} />
+                    <CreateorEditCheckListForm setDialog={
+                    setDialog
+                } checklist={checklist} />
                 </DialogContent>
             </Dialog>
         </>

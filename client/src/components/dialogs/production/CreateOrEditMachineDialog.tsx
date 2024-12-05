@@ -21,7 +21,9 @@ function CreateOrEditMachineDialog({ machine, dialog, setDialog }: Props) {
             </DialogTitle>
 
             <DialogContent>
-                <CreateOrEditMachineForm machine={machine} />
+                <CreateOrEditMachineForm setDialog={
+                    setDialog
+                }machine={machine} />
             </DialogContent>
         </Dialog >
     )

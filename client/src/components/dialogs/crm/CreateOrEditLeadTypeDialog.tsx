@@ -23,7 +23,9 @@ function CreateOrEditLeadTypeDialog({ type, dialog, setDialog }: Props) {
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!type ? "New Lead Type" : "Edit Lead Type"}</DialogTitle>
             <DialogContent>
-                <CreateOrEditLeadTypeForm type={type} />
+                <CreateOrEditLeadTypeForm setDialog={
+                    setDialog
+                }  type={type} />
             </DialogContent>
         </Dialog>
     )

@@ -21,7 +21,9 @@ function CreateOrEditMachineCategoryDialog({ machine_category, dialog, setDialog
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!machine_category ? "New Category" : "Edit Category"}</DialogTitle>
             <DialogContent>
-                <CreateOrEditMachinecategoryForm machine_category={machine_category} />
+                <CreateOrEditMachinecategoryForm setDialog={
+                    setDialog
+                }machine_category={machine_category} />
             </DialogContent>
         </Dialog>
     )

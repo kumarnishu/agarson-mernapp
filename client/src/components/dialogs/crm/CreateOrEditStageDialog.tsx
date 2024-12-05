@@ -24,7 +24,9 @@ function CreateOrEditStageDialog({ stage, dialog, setDialog }: Props) {
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!stage ? "New Stage" : "Edit Stage"}</DialogTitle>
             <DialogContent>
-                <CreateOrEditLeadStageForm stage={stage} />
+                <CreateOrEditLeadStageForm  setDialog={
+                    setDialog
+                }stage={stage} />
             </DialogContent>
         </Dialog>
     )

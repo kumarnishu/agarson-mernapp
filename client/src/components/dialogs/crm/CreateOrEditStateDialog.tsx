@@ -21,7 +21,9 @@ function CreateOrEditCrmStateDialog({ state, dialog, setDialog }: Props) {
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!state ? "New State" : "Edit State"}</DialogTitle>
             <DialogContent>
-                <CreateOrEditStateForm state={state} />
+                <CreateOrEditStateForm setDialog={
+                    setDialog
+                }state={state} />
             </DialogContent>
         </Dialog>
     )

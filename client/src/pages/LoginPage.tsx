@@ -16,7 +16,7 @@ function LoginPage() {
                         <a href="https://agarsonshoes.in/">
                             <AgarsonLogo width={100} height={100} title='Agarson Shoes' />
                         </a>
-                        <LoginForm />
+                        <LoginForm setDialog={setDialog}/>
                         <Stack
                             alignItems="center"
                             justifyContent="center"

@@ -22,7 +22,7 @@ function CreateOrEditSalesmanAttendanceDialog({ attendance, dialog, setDialog }:
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!attendance ? "New Attendance" : "Edit Attendance"}</DialogTitle>
             <DialogContent>
-                <CreateOrEditSalesAttendanceForm attendance={attendance} />
+                <CreateOrEditSalesAttendanceForm setDialog={setDialog}attendance={attendance} />
             </DialogContent>
         </Dialog>
     )

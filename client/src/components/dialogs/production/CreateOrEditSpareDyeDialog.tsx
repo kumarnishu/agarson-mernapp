@@ -23,7 +23,7 @@ function CreateOrEditSpareDyeDialog({ sparedye, dialog, setDialog }: Props) {
             </DialogTitle>
 
             <DialogContent>
-                <CreateOrEditSpareDyeForm sparedye={sparedye} />
+                <CreateOrEditSpareDyeForm setDialog={setDialog}sparedye={sparedye} />
 
             </DialogContent>
         </Dialog >

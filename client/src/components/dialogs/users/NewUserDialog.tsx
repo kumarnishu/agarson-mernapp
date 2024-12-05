@@ -18,7 +18,7 @@ function NewUserDialog({ dialog, setDialog }: Props) {
 
       <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>New User Form</DialogTitle>
       <DialogContent>
-        <NewUserForm />
+        <NewUserForm setDialog={setDialog}/>
       </DialogContent>
       <DialogActions>
         <Typography

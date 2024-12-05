@@ -21,7 +21,9 @@ function CreateOrEditArticleDialog({ article, dialog, setDialog }: Props) {
             </DialogTitle>
 
             <DialogContent>
-                <CreateOrEditArticleForm article={article} />
+                <CreateOrEditArticleForm setDialog={
+                    setDialog
+                }article={article} />
             </DialogContent>
         </Dialog >
     )

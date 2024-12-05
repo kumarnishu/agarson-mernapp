@@ -21,7 +21,9 @@ function CreateOrEditLeadDialog({ lead, dialog, setDialog }: Props) {
         </IconButton>
         <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{lead ? 'Update Lead' : 'New Lead'}</DialogTitle>
         <DialogContent>
-          <CreateOrEditLeadForm lead={lead} />
+          <CreateOrEditLeadForm setDialog={
+                    setDialog
+                } lead={lead} />
 
         </DialogContent>
       </Dialog>

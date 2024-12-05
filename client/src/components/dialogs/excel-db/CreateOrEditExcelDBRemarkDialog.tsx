@@ -21,7 +21,9 @@ function CreateOrEditExcelDBRemarkDialog({ category, obj, remark, dialog, setDia
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!remark ? "New Remark" : "Edit Remark"}</DialogTitle>
             <DialogContent>
-                <CreateOrEditExcelDBRemarkForm category={category} remark={remark} obj={obj} setDisplay={setDialog} />
+                <CreateOrEditExcelDBRemarkForm category={category} remark={remark} obj={obj} setDialog={
+                    setDialog
+                } />
             </DialogContent>
         </Dialog>
     )

@@ -21,7 +21,9 @@ function ReferLeadDialog({ lead, dialog, setDialog }: Props) {
             <DialogTitle sx={{ textAlign: 'center', minWidth: '350px' }}>Refer Lead</DialogTitle>
             <DialogContent>
                 {lead ?
-                    < ReferLeadForm lead={lead} />
+                    < ReferLeadForm setDialog={
+                        setDialog
+                    }lead={lead} />
                     : <CircularProgress size="large" />
                 }
             </DialogContent>

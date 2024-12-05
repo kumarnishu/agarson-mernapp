@@ -17,7 +17,7 @@ function EmailVerifySendMailDialog({ dialog, setDialog }: Props) {
 
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">Verify Your Email</DialogTitle>
             <DialogContent>
-                <EmailVerifySendMailDialogForm />
+                <EmailVerifySendMailDialogForm setDialog={setDialog} />
             </DialogContent>
             <DialogActions>
                 <Typography

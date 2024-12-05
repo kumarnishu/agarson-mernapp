@@ -21,7 +21,9 @@ function CreateOrEditLeadSourceDialog({ source, dialog, setDialog }: Props) {
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!source ? "New Lead Source" : "Edit Lead Source"}</DialogTitle>
             <DialogContent>
-                <CreateOrEditLeadSourceForm source={source} />
+                <CreateOrEditLeadSourceForm setDialog={
+                    setDialog
+                } source={source} />
             </DialogContent>
         </Dialog>
     )

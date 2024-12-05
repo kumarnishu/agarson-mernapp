@@ -27,7 +27,9 @@ function RemoveLeadReferralDialog({ lead, dialog, setDialog }: Props) {
                     {`Warning ! This will remove refreral from  ${lead.name}`}
 
                 </Typography>
-                <RemoveLeadReferForm lead={lead} />
+                <RemoveLeadReferForm setDialog={
+                    setDialog
+                }lead={lead} />
             </DialogContent>
         </Dialog >
     )

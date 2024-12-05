@@ -19,7 +19,7 @@ function UpdateUsePasswordDialog({ user, dialog, setDialog }: Props) {
                 </IconButton>
                 <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">Update Password</DialogTitle>
                 <DialogContent>
-                    <UpdateUserPasswordForm user={user} />
+                    <UpdateUserPasswordForm setDialog={setDialog}user={user} />
                 </DialogContent>
             </Dialog >
         </>

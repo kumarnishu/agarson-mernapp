@@ -29,10 +29,10 @@ function CreateOrEditShoeWeightDialog({ shoe_weight, dialog, setDialog }: Props)
             </DialogTitle>
 
             <DialogContent>
-                {dialog === "CreateOrEditShoeWeightDialog" && <CreateOrEditShoeWeightForm shoe_weight={shoe_weight} />}
+                {dialog === "CreateOrEditShoeWeightDialog" && <CreateOrEditShoeWeightForm setDialog={setDialog} shoe_weight={shoe_weight} />}
                 {shoe_weight && <>
-                    {dialog === "CreateOrEditShoeWeightDialog2" && <UpdateShoeWeightForm2 shoe_weight={shoe_weight} />}
-                    {dialog === "CreateOrEditShoeWeightDialog3" && <UpdateShoeWeightForm3 shoe_weight={shoe_weight} />}
+                    {dialog === "CreateOrEditShoeWeightDialog2" && <UpdateShoeWeightForm2 setDialog={setDialog} shoe_weight={shoe_weight} />}
+                    {dialog === "CreateOrEditShoeWeightDialog3" && <UpdateShoeWeightForm3 setDialog={setDialog} shoe_weight={shoe_weight} />}
                 </>}
 
 

@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { UserContext } from './contexts/userContext'
 import LoginPage from './pages/LoginPage.tsx'
@@ -64,6 +64,7 @@ import UsersNavbar from './components/navbar/UsersNavbar.tsx'
 
 function AppRoutes() {
   const { user } = useContext(UserContext)
+  const [dialog, setDialog] = useState<string | undefined>()
   return (
     <Routes >
       {
@@ -359,7 +360,7 @@ function AppRoutes() {
         </Route>
       }
 
-      <Route path="/ResetPassword/:token" element={<ResetPasswordDialog />} />
+      <Route path="/ResetPassword/:token" element={<ResetPasswordDialog dialog={dialog} setDialog={setDialog} />} />
       <Route path="/VerifyEmail/:token" element={<EmailVerifyPage />} />
       {user && <Route path="*" element={<Navigate to="/" />} />}
       <Route path="*" element={<Navigate to="/Login" />} />

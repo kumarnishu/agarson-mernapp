@@ -21,7 +21,9 @@ function CreateOrEditCityDialog({ city, dialog, setDialog }: Props) {
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!city ? "New City" : "Edit City "}</DialogTitle>
             <DialogContent>
-                <CreateOrEditCityForm city={city} />
+                <CreateOrEditCityForm setDialog={
+                    setDialog
+                } city={city} />
             </DialogContent>
         </Dialog>
     )

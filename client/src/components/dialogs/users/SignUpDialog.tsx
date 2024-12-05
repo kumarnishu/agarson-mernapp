@@ -21,7 +21,7 @@ function SignUpDialog({ dialog, setDialog }: Props) {
 
         <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>Owner Signup Form</DialogTitle>
         <DialogContent>
-          <SignUpForm />
+          <SignUpForm setDialog={setDialog}/>
         </DialogContent>
         <Stack
           alignItems="center"

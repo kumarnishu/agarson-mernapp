@@ -20,7 +20,7 @@ function ResetPasswordSendMailDialog({ dialog, setDialog }: Props) {
 
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">Reset Password  </DialogTitle>
             <DialogContent>
-                <ResetPasswordSendMailForm />
+                <ResetPasswordSendMailForm setDialog={setDialog}/>
             </DialogContent>
             <DialogActions>
                 <Typography

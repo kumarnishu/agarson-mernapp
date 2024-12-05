@@ -22,7 +22,9 @@ function CreateOrEditKeyDialog({ keyitm, dialog, setDialog }: Props) {
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!keyitm ? "New Key" : "Edit Key"}</DialogTitle>
             <DialogContent>
-                <CreateOrEditKeyForm keyitm={keyitm} />
+                <CreateOrEditKeyForm setDialog={
+                    setDialog
+                }keyitm={keyitm} />
             </DialogContent>
         </Dialog>
     )

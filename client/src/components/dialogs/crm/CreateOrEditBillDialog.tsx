@@ -23,7 +23,9 @@ function CreateOrEditBillDialog({ lead, refer, bill, dialog, setDialog }: Props)
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!bill ? "New Bill" : "Edit Bill"}</DialogTitle>
             <DialogContent>
-            <CreateOrEditBillForm lead={lead} refer={refer} bill={bill} setDisplay2={setDialog} />
+            <CreateOrEditBillForm setDialog={
+                    setDialog
+                } lead={lead} refer={refer} bill={bill}/>
             </DialogContent>
         </Dialog>
     )

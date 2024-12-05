@@ -22,7 +22,9 @@ function CreateOrEditKeyCategoryDialog({ category, dialog, setDialog }: Props) {
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!category ? "New Category" : "Edit Category"}</DialogTitle>
             <DialogContent>
-                <CreateOrEditKeyCategoryForm category={category} />
+                <CreateOrEditKeyCategoryForm setDialog={
+                    setDialog
+                }category={category} />
             </DialogContent>
         </Dialog>
     )

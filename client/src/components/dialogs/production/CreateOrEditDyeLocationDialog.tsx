@@ -21,7 +21,9 @@ function CreateOrEditDyeLocationDialog({ location, dialog, setDialog }: Props) {
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!location ? "New Location" : "Edit Location"}</DialogTitle>
             <DialogContent>
-                <CreateOrEditDyeLocationForm location={location} />
+                <CreateOrEditDyeLocationForm setDialog={
+                    setDialog
+                }location={location} />
             </DialogContent>
         </Dialog>
     )

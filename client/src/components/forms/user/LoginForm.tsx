@@ -15,7 +15,7 @@ import AlertBar from '../../snacks/AlertBar';
 import { Navigate } from "react-router-dom";
 import { GetUserDto } from '../../../dtos/user.dto';
 
-function LoginForm({setDialog}:{setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+function LoginForm({ setDialog }: { setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
   const goto = useNavigate()
   const { mutate, data, isSuccess, isLoading, isError, error } = useMutation
     <AxiosResponse<{ user: GetUserDto, token: string }>,
@@ -59,9 +59,9 @@ function LoginForm({setDialog}:{setDialog: React.Dispatch<React.SetStateAction<s
   useEffect(() => {
     if (isSuccess) {
       setUser(data.data.user)
-    setDialog(undefined) 
+      setDialog(undefined)
     }
-  }, [setUser, goto,  isSuccess, data])
+  }, [setUser, goto, isSuccess, data])
 
   return (
     <>

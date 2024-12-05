@@ -20,7 +20,7 @@ function UpdateUserDialog({ user, dialog, setDialog }: Props) {
             <DialogTitle textAlign="center" sx={{ minWidth: '350px' }}>Update User Form</DialogTitle>
             <DialogContent>
                 {user ?
-                    <UpdateUserForm user={user} />
+                    <UpdateUserForm setDialog={setDialog}user={user} />
                     : null
                 }
             </DialogContent>

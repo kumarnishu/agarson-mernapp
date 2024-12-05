@@ -20,7 +20,9 @@ function CreateOrEditProductionDialog({ production, dialog, setDialog }: Props) 
             </DialogTitle>
 
             <DialogContent>
-                <CreateOrEditProductionForm production={production} />
+                <CreateOrEditProductionForm setDialog={
+                    setDialog
+                }production={production} />
             </DialogContent>
             <Stack
                 direction="column"

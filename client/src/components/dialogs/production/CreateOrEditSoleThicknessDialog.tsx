@@ -23,7 +23,7 @@ function CreateOrEditSoleThicknessDialog({ thickness, dialog, setDialog }: Props
             </DialogTitle>
 
             <DialogContent>
-                <CreateOrEditSoleThicknessForm thickness={thickness} />
+                <CreateOrEditSoleThicknessForm setDialog={setDialog}thickness={thickness} />
             </DialogContent>
         </Dialog >
     )
