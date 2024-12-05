@@ -466,7 +466,31 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
-
+            {
+                label: 'Expense Store',
+                permissions: [
+                    {
+                        value: 'expense_store_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'expense_store_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'expense_store_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'expense_store_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'expense_store_export',
+                        label: 'export'
+                    }
+                ]
+            },
         ]
     }
     
@@ -803,7 +827,31 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
-            
+            {
+                label: 'Expense Item',
+                permissions: [
+                    {
+                        value: 'expense_item_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'expense_item_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'expense_item_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'expense_item_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'expense_item_export',
+                        label: 'export'
+                    }
+                ]
+            },
         ]
     }
    

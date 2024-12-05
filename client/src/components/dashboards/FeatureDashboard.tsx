@@ -32,7 +32,7 @@ function FeatureDashboard() {
         user?.assigned_permissions.includes('spare_dye_view') && tmpfeatures.push({ feature: 'Spare Dyes ', is_visible: false, url: "SpareDyesPage" })
         user?.assigned_permissions.includes('sole_thickness_view') && tmpfeatures.push({ feature: 'Sole Thickness ', is_visible: false, url: "SoleThicknessPage" })
         user?.assigned_permissions.includes('shoe_weight_view') && tmpfeatures.push({ feature: 'shoe weights ', is_visible: false, url: "ShoeWeightPage" })
-        tmpfeatures.push({ feature: 'Expense Store ', is_visible: false, url: "ShoeWeightPage" })
+        user?.assigned_permissions.includes('expense_store_view') && tmpfeatures.push({ feature: 'Expense Store ', is_visible: false, url: "ShoeWeightPage" })
 
         setFeatures(tmpfeatures)
     }, [user])
