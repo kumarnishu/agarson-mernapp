@@ -61,6 +61,11 @@ export default function ExcelDBPage() {
                       else if (cell.row.original['PARTY'])
                         //@ts-ignore
                         setObj(cell.row.original['PARTY'])
+
+                      //@ts-ignore
+                      else if (cell.row.original['Customer Name'])
+                        //@ts-ignore
+                        setObj(cell.row.original['Customer Name'])
                     }}
                   >
                     <Visibility />
@@ -83,6 +88,10 @@ export default function ExcelDBPage() {
                         else if (cell.row.original['PARTY'])
                           //@ts-ignore
                           setObj(cell.row.original['PARTY'])
+                           //@ts-ignore
+                      else if (cell.row.original['Customer Name'])
+                        //@ts-ignore
+                        setObj(cell.row.original['Customer Name'])
                       }}
                     >
                       <Comment />
@@ -110,7 +119,7 @@ export default function ExcelDBPage() {
         return {
           accessorKey: item.key, header: item.header,
           filterVariant: 'range',
-        filterFn: 'between',
+          filterFn: 'between',
           aggregationFn: 'sum',
           AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
           Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -200,7 +209,6 @@ export default function ExcelDBPage() {
       columnSizing: columnSizing
     }
   });
-
 
 
   //load state from local storage
