@@ -69,10 +69,11 @@ function LoginForm({ setDialog }: { setDialog: React.Dispatch<React.SetStateActi
           direction="column"
           p={2}
           gap={2}
-          sx={{ minWidth: '300px',borderRadius:20 }}
+          sx={{ minWidth: '300px', borderRadius: 20 }}
         >
           <TextField
             fullWidth
+            variant='filled'
             required
             focused
             error={
@@ -94,6 +95,7 @@ function LoginForm({ setDialog }: { setDialog: React.Dispatch<React.SetStateActi
             id="password"
             label="Password"
             fullWidth
+            variant='filled'
             helperText={
               formik.touched.password && formik.errors.password ? formik.errors.password : ""
             }
