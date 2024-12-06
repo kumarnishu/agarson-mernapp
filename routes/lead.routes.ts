@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { upload } from "./index.routes";
+import { upload } from ".";
 import { GetLeads, CreateLead, UpdateLead, DeleteLead, BulkLeadUpdateFromExcel, FuzzySearchLeads, ConvertLeadToRefer, BulkDeleteUselessLeads, GetAssignedReferrals, ReferLead, RemoveLeadReferral, MergeTwoLeads } from "../controllers/lead.controller";
 const router = express.Router()
 

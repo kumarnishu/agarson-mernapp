@@ -69,3 +69,15 @@ export const CreateOrEditSalesmanAttendance = async ({ id, body }: {
 export const DeleteSalesManAttendance= async (id: string) => {
     return await apiClient.delete(`attendances/${id}`)
 }
+
+
+export const GetAllReferences = async () => {
+    return await apiClient.get(`references`)
+  }
+
+  
+  export const CreateOrUpdateReferencesFromExcel = async (body: FormData) => {
+    return await apiClient.post(`create-references-from-excel`, body)
+  }
+
+ 

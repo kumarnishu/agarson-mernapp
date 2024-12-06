@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { upload } from "./index.routes";
+import { upload } from ".";
 import { GetAllCRMCities, CreateCRMCity, UpdateCRMCity, DeleteCRMCity, BulkCreateAndUpdateCRMCityFromExcel, AssignCRMCitiesToUsers, FindUnknownCrmCities, GetAllCRMCitiesForDropDown } from "../controllers/crm-city.controller";
 const router = express.Router()
 

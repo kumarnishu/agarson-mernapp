@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser';
 import cors from "cors";
 import { MulterError } from 'multer';
 import { connectDatabase } from './config/db';
-import AppRoutes from "./routes/index.routes";
+import AppRoutes from "./routes";
 
 import path from 'path';
 import { Server } from "socket.io";

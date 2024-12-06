@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { upload } from "./index.routes";
+import { upload } from ".";
 import { GetMachines, CreateMachine, UpdateMachine, ToogleMachine, BulkUploadMachine, GetMachinesForDropDown } from "../controllers/machine.controller";
 const router = express.Router()
 

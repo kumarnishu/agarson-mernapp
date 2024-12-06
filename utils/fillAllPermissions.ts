@@ -889,31 +889,7 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
-            {
-                label: 'Salesman Leaves',
-                permissions: [
-                    {
-                        value: 'salesman_leaves_report_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'salesman_leaves_report_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'salesman_leaves_report_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'salesman_leaves_report_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'salesman_leaves_report_export',
-                        label: 'export'
-                    }
-                ]
-            },
+           
         ]
     }
 
@@ -1239,7 +1215,57 @@ export function FetchAllPermissions() {
                         label: 'export'
                     }
                 ]
-            }
+            },
+            {
+                label: 'Salesman Leaves',
+                permissions: [
+                    {
+                        value: 'salesman_leaves_report_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'salesman_leaves_report_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'salesman_leaves_report_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'salesman_leaves_report_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'salesman_leaves_report_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'References',
+                permissions: [
+                    {
+                        value: 'references_report_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'references_report_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'references_report_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'references_report_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'references_report_export',
+                        label: 'export'
+                    }
+                ]
+            },
         ]
     }
 

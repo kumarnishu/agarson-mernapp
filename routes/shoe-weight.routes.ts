@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { upload } from "./index.routes";
+import { upload } from ".";
 import { GetMyTodayShoeWeights, GetShoeWeights, CreateShoeWeight, UpdateShoeWeight1, DeleteShoeWeight, UpdateShoeWeight2, UpdateShoeWeight3, ValidateShoeWeight } from "../controllers/shoe-weight.controller";
 const router = express.Router()
 

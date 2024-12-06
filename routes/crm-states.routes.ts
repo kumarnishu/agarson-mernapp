@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { upload } from "./index.routes";
+import { upload } from ".";
 import { GetAllCRMStates, CreateCRMState, UpdateCRMState, DeleteCRMState, BulkCreateAndUpdateCRMStatesFromExcel, AssignCRMStatesToUsers, FindUnknownCrmSates } from "../controllers/crm-states.controller";
 const router = express.Router()
 

@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { upload } from "./index.routes";
+import { upload } from ".";
 import { GetArticles, CreateArticle, UpdateArticle, ToogleArticle, BulkUploadArticle, GetArticlesForDropdown } from "../controllers/articles.controller";
 const router = express.Router()
 

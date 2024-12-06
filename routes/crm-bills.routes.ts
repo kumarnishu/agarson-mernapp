@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { upload } from "./index.routes";
+import { upload } from ".";
 import { CreateBill, UpdateBill, DeleteBill, GetLeadPartyBillsHistory, GetReferPartyBillsHistory } from "../controllers/crm-bills.controller";
 const router = express.Router()
 

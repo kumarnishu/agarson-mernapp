@@ -349,7 +349,7 @@ export const GetUsersForDropdown = async (req: Request, res: Response, next: Nex
     else {
         users = await User.find({ is_active: showhidden == 'false' }).sort('username')
     }
-    if (perm!='undefined') {
+    if (perm != 'undefined') {
         users = users.filter((u) => { return u.assigned_permissions.includes(String(perm)) })
     }
     result = users.map((u) => {
@@ -402,6 +402,8 @@ export const GetUsersForAssignmentPage = async (req: Request, res: Response, nex
 export const GetProfile = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetUserDto | null = null;
     const user = await User.findById(req.user?._id).populate("created_by").populate("updated_by").populate('assigned_users')
+    if (user && !user?.is_active)
+        return res.status(403).json({ message: "login again" })
     if (user)
         result = {
             _id: user._id,

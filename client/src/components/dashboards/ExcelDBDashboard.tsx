@@ -25,7 +25,7 @@ function ExcelDBDashboard() {
                 tmpfeatures.push({ feature: dt.label, display_name: dt.label && dt.label, is_visible: true, url: `ExcelDbReports/${dt.id}` })
             })
         }
-        user?.assigned_permissions.includes('salesman_leaves_report_view') && tmpfeatures.push({ feature: 'salesmen leaves report ', display_name: "", is_visible: false, url: "SalesmanLeavesReportPage" })
+       
         setFeatures(tmpfeatures)
 
     }, [user, categoryData])

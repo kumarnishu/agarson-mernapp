@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { upload } from "./index.routes";
+import { upload } from ".";
 import { GetPayments, CreatePayment,  EditPayment, DeletePayment, CreatePaymentFromExcel, DownloadExcelTemplateForCreatePayments, ChangeNextDate, AssignPaymentsToUsers, GetMobilePayments, BulkDeletePayments, GetPaymentsTopBarDetails, ChangeDueDate } from "../controllers/payment.controller";
 
 const router = express.Router()

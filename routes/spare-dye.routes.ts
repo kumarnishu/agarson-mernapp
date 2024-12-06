@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { upload } from "./index.routes";
+import { upload } from ".";
 import { ValidateSpareDye } from "../controllers/shoe-weight.controller";
 import { CreateSpareDye, DeleteSpareDye, GetMyTodaySpareDye, GetSpareDyes, UpdateSpareDye } from "../controllers/spare-dye.controller";
 const router = express.Router()

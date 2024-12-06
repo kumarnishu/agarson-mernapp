@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { upload } from "./index.routes";
+import { upload } from ".";
 import { GetDyes, CreateDye, UpdateDye, GetDyeById, ToogleDye, BulkUploadDye, GetDyeForDropdown } from "../controllers/dye.controller";
 const router = express.Router()
 

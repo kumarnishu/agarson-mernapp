@@ -38,7 +38,7 @@ import PaymentCategoriesPage from './pages/dropdowns/PaymentCategoriesPage.tsx'
 import KeysCategoriesPage from './pages/authorization/KeysCategoriesPage.tsx'
 import KeysPage from './pages/authorization/KeysPage.tsx'
 import ExcelDBPage from './pages/excel reports/ExcelDBPage.tsx'
-import SalesmanLeavesReportPage from './pages/feature reports/SalesmanLeavesReportPage.tsx'
+import SalesmanLeavesReportPage from './pages/sales/SalesmanLeavesReportPage.tsx'
 import UserAssignementPage from './pages/authorization/UserAssignementPage.tsx'
 import SalesmanVisitPage from './pages/sales/SalesmanVisitPage.tsx'
 import SalesmanAttendancePage from './pages/sales/SalesmanAttendancePage.tsx'
@@ -60,6 +60,7 @@ import FeatureDashboard from './components/dashboards/FeatureDashboard.tsx'
 import SalesDashboard from './components/dashboards/SalesDashboard.tsx'
 import FeatureReportsDashboard from './components/dashboards/FeatureReportsDashboard.tsx'
 import UsersNavbar from './components/navbar/UsersNavbar.tsx'
+import ReferencesReportPage from './pages/sales/ReferencesReportPage.tsx'
 
 
 function AppRoutes() {
@@ -315,11 +316,7 @@ function AppRoutes() {
                   <ExcelDBPage />
                 }
               />}
-              {user?.assigned_permissions.includes('salesman_leaves_report_view') && <Route
-                path="SalesmanLeavesReportPage" element={
-                  <SalesmanLeavesReportPage />
-                }
-              />}
+
 
             </Route>}
 
@@ -354,7 +351,16 @@ function AppRoutes() {
                   <SalesmanKpiPage />
                 }
               />}
-
+              {user?.assigned_permissions.includes('salesman_leaves_report_view') && <Route
+                path="SalesmanLeavesReportPage" element={
+                  <SalesmanLeavesReportPage />
+                }
+              />}
+                {user?.assigned_permissions.includes('references_report_view') && <Route
+                path="ReferencesReportPage" element={
+                  <ReferencesReportPage />
+                }
+              />}
             </Route>}
 
         </Route>

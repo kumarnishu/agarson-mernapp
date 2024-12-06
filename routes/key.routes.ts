@@ -1,7 +1,7 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
 import { AssignKeysToUsers, CreateKey, CreateKeysFromExcel, DeleteKey, DownloadExcelTemplateForCreateKeys, GetAllKey, UpdateKey } from "../controllers/keys.controller";
-import { upload } from "./index.routes";
+import { upload } from ".";
 
 const router = express.Router()
 

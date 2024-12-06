@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { upload } from "./index.routes";
+import { upload } from ".";
 import { CreateSalesmanLeavesFromExcel, DownloadExcelTemplateForCreateSalesmanLeavesReport, GetSalesmanLeavesReport } from "../controllers/salesman-leaves.controller";
 
 const router = express.Router()

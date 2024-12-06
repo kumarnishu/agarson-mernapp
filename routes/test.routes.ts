@@ -1,5 +1,5 @@
 import express from "express";
-import { upload } from "./index.routes";
+import { upload } from ".";
 import { test } from "../controllers/test.controller";
 import {  GetVisitReports } from "../controllers/visit-report.controller";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";

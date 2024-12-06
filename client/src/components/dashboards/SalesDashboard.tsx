@@ -17,7 +17,10 @@ function SalesDashboard() {
         user?.assigned_permissions.includes('salesman_kpi_view') && tmpfeatures.push({ feature: 'Salesman KPI Report', is_visible: true, url: "SalesmanKPI" })
         user?.assigned_permissions.includes('salesman_visit_view') && tmpfeatures.push({ feature: 'Salesman Last 3 days VisitSummary', is_visible: true, url: "SalesmanVisit" })
         setFeatures(tmpfeatures)
+        user?.assigned_permissions.includes('salesman_leaves_report_view') && tmpfeatures.push({ feature: 'salesmen leaves report ', is_visible: false, url: "SalesmanLeavesReportPage" })
+        user?.assigned_permissions.includes('references_report_view') && tmpfeatures.push({ feature: 'References Report ', is_visible: false, url: "ReferencesReportPage" })
 
+        
     }, [user])
 
     return (

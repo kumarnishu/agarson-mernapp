@@ -49,9 +49,11 @@ import ExpenseLocationRoutes from "./expense-location.route"
 import ItemUnitRoutes from "./itemunit.route"
 import ExpenseRoutes from "./expense.route"
 import ExpenseItemRoutes from "./expense-item.route"
+import ReferencesRoutes from "./references.routes"
 
 
 router.use(ArticlesRoutes);
+router.use(ReferencesRoutes);
 router.use(AuthRoutes);
 router.use(ChecklistCategoryRoutes);
 router.use(ChecklistRoutes);
