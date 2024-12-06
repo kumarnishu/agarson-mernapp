@@ -20,19 +20,19 @@ export default function SalesmanLeavesReportPage() {
 
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
-   const isFirstRender = useRef(true);
+  const isFirstRender = useRef(true);
 
-    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-  
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const columns = useMemo<MRT_ColumnDef<IColumnRowData['columns']>[]>(
     () => reportcolumns && reportcolumns.map((item) => {
 
       return {
-        accessorKey: item.key, header: item.header,grow:false,
+        accessorKey: item.key, header: item.header, grow: false,
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
         // //@ts-ignore
         // Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
       }
@@ -55,7 +55,7 @@ export default function SalesmanLeavesReportPage() {
     columns, columnFilterDisplayMode: 'popover',
     data: reports, //10,000 rows       
     enableColumnResizing: true,
-    enableColumnVirtualization: true, enableStickyFooter: true,
+    enableStickyFooter: true,
     muiTableFooterRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',
@@ -91,14 +91,13 @@ export default function SalesmanLeavesReportPage() {
     enableColumnPinning: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    rowVirtualizerInstanceRef, //optional
     //optionally customize the column virtualizer
     onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
-      
+
       sorting,
       columnSizing: columnSizing
     }
@@ -128,7 +127,7 @@ export default function SalesmanLeavesReportPage() {
     const columnSizing = localStorage.getItem(
       'mrt_columnSizing_table_1',
     );
-    
+
 
 
 
@@ -137,10 +136,10 @@ export default function SalesmanLeavesReportPage() {
       setColumnVisibility(JSON.parse(columnVisibility));
     }
 
-    
+
     if (columnSizing)
       setColumnSizing(JSON.parse(columnSizing))
-    
+
     isFirstRender.current = false;
   }, []);
 
@@ -152,7 +151,7 @@ export default function SalesmanLeavesReportPage() {
     );
   }, [columnVisibility]);
 
- 
+
 
 
   useEffect(() => {
