@@ -35,20 +35,20 @@ export function ProfileMenu({ anchorEl, setAnchorEl }: { anchorEl: Element | nul
 
                 <MenuItem
                     onClick={() => {
-                        setDialog(undefined)
+                        setDialog('ProfileDialog')
                         setAnchorEl(null)
                     }}
                 >View Profile</MenuItem>
                 <MenuItem
                     onClick={() => {
-                        setDialog(undefined)
+                        setDialog('UpdateProfileDialog')
                         setAnchorEl(null)
                     }}
 
                 >Update Profile</MenuItem >
 
                 <MenuItem onClick={() => {
-                    setDialog(undefined)
+                    setDialog('UpdatePasswordDialog')
                     setAnchorEl(null)
 
                 }}>
@@ -59,7 +59,7 @@ export function ProfileMenu({ anchorEl, setAnchorEl }: { anchorEl: Element | nul
                     !user?.email_verified ?
 
                         <MenuItem onClick={() => {
-                            setDialog(undefined) 
+                            setDialog('EmailVerifySendMailDialog') 
                             setAnchorEl(null)
 
                         }}>
