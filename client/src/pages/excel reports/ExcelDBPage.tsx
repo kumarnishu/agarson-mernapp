@@ -9,7 +9,7 @@ import { GetExcelDbReport } from '../../services/ExcelDbService'
 import { useParams } from 'react-router-dom'
 import PopUp from '../../components/popup/PopUp'
 import { UserContext } from '../../contexts/userContext'
-import { Comment, Visibility } from '@mui/icons-material'
+import { Comment, Refresh, Visibility } from '@mui/icons-material'
 import { GetKeyCategoryById } from '../../services/KeyServices'
 import CreateOrEditExcelDBRemarkDialog from '../../components/dialogs/excel-db/CreateOrEditExcelDBRemarkDialog'
 import ViewExcelDBRemarksDialog from '../../components/dialogs/excel-db/ViewExcelDBRemarksDialog'
@@ -257,7 +257,7 @@ export default function ExcelDBPage() {
         spacing={2}
         padding={1}
         direction="row"
-        justifyContent="space-between"
+        justifyContent="left"
         alignItems={'center'}
       >
         <Typography
@@ -265,8 +265,10 @@ export default function ExcelDBPage() {
           component={'h1'}
           sx={{ pl: 1 }}
         >
+
           {category ? category.label : "Excel DB"}
         </Typography>
+        <Refresh sx={{ cursor: 'pointer', color: 'green' }} onClick={() => window.location.reload()} />
       </Stack >
       {id && obj && <CreateOrEditExcelDBRemarkDialog dialog={dialog} setDialog={setDialog} category={id} obj={obj} />}
       {id && obj && <ViewExcelDBRemarksDialog dialog={dialog} setDialog={setDialog} id={id} obj={obj} />}
