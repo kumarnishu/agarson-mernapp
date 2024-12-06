@@ -42,7 +42,6 @@ export const GetAllKeyCategoryForDropDown = async (req: Request, res: Response, 
 
     let result: DropDownDto[] = [];
     result = data.map((R) => { return { id: R._id, label: R.display_name, value: R.category } })
-    console.log(result)
     return res.status(200).json(result)
 }
 

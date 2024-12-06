@@ -30,3 +30,4 @@ export const GetVisitReports = async (req: Request, res: Response, next: NextFun
     return res.status(200).json(reports);
 }
 
+

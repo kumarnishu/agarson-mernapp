@@ -8,4 +8,5 @@ router.route("/salesman-visit").get(isAuthenticatedUser, GetSalesManVisitReport)
 router.route("/visit-reports").get(isAuthenticatedUser, GetVisitReports)
 
 
+
 export default router
