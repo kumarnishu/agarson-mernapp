@@ -43,7 +43,7 @@ function CreateorEditPaymentForm({ payment,setDialog }: { payment?: GetPaymentDt
         validationSchema: Yup.object({
             payment_title: Yup.string().required("required field")
                 .min(5, 'Must be 5 characters or more')
-                .max(200, 'Must be 200 characters or less'),
+                ,
             payment_description: Yup.string(),
             link: Yup.string(),
             category: Yup.string().required("required field"),

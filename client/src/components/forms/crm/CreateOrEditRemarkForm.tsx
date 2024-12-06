@@ -55,7 +55,7 @@ function CreateOrEditRemarkForm({ lead, remark, setDialog }: { lead?: { _id: str
             stage: Yup.string(),
             remark: Yup.string().required("required field")
                 .min(5, 'Must be 5 characters or more')
-                .max(200, 'Must be 200 characters or less')
+                
                 .required('Required field'),
             remind_date: Yup.string().test(() => {
                 if (display && !formik.values.remind_date)

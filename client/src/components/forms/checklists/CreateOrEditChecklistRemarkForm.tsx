@@ -39,7 +39,7 @@ function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box ,set
             stage: Yup.string(),
             remark: Yup.string().required("required field")
                 .min(5, 'Must be 5 characters or more')
-                .max(200, 'Must be 200 characters or less')
+                
                 .required('Required field')
         }),
         onSubmit: (values: {

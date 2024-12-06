@@ -39,7 +39,7 @@ function CreateOrEditVisitReportRemarkForm({ employee, visit_date, remark, setDi
         validationSchema: Yup.object({
             remark: Yup.string().required("required field")
                 .min(5, 'Must be 5 characters or more')
-                .max(200, 'Must be 200 characters or less')
+                
                 .required('Required field'),
         }),
         onSubmit: (values) => {

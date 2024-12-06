@@ -9,6 +9,7 @@ import { GetAllKeyCategoriesForDropdown } from "../../services/KeyServices";
 import { DropDownDto } from "../../dtos/dropdown.dto";
 import { AssignmentOutlined } from "@mui/icons-material";
 import { toTitleCase } from "../../utils/TitleCase";
+import { ExcelDbButtons } from "../buttons/ExcelDbButtons";
 
 function ExcelDBDashboard() {
     const [features, setFeatures] = useState<{ feature: string, display_name: string, is_visible: boolean, url: string }[]>([])
@@ -32,6 +33,9 @@ function ExcelDBDashboard() {
 
     return (
         <>
+          {user?.assigned_permissions.includes('grp_excel_create') && <Stack sx={{ width: '100%' }} direction={'row'} p={2} justifyContent={'end'}>
+                <ExcelDbButtons />
+            </Stack>}
             <Grid container  >
                 {features.map((feat, index) => {
                     return (
