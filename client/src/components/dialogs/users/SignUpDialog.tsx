@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, Typography, Stack, IconButton } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
 import SignUpForm from '../../forms/user/SignUpForm';
 import { Cancel } from '@mui/icons-material';
 
@@ -23,32 +23,7 @@ function SignUpDialog({ dialog, setDialog }: Props) {
         <DialogContent>
           <SignUpForm setDialog={setDialog}/>
         </DialogContent>
-        <Stack
-          alignItems="center"
-          justifyContent="center"
-          gap={1}
-          p={1}
-          direction={"row"}
-          sx={{ backgroundColor: "lightgrey" }}
-        >
-          <Typography
-            variant="body1"
-            sx={{ cursor: "pointer" }}
-            component="span"
-            onClick={() => setDialog(undefined)}
-          >
-            <b>Close</b>
-          </Typography >
-          {" or "}
-          <Typography
-            variant="body1"
-            sx={{ cursor: "pointer" }}
-            component="span"
-          >
-            Forgot Password
-          </Typography >
-
-        </Stack>
+      
       </Dialog>
     </>
   )

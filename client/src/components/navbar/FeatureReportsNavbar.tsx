@@ -43,7 +43,7 @@ function FeatureReportsNavbar() {
                 <Stack flexDirection={"row"} gap={2} sx={{ alignItems: 'center' }}>
                   <AssignmentOutlined />
                   <Typography variant="button" sx={{ fontSize: 12 }} component="div">
-                    FeatureReports
+                    Feature Reports
                   </Typography>
                 </Stack>
               </Paper>

@@ -10,15 +10,15 @@ import AlertBar from '../../snacks/AlertBar';
 import { CreateOrEditProduction, GetArticles, GetMachines } from '../../../services/ProductionServices';
 import { UserContext } from '../../../contexts/userContext';
 import moment from 'moment';
-import { GetUserDto } from '../../../dtos/user.dto';
 import { GetArticleDto } from '../../../dtos/article.dto';
 import { GetMachineDto } from '../../../dtos/machine.dto';
 import { GetProductionDto, CreateOrEditProductionDto } from '../../../dtos/production.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
+import { DropDownDto } from '../../../dtos/dropdown.dto';
 
 function CreateOrEditProductionForm({ production,setDialog }: { production?: GetProductionDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const { user } = useContext(UserContext)
-    const { data: users } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'production_view', show_assigned_only: true }))
+    const { data: users } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'production_view', show_assigned_only: true }))
     const { data: machines } = useQuery<AxiosResponse<GetMachineDto[]>, BackendError>("machines", async () => GetMachines())
     const { data: articles } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>("articles", async () => GetArticles())
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
@@ -165,8 +165,8 @@ function CreateOrEditProductionForm({ production,setDialog }: { production?: Get
                     </option>
                     {
                         users && users.data.map((user, index) => {
-                            return (<option key={index} value={user._id}>
-                                {user.username}
+                            return (<option key={index} value={user.id}>
+                                {user.label}
                             </option>)
 
                         })
