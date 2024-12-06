@@ -72,7 +72,7 @@ export default function ExcelDBPage() {
                   </IconButton>
                 </Tooltip>}
 
-                {LoggedInUser?.assigned_permissions.includes('grp_excel_view') &&
+                {LoggedInUser?.assigned_permissions.includes('grp_excel_edit') &&
                   <Tooltip title="Add Remark">
                     <IconButton
 
