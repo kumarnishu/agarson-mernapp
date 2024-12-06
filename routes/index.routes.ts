@@ -44,6 +44,12 @@ import SalesmanVisitRoutes from "./salesman-visit.routes"
 import VisitRemarkRoutes from "./visist-remark.routes"
 
 
+import ExpenseCategoryRoutes from "./expense-category.route"
+import ExpenseLocationRoutes from "./expense-location.route"
+import ItemUnitRoutes from "./itemunit.route"
+import ExpenseRoutes from "./expense.route"
+import ExpenseItemRoutes from "./expense-item.route"
+
 
 router.use(ArticlesRoutes);
 router.use(AuthRoutes);
@@ -84,6 +90,11 @@ router.use(ExcelDBRemarkRoutes)
 router.use(SalesmanVisitRoutes)
 router.use(VisitRemarkRoutes)
 router.use(AttendancesRoutes)
+router.use(ExpenseCategoryRoutes)
+router.use(ExpenseLocationRoutes)
+router.use(ItemUnitRoutes)
+router.use(ExpenseRoutes)
+router.use(ExpenseItemRoutes)
 
 
 export default router;

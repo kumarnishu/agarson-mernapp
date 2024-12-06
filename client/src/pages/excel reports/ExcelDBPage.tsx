@@ -109,6 +109,8 @@ export default function ExcelDBPage() {
       else
         return {
           accessorKey: item.key, header: item.header,
+          filterVariant: 'range',
+        filterFn: 'between',
           aggregationFn: 'sum',
           AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
           Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
