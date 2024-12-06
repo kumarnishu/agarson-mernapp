@@ -13,12 +13,11 @@ import { GetAllCRMCitiesForDropDown } from '../../../services/LeadsServices';
 import { CreateOrEditSalesmanAttendance } from '../../../services/SalesServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetSalesAttendanceDto, CreateOrEditSalesAttendanceDto } from '../../../dtos/sales-attendance.dto';
-import { GetUserDto } from '../../../dtos/user.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
 
 function CreateOrEditSalesAttendanceForm({ attendance,setDialog }: { attendance?: GetSalesAttendanceDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const { user } = useContext(UserContext)
-    const { data: users } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: true }))
+    const { data: users } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: true }))
     const { data: cities } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("cities", async () => GetAllCRMCitiesForDropDown({ state: 'all' }))
 
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
@@ -113,8 +112,8 @@ function CreateOrEditSalesAttendanceForm({ attendance,setDialog }: { attendance?
                     </option>
                     {
                         users && users.data.map((user, index) => {
-                            return (<option key={index} value={user._id}>
-                                {user.username}
+                            return (<option key={index} value={user.id}>
+                                {user.label}
                             </option>)
 
                         })

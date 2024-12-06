@@ -18,7 +18,7 @@ import { DropDownDto } from '../../../dtos/dropdown.dto';
 
 function CreateOrEditProductionForm({ production,setDialog }: { production?: GetProductionDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const { user } = useContext(UserContext)
-    const { data: users } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'production_view', show_assigned_only: true }))
+    const { data: users } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'production_view', show_assigned_only: true }))
     const { data: machines } = useQuery<AxiosResponse<GetMachineDto[]>, BackendError>("machines", async () => GetMachines())
     const { data: articles } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>("articles", async () => GetArticles())
     const { mutate, isLoading, isSuccess, isError, error } = useMutation

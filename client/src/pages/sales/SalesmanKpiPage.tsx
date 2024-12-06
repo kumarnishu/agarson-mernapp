@@ -43,7 +43,7 @@ function SalesmanKpiPage() {
   let day = previous_date.getDate() - 4
   previous_date.setDate(day)
   previous_date.setHours(0, 0, 0, 0)
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: false }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: false }))
   const { data, isLoading, refetch } = useQuery<AxiosResponse<GetSalesmanKpiDto[]>, BackendError>(["salesmankpis", userId, dates?.start_date, dates?.end_date], async () => GetSalesmanKpis({ id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 

@@ -11,18 +11,8 @@ import { UserContext } from '../../contexts/userContext'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { DownloadFile } from '../../utils/DownloadFile'
 import {  GetUsersForAssignment } from '../../services/UserServices'
-import NewUserDialog from '../../components/dialogs/users/NewUserDialog'
 import AssignPermissionsToUsersDialog from '../../components/dialogs/users/AssignPermissionsToUsersDialog'
 import PopUp from '../../components/popup/PopUp'
-import UpdateUserDialog from '../../components/dialogs/users/UpdateUserDialog'
-import ResetMultiLoginDialog from '../../components/dialogs/users/ResetMultiLogin'
-import BlockMultiLoginDialog from '../../components/dialogs/users/BlockMultiLoginDialog'
-import UpdatePasswordDialog from '../../components/dialogs/users/UpdatePasswordDialog'
-import BlockUserDialog from '../../components/dialogs/users/BlockUserDialog'
-import UnBlockUserDialog from '../../components/dialogs/users/UnBlockUserDialog'
-import MakeAdminDialog from '../../components/dialogs/users/MakeAdminDialog'
-import RemoveAdminDialog from '../../components/dialogs/users/RemoveAdminDialog'
-import UpdateUsePasswordDialog from '../../components/dialogs/users/UpdateUsePasswordDialog'
 import AssignUsersDialog from '../../components/dialogs/users/AssignUsersDialog'
 import AssignPermissionsToOneUserDialog from '../../components/dialogs/users/AssignPermissionsToOneUserDialog'
 import ExportToExcel from '../../utils/ExportToExcel'
@@ -342,7 +332,6 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
               {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') &&<MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
               >Export Selected</MenuItem>}
             </Menu>
-            <NewUserDialog dialog={dialog} setDialog={setDialog} />
             <AssignPermissionsToUsersDialog  dialog={dialog} setDialog={setDialog}flag={flag} user_ids={table.getSelectedRowModel().rows.map((I) => { return I.original._id })} />
           </>
         </Stack >
@@ -353,15 +342,6 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
       {
         user ?
           <>
-            <UpdateUserDialog dialog={dialog} setDialog={setDialog} user={user} />
-            <ResetMultiLoginDialog dialog={dialog} setDialog={setDialog} id={user._id} />
-            <BlockMultiLoginDialog dialog={dialog} setDialog={setDialog} id={user._id} />
-            <UpdatePasswordDialog dialog={dialog} setDialog={setDialog} />
-            <BlockUserDialog dialog={dialog} setDialog={setDialog} id={user._id} />
-            <UnBlockUserDialog dialog={dialog} setDialog={setDialog} id={user._id} />
-            <MakeAdminDialog dialog={dialog} setDialog={setDialog} id={user._id} />
-            <RemoveAdminDialog dialog={dialog} setDialog={setDialog} id={user._id} />
-            <UpdateUsePasswordDialog dialog={dialog} setDialog={setDialog} user={user} />
             <AssignUsersDialog dialog={dialog} setDialog={setDialog} user={user} setUser={setUser} />
             <AssignPermissionsToOneUserDialog dialog={dialog} setDialog={setDialog} user={user} />
           </>

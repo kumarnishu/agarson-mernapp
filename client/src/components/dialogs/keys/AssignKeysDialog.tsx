@@ -22,7 +22,7 @@ type Props = {
 
 function AssignKeysDialog({ keys, flag, dialog, setDialog }: Props) {
     const [users, setUsers] = useState<DropDownDto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
 
 
     const { mutate, isLoading, isSuccess, isError, error } = useMutation

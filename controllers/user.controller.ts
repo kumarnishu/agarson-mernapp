@@ -349,7 +349,7 @@ export const GetUsersForDropdown = async (req: Request, res: Response, next: Nex
     else {
         users = await User.find({ is_active: showhidden == 'false' }).sort('username')
     }
-    if (perm) {
+    if (perm!='undefined') {
         users = users.filter((u) => { return u.assigned_permissions.includes(String(perm)) })
     }
     result = users.map((u) => {

@@ -34,7 +34,7 @@ function PaymentsPage() {
   const [userId, setUserId] = useState<string>()
   const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<{ category: string, count: number }[]>, BackendError>("payments", GetPaymentsTopBarDetails)
   const [dialog, setDialog] = useState<string | undefined>()
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'payments_view', show_assigned_only: false }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'payments_view', show_assigned_only: false }))
 
 
   const isFirstRender = useRef(true);

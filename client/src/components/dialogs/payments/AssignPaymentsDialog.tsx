@@ -20,7 +20,7 @@ type Props = {
 
 function AssignPaymentsDialog({ payments, flag, dialog, setDialog }: Props) {
     const [users, setUsers] = useState<DropDownDto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'payments_view', show_assigned_only: false }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'payments_view', show_assigned_only: false }))
 
 
 

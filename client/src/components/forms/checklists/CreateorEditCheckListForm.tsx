@@ -26,7 +26,7 @@ function CreateorEditCheckListForm({ checklist,setDialog }: { checklist?: GetChe
         })
 
 
-    const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
+    const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
     const { data: categoriesData, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("check_categories", GetAllCheckCategories)
 
     const formik = useFormik<CreateOrEditChecklistDto>({

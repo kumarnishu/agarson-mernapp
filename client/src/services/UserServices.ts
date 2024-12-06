@@ -18,7 +18,7 @@ export const Signup = async (body: FormData) => {
 };
 // new user
 export const NewUser = async (body: FormData) => {
-  return await apiClient.post("users", body);
+  return await apiClient.post("user_dropdowns", body);
 };
 export const NewCustomer = async (body: FormData) => {
   return await apiClient.post("customers", body);

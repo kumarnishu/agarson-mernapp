@@ -45,7 +45,7 @@ export default function SpareDyesPage() {
     })
     const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetSpareDyeDto[], page: number, total: number, limit: number }>, BackendError>(["spare_dyes", userId, dates?.start_date, dates?.end_date], async () => GetSpareDyes({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'spare_dye_view', show_assigned_only: true }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'spare_dye_view', show_assigned_only: true }))
 
     useEffect(() => {
         if (isUsersSuccess)

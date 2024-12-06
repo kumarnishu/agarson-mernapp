@@ -25,7 +25,7 @@ export default function SalesmanVisitPageAuto() {
     })
     const [users, setUsers] = useState<DropDownDto[]>([])
     const [reports, setReports] = useState<GetSalesAttendancesAuto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: false }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: false }))
     const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetSalesAttendancesAuto[]>, BackendError>(["visits-auto", userId, dates?.start_date, dates?.end_date], async () => GetSalesmanAutoVisitReports({ id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
     const isFirstRender = useRef(true);
 

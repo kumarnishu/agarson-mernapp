@@ -21,7 +21,7 @@ type Props = {
 
 function AssignUsersDialog({ user, setUser, dialog, setDialog }: Props) {
     const [users, setUsers] = useState<DropDownDto[]>(user.assigned_users)
-    const { data, isSuccess: isUserSuccess } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
+    const { data, isSuccess: isUserSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
     const { mutate, isLoading, isSuccess, isError, error } = useMutation
         <AxiosResponse<string>, BackendError, {
             id: string,
@@ -59,7 +59,7 @@ function AssignUsersDialog({ user, setUser, dialog, setDialog }: Props) {
 
     useEffect(() => {
         if (isUserSuccess) {
-            setUsers(data?.data.map((u) => { return { id: u._id, value: u.username, label: u.username } }))
+            setUsers(data?.data.map((u) => { return { id: u.id,  label: u.label } }))
         }
     }, [isUserSuccess, data])
 

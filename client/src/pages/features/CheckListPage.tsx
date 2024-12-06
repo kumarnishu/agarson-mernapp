@@ -52,7 +52,7 @@ function ChecklistPage() {
   let day = previous_date.getDate() - 1
   previous_date.setDate(day)
   previous_date.setHours(0, 0, 0, 0)
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, permission: 'checklist_view', show_assigned_only: true }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'checklist_view', show_assigned_only: true }))
   const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, stage], async () => GetChecklists({ limit: paginationData?.limit, page: paginationData?.page, id: userId, stage: stage }))
   const { mutate: changedate } = useMutation
     <AxiosResponse<any>, BackendError, { id: string, next_date: string }>

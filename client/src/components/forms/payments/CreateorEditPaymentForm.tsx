@@ -27,7 +27,7 @@ function CreateorEditPaymentForm({ payment,setDialog }: { payment?: GetPaymentDt
         })
 
 
-    const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("users", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
+    const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
     const { data: categoriesData, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("payment_categories", GetAllPaymentCategories)
 
     const formik = useFormik({
