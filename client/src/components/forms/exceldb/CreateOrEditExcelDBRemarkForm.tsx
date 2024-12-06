@@ -1,32 +1,36 @@
 import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect,  useState } from 'react';
+import { useContext, useEffect,  useState } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import moment from 'moment';
 import { CreateOrEditExcelDbRemark } from '../../../services/ExcelDbService';
 import { GetExcelDBRemarksDto, CreateOrEditExcelDbRemarkDto } from '../../../dtos/excel-db-remark.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
 function CreateOrEditExcelDBRemarkForm({ category, obj, remark, setDialog }: {
     category: string, obj: string, remark?: GetExcelDBRemarksDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> 
 }) {
-    const [show, setShow] = useState(Boolean(remark?.next_date))
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+     const [show, setShow] = useState(Boolean(remark?.next_date))
+    const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<string>, BackendError, {
             remark?: GetExcelDBRemarksDto,
             body: CreateOrEditExcelDbRemarkDto
         }>
         (CreateOrEditExcelDbRemark, {
+           
             onSuccess: () => {
                 queryClient.refetchQueries('remarks')
                 queryClient.refetchQueries('exceldb')
-                
-            }
+                setAlert({ message: remark ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
 
@@ -128,20 +132,7 @@ function CreateOrEditExcelDBRemarkForm({ category, obj, remark, setDialog }: {
                 </Button>
             </Stack>
 
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {!remark ? <AlertBar message="new remark created" color="success" /> : <AlertBar message="remark updated" color="success" />}
-                    </>
-                ) : null
-            }
+           
 
         </form>
     )

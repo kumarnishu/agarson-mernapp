@@ -7,7 +7,8 @@ type Props = {
 
 }
 function EmailVerifySendMailDialog({ dialog, setDialog }: Props) {
-    return (
+    
+     return (
         <Dialog open={dialog === 'EmailVerifySendMailDialog'}
             onClose={() => setDialog(undefined)}
         >

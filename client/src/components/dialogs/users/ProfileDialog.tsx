@@ -10,7 +10,8 @@ type Props = {
     profile: GetUserDto
 }
 function ProfileDialog({ profile, dialog, setDialog }: Props) {
-    return (
+  
+     return (
         <Dialog open={dialog === 'ProfileDialog'}
             onClose={() => setDialog(undefined)}
         >

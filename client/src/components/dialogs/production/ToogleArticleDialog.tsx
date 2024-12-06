@@ -1,13 +1,15 @@
 import { Dialog, DialogContent, DialogTitle, Button, DialogActions, CircularProgress, IconButton } from '@mui/material';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { queryClient } from '../../../main';
 import { AxiosResponse } from 'axios';
 import { BackendError } from '../../..';
 import { useMutation } from 'react-query';
 import { Cancel } from '@mui/icons-material';
-import AlertBar from '../../snacks/AlertBar';
+
 import { ToogleArticle } from '../../../services/ProductionServices';
 import { GetArticleDto } from '../../../dtos/article.dto';
+import { AlertContext } from '../../../contexts/alertContext';
+import AlertBar from '../../snacks/AlertBar';
 
 type Props = {
     dialog: string | undefined,
@@ -15,12 +17,16 @@ type Props = {
     article: GetArticleDto
 }
 function ToogleArticleDialog({ article, dialog, setDialog }: Props) {
+    const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
         (ToogleArticle, {
+            
             onSuccess: () => {
                 queryClient.invalidateQueries('articles')
-            }
+                setAlert({ message: "success", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
     useEffect(() => {

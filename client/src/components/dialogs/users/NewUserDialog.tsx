@@ -8,6 +8,7 @@ type Props = {
 
 }
 function NewUserDialog({ dialog, setDialog }: Props) {
+  
   return (
     <Dialog open={dialog === 'NewUserDialog'} onClose={() => setDialog(undefined)}
       scroll="paper"

@@ -1,13 +1,15 @@
 import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, CircularProgress } from '@mui/material'
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Cancel, CheckBoxOutlineBlank, CheckCircleOutline } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
-import { useMutation, useQuery } from 'react-query';
+import {  useMutation, useQuery } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { AssignPermissionsToUsers, GetPermissions } from '../../../services/UserServices';
 import { IMenu, IPermission } from '../../../dtos/permission.dto';
+import { AlertContext } from '../../../contexts/alertContext';
+
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
@@ -17,7 +19,8 @@ type Props = {
 function AssignPermissionsToUsersDialog({ user_ids, flag, dialog, setDialog }: Props) {
     const [permissiontree, setPermissiontree] = useState<IMenu>()
     const [permissions, setPermissions] = useState<string[]>([])
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+     const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 user_ids: string[],
@@ -26,9 +29,11 @@ function AssignPermissionsToUsersDialog({ user_ids, flag, dialog, setDialog }: P
             }
         }>
         (AssignPermissionsToUsers, {
-            onSuccess: () => {
+              onSuccess: () => {
                 queryClient.invalidateQueries('users')
-            }
+                setAlert({ message: "success", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
     const { data: Permdata, isSuccess: isPermSuccess } = useQuery<AxiosResponse<IMenu>, BackendError>("permissions", GetPermissions)
 
@@ -132,16 +137,7 @@ function AssignPermissionsToUsersDialog({ user_ids, flag, dialog, setDialog }: P
 
 
                 </Stack>
-                {
-                    isError ? (
-                        <AlertBar message={error?.response.data.message} color="error" />
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <AlertBar message="successfull" color="success" />
-                    ) : null
-                }
+               
             </DialogContent>
         </Dialog >
     )

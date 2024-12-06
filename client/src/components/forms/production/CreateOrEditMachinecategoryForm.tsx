@@ -1,17 +1,19 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import * as yup from 'yup';
 import { CreateOrEditMachineCategory } from '../../../services/ProductionServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
-function CreateOrEditMachinecategoryForm({ machine_category,setDialog }: { machine_category?: DropDownDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+function CreateOrEditMachinecategoryForm({ machine_category, setDialog }: { machine_category?: DropDownDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 key: string
@@ -19,9 +21,12 @@ function CreateOrEditMachinecategoryForm({ machine_category,setDialog }: { machi
             id?: string
         }>
         (CreateOrEditMachineCategory, {
+
             onSuccess: () => {
-                queryClient.invalidateQueries('machine_categories')
-            }
+                queryClient.refetchQueries('machine_categories')
+                setAlert({ message: machine_category ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
 
@@ -44,7 +49,7 @@ function CreateOrEditMachinecategoryForm({ machine_category,setDialog }: { machi
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined) 
+            setDialog(undefined)
 
         }
     }, [isSuccess])
@@ -54,7 +59,7 @@ function CreateOrEditMachinecategoryForm({ machine_category,setDialog }: { machi
                 gap={2}
                 pt={2}
             >
-               
+
 
                 <TextField
                     required
@@ -77,20 +82,7 @@ function CreateOrEditMachinecategoryForm({ machine_category,setDialog }: { machi
                 </Button>
             </Stack>
 
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {!machine_category ? <AlertBar message="new machine_category created" color="success" /> : <AlertBar message="machine_category updated" color="success" />}
-                    </>
-                ) : null
-            }
+
 
         </form>
     )

@@ -1,29 +1,34 @@
-import { Button,  CircularProgress,  Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { CreateOrEditChecklistRemark } from '../../../services/CheckListServices';
 import { GetChecklistBoxDto } from '../../../dtos/checklist-box.dto';
 import { GetChecklistRemarksDto, CreateOrEditChecklistRemarkDto } from '../../../dtos/checklist-remark.dto';
 import { GetChecklistDto } from '../../../dtos/checklist.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
-function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box ,setDialog }: { checklist: GetChecklistDto, checklist_box: GetChecklistBoxDto, remark?: GetChecklistRemarksDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box, setDialog }: { checklist: GetChecklistDto, checklist_box: GetChecklistBoxDto, remark?: GetChecklistRemarksDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: CreateOrEditChecklistRemarkDto,
             remark?: GetChecklistRemarksDto
         }>
         (CreateOrEditChecklistRemark, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('remarks')
                 queryClient.invalidateQueries('checklists')
-            }
+                setAlert({ message: remark ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
 
@@ -39,7 +44,7 @@ function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box ,set
             stage: Yup.string(),
             remark: Yup.string().required("required field")
                 .min(5, 'Must be 5 characters or more')
-                
+
                 .required('Required field')
         }),
         onSubmit: (values: {
@@ -74,8 +79,8 @@ function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box ,set
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined)
-            
+            setDialog(undefined)
+
         }
     }, [isSuccess])
     return (
@@ -140,20 +145,7 @@ function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box ,set
                 </Button>
             </Stack>
 
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {!remark ? <AlertBar message="new remark created" color="success" /> : <AlertBar message="remark updated" color="success" />}
-                    </>
-                ) : null
-            }
+
 
         </form>
     )

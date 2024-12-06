@@ -1,24 +1,26 @@
 import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect,  useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { CreateOrEditRemark, GetAllStages } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { toTitleCase } from '../../../utils/TitleCase';
 import moment from 'moment';
 import { GetRemarksDto } from '../../../dtos/crm-remarks.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
-function CreateOrEditRemarkForm({ lead, remark, setDialog }: { lead?: { _id: string, has_card?: boolean, stage: string }, remark?: GetRemarksDto,  setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
+function CreateOrEditRemarkForm({ lead, remark, setDialog }: { lead?: { _id: string, has_card?: boolean, stage: string }, remark?: GetRemarksDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const [display, setDisplay] = useState(Boolean(remark?.remind_date))
     const [card, setCard] = useState(Boolean(lead?.has_card))
     const [stages, setStages] = useState<DropDownDto[]>([])
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             lead_id?: string,
             remark_id?: string,
@@ -29,13 +31,17 @@ function CreateOrEditRemarkForm({ lead, remark, setDialog }: { lead?: { _id: str
                 remind_date?: string
             }
         }>
-        (CreateOrEditRemark,{onSuccess:()=>{
-            queryClient.refetchQueries('remarks')
-            queryClient.refetchQueries('activities')
-            queryClient.refetchQueries('activities_topbar')
-            queryClient.refetchQueries('reminders')
-            queryClient.refetchQueries('leads')
-        }})
+        (CreateOrEditRemark, {
+            onSuccess: () => {
+                queryClient.refetchQueries('remarks')
+                queryClient.refetchQueries('activities')
+                queryClient.refetchQueries('activities_topbar')
+                queryClient.refetchQueries('reminders')
+                queryClient.refetchQueries('leads')
+                setAlert({ message: remark ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+        })
     const { data: stagedata, isSuccess: stageSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("crm_stages", GetAllStages)
 
 
@@ -55,7 +61,7 @@ function CreateOrEditRemarkForm({ lead, remark, setDialog }: { lead?: { _id: str
             stage: Yup.string(),
             remark: Yup.string().required("required field")
                 .min(5, 'Must be 5 characters or more')
-                
+
                 .required('Required field'),
             remind_date: Yup.string().test(() => {
                 if (display && !formik.values.remind_date)
@@ -91,8 +97,8 @@ function CreateOrEditRemarkForm({ lead, remark, setDialog }: { lead?: { _id: str
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined) 
-            
+            setDialog(undefined)
+
             setCard(false)
         }
     }, [isSuccess])
@@ -195,20 +201,7 @@ function CreateOrEditRemarkForm({ lead, remark, setDialog }: { lead?: { _id: str
                 </Button>
             </Stack>
 
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {!remark ? <AlertBar message="new remark created" color="success" /> : <AlertBar message="remark updated" color="success" />}
-                    </>
-                ) : null
-            }
+          
 
         </form>
     )

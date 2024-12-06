@@ -1,27 +1,32 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { CreateOrEditDye, GetArticles } from '../../../services/ProductionServices';
 import { GetArticleDto } from '../../../dtos/article.dto';
 import { GetDyeDto, CreateOrEditDyeDTo } from '../../../dtos/dye.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
 
-function CreateOrEditDyeForm({ dye,setDialog }: { dye?: GetDyeDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+function CreateOrEditDyeForm({ dye, setDialog }: { dye?: GetDyeDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetDyeDto>, BackendError, {
             body: CreateOrEditDyeDTo, id?: string
         }>
         (CreateOrEditDye, {
+
             onSuccess: () => {
-                queryClient.invalidateQueries('dyes')
-            }
+                queryClient.refetchQueries('dyes')
+                setAlert({ message: dye ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
     const { data: articles, isLoading: articleLoading } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>("articles", async () => GetArticles())
 
@@ -70,7 +75,7 @@ function CreateOrEditDyeForm({ dye,setDialog }: { dye?: GetDyeDto, setDialog: Re
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined) 
+            setDialog(undefined)
         }
     }, [isSuccess])
 
@@ -148,16 +153,7 @@ function CreateOrEditDyeForm({ dye,setDialog }: { dye?: GetDyeDto, setDialog: Re
                         })
                     }
                 </TextField>
-                {
-                    isError ? (
-                        <AlertBar message={error?.response.data.message} color="error" />
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <AlertBar message={dye ? "dye updated" : "created"} color="success" />
-                    ) : null
-                }
+
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
                     fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Submit"}

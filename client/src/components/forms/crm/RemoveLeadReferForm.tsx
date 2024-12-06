@@ -1,24 +1,29 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
-import { useMutation } from 'react-query';
+import { useContext, useEffect } from 'react';
+import {  useMutation } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { RemoveReferLead } from '../../../services/LeadsServices';
 import { GetLeadDto } from '../../../dtos/lead.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
 function RemoveLeadReferForm({ lead ,setDialog}: { lead: GetLeadDto , setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+     const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<GetReferDto>, BackendError, { id: string, body: { remark: string } }>
         (RemoveReferLead, {
+           
             onSuccess: () => {
-                queryClient.invalidateQueries('leads')
-            }
+                queryClient.refetchQueries('leads')
+                setAlert({ message:  "removed refer", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
     const formik = useFormik({
         initialValues: {
@@ -71,16 +76,6 @@ function RemoveLeadReferForm({ lead ,setDialog}: { lead: GetLeadDto , setDialog:
                     {...formik.getFieldProps('remark')}
                 />
 
-                {
-                    isError ? (
-                        <AlertBar message={error?.response.data.message} color="error" />
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <AlertBar message="removed refer successfully" color="success" />
-                    ) : null
-                }
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
                     fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Submit"}

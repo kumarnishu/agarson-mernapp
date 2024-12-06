@@ -8,6 +8,7 @@ type Props = {
     production?: GetProductionDto
 }
 function CreateOrEditProductionDialog({ production, dialog, setDialog }: Props) {
+    
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)} open={dialog === "CreateOrEditProductionDialog"}
             onClose={() => setDialog(undefined)}

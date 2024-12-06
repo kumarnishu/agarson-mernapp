@@ -11,6 +11,7 @@ type Props = {
 
 
 function CreateOrEditSoleThicknessDialog({ thickness, dialog, setDialog }: Props) {
+   
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)} open={dialog === "CreateOrEditSoleThicknessDialog"}
             onClose={() => setDialog(undefined)}

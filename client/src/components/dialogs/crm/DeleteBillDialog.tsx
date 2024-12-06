@@ -1,13 +1,15 @@
 import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, CircularProgress, IconButton } from '@mui/material'
 import { AxiosResponse } from 'axios';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { DeleteBill } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
-import AlertBar from '../../snacks/AlertBar';
+
 import { GetBillDto } from '../../../dtos/crm-bill.dto';
+import { AlertContext } from '../../../contexts/alertContext';
+import AlertBar from '../../snacks/AlertBar';
 
 type Props = {
   dialog: string | undefined,
@@ -16,12 +18,16 @@ type Props = {
 }
 
 function DeleteBillDialog({ bill, dialog, setDialog }: Props) {
+  const { setAlert } = useContext(AlertContext)
   const { mutate, isLoading, isSuccess, error, isError } = useMutation
     <AxiosResponse<any>, BackendError, string>
     (DeleteBill, {
+      
       onSuccess: () => {
         queryClient.invalidateQueries('bills')
-      }
+        setAlert({ message: "success", color: 'success' })
+      },
+      onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
     })
 
   useEffect(() => {

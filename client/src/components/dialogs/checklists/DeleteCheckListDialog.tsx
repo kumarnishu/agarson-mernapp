@@ -1,13 +1,15 @@
 import { Dialog, DialogTitle, DialogContent, IconButton, Stack, Button, CircularProgress, Typography } from '@mui/material';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { Cancel } from '@mui/icons-material';
-import AlertBar from '../../snacks/AlertBar';
+
 import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { AxiosResponse } from 'axios';
 import { DeleteCheckList } from '../../../services/CheckListServices';
 import { queryClient } from '../../../main';
 import { GetChecklistDto } from '../../../dtos/checklist.dto';
+import { AlertContext } from '../../../contexts/alertContext';
+import AlertBar from '../../snacks/AlertBar';
 
 type Props = {
     dialog: string | undefined,
@@ -15,12 +17,17 @@ type Props = {
     checklist: GetChecklistDto
 }
 function DeleteCheckListDialog({ checklist, dialog, setDialog }: Props) {
+    const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
         (DeleteCheckList, {
+            
             onSuccess: () => {
+                
                 queryClient.invalidateQueries('checklists')
-            }
+                setAlert({ message: "success", color: 'success' })
+              },
+              onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
     useEffect(() => {

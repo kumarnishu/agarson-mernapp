@@ -1,24 +1,30 @@
 import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, CircularProgress, IconButton } from '@mui/material'
 import { AxiosResponse } from 'axios';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { UnBlockUser } from '../../../services/UserServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
+import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
+
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
     id: string
 }
 function UnBlockUserDialog({ id, dialog, setDialog }: Props) {
+    const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
         (UnBlockUser, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('users')
-            }
+                setAlert({ message: "success", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
     useEffect(() => {

@@ -1,14 +1,15 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
-import { useMutation } from 'react-query';
+import { useContext, useEffect } from 'react';
+import {  useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import * as yup from 'yup';
 import { CreateOrEditExpenseLocation } from '../../../services/ExpenseServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
 type props = {
@@ -18,7 +19,8 @@ type props = {
 }
 
 function CreateOrEditExpenseLocationForm({ location, setDialog }: props) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+     const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 key: string
@@ -26,9 +28,12 @@ function CreateOrEditExpenseLocationForm({ location, setDialog }: props) {
             id?: string
         }>
         (CreateOrEditExpenseLocation, {
+          
             onSuccess: () => {
-                queryClient.invalidateQueries('exp_locations')
-            }
+                queryClient.refetchQueries('exp_locations')
+                setAlert({ message: location ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
 
@@ -89,21 +94,7 @@ function CreateOrEditExpenseLocationForm({ location, setDialog }: props) {
                 </Button>
             </Stack>
 
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {!location ? <AlertBar message="new location created" color="success" /> : <AlertBar message="location updated" color="success" />}
-                    </>
-                ) : null
-            }
-
+           
         </form>
     )
 }

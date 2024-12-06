@@ -1,13 +1,15 @@
 import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, CircularProgress, IconButton } from '@mui/material'
 import { AxiosResponse } from 'axios';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
-import AlertBar from '../../snacks/AlertBar';
+
 import { DeleteKey } from '../../../services/KeyServices';
 import { GetKeyDto } from '../../../dtos/keys.dto';
+import { AlertContext } from '../../../contexts/alertContext';
+import AlertBar from '../../snacks/AlertBar';
 
 type Props = {
   dialog: string | undefined,
@@ -16,12 +18,16 @@ type Props = {
 }
 
 function DeleteKeyDialog({ item, dialog, setDialog }: Props) {
+  const { setAlert } = useContext(AlertContext)
   const { mutate, isLoading, isSuccess, error, isError } = useMutation
     <AxiosResponse<any>, BackendError, string>
     (DeleteKey, {
       onSuccess: () => {
         queryClient.invalidateQueries('keys')
-      }
+        setAlert({ message: "success", color: 'success' })
+      },
+      onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+
     })
 
   useEffect(() => {

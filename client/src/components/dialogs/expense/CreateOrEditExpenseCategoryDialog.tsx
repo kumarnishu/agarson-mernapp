@@ -11,6 +11,7 @@ type props = {
 }
 
 function CreateOrEditExpenseCategoryDialog({ category,dialog,setDialog }: props) {
+    
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
             open={dialog ==='CreateOrEditExpenseCategoryDialog'}

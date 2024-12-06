@@ -1,14 +1,15 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { UpdateUser } from '../../../services/UserServices';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { GetUserDto } from '../../../dtos/user.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
 type TformData = {
@@ -24,12 +25,15 @@ type Props = {
   setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 }
 function UpdateUserForm({ user, setDialog }: Props) {
-  const { mutate, isLoading, isSuccess, isError, error } = useMutation
+  const { setAlert } = useContext(AlertContext)
+  const { mutate, isLoading, isSuccess, } = useMutation
     <AxiosResponse<GetUserDto>, BackendError, { id: string, body: FormData }>
     (UpdateUser, {
       onSuccess: () => {
         queryClient.invalidateQueries('users')
-      }
+        setAlert({ message: 'updated user', color: 'success' })
+      },
+      onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
     })
 
   const formik = useFormik<TformData>({
@@ -206,16 +210,7 @@ function UpdateUserForm({ user, setDialog }: Props) {
               }
             }}
           />
-          {
-            isError ? (
-              <AlertBar message={error?.response.data.message} color="error" />
-            ) : null
-          }
-          {
-            isSuccess ? (
-              <AlertBar message="updated user" color="success" />
-            ) : null
-          }
+
           <Button variant="contained" color="primary" type="submit"
             disabled={Boolean(isLoading)}
             fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Update"}</Button>

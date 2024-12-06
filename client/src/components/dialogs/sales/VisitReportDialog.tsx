@@ -14,7 +14,8 @@ import { GetVisitReportDto } from '../../../dtos/visit-report.dto'
 
 
 function VisitReportPage({ employee }: { employee: string }) {
-    const [reports, setReports] = useState<GetVisitReportDto[]>([])
+    
+     const [reports, setReports] = useState<GetVisitReportDto[]>([])
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetVisitReportDto[]>, BackendError>(["reports", employee], async () => GetVisitReports({ employee }))
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const columns = useMemo<MRT_ColumnDef<GetVisitReportDto>[]>(

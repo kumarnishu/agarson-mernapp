@@ -1,14 +1,15 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
-import { useMutation } from 'react-query';
+import { useContext, useEffect } from 'react';
+import {  useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import * as yup from 'yup';
 import { CreateOrEditItemUnit } from '../../../services/ExpenseServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
 type props = {
@@ -19,7 +20,8 @@ type props = {
 
 
 function CreateOrEditItemUnitForm({ unit, setDialog }: props) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 key: string
@@ -27,9 +29,12 @@ function CreateOrEditItemUnitForm({ unit, setDialog }: props) {
             id?: string
         }>
         (CreateOrEditItemUnit, {
+          
             onSuccess: () => {
-                queryClient.invalidateQueries('units')
-            }
+                queryClient.refetchQueries('units')
+                setAlert({ message: unit ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
 
@@ -90,20 +95,7 @@ function CreateOrEditItemUnitForm({ unit, setDialog }: props) {
                 </Button>
             </Stack>
 
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {!unit ? <AlertBar message="new unit created" color="success" /> : <AlertBar message="unit updated" color="success" />}
-                    </>
-                ) : null
-            }
+           
 
         </form>
     )

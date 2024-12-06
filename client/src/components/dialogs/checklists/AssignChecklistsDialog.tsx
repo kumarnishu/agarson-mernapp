@@ -1,17 +1,18 @@
 import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, InputLabel, OutlinedInput, MenuItem, Checkbox, ListItemText, Select } from '@mui/material'
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
-import { useMutation, useQuery } from 'react-query';
+import {  useMutation, useQuery } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { useFormik } from 'formik';
 import * as Yup from "yup"
 import { AssignChecklistsToUsers } from '../../../services/CheckListServices';
 import { GetChecklistDto } from '../../../dtos/checklist.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
 type Props = {
@@ -24,7 +25,8 @@ type Props = {
 function AssignChecklistsDialog({ checklists, flag, dialog, setDialog }: Props) {
     const [users, setUsers] = useState<DropDownDto[]>([])
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'checklist_view', show_assigned_only: false }))
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 user_ids: string[],
@@ -33,9 +35,11 @@ function AssignChecklistsDialog({ checklists, flag, dialog, setDialog }: Props) 
             }
         }>
         (AssignChecklistsToUsers, {
-            onSuccess: () => {
-                queryClient.invalidateQueries('checklists')
-            }
+           onSuccess: () => {
+            queryClient.invalidateQueries('checklists')
+            setAlert({ message: "success", color: 'success' })
+          },
+          onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
     const formik = useFormik<{
         user_ids: string[],
@@ -138,16 +142,7 @@ function AssignChecklistsDialog({ checklists, flag, dialog, setDialog }: Props) 
 
 
                 </Stack>
-                {
-                    isError ? (
-                        <AlertBar message={error?.response.data.message} color="error" />
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <AlertBar message="successfull" color="success" />
-                    ) : null
-                }
+               
             </DialogContent>
         </Dialog >
     )

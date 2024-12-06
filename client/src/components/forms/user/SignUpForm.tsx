@@ -10,8 +10,10 @@ import * as Yup from "yup"
 import { UserContext } from '../../../contexts/userContext';
 import { Signup } from '../../../services/UserServices';
 import { BackendError, Target } from '../../..';
-import AlertBar from '../../snacks/AlertBar';
+
 import { GetUserDto } from '../../../dtos/user.dto';
+import { AlertContext } from '../../../contexts/alertContext';
+import { queryClient } from '../../../main';
 
 type TFormData = {
   username: string,
@@ -23,12 +25,19 @@ type TFormData = {
   dp: string | Blob | File
 }
 
-function OwnerSignUpForm({setDialog}:{setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+function OwnerSignUpForm({ setDialog }: { setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
   const goto = useNavigate()
+  const { setAlert } = useContext(AlertContext)
   const { setUser } = useContext(UserContext)
-  const { mutate, data, isLoading, isSuccess, isError, error } = useMutation
+  const { mutate, data, isLoading, isSuccess } = useMutation
     <AxiosResponse<{ user: GetUserDto, token: string }>, BackendError, FormData>
-    (Signup)
+    (Signup, {
+      onSuccess: () => {
+        queryClient.invalidateQueries('users')
+        setAlert({ message: 'registered successfully', color: 'success' })
+      },
+      onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+    })
 
   const formik = useFormik<TFormData>({
     initialValues: {
@@ -254,16 +263,7 @@ function OwnerSignUpForm({setDialog}:{setDialog: React.Dispatch<React.SetStateAc
             }
           }}
         />
-        {
-          isError ? (
-            <AlertBar message={error?.response.data.message} color="error" />
-          ) : null
-        }
-        {
-          isSuccess ? (
-            <AlertBar message="Successfully logged in" color="success" />
-          ) : null
-        }
+
         <Button variant="contained"
           disabled={Boolean(isLoading)}
           color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Register"}</Button>

@@ -16,7 +16,7 @@ function AlertBar({ message, color, variant }: Props) {
             color={color}
             autoHideDuration={6000}
             onClose={() => setAlert(undefined)}
-            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             message={message}
         >
             <Alert variant={variant || "filled"} onClose={() => setAlert(undefined)} severity={color} sx={{ width: '100%' }}>

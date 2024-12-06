@@ -17,7 +17,8 @@ type Props = {
 }
 
 function ViewVisitReportRemarksDialog({ employee, visit_date, dialog, setDialog }: Props) {
-    const [dialog2, setdialog2] = useState<string | undefined>()
+    
+     const [dialog2, setdialog2] = useState<string | undefined>()
     const [remark, setRemark] = useState<GetVisitSummaryReportRemarkDto>()
     const [remarks, setRemarks] = useState<GetVisitSummaryReportRemarkDto[]>()
 

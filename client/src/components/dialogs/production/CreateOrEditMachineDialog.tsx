@@ -9,6 +9,7 @@ type Props = {
     machine?: GetMachineDto
 }
 function CreateOrEditMachineDialog({ machine, dialog, setDialog }: Props) {
+    
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)} open={dialog === "CreateOrEditMachineDialog"}
             onClose={() => setDialog(undefined)}

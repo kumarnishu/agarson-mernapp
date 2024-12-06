@@ -1,26 +1,31 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { GetMachineCategories, CreateOrEditMachine } from '../../../services/ProductionServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetMachineDto, CreateOrEditMachineDto } from '../../../dtos/machine.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
-function CreateOrEditMachineForm({ machine,setDialog }: { machine?: GetMachineDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+function CreateOrEditMachineForm({ machine, setDialog }: { machine?: GetMachineDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetMachineDto>, BackendError, {
             body: CreateOrEditMachineDto, id?: string
         }>
         (CreateOrEditMachine, {
+
             onSuccess: () => {
-                queryClient.invalidateQueries('machines')
-            }
+                queryClient.refetchQueries('machines')
+                setAlert({ message: machine ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
     const { data: catgeories } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("machine_catgeories", GetMachineCategories, {
         staleTime: 10000
@@ -59,7 +64,7 @@ function CreateOrEditMachineForm({ machine,setDialog }: { machine?: GetMachineDt
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined) 
+            setDialog(undefined)
         }
     }, [isSuccess])
     console.log(formik.errors)
@@ -148,16 +153,7 @@ function CreateOrEditMachineForm({ machine,setDialog }: { machine?: GetMachineDt
                         })
                     }
                 </TextField>
-                {
-                    isError ? (
-                        <AlertBar message={error?.response.data.message} color="error" />
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <AlertBar message={machine ? "machine updated" : "created"} color="success" />
-                    ) : null
-                }
+
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
                     fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Submit"}

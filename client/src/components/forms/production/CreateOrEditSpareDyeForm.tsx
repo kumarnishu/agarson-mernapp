@@ -1,34 +1,39 @@
 import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { CreateOrEditSpareDye, GetAllDyeLocations, GetDyes } from '../../../services/ProductionServices';
 import UploadFileButton from '../../buttons/UploadFileButton';
 import { GetUserDto } from '../../../dtos/user.dto';
 import { GetDyeLocationDto } from '../../../dtos/dye-location.dto';
 import { GetDyeDto } from '../../../dtos/dye.dto';
 import { GetSpareDyeDto } from '../../../dtos/spare-dye.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
 function CreateOrEditSpareDyeForm({ sparedye, setDialog }: { sparedye?: GetSpareDyeDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    const { setAlert } = useContext(AlertContext)
     const { data: dyes } = useQuery<AxiosResponse<GetDyeDto[]>, BackendError>("dyes", async () => GetDyes('false'))
     const { data: locations } = useQuery<AxiosResponse<GetDyeLocationDto[]>, BackendError>("locations", async () => GetAllDyeLocations())
     const [file, setFile] = useState<File>()
     const [repairRequired, setRepairRequired] = useState(sparedye?.repair_required)
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetUserDto>, BackendError, {
             id?: string,
             body: FormData
         }>
         (CreateOrEditSpareDye, {
             onSuccess: () => {
-                queryClient.invalidateQueries('spare_dyes')
-            }
+                queryClient.refetchQueries('spare_dyes')
+                setAlert({ message: sparedye ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+
         })
 
 
@@ -180,16 +185,7 @@ function CreateOrEditSpareDyeForm({ sparedye, setDialog }: { sparedye?: GetSpare
                     />
 
                     <UploadFileButton name="media" required={true} camera={true} isLoading={isLoading} label="Upload Spare Dye Photo" file={file} setFile={setFile} disabled={isLoading} />
-                    {
-                        isError ? (
-                            <AlertBar message={error?.response.data.message} color="error" />
-                        ) : null
-                    }
-                    {
-                        isSuccess ? (
-                            <AlertBar message={sparedye ? "Updated Shoe weight" : "Create Shoe Weight"} color="success" />
-                        ) : null
-                    }
+
                     <Button size="large" variant="contained" color="primary" type="submit"
                         disabled={Boolean(isLoading)}
                         fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Submit"}

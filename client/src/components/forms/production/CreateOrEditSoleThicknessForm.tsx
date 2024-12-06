@@ -1,32 +1,37 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect,  useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useContext, useEffect, useState } from 'react';
+import {  useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { CreateOrEditSoleThickness, GetDyeById, GetDyes } from '../../../services/ProductionServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetDyeDto } from '../../../dtos/dye.dto';
 import { GetSoleThicknessDto, CreateOrEditSoleThicknessDto } from '../../../dtos/sole-thickness.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
-function CreateOrEditSoleThicknessForm({ thickness,setDialog }: { thickness?: GetSoleThicknessDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
+function CreateOrEditSoleThicknessForm({ thickness, setDialog }: { thickness?: GetSoleThicknessDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    const { setAlert } = useContext(AlertContext)
     const { data: dyes } = useQuery<AxiosResponse<GetDyeDto[]>, BackendError>("dyes", async () => GetDyes())
     const [dyeid, setDyeid] = useState<string>('');
     const [articles, setArticles] = useState<DropDownDto[]>([])
     const { data: dyedata, isSuccess: isDyeSuccess, refetch: refetchDye } = useQuery<AxiosResponse<GetDyeDto>, BackendError>(["dye", dyeid], async () => GetDyeById(dyeid), { enabled: false })
 
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetSoleThicknessDto>, BackendError, {
             id?: string,
             body: CreateOrEditSoleThicknessDto
         }>
         (CreateOrEditSoleThickness, {
+           
             onSuccess: () => {
-                queryClient.invalidateQueries('thickness')
-            }
+                queryClient.refetchQueries('thickness')
+                setAlert({ message: thickness ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
 
@@ -90,7 +95,7 @@ function CreateOrEditSoleThicknessForm({ thickness,setDialog }: { thickness?: Ge
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined) 
+            setDialog(undefined)
         }
     }, [isSuccess])
 
@@ -147,7 +152,7 @@ function CreateOrEditSoleThicknessForm({ thickness,setDialog }: { thickness?: Ge
                     }
                     {...formik.getFieldProps('size')}
                 />
-                
+
                 {/* articles */}
                 < TextField
                     select
@@ -178,7 +183,7 @@ function CreateOrEditSoleThicknessForm({ thickness,setDialog }: { thickness?: Ge
                     }
                 </TextField>
 
-             
+
 
                 <TextField
                     required
@@ -211,16 +216,6 @@ function CreateOrEditSoleThicknessForm({ thickness,setDialog }: { thickness?: Ge
                 />
 
 
-                {
-                    isError ? (
-                        <AlertBar message={error?.response.data.message} color="error" />
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <AlertBar message={thickness ? "updated" : "created"} color="success" />
-                    ) : null
-                }
                 <Button variant="contained" size="large" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
                     fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Submit"}

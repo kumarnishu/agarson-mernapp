@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios"
 import { BackendError } from "../.."
 import { useMutation } from "react-query"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Button, CircularProgress, Stack } from "@mui/material"
 import { Download, Upload } from "@mui/icons-material"
 import styled from "styled-components"
@@ -9,6 +9,7 @@ import { saveAs } from 'file-saver';
 import ExportToExcel from "../../utils/ExportToExcel"
 import { queryClient } from "../../main"
 import { BulkSalesManLeavesReportFromExcel } from "../../services/ExcelDbService"
+import { AlertContext } from "../../contexts/alertContext"
 
 
 const FileInput = styled.input`
@@ -22,7 +23,7 @@ export function SalesmanLeavesButton() {
         <AxiosResponse<any[]>, BackendError, FormData>
         (BulkSalesManLeavesReportFromExcel, { onSuccess: () => queryClient.refetchQueries('reports') })
     const [file, setFile] = useState<File | null>(null)
-
+    const { setAlert } = useContext(AlertContext)
 
 
     function HandleExport() {
@@ -47,6 +48,7 @@ export function SalesmanLeavesButton() {
         if (isSuccess) {
             if (data.data.length > 0)
                 ExportToExcel(data.data, "output.xlsx")
+            setAlert({ message: 'File uploaded successfully', color: 'success' })
         }
     }, [isSuccess, data])
 

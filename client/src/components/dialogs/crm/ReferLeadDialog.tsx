@@ -9,6 +9,7 @@ type Props = {
     lead: GetLeadDto
 }
 function ReferLeadDialog({ lead, dialog, setDialog }: Props) {
+   
 
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}

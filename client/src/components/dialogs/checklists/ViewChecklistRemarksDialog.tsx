@@ -23,7 +23,6 @@ function ViewChecklistRemarksDialog({ checklist, dialog, setDialog }: Props) {
     const [remarks, setRemarks] = useState<GetChecklistRemarksDto[]>()
     const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", checklist._id], async () => GetCheckListRemarksHistory(checklist._id))
 
-
     const { user } = useContext(UserContext)
     let previous_date = new Date()
     let day = previous_date.getDate() - 1

@@ -13,7 +13,7 @@ type Props = {
     }, remark?: GetRemarksDto,
 }
 function CreateOrEditRemarkDialog({ lead, remark, dialog, setDialog }: Props) {
-
+  
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
             open={dialog === 'CreateOrEditRemarkDialog'}

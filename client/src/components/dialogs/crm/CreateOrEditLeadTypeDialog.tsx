@@ -10,7 +10,7 @@ type Props = {
     type?: DropDownDto
 }
 function CreateOrEditLeadTypeDialog({ type, dialog, setDialog }: Props) {
-
+    
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
             open={dialog === 'CreateOrEditLeadTypeDialog'}

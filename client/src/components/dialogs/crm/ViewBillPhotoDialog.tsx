@@ -9,6 +9,7 @@ type Props = {
     bill: GetBillDto
 }
 function ViewBillPhotoDialog({ bill, dialog, setDialog }: Props) {
+    
     return (
         <>
             <Dialog fullScreen open={dialog == "ViewBillPhotoDialog"}

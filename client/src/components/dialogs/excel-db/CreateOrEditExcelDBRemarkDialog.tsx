@@ -9,6 +9,7 @@ type Props = {
     category: string, remark?: GetExcelDBRemarksDto,
 }
 function CreateOrEditExcelDBRemarkDialog({ category, obj, remark, dialog, setDialog }: Props) {
+
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
             open={dialog === 'CreateOrEditExcelDBRemarkDialog'}

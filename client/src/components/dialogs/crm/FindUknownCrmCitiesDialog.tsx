@@ -1,12 +1,13 @@
 import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button } from '@mui/material'
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
-import { useMutation } from 'react-query';
+import {  useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { FindUnknownCrmCities } from '../../../services/LeadsServices';
+import { AlertContext } from '../../../contexts/alertContext';
 
 type Props = {
     dialog: string | undefined,
@@ -15,12 +16,16 @@ type Props = {
 }
 
 function FindUknownCrmCitiesDialog({ dialog, setDialog }: Props) {
-    const { mutate, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isSuccess} = useMutation
         <AxiosResponse<string>, BackendError>
         (FindUnknownCrmCities, {
+           
             onSuccess: () => {
                 queryClient.invalidateQueries('crm_cities')
-            }
+                setAlert({ message: "success", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
 
@@ -58,16 +63,7 @@ function FindUknownCrmCitiesDialog({ dialog, setDialog }: Props) {
                     <Button variant='outlined' color='error' onClick={() => mutate()}>Submit</Button>
 
                 </Stack>
-                {
-                    isError ? (
-                        <AlertBar message={error?.response.data.message} color="error" />
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <AlertBar message="successfull" color="success" />
-                    ) : null
-                }
+             
             </DialogContent>
         </Dialog >
     )

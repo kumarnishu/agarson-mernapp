@@ -1,31 +1,36 @@
-import { Button,  CircularProgress,  Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { CreateOrEditVisitReportRemark } from '../../../services/SalesServices';
 import { GetVisitSummaryReportRemarkDto, CreateOrEditVisitSummaryRemarkDto } from '../../../dtos/visit_remark.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
 function CreateOrEditVisitReportRemarkForm({ employee, visit_date, remark, setDialog }: {
     employee: string,
-    visit_date: string, remark?: GetVisitSummaryReportRemarkDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> 
+    visit_date: string, remark?: GetVisitSummaryReportRemarkDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 }) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             remark?: GetVisitSummaryReportRemarkDto,
             body: CreateOrEditVisitSummaryRemarkDto
         }>
         (CreateOrEditVisitReportRemark, {
+
             onSuccess: () => {
                 queryClient.refetchQueries('remarks')
                 queryClient.refetchQueries('visits')
-                
-            }
+                setAlert({ message: remark ? 'updated remark' : 'created new remark', color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+
         })
 
 
@@ -39,7 +44,7 @@ function CreateOrEditVisitReportRemarkForm({ employee, visit_date, remark, setDi
         validationSchema: Yup.object({
             remark: Yup.string().required("required field")
                 .min(5, 'Must be 5 characters or more')
-                
+
                 .required('Required field'),
         }),
         onSubmit: (values) => {
@@ -53,12 +58,12 @@ function CreateOrEditVisitReportRemarkForm({ employee, visit_date, remark, setDi
             })
         }
     });
-   
+
 
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined) 
+            setDialog(undefined)
         }
     }, [isSuccess])
     return (
@@ -90,20 +95,7 @@ function CreateOrEditVisitReportRemarkForm({ employee, visit_date, remark, setDi
                 </Button>
             </Stack>
 
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {!remark ? <AlertBar message="new remark created" color="success" /> : <AlertBar message="remark updated" color="success" />}
-                    </>
-                ) : null
-            }
+
 
         </form>
     )

@@ -1,35 +1,39 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect,  useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { CreateOrEditCity, GetAllStates } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import * as yup from 'yup';
 import { toTitleCase } from '../../../utils/TitleCase';
 import { CreateOrEditCrmCity } from '../../../dtos/crm-city.dto';
 import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
-function CreateOrEditCityForm({ city ,setDialog}: { city?: CreateOrEditCrmCity, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
+function CreateOrEditCityForm({ city, setDialog }: { city?: CreateOrEditCrmCity, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const [states, setStates] = useState<GetCrmStateDto[]>([])
     const { data, isSuccess: isStateSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>("crm_states", GetAllStates)
-
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 city: string,
                 alias1: string,
                 alias2: string,
-                state:string
+                state: string
             },
             id?: string
         }>
         (CreateOrEditCity, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('crm_cities')
-            }
+                setAlert({ message: city ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
 
@@ -72,7 +76,7 @@ function CreateOrEditCityForm({ city ,setDialog}: { city?: CreateOrEditCrmCity, 
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined) 
+            setDialog(undefined)
 
         }
     }, [isSuccess])
@@ -136,7 +140,7 @@ function CreateOrEditCityForm({ city ,setDialog}: { city?: CreateOrEditCrmCity, 
                     {...formik.getFieldProps('city')}
                 />
                 <TextField
-                    
+
                     error={
                         formik.touched.alias1 && formik.errors.alias1 ? true : false
                     }
@@ -150,7 +154,7 @@ function CreateOrEditCityForm({ city ,setDialog}: { city?: CreateOrEditCrmCity, 
                     {...formik.getFieldProps('alias1')}
                 />
                 <TextField
-                    
+
                     error={
                         formik.touched.alias2 && formik.errors.alias2 ? true : false
                     }
@@ -163,7 +167,7 @@ function CreateOrEditCityForm({ city ,setDialog}: { city?: CreateOrEditCrmCity, 
                     }
                     {...formik.getFieldProps('alias2')}
                 />
-            
+
 
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
@@ -171,20 +175,7 @@ function CreateOrEditCityForm({ city ,setDialog}: { city?: CreateOrEditCrmCity, 
                 </Button>
             </Stack>
 
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {!city ? <AlertBar message="new city created" color="success" /> : <AlertBar message="city updated" color="success" />}
-                    </>
-                ) : null
-            }
+
 
         </form>
     )

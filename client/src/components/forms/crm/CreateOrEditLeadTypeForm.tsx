@@ -1,17 +1,19 @@
 import { Button,  CircularProgress,  Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import {  CreateOrEditLeadType } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import * as yup from 'yup';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 function CreateOrEditLeadTypeForm({ type ,setDialog}: { type?: DropDownDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 key: string
@@ -19,9 +21,12 @@ function CreateOrEditLeadTypeForm({ type ,setDialog}: { type?: DropDownDto, setD
             id?: string
         }>
         (CreateOrEditLeadType, {
+           
             onSuccess: () => {
                 queryClient.invalidateQueries('crm_types')
-            }
+                setAlert({ message: type ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
 
@@ -82,20 +87,7 @@ function CreateOrEditLeadTypeForm({ type ,setDialog}: { type?: DropDownDto, setD
                 </Button>
             </Stack>
 
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {!type ? <AlertBar message="new type created" color="success" /> : <AlertBar message="type updated" color="success" />}
-                    </>
-                ) : null
-            }
+           
 
         </form>
     )

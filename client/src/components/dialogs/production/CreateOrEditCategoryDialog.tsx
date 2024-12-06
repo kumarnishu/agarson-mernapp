@@ -8,7 +8,7 @@ type Props = {
     machine_category?: DropDownDto
 }
 function CreateOrEditMachineCategoryDialog({ machine_category, dialog, setDialog }: Props) {
-
+   
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
             open={dialog === "CreateOrEditMachineCategoryDialog"}

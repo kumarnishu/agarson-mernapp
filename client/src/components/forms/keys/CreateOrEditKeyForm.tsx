@@ -1,20 +1,22 @@
 import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect,  useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useContext, useEffect,  useState } from 'react';
+import {  useMutation, useQuery } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import * as yup from 'yup';
 import { CreateOrEditKey, GetAllKeyCategoriesForDropdown } from '../../../services/KeyServices';
 import { toTitleCase } from '../../../utils/TitleCase';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetKeyDto } from '../../../dtos/keys.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 function CreateOrEditKeyForm({ keyitm,setDialog }: { keyitm?: GetKeyDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const [categories, setCategories] = useState<DropDownDto[]>([])
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+     const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 key: string,
@@ -28,9 +30,12 @@ function CreateOrEditKeyForm({ keyitm,setDialog }: { keyitm?: GetKeyDto, setDial
             id?: string
         }>
         (CreateOrEditKey, {
+         
             onSuccess: () => {
-                queryClient.invalidateQueries('keys')
-            }
+                queryClient.refetchQueries('keys')
+                setAlert({ message: keyitm ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
     const { data, isSuccess: isSuccesskeysData } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategoriesForDropdown({ show_assigned_only: false }))
 
@@ -218,20 +223,7 @@ function CreateOrEditKeyForm({ keyitm,setDialog }: { keyitm?: GetKeyDto, setDial
                 </Button>
             </Stack>
 
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {!keyitm ? <AlertBar message="new key created" color="success" /> : <AlertBar message="key updated" color="success" />}
-                    </>
-                ) : null
-            }
+          
 
         </form>
     )

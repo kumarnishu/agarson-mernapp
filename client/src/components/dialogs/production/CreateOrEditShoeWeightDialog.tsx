@@ -11,7 +11,9 @@ type Props = {
     shoe_weight?: GetShoeWeightDto
 }
 function CreateOrEditShoeWeightDialog({ shoe_weight, dialog, setDialog }: Props) {
-    return (
+    
+     return (
+
         <Dialog fullScreen={Boolean(window.screen.width < 500)} open={dialog === "CreateOrEditShoeWeightDialog" || dialog === "CreateOrEditShoeWeightDialog2" || dialog === "CreateOrEditShoeWeightDialog3"}
             onClose={() => setDialog(undefined)}
         >

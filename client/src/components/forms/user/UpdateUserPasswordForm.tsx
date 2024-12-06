@@ -3,21 +3,30 @@ import { Button, CircularProgress, IconButton, InputAdornment, TextField } from 
 import { Stack } from '@mui/system';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from 'yup';
 import { UpdateUserPassword } from '../../../services/UserServices';
 import { BackendError } from '../../..';
-import AlertBar from '../../snacks/AlertBar';
+
 import { GetUserDto } from '../../../dtos/user.dto';
+import { AlertContext } from '../../../contexts/alertContext';
+import { queryClient } from '../../../main';
 
 
 function UpdateUserPasswordForm({ user, setDialog }: { user: GetUserDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
-    const { mutate, isSuccess, isLoading, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isSuccess, isLoading, } = useMutation
         <AxiosResponse<string>,
             BackendError,
             { id: string, body: { newPassword: string, confirmPassword: string } }
-        >(UpdateUserPassword)
+        >(UpdateUserPassword, {
+            onSuccess: () => {
+                queryClient.invalidateQueries('users')
+                setAlert({ message: 'updated user password', color: 'success' })
+              },
+              onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+        })
 
     const formik = useFormik({
         initialValues: {
@@ -58,6 +67,7 @@ function UpdateUserPasswordForm({ user, setDialog }: { user: GetUserDto, setDial
     useEffect(() => {
         if (isSuccess) {
             setDialog(undefined)
+            setAlert({ message: 'updated user password', color: 'success' })
         }
     }, [isSuccess,])
 
@@ -124,16 +134,7 @@ function UpdateUserPasswordForm({ user, setDialog }: { user: GetUserDto, setDial
                     {...formik.getFieldProps('confirmPassword')}
                 />
 
-                {
-                    isError ? (
-                        <AlertBar message={error?.response.data.message} color="error" />
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <AlertBar message="updated password" color="success" />
-                    ) : null
-                }
+
                 <Button variant="contained"
                     disabled={Boolean(isLoading)}
                     color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Update"}</Button>

@@ -2,15 +2,16 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {  Button, CircularProgress, IconButton, InputAdornment, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect,  useState } from 'react';
-import { useMutation } from 'react-query';
+import { useContext, useEffect,  useState } from 'react';
+import {  useMutation } from 'react-query';
 import * as Yup from "yup"
 
 import { NewUser } from '../../../services/UserServices';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
 import { GetUserDto } from '../../../dtos/user.dto';
+import { AlertContext } from '../../../contexts/alertContext';
+
 
 
 type TformData = {
@@ -24,12 +25,15 @@ type TformData = {
 }
 
 function NewUserForm({setDialog}:{setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+     const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<GetUserDto>, BackendError, FormData>
         (NewUser,{
-            onSuccess: () => {
-                queryClient.invalidateQueries('users')
-            }
+           onSuccess: () => {
+            queryClient.invalidateQueries('users')
+            setAlert({ message: 'created new user', color: 'success' })
+          },
+          onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
 
@@ -246,16 +250,7 @@ function NewUserForm({setDialog}:{setDialog: React.Dispatch<React.SetStateAction
                         }
                     }}
                 />
-                {
-                    isError ? (
-                        <AlertBar message={error?.response.data.message} color="error" />
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <AlertBar message="new user created" color="success" />
-                    ) : null
-                }
+               
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
                     fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Register"}

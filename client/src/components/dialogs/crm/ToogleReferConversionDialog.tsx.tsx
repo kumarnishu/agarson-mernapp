@@ -1,13 +1,14 @@
 import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Button, CircularProgress } from '@mui/material'
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { BackendError } from '../../..';
 import { ToogleReferPartyConversion } from '../../../services/LeadsServices';
 import { queryClient } from '../../../main';
-import { useMutation } from 'react-query';
-import AlertBar from '../../snacks/AlertBar';
+import {  useMutation } from 'react-query';
 import { GetReferDto } from '../../../dtos/refer.dto';
+import { AlertContext } from '../../../contexts/alertContext';
+
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
@@ -15,15 +16,18 @@ type Props = {
 }
 
 function ToogleReferConversionDialog({ refer, dialog, setDialog }: Props) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<GetReferDto>, BackendError, string>
         (ToogleReferPartyConversion, {
+           
             onSuccess: () => {
                 queryClient.invalidateQueries('refers')
                 queryClient.invalidateQueries('fuzzyrefers')
                 queryClient.invalidateQueries('new_refer_reports')
-
-            }
+                setAlert({ message: "success", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
     useEffect(() => {
@@ -41,16 +45,7 @@ function ToogleReferConversionDialog({ refer, dialog, setDialog }: Props) {
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
                 {refer.convertedfromlead ? "Convert To Old Customer" : "Convert To New Customer"}
             </DialogTitle>
-            {
-                isError ? (
-                    <AlertBar message={error?.response.data.message} color="error" />
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <AlertBar message={refer.convertedfromlead ? "Convert To Old Customer Success" : "Convert To New Customer Success"} color="success" />
-                ) : null
-            }
+           
             <DialogContent sx={{ gap: 2 }}>
 
                 <Typography variant="body1" color="error">

@@ -1,17 +1,19 @@
 import { Button,  CircularProgress,  Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { CreateOrEditStage } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import * as yup from 'yup';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 function CreateOrEditLeadStageForm({ stage ,setDialog}: { stage?: DropDownDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 key: string
@@ -19,9 +21,12 @@ function CreateOrEditLeadStageForm({ stage ,setDialog}: { stage?: DropDownDto, s
             id?: string
         }>
         (CreateOrEditStage, {
+          
             onSuccess: () => {
                 queryClient.invalidateQueries('crm_stages')
-            }
+                setAlert({ message: stage ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
 
@@ -82,21 +87,7 @@ function CreateOrEditLeadStageForm({ stage ,setDialog}: { stage?: DropDownDto, s
                 </Button>
             </Stack>
 
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {!stage ? <AlertBar message="new stage created" color="success" /> : <AlertBar message="stage updated" color="success" />}
-                    </>
-                ) : null
-            }
-
+          
         </form>
     )
 }

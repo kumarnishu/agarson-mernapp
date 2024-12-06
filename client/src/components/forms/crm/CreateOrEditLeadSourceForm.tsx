@@ -1,17 +1,19 @@
-import { Button,  CircularProgress,  Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { CreateOrEditSource } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import * as yup from 'yup';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
-function CreateOrEditLeadSourceForm({ source ,setDialog}: { source?: DropDownDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+function CreateOrEditLeadSourceForm({ source, setDialog }: { source?: DropDownDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 key: string
@@ -19,9 +21,12 @@ function CreateOrEditLeadSourceForm({ source ,setDialog}: { source?: DropDownDto
             id?: string
         }>
         (CreateOrEditSource, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('crm_sources')
-            }
+                setAlert({ message: source ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
 
@@ -31,14 +36,14 @@ function CreateOrEditLeadSourceForm({ source ,setDialog}: { source?: DropDownDto
         initialValues: {
             source: source ? source.label : ""
         },
-        validationSchema:yup.object({
-            source:yup.string().required()
+        validationSchema: yup.object({
+            source: yup.string().required()
         }),
         onSubmit: (values: {
             source: string,
         }) => {
             mutate({
-                id:source?.id,
+                id: source?.id,
                 body: {
                     key: values.source
                 }
@@ -48,8 +53,8 @@ function CreateOrEditLeadSourceForm({ source ,setDialog}: { source?: DropDownDto
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined) 
-           
+            setDialog(undefined)
+
         }
     }, [isSuccess])
     return (
@@ -73,8 +78,8 @@ function CreateOrEditLeadSourceForm({ source ,setDialog}: { source?: DropDownDto
                     }
                     {...formik.getFieldProps('source')}
                 />
-              
-               
+
+
 
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
@@ -82,20 +87,6 @@ function CreateOrEditLeadSourceForm({ source ,setDialog}: { source?: DropDownDto
                 </Button>
             </Stack>
 
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {!source ? <AlertBar message="new source created" color="success" /> : <AlertBar message="source updated" color="success" />}
-                    </>
-                ) : null
-            }
 
         </form>
     )

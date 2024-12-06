@@ -10,7 +10,8 @@ type Props = {
 }
 
 function CreateOrEditDyeDialog({ dye, setDialog, dialog }: Props) {
-    return (
+    
+      return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)} open={dialog === "CreateOrEditDyeDialog"}
             onClose={() => setDialog(undefined)}
         >

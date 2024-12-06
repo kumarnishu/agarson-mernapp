@@ -2,33 +2,38 @@ import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useEffect, useContext, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import {  useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { CreateOrUpdateRefer, GetAllCities, GetAllStates } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { UserContext } from '../../../contexts/userContext';
 import { toTitleCase } from '../../../utils/TitleCase';
 import { GetCrmCityDto } from '../../../dtos/crm-city.dto';
 import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
+import { AlertContext } from '../../../contexts/alertContext';
+
 
 function CreateOrEditReferForm({ refer,setDialog }: { refer?: GetReferDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
     const { user } = useContext(UserContext);
     const [states, setStates] = useState<GetCrmStateDto[]>([])
     const [cities, setCities] = useState<GetCrmCityDto[]>([])
     const [state, setState] = useState<string>();
-
+    const { setAlert } = useContext(AlertContext)
     const { data, isSuccess: isStateSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>("crm_states", GetAllStates)
     const { data: citydata, isSuccess: isCitySuccess } = useQuery<AxiosResponse<GetCrmCityDto[]>, BackendError>(["crm_cities", state], async () => GetAllCities({ state: state }))
 
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<GetReferDto>, BackendError, { body: FormData, id?: string }>
         (CreateOrUpdateRefer, {
+          
             onSuccess: () => {
                 queryClient.invalidateQueries('refers')
-            }
+                setAlert({ message: refer ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
     const formik = useFormik({
@@ -282,20 +287,7 @@ function CreateOrEditReferForm({ refer,setDialog }: { refer?: GetReferDto, setDi
                     </>}
                 </Button>
             </Stack>
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {refer ? <AlertBar message="updated refer " color="success" /> : <AlertBar message="new refer created" color="success" />}
-                    </>
-                ) : null
-            }
+          
 
         </form>
     )

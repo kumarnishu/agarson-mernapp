@@ -11,6 +11,7 @@ type Props = {
 }
 
 function CreateOrEditStageDialog({ stage, dialog, setDialog }: Props) {
+   
 
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}

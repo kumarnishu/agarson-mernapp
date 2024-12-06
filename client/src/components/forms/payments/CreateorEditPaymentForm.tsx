@@ -1,29 +1,34 @@
 import { Button, Checkbox, CircularProgress, InputLabel, ListItemText, MenuItem, OutlinedInput, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect,  useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import Select from '@mui/material/Select';
 import { CreateOrEditPayment, GetAllPaymentCategories } from '../../../services/PaymentsService';
 import moment from 'moment';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetPaymentDto, CreateOrEditPaymentDto } from '../../../dtos/payment.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
-function CreateorEditPaymentForm({ payment,setDialog }: { payment?: GetPaymentDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
+function CreateorEditPaymentForm({ payment, setDialog }: { payment?: GetPaymentDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const [categories, setCategories] = useState<DropDownDto[]>([])
+    const { setAlert } = useContext(AlertContext)
     const [users, setUsers] = useState<DropDownDto[]>([])
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, { body: CreateOrEditPaymentDto, id?: string }>
         (CreateOrEditPayment, {
+
             onSuccess: () => {
-                queryClient.invalidateQueries('payments')
-            }
+                queryClient.refetchQueries('payments')
+                setAlert({ message: payment ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
 
@@ -38,12 +43,12 @@ function CreateorEditPaymentForm({ payment,setDialog }: { payment?: GetPaymentDt
             link: payment ? payment.link : "",
             assigned_users: payment ? payment.assigned_users.map((user) => { return user.id }) : [],
             duedate: payment ? moment(payment.due_date).format("YYYY-MM-DD") : moment(new Date()).format("YYYY-MM-DD"),
-            frequency: payment?.frequency||""
+            frequency: payment?.frequency || ""
         },
         validationSchema: Yup.object({
             payment_title: Yup.string().required("required field")
                 .min(5, 'Must be 5 characters or more')
-                ,
+            ,
             payment_description: Yup.string(),
             link: Yup.string(),
             category: Yup.string().required("required field"),
@@ -81,7 +86,7 @@ function CreateorEditPaymentForm({ payment,setDialog }: { payment?: GetPaymentDt
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined) 
+            setDialog(undefined)
         }
     }, [isSuccess])
 
@@ -223,7 +228,7 @@ function CreateorEditPaymentForm({ payment,setDialog }: { payment?: GetPaymentDt
                     renderValue={() => `${formik.values.assigned_users.length} users`}
                     {...formik.getFieldProps('assigned_users')}
                 >
-                     {users.map((user) => (
+                    {users.map((user) => (
                         <MenuItem key={user.id} value={user.id}>
                             <Checkbox checked={formik.values.assigned_users.includes(user.id)} />
                             <ListItemText primary={user.label} />
@@ -235,16 +240,7 @@ function CreateorEditPaymentForm({ payment,setDialog }: { payment?: GetPaymentDt
                     fullWidth>{Boolean(isLoading) ? <CircularProgress /> : payment ? 'Update' : 'Create'}
                 </Button>
             </Stack>
-            {
-                isError ? (
-                    <AlertBar message={error?.response.data.message} color="error" />
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <AlertBar message="new payment added" color="success" />
-                ) : null
-            }
+
 
         </form>
     )

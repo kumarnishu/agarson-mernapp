@@ -9,6 +9,7 @@ type Props = {
 
 }
 function ResetPasswordDialog({ dialog, setDialog }: Props) {
+    
     const { token } = useParams()
     return (
         <>

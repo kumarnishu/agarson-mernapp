@@ -1,16 +1,18 @@
 import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, CircularProgress, MenuItem, Select, InputLabel, OutlinedInput, Checkbox, ListItemText, } from '@mui/material'
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
-import { useMutation, useQuery } from 'react-query';
+import {  useMutation, useQuery } from 'react-query';
 import { BackendError } from '../../..';
 import { AssignUsers, GetUsersForDropdown } from '../../../services/UserServices';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { useFormik } from 'formik';
 import * as Yup from "yup"
 import { GetUserDto } from '../../../dtos/user.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { AlertContext } from '../../../contexts/alertContext';
+
 
 
 type Props = {
@@ -22,7 +24,8 @@ type Props = {
 function AssignUsersDialog({ user, setUser, dialog, setDialog }: Props) {
     const [users, setUsers] = useState<DropDownDto[]>(user.assigned_users)
     const { data, isSuccess: isUserSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<string>, BackendError, {
             id: string,
             body: {
@@ -30,9 +33,11 @@ function AssignUsersDialog({ user, setUser, dialog, setDialog }: Props) {
             }
         }>
         (AssignUsers, {
-            onSuccess: () => {
+              onSuccess: () => {
                 queryClient.invalidateQueries('users')
-            }
+                setAlert({ message: "success", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
     const formik = useFormik<{
         ids: string[]
@@ -121,16 +126,6 @@ function AssignUsersDialog({ user, setUser, dialog, setDialog }: Props) {
 
 
                 </Stack>
-                {
-                    isError ? (
-                        <AlertBar message={error?.response.data.message} color="error" />
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <AlertBar message="assigned successfully" color="success" />
-                    ) : null
-                }
             </DialogContent>
         </Dialog >
     )

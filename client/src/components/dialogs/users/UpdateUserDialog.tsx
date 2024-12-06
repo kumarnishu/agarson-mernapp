@@ -8,7 +8,6 @@ type Props = {
     user: GetUserDto
 }
 function UpdateUserDialog({ user, dialog, setDialog }: Props) {
-
     return (
         <Dialog open={dialog === "UpdateUserDialog"}
             onClose={() => setDialog(undefined)}

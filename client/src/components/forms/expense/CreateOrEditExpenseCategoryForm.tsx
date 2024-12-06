@@ -1,14 +1,15 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import * as yup from 'yup';
 import { CreateOrEditExpenseCategory } from '../../../services/ExpenseServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 type props = {
     category?: DropDownDto,
@@ -17,7 +18,8 @@ type props = {
 }
 
 function CreateOrEditExpenseCategoryForm({ category, setDialog }: props) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 key: string
@@ -25,9 +27,12 @@ function CreateOrEditExpenseCategoryForm({ category, setDialog }: props) {
             id?: string
         }>
         (CreateOrEditExpenseCategory, {
+
             onSuccess: () => {
-                queryClient.invalidateQueries('check_categories')
-            }
+                queryClient.refetchQueries('check_categories')
+                setAlert({ message: category ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
 
@@ -88,20 +93,7 @@ function CreateOrEditExpenseCategoryForm({ category, setDialog }: props) {
                 </Button>
             </Stack>
 
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {!category ? <AlertBar message="new category created" color="success" /> : <AlertBar message="category updated" color="success" />}
-                    </>
-                ) : null
-            }
+
 
         </form>
     )

@@ -1,15 +1,17 @@
 import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, CircularProgress, IconButton } from '@mui/material'
 import { AxiosResponse } from 'axios';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { DeleteCrmItem } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
-import AlertBar from '../../snacks/AlertBar';
+
 import { GetCrmCityDto } from '../../../dtos/crm-city.dto';
 import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { AlertContext } from '../../../contexts/alertContext';
+import AlertBar from '../../snacks/AlertBar';
 
 type Props = {
     dialog: string | undefined,
@@ -18,6 +20,7 @@ type Props = {
 }
 
 function DeleteCrmItemDialog({ refer, lead, state, city, type, source, stage, dialog, setDialog }: Props) {
+    const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, { refer?: DropDownDto, lead?: DropDownDto, state?: GetCrmStateDto, city?: GetCrmCityDto, type?: DropDownDto, source?: DropDownDto, stage?: DropDownDto }>
         (DeleteCrmItem, {
@@ -36,7 +39,9 @@ function DeleteCrmItemDialog({ refer, lead, state, city, type, source, stage, di
                     queryClient.invalidateQueries('crm_cities')
                 if (stage)
                     queryClient.invalidateQueries('crm_stages')
-            }
+                setAlert({ message: "success", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
     useEffect(() => {

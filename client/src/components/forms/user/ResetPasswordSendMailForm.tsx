@@ -10,20 +10,28 @@ import * as Yup from 'yup';
 import { ResetPasswordSendMail } from '../../../services/UserServices';
 import { UserContext } from '../../../contexts/userContext';
 import { BackendError } from '../../..';
-import AlertBar from '../../snacks/AlertBar';
+import { AlertContext } from '../../../contexts/alertContext';
+import { queryClient } from '../../../main';
+
 
 
 
 function ResetPasswordSendMailForm({ setDialog }: { setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
   const goto = useNavigate()
   const { user } = useContext(UserContext)
-
-  const { mutate, isSuccess, isLoading, isError, error } = useMutation
+  const { setAlert } = useContext(AlertContext)
+  const { mutate, isSuccess, isLoading } = useMutation
     <AxiosResponse<string>,
       BackendError,
       { email: string }
     >
-    (ResetPasswordSendMail)
+    (ResetPasswordSendMail, {
+      onSuccess: () => {
+        queryClient.invalidateQueries('users')
+        setAlert({ message: 'successfully sent a password reset link to your email id.', color: 'success' })
+      },
+      onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+    })
 
   const formik = useFormik({
     initialValues: {
@@ -69,16 +77,7 @@ function ResetPasswordSendMailForm({ setDialog }: { setDialog: React.Dispatch<Re
           }
           {...formik.getFieldProps('email')}
         />
-        {
-          isError ? (
-            <AlertBar message={error?.response.data.message} color="error" />
-          ) : null
-        }
-        {
-          isSuccess ? (
-            <AlertBar message="reset password link sent to your provided email" color="success" />
-          ) : null
-        }
+
 
         <Button variant="contained"
           disabled={Boolean(isLoading)}

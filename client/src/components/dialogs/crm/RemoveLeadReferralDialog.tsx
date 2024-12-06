@@ -9,6 +9,7 @@ type Props = {
     lead: GetLeadDto
 }
 function RemoveLeadReferralDialog({ lead, dialog, setDialog }: Props) {
+ 
     return (
         <Dialog open={dialog === "RemoveLeadReferralDialog"}
             onClose={() => setDialog(undefined)}

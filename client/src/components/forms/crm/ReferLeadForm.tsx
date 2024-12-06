@@ -1,27 +1,32 @@
 import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect,  useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useContext, useEffect,  useState } from 'react';
+import {  useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { GetRefers, ReferLead } from '../../../services/LeadsServices';
-import AlertBar from '../../snacks/AlertBar';
+
 import { GetLeadDto } from '../../../dtos/lead.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
 
 function ReferLeadForm({ lead,setDialog }: { lead: GetLeadDto , setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
-    const [display, setDisplay] = useState(false)
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+     const [display, setDisplay] = useState(false)
+    const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<GetReferDto>, BackendError, { id: string, body: { party_id: string, remark: string, remind_date?: string } }>
         (ReferLead, {
+           
             onSuccess: () => {
                 queryClient.invalidateQueries('refers')
                 queryClient.invalidateQueries('leads')
-            }
+                setAlert({ message:  " refer successfully", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
     const { data, isSuccess: isReferSuccess } = useQuery<AxiosResponse<GetReferDto[]>, BackendError>("refers", GetRefers)
 
@@ -143,16 +148,7 @@ function ReferLeadForm({ lead,setDialog }: { lead: GetLeadDto , setDialog: React
                     }
                 </TextField>
 
-                {
-                    isError ? (
-                        <AlertBar message={error?.response.data.message} color="error" />
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <AlertBar message="referred successfully" color="success" />
-                    ) : null
-                }
+               
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
                     fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Refer"}

@@ -1,27 +1,32 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { CreateOrEditArticle } from '../../../services/ProductionServices';
 import { GetArticleDto, CreateOrEditArticleDto } from '../../../dtos/article.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
 
 
-function CreateOrEditArticleForm({ article,setDialog }: { article?: GetArticleDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+function CreateOrEditArticleForm({ article, setDialog }: { article?: GetArticleDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetArticleDto>, BackendError, {
             body: CreateOrEditArticleDto, id?: string
         }>
         (CreateOrEditArticle, {
+
             onSuccess: () => {
-                queryClient.invalidateQueries('articles')
-            }
+                queryClient.refetchQueries('articles')
+                setAlert({ message: article ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
 
@@ -51,7 +56,7 @@ function CreateOrEditArticleForm({ article,setDialog }: { article?: GetArticleDt
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined) 
+            setDialog(undefined)
         }
     }, [isSuccess])
 
@@ -93,16 +98,7 @@ function CreateOrEditArticleForm({ article,setDialog }: { article?: GetArticleDt
                     }
                     {...formik.getFieldProps('display_name')}
                 />
-                {
-                    isError ? (
-                        <AlertBar message={error?.response.data.message} color="error" />
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <AlertBar message={article ? "article updated" : "created"} color="success" />
-                    ) : null
-                }
+
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
                     fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Submit"}

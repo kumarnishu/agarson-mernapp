@@ -6,7 +6,7 @@ import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { UserContext } from '../../../contexts/userContext';
 import moment from 'moment';
 import { GetAllCRMCitiesForDropDown } from '../../../services/LeadsServices';
@@ -14,21 +14,26 @@ import { CreateOrEditSalesmanAttendance } from '../../../services/SalesServices'
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetSalesAttendanceDto, CreateOrEditSalesAttendanceDto } from '../../../dtos/sales-attendance.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
+import { AlertContext } from '../../../contexts/alertContext';
 
-function CreateOrEditSalesAttendanceForm({ attendance,setDialog }: { attendance?: GetSalesAttendanceDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
+function CreateOrEditSalesAttendanceForm({ attendance, setDialog }: { attendance?: GetSalesAttendanceDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    const { setAlert } = useContext(AlertContext)
     const { user } = useContext(UserContext)
     const { data: users } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: true }))
     const { data: cities } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("cities", async () => GetAllCRMCitiesForDropDown({ state: 'all' }))
 
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetSalesAttendanceDto>, BackendError, {
             id?: string,
             body: CreateOrEditSalesAttendanceDto
         }>
         (CreateOrEditSalesmanAttendance, {
             onSuccess: () => {
-                queryClient.invalidateQueries('attendances')
-            }
+                queryClient.refetchQueries('attendances')
+                setAlert({ message: attendance ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+
         })
 
 
@@ -77,7 +82,7 @@ function CreateOrEditSalesAttendanceForm({ attendance,setDialog }: { attendance?
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined) 
+            setDialog(undefined)
         }
     }, [isSuccess])
 
@@ -260,16 +265,7 @@ function CreateOrEditSalesAttendanceForm({ attendance,setDialog }: { attendance?
                     {...formik.getFieldProps('remark')}
                 />
 
-                {
-                    isError ? (
-                        <AlertBar message={error?.response.data.message} color="error" />
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <AlertBar message={attendance ? "updated" : "created"} color="success" />
-                    ) : null
-                }
+
                 <Button variant="contained" size="large" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
                     fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Submit"}

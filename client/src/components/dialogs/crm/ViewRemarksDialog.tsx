@@ -20,7 +20,6 @@ function ViewRemarksDialog({ id, dialog, setDialog }: Props) {
     const [dialog1, setDialog1] = useState<string | undefined>()
     const [remark, setRemark] = useState<GetRemarksDto>()
     const [remarks, setRemarks] = useState<GetRemarksDto[]>()
-
     const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", id], async () => GetRemarksHistory({ id: id }))
 
 

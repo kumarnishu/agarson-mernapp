@@ -9,7 +9,7 @@ type Props = {
     category?: DropDownDto
 }
 function CreateOrEditPaymentCategoryDialog({ category, dialog, setDialog }: Props) {
-
+   
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
             open={dialog === "CreateOrEditPaymentCategoryDialog"}

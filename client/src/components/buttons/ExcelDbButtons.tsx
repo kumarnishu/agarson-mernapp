@@ -1,12 +1,13 @@
 import { AxiosResponse } from "axios"
 import { BackendError } from "../.."
 import { useMutation } from "react-query"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Button, CircularProgress, Stack, Typography } from "@mui/material"
 import { Upload } from "@mui/icons-material"
 import styled from "styled-components"
 import { CreateExcelDBFromExcel } from "../../services/ExcelDbService"
 import ExportToExcel from "../../utils/ExportToExcel"
+import { AlertContext } from "../../contexts/alertContext"
 
 
 const FileInput = styled.input`
@@ -20,7 +21,7 @@ export function ExcelDbButtons() {
         <AxiosResponse<any[]>, BackendError, FormData>
         (CreateExcelDBFromExcel)
     const [file, setFile] = useState<File | null>(null)
-
+    const { setAlert } = useContext(AlertContext)
 
     function handleFile() {
         if (file) {
@@ -43,8 +44,10 @@ export function ExcelDbButtons() {
 
     useEffect(() => {
         if (isSuccess && data) {
-            if (data.data.length > 0)
+            if (data.data.length > 0) {
                 ExportToExcel(data.data, "output.xlsx")
+            }
+            setAlert({ message: 'File uploaded successfully', color: 'success' })
         }
     }, [isSuccess, data])
 

@@ -9,6 +9,7 @@ type Props = {
     checklist?: GetChecklistDto, setChecklist: React.Dispatch<React.SetStateAction<GetChecklistDto | undefined>>
 }
 function CreateOrEditCheckListDialog({ checklist, setChecklist, dialog, setDialog }: Props) {
+   
     return (
         <>
             <Dialog fullScreen={Boolean(window.screen.width < 500)} open={dialog === 'CreateOrEditCheckListDialog'}

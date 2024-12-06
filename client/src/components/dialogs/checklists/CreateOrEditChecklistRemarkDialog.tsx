@@ -10,7 +10,7 @@ type Props = {
     checklist: GetChecklistDto, checklist_box: GetChecklistBoxDto, remark?: GetChecklistRemarksDto
 }
 function CreateOrEditChecklistRemarkDialog({ remark, checklist, checklist_box, dialog, setDialog }: Props) {
-
+    
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
             open={dialog == 'CreateOrEditChecklistRemarkDialog'}

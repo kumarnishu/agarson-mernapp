@@ -1,17 +1,19 @@
 import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, InputLabel, Select, OutlinedInput, MenuItem, Checkbox, ListItemText } from '@mui/material'
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
-import { useMutation, useQuery } from 'react-query';
+import {  useMutation, useQuery } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { useFormik } from 'formik';
 import * as Yup from "yup"
 import { AssignKeysToUsers } from '../../../services/KeyServices';
 import { GetKeyDto } from '../../../dtos/keys.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { AlertContext } from '../../../contexts/alertContext';
+
 
 
 type Props = {
@@ -23,9 +25,9 @@ type Props = {
 function AssignKeysDialog({ keys, flag, dialog, setDialog }: Props) {
     const [users, setUsers] = useState<DropDownDto[]>([])
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
+    const { setAlert } = useContext(AlertContext)
 
-
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 user_ids: string[],
@@ -34,9 +36,11 @@ function AssignKeysDialog({ keys, flag, dialog, setDialog }: Props) {
             }
         }>
         (AssignKeysToUsers, {
-            onSuccess: () => {
+              onSuccess: () => {
                 queryClient.invalidateQueries('keys')
-            }
+                setAlert({ message: "success", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
     const formik = useFormik<{
         user_ids: string[],
@@ -137,16 +141,7 @@ function AssignKeysDialog({ keys, flag, dialog, setDialog }: Props) {
 
 
                 </Stack>
-                {
-                    isError ? (
-                        <AlertBar message={error?.response.data.message} color="error" />
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <AlertBar message="successfull" color="success" />
-                    ) : null
-                }
+              
             </DialogContent>
         </Dialog >
     )

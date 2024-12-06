@@ -11,16 +11,25 @@ import * as Yup from 'yup';
 import { UserContext } from '../../../contexts/userContext';
 import { Login } from '../../../services/UserServices';
 import { BackendError } from '../../..';
-import AlertBar from '../../snacks/AlertBar';
+
 import { GetUserDto } from '../../../dtos/user.dto';
+import { AlertContext } from '../../../contexts/alertContext';
+import { queryClient } from '../../../main';
 
 function LoginForm({ setDialog }: { setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+  const { setAlert } = useContext(AlertContext)
   const goto = useNavigate()
-  const { mutate, data, isSuccess, isLoading, isError, error } = useMutation
+  const { mutate, data, isSuccess, isLoading } = useMutation
     <AxiosResponse<{ user: GetUserDto, token: string }>,
       BackendError,
       { username: string, password: string, multi_login_token?: string }
-    >(Login)
+    >(Login, {
+      onSuccess: () => {
+        queryClient.invalidateQueries('users')
+        setAlert({ message: 'logged in.', color: 'success' })
+      },
+      onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+    })
 
   const { setUser } = useContext(UserContext)
   const formik = useFormik({
@@ -114,16 +123,7 @@ function LoginForm({ setDialog }: { setDialog: React.Dispatch<React.SetStateActi
             }}
             {...formik.getFieldProps('password')}
           />
-          {
-            isError ? (
-              <AlertBar message={error?.response.data.message} color="error" />
-            ) : null
-          }
-          {
-            isSuccess ? (
-              <AlertBar message="logged in" color="success" />
-            ) : null
-          }
+
           <Button size="large" variant="contained" color='inherit'
             disabled={Boolean(isLoading)}
             type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Login"}

@@ -3,28 +3,32 @@ import { Stack } from '@mui/system';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useContext, useEffect } from 'react';
-import { useMutation } from 'react-query';
+import {  useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-
 import { SendVerifyEmail } from '../../../services/UserServices';
 import { UserContext } from '../../../contexts/userContext';
 import { queryClient } from '../../../main';
 import { BackendError } from '../../..';
-import AlertBar from '../../snacks/AlertBar';
+import { AlertContext } from '../../../contexts/alertContext';
+
+
 
 
 function EmailVerifySendMailForm({setDialog}:{setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+  const { setAlert } = useContext(AlertContext)
   const goto = useNavigate()
   const { user } = useContext(UserContext)
-  const { mutate, isSuccess, isLoading, isError, error } = useMutation
+  const { mutate, isSuccess, isLoading} = useMutation
     <AxiosResponse<string>,
       BackendError,
       { email: string }
     >(SendVerifyEmail,{
       onSuccess: () => {
         queryClient.invalidateQueries('users')
-      }
+        setAlert({ message: 'email verification link sent to your provided email', color: 'success' })
+      },
+      onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
     })
 
   const formik = useFormik({
@@ -53,17 +57,7 @@ function EmailVerifySendMailForm({setDialog}:{setDialog: React.Dispatch<React.Se
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
-        {
-          isError ? (
-            <AlertBar message={error?.response.data.message} color="error" />
-          ) : null
-        }
-        {
-          isSuccess ? (
-            <AlertBar message="  email verification link sent to your provided email" color="success" />
-          ) : null
-        }
-         
+       
         <Stack
           direction="column"
           pt={2}

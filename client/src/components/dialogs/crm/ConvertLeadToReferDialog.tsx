@@ -1,14 +1,15 @@
 import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Button, CircularProgress, TextField } from '@mui/material'
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { BackendError } from '../../..';
 import { ConvertLeadToRefer } from '../../../services/LeadsServices';
 import { queryClient } from '../../../main';
-import { useMutation } from 'react-query';
-import AlertBar from '../../snacks/AlertBar';
+import {  useMutation } from 'react-query';
+
 import { GetLeadDto } from '../../../dtos/lead.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 type Props = {
     dialog: string | undefined,
@@ -16,13 +17,17 @@ type Props = {
     lead: GetLeadDto
 }
 function ConvertLeadToReferDialog({ lead, dialog, setDialog }: Props) {
-    const [remark, setRemark] = useState("")
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+     const [remark, setRemark] = useState("")
+    const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<GetReferDto>, BackendError, { id: string, body: { remark: string } }>
         (ConvertLeadToRefer, {
+          
             onSuccess: () => {
                 queryClient.invalidateQueries('leads')
-            }
+                setAlert({ message: "success", color: 'success' })
+              },
+              onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
     useEffect(() => {
@@ -40,16 +45,7 @@ function ConvertLeadToReferDialog({ lead, dialog, setDialog }: Props) {
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
                 Convert  To Customer
             </DialogTitle>
-            {
-                isError ? (
-                    <AlertBar message={error?.response.data.message} color="error" />
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <AlertBar message="lead converted successfully" color="success" />
-                ) : null
-            }
+           
             <DialogContent sx={{ gap: 2 }}>
 
                 <TextField

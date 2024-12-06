@@ -9,6 +9,7 @@ type Props = {
 }
 
 function SignUpDialog({ dialog, setDialog }: Props) {
+  
   return (
     <>
       <Dialog open={dialog === "SignUpDialog"}

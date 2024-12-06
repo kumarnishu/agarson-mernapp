@@ -1,13 +1,15 @@
 import { Dialog, DialogContent, DialogTitle, Button, DialogActions, CircularProgress, IconButton } from '@mui/material';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { queryClient } from '../../../main';
 import { AxiosResponse } from 'axios';
 import { BackendError } from '../../..';
 import { useMutation } from 'react-query';
 import { Cancel } from '@mui/icons-material';
-import AlertBar from '../../snacks/AlertBar';
+
 import { ToogleDyeLocation } from '../../../services/ProductionServices';
 import { GetDyeLocationDto } from '../../../dtos/dye-location.dto';
+import { AlertContext } from '../../../contexts/alertContext';
+import AlertBar from '../../snacks/AlertBar';
 
 
 type Props = {
@@ -17,12 +19,16 @@ type Props = {
 }
 
 function ToogleDyeLocationDialog({ location, dialog, setDialog }: Props) {
-    const { mutate, isLoading, isSuccess, error, isError } = useMutation
+    const { setAlert } = useContext(AlertContext)
+      const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
         (ToogleDyeLocation, {
+           
             onSuccess: () => {
                 queryClient.invalidateQueries('dyelocations')
-            }
+                setAlert({ message: "success", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
     useEffect(() => {

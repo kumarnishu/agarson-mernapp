@@ -1,44 +1,49 @@
-import { Button,  CircularProgress,  Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import * as yup from 'yup';
 import { CreateOrEditKeyCategory } from '../../../services/KeyServices';
 import { GetKeyCategoryDto } from '../../../dtos/key-category.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
-function CreateOrEditKeyCategoryForm({ category,setDialog }: { category?: GetKeyCategoryDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+function CreateOrEditKeyCategoryForm({ category, setDialog }: { category?: GetKeyCategoryDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 key: string,
                 display_name: string,
-                skip_bottom_rows:number
+                skip_bottom_rows: number
             },
             id?: string
         }>
         (CreateOrEditKeyCategory, {
+
             onSuccess: () => {
-                queryClient.invalidateQueries('key_categories')
-            }
+                queryClient.refetchQueries('key_categories')
+                setAlert({ message: category ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
-  
+
 
 
     const formik = useFormik<{
         category: string,
-        display_name:string,
-        skip_bottom_rows:number
+        display_name: string,
+        skip_bottom_rows: number
     }>({
         initialValues: {
             category: category ? category.category : "",
             display_name: category ? category.display_name : "",
-            skip_bottom_rows: category ? category.skip_bottom_rows:0
+            skip_bottom_rows: category ? category.skip_bottom_rows : 0
         },
-        validationSchema:yup.object({
+        validationSchema: yup.object({
             category: yup.string().required(),
             display_name: yup.string().required(),
             skip_bottom_rows: yup.number().required()
@@ -46,10 +51,10 @@ function CreateOrEditKeyCategoryForm({ category,setDialog }: { category?: GetKey
         onSubmit: (values: {
             category: string,
             display_name: string,
-            skip_bottom_rows:number
+            skip_bottom_rows: number
         }) => {
             mutate({
-                id:category?._id,
+                id: category?._id,
                 body: {
                     key: values.category, display_name: values.display_name, skip_bottom_rows: values.skip_bottom_rows
                 }
@@ -59,8 +64,8 @@ function CreateOrEditKeyCategoryForm({ category,setDialog }: { category?: GetKey
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined)
-           
+            setDialog(undefined)
+
         }
     }, [isSuccess])
     return (
@@ -118,20 +123,6 @@ function CreateOrEditKeyCategoryForm({ category,setDialog }: { category?: GetKey
                 </Button>
             </Stack>
 
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {!category ? <AlertBar message="new category created" color="success" /> : <AlertBar message="category updated" color="success" />}
-                    </>
-                ) : null
-            }
 
         </form>
     )

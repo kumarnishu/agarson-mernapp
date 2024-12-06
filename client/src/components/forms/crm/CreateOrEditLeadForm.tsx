@@ -1,19 +1,20 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect,  useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useContext, useEffect,  useState } from 'react';
+import {  useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { CreateOrUpdateLead, GetAllCities, GetAllLeadTypes, GetAllSources, GetAllStates } from '../../../services/LeadsServices';
 import { Countries } from '../../../utils/countries';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { toTitleCase } from '../../../utils/TitleCase';
 import { GetCrmCityDto } from '../../../dtos/crm-city.dto';
 import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetLeadDto } from '../../../dtos/lead.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
 function CreateOrEditLeadForm({ lead,setDialog }: { lead?: GetLeadDto , setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
@@ -21,13 +22,17 @@ function CreateOrEditLeadForm({ lead,setDialog }: { lead?: GetLeadDto , setDialo
     const [cities, setCities] = useState<GetCrmCityDto[]>([])
     const [state, setState] = useState<string>();
     const [types, setTypes] = useState<DropDownDto[]>([])
+    const { setAlert } = useContext(AlertContext)
     const [sources, setSources] = useState<DropDownDto[]>([])
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<GetLeadDto>, BackendError, { body: FormData, id?: string }>
         (CreateOrUpdateLead, {
+           
             onSuccess: () => {
                 queryClient.invalidateQueries('leads')
-            }
+                setAlert({ message: lead ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
     const { data: typesdata, isSuccess: isTypeSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("crm_types", GetAllLeadTypes)
@@ -625,20 +630,7 @@ function CreateOrEditLeadForm({ lead,setDialog }: { lead?: GetLeadDto , setDialo
                     </>}
                 </Button>
             </Stack>
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {lead ? <AlertBar message="updated lead" color="success" /> : <AlertBar message="new lead created" color="success" />}
-                    </>
-                ) : null
-            }
+           
 
         </form>
     )

@@ -1,4 +1,4 @@
-import { Button, Checkbox, CircularProgress,  InputLabel, ListItemText, MenuItem, OutlinedInput, Select, Stack, TextField } from '@mui/material';
+import { Button, Checkbox, CircularProgress, InputLabel, ListItemText, MenuItem, OutlinedInput, Select, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useContext, useEffect } from 'react';
@@ -6,7 +6,7 @@ import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { CreateOrEditProduction, GetArticles, GetMachines } from '../../../services/ProductionServices';
 import { UserContext } from '../../../contexts/userContext';
 import moment from 'moment';
@@ -15,21 +15,25 @@ import { GetMachineDto } from '../../../dtos/machine.dto';
 import { GetProductionDto, CreateOrEditProductionDto } from '../../../dtos/production.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
-function CreateOrEditProductionForm({ production,setDialog }: { production?: GetProductionDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
+function CreateOrEditProductionForm({ production, setDialog }: { production?: GetProductionDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    const { setAlert } = useContext(AlertContext)
     const { user } = useContext(UserContext)
     const { data: users } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'production_view', show_assigned_only: true }))
     const { data: machines } = useQuery<AxiosResponse<GetMachineDto[]>, BackendError>("machines", async () => GetMachines())
     const { data: articles } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>("articles", async () => GetArticles())
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetProductionDto>, BackendError, {
             id?: string,
             body: CreateOrEditProductionDto
         }>
         (CreateOrEditProduction, {
             onSuccess: () => {
-                queryClient.invalidateQueries('productions')
-            }
+                queryClient.refetchQueries('productions')
+                setAlert({ message: production ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
 
@@ -84,7 +88,7 @@ function CreateOrEditProductionForm({ production,setDialog }: { production?: Get
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined) 
+            setDialog(undefined)
         }
     }, [isSuccess])
 
@@ -178,22 +182,22 @@ function CreateOrEditProductionForm({ production,setDialog }: { production?: Get
                 <Select
                     label="Articles"
                     fullWidth
-                        labelId="demo-multiple-checkbox-label"
-                        id="demo-multiple-checkbox"
-                        multiple
-                        input={<OutlinedInput label="Article" />}
-                        renderValue={() => `${formik.values.articles.length} articles`}
-                        {...formik.getFieldProps('articles')}
-                    >
-                        {articles && articles.data && articles.data.map((article) =>  (
-                            <MenuItem key={article._id} value={article._id}>
-                                <Checkbox checked={formik.values.articles.includes(article._id)} />
-                                <ListItemText primary={article.name} />
-                            </MenuItem>
-                        ))}
-                    </Select>
-               
-              
+                    labelId="demo-multiple-checkbox-label"
+                    id="demo-multiple-checkbox"
+                    multiple
+                    input={<OutlinedInput label="Article" />}
+                    renderValue={() => `${formik.values.articles.length} articles`}
+                    {...formik.getFieldProps('articles')}
+                >
+                    {articles && articles.data && articles.data.map((article) => (
+                        <MenuItem key={article._id} value={article._id}>
+                            <Checkbox checked={formik.values.articles.includes(article._id)} />
+                            <ListItemText primary={article.name} />
+                        </MenuItem>
+                    ))}
+                </Select>
+
+
                 <TextField
                     required
                     fullWidth
@@ -279,16 +283,7 @@ function CreateOrEditProductionForm({ production,setDialog }: { production?: Get
                     {...formik.getFieldProps('small_repair')}
                 />
 
-                {
-                    isError ? (
-                        <AlertBar message={error?.response.data.message} color="error" />
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <AlertBar message={production ? "updated" : "created"} color="success" />
-                    ) : null
-                }
+
                 <Button variant="contained" size="large" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
                     fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Submit"}

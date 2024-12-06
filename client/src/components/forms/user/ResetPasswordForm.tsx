@@ -1,9 +1,9 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import {  Button, CircularProgress, IconButton, InputAdornment, TextField } from '@mui/material';
+import { Button, CircularProgress, IconButton, InputAdornment, TextField } from '@mui/material';
 import { Stack } from '@mui/system';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import React, {  useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
@@ -11,20 +11,24 @@ import * as Yup from 'yup';
 import { ResetPassword } from '../../../services/UserServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
-function ResetPasswordForm({ token,setDialog }: { token: string,setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
+
+function ResetPasswordForm({ token, setDialog }: { token: string, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
   const goto = useNavigate()
-  const { mutate, isLoading, isSuccess, isError, error } = useMutation
+  const { setAlert } = useContext(AlertContext)
+  const { mutate, isLoading, isSuccess } = useMutation
     <AxiosResponse<string>,
       BackendError,
       { token: string, body: { newPassword: string, confirmPassword: string } }
     >
-    (ResetPassword,{
+    (ResetPassword, {
       onSuccess: () => {
         queryClient.invalidateQueries('users')
-      }
+        setAlert({ message: 'successful', color: 'success' })
+      },
+      onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
     })
 
   const formik = useFormik({
@@ -64,10 +68,10 @@ function ResetPasswordForm({ token,setDialog }: { token: string,setDialog: React
 
   useEffect(() => {
     if (isSuccess) {
-    setDialog(undefined)
+      setDialog(undefined)
       goto("/")
     }
-  }, [goto,  isSuccess])
+  }, [goto, isSuccess])
 
   return (
 
@@ -84,7 +88,7 @@ function ResetPasswordForm({ token,setDialog }: { token: string,setDialog: React
             formik.touched.newPassword && formik.errors.newPassword ? true : false
           }
           id="newPassword"
-         
+
           label="New Password"
           fullWidth
           helperText={
@@ -111,7 +115,7 @@ function ResetPasswordForm({ token,setDialog }: { token: string,setDialog: React
             formik.touched.confirmPassword && formik.errors.confirmPassword ? true : false
           }
           id="confirmPassword"
-         
+
           label="Confirm Password"
           fullWidth
           helperText={
@@ -132,17 +136,8 @@ function ResetPasswordForm({ token,setDialog }: { token: string,setDialog: React
           }}
           {...formik.getFieldProps('confirmPassword')}
         />
-        {
-          isError ? (
-            <AlertBar message={error?.response.data.message} color="error" />
-          ) : null
-        }
-        {
-          isSuccess ? (
-            <AlertBar message="Reset password successfully" color="success" />
-          ) : null
-        }
-       
+
+
         <Button variant="contained"
           disabled={Boolean(isLoading)}
           color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Reset"}

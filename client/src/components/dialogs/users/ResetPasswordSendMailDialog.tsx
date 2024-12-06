@@ -9,7 +9,7 @@ type Props = {
 }
 
 function ResetPasswordSendMailDialog({ dialog, setDialog }: Props) {
-
+   
     return (
         <Dialog open={dialog === 'ResetPasswordSendMailDialog'}
             onClose={() => setDialog(undefined)}

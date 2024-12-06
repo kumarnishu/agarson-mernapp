@@ -9,7 +9,8 @@ type Props = {
     visit_date: string, remark?: GetVisitSummaryReportRemarkDto,
 }
 function CreateOrEditVisitReportRemarkDialog({ employee, visit_date, remark, dialog, setDialog }: Props) {
-    return (
+    
+     return (
         <Dialog
             open={dialog === "CreateOrEditVisitReportRemarkDialog"}
         >

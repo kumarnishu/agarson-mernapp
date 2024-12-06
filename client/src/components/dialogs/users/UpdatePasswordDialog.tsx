@@ -8,7 +8,7 @@ type Props = {
 
 }
 function UpdatePasswordDialog({ dialog, setDialog }: Props) {
-    return (
+     return (
         <>
             <Dialog open={dialog === "UpdatePasswordDialog"}
                 onClose={() => setDialog(undefined)}

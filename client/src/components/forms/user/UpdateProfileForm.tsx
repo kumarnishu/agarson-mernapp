@@ -3,12 +3,14 @@ import { useFormik } from 'formik';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { UpdateProfile } from '../../../services/UserServices';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { AxiosResponse } from 'axios';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { GetUserDto } from '../../../dtos/user.dto';
+import { AlertContext } from '../../../contexts/alertContext';
+
 
 
 type TformData = {
@@ -18,12 +20,16 @@ type TformData = {
 }
 
 function UpdateProfileForm({ user, setDialog }: { user: GetUserDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
-  const { mutate, isLoading, isSuccess, isError, error } = useMutation
+  const { setAlert } = useContext(AlertContext)
+  const { mutate, isLoading, isSuccess} = useMutation
+  
     <AxiosResponse<GetUserDto>, BackendError, FormData>
     (UpdateProfile, {
-      onSuccess: () => {
-        queryClient.invalidateQueries('users')
-      }
+     onSuccess: () => {
+      queryClient.invalidateQueries('users')
+      setAlert({ message: 'updated profile', color: 'success' })
+    },
+    onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
     })
 
   const formik = useFormik<TformData>({
@@ -139,16 +145,7 @@ function UpdateProfileForm({ user, setDialog }: { user: GetUserDto, setDialog: R
             }
           }}
         />
-        {
-          isError ? (
-            <AlertBar message={error?.response.data.message} color="error" />
-          ) : null
-        }
-        {
-          isSuccess ? (
-            <AlertBar message="updated profile" color="success" />
-          ) : null
-        }
+       
         <Button variant="contained" color="primary" type="submit"
           disabled={Boolean(isLoading)}
           fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Update"}</Button>

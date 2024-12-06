@@ -1,13 +1,13 @@
 import { Button, CircularProgress, Divider, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect,  useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { CreateOrEditBill } from '../../../services/LeadsServices';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { toTitleCase } from '../../../utils/TitleCase';
 import moment from 'moment';
 import { GetArticles } from '../../../services/ProductionServices';
@@ -17,24 +17,29 @@ import { CreateOrEditBillItemDto } from '../../../dtos/bill-item.dto';
 import { GetBillDto } from '../../../dtos/crm-bill.dto';
 import { GetLeadDto } from '../../../dtos/lead.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
-function CreateOrEditBillForm({ lead, refer, setDialog, bill }: { lead?: GetLeadDto, refer?: GetReferDto, bill?: GetBillDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
+function CreateOrEditBillForm({ lead, refer, setDialog, bill }: { lead?: GetLeadDto, refer?: GetReferDto, bill?: GetBillDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    const { setAlert } = useContext(AlertContext)
     const [items, setItems] = useState<CreateOrEditBillItemDto[]>(bill?.items || [])
     const [item, setItem] = useState<CreateOrEditBillItemDto>()
     const [articles, setArticles] = useState<GetArticleDto[]>([])
     const { data: articlesData, isSuccess: isSucessArticles } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>(["articles"], async () => GetArticles(String(false)))
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: FormData,
             id?: string,
         }>
         (CreateOrEditBill, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('bills')
                 queryClient.invalidateQueries('new_refer_reports')
                 queryClient.invalidateQueries('assign_refer_reports')
-            }
+                setAlert({ message: bill ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
 
@@ -127,8 +132,8 @@ function CreateOrEditBillForm({ lead, refer, setDialog, bill }: { lead?: GetLead
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined) 
-         
+            setDialog(undefined)
+
         }
     }, [isSuccess])
     return (
@@ -341,20 +346,7 @@ function CreateOrEditBillForm({ lead, refer, setDialog, bill }: { lead?: GetLead
 
             </Stack>
 
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {!bill ? <AlertBar message="new bill created" color="success" /> : <AlertBar message="bill updated" color="success" />}
-                    </>
-                ) : null
-            }
+
 
         </form >
     )

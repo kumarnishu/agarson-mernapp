@@ -9,6 +9,7 @@ type Props = {
     sparedye?: GetSpareDyeDto
 }
 function CreateOrEditSpareDyeDialog({ sparedye, dialog, setDialog }: Props) {
+    
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)} open={dialog === "CreateOrEditSpareDyeDialog"}
             onClose={() => setDialog(undefined)}

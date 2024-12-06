@@ -7,6 +7,7 @@ type Props = {
     weight: GetShoeWeightDto
 }
 function ViewShoeWeightPhotoDialog({ weight, dialog, setDialog }: Props) {
+    
     return (
         <>
             <Dialog fullScreen={Boolean(window.screen.width < 500)} open={dialog === "ViewShoeWeightPhotoDialog" || dialog === "ViewShoeWeightPhotoDialog2" || dialog === "ViewShoeWeightPhotoDialog3"}

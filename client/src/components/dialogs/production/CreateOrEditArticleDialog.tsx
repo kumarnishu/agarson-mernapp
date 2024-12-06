@@ -9,6 +9,7 @@ type Props = {
     article?: GetArticleDto
 }
 function CreateOrEditArticleDialog({ article, dialog, setDialog }: Props) {
+
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)} open={dialog === "CreateOrEditArticleDialog"}
             onClose={() => setDialog(undefined)}

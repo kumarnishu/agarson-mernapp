@@ -16,7 +16,7 @@ type Props = {
 
 function ViewReferRemarksDialog({ id, dialog, setDialog }: Props) {
     const [remarks, setRemarks] = useState<GetRemarksDto[]>()
-
+    
     const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", id], async () => GetReferRemarksHistory({ id: id }))
 
 

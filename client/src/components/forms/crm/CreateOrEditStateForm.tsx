@@ -1,17 +1,19 @@
-import { Button,  CircularProgress,  Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { CreateOrEditState } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import * as yup from 'yup';
 import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
-function CreateOrEditStateForm({ state,setDialog }: { state?: GetCrmStateDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+function CreateOrEditStateForm({ state, setDialog }: { state?: GetCrmStateDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 state: string,
@@ -23,7 +25,10 @@ function CreateOrEditStateForm({ state,setDialog }: { state?: GetCrmStateDto, se
         (CreateOrEditState, {
             onSuccess: () => {
                 queryClient.invalidateQueries('crm_states')
-            }
+                setAlert({ message: state ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+
         })
 
 
@@ -36,9 +41,9 @@ function CreateOrEditStateForm({ state,setDialog }: { state?: GetCrmStateDto, se
             state: state ? state.state : "",
             alias1: state ? state.alias1 : "",
             alias2: state ? state.alias2 : "",
-         
+
         },
-        validationSchema:yup.object({
+        validationSchema: yup.object({
             state: yup.string().required(),
             alias1: yup.string(),
             alias2: yup.string(),
@@ -49,7 +54,7 @@ function CreateOrEditStateForm({ state,setDialog }: { state?: GetCrmStateDto, se
             alias2: string,
         }) => {
             mutate({
-                id:state?._id,
+                id: state?._id,
                 body: {
                     state: values.state,
                     alias1: values.alias1,
@@ -61,8 +66,8 @@ function CreateOrEditStateForm({ state,setDialog }: { state?: GetCrmStateDto, se
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined) 
-           
+            setDialog(undefined)
+
         }
     }, [isSuccess])
     return (
@@ -112,7 +117,7 @@ function CreateOrEditStateForm({ state,setDialog }: { state?: GetCrmStateDto, se
                     }
                     {...formik.getFieldProps('alias2')}
                 />
-               
+
 
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
@@ -120,20 +125,7 @@ function CreateOrEditStateForm({ state,setDialog }: { state?: GetCrmStateDto, se
                 </Button>
             </Stack>
 
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {!state ? <AlertBar message="new state created" color="success" /> : <AlertBar message="state updated" color="success" />}
-                    </>
-                ) : null
-            }
+
 
         </form>
     )

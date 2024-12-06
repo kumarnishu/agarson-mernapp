@@ -1,31 +1,35 @@
-import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, CircularProgress,  IconButton } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, CircularProgress, IconButton } from '@mui/material'
 import { AxiosResponse } from 'axios';
-import {  useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { BlockUser } from '../../../services/UserServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
+import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
+
 
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
     id: string
 }
-function BlockUserDialog({ id ,dialog,setDialog}:Props) {
+function BlockUserDialog({ id, dialog, setDialog }: Props) {
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (BlockUser,{
+        (BlockUser, {
             onSuccess: () => {
                 queryClient.invalidateQueries('users')
-            }
+                setAlert({ message: "success", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
-
+    const { setAlert } = useContext(AlertContext)
     useEffect(() => {
         if (isSuccess)
             setDialog(undefined)
-    }, [ isSuccess])
+    }, [isSuccess])
 
     return (
         <Dialog open={dialog === "BlockUserDialog"}
@@ -34,7 +38,7 @@ function BlockUserDialog({ id ,dialog,setDialog}:Props) {
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>
-            
+
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
                 Block User
             </DialogTitle>
@@ -69,7 +73,7 @@ function BlockUserDialog({ id ,dialog,setDialog}:Props) {
                     {isLoading ? <CircularProgress /> :
                         "Block"}
                 </Button>
-               
+
             </Stack >
         </Dialog >
     )

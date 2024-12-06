@@ -1,28 +1,33 @@
 import { Button, Checkbox, CircularProgress, InputLabel, ListItemText, MenuItem, OutlinedInput, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect,  useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { CreateOrEditCheckList, GetAllCheckCategories } from '../../../services/CheckListServices';
 import Select from '@mui/material/Select';
 import { GetChecklistDto, CreateOrEditChecklistDto } from '../../../dtos/checklist.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
+import { AlertContext } from '../../../contexts/alertContext';
 
 
-function CreateorEditCheckListForm({ checklist,setDialog }: { checklist?: GetChecklistDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+function CreateorEditCheckListForm({ checklist, setDialog }: { checklist?: GetChecklistDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    const { setAlert } = useContext(AlertContext)
     const [categories, setCategories] = useState<DropDownDto[]>([])
     const [users, setUsers] = useState<DropDownDto[]>([])
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, { body: FormData, id?: string }>
         (CreateOrEditCheckList, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('checklists')
-            }
+                setAlert({ message: checklist ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
 
@@ -44,7 +49,7 @@ function CreateorEditCheckListForm({ checklist,setDialog }: { checklist?: GetChe
             serial_no: Yup.string().required("required field"),
             work_title: Yup.string().required("required field")
                 .min(5, 'Must be 5 characters or more')
-                ,
+            ,
             work_description: Yup.string(),
             link: Yup.string(),
             category: Yup.string().required("required field"),
@@ -112,7 +117,7 @@ function CreateorEditCheckListForm({ checklist,setDialog }: { checklist?: GetChe
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined)
+            setDialog(undefined)
         }
     }, [isSuccess])
 
@@ -297,16 +302,7 @@ function CreateorEditCheckListForm({ checklist,setDialog }: { checklist?: GetChe
                     fullWidth>{Boolean(isLoading) ? <CircularProgress /> : checklist ? 'Update' : 'Create'}
                 </Button>
             </Stack>
-            {
-                isError ? (
-                    <AlertBar message={error?.response.data.message} color="error" />
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <AlertBar message="new checklist added" color="success" />
-                ) : null
-            }
+
 
         </form>
     )

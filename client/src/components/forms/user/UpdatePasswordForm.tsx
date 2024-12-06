@@ -1,23 +1,34 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import {  Button, CircularProgress, IconButton, InputAdornment, TextField } from '@mui/material';
+import { Button, CircularProgress, IconButton, InputAdornment, TextField } from '@mui/material';
 import { Stack } from '@mui/system';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import React, {  useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from 'yup';
 
 import { UpdatePassword } from '../../../services/UserServices';
 import { BackendError } from '../../..';
-import AlertBar from '../../snacks/AlertBar';
+
+import { AlertContext } from '../../../contexts/alertContext';
+import { queryClient } from '../../../main';
 
 
-function UpdatePasswordForm({setDialog}:{setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
-    const { mutate, isSuccess, isLoading, isError, error } = useMutation
+
+
+function UpdatePasswordForm({ setDialog }: { setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isSuccess, isLoading } = useMutation
         <AxiosResponse<string>,
             BackendError,
             { oldPassword: string, newPassword: string, confirmPassword: string }
-        >(UpdatePassword)
+        >(UpdatePassword, {
+            onSuccess: () => {
+                queryClient.invalidateQueries('users')
+                setAlert({ message: 'updated password', color: 'success' })
+              },
+              onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+        })
 
 
     const formik = useFormik({
@@ -64,7 +75,7 @@ function UpdatePasswordForm({setDialog}:{setDialog: React.Dispatch<React.SetStat
         if (isSuccess) {
             setDialog(undefined)
         }
-    }, [ isSuccess,])
+    }, [isSuccess,])
 
     return (
         <form onSubmit={formik.handleSubmit}>
@@ -81,7 +92,7 @@ function UpdatePasswordForm({setDialog}:{setDialog: React.Dispatch<React.SetStat
                         formik.touched.oldPassword && formik.errors.oldPassword ? true : false
                     }
                     id="oldPassword"
-                    
+
                     label="Old Password"
                     fullWidth
                     helperText={
@@ -108,7 +119,7 @@ function UpdatePasswordForm({setDialog}:{setDialog: React.Dispatch<React.SetStat
                         formik.touched.newPassword && formik.errors.newPassword ? true : false
                     }
                     id="newPassword"
-                    
+
                     label="New Password"
                     fullWidth
                     helperText={
@@ -135,7 +146,7 @@ function UpdatePasswordForm({setDialog}:{setDialog: React.Dispatch<React.SetStat
                         formik.touched.confirmPassword && formik.errors.confirmPassword ? true : false
                     }
                     id="confirmPassword"
-                    
+
                     label="Confirm Password"
                     fullWidth
                     helperText={
@@ -156,16 +167,7 @@ function UpdatePasswordForm({setDialog}:{setDialog: React.Dispatch<React.SetStat
                     }}
                     {...formik.getFieldProps('confirmPassword')}
                 />
-                {
-                    isError ? (
-                        <AlertBar message={error?.response.data.message} color="error" />
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <AlertBar message="updated password" color="success" />
-                    ) : null
-                }
+
                 <Button variant="contained"
                     disabled={Boolean(isLoading)}
                     color="primary" type="submit" fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Update"}</Button>

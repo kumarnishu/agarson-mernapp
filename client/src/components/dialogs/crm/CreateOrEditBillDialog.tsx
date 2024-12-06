@@ -10,7 +10,6 @@ type Props = {
     lead?: GetLeadDto, refer?: GetReferDto, bill?: GetBillDto
 }
 function CreateOrEditBillDialog({ lead, refer, bill, dialog, setDialog }: Props) {
-
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
             open={dialog == 'CreateOrEditBillDialog'}

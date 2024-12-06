@@ -1,14 +1,14 @@
 import { Dialog, DialogContent, DialogActions, IconButton, DialogTitle, Stack, Checkbox, Button } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Cancel } from '@mui/icons-material'
 import { STable, STableBody, STableCell, STableHead, STableHeadCell, STableRow } from '../../styled/STyledTable'
 import { MergeTwoLeads } from '../../../services/LeadsServices'
 import { AxiosResponse } from 'axios'
-import { useMutation } from 'react-query'
+import {  useMutation } from 'react-query'
 import { BackendError } from '../../..'
 import { queryClient } from '../../../main'
-import AlertBar from '../../snacks/AlertBar'
 import { GetLeadDto, CreateOrEditMergeLeadsDto } from '../../../dtos/lead.dto'
+import { AlertContext } from '../../../contexts/alertContext'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
@@ -16,6 +16,7 @@ type Props = {
 }
 
 function MergeTwoLeadsDialog({ leads, removeSelectedLeads, dialog, setDialog }: Props) {
+    const { setAlert } = useContext(AlertContext)
     const [mobiles, setMobiles] = useState<string[]>([]);
     const [targetLead, setTartgetLead] = useState<CreateOrEditMergeLeadsDto>({
         name: leads[0].name,
@@ -32,13 +33,15 @@ function MergeTwoLeadsDialog({ leads, removeSelectedLeads, dialog, setDialog }: 
         source_lead_id: leads[1]._id
     })
 
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { mutate, isLoading} = useMutation
         <AxiosResponse<GetLeadDto>, BackendError, { body: CreateOrEditMergeLeadsDto, id: string }>
         (MergeTwoLeads, {
             onSuccess: () => {
-                queryClient.resetQueries('leads')
                 removeSelectedLeads()
-            }
+                queryClient.invalidateQueries('leads')
+                setAlert({ message: "success", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         },)
 
 
@@ -60,20 +63,7 @@ function MergeTwoLeadsDialog({ leads, removeSelectedLeads, dialog, setDialog }: 
             open={dialog === "MergeTwoLeadsDialog"}
             onClose={() => setDialog(undefined)}
         >
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {<AlertBar message="success" color="success" />}
-                    </>
-                ) : null
-            }
+           
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>

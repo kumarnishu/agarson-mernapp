@@ -1,17 +1,20 @@
 import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, InputLabel, Select, OutlinedInput, MenuItem, Checkbox, ListItemText } from '@mui/material'
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
-import { useMutation, useQuery } from 'react-query';
+import {  useMutation, useQuery } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import { useFormik } from 'formik';
 import * as Yup from "yup"
 import { AssignKeyCategoryToUsers } from '../../../services/KeyServices';
 import { GetKeyCategoryDto } from '../../../dtos/key-category.dto';
 import { GetUsersForDropdown } from '../../../services/UserServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { AlertContext } from '../../../contexts/alertContext';
+
+
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
@@ -19,13 +22,13 @@ type Props = {
 }
 
 function AssignKeyCategoriesDialog({ categories, flag, setDialog, dialog }: Props) {
-
+    const { setAlert } = useContext(AlertContext)
     const [users, setUsers] = useState<DropDownDto[]>([])
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
 
 
 
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 user_ids: string[],
@@ -34,9 +37,12 @@ function AssignKeyCategoriesDialog({ categories, flag, setDialog, dialog }: Prop
             }
         }>
         (AssignKeyCategoryToUsers, {
+        
             onSuccess: () => {
                 queryClient.invalidateQueries('key_categories')
-            }
+                setAlert({ message: "success", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
     const formik = useFormik<{
         user_ids: string[],
@@ -139,16 +145,7 @@ function AssignKeyCategoriesDialog({ categories, flag, setDialog, dialog }: Prop
 
 
                 </Stack>
-                {
-                    isError ? (
-                        <AlertBar message={error?.response.data.message} color="error" />
-                    ) : null
-                }
-                {
-                    isSuccess ? (
-                        <AlertBar message="successfull" color="success" />
-                    ) : null
-                }
+               
             </DialogContent>
         </Dialog >
     )

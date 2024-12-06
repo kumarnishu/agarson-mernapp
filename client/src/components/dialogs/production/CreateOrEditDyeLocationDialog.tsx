@@ -8,7 +8,7 @@ type Props = {
     location?: GetDyeLocationDto
 }
 function CreateOrEditDyeLocationDialog({ location, dialog, setDialog }: Props) {
-
+    
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
             open={dialog === 'CreateOrEditDyeLocationDialog'}

@@ -1,17 +1,19 @@
-import { Button,  CircularProgress,  Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import AlertBar from '../../snacks/AlertBar';
+
 import * as yup from 'yup';
 import { CreateOrEditPaymentCategory } from '../../../services/PaymentsService';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
-function CreateOrEditCategoryForm({ category,setDialog }: { category?: DropDownDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+function CreateOrEditCategoryForm({ category, setDialog }: { category?: DropDownDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    const { setAlert } = useContext(AlertContext)
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 key: string
@@ -19,11 +21,14 @@ function CreateOrEditCategoryForm({ category,setDialog }: { category?: DropDownD
             id?: string
         }>
         (CreateOrEditPaymentCategory, {
+
             onSuccess: () => {
-                queryClient.invalidateQueries('payment_categories')
-            }
+                queryClient.refetchQueries('payment_categories')
+                setAlert({ message: category ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
-  
+
 
 
     const formik = useFormik<{
@@ -32,14 +37,14 @@ function CreateOrEditCategoryForm({ category,setDialog }: { category?: DropDownD
         initialValues: {
             category: category ? category.label : ""
         },
-        validationSchema:yup.object({
-            category:yup.string().required()
+        validationSchema: yup.object({
+            category: yup.string().required()
         }),
         onSubmit: (values: {
             category: string,
         }) => {
             mutate({
-                id:category?.id,
+                id: category?.id,
                 body: {
                     key: values.category
                 }
@@ -49,8 +54,8 @@ function CreateOrEditCategoryForm({ category,setDialog }: { category?: DropDownD
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined)
-           
+            setDialog(undefined)
+
         }
     }, [isSuccess])
     return (
@@ -73,8 +78,8 @@ function CreateOrEditCategoryForm({ category,setDialog }: { category?: DropDownD
                     }
                     {...formik.getFieldProps('category')}
                 />
-              
-               
+
+
 
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
@@ -82,20 +87,7 @@ function CreateOrEditCategoryForm({ category,setDialog }: { category?: DropDownD
                 </Button>
             </Stack>
 
-            {
-                isError ? (
-                    <>
-                        {<AlertBar message={error?.response.data.message} color="error" />}
-                    </>
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <>
-                        {!category ? <AlertBar message="new category created" color="success" /> : <AlertBar message="category updated" color="success" />}
-                    </>
-                ) : null
-            }
+
 
         </form>
     )

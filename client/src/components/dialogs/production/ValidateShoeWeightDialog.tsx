@@ -1,14 +1,15 @@
 import { Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
 import { BackendError } from '../../..';
-import { useMutation } from 'react-query';
-import AlertBar from '../../snacks/AlertBar';
+import {  useMutation } from 'react-query';
+
 import { ValidateShoeWeight } from '../../../services/ProductionServices';
 import { GetUserDto } from '../../../dtos/user.dto';
 import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
+import { AlertContext } from '../../../contexts/alertContext';
 
 type Props = {
     dialog: string | undefined,
@@ -16,12 +17,15 @@ type Props = {
     weight: GetShoeWeightDto
 }
 function ValidateShoeWeightDialog({ weight, dialog, setDialog }: Props) {
-    const { mutate, isLoading, isSuccess, isError, error } = useMutation
+    const { setAlert } = useContext(AlertContext)
+     const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<GetUserDto>, BackendError, string>
         (ValidateShoeWeight, {
             onSuccess: () => {
                 queryClient.invalidateQueries('shoe_weights')
-            }
+                setAlert({ message: "success", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
     useEffect(() => {
         if (isSuccess) {
@@ -32,16 +36,7 @@ function ValidateShoeWeightDialog({ weight, dialog, setDialog }: Props) {
     }, [isSuccess])
     return (
         <>
-            {
-                isError ? (
-                    <AlertBar message={error?.response.data.message} color="error" />
-                ) : null
-            }
-            {
-                isSuccess ? (
-                    <AlertBar message="validated successfull" color="success" />
-                ) : null
-            }
+           
 
             <Dialog open={dialog === "ValidateShoeWeightDialog"}
             > <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>

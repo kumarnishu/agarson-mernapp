@@ -9,6 +9,7 @@ type Props = {
     spare_dye: GetSpareDyeDto
 }
 function ViewSpareDyePhotoDialog({ spare_dye, dialog, setDialog }: Props) {
+    
     return (
         <>
             <Dialog fullScreen={Boolean(window.screen.width < 500)} open={dialog === "ViewSpareDyePhotoDialog"}
