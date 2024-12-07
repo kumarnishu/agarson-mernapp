@@ -88,10 +88,10 @@ export default function ExcelDBPage() {
                         else if (cell.row.original['PARTY'])
                           //@ts-ignore
                           setObj(cell.row.original['PARTY'])
-                           //@ts-ignore
-                      else if (cell.row.original['Customer Name'])
                         //@ts-ignore
-                        setObj(cell.row.original['Customer Name'])
+                        else if (cell.row.original['Customer Name'])
+                          //@ts-ignore
+                          setObj(cell.row.original['Customer Name'])
                       }}
                     >
                       <Comment />
@@ -178,9 +178,28 @@ export default function ExcelDBPage() {
         color: 'white'
       },
     }),
+	muiTableHeadCellProps: ({ column }) => ({
+      sx: {
+        '& div:nth-child(1) span': {
+          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+        },
+        '& div:nth-child(2)': {
+          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+        },
+        '&:hover div:nth-child(1) span': {
+          display: 'inline', // Visible on hover
+        },
+        '&:hover div:nth-child(2)': {
+          display: 'block', // Visible on hover
+        }
+      },
+    }),
+   
+   
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid #c2beba;',
+
       },
     }),
     muiPaginationProps: {

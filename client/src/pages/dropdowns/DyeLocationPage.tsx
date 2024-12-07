@@ -138,6 +138,21 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     }),
     muiTableContainerProps: (table) => ({
       sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
+    }), muiTableHeadCellProps: ({ column }) => ({
+      sx: {
+        '& div:nth-child(1) span': {
+          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+        },
+        '& div:nth-child(2)': {
+          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+        },
+        '&:hover div:nth-child(1) span': {
+          display: 'inline', // Visible on hover
+        },
+        '&:hover div:nth-child(2)': {
+          display: 'block', // Visible on hover
+        }
+      },
     }),
     muiTableHeadRowProps: () => ({
       sx: {
@@ -145,6 +160,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
         color: 'white'
       },
     }),
+	
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid #c2beba;',
