@@ -1,4 +1,4 @@
-import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
+import { Fade, IconButton, LinearProgress, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
@@ -224,7 +224,7 @@ export default function ExcelDBPage() {
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing,
     state: {
-      isLoading: isLoading || isRefetching,
+      isLoading: isLoading,
       columnVisibility,
       sorting,
       columnSizing: columnSizing
@@ -333,7 +333,7 @@ export default function ExcelDBPage() {
       </Stack >
       {id && obj && <CreateOrEditExcelDBRemarkDialog dialog={dialog} setDialog={setDialog} category={id} obj={obj} />}
       {id && obj && <ViewExcelDBRemarksDialog dialog={dialog} setDialog={setDialog} id={id} obj={obj} />}
-
+      {isRefetching && <LinearProgress />}
       <MaterialReactTable table={table} />
     </>
 
