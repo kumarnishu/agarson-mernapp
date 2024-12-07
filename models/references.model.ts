@@ -10,7 +10,7 @@ export type IReference = {
     pincode: number,
     business: string,
     sale_scope: number,
-    reference: String
+    reference: string
     created_at: Date,
     updated_at: Date,
     created_by: IUser,
@@ -37,8 +37,14 @@ const ReferenceSchema = new mongoose.Schema<IReference, mongoose.Model<IReferenc
         trim: true,
         index: true
     },
+    state: {
+        type: String,
+        required: true,
+        lowercase: true,
+        trim: true,
+        index: true
+    },
     address: String,
-    state: String,
     pincode: Number,
     business: String,
     sale_scope: { type: Number, default: 0, required: true },

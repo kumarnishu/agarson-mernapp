@@ -1,63 +1,94 @@
-import {  Box, Button, LinearProgress, TextField, Typography } from '@mui/material'
+import { LinearProgress, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import moment from 'moment'
-import { GetproductionMachineWise } from '../../services/ProductionServices'
-import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
-import ExportToExcel from '../../utils/ExportToExcel'
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import { IColumnRowData } from '../../dtos/table.dto'
+import { ReferencesExcelButtons } from '../../components/buttons/ReferencesExcelButtons'
+import { GetAllReferences } from '../../services/SalesServices'
+import { GetReferenceDto } from '../../dtos/references.dto'
+import { HandleNumbers } from '../../utils/IsDecimal'
 
 export default function ReferencesReportPage() {
-  const [reports, setReports] = useState<IColumnRowData['rows']>([])
-  const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
-  const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
-    start_date: moment(new Date().setDate(1)).format("YYYY-MM-DD")
-    , end_date: moment(new Date().setDate(31)).format("YYYY-MM-DD")
-  })
   const { user } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["machine_wisereports", dates.start_date, dates.end_date], async () => GetproductionMachineWise({ start_date: dates.start_date, end_date: dates.end_date }))
+  const [reports, setReports] = useState<GetReferenceDto[]>([])
 
-   const isFirstRender = useRef(true);
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferenceDto[]>, BackendError>(["references",], async () => GetAllReferences())
 
-    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-  
+  const isFirstRender = useRef(true);
+
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
+  const columns = useMemo<MRT_ColumnDef<GetReferenceDto>[]>(
+    //column definitions...
+    () => reports && [
 
-  const columns = useMemo<MRT_ColumnDef<IColumnRowData['rows']>[]>(
-    () => reportcolumns && reportcolumns.map((item) => {
-      if (item.type == "string")
-        return { accessorKey: item.key, mingrow:false, header: item.header, Footer: "" }
-      if (item.type == "date")
-        return {
-          accessorKey: item.key,  header: item.header, Footer: <b>Total</b>,
-          filterVariant: 'multi-select', filterSelectOptions: reports && reports.map((i) => {return i['date'].toString() }).filter(onlyUnique) }
-      return {
-        accessorKey: item.key,  header: item.header,
+
+      {
+        accessorKey: 'gst',
+        header: 'GST',
+        aggregationFn: 'count',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+      },
+      {
+        accessorKey: 'party',
+        header: 'Party',
+        aggregationFn: 'count',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+      },
+      {
+        accessorKey: 'address',
+        header: 'Address',
+        aggregationFn: 'count',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+      },
+      {
+        accessorKey: 'state',
+        header: 'State',
+        aggregationFn: 'count',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+      },
+      {
+        accessorKey: 'pincode',
+        header: 'Pincode',
+        aggregationFn: 'count',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+      },
+      {
+        accessorKey: 'business',
+        header: 'Business Type',
+        aggregationFn: 'count',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+      },
+      {
+        accessorKey: 'sale_scope',
+        header: 'Sale Scope',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
-        //@ts-ignore
-        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+      },
+      {
+        accessorKey: 'reference',
+        header: 'Reference',
+        aggregationFn: 'count',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       }
-    })
-    ,
+    ],
     [reports],
     //end
   );
+
   const table = useMaterialReactTable({
     //@ts-ignore
-    columns, columnFilterDisplayMode: 'popover', 
+    columns, columnFilterDisplayMode: 'popover',
     data: reports, //10,000 rows       
     enableColumnResizing: true,
-    enableColumnVirtualization: true, enableStickyFooter: true,
+    enableStickyFooter: true,
     muiTableFooterRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',
@@ -73,38 +104,6 @@ export default function ReferencesReportPage() {
         color: 'white'
       },
     }),
-    renderTopToolbarCustomActions: ({ table }) => (
-      <Box
-        sx={{
-          display: 'flex',
-          gap: '16px',
-          padding: '8px',
-          flexWrap: 'wrap',
-        }}
-      >
-        {user?.assigned_permissions.includes("shoe_weight_report_export") && <Button
-          //export all data that is currently in the table (ignore pagination, sorting, filtering, etc.)
-          onClick={() => {
-            ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "shoe_weight_difference")
-          }}
-          startIcon={<FileDownloadIcon />}
-        >
-          Export All Data
-        </Button>}
-
-
-        {user?.assigned_permissions.includes("shoe_weight_report_export") && <Button
-          disabled={
-            !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()
-          }
-          //only export selected rows
-          onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "shoe_weight_difference")}
-          startIcon={<FileDownloadIcon />}
-        >
-          Export Selected Rows
-        </Button>}
-      </Box>
-    ),
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid #c2beba;',
@@ -116,44 +115,31 @@ export default function ReferencesReportPage() {
       variant: 'outlined',
     },
     initialState: {
-      density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
+      density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }, grouping: ['reference']
     },
     enableGrouping: true,
     enableRowSelection: true,
     manualPagination: false,
     enablePagination: true,
-    enableRowNumbers: true,
     enableColumnPinning: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    rowVirtualizerInstanceRef, //optional
     //optionally customize the column virtualizer
     onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
-      
+
       sorting,
       columnSizing: columnSizing
     }
   });
   useEffect(() => {
     if (typeof window !== 'undefined' && isSuccess) {
-      setReports(data.data.rows);
-      setReportColumns(data.data.columns)
+      setReports(data.data);
     }
   }, [isSuccess]);
-
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
-
 
   useEffect(() => {
     //scroll to the top of the table when the sorting changes
@@ -172,7 +158,7 @@ export default function ReferencesReportPage() {
     const columnSizing = localStorage.getItem(
       'mrt_columnSizing_table_1',
     );
-    
+
 
 
 
@@ -181,10 +167,10 @@ export default function ReferencesReportPage() {
       setColumnVisibility(JSON.parse(columnVisibility));
     }
 
-    
+
     if (columnSizing)
       setColumnSizing(JSON.parse(columnSizing))
-    
+
     isFirstRender.current = false;
   }, []);
 
@@ -196,7 +182,7 @@ export default function ReferencesReportPage() {
     );
   }, [columnVisibility]);
 
- 
+
 
 
   useEffect(() => {
@@ -227,48 +213,18 @@ export default function ReferencesReportPage() {
           component={'h1'}
           sx={{ pl: 1 }}
         >
-          Machine Wise
+          References
         </Typography>
-        <Stack direction="row" gap={2}>
-          < TextField
-            size="small"
-            type="date"
-            id="start_date"
-            label="Start Date"
-            fullWidth
-            value={dates.start_date}
-            focused
-            onChange={(e) => {
-              if (e.currentTarget.value) {
-                setDates({
-                  ...dates,
-                  start_date: moment(e.target.value).format("YYYY-MM-DD")
-                })
-              }
-            }}
-          />
-          < TextField
-            size="small"
-            type="date"
-            id="end_date"
-            label="End Date"
-            focused
-            value={dates.end_date}
-            fullWidth
-            onChange={(e) => {
-              if (e.currentTarget.value) {
-                setDates({
-                  ...dates,
-                  end_date: moment(e.target.value).format("YYYY-MM-DD")
-                })
-              }
-            }}
-          />
+        <Stack direction={'row'} gap={2} alignItems={'center'}>
+          <>
+
+            {user?.assigned_permissions.includes("references_report_create") && <ReferencesExcelButtons />}
+          </>
         </Stack>
       </Stack >
-   
-        {/* table */}
-        <MaterialReactTable table={table} />
+
+      {/* table */}
+      <MaterialReactTable table={table} />
     </>
 
   )

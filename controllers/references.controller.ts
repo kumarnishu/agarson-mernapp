@@ -1,16 +1,32 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
-import { GetReferenceExcelDto } from "../dtos/references.dto";
+import { GetReferenceDto, GetReferenceExcelDto } from "../dtos/references.dto";
 import isMongoId from "validator/lib/isMongoId";
 import { Reference } from "../models/references.model";
 
 
-export const GetReferencesReport=async (req: Request, res: Response, next: NextFunction) => {
-    
+export const GetReferencesReport = async (req: Request, res: Response, next: NextFunction) => {
+    let result: GetReferenceDto[] = []
+    const data = await Reference.find()
+    result = data.map((ref) => {
+        return {
+            _id: ref._id,
+            gst: ref.gst,
+            party: ref.party,
+            address: ref.address,
+            state: ref.state,
+            pincode: ref.pincode,
+            business: ref.business,
+            sale_scope: ref.sale_scope,
+            reference: ref.reference
+        }
+    })
+    return res.status(200).json(result)
 }
 export const BulkCreateAndUpdateReferenceFromExcel = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetReferenceExcelDto[] = []
+    let validated = true
     let statusText: string = ""
     if (!req.file)
         return res.status(400).json({
@@ -33,52 +49,66 @@ export const BulkCreateAndUpdateReferenceFromExcel = async (req: Request, res: R
 
         for (let i = 0; i < workbook_response.length; i++) {
             let item = workbook_response[i]
-            let gst: string | null = String(item.gst)
-            let party: string | null = String(item.party)
-            let address: string | null = String(item.address)
-            let state: string | null = String(item.state)
-            let pincode: string | null = String(item.pincode)
-            let business: string | null = String(item.business)
-            let sale_scope: string | null = String(item.sale_scope)
-            let reference: string | null = String(item.reference)
+            let gst: string | null = item.gst
+            let party: string | null = item.party
+            let address: string | null = item.address
+            let state: string | null = item.state
+            let pincode: number | null = item.pincode
+            let business: string | null = item.business
+            let sale_scope: number | null = item.sale_scope
+            let reference: string | null = item.reference || "Default"
+            if (!party) {
+                validated = false
+                statusText = "party required"
+            }
+            if (!state) {
+                validated = false
+                statusText = "state required"
+            }
+            if (!reference) {
+                validated = false
+                statusText = "reference required"
+            }
 
-
-            if (state) {
+            if (validated) {
                 if (item._id && isMongoId(String(item._id))) {
                     let tmpitem = await Reference.findById(item._id)
-                    if (tmpitem && tmpitem.state !== item.state) {
+
+                    if (tmpitem) {
                         await Reference.findByIdAndUpdate(item._id, {
                             gst: gst,
-                            party: party,
                             address: address,
-                            state: state,
+                            state: item.state.toLowerCase(),
                             pincode: pincode,
                             business: business,
+                            party: item.party.toLowerCase(),
                             sale_scope: sale_scope,
-                            reference: reference,
+                            reference: item.reference.toLowerCase(),
                             updated_by: req.user,
                             updated_at: new Date()
                         })
                         statusText = "updated"
                     }
+
                     else {
-                         statusText = "duplicate"
+                        console.log(item._id, "not found")
+                        statusText = "not found"
                     }
 
                 }
 
                 if (!item._id || !isMongoId(String(item._id))) {
-                    let oldref = await Reference.findOne({ party: party.toLowerCase(), reference: item.reference.toLowerCase() })
+                    let oldref = await Reference.findOne({ state: state.toLowerCase(), party: party.toLowerCase(), reference: item.reference.toLowerCase() })
                     if (!oldref) {
                         await new Reference({
                             gst: gst,
-                            party: party,
+                            party: party.toLowerCase(),
                             address: address,
-                            state: state,
+                            state: state.toLowerCase(),
                             pincode: pincode,
                             business: business,
                             sale_scope: sale_scope,
-                            reference: reference,
+                            reference: reference.toLowerCase(),
                             created_by: req.user,
                             updated_by: req.user,
                             created_at: new Date(),
@@ -91,8 +121,6 @@ export const BulkCreateAndUpdateReferenceFromExcel = async (req: Request, res: R
                 }
 
             }
-            else
-                statusText = "required state"
 
             result.push({
                 ...item,
@@ -119,6 +147,21 @@ export const DownloadExcelTemplateForCreateReferenceReport = async (req: Request
             reference: 'A'
         }
     ]
+    let data = await Reference.find()
+    if (data.length > 0)
+        checklist = data.map((ref) => {
+            return {
+                _id: ref._id.valueOf(),
+                gst: ref.gst,
+                party: ref.party,
+                address: ref.address,
+                state: ref.state,
+                pincode: ref.pincode,
+                business: ref.business,
+                sale_scope: ref.sale_scope,
+                reference: ref.reference
+            }
+        })
     let template: { sheet_name: string, data: any[] }[] = []
     template.push({ sheet_name: 'template', data: checklist })
     ConvertJsonToExcel(template)

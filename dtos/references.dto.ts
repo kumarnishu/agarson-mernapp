@@ -10,10 +10,6 @@ export type GetReferenceDto = {
     business: string,
     sale_scope: number,
     reference: string
-    created_at: string,
-    updated_at: string,
-    created_by: DropDownDto,
-    updated_by: DropDownDto
 }
 
 export type GetReferenceExcelDto = {
@@ -25,6 +21,6 @@ export type GetReferenceExcelDto = {
     pincode: number,
     business: string,
     sale_scope: number,
-    reference: String,
+    reference: string,
     status?:string
 }

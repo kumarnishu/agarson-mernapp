@@ -14,11 +14,9 @@ import { getCurrentUser, userJoin, userLeave } from "./utils/handleSocketUsers";
 import { Storage } from '@google-cloud/storage';
 import morgan from 'morgan';
 import { activateChecklist } from './services/activateChecklist';
-import { currentMonth, nextMonth } from './utils/datesHelper';
 
 const app = express()
 const server = createServer(app)
-console.log(currentMonth,nextMonth)
 
 //env setup
 dotenv.config();

@@ -7,7 +7,7 @@ export const GetSalesmanVisit = async ({ date }: { date: string }) => {
     return await apiClient.get(`salesman-visit/?date=${date}`)
 }
 
-export const GetSalesmanKpis = async ({  start_date, end_date, id }: { start_date?: string, end_date?: string, id?: string }) => {
+export const GetSalesmanKpis = async ({ start_date, end_date, id }: { start_date?: string, end_date?: string, id?: string }) => {
     if (id)
         return await apiClient.get(`salesman/kpi/?id=${id}&start_date=${start_date}&end_date=${end_date}`)
     else
@@ -43,7 +43,7 @@ export const DeleteVisitReportRemark = async (id: string) => {
     return await apiClient.delete(`visit/remarks/${id}`)
 }
 
-export const GetVisitReportRemarksHistory = async (employee: string,date: string) => {
+export const GetVisitReportRemarksHistory = async (employee: string, date: string) => {
     return await apiClient.get(`visit/remarks/?date=${date}&employee=${employee}`)
 }
 
@@ -66,18 +66,17 @@ export const CreateOrEditSalesmanAttendance = async ({ id, body }: {
     return await apiClient.post(`attendances`, body);
 }
 
-export const DeleteSalesManAttendance= async (id: string) => {
+export const DeleteSalesManAttendance = async (id: string) => {
     return await apiClient.delete(`attendances/${id}`)
 }
 
 
 export const GetAllReferences = async () => {
     return await apiClient.get(`references`)
-  }
+}
 
-  
-  export const CreateOrUpdateReferencesFromExcel = async (body: FormData) => {
+
+export const CreateOrUpdateReferencesFromExcel = async (body: FormData) => {
     return await apiClient.post(`create-references-from-excel`, body)
-  }
+}
 
- 

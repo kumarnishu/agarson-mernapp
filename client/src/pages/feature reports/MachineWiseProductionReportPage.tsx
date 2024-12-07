@@ -145,17 +145,7 @@ export default function MachineWiseProductionReportPage() {
     }
   }, [isSuccess]);
 
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
-
-
-  useEffect(() => {
+   useEffect(() => {
     //scroll to the top of the table when the sorting changes
     try {
       rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);

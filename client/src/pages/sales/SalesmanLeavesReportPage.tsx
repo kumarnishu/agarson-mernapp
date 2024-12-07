@@ -110,14 +110,7 @@ export default function SalesmanLeavesReportPage() {
       console.error(error);
     }
   }, [sorting]);
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
+  
 
   //load state from local storage
   useEffect(() => {
