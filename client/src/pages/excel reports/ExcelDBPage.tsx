@@ -1,4 +1,4 @@
-import { IconButton, Tooltip, Typography } from '@mui/material'
+import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
@@ -16,7 +16,8 @@ import ViewExcelDBRemarksDialog from '../../components/dialogs/excel-db/ViewExce
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import { IColumnRowData } from '../../dtos/table.dto'
-
+import { Menu as MenuIcon } from '@mui/icons-material';
+import ExportToExcel from '../../utils/ExportToExcel'
 
 export default function ExcelDBPage() {
   const [reports, setReports] = useState<IColumnRowData['rows']>([])
@@ -26,6 +27,7 @@ export default function ExcelDBPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const [dialog, setDialog] = useState<string | undefined>()
   const { id } = useParams()
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const { data: categorydata, refetch: RefetchCategory, isSuccess: isSuccessCategorydata } = useQuery<AxiosResponse<DropDownDto>, BackendError>(["key_categories"], async () => GetKeyCategoryById(id || ""), { enabled: false })
 
@@ -178,13 +180,13 @@ export default function ExcelDBPage() {
         color: 'white'
       },
     }),
-	muiTableHeadCellProps: ({ column }) => ({
+    muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-child(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-child(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-child(1) span': {
           display: 'inline', // Visible on hover
@@ -194,8 +196,8 @@ export default function ExcelDBPage() {
         }
       },
     }),
-   
-   
+
+
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid #c2beba;',
@@ -286,7 +288,7 @@ export default function ExcelDBPage() {
         spacing={2}
         padding={1}
         direction="row"
-        justifyContent="left"
+        justifyContent="space-between"
         alignItems={'center'}
       >
         <Typography
@@ -296,8 +298,38 @@ export default function ExcelDBPage() {
         >
 
           {category ? category.label : "Excel DB"}
+          <Refresh sx={{ cursor: 'pointer', color: 'green' }} onClick={() => window.location.reload()} />
         </Typography>
-        <Refresh sx={{ cursor: 'pointer', color: 'green' }} onClick={() => window.location.reload()} />
+        <Stack>
+          <IconButton size="small" color="primary"
+            onClick={(e) => setAnchorEl(e.currentTarget)
+            }
+            sx={{ border: 2, borderRadius: 3, marginLeft: 1 }}
+          >
+            <MenuIcon />
+          </IconButton>
+
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={() => setAnchorEl(null)
+            }
+            TransitionComponent={Fade}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button',
+            }}
+            sx={{ borderRadius: 2 }}
+          >
+
+            {LoggedInUser?.assigned_permissions.includes('grp_excel_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+
+            >Export All</MenuItem>}
+            {LoggedInUser?.assigned_permissions.includes('grp_excel_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+
+            >Export Selected</MenuItem>}
+
+          </Menu >
+        </Stack>
       </Stack >
       {id && obj && <CreateOrEditExcelDBRemarkDialog dialog={dialog} setDialog={setDialog} category={id} obj={obj} />}
       {id && obj && <ViewExcelDBRemarksDialog dialog={dialog} setDialog={setDialog} id={id} obj={obj} />}
