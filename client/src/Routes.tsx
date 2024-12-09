@@ -61,6 +61,8 @@ import SalesDashboard from './components/dashboards/SalesDashboard.tsx'
 import FeatureReportsDashboard from './components/dashboards/FeatureReportsDashboard.tsx'
 import UsersNavbar from './components/navbar/UsersNavbar.tsx'
 import ReferencesReportPage from './pages/sales/ReferencesReportPage.tsx'
+import ExpenseCategoriesPage from './pages/dropdowns/ExpenseCategoryPage.tsx'
+import ExpenseLocationPage from './pages/dropdowns/ExpenseLocationPage.tsx'
 
 
 function AppRoutes() {
@@ -295,9 +297,9 @@ function AppRoutes() {
                   <PaymentCategoriesPage />
                 }
               />}
-              {user?.assigned_permissions.includes('payment_category_view') && <Route
-                path="PaymentCategoriesPage" element={
-                  <PaymentCategoriesPage />
+              {user?.assigned_permissions.includes('expense_category_view') && <Route
+                path="ExpenseCategoriesPage" element={
+                  <ExpenseCategoriesPage />
                 }
               />}
               {user?.assigned_permissions.includes('item_unit_view') && <Route
@@ -305,7 +307,11 @@ function AppRoutes() {
                   <ItemUnitPage />
                 }
               />}
-
+              {user?.assigned_permissions.includes('expense_location_view') && <Route
+                path="ExpenseLocationPage" element={
+                  <ExpenseLocationPage />
+                }
+              />}
             </Route>}
 
           {user && user?.assigned_permissions.includes('excel_db_menu') &&

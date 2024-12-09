@@ -29,7 +29,7 @@ function CreateOrEditExpenseCategoryForm({ category, setDialog }: props) {
         (CreateOrEditExpenseCategory, {
 
             onSuccess: () => {
-                queryClient.refetchQueries('check_categories')
+                queryClient.refetchQueries('expense_categories')
                 setAlert({ message: category ? "updated" : "created", color: 'success' })
             },
             onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })

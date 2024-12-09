@@ -9,7 +9,7 @@ import { IKeyCategory, KeyCategory } from "../models/key-category.model";
 import { Key } from "../models/keys.model";
 import { User, IUser } from "../models/user.model";
 import { VisitReport } from "../models/visit-report.model";
-import { ExcelDBRemark } from "../models/excel-db-remark.model";
+import { ExcelDBRemark, IExcelDBRemark } from "../models/excel-db-remark.model";
 
 export const GetExcelDbReport = async (req: Request, res: Response, next: NextFunction) => {
     const category = req.query.category
@@ -45,7 +45,12 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
     });
     let assigned_employees: string[] = [String(req.user.username), String(req.user.alias1 || ""), String(req.user.alias2 || "")].filter(value => value)
 
-
+    //for hiding rows
+    let dt1 = new Date()
+    dt1.setHours(0, 0, 0, 0)
+    dt1.setDate(dt1.getDate() + 1)
+    let dt2 = new Date(dt1)
+    dt2.setDate(dt1.getDate() - 7)
 
     let keys = await Key.find({ category: category, _id: { $in: assigned_keys } }).sort('serial_no');
 
@@ -122,13 +127,15 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
         result.columns.push({ key: c.key, header: c.key, type: c.type })
     }
 
-    
+
 
     for (let k = 0; k < data.length; k++) {
         let obj: IRowData = {}
         let dt = data[k]
 
+        let push_row = true
         if (dt) {
+            let lastremark: IExcelDBRemark | undefined = undefined;
             for (let i = 0; i < keys.length; i++) {
                 if (assigned_keys.includes(keys[i]._id)) {
                     let key = keys[i].key
@@ -154,7 +161,7 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
                         //adding bills age actions
                         if (cat && cat.category == 'BillsAge' && key == 'Account Name') {
                             //@ts-ignore
-                            let lastremark = await ExcelDBRemark.findOne({ category: category, obj: dt[key] }).sort('-created_at')
+                            lastremark = await ExcelDBRemark.findOne({ category: category, obj: dt[key] }).sort('-created_at')
                             if (lastremark) {
                                 obj['last remark'] = lastremark.remark
                                 if (lastremark.next_date)
@@ -163,7 +170,7 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
                         }
                         if (cat && cat.category == 'PartyTarget' && key == 'PARTY') {
                             //@ts-ignore
-                            let lastremark = await ExcelDBRemark.findOne({ category: category, obj: dt[key] }).sort('-created_at')
+                            lastremark = await ExcelDBRemark.findOne({ category: category, obj: dt[key] }).sort('-created_at')
                             if (lastremark) {
                                 obj['last remark'] = lastremark.remark
                                 if (lastremark.next_date)
@@ -172,7 +179,7 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
                         }
                         if (cat && cat.category == 'OrderDash' && key == 'Customer Name') {
                             //@ts-ignore
-                            let lastremark = await ExcelDBRemark.findOne({ category: category, obj: dt[key] }).sort('-created_at')
+                            lastremark = await ExcelDBRemark.findOne({ category: category, obj: dt[key] }).sort('-created_at')
                             if (lastremark) {
                                 obj['last remark'] = lastremark.remark
                                 if (lastremark.next_date)
@@ -181,7 +188,7 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
                         }
                         if (cat && cat.category == 'ClientSale' && key == 'CUSTOMER') {
                             //@ts-ignore
-                            let lastremark = await ExcelDBRemark.findOne({ category: category, obj: dt[key] }).sort('-created_at')
+                            lastremark = await ExcelDBRemark.findOne({ category: category, obj: dt[key] }).sort('-created_at')
                             if (lastremark) {
                                 obj['last remark'] = lastremark.remark
                                 if (lastremark.next_date)
@@ -198,12 +205,15 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
                 }
 
             }
-
+            console.log(dt2, dt1, lastremark?.next_date)
+            if (lastremark && lastremark.next_date > dt1) {
+                if (lastremark.created_by == req.user._id.valueOf())
+                    push_row = false
+            }
 
         }
-
-
-        result.rows.push(obj)
+        if (push_row)
+            result.rows.push(obj)
     }
     return res.status(200).json(result)
 }

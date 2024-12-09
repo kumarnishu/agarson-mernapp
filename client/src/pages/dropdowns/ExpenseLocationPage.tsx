@@ -12,16 +12,16 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { DropDownDto } from '../../dtos/dropdown.dto'
-import { GetAllExpenseCategories } from '../../services/ExpenseServices'
-import CreateOrEditExpenseCategoryDialog from '../../components/dialogs/expense/CreateOrEditExpenseCategoryDialog'
+import {  GetAllExpenseLocations } from '../../services/ExpenseServices'
+import CreateOrEditExpenseLocationDialog from '../../components/dialogs/expense/CreateOrEditExpenseLocationDialog'
 
 
 
-export default function ExpenseCategoriesPage() {
-  const [category, setExpenseCategory] = useState<DropDownDto>()
-  const [categories, setExpenseCategorys] = useState<DropDownDto[]>([])
+export default function ExpenseLocationPage() {
+  const [location, setExpenseLocation] = useState<DropDownDto>()
+  const [locations, setExpenseLocations] = useState<DropDownDto[]>([])
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["expense_categories"], async () => GetAllExpenseCategories())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["expense_locations"], async () => GetAllExpenseLocations())
 
 
   const isFirstRender = useRef(true);
@@ -35,7 +35,7 @@ export default function ExpenseCategoriesPage() {
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const columns = useMemo<MRT_ColumnDef<DropDownDto>[]>(
     //column definitions...
-    () => categories && [
+    () => locations && [
       {
         accessorKey: 'actions',
         header: '',
@@ -45,12 +45,12 @@ export default function ExpenseCategoriesPage() {
           element={
             <Stack direction="row">
               <>
-                {LoggedInUser?.assigned_permissions.includes('expense_category_edit') && <Tooltip title="edit">
+                {LoggedInUser?.assigned_permissions.includes('expense_location_edit') && <Tooltip title="edit">
                   <IconButton
 
                     onClick={() => {
-                      setExpenseCategory(cell.row.original)
-                      setDialog('CreateOrEditExpenseCategoryDialog')
+                      setExpenseLocation(cell.row.original)
+                      setDialog('CreateOrEditExpenseLocationDialog')
                     }}
 
                   >
@@ -69,20 +69,20 @@ export default function ExpenseCategoriesPage() {
         header: 'Name',
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
-        filterSelectOptions: categories && categories.map((i) => {
+        filterSelectOptions: locations && locations.map((i) => {
           return i.label;
         }).filter(onlyUnique)
       },
 
     ],
-    [categories],
+    [locations],
     //end
   );
 
 
   const table = useMaterialReactTable({
     columns, columnFilterDisplayMode: 'popover',
-    data: categories, //10,000 rows       
+    data: locations, //10,000 rows       
     enableColumnResizing: true,
     enableColumnVirtualization: true, enableStickyFooter: true,
     muiTableFooterRowProps: () => ({
@@ -152,7 +152,7 @@ export default function ExpenseCategoriesPage() {
 
   useEffect(() => {
     if (isSuccess) {
-      setExpenseCategorys(data.data);
+      setExpenseLocations(data.data);
     }
   }, [data, isSuccess]);
 
@@ -226,7 +226,7 @@ export default function ExpenseCategoriesPage() {
           component={'h1'}
           sx={{ pl: 1 }}
         >
-          Expense Category
+          Expense Location
         </Typography>
 
 
@@ -252,23 +252,23 @@ export default function ExpenseCategoriesPage() {
             }}
             sx={{ borderRadius: 2 }}
           >
-            {LoggedInUser?.assigned_permissions.includes("expense_category_create") && <MenuItem
+            {LoggedInUser?.assigned_permissions.includes("expense_location_create") && <MenuItem
               onClick={() => {
-                setExpenseCategory(undefined)
+                setExpenseLocation(undefined)
                 setAnchorEl(null)
-                setDialog('CreateOrEditExpenseCategoryDialog')
+                setDialog('CreateOrEditExpenseLocationDialog')
               }}
 
             > Add New</MenuItem>}
-            {LoggedInUser?.assigned_permissions.includes('expense_category_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+            {LoggedInUser?.assigned_permissions.includes('expense_location_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
             >Export All</MenuItem>}
-            {LoggedInUser?.assigned_permissions.includes('expense_category_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+            {LoggedInUser?.assigned_permissions.includes('expense_location_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
             >Export Selected</MenuItem>}
 
           </Menu >
-          <CreateOrEditExpenseCategoryDialog dialog={dialog} setDialog={setDialog} category={category} />
+          <CreateOrEditExpenseLocationDialog dialog={dialog} setDialog={setDialog} location={location} />
         </>
 
 

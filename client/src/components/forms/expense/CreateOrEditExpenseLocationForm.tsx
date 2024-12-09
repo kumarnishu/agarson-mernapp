@@ -30,7 +30,7 @@ function CreateOrEditExpenseLocationForm({ location, setDialog }: props) {
         (CreateOrEditExpenseLocation, {
           
             onSuccess: () => {
-                queryClient.refetchQueries('exp_locations')
+                queryClient.refetchQueries('expense_locations')
                 setAlert({ message: location ? "updated" : "created", color: 'success' })
             },
             onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
