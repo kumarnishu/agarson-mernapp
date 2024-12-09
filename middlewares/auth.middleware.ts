@@ -90,3 +90,6 @@ export const deleteToken = async (res: Response, accessToken: string) => {
     };
     res.cookie("accessToken", null, options);
 };
+export const deleteTokenOnly = async (accessToken: string) => {
+    UserTokens = UserTokens.filter((token) => token !== accessToken)
+};

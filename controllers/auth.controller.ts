@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { deleteToken, sendUserToken } from '../middlewares/auth.middleware';
+import { deleteToken, deleteTokenOnly, sendUserToken } from '../middlewares/auth.middleware';
 import isMongoId from "validator/lib/isMongoId";
 import { FetchAllPermissions } from '../utils/fillAllPermissions';
 import moment from 'moment';
@@ -53,13 +53,14 @@ export const Login = async (req: Request, res: Response, next: NextFunction) => 
     user.last_login = new Date()
     let token = user.getAccessToken()
     user.orginal_password = password;
+    user.access_token = token;
     await user.save();
     let result: GetUserDto | null = {
         _id: user._id,
         username: user.username,
         alias1: user.alias1,
         alias2: user.alias2,
-        email: user.email, 
+        email: user.email,
         mobile: user.mobile,
         dp: user.dp?.public_url || "",
         orginal_password: user.orginal_password,
@@ -80,7 +81,7 @@ export const Login = async (req: Request, res: Response, next: NextFunction) => 
         created_at: moment(user.created_at).format("DD/MM/YYYY"),
         updated_at: moment(user.updated_at).format("DD/MM/YYYY"),
         created_by: { id: user.created_by._id, label: user.created_by.username },
-        updated_by: { id: user.updated_by._id, label: user.updated_by.username},
+        updated_by: { id: user.updated_by._id, label: user.updated_by.username },
     }
     res.status(200).json({ user: result, token: token })
 }
@@ -193,6 +194,7 @@ export const BlockUser = async (req: Request, res: Response, next: NextFunction)
     if (String(user._id) === String(req.user?._id))
         return res.status(403).json({ message: "not allowed this operation here, because you may block yourself" })
     user.is_active = false
+    deleteTokenOnly(user.access_token)
     if (req.user) {
         user.updated_by = user
     }
