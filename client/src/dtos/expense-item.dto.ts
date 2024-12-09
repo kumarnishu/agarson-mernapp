@@ -6,7 +6,7 @@ export type GetExpenseItemDto = {
     category: DropDownDto,
     unit: DropDownDto;
     to_maintain_stock: boolean,
-    stock: number
+    stock: number,
 }
 export type GetExpenseItemFromExcelDto = {
     _id: string,
@@ -17,10 +17,14 @@ export type GetExpenseItemFromExcelDto = {
     stock: number,
     status?: string
 }
-export type CreateOrEditExpenseItem = {
+export type CreateOrEditExpenseItemDto = {
     item: string,
     unit: string;
     stock: number,
     to_maintain_stock: boolean,
-    category: string
+    category: string,
+}
+export type IssueOrAddExpenseItemDto = {
+    stock: number,
+    location:string
 }

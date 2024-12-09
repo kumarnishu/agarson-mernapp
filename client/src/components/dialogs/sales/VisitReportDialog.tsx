@@ -29,9 +29,6 @@ function VisitReportPage({ employee }: { employee: string }) {
             {
                 accessorKey: 'visit_date',
                 header: 'Visit Date',
-
-                filterVariant: 'multi-select',
-                filterSelectOptions: reports.map((i) => { return i.visit_date || "" }).filter(onlyUnique)
             },
             {
                 accessorKey: 'customer',

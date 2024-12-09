@@ -1,4 +1,4 @@
-import { Fade, IconButton, LinearProgress, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
+import { Fade, FormControlLabel, IconButton, LinearProgress, Menu, MenuItem, Switch, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
@@ -20,6 +20,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 
 export default function ExcelDBPage() {
+  const [hidden, setHidden] = useState(false)
   const [reports, setReports] = useState<IColumnRowData['rows']>([])
   const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
   const [category, setCategory] = useState<DropDownDto>()
@@ -31,7 +32,7 @@ export default function ExcelDBPage() {
 
   const { data: categorydata, refetch: RefetchCategory, isSuccess: isSuccessCategorydata } = useQuery<AxiosResponse<DropDownDto>, BackendError>(["key_categories"], async () => GetKeyCategoryById(id || ""), { enabled: false })
 
-  const { data, isLoading, isSuccess, refetch, isRefetching } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb"], async () => GetExcelDbReport(id || ""), { enabled: false })
+  const { data, isLoading, isSuccess, refetch, isRefetching } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb", hidden], async () => GetExcelDbReport(id || "", hidden), { enabled: false })
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
 
@@ -68,7 +69,7 @@ export default function ExcelDBPage() {
                       else if (cell.row.original['Customer Name'])
                         //@ts-ignore
                         setObj(cell.row.original['Customer Name'])
-                        //@ts-ignore
+                      //@ts-ignore
                       else if (cell.row.original['CUSTOMER'])
                         //@ts-ignore
                         setObj(cell.row.original['CUSTOMER'])
@@ -98,10 +99,10 @@ export default function ExcelDBPage() {
                         else if (cell.row.original['Customer Name'])
                           //@ts-ignore
                           setObj(cell.row.original['Customer Name'])
-                          //@ts-ignore
-                      else if (cell.row.original['CUSTOMER'])
                         //@ts-ignore
-                        setObj(cell.row.original['CUSTOMER'])
+                        else if (cell.row.original['CUSTOMER'])
+                          //@ts-ignore
+                          setObj(cell.row.original['CUSTOMER'])
                       }}
                     >
                       <Comment />
@@ -147,7 +148,7 @@ export default function ExcelDBPage() {
       refetch()
       RefetchCategory()
     }
-  }, [id])
+  }, [id, hidden])
 
   useEffect(() => {
     if (isSuccess && data) {
@@ -308,7 +309,12 @@ export default function ExcelDBPage() {
           {category ? category.label : "Excel DB"}
           <Refresh sx={{ cursor: 'pointer', color: 'green' }} onClick={() => window.location.reload()} />
         </Typography>
-        <Stack>
+        <Stack direction={'row'}>
+          <FormControlLabel control={<Switch
+            defaultChecked={Boolean(hidden)}
+            onChange={() => setHidden(!hidden)}
+          />} label="Hidden" />
+
           <IconButton size="small" color="primary"
             onClick={(e) => setAnchorEl(e.currentTarget)
             }

@@ -13,6 +13,7 @@ import { ExcelDBRemark, IExcelDBRemark } from "../models/excel-db-remark.model";
 
 export const GetExcelDbReport = async (req: Request, res: Response, next: NextFunction) => {
     const category = req.query.category
+    const hidden = req.query.hidden
     let result: IColumnRowData = {
         columns: [],
         rows: []
@@ -205,8 +206,7 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
                 }
 
             }
-            console.log(dt2, dt1, lastremark?.next_date)
-            if (lastremark && lastremark.next_date > dt1) {
+            if (hidden && hidden !== 'true' && lastremark && lastremark.next_date > dt1) {
                 if (lastremark.created_by == req.user._id.valueOf())
                     push_row = false
             }

@@ -2,8 +2,8 @@ import { CreateOrEditExcelDbRemarkDto, GetExcelDBRemarksDto } from "../dtos/exce
 import { apiClient } from "./utils/AxiosInterceptor";
 
 
-export const GetExcelDbReport = async (category: string) => {
-    return await apiClient.get(`excel-db/?category=${category}`)
+export const GetExcelDbReport = async (category: string, hidden: boolean) => {
+    return await apiClient.get(`excel-db/?category=${category}&hidden=${hidden}`)
 }
 
 

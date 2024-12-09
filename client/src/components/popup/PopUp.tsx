@@ -6,7 +6,7 @@ function PopUp({ element }: { element: JSX.Element }) {
     const [popup, setPopup] = useState<any | null>(null);
     return (
         <div>
-            <AcUnitTwoTone color='primary' onClick={(e) => setPopup(e.currentTarget)} sx={{ height: 14, width: 14, cursor: 'pointer' }} />
+            <AcUnitTwoTone color='primary' onMouseOver={(e) => setPopup(e.currentTarget)} onClick={(e) => setPopup(e.currentTarget)} sx={{ height: 14, width: 14, cursor: 'pointer' }} />
             <Popover
             
                 open={Boolean(popup)}

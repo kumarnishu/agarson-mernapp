@@ -1,0 +1,201 @@
+import { Button, CircularProgress, FormControlLabel, Stack, Switch, TextField } from '@mui/material';
+import { AxiosResponse } from 'axios';
+import { useFormik } from 'formik';
+import { useContext, useEffect, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
+import * as Yup from "yup"
+import { BackendError } from '../../..';
+import { queryClient } from '../../../main';
+
+import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { AlertContext } from '../../../contexts/alertContext';
+import { CreateOrEditExpenseItemDto, GetExpenseItemDto } from '../../../dtos/expense-item.dto';
+import { CreateOrEditExpenseItem, GetAllExpenseCategories, GetAllItemUnits } from '../../../services/ExpenseServices';
+
+
+function CreateorEditExpenseItemForm({ item, setDialog }: { item?: GetExpenseItemDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+    const { setAlert } = useContext(AlertContext)
+    const [categories, setCategories] = useState<DropDownDto[]>([])
+    const [units, setUnits] = useState<DropDownDto[]>([])
+    const { mutate, isLoading, isSuccess } = useMutation
+        <AxiosResponse<string>, BackendError, { body: CreateOrEditExpenseItemDto, id?: string }>
+        (CreateOrEditExpenseItem, {
+            onSuccess: () => {
+                queryClient.invalidateQueries('items')
+                setAlert({ message: item ? "updated" : "created", color: 'success' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+        })
+
+
+    const { data: categoriesData, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("expense_categories", GetAllExpenseCategories)
+    const { data: unitsData, isSuccess: unitsSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("units", GetAllItemUnits)
+
+    const formik = useFormik<CreateOrEditExpenseItemDto>({
+        initialValues: {
+            category: item ? item.category.id : "",
+            item: item ? item.item : "",
+            unit: item ? item.unit.id : "",
+            to_maintain_stock: item ? item.to_maintain_stock : true,
+            stock: item ? item.stock : 0,
+        },
+        validationSchema: Yup.object({
+            category: Yup.string().required("required field"),
+            item: Yup.string().required("required field"),
+            unit: Yup.string().required(),
+            stock:Yup.number()
+        }),
+        onSubmit: (values: CreateOrEditExpenseItemDto) => {
+            if (item) {
+                mutate({
+                    id: item._id,
+                    body: values
+                })
+            }
+            else {
+               
+                mutate({
+                    id: undefined,
+                    body: values
+                })
+            }
+
+        }
+    });
+
+
+    useEffect(() => {
+        if (categorySuccess && categoriesData) {
+            setCategories(categoriesData.data)
+        }
+    }, [categoriesData])
+
+    useEffect(() => {
+        if (unitsSuccess && unitsData) {
+            setUnits(unitsData.data)
+        }
+    }, [unitsData])
+
+    useEffect(() => {
+        if (isSuccess) {
+            setDialog(undefined)
+        }
+    }, [isSuccess])
+
+
+    return (
+        <form onSubmit={formik.handleSubmit}>
+            <Stack
+                gap={2}
+                pt={2}
+            >
+                {/* titles */}
+                <TextField
+                    required
+                    error={
+                        formik.touched.item && formik.errors.item ? true : false
+                    }
+                    id="item"
+                    label="Item"
+                    fullWidth
+                    helperText={
+                        formik.touched.item && formik.errors.item ? formik.errors.item : ""
+                    }
+                    {...formik.getFieldProps('item')}
+                />
+                <FormControlLabel control={<Switch
+                    defaultChecked={true}
+                    {...formik.getFieldProps('to_maintain_stock')}
+                />} label="Maintain Stock"
+                />
+
+                {formik.values.to_maintain_stock&&<TextField
+                    required
+                    error={
+                        formik.touched.stock && formik.errors.stock ? true : false
+                    }
+                    id="stock"
+                    label="Stock"
+                    fullWidth
+                    helperText={
+                        formik.touched.stock && formik.errors.stock ? formik.errors.stock : ""
+                    }
+                    {...formik.getFieldProps('stock')}
+                />}
+
+                < TextField
+                    select
+                    required
+                    variant='filled'
+                    SelectProps={{
+                        native: true
+                    }}
+                    focused
+                    error={
+                        formik.touched.category && formik.errors.category ? true : false
+                    }
+                    id="category"
+                    label="Category"
+                    fullWidth
+                    helperText={
+                        formik.touched.category && formik.errors.category ? formik.errors.category : ""
+                    }
+                    {...formik.getFieldProps('category')}
+                >
+                    <option key={0} value={undefined}>
+                    </option>
+                    {
+                        categories && categories.map(cat => {
+
+                            return (<option key={cat.id} value={cat.id}>
+                                {cat.label}
+                            </option>)
+                        })
+                    }
+                </TextField>
+                < TextField
+                    select
+                    variant='filled'
+                    SelectProps={{
+                        native: true
+                    }}
+                    focused
+                    error={
+                        formik.touched.unit && formik.errors.unit ? true : false
+                    }
+                    required
+                    id="unit"
+                    label="Unit"
+                    fullWidth
+                    helperText={
+                        formik.touched.unit && formik.errors.unit ? formik.errors.unit : ""
+                    }
+                    {...formik.getFieldProps('unit')}
+                >
+                    <option key={0} value={undefined}>
+                    </option>
+                    {
+                        units && units.map(cat => {
+
+                            return (<option key={cat.id} value={cat.id}>
+                                {cat.label}
+                            </option>)
+                        })
+                    }
+                </TextField>
+
+               
+
+
+                <Button variant="contained" color="primary" type="submit"
+                    disabled={Boolean(isLoading)}
+                    fullWidth>{Boolean(isLoading) ? <CircularProgress /> : item ? 'Update' : 'Create'}
+                </Button>
+            </Stack>
+
+
+        </form>
+    )
+}
+
+export default CreateorEditExpenseItemForm

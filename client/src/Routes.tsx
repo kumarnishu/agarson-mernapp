@@ -63,6 +63,8 @@ import UsersNavbar from './components/navbar/UsersNavbar.tsx'
 import ReferencesReportPage from './pages/sales/ReferencesReportPage.tsx'
 import ExpenseCategoriesPage from './pages/dropdowns/ExpenseCategoryPage.tsx'
 import ExpenseLocationPage from './pages/dropdowns/ExpenseLocationPage.tsx'
+import ExpenseItemsPage from './pages/dropdowns/ExpenseItemsPage.tsx'
+import ExpenseStorePage from './pages/features/ExpenseStorePage.tsx'
 
 
 function AppRoutes() {
@@ -189,6 +191,13 @@ function AppRoutes() {
                   <SoleThicknessPage />
                 }
               />}
+
+              {user?.assigned_permissions.includes('expense_store_view') && <Route
+                path="ExpenseStorePage" element={
+                  <ExpenseStorePage />
+                }
+              />}
+
             </Route>}
 
           {user && user?.assigned_permissions.includes('report_menu') &&
@@ -312,6 +321,12 @@ function AppRoutes() {
                   <ExpenseLocationPage />
                 }
               />}
+
+              {user?.assigned_permissions.includes('expense_item_view') && <Route
+                path="ExpenseItemsPage" element={
+                  <ExpenseItemsPage />
+                }
+              />}
             </Route>}
 
           {user && user?.assigned_permissions.includes('excel_db_menu') &&
@@ -367,7 +382,7 @@ function AppRoutes() {
                   <SalesmanLeavesReportPage />
                 }
               />}
-                {user?.assigned_permissions.includes('references_report_view') && <Route
+              {user?.assigned_permissions.includes('references_report_view') && <Route
                 path="ReferencesReportPage" element={
                   <ReferencesReportPage />
                 }

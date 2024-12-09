@@ -1,11 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import xlsx from 'xlsx';
 import isMongoId from 'validator/lib/isMongoId';
-import moment from 'moment';
 import { ExpenseCategory } from '../models/expense-category.model';
 import { DropDownDto } from '../dtos/dropdown.dto';
 import { ExpenseItem, IExpenseItem } from '../models/expense-item.model';
-import { GetExpenseItemDto, CreateOrEditExpenseItem, GetExpenseItemFromExcelDto } from '../dtos/expense-item.dto';
+import { GetExpenseItemDto, CreateOrEditExpenseItemDto, GetExpenseItemFromExcelDto, IssueOrAddExpenseItemDto } from '../dtos/expense-item.dto';
 import { ItemUnit } from '../models/item-unit.model';
 import ConvertJsonToExcel from '../services/ConvertJsonToExcel';
 
@@ -19,7 +18,7 @@ export const GetAllExpenseItems = async (req: Request, res: Response, next: Next
             _id: item._id,
             item: item.item,
             stock: item.stock,
-            to_maintain_stock:item.to_maintain_stock,
+            to_maintain_stock: item.to_maintain_stock,
             unit: { id: item.unit._id, label: item.unit.unit, value: item.unit.unit },
             category: { id: item.category._id, label: item.category.category, value: item.category.category },
         }
@@ -42,7 +41,7 @@ export const GetAllExpenseItemsForDropDown = async (req: Request, res: Response,
 }
 
 export const CreateExpenseItem = async (req: Request, res: Response, next: NextFunction) => {
-    const { item, unit, category, stock, to_maintain_stock } = req.body as CreateOrEditExpenseItem
+    const { item, unit, category, stock, to_maintain_stock } = req.body as CreateOrEditExpenseItemDto
     if (!item || !unit || !category) {
         return res.status(400).json({ message: "please provide required fields" })
     }
@@ -65,7 +64,7 @@ export const CreateExpenseItem = async (req: Request, res: Response, next: NextF
 }
 
 export const UpdateExpenseItem = async (req: Request, res: Response, next: NextFunction) => {
-    const { item, unit, category, stock } = req.body as CreateOrEditExpenseItem
+    const { item, unit, category, stock } = req.body as CreateOrEditExpenseItemDto
     if (!item || !item || !category) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
@@ -207,7 +206,7 @@ export const DownloadExcelTemplateForCreateExpenseItem = async (req: Request, re
         _id: 'hwhii',
         item: 'belt',
         unit: 'kg',
-        to_maintain_stock:false,
+        to_maintain_stock: false,
         category: 'GUMBOOT',
         stock: 5
     }]
@@ -220,9 +219,45 @@ export const DownloadExcelTemplateForCreateExpenseItem = async (req: Request, re
     template.push({ sheet_name: 'template', data: checklists })
     template.push({ sheet_name: 'categories', data: categories })
     template.push({ sheet_name: 'unit', data: units })
-  
+
     ConvertJsonToExcel(template)
     let fileName = "CreateExpenseItemTemplate.xlsx"
     return res.download("./file", fileName)
 }
 
+export const IssueExpenseItem = async (req: Request, res: Response, next: NextFunction) => {
+    const { stock, location } = req.body as IssueOrAddExpenseItemDto
+    if (!location) {
+        return res.status(400).json({ message: "please fill all required fields" })
+    }
+    const id = req.params.id
+    let olditem = await ExpenseItem.findById(id)
+    if (!olditem)
+        return res.status(404).json({ message: "item not found" })
+
+    await ExpenseItem.findByIdAndUpdate(id, {
+        stock: olditem.stock - stock || 0,
+        location,
+        updated_at: new Date(),
+        updated_by: req.user
+    })
+    return res.status(200).json(olditem)
+}
+
+export const AddExpenseItem = async (req: Request, res: Response, next: NextFunction) => {
+    const { stock } = req.body as IssueOrAddExpenseItemDto
+    if (!stock) {
+        return res.status(400).json({ message: "please fill all required fields" })
+    }
+    const id = req.params.id
+    let olditem = await ExpenseItem.findById(id)
+    if (!olditem)
+        return res.status(404).json({ message: "item not found" })
+    console.log(olditem.stock, stock)
+    await ExpenseItem.findByIdAndUpdate(id, {
+        stock: Number(olditem.stock) + Number(stock || 0),
+        updated_at: new Date(),
+        updated_by: req.user
+    })
+    return res.status(200).json(olditem)
+}
