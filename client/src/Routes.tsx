@@ -295,6 +295,11 @@ function AppRoutes() {
                   <PaymentCategoriesPage />
                 }
               />}
+              {user?.assigned_permissions.includes('payment_category_view') && <Route
+                path="PaymentCategoriesPage" element={
+                  <PaymentCategoriesPage />
+                }
+              />}
               {user?.assigned_permissions.includes('item_unit_view') && <Route
                 path="ItemUnitPage" element={
                   <ItemUnitPage />

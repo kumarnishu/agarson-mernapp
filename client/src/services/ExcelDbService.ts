@@ -36,6 +36,6 @@ export const DeleteExcelDBRemark = async (id: string) => {
 }
 
 export const GetExcelDBRemarksHistory = async (id: string, obj: string) => {
-    return await apiClient.get(`excel-db/remarks/${id}/?obj=${obj}`)
+    return await apiClient.get(`excel-db/remarks/${id}/?obj=${encodeURIComponent(obj)}`)
 }
 

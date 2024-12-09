@@ -22,11 +22,9 @@ function DropDownDashboard() {
     user?.assigned_permissions.includes('dye_view') && tmpfeatures.push({ feature: 'Dyes ', is_visible: true, url: "DyePage" })
     user?.assigned_permissions.includes('checklist_category_view') && tmpfeatures.push({ feature: 'Checklist category ', is_visible: true, url: "ChecklistCategoriesPage" })
     user?.assigned_permissions.includes('payment_category_view') && tmpfeatures.push({ feature: 'Payment category ', is_visible: true, url: "PaymentCategoriesPage" })
-    user?.assigned_permissions.includes('expense_category_view') && tmpfeatures.push({ feature: 'expense category ', is_visible: true, url: "PaymentCategoriesPage" })
+    user?.assigned_permissions.includes('expense_category_view') && tmpfeatures.push({ feature: 'expense category ', is_visible: true, url: "ExpenseCategoriesPage" })
     user?.assigned_permissions.includes('expense_item_view') && tmpfeatures.push({ feature: 'expense item ', is_visible: true, url: "PaymentCategoriesPage" })
     user?.assigned_permissions.includes('expense_location_view') && tmpfeatures.push({ feature: 'expense location ', is_visible: true, url: "PaymentCategoriesPage" })
-
-
     user?.assigned_permissions.includes('item_unit_view') && tmpfeatures.push({ feature: 'Item unit ', is_visible: true, url: "ItemUnitPage" })
 
 

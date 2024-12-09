@@ -29,6 +29,8 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
             result.columns.push({ key: 'action', header: 'Action', type: 'action' })
         else if (cat && cat.category == 'OrderDash')
             result.columns.push({ key: 'action', header: 'Action', type: 'action' })
+        else if (cat && cat.category == 'ClientSale')
+            result.columns.push({ key: 'action', header: 'Action', type: 'action' })
     }
 
     let assigned_keys: any[] = req.user.assigned_keys;
@@ -109,6 +111,12 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
             result.columns.push({ key: 'next call', header: 'Next Call', type: 'string' })
         }
     }
+    else if (cat && cat.category == 'ClientSale') {
+        {
+            result.columns.push({ key: 'last remark', header: 'Last Remark', type: 'string' })
+            result.columns.push({ key: 'next call', header: 'Next Call', type: 'string' })
+        }
+    }
     for (let k = 0; k < keys.length; k++) {
         let c = keys[k]
         result.columns.push({ key: c.key, header: c.key, type: c.type })
@@ -163,6 +171,15 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
                             }
                         }
                         if (cat && cat.category == 'OrderDash' && key == 'Customer Name') {
+                            //@ts-ignore
+                            let lastremark = await ExcelDBRemark.findOne({ category: category, obj: dt[key] }).sort('-created_at')
+                            if (lastremark) {
+                                obj['last remark'] = lastremark.remark
+                                if (lastremark.next_date)
+                                    obj['next call'] = moment(lastremark.next_date).format('DD/MM/YYYY')
+                            }
+                        }
+                        if (cat && cat.category == 'ClientSale' && key == 'CUSTOMER') {
                             //@ts-ignore
                             let lastremark = await ExcelDBRemark.findOne({ category: category, obj: dt[key] }).sort('-created_at')
                             if (lastremark) {

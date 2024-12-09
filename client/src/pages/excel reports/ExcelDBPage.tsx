@@ -68,6 +68,10 @@ export default function ExcelDBPage() {
                       else if (cell.row.original['Customer Name'])
                         //@ts-ignore
                         setObj(cell.row.original['Customer Name'])
+                        //@ts-ignore
+                      else if (cell.row.original['CUSTOMER'])
+                        //@ts-ignore
+                        setObj(cell.row.original['CUSTOMER'])
                     }}
                   >
                     <Visibility />
@@ -94,6 +98,10 @@ export default function ExcelDBPage() {
                         else if (cell.row.original['Customer Name'])
                           //@ts-ignore
                           setObj(cell.row.original['Customer Name'])
+                          //@ts-ignore
+                      else if (cell.row.original['CUSTOMER'])
+                        //@ts-ignore
+                        setObj(cell.row.original['CUSTOMER'])
                       }}
                     >
                       <Comment />
