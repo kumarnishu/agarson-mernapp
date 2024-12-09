@@ -1,4 +1,4 @@
-import { Avatar,  Paper, Stack, Typography } from '@mui/material';
+import { Avatar, Paper, Stack, Typography } from '@mui/material';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { useContext, useState } from 'react';
@@ -15,10 +15,10 @@ function MainNavbar() {
   return (
     <>
 
-<Paper sx={{ bgcolor: 'grey', width: '100vw' }}>
+      <Paper sx={{ bgcolor: 'grey', width: '100vw' }}>
         {/* parent stack */}
         <Stack direction="row" sx={{
-          px:1,
+          p: 1,
           justifyContent: "space-between", alignItems: "center"
         }}
         >
@@ -52,7 +52,7 @@ function MainNavbar() {
             < MenuIcon onClick={(e) => {
               if (e.currentTarget)
                 setAnchorEl(e.currentTarget)
-            }} sx={{ width: 35, height: 35, color: 'white',cursor:'pointer' }} />
+            }} sx={{ width: 35, height: 35, color: 'white', cursor: 'pointer' }} />
           </Stack>
         </Stack>
       </Paper >

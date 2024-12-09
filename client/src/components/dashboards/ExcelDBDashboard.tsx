@@ -44,6 +44,7 @@ function ExcelDBDashboard() {
                                 <Paper
                                     sx={{
                                         m: 0,
+                                        p:1,
                                         minHeight: 60,
                                         position: 'relative',
                                         overflow: 'hidden',
