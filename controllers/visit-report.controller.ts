@@ -4,30 +4,20 @@ import moment from "moment";
 import { decimalToTimeForXlsx } from '../utils/datesHelper';
 import { GetVisitReportDto } from '../dtos/visit-report.dto';
 import { VisitReport } from '../models/visit-report.model';
+import { ExcelDBRemark } from '../models/excel-db-remark.model';
 
 
 export const GetVisitReports = async (req: Request, res: Response, next: NextFunction) => {
-    let employee = req.query.employee
-    if (!employee)
-        return res.status(400).json({ message: "please select employee" })
-    let reports: GetVisitReportDto[] = (await VisitReport.find({ employee: employee }).populate('employee').populate('created_by').populate('updated_by').sort('-visit_date')).map((i) => {
-        return {
-            _id: i._id,
-            employee: i.employee.username,
-            visit_date: moment(i.visit_date).format("DD/MM/YYYY"),
-            customer: i.customer,
-            intime: decimalToTimeForXlsx(i.intime),
-            outtime: decimalToTimeForXlsx(i.outtime),
-            visitInLocation: i.visitInLocation,
-            visitOutLocation: i.visitOutLocation,
-            remarks: i.remarks,
-            created_by: i.created_by.username,
-            updated_by: i.updated_by.username,
-            created_at: moment(i.created_at).format("DD/MM/YYYY"),
-            updated_at: moment(i.updated_at).format("DD/MM/YYYY")
-        }
-    })
-    return res.status(200).json(reports);
+    let dt1 = new Date()
+    dt1.setHours(0, 0, 0, 0)
+    let dt2 = new Date()
+
+    dt2.setDate(dt1.getDate() + 1)
+    dt2.setHours(0)
+    dt2.setMinutes(0)
+
+    let remarks = await ExcelDBRemark.find({ created_at: { $gte: dt1, $lt: dt2 } }).countDocuments()
+    return res.status(200).json(remarks);
 }
 
 
