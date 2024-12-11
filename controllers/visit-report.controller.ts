@@ -5,6 +5,7 @@ import { decimalToTimeForXlsx } from '../utils/datesHelper';
 import { GetVisitReportDto } from '../dtos/visit-report.dto';
 import { VisitReport } from '../models/visit-report.model';
 import { ExcelDBRemark } from '../models/excel-db-remark.model';
+import { KeyCategory } from '../models/key-category.model';
 
 
 export const GetVisitReports = async (req: Request, res: Response, next: NextFunction) => {
@@ -15,8 +16,8 @@ export const GetVisitReports = async (req: Request, res: Response, next: NextFun
     dt2.setDate(dt1.getDate() + 1)
     dt2.setHours(0)
     dt2.setMinutes(0)
-
-    let remarks = await ExcelDBRemark.find({ created_at: { $gte: dt1, $lt: dt2 } }).countDocuments()
+    let cat = await KeyCategory.findOne({ category: 'ClientSale' })
+    let remarks = await ExcelDBRemark.find({ created_at: { $gte: dt1, $lt: dt2 }, category: cat }).countDocuments()
     return res.status(200).json(remarks);
 }
 
