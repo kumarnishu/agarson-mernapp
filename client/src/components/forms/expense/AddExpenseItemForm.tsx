@@ -6,22 +6,22 @@ import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-import { IssueOrAddExpenseItemDto, GetExpenseItemDto } from '../../../dtos/expense-item.dto';
-import { GetAllExpenseLocations, IssueOrAddExpenseItem } from '../../../services/ExpenseServices';
+import { GetExpenseItemDto } from '../../../dtos/expense-item.dto';
+import { AddExpenseItem, GetAllExpenseLocations } from '../../../services/ExpenseServices';
+import { IssueOrAddExpenseItemDto } from '../../../dtos/expense.dto';
 
 
-function IssueOrAddExpenseItemForm({ item, setDialog, val }: { item: GetExpenseItemDto, val: string, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+function AddExpenseItemForm({ item, setDialog }: { item: GetExpenseItemDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
     const [locations, setLocations] = useState<DropDownDto[]>([])
     const { mutate, isLoading, isSuccess } = useMutation
-        <AxiosResponse<string>, BackendError, { body: IssueOrAddExpenseItemDto, id?: string, val: string }>
-        (IssueOrAddExpenseItem, {
+        <AxiosResponse<string>, BackendError, { body: IssueOrAddExpenseItemDto, id?: string }>
+        (AddExpenseItem, {
             onSuccess: () => {
-                queryClient.invalidateQueries('items')
-                setAlert({ message: item ? "updated" : "created", color: 'success' })
+                queryClient.invalidateQueries('expense-store')
+                setAlert({ message: 'successfull', color: 'success' })
             },
             onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
@@ -30,20 +30,23 @@ function IssueOrAddExpenseItemForm({ item, setDialog, val }: { item: GetExpenseI
     const { data: locationsData, isSuccess: locationSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("expense_locations", GetAllExpenseLocations)
 
 
-    const formik = useFormik<IssueOrAddExpenseItemDto>({
+    const formik = useFormik({
         initialValues: {
-            location: "",
-            stock: 0,
+            stock: 1,
+            price: item.price,
+            remark: "",
+            location: ""
         },
         validationSchema: Yup.object({
-            location: Yup.string(),
-            stock: Yup.number().max(item.stock)
+            location: Yup.string().required(),
+            stock: Yup.number(),
+            price: Yup.number().max(item.price + item.pricetolerance),
+            remark: Yup.string().required()
         }),
-        onSubmit: (values: IssueOrAddExpenseItemDto) => {
+        onSubmit: (values) => {
             mutate({
                 id: item._id,
-                body: values,
-                val: val
+                body: values
             })
         }
     });
@@ -71,22 +74,23 @@ function IssueOrAddExpenseItemForm({ item, setDialog, val }: { item: GetExpenseI
                 pt={2}
             >
 
-                <TextField
+                {item?.to_maintain_stock && <TextField
                     required={Boolean(item?.to_maintain_stock)}
                     error={
                         formik.touched.stock && formik.errors.stock ? true : false
                     }
+                    type='number'
                     id="stock"
-                    label="Stock"
+                    label="Qty To Add"
                     fullWidth
                     helperText={
-                        formik.touched.stock && formik.errors.stock ? formik.errors.stock : ""
+                        formik.touched.stock && formik.errors.stock ? formik.errors.stock : `available stock : ${item.stock}`
                     }
                     {...formik.getFieldProps('stock')}
-                />
+                />}
 
 
-                {val == 'issue' && < TextField
+                < TextField
                     select
                     variant='filled'
                     SelectProps={{
@@ -97,7 +101,7 @@ function IssueOrAddExpenseItemForm({ item, setDialog, val }: { item: GetExpenseI
                         formik.touched.location && formik.errors.location ? true : false
                     }
                     id="location"
-                    label="Location"
+                    label="From Location"
                     fullWidth
                     helperText={
                         formik.touched.location && formik.errors.location ? formik.errors.location : ""
@@ -108,20 +112,50 @@ function IssueOrAddExpenseItemForm({ item, setDialog, val }: { item: GetExpenseI
                     </option>
                     {
                         locations && locations.map(cat => {
-
-                            return (<option key={cat.id} value={cat.id}>
-                                {cat.label}
-                            </option>)
+                            if (cat.label !== 'store')
+                                return (<option key={cat.id} value={cat.id}>
+                                    {cat.label}
+                                </option>)
                         })
                     }
-                </TextField>}
+                </TextField>
 
+                <TextField
+                    required={Boolean(item?.to_maintain_stock)}
+                    error={
+                        formik.touched.price && formik.errors.price ? true : false
+                    }
+                    type='number'
+                    id="price"
+                    label="Std. Price"
+                    fullWidth
+                    helperText={
+                        formik.touched.price && formik.errors.price ? formik.errors.price : `Standard price : ${item.price}`
+                    }
+                    {...formik.getFieldProps('price')}
+                />
+                <TextField
+                    multiline
+                    minRows={4}
+                    required
+                    error={
+                        formik.touched.remark && formik.errors.remark ? true : false
+                    }
+                    autoFocus
+                    id="remark"
+                    label="Remark"
+                    fullWidth
+                    helperText={
+                        formik.touched.remark && formik.errors.remark ? formik.errors.remark : ""
+                    }
+                    {...formik.getFieldProps('remark')}
+                />
 
 
 
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
-                    fullWidth>{Boolean(isLoading) ? <CircularProgress /> : item ? 'Update' : 'Create'}
+                    fullWidth>{Boolean(isLoading) ? <CircularProgress /> : 'Add'}
                 </Button>
             </Stack>
 
@@ -130,4 +164,4 @@ function IssueOrAddExpenseItemForm({ item, setDialog, val }: { item: GetExpenseI
     )
 }
 
-export default IssueOrAddExpenseItemForm
+export default AddExpenseItemForm

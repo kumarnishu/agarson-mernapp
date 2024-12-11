@@ -1,4 +1,5 @@
-import { CreateOrEditExpenseItemDto, IssueOrAddExpenseItemDto } from "../dtos/expense-item.dto";
+import { CreateOrEditExpenseItemDto } from "../dtos/expense-item.dto";
+import { IssueOrAddExpenseItemDto } from "../dtos/expense.dto";
 import { apiClient } from "./utils/AxiosInterceptor"
 
 
@@ -9,12 +10,14 @@ export const CreateOrEditExpenseItem = async ({ body, id }: { body: CreateOrEdit
     return await apiClient.post(`expense-items`, body);
 };
 
-export const IssueOrAddExpenseItem = async ({ body, id, val }: { body: IssueOrAddExpenseItemDto, id?: string, val: string }) => {
-    if (val == 'issue')
-        return await apiClient.put(`issue-expense-items/${id}`, body);
-    return await apiClient.put(`add-expense-items/${id}`, body);
+export const IssueExpenseItem = async ({ body, id }: { body: IssueOrAddExpenseItemDto, id?: string }) => {
+    return await apiClient.patch(`issue-expense-items/${id}`, body);
+};
+export const AddExpenseItem = async ({ body, id }: { body: IssueOrAddExpenseItemDto, id?: string }) => {
+    return await apiClient.patch(`add-expense-items/${id}`, body);
 
 };
+
 
 export const DeleteExpenseItem = async (id: string) => {
     return await apiClient.delete(`expense-items/${id}`)
@@ -24,6 +27,12 @@ export const GetExpenseItems = async () => {
     return await apiClient.get(`expense-items`)
 }
 
+export const GetExpenseStore = async () => {
+    return await apiClient.get('expense-store')
+}
+export const GetAllExpenseTransactions = async ({ start_date, end_date }: { start_date?: string, end_date?: string }) => {
+    return await apiClient.get(`expense-transactions/?start_date=${start_date}&end_date=${end_date}`)
+}
 
 export const GetExpenseItemsForDropdown = async () => {
     return await apiClient.get(`dropdown/expense-items`)

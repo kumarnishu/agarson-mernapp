@@ -91,6 +91,16 @@ export default function ExpenseItemsPage() {
       }
       ,
       {
+        accessorKey: 'price',
+        header: 'Price',
+      }
+      ,
+      {
+        accessorKey: 'tolerance',
+        header: 'Tolerance',
+      }
+      ,
+      {
         accessorKey: 'to_maintain_stock',
         header: 'Maintain Stock',
         Cell: (cell) => <>{cell.row.original.to_maintain_stock ? "yes" : ""}</>,

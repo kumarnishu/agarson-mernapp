@@ -35,15 +35,21 @@ function CreateorEditExpenseItemForm({ item, setDialog }: { item?: GetExpenseIte
         initialValues: {
             category: item ? item.category.id : "",
             item: item ? item.item : "",
+            price: item ? item.price : 0,
+            pricetolerance: item ? item.pricetolerance : 0,
+            qtytolerance: item ? item.qtytolerance : 0,
             unit: item ? item.unit.id : "",
-            to_maintain_stock: item ? item.to_maintain_stock : true,
+            to_maintain_stock: item ? item.to_maintain_stock : false,
             stock: item ? item.stock : 0,
         },
         validationSchema: Yup.object({
             category: Yup.string().required("required field"),
+            price: Yup.number().required(),
+            qtytolerance: Yup.number().required(),
+            pricetolerance: Yup.number().required(),
             item: Yup.string().required("required field"),
             unit: Yup.string().required(),
-            stock:Yup.number()
+            stock: Yup.number()
         }),
         onSubmit: (values: CreateOrEditExpenseItemDto) => {
             if (item) {
@@ -53,7 +59,7 @@ function CreateorEditExpenseItemForm({ item, setDialog }: { item?: GetExpenseIte
                 })
             }
             else {
-               
+
                 mutate({
                     id: undefined,
                     body: values
@@ -104,12 +110,11 @@ function CreateorEditExpenseItemForm({ item, setDialog }: { item?: GetExpenseIte
                     {...formik.getFieldProps('item')}
                 />
                 <FormControlLabel control={<Switch
-                    defaultChecked={true}
                     {...formik.getFieldProps('to_maintain_stock')}
                 />} label="Maintain Stock"
                 />
 
-                {formik.values.to_maintain_stock&&<TextField
+                {formik.values.to_maintain_stock && <TextField
                     required
                     error={
                         formik.touched.stock && formik.errors.stock ? true : false
@@ -122,7 +127,45 @@ function CreateorEditExpenseItemForm({ item, setDialog }: { item?: GetExpenseIte
                     }
                     {...formik.getFieldProps('stock')}
                 />}
-
+                <TextField
+                    required
+                    error={
+                        formik.touched.price && formik.errors.price ? true : false
+                    }
+                    id="price"
+                    label="Price"
+                    fullWidth
+                    helperText={
+                        formik.touched.price && formik.errors.price ? formik.errors.price : ""
+                    }
+                    {...formik.getFieldProps('price')}
+                />
+                <TextField
+                    required
+                    error={
+                        formik.touched.pricetolerance && formik.errors.pricetolerance ? true : false
+                    }
+                    id="pricetolerance"
+                    label="Price Tolerance"
+                    fullWidth
+                    helperText={
+                        formik.touched.pricetolerance && formik.errors.pricetolerance ? formik.errors.pricetolerance : ""
+                    }
+                    {...formik.getFieldProps('pricetolerance')}
+                />
+                 <TextField
+                    required
+                    error={
+                        formik.touched.qtytolerance && formik.errors.qtytolerance ? true : false
+                    }
+                    id="qtytolerance"
+                    label="Qty Tolerance"
+                    fullWidth
+                    helperText={
+                        formik.touched.qtytolerance && formik.errors.qtytolerance ? formik.errors.qtytolerance : ""
+                    }
+                    {...formik.getFieldProps('qtytolerance')}
+                />
                 < TextField
                     select
                     required
@@ -184,7 +227,7 @@ function CreateorEditExpenseItemForm({ item, setDialog }: { item?: GetExpenseIte
                     }
                 </TextField>
 
-               
+
 
 
                 <Button variant="contained" color="primary" type="submit"

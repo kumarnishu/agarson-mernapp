@@ -152,7 +152,7 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
                             }
                             else {
                                 //@ts-ignore
-                                obj[key] = moment(dt[key]).format("DD/MM/YYYY")
+                                obj[key] = moment(dt[key]).format("YYYY-MM-DD")
                             }
                         }
                         else
@@ -166,7 +166,7 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
                             if (lastremark) {
                                 obj['last remark'] = lastremark.remark
                                 if (lastremark.next_date)
-                                    obj['next call'] = moment(lastremark.next_date).format('DD/MM/YYYY')
+                                    obj['next call'] = moment(lastremark.next_date).format('YYYY-MM-DD')
                             }
                         }
                         if (cat && cat.category == 'PartyTarget' && key == 'PARTY') {
@@ -175,7 +175,7 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
                             if (lastremark) {
                                 obj['last remark'] = lastremark.remark
                                 if (lastremark.next_date)
-                                    obj['next call'] = moment(lastremark.next_date).format('DD/MM/YYYY')
+                                    obj['next call'] = moment(lastremark.next_date).format('YYYY-MM-DD')
                             }
                         }
                         if (cat && cat.category == 'OrderDash' && key == 'Customer Name') {
@@ -184,7 +184,7 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
                             if (lastremark) {
                                 obj['last remark'] = lastremark.remark
                                 if (lastremark.next_date)
-                                    obj['next call'] = moment(lastremark.next_date).format('DD/MM/YYYY')
+                                    obj['next call'] = moment(lastremark.next_date).format('YYYY-MM-DD')
                             }
                         }
                         if (cat && cat.category == 'ClientSale' && key == 'CUSTOMER') {
@@ -193,7 +193,7 @@ export const GetExcelDbReport = async (req: Request, res: Response, next: NextFu
                             if (lastremark) {
                                 obj['last remark'] = lastremark.remark
                                 if (lastremark.next_date)
-                                    obj['next call'] = moment(lastremark.next_date).format('DD/MM/YYYY')
+                                    obj['next call'] = moment(lastremark.next_date).format('YYYY-MM-DD')
                             }
                         }
                     }

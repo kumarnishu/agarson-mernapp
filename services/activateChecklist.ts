@@ -1,7 +1,7 @@
 import { CronJob } from "cron";
 import { Checklist } from "../models/checklist.model";
 import { ChecklistBox } from "../models/checklist-box.model";
-import { currentMonth, currentYear, getNextMonday, getPrevMonday, nextMonth, nextYear, previousMonth, previousYear } from "../utils/datesHelper";
+import {  getNextMonday, getPrevMonday, } from "../utils/datesHelper";
 
 
 export async function activateChecklist() {

@@ -65,6 +65,7 @@ import ExpenseCategoriesPage from './pages/dropdowns/ExpenseCategoryPage.tsx'
 import ExpenseLocationPage from './pages/dropdowns/ExpenseLocationPage.tsx'
 import ExpenseItemsPage from './pages/dropdowns/ExpenseItemsPage.tsx'
 import ExpenseStorePage from './pages/features/ExpenseStorePage.tsx'
+import ExpenseTransactionReports from './pages/feature reports/ExpenseTransactionReports.tsx'
 
 
 function AppRoutes() {
@@ -242,6 +243,12 @@ function AppRoutes() {
                 <AssignedReferReportPage />
               }
               />}
+               {user?.assigned_permissions.includes('expense-transaction_report_view') && <Route path="ExpenseTransactionReports" element={
+                <ExpenseTransactionReports />
+              }
+              />}
+
+
               {user?.assigned_permissions.includes('newrefer_view') && <Route path="NewReferReportPage" element={
                 <NewReferReportPage />
               }

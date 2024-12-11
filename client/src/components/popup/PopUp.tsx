@@ -2,7 +2,11 @@ import { AcUnitTwoTone } from '@mui/icons-material';
 import { Popover } from '@mui/material';
 import { useState } from 'react'
 
-function PopUp({ element }: { element: JSX.Element }) {
+
+type Props={
+    element: JSX.Element ,
+}
+function PopUp({ element }: Props) {
     const [popup, setPopup] = useState<any | null>(null);
     return (
         <div>

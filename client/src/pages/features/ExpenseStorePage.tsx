@@ -10,18 +10,20 @@ import { AddBoxOutlined, Input } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { GetExpenseItems } from '../../services/ExpenseServices'
-import IssueorAddExpenseItemDialog from '../../components/dialogs/expense/IssueorAddExpenseItemDialog'
+import { GetExpenseStore } from '../../services/ExpenseServices'
 import { GetExpenseItemDto } from '../../dtos/expense-item.dto'
+import IssueExpenseItemDialog from '../../components/dialogs/expense/IssueExpenseItemDialog'
+import AddExpenseItemDialog from '../../components/dialogs/expense/AddExpenseItemDialog'
 
 
 
 export default function ExpenseStorePage() {
   const [item, setItem] = useState<GetExpenseItemDto>()
-  const [val, setVal] = useState<string>("")
   const [items, setItems] = useState<GetExpenseItemDto[]>([])
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetExpenseItemDto[]>, BackendError>(["items"], async () => GetExpenseItems())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetExpenseItemDto[]>, BackendError>(["expense-store"], async () => GetExpenseStore())
+
+
 
   const isFirstRender = useRef(true);
 
@@ -44,26 +46,24 @@ export default function ExpenseStorePage() {
           element={
             <Stack direction="row">
               <>
-                {LoggedInUser?.assigned_permissions.includes('expense_item_edit') && <Tooltip title="add more items">
+                {cell.row.original.to_maintain_stock && LoggedInUser?.assigned_permissions.includes('expense_item_edit') && <Tooltip title="add more items">
                   <IconButton
-                    color='info'
+                    color='success'
                     onClick={() => {
                       setItem(cell.row.original)
-                      setVal('add')
-                      setDialog('IssueorAddExpenseItemDialog')
+                      setDialog('AddExpenseItemDialog')
                     }}
 
                   >
                     <AddBoxOutlined />
                   </IconButton>
                 </Tooltip>}
+
                 {LoggedInUser?.assigned_permissions.includes('expense_item_edit') && <Tooltip title="issue item">
                   <IconButton
-                    color='success'
                     onClick={() => {
                       setItem(cell.row.original)
-                      setVal('issue')
-                      setDialog('IssueorAddExpenseItemDialog')
+                      setDialog('IssueExpenseItemDialog')
                     }}
 
                   >
@@ -86,7 +86,10 @@ export default function ExpenseStorePage() {
           return i.item;
         }).filter(onlyUnique)
       },
-
+      {
+        accessorKey: 'last_remark',
+        header: 'Last Remark',
+      },
       {
         accessorKey: 'category.label',
         header: 'Category',
@@ -102,6 +105,19 @@ export default function ExpenseStorePage() {
         header: 'Stock',
       }
       ,
+      {
+        accessorKey: 'to_maintain_stock',
+        header: 'Maintain Stock',
+        Cell: (cell) => <>{cell.row.original.to_maintain_stock ? "yes" : ""}</>,
+      },
+      {
+        accessorKey: 'price',
+        header: 'Price',
+      },
+      {
+        accessorKey: 'tolerance',
+        header: 'Tolerance',
+      },
       {
         accessorKey: 'unit.label',
         header: 'Unit',
@@ -279,7 +295,7 @@ export default function ExpenseStorePage() {
             }}
             sx={{ borderRadius: 2 }}
           >
-           
+
             {LoggedInUser?.assigned_permissions.includes('expense_item_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
             >Export All</MenuItem>}
@@ -290,7 +306,8 @@ export default function ExpenseStorePage() {
           </Menu >
         </Stack>
 
-        {item && <IssueorAddExpenseItemDialog item={item} dialog={dialog} setDialog={setDialog} val={val} />}
+        {item && <IssueExpenseItemDialog item={item} dialog={dialog} setDialog={setDialog} />}
+        {item && <AddExpenseItemDialog item={item} dialog={dialog} setDialog={setDialog} />}
       </Stack >
 
       {/* table */}
