@@ -39,7 +39,7 @@ function AddExpenseItemForm({ item, setDialog }: { item: GetExpenseItemDto, setD
         },
         validationSchema: Yup.object({
             location: Yup.string().required(),
-            stock: Yup.number(),
+            stock: Yup.number().max(item?.stock_limit || 0),
             price: Yup.number().max(item.price + item.pricetolerance),
             remark: Yup.string().required()
         }),

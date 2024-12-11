@@ -49,7 +49,7 @@ function CreateorEditExpenseItemForm({ item, setDialog }: { item?: GetExpenseIte
             pricetolerance: Yup.number().required(),
             item: Yup.string().required("required field"),
             unit: Yup.string().required(),
-            stock: Yup.number()
+            stock: Yup.number().max(item?.stock_limit || 0)
         }),
         onSubmit: (values: CreateOrEditExpenseItemDto) => {
             if (item) {
