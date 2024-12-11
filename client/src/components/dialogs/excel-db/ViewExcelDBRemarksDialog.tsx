@@ -55,12 +55,12 @@ function ViewExcelDBRemarksDialog({ id, obj, dialog, setDialog }: Props) {
                                 {item.created_date && <p>{new Date(item.created_date).toLocaleString()}</p>}
                                 {
                                     <Stack justifyContent={'end'} direction="row" gap={0} pt={2}>
-                                        {user?.assigned_permissions.includes('activities_delete') && <IconButton size="small" color="error" onClick={() => {
+                                        {user?.assigned_permissions.includes('grp_excel_delete') && <IconButton size="small" color="error" onClick={() => {
                                             setRemark(item)
                                             setdialog1('DeleteExcelDBRemarkDialog')
                                         }}>
                                             Delete</IconButton>}
-                                        {user && item.remark && user?.username === item.created_by && new Date(item.created_date) > new Date(previous_date) && user?.assigned_permissions.includes('activities_edit') && <IconButton size="small" color="success"
+                                        {user && item.remark && user?.username === item.created_by && new Date(item.created_date) > new Date(previous_date) && user?.assigned_permissions.includes('grp_excel_edit') && <IconButton size="small" color="success"
                                             onClick={() => {
                                                 setRemark(item)
                                                 setdialog1('CreateOrEditExcelDBRemarkDialog')
