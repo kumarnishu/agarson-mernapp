@@ -5,7 +5,7 @@ export type GetExpenseItemDto = {
     item: string;
     price: number,
     pricetolerance: number,
-    qtytolerance: number,
+    stock_limit: number,
     category: DropDownDto,
     unit: DropDownDto;
     to_maintain_stock: boolean,
@@ -18,7 +18,7 @@ export type GetExpenseItemFromExcelDto = {
     item: string,
     unit: string,
     price: number,
-    qtytolerance: number,
+    stock_limit: number,
     pricetolerance: number,
     category: string,
     to_maintain_stock: boolean,
@@ -31,7 +31,7 @@ export type CreateOrEditExpenseItemDto = {
     stock: number,
     price: number,
     pricetolerance: number,
-    qtytolerance: number,
+    stock_limit: number,
     to_maintain_stock: boolean,
     category: string,
 }

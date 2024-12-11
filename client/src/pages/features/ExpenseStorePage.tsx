@@ -90,6 +90,7 @@ export default function ExpenseStorePage() {
         accessorKey: 'last_remark',
         header: 'Last Remark',
       },
+     
       {
         accessorKey: 'category.label',
         header: 'Category',
@@ -103,21 +104,32 @@ export default function ExpenseStorePage() {
       {
         accessorKey: 'stock',
         header: 'Stock',
+        Cell: (cell) => <>{cell.row.original.stock == 0 ? "" : cell.row.original.stock}</>,
+      }
+      ,
+      {
+        accessorKey: 'price',
+        header: 'Price',
+      }
+      ,
+      {
+        accessorKey: 'pricetolerance',
+        header: 'Price Tolerance',
+        Cell: (cell) => <>{cell.row.original.pricetolerance == 0 ? "" : cell.row.original.pricetolerance}</>,
+      }
+      ,
+      {
+        accessorKey: 'stock_limit',
+        header: 'Stock Limit',
+        Cell: (cell) => <>{cell.row.original.stock_limit == 0 ? "" : cell.row.original.stock_limit}</>,
       }
       ,
       {
         accessorKey: 'to_maintain_stock',
         header: 'Maintain Stock',
         Cell: (cell) => <>{cell.row.original.to_maintain_stock ? "yes" : ""}</>,
-      },
-      {
-        accessorKey: 'price',
-        header: 'Price',
-      },
-      {
-        accessorKey: 'tolerance',
-        header: 'Tolerance',
-      },
+      }
+      ,
       {
         accessorKey: 'unit.label',
         header: 'Unit',

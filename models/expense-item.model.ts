@@ -13,7 +13,7 @@ export type IExpenseItem = {
     to_maintain_stock: boolean,
     price: number,
     pricetolerance: number,
-    qtytolerance: number,
+    stock_limit: number,
     category: IExpenseCategory
     created_at: Date,
     updated_at: Date,
@@ -47,7 +47,7 @@ const ExpenseItemSchema = new mongoose.Schema<IExpenseItem, mongoose.Model<IExpe
     pricetolerance: {
         type: Number, default: 0
     },
-    qtytolerance:{
+    stock_limit:{
         type: Number, default: 0
     },
     last_remark: String,

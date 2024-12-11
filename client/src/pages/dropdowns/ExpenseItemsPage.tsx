@@ -88,6 +88,7 @@ export default function ExpenseItemsPage() {
       {
         accessorKey: 'stock',
         header: 'Stock',
+        Cell: (cell) => <>{cell.row.original.stock == 0 ? "" : cell.row.original.stock}</>,
       }
       ,
       {
@@ -96,8 +97,15 @@ export default function ExpenseItemsPage() {
       }
       ,
       {
-        accessorKey: 'tolerance',
-        header: 'Tolerance',
+        accessorKey: 'pricetolerance',
+        header: 'Price Tolerance',
+        Cell: (cell) => <>{cell.row.original.pricetolerance == 0 ? "" : cell.row.original.pricetolerance}</>,
+      }
+      ,
+      {
+        accessorKey: 'stock_limit',
+        header: 'Stock Limit',
+        Cell: (cell) => <>{cell.row.original.stock_limit == 0 ? "" : cell.row.original.stock_limit}</>,
       }
       ,
       {

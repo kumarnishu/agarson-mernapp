@@ -16,6 +16,8 @@ export const IssueExpenseItem = async (req: Request, res: Response, next: NextFu
     let olditem = await ExpenseItem.findById(id)
     if (!olditem)
         return res.status(404).json({ message: "item not found" })
+    if (olditem.to_maintain_stock && stock == 0)
+        return res.status(404).json({ message: "stock should be more than 0" })
     let store = await ExpenseLocation.findOne({ name: "store" })
     if (!store)
         return res.status(404).json({ messgae: "store not exists" })
@@ -110,7 +112,7 @@ export const GetAllExpenseStore = async (req: Request, res: Response, next: Next
             item: item.item,
             price: item.price,
             pricetolerance: item.pricetolerance,
-            qtytolerance: item.qtytolerance,
+            stock_limit: item.stock_limit,
             stock: item.stock,
             last_remark: "",
             to_maintain_stock: item.to_maintain_stock,

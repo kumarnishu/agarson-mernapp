@@ -12,6 +12,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { GetExpenseTransactionsDto } from '../../dtos/expense.dto'
 import { GetAllExpenseTransactions } from '../../services/ExpenseServices'
+import { HandleNumbers } from '../../utils/IsDecimal'
 
 export default function ExpenseTransactionReports() {
   const [transactions, seTransactions] = useState<GetExpenseTransactionsDto[]>([])
@@ -68,10 +69,22 @@ export default function ExpenseTransactionReports() {
       {
         accessorKey: 'inWardQty',
         header: 'Inward Qty',
+        filterVariant: 'range',
+        filterFn: 'between',
+        aggregationFn: 'sum',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return a + b.original.inWardQty }, 0).toFixed()}</b>
       },
       {
         accessorKey: 'outWardQty',
         header: 'Outward Qty',
+        filterVariant: 'range',
+        filterFn: 'between',
+        aggregationFn: 'sum',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return a + b.original.outWardQty }, 0).toFixed()}</b>
       },
       {
         accessorKey: 'unit.label',

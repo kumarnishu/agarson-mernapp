@@ -1,4 +1,4 @@
-import { Button, CircularProgress, FormControlLabel, Stack, Switch, TextField } from '@mui/material';
+import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useContext, useEffect, useState } from 'react';
@@ -37,7 +37,7 @@ function CreateorEditExpenseItemForm({ item, setDialog }: { item?: GetExpenseIte
             item: item ? item.item : "",
             price: item ? item.price : 0,
             pricetolerance: item ? item.pricetolerance : 0,
-            qtytolerance: item ? item.qtytolerance : 0,
+            stock_limit: item ? item.stock_limit : 0,
             unit: item ? item.unit.id : "",
             to_maintain_stock: item ? item.to_maintain_stock : false,
             stock: item ? item.stock : 0,
@@ -45,7 +45,7 @@ function CreateorEditExpenseItemForm({ item, setDialog }: { item?: GetExpenseIte
         validationSchema: Yup.object({
             category: Yup.string().required("required field"),
             price: Yup.number().required(),
-            qtytolerance: Yup.number().required(),
+            stock_limit: Yup.number().required(),
             pricetolerance: Yup.number().required(),
             item: Yup.string().required("required field"),
             unit: Yup.string().required(),
@@ -109,10 +109,16 @@ function CreateorEditExpenseItemForm({ item, setDialog }: { item?: GetExpenseIte
                     }
                     {...formik.getFieldProps('item')}
                 />
-                <FormControlLabel control={<Switch
-                    {...formik.getFieldProps('to_maintain_stock')}
-                />} label="Maintain Stock"
-                />
+                <FormGroup>
+                    <FormControlLabel control={<Checkbox
+                        disabled={item ? true : false}
+                        checked={formik.values.to_maintain_stock}
+                        {...formik.getFieldProps('to_maintain_stock')}
+                    />} label="Maintain Stock" />
+                </FormGroup>
+
+
+
 
                 {formik.values.to_maintain_stock && <TextField
                     required
@@ -153,19 +159,19 @@ function CreateorEditExpenseItemForm({ item, setDialog }: { item?: GetExpenseIte
                     }
                     {...formik.getFieldProps('pricetolerance')}
                 />
-                 <TextField
+                {formik.values.to_maintain_stock && <TextField
                     required
                     error={
-                        formik.touched.qtytolerance && formik.errors.qtytolerance ? true : false
+                        formik.touched.stock_limit && formik.errors.stock_limit ? true : false
                     }
-                    id="qtytolerance"
-                    label="Qty Tolerance"
+                    id="stock_limit"
+                    label="Stock Limit"
                     fullWidth
                     helperText={
-                        formik.touched.qtytolerance && formik.errors.qtytolerance ? formik.errors.qtytolerance : ""
+                        formik.touched.stock_limit && formik.errors.stock_limit ? formik.errors.stock_limit : ""
                     }
-                    {...formik.getFieldProps('qtytolerance')}
-                />
+                    {...formik.getFieldProps('stock_limit')}
+                />}
                 < TextField
                     select
                     required

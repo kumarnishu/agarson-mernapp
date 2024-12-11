@@ -20,7 +20,7 @@ export const GetAllExpenseItems = async (req: Request, res: Response, next: Next
             item: item.item,
             price: item.price,
             pricetolerance: item.pricetolerance,
-            qtytolerance: item.qtytolerance,
+            stock_limit: item.stock_limit,
             stock: item.stock,
             last_remark: "",
             to_maintain_stock: item.to_maintain_stock,
@@ -47,8 +47,8 @@ export const GetAllExpenseItemsForDropDown = async (req: Request, res: Response,
 
 export const CreateExpenseItem = async (req: Request, res: Response, next: NextFunction) => {
     const { item, unit, category, stock, to_maintain_stock, price, pricetolerance,
-        qtytolerance, } = req.body as CreateOrEditExpenseItemDto
-    if (!item || !unit || !category || !price || !qtytolerance || !pricetolerance) {
+        stock_limit, } = req.body as CreateOrEditExpenseItemDto
+    if (!item || !unit || !category || !price || !pricetolerance) {
         return res.status(400).json({ message: "please provide required fields" })
     }
 
@@ -56,7 +56,7 @@ export const CreateExpenseItem = async (req: Request, res: Response, next: NextF
         return res.status(400).json({ message: "already exists this item" })
     let result = await new ExpenseItem({
         item: item,
-        price, pricetolerance, qtytolerance,
+        price, pricetolerance, stock_limit,
         unit,
         stock,
         category,
@@ -72,8 +72,8 @@ export const CreateExpenseItem = async (req: Request, res: Response, next: NextF
 
 export const UpdateExpenseItem = async (req: Request, res: Response, next: NextFunction) => {
     const { item, unit, category, stock, price, pricetolerance,
-        qtytolerance } = req.body as CreateOrEditExpenseItemDto
-    if (!item || !item || !category || !price || !qtytolerance || !pricetolerance) {
+        stock_limit } = req.body as CreateOrEditExpenseItemDto
+    if (!item || !item || !category || !price  || !pricetolerance) {
         return res.status(400).json({ message: "please fill all reqired fields" })
     }
     const id = req.params.id
@@ -84,7 +84,7 @@ export const UpdateExpenseItem = async (req: Request, res: Response, next: NextF
         if (await ExpenseItem.findOne({ item: item.toLowerCase(), category: category }))
             return res.status(400).json({ message: "already exists this item" })
     await ExpenseItem.findByIdAndUpdate(id, {
-        item, unit, category, stock, price, qtytolerance, pricetolerance, updated_at: new Date(),
+        item, unit, category, stock, price, stock_limit, pricetolerance, updated_at: new Date(),
         updated_by: req.user
     })
     return res.status(200).json(olditem)
@@ -132,7 +132,7 @@ export const BulkCreateAndUpdateExpenseItemFromExcel = async (req: Request, res:
             let stock: number | null = data.stock && Number(data.stock) || 0
             let price: number | null = data.price && Number(data.price) || 0
             let pricetolerance: number | null = data.pricetolerance && Number(data.pricetolerance) || 0
-            let qtytolerance: number | null = data.qtytolerance && Number(data.qtytolerance) || 0
+            let stock_limit: number | null = data.stock_limit && Number(data.stock_limit) || 0
             let category: string | null = String(data.category)
             let to_maintain_stock: boolean | null = data.to_maintain_stock
             let isValidated = true;
@@ -142,6 +142,10 @@ export const BulkCreateAndUpdateExpenseItemFromExcel = async (req: Request, res:
             }
             if (!unit) {
                 statusText = "unit required"
+                isValidated = false
+            }
+            if(!pricetolerance){
+                statusText = "price tolerance required"
                 isValidated = false
             }
             let cat = await ExpenseCategory.findOne({ category: category })
@@ -165,7 +169,7 @@ export const BulkCreateAndUpdateExpenseItemFromExcel = async (req: Request, res:
                                 olditem.to_maintain_stock = to_maintain_stock
                                 olditem.stock = stock
                                 olditem.price = price
-                                olditem.qtytolerance = qtytolerance
+                                olditem.stock_limit = stock_limit
                                 olditem.pricetolerance = pricetolerance
                                 if (cat)
                                     olditem.category = cat
@@ -188,7 +192,7 @@ export const BulkCreateAndUpdateExpenseItemFromExcel = async (req: Request, res:
                             item: item,
                             category: cat,
                             unit: un,
-                            price, pricetolerance, qtytolerance,
+                            price, pricetolerance, stock_limit,
                             to_maintain_stock,
                             stock: stock,
                             created_by: req.user,
@@ -223,7 +227,7 @@ export const DownloadExcelTemplateForCreateExpenseItem = async (req: Request, re
         unit: 'kg',
         price: 35,
         pricetolerance: 10,
-        qtytolerance: 0,
+        stock_limit: 0,
         to_maintain_stock: false,
         category: 'GUMBOOT',
         stock: 5
