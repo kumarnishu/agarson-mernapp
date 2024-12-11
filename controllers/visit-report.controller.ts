@@ -18,7 +18,16 @@ export const GetVisitReports = async (req: Request, res: Response, next: NextFun
     dt2.setHours(0)
     dt2.setMinutes(0)
     let cat = await KeyCategory.findOne({ category: category })
-    let remarks = await ExcelDBRemark.find({ created_at: { $gte: dt1, $lt: dt2 }, category: cat }).countDocuments()
+    let remarks = await ExcelDBRemark.find({ 
+        created_at: { $gte: dt1, $lt: dt2 }, 
+        category: cat 
+    })
+    .populate({
+        path: 'created_by', 
+        select: 'username' // Specify the fields to fetch from the populated model
+    })
+    .select('remark obj created_at');
+    
     return res.status(200).json(remarks);
 }
 
