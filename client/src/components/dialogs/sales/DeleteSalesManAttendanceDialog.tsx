@@ -38,7 +38,7 @@ function DeleteSalesManAttendanceDialog({ attendance, dialog, setDialog }: Props
   }, [isSuccess])
 
   return (
-    <Dialog open={dialog ==="DeleteSalesManAttendanceDialog"}
+    <Dialog open={dialog ==="DeleteVisitSalesManAttendanceDialog"}
     >
       <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
         setDialog(undefined)
