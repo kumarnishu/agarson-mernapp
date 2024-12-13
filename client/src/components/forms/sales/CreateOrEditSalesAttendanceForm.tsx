@@ -54,13 +54,13 @@ function CreateOrEditSalesAttendanceForm({ attendance, setDialog }: { attendance
                 .required('Required field'),
             employee: Yup.string()
                 .required('Required field'),
-            old_visit: Yup.number().max(10, "shult not be more than 10")
+            old_visit: Yup.number().max(25, "should not be more than 10")
                 .required('Required field'),
             in_time: Yup.string(),
             attendance: Yup.string()
                 .required('Required field'),
             end_time: Yup.string(),
-            new_visit: Yup.number().max(10, "shult not be more than 10"),
+            new_visit: Yup.number().max(25, "should not be more than 10"),
             remark: Yup.string()
             ,
             date: Yup.string().required('Required field'),
