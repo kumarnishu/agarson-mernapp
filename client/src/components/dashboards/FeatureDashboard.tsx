@@ -17,23 +17,16 @@ function FeatureDashboard() {
         user?.assigned_permissions.includes('leads_view') && tmpfeatures.push({ feature: 'leads ', is_visible: false, url: "LeadsPage" })
         user?.assigned_permissions.includes('refer_view') && tmpfeatures.push({ feature: 'customers', is_visible: false, url: "RefersPage" })
         user?.assigned_permissions.includes('reminders_view') && tmpfeatures.push({ feature: 'crm reminders', is_visible: false, url: "RemindersPage" })
-       
-
         user?.assigned_permissions.includes('checklist_view') && tmpfeatures.push({ feature: 'CheckLists ', is_visible: false, url: "CheckListPage" })
         user?.assigned_permissions.includes('checklist_admin_view') && tmpfeatures.push({ feature: 'CheckLists Admin ', is_visible: false, url: "CheckListAdminPage" })
-
-
-      
         user?.assigned_permissions.includes('payments_view') && tmpfeatures.push({ feature: 'Payments ', is_visible: false, url: "PaymentsPage" })
-        
-       
-
         user?.assigned_permissions.includes('production_view') && tmpfeatures.push({ feature: 'production ', is_visible: false, url: "ProductionPage" })
         user?.assigned_permissions.includes('spare_dye_view') && tmpfeatures.push({ feature: 'Spare Dyes ', is_visible: false, url: "SpareDyesPage" })
         user?.assigned_permissions.includes('sole_thickness_view') && tmpfeatures.push({ feature: 'Sole Thickness ', is_visible: false, url: "SoleThicknessPage" })
         user?.assigned_permissions.includes('shoe_weight_view') && tmpfeatures.push({ feature: 'shoe weights ', is_visible: false, url: "ShoeWeightPage" })
         user?.assigned_permissions.includes('expense_store_view') && tmpfeatures.push({ feature: 'Expense Store ', is_visible: false, url: "ExpenseStorePage" })
-
+        user?.assigned_permissions.includes('driver_system_view') && tmpfeatures.push({ feature: 'Driver System ', is_visible: false, url: "DriverAppSystemPage" })
+        
         setFeatures(tmpfeatures)
     }, [user])
 

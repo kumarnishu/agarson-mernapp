@@ -66,6 +66,7 @@ import ExpenseLocationPage from './pages/dropdowns/ExpenseLocationPage.tsx'
 import ExpenseItemsPage from './pages/dropdowns/ExpenseItemsPage.tsx'
 import ExpenseStorePage from './pages/features/ExpenseStorePage.tsx'
 import ExpenseTransactionReports from './pages/feature reports/ExpenseTransactionReports.tsx'
+import DriverAppSystemPage from './pages/features/DriverAppSystemPage.tsx'
 
 
 function AppRoutes() {
@@ -196,6 +197,11 @@ function AppRoutes() {
               {user?.assigned_permissions.includes('expense_store_view') && <Route
                 path="ExpenseStorePage" element={
                   <ExpenseStorePage />
+                }
+              />}
+              {user?.assigned_permissions.includes('driver_system_view') && <Route
+                path="DriverAppSystemPage" element={
+                  <DriverAppSystemPage />
                 }
               />}
 

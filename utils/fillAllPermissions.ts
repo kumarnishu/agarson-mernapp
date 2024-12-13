@@ -491,6 +491,31 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
+            {
+                label: 'Driver App System',
+                permissions: [
+                    {
+                        value: 'driver_system_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'driver_system_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'driver_system_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'driver_system_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'driver_system_export',
+                        label: 'export'
+                    }
+                ]
+            },
         ]
     }
     

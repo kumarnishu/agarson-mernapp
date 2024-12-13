@@ -63,7 +63,7 @@ function SalesmanKpiPage() {
         header: ' Attendance'
       },
       {
-        accessorKey: 'employee.value',
+        accessorKey: 'employee.label',
         header: ' Employee',
       },
       {

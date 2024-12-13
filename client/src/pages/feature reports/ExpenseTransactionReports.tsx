@@ -312,10 +312,10 @@ export default function ExpenseTransactionReports() {
             }}
             sx={{ borderRadius: 2 }}
           >
-            {LoggedInUser?.assigned_permissions.includes('assignedrefer_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+            {LoggedInUser?.assigned_permissions.includes('expense-transaction_report_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
             >Export All</MenuItem>}
-            {LoggedInUser?.assigned_permissions.includes('assignedrefer_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+            {LoggedInUser?.assigned_permissions.includes('expense-transaction_report_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
             >Export Selected</MenuItem>}
 
