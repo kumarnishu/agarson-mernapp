@@ -1,11 +1,13 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
-import { GetReferenceDto, GetReferenceExcelDto } from "../dtos/references.dto";
+import { GetReferenceDto, GetReferenceExcelDto, GetReferenceReportForSalesmanDto } from "../dtos/references.dto";
 import isMongoId from "validator/lib/isMongoId";
 import { Reference } from "../models/references.model";
-import moment, { isDate } from "moment";
+import { isDate } from "moment";
 import { excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
+import { User } from "../models/user.model";
+import { ICRMState } from "../models/crm-state.model";
 
 
 export const GetReferencesReport = async (req: Request, res: Response, next: NextFunction) => {
@@ -14,8 +16,8 @@ export const GetReferencesReport = async (req: Request, res: Response, next: Nex
         [
             {
                 $group: {
-                    _id: { reference: "$reference", party: "$party", date: "$date" }, // Group by reference, party, and date
-                    id:{ $first: "$_id" },
+                    _id: { reference: "$reference", party: "$party" }, // Group by reference, party, and date
+                    id: { $first: "$_id" },
                     total_sale_scope: { $sum: "$sale_scope" }, // Summing sale_scope for each group
                     gst: { $first: "$gst" }, // Assuming same GST for each group
                     address: { $first: "$address" }, // Assuming same address for each group
@@ -27,7 +29,7 @@ export const GetReferencesReport = async (req: Request, res: Response, next: Nex
             {
                 $project: {
                     _id: 0,
-                    id:"$id",
+                    id: "$id",
                     reference: "$_id.reference",
                     party: "$_id.party",
                     date: "$_id.date",
@@ -51,8 +53,70 @@ export const GetReferencesReport = async (req: Request, res: Response, next: Nex
             state: ref.state,
             pincode: ref.pincode,
             business: ref.business,
-            sale_scope: ref.total_sale_scope,
+            sale_scope: Math.round((ref.total_sale_scope / 1000) - 0.1),
             reference: ref.reference
+        }
+    })
+    return res.status(200).json(result)
+}
+
+export const GetReferencesReportForSalesman = async (req: Request, res: Response, next: NextFunction) => {
+    let result: GetReferenceReportForSalesmanDto[] = []
+    let assigned_states: string[] = []
+    let user = await User.findById(req.user._id).populate('assigned_crm_states')
+    user && user?.assigned_crm_states.map((state: ICRMState) => {
+        assigned_states.push(state.state)
+        if (state.alias1)
+            assigned_states.push(state.alias1)
+        if (state.alias2)
+            assigned_states.push(state.alias2)
+    });
+    const data = await Reference.aggregate(
+        [
+            {
+                $match: {
+                    state: { $in: assigned_states }  // Filter documents where the lowercase state is 'haryana'
+                }
+            },
+            {
+                $group: {
+                    _id: { reference: "$reference", party: "$party" }, // Group by reference, party, and date
+                    id: { $first: "$_id" },
+                    total_sale_scope: { $sum: "$sale_scope" }, // Summing sale_scope for each group
+                    gst: { $first: "$gst" }, // Assuming same GST for each group
+                    address: { $first: "$address" }, // Assuming same address for each group
+                    state: { $first: "$state" }, // Assuming same state for each group
+                    pincode: { $first: "$pincode" }, // Assuming same pincode for each group
+                    business: { $first: "$business" }, // Assuming same business for each group
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    id: "$id",
+                    reference: "$_id.reference",
+                    party: "$_id.party",
+                    date: "$_id.date",
+                    total_sale_scope: 1,
+                    gst: 1,
+                    address: 1,
+                    state: 1,
+                    pincode: 1,
+                    business: 1
+                }
+            }
+        ]
+    )
+    result = data.map((ref) => {
+        return {
+            _id: ref.id,
+            party: ref.party,
+            address: ref.address,
+            business: ref.business,
+            reference: ref.reference,
+            state: ref.state,
+            status: 'open',
+            last_remark: ""
         }
     })
     return res.status(200).json(result)
@@ -194,19 +258,50 @@ export const DownloadExcelTemplateForCreateReferenceReport = async (req: Request
             reference: 'A'
         }
     ]
-    let data = await Reference.find()
+    const data = await Reference.aggregate(
+        [
+            {
+                $group: {
+                    _id: { reference: "$reference", party: "$party", date: "$date" }, // Group by reference, party, and date
+                    id: { $first: "$_id" },
+                    total_sale_scope: { $sum: "$sale_scope" }, // Summing sale_scope for each group
+                    gst: { $first: "$gst" }, // Assuming same GST for each group
+                    address: { $first: "$address" }, // Assuming same address for each group
+                    state: { $first: "$state" }, // Assuming same state for each group
+                    pincode: { $first: "$pincode" }, // Assuming same pincode for each group
+                    business: { $first: "$business" }, // Assuming same business for each group
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    id: "$id",
+                    reference: "$_id.reference",
+                    party: "$_id.party",
+                    date: "$_id.date",
+                    total_sale_scope: 1,
+                    gst: 1,
+                    address: 1,
+                    state: 1,
+                    pincode: 1,
+                    business: 1
+                }
+            }
+        ]
+    )
+
+
     if (data.length > 0)
         checklist = data.map((ref) => {
             return {
-                _id: ref._id.valueOf(),
-                date: moment(ref.date).format("DD-MM-YYYY"),
+                _id: ref.id,
                 gst: ref.gst,
                 party: ref.party,
                 address: ref.address,
                 state: ref.state,
                 pincode: ref.pincode,
                 business: ref.business,
-                sale_scope: ref.sale_scope,
+                sale_scope: ref.total_sale_scope,
                 reference: ref.reference
             }
         })

@@ -1,5 +1,3 @@
-import { DropDownDto } from "./dropdown.dto"
-
 export type GetReferenceDto = {
     _id: string,
     gst: string,
@@ -10,14 +8,21 @@ export type GetReferenceDto = {
     business: string,
     sale_scope: number,
     reference: string
-    created_at: string,
-    updated_at: string,
-    created_by: DropDownDto,
-    updated_by: DropDownDto
 }
+
+export type GetReferenceReportForSalesmanDto = {
+    _id: string,
+    party: string,
+    address: string,
+    state: string,
+    status: string,
+    last_remark: string
+}
+
 
 export type GetReferenceExcelDto = {
     _id: string,
+    date: string,
     gst: string,
     party: string,
     address: string,
@@ -25,6 +30,6 @@ export type GetReferenceExcelDto = {
     pincode: number,
     business: string,
     sale_scope: number,
-    reference: String,
-    status?:string
+    reference: string,
+    status?: string
 }

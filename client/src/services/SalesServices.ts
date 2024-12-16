@@ -75,6 +75,9 @@ export const GetAllReferences = async () => {
     return await apiClient.get(`references`)
 }
 
+export const GetAllSalesmanReferences = async () => {
+    return await apiClient.get(`references/salesman`)
+}
 
 export const CreateOrUpdateReferencesFromExcel = async (body: FormData) => {
     return await apiClient.post(`create-references-from-excel`, body)

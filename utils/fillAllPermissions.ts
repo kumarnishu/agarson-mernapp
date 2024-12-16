@@ -1316,7 +1316,31 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
-            
+            {
+                label: 'References For Salesperson',
+                permissions: [
+                    {
+                        value: 'salesman_references_report_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'salesman_references_report_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'salesman_references_report_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'salesman_references_report_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'salesman_references_report_export',
+                        label: 'export'
+                    }
+                ]
+            },
             
         ]
     }

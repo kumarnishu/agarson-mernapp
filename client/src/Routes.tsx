@@ -67,6 +67,7 @@ import ExpenseItemsPage from './pages/dropdowns/ExpenseItemsPage.tsx'
 import ExpenseStorePage from './pages/features/ExpenseStorePage.tsx'
 import ExpenseTransactionReports from './pages/feature reports/ExpenseTransactionReports.tsx'
 import DriverAppSystemPage from './pages/features/DriverAppSystemPage.tsx'
+import ReferenceReportPageSalesman from './pages/sales/ReferenceReportPageSalesman.tsx'
 
 
 function AppRoutes() {
@@ -398,6 +399,11 @@ function AppRoutes() {
               {user?.assigned_permissions.includes('references_report_view') && <Route
                 path="ReferencesReportPage" element={
                   <ReferencesReportPage />
+                }
+              />}
+                 {user?.assigned_permissions.includes('salesman_references_report_view') && <Route
+                path="ReferenceReportPageSalesman" element={
+                  <ReferenceReportPageSalesman />
                 }
               />}
             </Route>}
