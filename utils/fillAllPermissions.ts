@@ -1129,6 +1129,31 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
+            {
+                label: 'Expense Tranactions',
+                permissions: [
+                    {
+                        value: 'expense-transaction_report_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'expense-transaction_report_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'expense-transaction_report_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'expense-transaction_report_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'expense-transaction_report_export',
+                        label: 'export'
+                    }
+                ]
+            },
         ]
     }
 
@@ -1291,31 +1316,7 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
-            {
-                label: 'Expense Tranactions',
-                permissions: [
-                    {
-                        value: 'expense-transaction_report_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'expense-transaction_report_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'expense-transaction_report_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'expense-transaction_report_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'expense-transaction_report_export',
-                        label: 'export'
-                    }
-                ]
-            },
+            
             
         ]
     }

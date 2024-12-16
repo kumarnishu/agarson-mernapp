@@ -14,6 +14,7 @@ export type GetReferenceDto = {
 
 export type GetReferenceExcelDto = {
     _id: string,
+    date:string,
     gst: string,
     party: string,
     address: string,

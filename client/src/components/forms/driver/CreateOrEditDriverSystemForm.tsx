@@ -16,7 +16,7 @@ import { DropDownDto } from '../../../dtos/dropdown.dto';
 
 function CreateOrEditDriverSystemForm({ item, setDialog }: { item?: GetDriverSystemDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
-    const { data: users } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: true }))
+    const { data: users } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'driver_system_view', show_assigned_only: true }))
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, { body: CreateOrEditDriverSystemDto, id?: string }>
         (CreateOrEditDriverSystem, {
@@ -44,7 +44,7 @@ function CreateOrEditDriverSystemForm({ item, setDialog }: { item?: GetDriverSys
             billno: Yup.string().required(),
             party: Yup.string().required(),
             marka: Yup.string().required("required field"),
-            transport: Yup.string()
+            transport: Yup.string().required('required')
         }),
         onSubmit: (values: CreateOrEditDriverSystemDto) => {
             if (item) {

@@ -4,6 +4,7 @@ import { IUser } from "./user.model"
 export type IReference = {
     _id: string,
     gst: string,
+    date: Date,
     party: string,
     address: string,
     state: string,
@@ -18,6 +19,10 @@ export type IReference = {
 }
 
 const ReferenceSchema = new mongoose.Schema<IReference, mongoose.Model<IReference, {}, {}>, {}>({
+    date: {
+        type: Date,
+        required: true
+    },
     gst: {
         type: String,
         trim: true

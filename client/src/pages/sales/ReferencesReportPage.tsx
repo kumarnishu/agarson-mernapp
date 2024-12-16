@@ -28,8 +28,6 @@ export default function ReferencesReportPage() {
   const columns = useMemo<MRT_ColumnDef<GetReferenceDto>[]>(
     //column definitions...
     () => reports && [
-
-
       {
         accessorKey: 'gst',
         header: 'GST',
