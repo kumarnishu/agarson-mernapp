@@ -1,4 +1,4 @@
-import { LinearProgress, Typography } from '@mui/material'
+import { IconButton, LinearProgress, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
@@ -10,17 +10,15 @@ import { ReferencesExcelButtons } from '../../components/buttons/ReferencesExcel
 import {  GetAllSalesmanReferences } from '../../services/SalesServices'
 import { GetReferenceDto } from '../../dtos/references.dto'
 import { HandleNumbers } from '../../utils/IsDecimal'
+import PopUp from '../../components/popup/PopUp'
 
 export default function ReferencesReportPage() {
-  const { user } = useContext(UserContext)
+  const { user: LoggedInUser } = useContext(UserContext)
   const [reports, setReports] = useState<GetReferenceDto[]>([])
-
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferenceDto[]>, BackendError>(["references",], async () => GetAllSalesmanReferences())
-
   const isFirstRender = useRef(true);
-
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-
+  const [dialog, setDialog] = useState<string | undefined>()
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
@@ -48,13 +46,6 @@ export default function ReferencesReportPage() {
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
      
-      {
-        accessorKey: 'business',
-        header: 'Business Type',
-        aggregationFn: 'count',
-        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-      },
-  
       {
         accessorKey: 'reference',
         header: 'Reference',
@@ -212,12 +203,12 @@ export default function ReferencesReportPage() {
           component={'h1'}
           sx={{ pl: 1 }}
         >
-          References
+          Salesman References
         </Typography>
         <Stack direction={'row'} gap={2} alignItems={'center'}>
           <>
 
-            {user?.assigned_permissions.includes("references_report_create") && <ReferencesExcelButtons />}
+            {LoggedInUser?.assigned_permissions.includes("references_report_create") && <ReferencesExcelButtons />}
           </>
         </Stack>
       </Stack >

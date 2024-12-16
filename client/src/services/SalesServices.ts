@@ -1,3 +1,4 @@
+import { CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto } from "../dtos/references-remark.dto"
 import { CreateOrEditSalesAttendanceDto } from "../dtos/sales-attendance.dto"
 import { CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto } from "../dtos/visit_remark.dto"
 import { apiClient } from "./utils/AxiosInterceptor"
@@ -83,3 +84,21 @@ export const CreateOrUpdateReferencesFromExcel = async (body: FormData) => {
     return await apiClient.post(`create-references-from-excel`, body)
 }
 
+export const CreateOrEditReferenceRemark = async ({ body, remark }: {
+    body: CreateOrEditReferenceRemarkDto,
+    remark?: GetReferenceRemarksDto
+
+}) => {
+    if (!remark) {
+        return await apiClient.post(`references/remarks`, body)
+    }
+    return await apiClient.put(`references/remarks/${remark._id}`, body)
+}
+
+export const DeleteReferenceRemark = async (id: string) => {
+    return await apiClient.delete(`references/remarks/${id}`)
+}
+
+export const GetReferenceRemarksHistory = async (party: string, reference: string) => {
+    return await apiClient.get(`references/remarks/?reference=${reference}&party=${party}`)
+}

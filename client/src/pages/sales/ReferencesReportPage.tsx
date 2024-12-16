@@ -1,4 +1,4 @@
-import { LinearProgress, Typography } from '@mui/material'
+import { IconButton, LinearProgress, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
@@ -10,13 +10,14 @@ import { ReferencesExcelButtons } from '../../components/buttons/ReferencesExcel
 import { GetAllReferences } from '../../services/SalesServices'
 import { GetReferenceDto } from '../../dtos/references.dto'
 import { HandleNumbers } from '../../utils/IsDecimal'
+import PopUp from '../../components/popup/PopUp'
+import { Comment, Visibility } from '@mui/icons-material'
 
 export default function ReferencesReportPage() {
-  const { user } = useContext(UserContext)
   const [reports, setReports] = useState<GetReferenceDto[]>([])
-
+  const { user: LoggedInUser } = useContext(UserContext)
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferenceDto[]>, BackendError>(["references",], async () => GetAllReferences())
-
+  const [dialog, setDialog] = useState<string | undefined>()
   const isFirstRender = useRef(true);
 
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
@@ -28,6 +29,42 @@ export default function ReferencesReportPage() {
   const columns = useMemo<MRT_ColumnDef<GetReferenceDto>[]>(
     //column definitions...
     () => reports && [
+      {
+        accessorKey: 'actions',
+        header: 'Actions',
+        Cell: (cell) => <PopUp key={'action'}
+          element={
+            <Stack direction="row" spacing={1} >
+              {LoggedInUser?.assigned_permissions.includes('grp_excel_view') && <Tooltip title="view remarks">
+                <IconButton color="primary"
+
+                  onClick={() => {
+                    setDialog('ViewExcelDBRemarksDialog')
+                    
+                  }}
+                >
+                  <Visibility />
+                </IconButton>
+              </Tooltip>}
+
+              {LoggedInUser?.assigned_permissions.includes('grp_excel_edit') &&
+                <Tooltip title="Add Remark">
+                  <IconButton
+
+                    color="success"
+                    onClick={() => {
+
+                      setDialog('CreateOrEditExcelDBRemarkDialog')
+                    
+                    }}
+                  >
+                    <Comment  />
+                  </IconButton>
+                </Tooltip>}
+
+            </Stack>}
+        />
+      },
       {
         accessorKey: 'gst',
         header: 'GST',
@@ -102,13 +139,13 @@ export default function ReferencesReportPage() {
         color: 'white'
       },
     }),
-	muiTableHeadCellProps: ({ column }) => ({
+    muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-child(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-child(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-child(1) span': {
           display: 'inline', // Visible on hover
@@ -236,7 +273,8 @@ export default function ReferencesReportPage() {
           </>
         </Stack>
       </Stack >
-
+      {id && obj && <CreateOrEditExcelDBRemarkDialog dialog={dialog} setDialog={setDialog} category={id} obj={obj} />}
+      {id && obj && <ViewExcelDBRemarksDialog dialog={dialog} setDialog={setDialog} id={id} obj={obj} />}
       {/* table */}
       <MaterialReactTable table={table} />
     </>
