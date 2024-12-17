@@ -3,6 +3,7 @@ import isMongoId from 'validator/lib/isMongoId';
 import moment from 'moment';
 import { CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto } from '../dtos/references-remark.dto';
 import { IReferenceRemark, ReferenceRemark } from '../models/reference-remarks.model';
+import { Reference } from '../models/references.model';
 
 
 export const UpdateReferenceRemark = async (req: Request, res: Response, next: NextFunction) => {
@@ -36,10 +37,9 @@ export const DeleteReferenceRemark = async (req: Request, res: Response, next: N
 
 export const GetReferenceRemarkHistory = async (req: Request, res: Response, next: NextFunction) => {
     const party = req.query.party
-    const reference = req.query.reference
     let remarks: IReferenceRemark[] = []
     let result: GetReferenceRemarksDto[] = []
-    remarks = await ReferenceRemark.find({  party: String(party).trim().toLowerCase(), reference: String(reference).trim().toLowerCase() }).populate('created_by').sort('-created_at')
+    remarks = await ReferenceRemark.find({ party: String(party).trim().toLowerCase() }).populate('created_by').sort('-created_at')
 
     result = remarks.map((r) => {
         return {
@@ -59,23 +59,28 @@ export const NewReferenceRemark = async (req: Request, res: Response, next: Next
     const {
         remark,
         party,
-        ref,
-        next_date } = req.body as CreateOrEditReferenceRemarkDto
-    if (!remark || !party || !ref) return res.status(403).json({ message: "please fill required fields" })
+        next_date, stage } = req.body as CreateOrEditReferenceRemarkDto
+    if (!remark || !party ) return res.status(403).json({ message: "please fill required fields" })
 
-
+    console.log(stage)
 
     let new_remark = new ReferenceRemark({
         remark,
         party: party.trim().toLowerCase(),
-        reference: ref.trim().toLowerCase(),
         created_at: new Date(Date.now()),
         created_by: req.user,
         updated_at: new Date(Date.now()),
         updated_by: req.user
     })
-    if (next_date)
+    if (next_date) {
         new_remark.next_call = new Date(next_date)
+    }
+    if (stage && next_date) {
+        await Reference.updateMany({ party: party }, { stgae: stage, next_call: new Date(next_date) })
+    }
+    else if (stage) {
+        await Reference.updateMany({ party: party }, { stgae: stage })
+    }
     await new_remark.save()
     return res.status(200).json({ message: "remark added successfully" })
 }

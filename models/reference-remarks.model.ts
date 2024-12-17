@@ -21,15 +21,7 @@ const ReferenceRemarkSchema = new mongoose.Schema<IReferenceRemark, mongoose.Mod
         trim: true,
         index: true
     },
-    next_call: Date
-    ,
-    reference: {
-        type: String,
-        required: true,
-        lowercase: true,
-        trim: true,
-        index: true
-    },
+    next_call: Date,
     remark: {
         type: String,
         required: true,

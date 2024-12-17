@@ -11,57 +11,74 @@ import { ICRMState } from "../models/crm-state.model";
 
 
 export const GetReferencesReport = async (req: Request, res: Response, next: NextFunction) => {
-    let result: GetReferenceDto[] = []
-    const data = await Reference.aggregate(
-        [
+    try {
+        // Step 1: Aggregate data to calculate total_sale_scope and gather party details
+        const data = await Reference.aggregate([
             {
                 $group: {
-                    _id: { reference: "$reference", party: "$party" }, // Group by reference, party, and date
-                    id: { $first: "$_id" },
-                    total_sale_scope: { $sum: "$sale_scope" }, // Summing sale_scope for each group
-                    gst: { $first: "$gst" }, // Assuming same GST for each group
-                    address: { $first: "$address" }, // Assuming same address for each group
-                    state: { $first: "$state" }, // Assuming same state for each group
-                    pincode: { $first: "$pincode" }, // Assuming same pincode for each group
-                    business: { $first: "$business" }, // Assuming same business for each group
-                }
+                    _id: { party: "$party", reference: "$reference" },
+                    total_sale_scope: { $sum: "$sale_scope" },
+                    gst: { $first: "$gst" },
+                    address: { $first: "$address" },
+                    state: { $first: "$state" },
+                    pincode: { $first: "$pincode" },
+                    business: { $first: "$business" },
+                    stage: { $first: "$stage" }
+                },
             },
             {
                 $project: {
                     _id: 0,
-                    id: "$id",
-                    reference: "$_id.reference",
                     party: "$_id.party",
-                    date: "$_id.date",
+                    reference: "$_id.reference",
                     total_sale_scope: 1,
                     gst: 1,
                     address: 1,
                     state: 1,
+                    stage: 1,
                     pincode: 1,
                     business: 1
-                }
-            }
-        ]
-    )
+                },
+            },
+        ]);
 
-    result = data.map((ref) => {
-        return {
-            _id: ref.id,
-            gst: ref.gst,
-            party: ref.party,
-            address: ref.address,
-            state: ref.state,
-            pincode: ref.pincode,
-            business: ref.business,
-            sale_scope: Math.round((ref.total_sale_scope / 1000) - 0.1),
-            reference: ref.reference
-        }
-    })
-    return res.status(200).json(result)
-}
+        // Step 2: Reshape the aggregated result to pivot references into separate columns
+        const pivotResult: any = {};
+
+        data.forEach((item) => {
+            const { party, reference, total_sale_scope, stage, gst, address, state, pincode, business } = item;
+
+            // Initialize row for each party
+            if (!pivotResult[party]) {
+                pivotResult[party] = {
+                    party,
+                    gst,
+                    address,
+                    state,
+                    stage,
+                    pincode,
+                    business
+                };
+            }
+
+            // Add dynamic reference column
+            pivotResult[party][reference] = total_sale_scope;
+        });
+
+        // Step 3: Convert pivotResult object into an array
+        const finalResult: GetReferenceDto[] = Object.values(pivotResult);
+
+        return res.status(200).json(finalResult);
+    } catch (error: any) {
+        console.error("Error generating references report:", error);
+        return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+};
+
+
+
 
 export const GetReferencesReportForSalesman = async (req: Request, res: Response, next: NextFunction) => {
-    let result: GetReferenceReportForSalesmanDto[] = []
     let assigned_states: string[] = []
     let user = await User.findById(req.user._id).populate('assigned_crm_states')
     user && user?.assigned_crm_states.map((state: ICRMState) => {
@@ -71,55 +88,59 @@ export const GetReferencesReportForSalesman = async (req: Request, res: Response
         if (state.alias2)
             assigned_states.push(state.alias2)
     });
-    const data = await Reference.aggregate(
-        [
-            {
-                $match: {
-                    state: { $in: assigned_states }  // Filter documents where the lowercase state is 'haryana'
-                }
-            },
-            {
-                $group: {
-                    _id: { reference: "$reference", party: "$party" }, // Group by reference, party, and date
-                    id: { $first: "$_id" },
-                    total_sale_scope: { $sum: "$sale_scope" }, // Summing sale_scope for each group
-                    gst: { $first: "$gst" }, // Assuming same GST for each group
-                    address: { $first: "$address" }, // Assuming same address for each group
-                    state: { $first: "$state" }, // Assuming same state for each group
-                    pincode: { $first: "$pincode" }, // Assuming same pincode for each group
-                    business: { $first: "$business" }, // Assuming same business for each group
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    id: "$id",
-                    reference: "$_id.reference",
-                    party: "$_id.party",
-                    date: "$_id.date",
-                    total_sale_scope: 1,
-                    gst: 1,
-                    address: 1,
-                    state: 1,
-                    pincode: 1,
-                    business: 1
-                }
+    const data = await Reference.aggregate([
+        {
+            $match: {
+                state: { $in: assigned_states }  // Filter documents where the lowercase state is 'haryana'
             }
-        ]
-    )
-    result = data.map((ref) => {
-        return {
-            _id: ref.id,
-            party: ref.party,
-            address: ref.address,
-            business: ref.business,
-            reference: ref.reference,
-            state: ref.state,
-            status: 'open',
-            last_remark: ""
+        },
+        {
+            $group: {
+                _id: { party: "$party", reference: "$reference" },
+                total_sale_scope: { $sum: "$sale_scope" },
+                address: { $first: "$address" },
+                state: { $first: "$state" },
+                stage: { $first: "$stage" }
+            },
+        },
+        {
+            $project: {
+                _id: 0,
+                party: "$_id.party",
+                reference: "$_id.reference",
+                total_sale_scope: 1,
+                address: 1,
+                state: 1,
+                stage: 1,
+            },
+        },
+    ]);
+
+    // Step 2: Reshape the aggregated result to pivot references into separate columns
+    const pivotResult: any = {};
+
+    data.forEach((item) => {
+        const { party, reference, total_sale_scope, stage, gst, address, state, pincode, business } = item;
+
+        // Initialize row for each party
+        if (!pivotResult[party]) {
+            pivotResult[party] = {
+                party,
+                address,
+                state,
+                stage,
+            };
         }
-    })
-    return res.status(200).json(result)
+
+        // Add dynamic reference column
+        pivotResult[party][reference] = total_sale_scope;
+    });
+
+    // Step 3: Convert pivotResult object into an array
+    const finalResult: GetReferenceReportForSalesmanDto[] = Object.values(pivotResult);
+
+    return res.status(200).json(finalResult);
+   
 }
 
 export const BulkCreateAndUpdateReferenceFromExcel = async (req: Request, res: Response, next: NextFunction) => {

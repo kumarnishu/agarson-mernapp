@@ -1,30 +1,31 @@
 import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useContext, useEffect,  useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
 import moment from 'moment';
-    import { AlertContext } from '../../../contexts/alertContext';
+import { AlertContext } from '../../../contexts/alertContext';
 import { CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto } from '../../../dtos/references-remark.dto';
 import { CreateOrEditReferenceRemark } from '../../../services/SalesServices';
+import { toTitleCase } from '../../../utils/TitleCase';
 
 
-function CreateOrEditReferenceRemarkForm({ party, reference, remark, setDialog }: {
-    party: string, reference: string, remark?: GetReferenceRemarksDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> 
+function CreateOrEditReferenceRemarkForm({ party, stage,  remark, setDialog }: {
+    party: string,  stage: string, remark?: GetReferenceRemarksDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 }) {
     const { setAlert } = useContext(AlertContext)
-     const [show, setShow] = useState(Boolean(remark?.next_date))
-    const { mutate, isLoading, isSuccess} = useMutation
+    const [show, setShow] = useState(Boolean(remark?.next_date))
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             remark?: GetReferenceRemarksDto,
             body: CreateOrEditReferenceRemarkDto
         }>
         (CreateOrEditReferenceRemark, {
-           
+
             onSuccess: () => {
                 queryClient.refetchQueries('remarks')
                 queryClient.refetchQueries('references')
@@ -38,27 +39,25 @@ function CreateOrEditReferenceRemarkForm({ party, reference, remark, setDialog }
     const formik = useFormik<{
         remark: string,
         next_date?: string,
+        stage: string,
         party: string,
-        reference: string,
     }>({
         initialValues: {
             remark: remark ? remark.remark : "",
+            stage: stage || "open",
             next_date: remark?.next_date ? moment(new Date(remark?.next_date)).format("YYYY-MM-DD") : undefined,
-            reference: remark ? remark.ref : reference,
-            party: remark && remark.party  || party,
+            party: remark && remark.party || party,
         },
         validationSchema: Yup.object({
             remark: Yup.string().required("required field")
-                .min(5, 'Must be 5 characters or more')
-                
-                .required('Required field'),
+                .min(5, 'Must be 5 characters or more'),
+            stage: Yup.string().required("required field"),
             next_date: Yup.string().test(() => {
                 if (show && !formik.values.next_date)
                     return false
                 else
                     return true
             }),
-            reference: Yup.string().required(),
             party: Yup.string().required(),
         }),
         onSubmit: (values) => {
@@ -66,21 +65,20 @@ function CreateOrEditReferenceRemarkForm({ party, reference, remark, setDialog }
                 remark: remark,
                 body: {
                     remark: values.remark,
-                    stage:'open',
-                    ref: values.reference,
+                    stage: values.stage,
                     next_date: values.next_date,
                     party: values.party
                 }
             })
         }
     });
-   
+
 
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined) 
-            
+            setDialog(undefined)
+
         }
     }, [isSuccess])
     return (
@@ -106,6 +104,35 @@ function CreateOrEditReferenceRemarkForm({ party, reference, remark, setDialog }
                     }
                     {...formik.getFieldProps('remark')}
                 />
+                < TextField
+                    select
+                    SelectProps={{
+                        native: true
+                    }}
+                    focused
+
+                    error={
+                        formik.touched.stage && formik.errors.stage ? true : false
+                    }
+                    disabled={Boolean(stage == "added")}
+                    id="stage"
+                    label="Stage"
+                    fullWidth
+                    helperText={
+                        formik.touched.stage && formik.errors.stage ? formik.errors.stage : ""
+                    }
+                    {...formik.getFieldProps('stage')}
+                >
+
+
+                    {
+                        ["existing", "open", "added", "not interested", "useless"].map(stage => {
+                            return (<option key={stage} value={stage}>
+                                {toTitleCase(stage)}
+                            </option>)
+                        })
+                    }
+                </TextField>
 
                 <FormGroup>
                     <FormControlLabel control={<Checkbox
@@ -133,7 +160,7 @@ function CreateOrEditReferenceRemarkForm({ party, reference, remark, setDialog }
                 </Button>
             </Stack>
 
-           
+
 
         </form>
     )

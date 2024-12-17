@@ -14,14 +14,14 @@ import { GetReferenceRemarksDto } from '../../../dtos/references-remark.dto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-    reference: string, party: string
+    party: string,stage:string
 }
 
-function ViewReferenceRemarksDialog({ reference, party, dialog, setDialog }: Props) {
+function ViewReferenceRemarksDialog({  party,stage, dialog, setDialog }: Props) {
     const [dialog1, setdialog1] = useState<string | undefined>()
     const [remark, setRemark] = useState<GetReferenceRemarksDto>()
     const [remarks, setRemarks] = useState<GetReferenceRemarksDto[]>()
-    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", reference, party], async () => GetReferenceRemarksHistory(party, reference))
+    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks",  party], async () => GetReferenceRemarksHistory(party))
 
 
     const { user } = useContext(UserContext)
@@ -76,7 +76,7 @@ function ViewReferenceRemarksDialog({ reference, party, dialog, setDialog }: Pro
                     })}
                 </Stack>
                 {remark && <DeleteReferenceRemarkDialog dialog={dialog1} setDialog={setdialog1} remark={remark} />}
-                {remark && <CreateOrEditReferenceRemarkDialog party={party} reference={reference} remark={remark} dialog={dialog1} setDialog={setdialog1} />}
+                {remark && <CreateOrEditReferenceRemarkDialog party={party} stage={stage} remark={remark} dialog={dialog1} setDialog={setdialog1} />}
             </DialogContent>
 
         </Dialog>

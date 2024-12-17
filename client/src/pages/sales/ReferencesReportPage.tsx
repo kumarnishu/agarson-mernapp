@@ -22,55 +22,26 @@ export default function ReferencesReportPage() {
   const [dialog, setDialog] = useState<string | undefined>()
   const isFirstRender = useRef(true);
   const [party, setParty] = useState<string | undefined>()
-  const [reference, setReference] = useState<string | undefined>()
+  const [stage, setStage] = useState<string | undefined>('open')
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
 
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
-  const columns = useMemo<MRT_ColumnDef<GetReferenceDto>[]>(
-    //column definitions...
-    () => reports && [
+  const columns = useMemo<MRT_ColumnDef<GetReferenceDto>[]>(() => {
+    // Step 1: Extract dynamic keys from the first row of reports (if available)
+    const dynamicKeys = reports?.length
+      ? Object.keys(reports[0]).filter(
+        (key) => !['party', 'gst', 'address', 'state', 'stage', 'pincode', 'business'].includes(key) // Exclude static keys
+      )
+      : [];
+
+    // Step 2: Define static columns
+    const staticColumns: MRT_ColumnDef<GetReferenceDto>[] = [
       {
-        accessorKey: 'actions',
-        header: 'Actions',
-        Cell: (cell) => <PopUp key={'action'}
-          element={
-            <Stack direction="row" spacing={1} >
-              {LoggedInUser?.assigned_permissions.includes('references_report_view') && <Tooltip title="view remarks">
-                <IconButton color="primary"
-                  onClick={() => {
-                    setDialog('ViewReferenceRemarksDialog')
-                    setParty(cell.row.original.party)
-                    setReference(cell.row.original.reference)
-                  }}
-                >
-                  <Visibility />
-                </IconButton>
-              </Tooltip>}
-
-              {LoggedInUser?.assigned_permissions.includes('references_report_edit') &&
-                <Tooltip title="Add Remark">
-                  <IconButton
-
-                    color="success"
-                    onClick={() => {
-                      setDialog('CreateOrEditReferenceRemarkDialog')
-                      setParty(cell.row.original.party)
-                      setReference(cell.row.original.reference)
-                    }}
-                  >
-                    <Comment />
-                  </IconButton>
-                </Tooltip>}
-
-            </Stack>}
-        />
-      },
-      {
-        accessorKey: 'gst',
-        header: 'GST',
+        accessorKey: 'stage',
+        header: 'Stage',
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
@@ -100,26 +71,64 @@ export default function ReferencesReportPage() {
       },
       {
         accessorKey: 'business',
-        header: 'Business Type',
+        header: 'Business',
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
+    ];
+
+    // Step 3: Define dynamic columns based on extracted keys
+    const dynamicColumns: MRT_ColumnDef<GetReferenceDto>[] = dynamicKeys.map((key) => ({
+      accessorKey: key,
+      header: key, // Use the dynamic key as the column header
+      Cell: ({ cell }) => HandleNumbers(cell.getValue()), // Optional: Format the value if needed
+      aggregationFn: 'sum', // Example: Aggregate total sale_scope
+      AggregatedCell: (cell) => HandleNumbers(cell.cell.getValue()), // Format aggregated value
+    }));
+
+    // Step 4: Combine static and dynamic columns
+    return [
       {
-        accessorKey: 'sale_scope',
-        header: 'Sale Scope',
-        aggregationFn: 'sum',
-        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        accessorKey: 'actions',
+        header: 'Actions',
+        Cell: (cell) => <PopUp key={'action'}
+          element={
+            <Stack direction="row" spacing={1} >
+              {LoggedInUser?.assigned_permissions.includes('references_report_view') && <Tooltip title="view remarks">
+                <IconButton color="primary"
+                  onClick={() => {
+                    setDialog('ViewReferenceRemarksDialog')
+                    setParty(cell.row.original.party)
+                     setStage(cell.row.original.stage||"open")
+                  }}
+                >
+                  <Visibility />
+                </IconButton>
+              </Tooltip>}
+
+              {LoggedInUser?.assigned_permissions.includes('references_report_edit') &&
+                <Tooltip title="Add Remark">
+                  <IconButton
+
+                    color="success"
+                    onClick={() => {
+                      setDialog('CreateOrEditReferenceRemarkDialog')
+                      setParty(cell.row.original.party)
+                       setStage(cell.row.original.stage||"open")
+                    }}
+                  >
+                    <Comment />
+                  </IconButton>
+                </Tooltip>}
+
+            </Stack>}
+        />
       },
-      {
-        accessorKey: 'reference',
-        header: 'Reference',
-        aggregationFn: 'count',
-        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-      }
-    ],
-    [reports],
-    //end
-  );
+      ...staticColumns,
+      ...dynamicColumns,
+    ];
+  }, [reports, LoggedInUser]);
+
 
   const table = useMaterialReactTable({
     //@ts-ignore
@@ -169,7 +178,7 @@ export default function ReferencesReportPage() {
       variant: 'outlined',
     },
     initialState: {
-      density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }, grouping: ['reference']
+      density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
     },
     enableGrouping: true,
     enableRowSelection: true,
@@ -276,8 +285,8 @@ export default function ReferencesReportPage() {
           </>
         </Stack>
       </Stack >
-      {party && reference && <CreateOrEditReferenceRemarkDialog dialog={dialog} setDialog={setDialog} reference={reference} party={party} />}
-      {party && reference && <ViewReferenceRemarksDialog dialog={dialog} setDialog={setDialog} party={party} reference={reference} />}
+      {party && stage && <CreateOrEditReferenceRemarkDialog dialog={dialog} setDialog={setDialog} stage={stage} party={party} />}
+      {party && stage && <ViewReferenceRemarksDialog dialog={dialog} setDialog={setDialog} party={party} stage={stage} />}
       {/* table */}
       <MaterialReactTable table={table} />
     </>

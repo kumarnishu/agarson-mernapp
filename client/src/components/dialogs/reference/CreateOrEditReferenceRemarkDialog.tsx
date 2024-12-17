@@ -9,9 +9,9 @@ type Props = {
     remark?: GetReferenceRemarksDto,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
     party: string,
-    reference: string,
+    stage:string
 }
-function CreateOrEditReferenceRemarkDialog({ party, reference, remark, dialog, setDialog }: Props) {
+function CreateOrEditReferenceRemarkDialog({ party, stage, remark, dialog, setDialog }: Props) {
 
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
@@ -25,7 +25,7 @@ function CreateOrEditReferenceRemarkDialog({ party, reference, remark, dialog, s
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!remark ? "New Remark" : "Edit Remark"}</DialogTitle>
             <DialogContent>
-                <CreateOrEditReferenceRemarkForm party={party} reference={reference} remark={remark} setDialog={
+                <CreateOrEditReferenceRemarkForm party={party} stage={stage} remark={remark} setDialog={
                     setDialog
                 } />
             </DialogContent>

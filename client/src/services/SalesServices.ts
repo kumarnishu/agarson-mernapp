@@ -99,6 +99,6 @@ export const DeleteReferenceRemark = async (id: string) => {
     return await apiClient.delete(`references/remarks/${id}`)
 }
 
-export const GetReferenceRemarksHistory = async (party: string, reference: string) => {
-    return await apiClient.get(`references/remarks/?reference=${reference}&party=${party}`)
+export const GetReferenceRemarksHistory = async (party: string) => {
+    return await apiClient.get(`references/remarks/?party=${party}`)
 }

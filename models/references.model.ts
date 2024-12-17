@@ -6,6 +6,8 @@ export type IReference = {
     gst: string,
     date: Date,
     party: string,
+    stage:string,
+    next_call:Date,
     address: string,
     state: string,
     pincode: number,
@@ -35,6 +37,12 @@ const ReferenceSchema = new mongoose.Schema<IReference, mongoose.Model<IReferenc
         index: true
     }
     ,
+    stage: {
+        type: String,
+        default: 'open',
+        required: true
+    },
+    next_call: Date,
     reference: {
         type: String,
         required: true,
