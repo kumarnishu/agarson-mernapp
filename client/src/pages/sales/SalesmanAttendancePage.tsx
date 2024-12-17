@@ -76,7 +76,7 @@ function SalesmanAttendancePage() {
                             {LoggedInUser?.assigned_permissions.includes('salesman_attendance_edit') &&
                                 <Tooltip title="Edit">
                                     <IconButton
-                                        disabled={new Date(cell.row.original.date) < previous_date}
+                                        disabled={!LoggedInUser.is_admin && new Date(cell.row.original.date) < previous_date}
                                         onClick={() => {
 
                                             setDialog('CreateOrEditSalesmanAttendanceDialog')
@@ -181,20 +181,20 @@ function SalesmanAttendancePage() {
         }),
         muiTableHeadCellProps: ({ column }) => ({
             sx: {
-              '& div:nth-child(1) span': {
-                display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
-              },
-              '& div:nth-child(2)': {
-                display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
-              },
-              '&:hover div:nth-child(1) span': {
-                display: 'inline', // Visible on hover
-              },
-              '&:hover div:nth-child(2)': {
-                display: 'block', // Visible on hover
-              }
+                '& div:nth-child(1) span': {
+                    display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
+                },
+                '& div:nth-child(2)': {
+                    display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
+                },
+                '&:hover div:nth-child(1) span': {
+                    display: 'inline', // Visible on hover
+                },
+                '&:hover div:nth-child(2)': {
+                    display: 'block', // Visible on hover
+                }
             },
-          }),
+        }),
         muiTableHeadRowProps: () => ({
             sx: {
                 backgroundColor: 'whitesmoke',

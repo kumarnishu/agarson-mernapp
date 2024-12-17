@@ -34,9 +34,10 @@ export type IUser = {
   is_admin: Boolean,
   email_verified: Boolean,
   mobile_verified: Boolean,
-  access_token:string,
+  access_token: string,
   is_active: Boolean,
   last_login: Date,
+  impersonated_user: IUser
   multi_login_token: string | null,
   is_multi_login: boolean,
   assigned_users: IUser[]
@@ -83,6 +84,10 @@ const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMet
     required: true,
     trim: true,
     select: false,
+  },
+  impersonated_user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   },
   email: {
     type: String,
