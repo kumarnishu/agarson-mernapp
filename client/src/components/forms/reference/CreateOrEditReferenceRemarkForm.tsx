@@ -1,13 +1,11 @@
-import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
+import { Button,  CircularProgress,  Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-
-import moment from 'moment';
 import { AlertContext } from '../../../contexts/alertContext';
 import { CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto } from '../../../dtos/references-remark.dto';
 import { CreateOrEditReferenceRemark } from '../../../services/SalesServices';
@@ -18,7 +16,6 @@ function CreateOrEditReferenceRemarkForm({ party, stage,  remark, setDialog }: {
     party: string,  stage: string, remark?: GetReferenceRemarksDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 }) {
     const { setAlert } = useContext(AlertContext)
-    const [show, setShow] = useState(Boolean(remark?.next_date))
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             remark?: GetReferenceRemarksDto,
@@ -38,26 +35,19 @@ function CreateOrEditReferenceRemarkForm({ party, stage,  remark, setDialog }: {
 
     const formik = useFormik<{
         remark: string,
-        next_date?: string,
         stage: string,
         party: string,
     }>({
         initialValues: {
             remark: remark ? remark.remark : "",
             stage: stage || "open",
-            next_date: remark?.next_date ? moment(new Date(remark?.next_date)).format("YYYY-MM-DD") : undefined,
             party: remark && remark.party || party,
         },
         validationSchema: Yup.object({
             remark: Yup.string().required("required field")
                 .min(5, 'Must be 5 characters or more'),
             stage: Yup.string().required("required field"),
-            next_date: Yup.string().test(() => {
-                if (show && !formik.values.next_date)
-                    return false
-                else
-                    return true
-            }),
+           
             party: Yup.string().required(),
         }),
         onSubmit: (values) => {
@@ -66,7 +56,6 @@ function CreateOrEditReferenceRemarkForm({ party, stage,  remark, setDialog }: {
                 body: {
                     remark: values.remark,
                     stage: values.stage,
-                    next_date: values.next_date,
                     party: values.party
                 }
             })
@@ -134,26 +123,6 @@ function CreateOrEditReferenceRemarkForm({ party, stage,  remark, setDialog }: {
                     }
                 </TextField>
 
-                <FormGroup>
-                    <FormControlLabel control={<Checkbox
-                        checked={Boolean(show)}
-                        onChange={() => setShow(!show)}
-                    />} label="Create Reminder" />
-                </FormGroup>
-                {show && < TextField
-                    type="date"
-                    error={
-                        formik.touched.next_date && formik.errors.next_date ? true : false
-                    }
-                    focused
-                    id="next_date"
-                    label="Next Call"
-                    fullWidth
-                    helperText={
-                        formik.touched.next_date && formik.errors.next_date ? formik.errors.next_date : ""
-                    }
-                    {...formik.getFieldProps('next_date')}
-                />}
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
                     fullWidth>{Boolean(isLoading) ? <CircularProgress /> : !remark ? "Add Remark" : "Update Remark"}

@@ -46,12 +46,6 @@ export default function ReferencesReportPage() {
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
-        accessorKey: 'next_call',
-        header: 'Next Call',
-        aggregationFn: 'count',
-        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-      },
-      {
         accessorKey: 'stage',
         header: 'Stage',
         aggregationFn: 'count',

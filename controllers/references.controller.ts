@@ -108,7 +108,6 @@ export const GetReferencesReportForSalesman = async (req: Request, res: Response
                 state: { $first: "$state" },
                 stage: { $first: "$stage" },
                 last_remark: { $first: "$last_remark" },
-                next_call: { $first: "$next_call" },
             },
         },
         {
@@ -121,7 +120,6 @@ export const GetReferencesReportForSalesman = async (req: Request, res: Response
                 state: 1,
                 stage: 1,
                 last_remark: 1,
-                next_call: 1
             },
         },
     ]);
@@ -130,7 +128,7 @@ export const GetReferencesReportForSalesman = async (req: Request, res: Response
     const pivotResult: any = {};
 
     data.forEach((item) => {
-        const { party, reference, total_sale_scope, stage, address, state, last_remark, next_call } = item;
+        const { party, stage, address, state, last_remark } = item;
 
         // Initialize row for each party
         if (!pivotResult[party]) {
@@ -140,12 +138,8 @@ export const GetReferencesReportForSalesman = async (req: Request, res: Response
                 state,
                 stage: stage ? stage : "open",
                 last_remark,
-                next_call: next_call ? moment(next_call).format("DD/MM/YYYY") : ""
             };
         }
-
-        // Add dynamic reference column
-        pivotResult[party][reference] = total_sale_scope;
     });
 
     // Step 3: Convert pivotResult object into an array

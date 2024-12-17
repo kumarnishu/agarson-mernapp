@@ -11,19 +11,17 @@ export type GetReferenceDto = {
     [key: string]: string | number; // Index signature for dynamic reference columns
 };
 
-
 export type GetReferenceReportForSalesmanDto = {
     _id: string,
     party: string,
     address: string,
     state: string,
     stage:string,
-    next_call:string,
-    reference: string,
     status: string,
     last_remark: string
-    [key: string]: string | number;
 }
+
+
 
 
 export type GetReferenceExcelDto = {

@@ -6,55 +6,75 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
-import { ReferencesExcelButtons } from '../../components/buttons/ReferencesExcelButtons'
-import { GetAllSalesmanReferences } from '../../services/SalesServices'
-import { GetReferenceDto } from '../../dtos/references.dto'
+import {  GetAllSalesmanReferences } from '../../services/SalesServices'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import PopUp from '../../components/popup/PopUp'
 import { Comment, Visibility } from '@mui/icons-material'
+import { GetReferenceReportForSalesmanDto } from '../../dtos/references.dto'
 import CreateOrEditReferenceRemarkDialog from '../../components/dialogs/reference/CreateOrEditReferenceRemarkDialog'
 import ViewReferenceRemarksDialog from '../../components/dialogs/reference/ViewReferenceRemarksDialog'
 
-export default function ReferenceReportPageSalesman() {
-  const [reports, setReports] = useState<GetReferenceDto[]>([])
+export default function ReferencesReportPage() {
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferenceDto[]>, BackendError>(["references",], async () => GetAllSalesmanReferences())
-  const [dialog, setDialog] = useState<string | undefined>()
+  const [reports, setReports] = useState<GetReferenceReportForSalesmanDto[]>([])
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferenceReportForSalesmanDto[]>, BackendError>(["stages",], async () => GetAllSalesmanReferences())
   const isFirstRender = useRef(true);
-  const [party, setParty] = useState<string | undefined>()
-  const [stage, setStage] = useState<string | undefined>()
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-
+  const [dialog, setDialog] = useState<string | undefined>()
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
-
-  const columns = useMemo<MRT_ColumnDef<GetReferenceDto>[]>(() => {
-    // Step 1: Extract dynamic keys from the first row of reports (if available)
-    const dynamicKeys = reports?.length
-      ? Object.keys(reports[0]).filter(
-        (key) => !['party', 'address', 'state', 'last_remark', 'next_call','stage',].includes(key) // Exclude static keys
-      )
-      : [];
-
-    // Step 2: Define static columns
-    const staticColumns: MRT_ColumnDef<GetReferenceDto>[] = [
+  const [party, setParty] = useState<string | undefined>()
+  const [stage, setReference] = useState<string | undefined>()
+  
+  const columns = useMemo<MRT_ColumnDef<GetReferenceReportForSalesmanDto>[]>(
+    //column definitions...
+    () => reports && [
       {
-        accessorKey: 'last_remark',
-        header: 'Remark',
-        aggregationFn: 'count',
-        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        accessorKey: 'actions',
+        header: 'Actions',
+        Cell: (cell) => <PopUp key={'action'}
+          element={
+            <Stack direction="row" spacing={1} >
+              {LoggedInUser?.assigned_permissions.includes('salesman_references_report_view') && <Tooltip title="view remarks">
+                <IconButton color="primary"
+                  onClick={() => {
+                    setDialog('ViewReferenceRemarksDialog')
+                    setParty(cell.row.original.party)
+                    setReference(cell.row.original.stage)
+                  }}
+                >
+                  <Visibility />
+                </IconButton>
+              </Tooltip>}
+
+              {LoggedInUser?.assigned_permissions.includes('salesman_references_report_edit') &&
+                <Tooltip title="Add Remark">
+                  <IconButton
+
+                    color="success"
+                    onClick={() => {
+                      setDialog('CreateOrEditReferenceRemarkDialog')
+                      setParty(cell.row.original.party)
+                      setReference(cell.row.original.stage)
+                    }}
+                  >
+                    <Comment />
+                  </IconButton>
+                </Tooltip>}
+
+            </Stack>}
+        />
       },
-      {
-        accessorKey: 'next_call',
-        header: 'Next Call',
-        aggregationFn: 'count',
-        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-      },
-     
       {
         accessorKey: 'stage',
         header: 'Stage',
+        aggregationFn: 'count',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+      },
+      {
+        accessorKey: 'last_remark',
+        header: 'Last Remark',
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
@@ -75,63 +95,13 @@ export default function ReferenceReportPageSalesman() {
         header: 'State',
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-      }
-
-
-    ];
-
-    // Step 3: Define dynamic columns based on extracted keys
-    const dynamicColumns: MRT_ColumnDef<GetReferenceDto>[] = dynamicKeys.map((key) => ({
-      accessorKey: key,
-      header: key, // Use the dynamic key as the column header
-      Cell: ({ cell }) => HandleNumbers(cell.getValue()), // Optional: Format the value if needed
-      aggregationFn: 'sum', // Example: Aggregate total sale_scope
-      AggregatedCell: (cell) => HandleNumbers(cell.cell.getValue()), // Format aggregated value
-    }));
-
-    // Step 4: Combine static and dynamic columns
-    return [
-      {
-        accessorKey: 'actions',
-        header: 'Actions',
-        Cell: (cell) => <PopUp key={'action'}
-          element={
-            <Stack direction="row" spacing={1} >
-              {LoggedInUser?.assigned_permissions.includes('salesman_references_report_view') && <Tooltip title="view remarks">
-                <IconButton color="primary"
-                  onClick={() => {
-                    setDialog('ViewReferenceRemarksDialog')
-                    setParty(cell.row.original.party)
-                    setStage(cell.row.original.stage || "open")
-                  }}
-                >
-                  <Visibility />
-                </IconButton>
-              </Tooltip>}
-
-              {LoggedInUser?.assigned_permissions.includes('salesman_references_report_edit') &&
-                <Tooltip title="Add Remark">
-                  <IconButton
-
-                    color="success"
-                    onClick={() => {
-                      setDialog('CreateOrEditReferenceRemarkDialog')
-                      setParty(cell.row.original.party)
-                      setStage(cell.row.original.stage || "open")
-                    }}
-                  >
-                    <Comment />
-                  </IconButton>
-                </Tooltip>}
-
-            </Stack>}
-        />
       },
-      ...staticColumns,
-      ...dynamicColumns,
-    ];
-  }, [reports, LoggedInUser]);
-
+     
+   
+    ],
+    [reports],
+    //end
+  );
 
   const table = useMaterialReactTable({
     //@ts-ignore
@@ -154,13 +124,13 @@ export default function ReferenceReportPageSalesman() {
         color: 'white'
       },
     }),
-    muiTableHeadCellProps: ({ column }) => ({
+	muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-child(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
         },
         '& div:nth-child(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
+          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
         },
         '&:hover div:nth-child(1) span': {
           display: 'inline', // Visible on hover
@@ -205,7 +175,7 @@ export default function ReferenceReportPageSalesman() {
     if (typeof window !== 'undefined' && isSuccess) {
       setReports(data.data);
     }
-  }, [isSuccess, data]);
+  }, [isSuccess]);
 
   useEffect(() => {
     //scroll to the top of the table when the sorting changes
@@ -281,12 +251,7 @@ export default function ReferenceReportPageSalesman() {
         >
           Salesman References
         </Typography>
-        <Stack direction={'row'} gap={2} alignItems={'center'}>
-          <>
-
-            {LoggedInUser?.assigned_permissions.includes("references_report_create") && <ReferencesExcelButtons />}
-          </>
-        </Stack>
+       
       </Stack >
       {party && stage && <CreateOrEditReferenceRemarkDialog dialog={dialog} setDialog={setDialog} stage={stage} party={party} />}
       {party && stage && <ViewReferenceRemarksDialog dialog={dialog} setDialog={setDialog} party={party} stage={stage} />}
@@ -297,4 +262,3 @@ export default function ReferenceReportPageSalesman() {
   )
 
 }
-
