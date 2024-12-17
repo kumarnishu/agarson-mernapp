@@ -4,7 +4,7 @@ import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
 import { GetReferenceDto, GetReferenceExcelDto, GetReferenceReportForSalesmanDto } from "../dtos/references.dto";
 import isMongoId from "validator/lib/isMongoId";
 import { Reference } from "../models/references.model";
-import { isDate } from "moment";
+import moment, { isDate } from "moment";
 import { excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
 import { User } from "../models/user.model";
 import { ICRMState } from "../models/crm-state.model";
@@ -23,6 +23,8 @@ export const GetReferencesReport = async (req: Request, res: Response, next: Nex
                     state: { $first: "$state" },
                     pincode: { $first: "$pincode" },
                     business: { $first: "$business" },
+                    last_remark: { $first: "$last_remark" },
+                    next_call: { $first: "$next_call" },
                     stage: { $first: "$stage" }
                 },
             },
@@ -37,7 +39,9 @@ export const GetReferencesReport = async (req: Request, res: Response, next: Nex
                     state: 1,
                     stage: 1,
                     pincode: 1,
-                    business: 1
+                    business: 1,
+                    last_remark: 1,
+                    next_call: 1
                 },
             },
         ]);
@@ -46,7 +50,7 @@ export const GetReferencesReport = async (req: Request, res: Response, next: Nex
         const pivotResult: any = {};
 
         data.forEach((item) => {
-            const { party, reference, total_sale_scope, stage, gst, address, state, pincode, business } = item;
+            const { party, reference, total_sale_scope, stage, gst, address, last_remark, next_call, state, pincode, business } = item;
 
             // Initialize row for each party
             if (!pivotResult[party]) {
@@ -55,14 +59,16 @@ export const GetReferencesReport = async (req: Request, res: Response, next: Nex
                     gst,
                     address,
                     state,
-                    stage,
+                    stage: stage ? stage : "open",
                     pincode,
-                    business
+                    business,
+                    last_remark,
+                    next_call: next_call ? moment(next_call).format("DD/MM/YYYY") : ""
                 };
             }
 
             // Add dynamic reference column
-            pivotResult[party][reference] = total_sale_scope;
+            pivotResult[party][reference] = Math.round((total_sale_scope / 1000) - 0.1);
         });
 
         // Step 3: Convert pivotResult object into an array
@@ -100,7 +106,9 @@ export const GetReferencesReportForSalesman = async (req: Request, res: Response
                 total_sale_scope: { $sum: "$sale_scope" },
                 address: { $first: "$address" },
                 state: { $first: "$state" },
-                stage: { $first: "$stage" }
+                stage: { $first: "$stage" },
+                last_remark: { $first: "$last_remark" },
+                next_call: { $first: "$next_call" },
             },
         },
         {
@@ -112,6 +120,8 @@ export const GetReferencesReportForSalesman = async (req: Request, res: Response
                 address: 1,
                 state: 1,
                 stage: 1,
+                last_remark: 1,
+                next_call: 1
             },
         },
     ]);
@@ -120,7 +130,7 @@ export const GetReferencesReportForSalesman = async (req: Request, res: Response
     const pivotResult: any = {};
 
     data.forEach((item) => {
-        const { party, reference, total_sale_scope, stage, gst, address, state, pincode, business } = item;
+        const { party, reference, total_sale_scope, stage, address, state, last_remark, next_call } = item;
 
         // Initialize row for each party
         if (!pivotResult[party]) {
@@ -128,7 +138,9 @@ export const GetReferencesReportForSalesman = async (req: Request, res: Response
                 party,
                 address,
                 state,
-                stage,
+                stage: stage ? stage : "open",
+                last_remark,
+                next_call: next_call ? moment(next_call).format("DD/MM/YYYY") : ""
             };
         }
 
@@ -140,7 +152,7 @@ export const GetReferencesReportForSalesman = async (req: Request, res: Response
     const finalResult: GetReferenceReportForSalesmanDto[] = Object.values(pivotResult);
 
     return res.status(200).json(finalResult);
-   
+
 }
 
 export const BulkCreateAndUpdateReferenceFromExcel = async (req: Request, res: Response, next: NextFunction) => {

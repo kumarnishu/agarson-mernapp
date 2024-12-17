@@ -33,12 +33,24 @@ export default function ReferencesReportPage() {
     // Step 1: Extract dynamic keys from the first row of reports (if available)
     const dynamicKeys = reports?.length
       ? Object.keys(reports[0]).filter(
-        (key) => !['party', 'gst', 'address', 'state', 'stage', 'pincode', 'business'].includes(key) // Exclude static keys
+        (key) => !['party', 'gst', 'address', 'state', 'stage', 'last_remark', 'next_call', 'pincode', 'business'].includes(key) // Exclude static keys
       )
       : [];
 
     // Step 2: Define static columns
     const staticColumns: MRT_ColumnDef<GetReferenceDto>[] = [
+      {
+        accessorKey: 'last_remark',
+        header: 'Remark',
+        aggregationFn: 'count',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+      },
+      {
+        accessorKey: 'next_call',
+        header: 'Next Call',
+        aggregationFn: 'count',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+      },
       {
         accessorKey: 'stage',
         header: 'Stage',
@@ -99,7 +111,7 @@ export default function ReferencesReportPage() {
                   onClick={() => {
                     setDialog('ViewReferenceRemarksDialog')
                     setParty(cell.row.original.party)
-                     setStage(cell.row.original.stage||"open")
+                    setStage(cell.row.original.stage || "open")
                   }}
                 >
                   <Visibility />
@@ -114,7 +126,7 @@ export default function ReferencesReportPage() {
                     onClick={() => {
                       setDialog('CreateOrEditReferenceRemarkDialog')
                       setParty(cell.row.original.party)
-                       setStage(cell.row.original.stage||"open")
+                      setStage(cell.row.original.stage || "open")
                     }}
                   >
                     <Comment />
@@ -202,7 +214,7 @@ export default function ReferencesReportPage() {
     if (typeof window !== 'undefined' && isSuccess) {
       setReports(data.data);
     }
-  }, [isSuccess]);
+  }, [isSuccess, data]);
 
   useEffect(() => {
     //scroll to the top of the table when the sorting changes

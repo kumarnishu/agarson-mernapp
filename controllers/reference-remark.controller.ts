@@ -60,7 +60,7 @@ export const NewReferenceRemark = async (req: Request, res: Response, next: Next
         remark,
         party,
         next_date, stage } = req.body as CreateOrEditReferenceRemarkDto
-    if (!remark || !party ) return res.status(403).json({ message: "please fill required fields" })
+    if (!remark || !party) return res.status(403).json({ message: "please fill required fields" })
 
     console.log(stage)
 
@@ -76,10 +76,10 @@ export const NewReferenceRemark = async (req: Request, res: Response, next: Next
         new_remark.next_call = new Date(next_date)
     }
     if (stage && next_date) {
-        await Reference.updateMany({ party: party }, { stgae: stage, next_call: new Date(next_date) })
+        await Reference.updateMany({ party: party }, { stage: stage, next_call: new Date(next_date), last_remark: remark })
     }
     else if (stage) {
-        await Reference.updateMany({ party: party }, { stgae: stage })
+        await Reference.updateMany({ party: party }, { stage: stage, last_remark: remark })
     }
     await new_remark.save()
     return res.status(200).json({ message: "remark added successfully" })
