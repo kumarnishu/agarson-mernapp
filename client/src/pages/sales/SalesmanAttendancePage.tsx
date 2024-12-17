@@ -110,6 +110,12 @@ function SalesmanAttendancePage() {
 
             },
             {
+                accessorKey: 'sunday_working',
+                header: ' Sunday Wokring',
+                aggregationFn: 'count',
+
+            },
+            {
                 accessorKey: 'station.value',
                 header: ' Station',
                 aggregationFn: 'count'

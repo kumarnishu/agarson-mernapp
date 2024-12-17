@@ -8,6 +8,7 @@ export type ISalesAttendance = {
     employee: IUser,
     date: Date,
     attendance: string,
+    is_sunday_working:boolean,
     new_visit: number,
     old_visit: number,
     remark: string,
@@ -38,7 +39,7 @@ const SalesAttendanceSchema = new mongoose.Schema<ISalesAttendance, mongoose.Mod
         lowercase: true,
         required: true
     },
-
+    is_sunday_working: { type: Boolean, default: false },
     new_visit: {
         type: Number,
         default: 0

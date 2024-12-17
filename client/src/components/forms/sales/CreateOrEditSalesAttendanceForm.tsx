@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Stack, TextField } from '@mui/material';
+import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useContext, useEffect } from 'react';
@@ -41,6 +41,7 @@ function CreateOrEditSalesAttendanceForm({ attendance, setDialog }: { attendance
         initialValues: {
             station: attendance ? attendance.station.id : "",
             employee: attendance ? attendance.employee.id : "",
+            is_sunday_working: attendance && attendance.sunday_working == "yes" ? true : false,
             in_time: attendance ? attendance.in_time : '',
             old_visit: attendance ? attendance.old_visit : 0,
             attendance: attendance ? attendance.attendance : 'absent',
@@ -57,6 +58,7 @@ function CreateOrEditSalesAttendanceForm({ attendance, setDialog }: { attendance
             old_visit: Yup.number().max(25, "should not be more than 10")
                 .required('Required field'),
             in_time: Yup.string(),
+            is_sunday_working: Yup.boolean(),
             attendance: Yup.string()
                 .required('Required field'),
             end_time: Yup.string(),
@@ -249,6 +251,13 @@ function CreateOrEditSalesAttendanceForm({ attendance, setDialog }: { attendance
                     }
                     {...formik.getFieldProps('end_time')}
                 />
+
+                {new Date(formik.values.date).getDay() == 0 && <FormGroup>
+                    <FormControlLabel control={<Checkbox
+                        checked={formik.values.is_sunday_working}
+                        {...formik.getFieldProps('is_sunday_working')}
+                    />} label="Make Sunday Working" />
+                </FormGroup>}
 
                 <TextField
                     fullWidth
