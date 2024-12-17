@@ -12,6 +12,8 @@ import { GetReferenceDto } from '../../dtos/references.dto'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import PopUp from '../../components/popup/PopUp'
 import { Comment, Visibility } from '@mui/icons-material'
+import CreateOrEditReferenceRemarkDialog from '../../components/dialogs/reference/CreateOrEditReferenceRemarkDialog'
+import ViewReferenceRemarksDialog from '../../components/dialogs/reference/ViewReferenceRemarksDialog'
 
 export default function ReferencesReportPage() {
   const [reports, setReports] = useState<GetReferenceDto[]>([])
@@ -19,7 +21,8 @@ export default function ReferencesReportPage() {
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferenceDto[]>, BackendError>(["references",], async () => GetAllReferences())
   const [dialog, setDialog] = useState<string | undefined>()
   const isFirstRender = useRef(true);
-
+  const [party, setParty] = useState<string | undefined>()
+  const [reference, setReference] = useState<string | undefined>()
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
 
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
@@ -35,30 +38,30 @@ export default function ReferencesReportPage() {
         Cell: (cell) => <PopUp key={'action'}
           element={
             <Stack direction="row" spacing={1} >
-              {LoggedInUser?.assigned_permissions.includes('grp_excel_view') && <Tooltip title="view remarks">
+              {LoggedInUser?.assigned_permissions.includes('references_report_view') && <Tooltip title="view remarks">
                 <IconButton color="primary"
-
                   onClick={() => {
-                    setDialog('ViewExcelDBRemarksDialog')
-                    
+                    setDialog('ViewReferenceRemarksDialog')
+                    setParty(cell.row.original.party)
+                    setReference(cell.row.original.reference)
                   }}
                 >
                   <Visibility />
                 </IconButton>
               </Tooltip>}
 
-              {LoggedInUser?.assigned_permissions.includes('grp_excel_edit') &&
+              {LoggedInUser?.assigned_permissions.includes('references_report_edit') &&
                 <Tooltip title="Add Remark">
                   <IconButton
 
                     color="success"
                     onClick={() => {
-
-                      setDialog('CreateOrEditExcelDBRemarkDialog')
-                    
+                      setDialog('CreateOrEditReferenceRemarkDialog')
+                      setParty(cell.row.original.party)
+                      setReference(cell.row.original.reference)
                     }}
                   >
-                    <Comment  />
+                    <Comment />
                   </IconButton>
                 </Tooltip>}
 
@@ -269,12 +272,12 @@ export default function ReferencesReportPage() {
         <Stack direction={'row'} gap={2} alignItems={'center'}>
           <>
 
-            {user?.assigned_permissions.includes("references_report_create") && <ReferencesExcelButtons />}
+            {LoggedInUser?.assigned_permissions.includes("references_report_create") && <ReferencesExcelButtons />}
           </>
         </Stack>
       </Stack >
-      {id && obj && <CreateOrEditExcelDBRemarkDialog dialog={dialog} setDialog={setDialog} category={id} obj={obj} />}
-      {id && obj && <ViewExcelDBRemarksDialog dialog={dialog} setDialog={setDialog} id={id} obj={obj} />}
+      {party && reference && <CreateOrEditReferenceRemarkDialog dialog={dialog} setDialog={setDialog} reference={reference} party={party} />}
+      {party && reference && <ViewReferenceRemarksDialog dialog={dialog} setDialog={setDialog} party={party} reference={reference} />}
       {/* table */}
       <MaterialReactTable table={table} />
     </>

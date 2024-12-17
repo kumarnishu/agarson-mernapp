@@ -68,7 +68,7 @@ export const NewReferenceRemark = async (req: Request, res: Response, next: Next
     let new_remark = new ReferenceRemark({
         remark,
         party: party.trim().toLowerCase(),
-        ref: ref.trim().toLowerCase(),
+        reference: ref.trim().toLowerCase(),
         created_at: new Date(Date.now()),
         created_by: req.user,
         updated_at: new Date(Date.now()),

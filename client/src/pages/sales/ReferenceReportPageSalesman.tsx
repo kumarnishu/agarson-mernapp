@@ -1,4 +1,4 @@
-import { IconButton, LinearProgress, Typography } from '@mui/material'
+import { IconButton, LinearProgress, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
@@ -6,11 +6,13 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
-import { ReferencesExcelButtons } from '../../components/buttons/ReferencesExcelButtons'
 import {  GetAllSalesmanReferences } from '../../services/SalesServices'
 import { GetReferenceDto } from '../../dtos/references.dto'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import PopUp from '../../components/popup/PopUp'
+import { Comment, Visibility } from '@mui/icons-material'
+import CreateOrEditReferenceRemarkDialog from '../../components/dialogs/reference/CreateOrEditReferenceRemarkDialog'
+import ViewReferenceRemarksDialog from '../../components/dialogs/reference/ViewReferenceRemarksDialog'
 
 export default function ReferencesReportPage() {
   const { user: LoggedInUser } = useContext(UserContext)
@@ -22,11 +24,48 @@ export default function ReferencesReportPage() {
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
-
+  const [party, setParty] = useState<string | undefined>()
+  const [reference, setReference] = useState<string | undefined>()
+  
   const columns = useMemo<MRT_ColumnDef<GetReferenceDto>[]>(
     //column definitions...
     () => reports && [
-     
+      {
+        accessorKey: 'actions',
+        header: 'Actions',
+        Cell: (cell) => <PopUp key={'action'}
+          element={
+            <Stack direction="row" spacing={1} >
+              {LoggedInUser?.assigned_permissions.includes('salesman_references_report_view') && <Tooltip title="view remarks">
+                <IconButton color="primary"
+                  onClick={() => {
+                    setDialog('ViewReferenceRemarksDialog')
+                    setParty(cell.row.original.party)
+                    setReference(cell.row.original.reference)
+                  }}
+                >
+                  <Visibility />
+                </IconButton>
+              </Tooltip>}
+
+              {LoggedInUser?.assigned_permissions.includes('salesman_references_report_edit') &&
+                <Tooltip title="Add Remark">
+                  <IconButton
+
+                    color="success"
+                    onClick={() => {
+                      setDialog('CreateOrEditReferenceRemarkDialog')
+                      setParty(cell.row.original.party)
+                      setReference(cell.row.original.reference)
+                    }}
+                  >
+                    <Comment />
+                  </IconButton>
+                </Tooltip>}
+
+            </Stack>}
+        />
+      },
       {
         accessorKey: 'party',
         header: 'Party',
@@ -205,14 +244,10 @@ export default function ReferencesReportPage() {
         >
           Salesman References
         </Typography>
-        <Stack direction={'row'} gap={2} alignItems={'center'}>
-          <>
-
-            {LoggedInUser?.assigned_permissions.includes("references_report_create") && <ReferencesExcelButtons />}
-          </>
-        </Stack>
+       
       </Stack >
-
+      {party && reference && <CreateOrEditReferenceRemarkDialog dialog={dialog} setDialog={setDialog} reference={reference} party={party} />}
+      {party && reference && <ViewReferenceRemarksDialog dialog={dialog} setDialog={setDialog} party={party} reference={reference} />}
       {/* table */}
       <MaterialReactTable table={table} />
     </>

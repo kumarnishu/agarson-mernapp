@@ -51,9 +51,13 @@ import ExpenseRoutes from "./expense.route"
 import ExpenseItemRoutes from "./expense-item.route"
 import ReferencesRoutes from "./references.routes"
 import DriverSystemRoutes from "./driver-system.route"
+import ReferenceROutes from "./references.routes"
+import ReferenceRemarkRoutes from "./reference-remark.routes"
 
 
 router.use(ArticlesRoutes);
+router.use(ReferenceROutes);
+router.use(ReferenceRemarkRoutes);
 router.use(DriverSystemRoutes)
 router.use(ReferencesRoutes);
 router.use(AuthRoutes);

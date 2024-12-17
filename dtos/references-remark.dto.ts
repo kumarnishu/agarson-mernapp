@@ -11,6 +11,7 @@ export type GetReferenceRemarksDto = {
 export type CreateOrEditReferenceRemarkDto = {
     remark: string,
     party: string,
+    stage:string,
     ref: string,
     next_date?: string
 }

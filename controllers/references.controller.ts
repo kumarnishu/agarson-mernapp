@@ -247,7 +247,7 @@ export const DownloadExcelTemplateForCreateReferenceReport = async (req: Request
     let checklist: any[] = [
         {
             _id: 'wwwewew',
-            date: '2024-01-12',
+            date: '01-12-2024',
             gst: '22AAAAA0000A15',
             party: 'sunrise traders',
             address: 'mumbai maharashtra',
@@ -258,53 +258,53 @@ export const DownloadExcelTemplateForCreateReferenceReport = async (req: Request
             reference: 'A'
         }
     ]
-    const data = await Reference.aggregate(
-        [
-            {
-                $group: {
-                    _id: { reference: "$reference", party: "$party", date: "$date" }, // Group by reference, party, and date
-                    id: { $first: "$_id" },
-                    total_sale_scope: { $sum: "$sale_scope" }, // Summing sale_scope for each group
-                    gst: { $first: "$gst" }, // Assuming same GST for each group
-                    address: { $first: "$address" }, // Assuming same address for each group
-                    state: { $first: "$state" }, // Assuming same state for each group
-                    pincode: { $first: "$pincode" }, // Assuming same pincode for each group
-                    business: { $first: "$business" }, // Assuming same business for each group
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    id: "$id",
-                    reference: "$_id.reference",
-                    party: "$_id.party",
-                    date: "$_id.date",
-                    total_sale_scope: 1,
-                    gst: 1,
-                    address: 1,
-                    state: 1,
-                    pincode: 1,
-                    business: 1
-                }
-            }
-        ]
-    )
+    // const data = await Reference.aggregate(
+    //     [
+    //         {
+    //             $group: {
+    //                 _id: { reference: "$reference", party: "$party", date: "$date" }, // Group by reference, party, and date
+    //                 id: { $first: "$_id" },
+    //                 total_sale_scope: { $sum: "$sale_scope" }, // Summing sale_scope for each group
+    //                 gst: { $first: "$gst" }, // Assuming same GST for each group
+    //                 address: { $first: "$address" }, // Assuming same address for each group
+    //                 state: { $first: "$state" }, // Assuming same state for each group
+    //                 pincode: { $first: "$pincode" }, // Assuming same pincode for each group
+    //                 business: { $first: "$business" }, // Assuming same business for each group
+    //             }
+    //         },
+    //         {
+    //             $project: {
+    //                 _id: 0,
+    //                 id: "$id",
+    //                 reference: "$_id.reference",
+    //                 party: "$_id.party",
+    //                 date: "$_id.date",
+    //                 total_sale_scope: 1,
+    //                 gst: 1,
+    //                 address: 1,
+    //                 state: 1,
+    //                 pincode: 1,
+    //                 business: 1
+    //             }
+    //         }
+    //     ]
+    // )
 
 
-    if (data.length > 0)
-        checklist = data.map((ref) => {
-            return {
-                _id: ref.id,
-                gst: ref.gst,
-                party: ref.party,
-                address: ref.address,
-                state: ref.state,
-                pincode: ref.pincode,
-                business: ref.business,
-                sale_scope: ref.total_sale_scope,
-                reference: ref.reference
-            }
-        })
+    // if (data.length > 0)
+    //     checklist = data.map((ref) => {
+    //         return {
+    //             _id: ref.id,
+    //             gst: ref.gst,
+    //             party: ref.party,
+    //             address: ref.address,
+    //             state: ref.state,
+    //             pincode: ref.pincode,
+    //             business: ref.business,
+    //             sale_scope: ref.total_sale_scope,
+    //             reference: ref.reference
+    //         }
+    //     })
     let template: { sheet_name: string, data: any[] }[] = []
     template.push({ sheet_name: 'template', data: checklist })
     ConvertJsonToExcel(template)
