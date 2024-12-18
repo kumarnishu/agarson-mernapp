@@ -6,7 +6,7 @@ import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
-import { Assignment, Block, DeviceHubOutlined, Edit, GroupAdd, GroupRemove, Key, KeyOffOutlined, RemoveCircle, Restore } from '@mui/icons-material'
+import { Assignment, Block, DeviceHubOutlined, Edit, GroupAdd, GroupRemove, Key, KeyOffOutlined, RemoveCircle, Restore, RoundaboutLeft } from '@mui/icons-material'
 import { UserContext } from '../../contexts/userContext'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { DownloadFile } from '../../utils/DownloadFile'
@@ -254,7 +254,7 @@ export default function UsersPage() {
                                     color="info"
                                     onClick={() => mutate({ body: { user_id: cell.row.original._id || "", impersnate_id: LoggedInUser._id || "" } })}
                                 >
-                                    <KeyOffOutlined />
+                                    <RoundaboutLeft />
                                 </IconButton>
                             </Tooltip>}
                         </Stack >} />
