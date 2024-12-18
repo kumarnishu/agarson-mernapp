@@ -34,7 +34,7 @@ function App() {
 
   return (
     <>
-      {user && user?.impersonated_user && user?.impersonated_user.is_admin && <Button disabled onClick={() => mutate({ body: { user_id: user?._id || "", impersnate_id: user?.impersonated_user._id || "" } })}>{`Back To ${user.impersonated_user.username}`}</Button >}
+      {user && user?.impersonated_user && user?.impersonated_user.is_admin && <Button disabled={true} onClick={() => mutate({ body: { user_id: user?._id || "", impersnate_id: user?.impersonated_user._id || "" } })}>{`Back To ${user.impersonated_user.username}`}</Button >}
       {alert && <AlertBar message={alert.message} color={alert.color} variant={alert.variant} />
       }
       {!loading && < AppRoutes />}

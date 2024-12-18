@@ -251,6 +251,7 @@ export default function UsersPage() {
                             </Tooltip>
                             {!LoggedInUser?.impersonated_user && LoggedInUser?.is_admin && < Tooltip title={`login as this user ${cell.row.original.username || ""}`}>
                                 <IconButton
+                                    disabled={LoggedInUser?._id === cell.row.original._id}
                                     color="info"
                                     onClick={() => mutate({ body: { user_id: cell.row.original._id || "", impersnate_id: LoggedInUser._id || "" } })}
                                 >
