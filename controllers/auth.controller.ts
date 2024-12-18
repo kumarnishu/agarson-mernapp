@@ -361,28 +361,28 @@ export const LoginByThisUser = async (req: Request, res: Response, next: NextFun
     res.status(200).json({ message: "success" })
 }
 
-export const BackToMyAccount = async (req: Request, res: Response, next: NextFunction) => {
-    const { user_id, impersnate_id } = req.body as GetLoginByThisUserDto
-    if (!user_id)
-        return res.status(400).json({ message: "please select user" })
-    if (!impersnate_id || !req.user)
-        return res.status(400).json({ message: "please login" })
+// export const BackToMyAccount = async (req: Request, res: Response, next: NextFunction) => {
+//     const { user_id, impersnate_id } = req.body as GetLoginByThisUserDto
+//     if (!user_id)
+//         return res.status(400).json({ message: "please select user" })
+//     if (!impersnate_id || !req.user)
+//         return res.status(400).json({ message: "please login" })
 
-    let user1 = await User.findById(user_id)
-    if (!user1)
-        return res.status(404).json({ message: "user not exists" })
+//     let user1 = await User.findById(user_id)
+//     if (!user1)
+//         return res.status(404).json({ message: "user not exists" })
 
-    let user2 = await User.findById(impersnate_id)
-    if (!user2)
-        return res.status(404).json({ message: "Impersnated user not exists" })
-    console.log(user1.username, user2.username)
-    //logout user1
-    deleteToken(res, user1.access_token)
-    await User.findByIdAndUpdate(user1._id, { access_token: undefined, impersonated_user: undefined })
-    //login user2
-    let token1 = user2.getAccessToken();
-    sendUserToken(res, token1)
-    await User.findByIdAndUpdate(impersnate_id, { access_token: token1, impersonated_user: undefined })
+//     let user2 = await User.findById(impersnate_id)
+//     if (!user2)
+//         return res.status(404).json({ message: "Impersnated user not exists" })
+//     console.log(user1.username, user2.username)
+//     //logout user1
+//     deleteToken(res, user1.access_token)
+//     await User.findByIdAndUpdate(user1._id, { access_token: undefined, impersonated_user: undefined })
+//     //login user2
+//     let token1 = user2.getAccessToken();
+//     sendUserToken(res, token1)
+//     await User.findByIdAndUpdate(impersnate_id, { access_token: token1, impersonated_user: undefined })
 
-    res.status(200).json({ message: "success" })
-}
+//     res.status(200).json({ message: "success" })
+// }

@@ -18,11 +18,7 @@ export const LoginByThisUser = async (
 ) => {
   return await apiClient.post("loginbythisuser", body);
 };
-export const BackTomyAccount = async (
-  { body }: { body: GetLoginByThisUserDto }
-) => {
-  return await apiClient.post("backtomyacount", body);
-};
+
 // signup new organization and owner
 export const Signup = async (body: FormData) => {
   return await apiClient.post("signup", body);
