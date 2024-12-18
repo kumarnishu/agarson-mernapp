@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import AppRoutes from "./Routes";
 import { LoadingContext } from "./contexts/loaderContext";
 import { Button, LinearProgress } from "@mui/material";
@@ -34,7 +34,7 @@ function App() {
 
   return (
     <>
-      {user?.impersonated_user && <Button onClick={() => mutate({ body: { user_id: user?._id || "", impersnate_id: user?.impersonated_user.id || "" } })}>Back To My Account</Button >}
+      {user?.impersonated_user && <Button onClick={() => mutate({ body: { user_id: user?._id || "", impersnate_id: user?.impersonated_user.id || "" } })}>{`Back To ${user.impersonated_user.label}`}</Button >}
       {alert && <AlertBar message={alert.message} color={alert.color} variant={alert.variant} />
       }
       {!loading && < AppRoutes />}
