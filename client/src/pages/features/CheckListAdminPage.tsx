@@ -6,7 +6,7 @@ import { Box, Button, Fade, IconButton, Menu, MenuItem, Stack, TextField, Toolti
 import { UserContext } from '../../contexts/userContext'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_Row, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import PopUp from '../../components/popup/PopUp'
 import { Delete, Edit, FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
 import { DownloadFile } from '../../utils/DownloadFile'
@@ -27,7 +27,8 @@ import { GetChecklistBoxDto } from '../../dtos/checklist-box.dto'
 import { GetChecklistDto, GetChecklistFromExcelDto } from '../../dtos/checklist.dto'
 import { GetUsersForDropdown } from '../../services/UserServices'
 import { DropDownDto } from '../../dtos/dropdown.dto'
-
+import { jsPDF } from 'jspdf'; //or use your library of choice here
+import autoTable from 'jspdf-autotable';
 
 function CheckListAdminPage() {
   const { user: LoggedInUser } = useContext(UserContext)
@@ -73,7 +74,19 @@ function CheckListAdminPage() {
       }
     })
 
+  const handleExportRows = (rows: MRT_Row<GetChecklistDto>[], filename: string) => {
+    const doc = new jsPDF();
+    const tableData = rows.map((row) => Object.values(row.original));
+    const tableHeaders = columns.map((c) => c.header);
 
+    autoTable(doc, {
+      head: [tableHeaders],
+      //@ts-ignore
+      body: tableData,
+    });
+
+    doc.save(`${filename}`);
+  };
 
   const columns = useMemo<MRT_ColumnDef<GetChecklistDto>[]>(
     //column definitions...
@@ -424,7 +437,7 @@ function CheckListAdminPage() {
     muiTableContainerProps: (table) => ({
       sx: { maxHeight: table.table.getState().isFullScreen ? 'auto' : '64vh' }
     }),
-    
+
     muiTableHeadRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',
@@ -788,7 +801,15 @@ function CheckListAdminPage() {
           ExportToExcel(data, "Checklists Data")
         }}
 
-        >Export Selected</MenuItem>}
+        >Export Selected </MenuItem>}
+
+        {LoggedInUser?.assigned_permissions.includes('checklist_admin_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => {
+          handleExportRows(table.getSelectedRowModel().rows, "Checklists Data")
+        }}
+
+        >Export PDF</MenuItem>}
+
+
       </Menu>
 
       <CreateOrEditCheckListDialog dialog={dialog} setDialog={setDialog} checklist={checklist} setChecklist={setChecklist} />
