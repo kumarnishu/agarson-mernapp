@@ -4,7 +4,10 @@ export type LoginDto = {
     password: string,
     multi_login_token: string
 }
-
+export type GetLoginByThisUserDto={
+    user_id:string,
+    impersnate_id:string
+}
 export type AssignUsersDto = {
     ids: string[]
 }

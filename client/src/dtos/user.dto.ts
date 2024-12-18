@@ -12,6 +12,7 @@ export type GetUserDto = {
   _id: string,
   username: string,
   alias1: string,
+  impersonated_user: DropDownDto,
   alias2: string,
   email: string,
   mobile: string,

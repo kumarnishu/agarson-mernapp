@@ -1,3 +1,4 @@
+import { GetLoginByThisUserDto } from "../dtos/auth.dto";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 
@@ -12,6 +13,16 @@ export const Login = async (
   return await apiClient.post("login", body);
 };
 
+export const LoginByThisUser = async (
+  { body }: { body: GetLoginByThisUserDto }
+) => {
+  return await apiClient.post("loginbythisuser", body);
+};
+export const BackTomyAccount = async (
+  { body }: { body: GetLoginByThisUserDto }
+) => {
+  return await apiClient.post("backtomyacount", body);
+};
 // signup new organization and owner
 export const Signup = async (body: FormData) => {
   return await apiClient.post("signup", body);

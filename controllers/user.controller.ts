@@ -77,6 +77,7 @@ export const SignUp = async (req: Request, res: Response, next: NextFunction) =>
         mobile: owner.mobile,
         dp: owner.dp?.public_url || "",
         orginal_password: owner.orginal_password,
+        impersonated_user: owner.impersonated_user && { id: owner.impersonated_user._id, label: owner.impersonated_user.username },
         is_admin: owner.is_admin,
         email_verified: owner.email_verified,
         mobile_verified: owner.mobile_verified,
@@ -272,6 +273,7 @@ export const UpdateProfile = async (req: Request, res: Response, next: NextFunct
     })
     return res.status(200).json({ message: "profile updated" })
 }
+
 export const AssignUsers = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const { ids } = req.body as AssignUsersDto
@@ -386,7 +388,7 @@ export const GetUsersForAssignmentPage = async (req: Request, res: Response, nex
                     id: u._id, label: u.username, value: u.username
                 }
             }),
-
+            impersonated_user: u.impersonated_user && { id: u.impersonated_user._id, label: u.impersonated_user.username },
             assigned_crm_states: u.assigned_crm_states.length || 0,
             assigned_crm_cities: u.assigned_crm_cities.length || 0,
             assigned_permissions: u.assigned_permissions,
@@ -413,6 +415,7 @@ export const GetProfile = async (req: Request, res: Response, next: NextFunction
             email: user.email,
             mobile: user.mobile,
             dp: user.dp?.public_url || "",
+            impersonated_user: user.impersonated_user && { id: user.impersonated_user._id, label: user.impersonated_user.username },
             orginal_password: user.orginal_password,
             is_admin: user.is_admin,
             email_verified: user.email_verified,

@@ -2,7 +2,7 @@ import { Avatar, Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
@@ -10,7 +10,7 @@ import { Assignment, Block, DeviceHubOutlined, Edit, GroupAdd, GroupRemove, Key,
 import { UserContext } from '../../contexts/userContext'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { DownloadFile } from '../../utils/DownloadFile'
-import { GetUsers } from '../../services/UserServices'
+import { GetUsers, LoginByThisUser } from '../../services/UserServices'
 import NewUserDialog from '../../components/dialogs/users/NewUserDialog'
 import AssignPermissionsToUsersDialog from '../../components/dialogs/users/AssignPermissionsToUsersDialog'
 import PopUp from '../../components/popup/PopUp'
@@ -27,6 +27,8 @@ import AssignUsersDialog from '../../components/dialogs/users/AssignUsersDialog'
 import AssignPermissionsToOneUserDialog from '../../components/dialogs/users/AssignPermissionsToOneUserDialog'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { GetUserDto } from '../../dtos/user.dto'
+import { GetLoginByThisUserDto } from '../../dtos/auth.dto'
+import { AlertContext } from '../../contexts/alertContext'
 
 export default function UsersPage() {
     const [hidden, setHidden] = useState(false)
@@ -38,8 +40,19 @@ export default function UsersPage() {
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [flag, setFlag] = useState(1);
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
-    const isFirstRender = useRef(true);
+    const { setAlert } = useContext(AlertContext)
 
+    const isFirstRender = useRef(true);
+    const { mutate } = useMutation
+        <AxiosResponse<{ user: GetUserDto, token: string }>,
+            BackendError,
+            { body: GetLoginByThisUserDto }
+        >(LoginByThisUser, {
+            onSuccess: () => {
+                window.location.reload()
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+        })
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
 
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
@@ -236,8 +249,15 @@ export default function UsersPage() {
                                     <KeyOffOutlined />
                                 </IconButton>
                             </Tooltip>
-
-                        </Stack>} />
+                            {!LoggedInUser?.impersonated_user && LoggedInUser?.is_admin && < Tooltip title={`login as this user ${cell.row.original.username || ""}`}>
+                                <IconButton
+                                    color="info"
+                                    onClick={() => mutate({ body: { user_id: cell.row.original._id || "", impersnate_id: LoggedInUser._id || "" } })}
+                                >
+                                    <KeyOffOutlined />
+                                </IconButton>
+                            </Tooltip>}
+                        </Stack >} />
 
             },
 
@@ -354,22 +374,22 @@ export default function UsersPage() {
         }),
         muiTableContainerProps: (table) => ({
             sx: { height: table.table.getState().isFullScreen ? 'auto' : '65vh' }
-        }),muiTableHeadCellProps: ({ column }) => ({
+        }), muiTableHeadCellProps: ({ column }) => ({
             sx: {
-              '& div:nth-child(1) span': {
-                display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
-              },
-              '& div:nth-child(2)': {
-                display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
-              },
-              '&:hover div:nth-child(1) span': {
-                display: 'inline', // Visible on hover
-              },
-              '&:hover div:nth-child(2)': {
-                display: 'block', // Visible on hover
-              }
+                '& div:nth-child(1) span': {
+                    display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
+                },
+                '& div:nth-child(2)': {
+                    display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
+                },
+                '&:hover div:nth-child(1) span': {
+                    display: 'inline', // Visible on hover
+                },
+                '&:hover div:nth-child(2)': {
+                    display: 'block', // Visible on hover
+                }
             },
-          }),
+        }),
         muiTableHeadRowProps: () => ({
             sx: {
                 backgroundColor: 'whitesmoke',
@@ -532,7 +552,7 @@ export default function UsersPage() {
 
                                 onClick={() => {
                                     if (!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()) {
-                                        alert("select some users")
+                                        setAlert({ message: "select some users", color: 'info' })
                                     }
                                     else {
                                         setDialog('AssignPermissionsToUsersDialog')
@@ -546,7 +566,7 @@ export default function UsersPage() {
 
                                 onClick={() => {
                                     if (!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()) {
-                                        alert("select some users")
+                                        setAlert({ message: "select some users", color: 'info' })
                                     }
                                     else {
                                         setDialog('AssignPermissionsToUsersDialog')

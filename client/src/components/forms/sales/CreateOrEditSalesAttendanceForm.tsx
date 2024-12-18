@@ -88,6 +88,14 @@ function CreateOrEditSalesAttendanceForm({ attendance, setDialog }: { attendance
         }
     }, [isSuccess])
 
+    useEffect(() => {
+        if (new Date(formik.values.date).getDay() == 0)
+            formik.values.is_sunday_working = true
+        else
+            formik.values.is_sunday_working = false
+
+    }, [formik.values.date])
+
     return (
         <form onSubmit={formik.handleSubmit}>
 

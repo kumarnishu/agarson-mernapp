@@ -1,7 +1,7 @@
 import express from "express";
 import { isAdmin, isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { MakeAdmin, AllowMultiLogin, BlockMultiLogin, BlockUser, UnBlockUser, RemoveAdmin,  Login, Logout, updatePassword, resetUserPassword, ResetPassword, VerifyEmail, GetAllPermissions, AssignPermissionsToUsers, AssignPermissionsToOneUser } from "../controllers/auth.controller";
-const router = express.Router() 
+import { MakeAdmin, AllowMultiLogin, BlockMultiLogin, BlockUser, UnBlockUser, RemoveAdmin, Login, Logout, updatePassword, resetUserPassword, ResetPassword, VerifyEmail, GetAllPermissions, AssignPermissionsToUsers, AssignPermissionsToOneUser, LoginByThisUser, BackToMyAccount } from "../controllers/auth.controller";
+const router = express.Router()
 
 
 router.patch("/make-admin/user/:id", isAuthenticatedUser, isAdmin, MakeAdmin)
@@ -10,6 +10,9 @@ router.patch("/block/multi_login/:id", isAuthenticatedUser, isAdmin, BlockMultiL
 router.patch("/block/user/:id", isAuthenticatedUser, isAdmin, BlockUser)
 router.patch("/unblock/user/:id", isAuthenticatedUser, isAdmin, UnBlockUser)
 router.patch("/remove-admin/user/:id", isAuthenticatedUser, isAdmin, RemoveAdmin)
+router.post("/login", Login)
+router.post("/loginbythisuser", isAuthenticatedUser, LoginByThisUser)
+router.post("/backtomyacount", isAuthenticatedUser, BackToMyAccount)
 router.post("/login", Login)
 router.post("/logout", Logout)
 router.route("/password/update").patch(isAuthenticatedUser, updatePassword)

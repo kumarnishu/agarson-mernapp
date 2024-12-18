@@ -89,11 +89,11 @@ function AppRoutes() {
               }
             />
           </Route>
-          < Route path="/Users" element={
+          {user.is_admin && < Route path="/Users" element={
             <UsersNavbar />
           } >
             <Route index element={<UsersPage />} />
-          </Route>
+          </Route>}
 
           {user && user?.assigned_permissions.includes('authorization_menu') &&
             < Route path="/Authorization" element={<AuthorizationNavbar />} >
@@ -250,7 +250,7 @@ function AppRoutes() {
                 <AssignedReferReportPage />
               }
               />}
-               {user?.assigned_permissions.includes('expense-transaction_report_view') && <Route path="ExpenseTransactionReports" element={
+              {user?.assigned_permissions.includes('expense-transaction_report_view') && <Route path="ExpenseTransactionReports" element={
                 <ExpenseTransactionReports />
               }
               />}
@@ -401,7 +401,7 @@ function AppRoutes() {
                   <ReferencesReportPage />
                 }
               />}
-                 {user?.assigned_permissions.includes('salesman_references_report_view') && <Route
+              {user?.assigned_permissions.includes('salesman_references_report_view') && <Route
                 path="ReferenceReportPageSalesman" element={
                   <ReferenceReportPageSalesman />
                 }
