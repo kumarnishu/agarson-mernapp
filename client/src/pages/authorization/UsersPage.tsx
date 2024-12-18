@@ -249,7 +249,7 @@ export default function UsersPage() {
                                     <KeyOffOutlined />
                                 </IconButton>
                             </Tooltip>
-                            {!LoggedInUser?.impersonated_user && LoggedInUser?.is_admin && < Tooltip title={`login as this user ${cell.row.original.username || ""}`}>
+                            {LoggedInUser?._id !== cell.row.original._id && LoggedInUser?.is_admin && < Tooltip title={`login as this user ${cell.row.original.username || ""}`}>
                                 <IconButton
                                     disabled={LoggedInUser?._id === cell.row.original._id}
                                     color="info"
