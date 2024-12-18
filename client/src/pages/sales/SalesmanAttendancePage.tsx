@@ -331,6 +331,11 @@ function SalesmanAttendancePage() {
                 border: '1px solid lightgrey;',
             },
         }),
+        muiTableBodyRowProps: ({ row }) => ({
+            sx: {
+                backgroundColor: new Date(row.original.date).getDay() == 0 ? 'yellow' : ""
+            },
+        }),
         positionToolbarAlertBanner: 'none',
         enableToolbarInternalActions: false,
         initialState: { density: 'compact' },
