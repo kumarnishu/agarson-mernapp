@@ -66,7 +66,7 @@ export const SignUp = async (req: Request, res: Response, next: NextFunction) =>
     owner.updated_at = new Date()
     sendUserToken(res, owner.getAccessToken())
     await owner.save()
-    owner = await User.findById(owner._id).populate("created_by").populate('assigned_users').populate("updated_by") || owner
+    owner = await User.findById(owner._id).populate('impersonated_user').populate("created_by").populate('assigned_users').populate("updated_by") || owner
     let token = owner.getAccessToken()
     result = {
         _id: owner._id,
@@ -77,7 +77,7 @@ export const SignUp = async (req: Request, res: Response, next: NextFunction) =>
         mobile: owner.mobile,
         dp: owner.dp?.public_url || "",
         orginal_password: owner.orginal_password,
-        impersonated_user: owner.impersonated_user && { id: owner.impersonated_user._id, label: owner.impersonated_user.username },
+        impersonated_user: owner.impersonated_user && { _id: owner.impersonated_user._id, username: owner.impersonated_user.username, is_admin: Boolean(owner.impersonated_user.is_admin) },
         is_admin: owner.is_admin,
         email_verified: owner.email_verified,
         mobile_verified: owner.mobile_verified,
@@ -388,7 +388,7 @@ export const GetUsersForAssignmentPage = async (req: Request, res: Response, nex
                     id: u._id, label: u.username, value: u.username
                 }
             }),
-            impersonated_user: u.impersonated_user && { id: u.impersonated_user._id, label: u.impersonated_user.username },
+            impersonated_user: u.impersonated_user && { _id: u.impersonated_user._id, username: u.impersonated_user.username, is_admin: Boolean(u.impersonated_user.is_admin) },
             assigned_crm_states: u.assigned_crm_states.length || 0,
             assigned_crm_cities: u.assigned_crm_cities.length || 0,
             assigned_permissions: u.assigned_permissions,
@@ -403,7 +403,7 @@ export const GetUsersForAssignmentPage = async (req: Request, res: Response, nex
 
 export const GetProfile = async (req: Request, res: Response, next: NextFunction) => {
     let result: GetUserDto | null = null;
-    const user = await User.findById(req.user?._id).populate("created_by").populate("updated_by").populate('assigned_users')
+    const user = await User.findById(req.user?._id).populate('impersonated_user').populate("created_by").populate("updated_by").populate('assigned_users')
     if (user && !user?.is_active)
         return res.status(403).json({ message: "login again" })
     if (user)
@@ -415,8 +415,7 @@ export const GetProfile = async (req: Request, res: Response, next: NextFunction
             email: user.email,
             mobile: user.mobile,
             dp: user.dp?.public_url || "",
-            impersonated_user: user.impersonated_user && { id: user.impersonated_user._id, label: user.impersonated_user.username },
-            orginal_password: user.orginal_password,
+            impersonated_user: user.impersonated_user && { _id: user.impersonated_user._id, username: user.impersonated_user.username, is_admin: Boolean(user.impersonated_user.is_admin) }, orginal_password: user.orginal_password,
             is_admin: user.is_admin,
             email_verified: user.email_verified,
             mobile_verified: user.mobile_verified,

@@ -8,11 +8,17 @@ export type createOrEditUserDto = {
   password?: string,
   mobile: string,
 }
+
+export type GetImpersantedUserdto = {
+  _id: string,
+  username: string,
+  is_admin: boolean
+}
 export type GetUserDto = {
   _id: string,
   username: string,
   alias1: string,
-  impersonated_user?: DropDownDto,
+  impersonated_user?: GetImpersantedUserdto,
   alias2: string,
   email: string,
   mobile: string,

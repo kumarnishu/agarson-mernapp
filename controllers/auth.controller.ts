@@ -19,18 +19,18 @@ export const Login = async (req: Request, res: Response, next: NextFunction) => 
 
     let user = await User.findOne({
         username: String(username).toLowerCase().trim(),
-    }).select("+password").populate("created_by").populate('assigned_users').populate("updated_by")
+    }).select("+password").populate('impersonated_user').populate("created_by").populate('assigned_users').populate("updated_by")
 
     if (!user) {
         user = await User.findOne({
             mobile: String(username).toLowerCase().trim(),
-        }).select("+password").populate("created_by").populate('assigned_users').populate("updated_by")
+        }).select("+password").populate('impersonated_user').populate("created_by").populate('assigned_users').populate("updated_by")
 
     }
     if (!user) {
         user = await User.findOne({
             email: String(username).toLowerCase().trim(),
-        }).select("+password").populate("created_by").populate('assigned_users').populate("updated_by")
+        }).select("+password").populate('impersonated_user').populate("created_by").populate('assigned_users').populate("updated_by")
         if (user)
             if (!user.email_verified)
                 return res.status(403).json({ message: "please verify email id before login" })
@@ -68,6 +68,7 @@ export const Login = async (req: Request, res: Response, next: NextFunction) => 
         email_verified: user.email_verified,
         mobile_verified: user.mobile_verified,
         is_active: user.is_active,
+        impersonated_user: user.impersonated_user && { _id: user.impersonated_user._id, username: user.impersonated_user.username, is_admin: Boolean(user.impersonated_user.is_admin )},
         last_login: moment(user.last_login).calendar(),
         is_multi_login: user.is_multi_login,
         assigned_users: user.assigned_users.map((u) => {
@@ -350,7 +351,7 @@ export const LoginByThisUser = async (req: Request, res: Response, next: NextFun
     console.log(user1.username, user2.username)
     //logout user2
     deleteToken(res, user2.access_token)
-    await User.findByIdAndUpdate(user2._id, { access_token: undefined })
+    await User.findByIdAndUpdate(user2._id, { access_token: undefined, impersonated_user: undefined })
 
     //login user1
     let token1 = user1.getAccessToken();
@@ -362,7 +363,6 @@ export const LoginByThisUser = async (req: Request, res: Response, next: NextFun
 
 export const BackToMyAccount = async (req: Request, res: Response, next: NextFunction) => {
     const { user_id, impersnate_id } = req.body as GetLoginByThisUserDto
-    console.log(req.body)
     if (!user_id)
         return res.status(400).json({ message: "please select user" })
     if (!impersnate_id || !req.user)
@@ -378,7 +378,7 @@ export const BackToMyAccount = async (req: Request, res: Response, next: NextFun
     console.log(user1.username, user2.username)
     //logout user1
     deleteToken(res, user1.access_token)
-    await User.findByIdAndUpdate(user1._id, { access_token: undefined })
+    await User.findByIdAndUpdate(user1._id, { access_token: undefined, impersonated_user: undefined })
     //login user2
     let token1 = user2.getAccessToken();
     sendUserToken(res, token1)
