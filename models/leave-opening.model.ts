@@ -7,7 +7,6 @@ export type ILeave = {
     fl: number,
     sw: number,
     cl: number,
-    
     yearmonth: number,
     employee: IUser,
     created_at: Date,

@@ -106,7 +106,6 @@ function ChecklistPage() {
       {
         accessorKey: 'assigned_users.value',
         header: 'Responsible',
-
         enableColumnFilter: true,
         Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.label }).toString() || ""}</>,
         filter: 'custom',
