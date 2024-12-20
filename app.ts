@@ -6,7 +6,6 @@ import cookieParser from 'cookie-parser';
 import cors from "cors";
 import { MulterError } from 'multer';
 import { connectDatabase } from './config/db';
-import AppRoutes from "./routes";
 
 import path from 'path';
 import { Server } from "socket.io";
@@ -14,6 +13,7 @@ import { getCurrentUser, userJoin, userLeave } from "./utils/handleSocketUsers";
 import { Storage } from '@google-cloud/storage';
 import morgan from 'morgan';
 import { activateChecklist } from './services/activateChecklist';
+import { UserController } from './controllers/UserController';
 
 const app = express()
 const server = createServer(app)
@@ -102,7 +102,7 @@ export const bucket = storage.bucket(bucketName)
 
 
 //server routes
-app.use("/api/v1", AppRoutes)
+app.use("/api/v1/users", new UserController().router)
 activateChecklist();
 
 
