@@ -94,11 +94,11 @@ function ChecklistPage() {
 
         Cell: (cell) => <span title={cell.row.original.work_description} >
           {cell.row.original.link && cell.row.original.link != "" ?
-            <a style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.work_title}</a>
+            <a style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}><pre>{cell.row.original.work_title}</pre></a>
             :
-            <span style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }}>
+            <pre style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }}>
               {cell.row.original.work_title}
-            </span>
+            </pre>
           }
         </span>
       },

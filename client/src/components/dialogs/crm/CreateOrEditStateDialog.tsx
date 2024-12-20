@@ -11,7 +11,7 @@ function CreateOrEditCrmStateDialog({ state, dialog, setDialog }: Props) {
 
     return (
         <Dialog fullScreen={Boolean(window.screen.width < 500)}
-            open={dialog == 'CreateOrEditCrmStateDialog'}
+            open={dialog == 'CreateOrEditStateDialog'}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => {
                 setDialog(undefined)

@@ -147,6 +147,8 @@ function CreateorEditCheckListForm({ checklist, setDialog }: { checklist?: GetCh
                     error={
                         formik.touched.work_title && formik.errors.work_title ? true : false
                     }
+                    multiline
+                    rows={4}
                     id="work_title"
                     label="Work Title"
                     fullWidth
