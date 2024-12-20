@@ -5,7 +5,7 @@ import isMongoId from "validator/lib/isMongoId";
 import moment from 'moment';
 import { UpdateProfileDto, AssignUsersDto, LoginDto, UpdatePasswordDto, ResetPasswordDto, AssignPermissionForOneUserDto, AssignPermissionForMultipleUserDto, GetLoginByThisUserDto, VerifyEmailDto } from '../dtos/auth.dto';
 import { GetUserDto, createOrEditUserDto } from '../dtos/user.dto';
-import { deleteToken, deleteTokenOnly, sendUserToken } from '../middlewares/auth.middleware';
+import { deleteToken, deleteTokenOnly, isAuthenticatedUser, isProfileAuthenticated, sendUserToken } from '../middlewares/auth.middleware';
 import { User, Asset, IUser } from '../models/user.model';
 import { destroyCloudFile } from '../services/destroyCloudFile';
 import { uploadFileToCloud } from '../services/uploadFileToCloud';
@@ -13,6 +13,7 @@ import { DropDownDto } from '../dtos/dropdown.dto';
 import { IMenu } from '../dtos/permission.dto';
 import { FetchAllPermissions } from '../utils/fillAllPermissions';
 import { sendEmail } from '../utils/sendEmail';
+import { UseMiddleware } from '../middlewares';
 
 export class UserController {
     public router: Router
@@ -410,7 +411,8 @@ export class UserController {
         return res.status(200).json(result)
     }
 
-    public async GetProfile(req: Request, res: Response, next: NextFunction) {
+    
+    public async getProfile(req: Request, res: Response, next: NextFunction) {
         let result: GetUserDto | null = null;
         const user = await User.findById(req.user?._id).populate('impersonated_user').populate("created_by").populate("updated_by").populate('assigned_users')
         if (user && !user?.is_active)

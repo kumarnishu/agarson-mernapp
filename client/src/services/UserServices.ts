@@ -92,7 +92,7 @@ export const RemoveAdmin = async (id: string) => {
 }
 // get profile
 export const GetProfile = async () => {
-  return await apiClient.get("profile");
+  return await apiClient.get("users/profile");
 };
 // update profile
 export const UpdateProfile = async (body: FormData) => {

@@ -102,7 +102,7 @@ export const bucket = storage.bucket(bucketName)
 
 
 //server routes
-app.use("/api/v1/users", new UserController().router)
+app.use("/api/v1/users/", new UserController().router)
 activateChecklist();
 
 
