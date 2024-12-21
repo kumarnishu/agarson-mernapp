@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import express from 'express'
 import moment, { isDate } from 'moment';
 import xlsx from "xlsx"
 import isMongoId from 'validator/lib/isMongoId';
@@ -9,27 +8,24 @@ import { ExcelDB } from '../models/excel-db.model';
 import { KeyCategory } from '../models/key-category.model';
 import { ISalesAttendance, SalesAttendance } from '../models/sales-attendance.model';
 import { IUser, User } from '../models/user.model';
-import { GetSalesAttendancesAuto } from '../dtos/visit-report.dto';
+import { GetSalesAttendancesAuto, GetVisitReportDto } from '../dtos/visit-report.dto';
 import { VisitReport } from '../models/visit-report.model';
 import { decimalToTimeForXlsx } from '../utils/datesHelper';
 import { IColumnRowData, IRowData } from "../dtos/table.dto";
 import { SalesmanLeaves, SalesmanLeavesColumns } from "../models/salesman-leaves.model";
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
 import { GetSalesManVisitSummaryReportDto } from '../dtos/visit-report.dto';
-import { VisitRemark } from '../models/visit_remark.model';
+import { IVisitRemark, VisitRemark } from '../models/visit_remark.model';
 import { GetReferenceDto, GetReferenceExcelDto, GetReferenceReportForSalesmanDto } from "../dtos/references.dto";
 import { excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
 import { ICRMState } from "../models/crm-state.model";
 import { CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto } from '../dtos/references-remark.dto';
 import { IReferenceRemark, ReferenceRemark } from '../models/reference-remarks.model';
 import { Reference } from '../models/references.model';
+import { CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto } from '../dtos/visit_remark.dto';
 
 export class SalesController {
-    public router: Router
-    constructor() {
-        this.router = express.Router();
-        this.generateRoutes(); // Automatically generate routes
-    }
+   
     public async GetSalesAttendances(req: Request, res: Response, next: NextFunction) {
         let limit = Number(req.query.limit)
         let page = Number(req.query.page)
@@ -1031,7 +1027,29 @@ export class SalesController {
         }
         return res.status(200).json(result)
     }
-
+    public async GetVisitReports(req: Request, res: Response, next: NextFunction) {
+        let employee = req.query.employee
+        if (!employee)
+            return res.status(400).json({ message: "please select employee" })
+        let reports: GetVisitReportDto[] = (await VisitReport.find({ employee: employee }).populate('employee').populate('created_by').populate('updated_by').sort('-visit_date')).map((i) => {
+            return {
+                _id: i._id,
+                employee: i.employee.username,
+                visit_date: moment(i.visit_date).format("DD/MM/YYYY"),
+                customer: i.customer,
+                intime: decimalToTimeForXlsx(i.intime),
+                outtime: decimalToTimeForXlsx(i.outtime),
+                visitInLocation: i.visitInLocation,
+                visitOutLocation: i.visitOutLocation,
+                remarks: i.remarks,
+                created_by: i.created_by.username,
+                updated_by: i.updated_by.username,
+                created_at: moment(i.created_at).format("DD/MM/YYYY"),
+                updated_at: moment(i.updated_at).format("DD/MM/YYYY")
+            }
+        })
+        return res.status(200).json(reports);
+    }
     public async GetReferencesReport(req: Request, res: Response, next: NextFunction) {
         try {
             // Step 1: Aggregate data to calculate total_sale_scope and gather party details
@@ -1434,24 +1452,74 @@ export class SalesController {
         await new_remark.save()
         return res.status(200).json({ message: "remark added successfully" })
     }
-    private generateRoutes(): void {
-        const methodPrefix = ['get', 'post', 'put', 'patch', 'delete']; // Allowed HTTP methods
-
-        Object.getOwnPropertyNames(Object.getPrototypeOf(this))
-            .filter((methodName) => methodName !== 'constructor' && typeof (this as any)[methodName] === 'function')
-            .forEach((methodName) => {
-                const match = methodName.match(new RegExp(`^(${methodPrefix.join('|')})([A-Z].*)$`));
-                if (match) {
-                    const [, httpMethod, routeName] = match;
-                    const routePath =
-                        '/' +
-                        routeName
-                            .replace(/([A-Z])/g, '-$1')
-                            .toLowerCase()
-                            .substring(1); // Convert "CamelCase" to "kebab-case"
-                    //@ts-ignore
-                    this.router[httpMethod](routePath, (this as any)[methodName].bind(this));
-                }
-            });
-    }
+    public async UpdateVisitRemark(req: Request, res: Response, next: NextFunction) {
+           const { remark } = req.body as CreateOrEditVisitSummaryRemarkDto
+           if (!remark) return res.status(403).json({ message: "please fill required fields" })
+   
+           const id = req.params.id;
+           if (!isMongoId(id)) return res.status(403).json({ message: "id not valid" })
+           let rremark = await VisitRemark.findById(id)
+           if (!rremark) {
+               return res.status(404).json({ message: "remark not found" })
+           }
+           rremark.remark = remark
+           await rremark.save()
+           return res.status(200).json({ message: "remark updated successfully" })
+       }
+   
+       public async DeleteVisitRemark(req: Request, res: Response, next: NextFunction) {
+           const id = req.params.id;
+           if (!isMongoId(id)) return res.status(403).json({ message: "id not valid" })
+           let rremark = await VisitRemark.findById(id)
+           if (!rremark) {
+               return res.status(404).json({ message: "remark not found" })
+           }
+           await rremark.remove()
+           return res.status(200).json({ message: " remark deleted successfully" })
+       }
+   
+       public async GetVisitSummaryReportRemarkHistory(req: Request, res: Response, next: NextFunction) {
+           const date = req.query.date;
+           const employee = req.query.employee;
+           if (!date || !employee) return res.status(403).json({ message: "please fill required fields" })
+           let remarks: IVisitRemark[] = []
+           let dt1 = new Date(String(date))
+           let dt2 = new Date(dt1)
+           dt1.setHours(0, 0, 0, 0)
+           dt2.setHours(0, 0, 0, 0)
+           dt2.setDate(dt1.getDate() + 1)
+   
+           let result: GetVisitSummaryReportRemarkDto[] = []
+           remarks = await VisitRemark.find({ employee: employee, visit_date: { $gte: dt1, $lt: dt2 } }).populate('created_by').populate('employee').sort('-created_at')
+   
+   
+           result = remarks.map((r) => {
+               return {
+                   _id: r._id,
+                   remark: r.remark,
+                   employee: { id: r.created_by._id, value: r.created_by.username, label: r.created_by.username },
+                   created_at: r.created_at.toString(),
+                   visit_date: r.visit_date.toString(),
+                   created_by: r.created_by.username
+               }
+           })
+           return res.json(result)
+       }
+   
+   
+       public async NewVisitRemark(req: Request, res: Response, next: NextFunction) {
+           const { remark, employee, visit_date } = req.body as CreateOrEditVisitSummaryRemarkDto
+           if (!remark || !employee || !visit_date) return res.status(403).json({ message: "please fill required fields" })
+   
+           await new VisitRemark({
+               remark,
+               employee,
+               visit_date: new Date(visit_date),
+               created_at: new Date(Date.now()),
+               created_by: req.user,
+               updated_at: new Date(Date.now()),
+               updated_by: req.user
+           }).save()
+           return res.status(200).json({ message: "remark added successfully" })
+       }
 }

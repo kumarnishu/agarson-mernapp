@@ -13,14 +13,8 @@ import { DropDownDto } from '../dtos/dropdown.dto';
 import { IMenu } from '../dtos/permission.dto';
 import { FetchAllPermissions } from '../utils/fillAllPermissions';
 import { sendEmail } from '../utils/sendEmail';
-import { UseMiddleware } from '../middlewares';
 
 export class UserController {
-    public router: Router
-    constructor() {
-        this.router = express.Router();
-        this.generateRoutes(); // Automatically generate routes
-    }
     public async SignUp(req: Request, res: Response, next: NextFunction) {
         let result: GetUserDto | null = null;
         let users = await User.find()
@@ -410,9 +404,7 @@ export class UserController {
         })
         return res.status(200).json(result)
     }
-
-    
-    public async getProfile(req: Request, res: Response, next: NextFunction) {
+    public async GetProfile(req: Request, res: Response, next: NextFunction) {
         let result: GetUserDto | null = null;
         const user = await User.findById(req.user?._id).populate('impersonated_user').populate("created_by").populate("updated_by").populate('assigned_users')
         if (user && !user?.is_active)
@@ -896,27 +888,6 @@ export class UserController {
             await user.save();
             return res.status(500).json({ message: "email could not be sent, something went wrong" })
         }
-    }
-
-    private generateRoutes(): void {
-        const methodPrefix = ['get', 'post', 'put', 'patch', 'delete']; // Allowed HTTP methods
-
-        Object.getOwnPropertyNames(Object.getPrototypeOf(this))
-            .filter((methodName) => methodName !== 'constructor' && typeof (this as any)[methodName] === 'function')
-            .forEach((methodName) => {
-                const match = methodName.match(new RegExp(`^(${methodPrefix.join('|')})([A-Z].*)$`));
-                if (match) {
-                    const [, httpMethod, routeName] = match;
-                    const routePath =
-                        '/' +
-                        routeName
-                            .replace(/([A-Z])/g, '-$1')
-                            .toLowerCase()
-                            .substring(1); // Convert "CamelCase" to "kebab-case"
-                    //@ts-ignore
-                    this.router[httpMethod](routePath, (this as any)[methodName].bind(this));
-                }
-            });
     }
 }
 

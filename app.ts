@@ -6,17 +6,13 @@ import cookieParser from 'cookie-parser';
 import cors from "cors";
 import { MulterError } from 'multer';
 import { connectDatabase } from './config/db';
-
 import path from 'path';
-import { Server } from "socket.io";
-import { getCurrentUser, userJoin, userLeave } from "./utils/handleSocketUsers";
 import { Storage } from '@google-cloud/storage';
 import morgan from 'morgan';
 import { activateChecklist } from './services/activateChecklist';
-import { UserController } from './controllers/UserController';
+import AppRoutes from './routes';
 
 const app = express()
-const server = createServer(app)
 
 //env setup
 dotenv.config();
@@ -46,41 +42,6 @@ if (ENV === "development") {
     }))
 }
 
-if (ENV === "production") {
-    origin = "https://agarson-client.netlify.app"
-    let origin2 = "https://agarson-client.onrender.com"
-    app.use(cors({
-        origin: [origin, origin2],
-        credentials: true
-    }))
-}
-
-
-let io: Server | undefined = undefined
-io = new Server(server, {
-    cors: {
-        origin: origin,
-        credentials: true
-    }
-});
-
-io.on("connection", (socket) => {
-    console.log("socket connected")
-    socket.on('JoinRoom', async (id: string) => {
-        console.log("running in room", id)
-        const user = userJoin(id)
-        socket.join(user.id)
-
-        socket.on("disconnect", (reason) => {
-            let user = getCurrentUser(id)
-            if (user)
-                userLeave(user.id)
-            console.log(`socket ${socket.id} disconnected due to ${reason}`);
-        });
-    })
-
-});
-
 
 
 //cloud storage setupu config
@@ -102,7 +63,7 @@ export const bucket = storage.bucket(bucketName)
 
 
 //server routes
-app.use("/api/v1/users/", new UserController().router)
+app.use("/api/v1/", AppRoutes)
 activateChecklist();
 
 
@@ -133,10 +94,7 @@ if (!PORT) {
     console.log("Server Port not specified in the environment")
     process.exit(1)
 }
-server.listen(PORT, () => {
+app.listen(PORT, () => {
     console.log(`running on ${HOST}:${PORT}`)
 });
 
-export {
-    io
-}

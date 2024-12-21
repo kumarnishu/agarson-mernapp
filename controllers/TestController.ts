@@ -5,11 +5,7 @@ import { ExcelDBRemark } from '../models/excel-db-remark.model';
 import { Reference } from '../models/references.model';
 
 export class TestController {
- public router: Router
-    constructor() {
-        this.router = express.Router();
-        this.generateRoutes(); // Automatically generate routes
-    }
+   
     public async test(req: Request, res: Response, next: NextFunction) {
 
         // const category = req.query.category
@@ -40,24 +36,5 @@ export class TestController {
         return res.status(200).json(items)
 
     }
-    private generateRoutes(): void {
-        const methodPrefix = ['get', 'post', 'put', 'patch', 'delete']; // Allowed HTTP methods
-
-        Object.getOwnPropertyNames(Object.getPrototypeOf(this))
-            .filter((methodName) => methodName !== 'constructor' && typeof (this as any)[methodName] === 'function')
-            .forEach((methodName) => {
-                const match = methodName.match(new RegExp(`^(${methodPrefix.join('|')})([A-Z].*)$`));
-                if (match) {
-                    const [, httpMethod, routeName] = match;
-                    const routePath =
-                        '/' +
-                        routeName
-                            .replace(/([A-Z])/g, '-$1')
-                            .toLowerCase()
-                            .substring(1); // Convert "CamelCase" to "kebab-case"
-                    //@ts-ignore
-                    this.router[httpMethod](routePath, (this as any)[methodName].bind(this));
-                }
-            });
-    }
+    
 }

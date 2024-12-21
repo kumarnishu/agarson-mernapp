@@ -29,11 +29,7 @@ import { Stage } from '../models/crm-stage.model';
 
 
 export class DropDownController {
- public router: Router
-    constructor() {
-        this.router = express.Router();
-        this.generateRoutes(); // Automatically generate routes
-    }
+
     public async GetArticles(req: Request, res: Response, next: NextFunction) {
         let hidden = String(req.query.hidden)
         let result: GetArticleDto[] = []
@@ -1339,24 +1335,5 @@ export class DropDownController {
         return res.status(200).json(machine)
 
     }
-    private generateRoutes(): void {
-        const methodPrefix = ['get', 'post', 'put', 'patch', 'delete']; // Allowed HTTP methods
-
-        Object.getOwnPropertyNames(Object.getPrototypeOf(this))
-            .filter((methodName) => methodName !== 'constructor' && typeof (this as any)[methodName] === 'function')
-            .forEach((methodName) => {
-                const match = methodName.match(new RegExp(`^(${methodPrefix.join('|')})([A-Z].*)$`));
-                if (match) {
-                    const [, httpMethod, routeName] = match;
-                    const routePath =
-                        '/' +
-                        routeName
-                            .replace(/([A-Z])/g, '-$1')
-                            .toLowerCase()
-                            .substring(1); // Convert "CamelCase" to "kebab-case"
-                    //@ts-ignore
-                    this.router[httpMethod](routePath, (this as any)[methodName].bind(this));
-                }
-            });
-    }
+   
 }
