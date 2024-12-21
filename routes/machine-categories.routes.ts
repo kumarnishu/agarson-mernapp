@@ -1,11 +1,11 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { GetMachineCategories, CreateMachineCategory, UpdateMachineCategory, DeleteMachineCategory } from "../controllers/machine-categories.controller";
 import { FeatureController } from "../controllers/FeaturesController";
-let controller = new FeatureController()
+import { DropDownController } from "../controllers/DropDownController";
+let controller = new DropDownController()
 const router = express.Router()
 
-router.route("/machine/categories").get(isAuthenticatedUser, GetMachineCategories).post(isAuthenticatedUser, CreateMachineCategory)
-router.route("/machine/categories/:id").put(isAuthenticatedUser, UpdateMachineCategory).delete(isAuthenticatedUser, DeleteMachineCategory)
+router.route("/machine/categories").get(isAuthenticatedUser, controller.GetMachineCategories).post(isAuthenticatedUser, controller.CreateMachineCategory)
+router.route("/machine/categories/:id").put(isAuthenticatedUser, controller.UpdateMachineCategory).delete(isAuthenticatedUser, controller.DeleteMachineCategory)
 
 export default router

@@ -1,12 +1,12 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { GetAllCRMLeadTypes, CreateCRMLeadTypes, UpdateCRMLeadTypes, DeleteCRMLeadType } from "../controllers/lead-types.controller";
 import { FeatureController } from "../controllers/FeaturesController";
-let controller = new FeatureController()
+import { DropDownController } from "../controllers/DropDownController";
+let controller = new DropDownController()
 const router = express.Router()
 
-router.route("/crm/leadtypes").get(isAuthenticatedUser, GetAllCRMLeadTypes).post(isAuthenticatedUser, CreateCRMLeadTypes),
-    router.route("/crm/leadtypes/:id").put(isAuthenticatedUser, UpdateCRMLeadTypes).delete(isAuthenticatedUser, DeleteCRMLeadType)
+router.route("/crm/leadtypes").get(isAuthenticatedUser, controller.GetAllCRMLeadTypes).post(isAuthenticatedUser, controller.CreateCRMLeadTypes),
+    router.route("/crm/leadtypes/:id").put(isAuthenticatedUser, controller.UpdateCRMLeadTypes).delete(isAuthenticatedUser, controller.DeleteCRMLeadType)
 
 
 export default router

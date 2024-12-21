@@ -1,17 +1,17 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { AssignKeysToUsers, CreateKey, CreateKeysFromExcel, DeleteKey, DownloadExcelTemplateForCreateKeys, GetAllKey, UpdateKey } from "../controllers/keys.controller";
 import { upload } from ".";
 
 import { FeatureController } from "../controllers/FeaturesController";
-let controller = new FeatureController()
+import { AuthorizationController } from "../controllers/AuthorizationController";
+let controller = new AuthorizationController()
 const router = express.Router()
 
-router.route("/keys").get(isAuthenticatedUser, GetAllKey).post(isAuthenticatedUser, CreateKey)
-router.route("/keys/:id").put(isAuthenticatedUser, UpdateKey).delete(isAuthenticatedUser, DeleteKey)
-router.patch("/keys/assign", isAuthenticatedUser, AssignKeysToUsers)
+router.route("/keys").get(isAuthenticatedUser, controller.GetAllKey).post(isAuthenticatedUser, controller.CreateKey)
+router.route("/keys/:id").put(isAuthenticatedUser, controller.UpdateKey).delete(isAuthenticatedUser, controller.DeleteKey)
+router.patch("/keys/assign", isAuthenticatedUser, controller.AssignKeysToUsers)
 router.route("/create-from-excel/keys")
-    .put(isAuthenticatedUser, upload.single("excel"), CreateKeysFromExcel)
-router.get("/download/template/keys", isAuthenticatedUser, DownloadExcelTemplateForCreateKeys)
+    .put(isAuthenticatedUser, upload.single("excel"), controller.CreateKeysFromExcel)
+router.get("/download/template/keys", isAuthenticatedUser, controller.DownloadExcelTemplateForCreateKeys)
 export default router
 
