@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Butt
 import { useContext, useEffect, useState } from 'react';
 import { Cancel, CheckBoxOutlineBlank, CheckCircleOutline } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
-import {  useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
@@ -18,52 +18,52 @@ type Props = {
     user: GetUserDto
 }
 
-
-function RenderTree({ permissiontree, permissions, setPermissions }: { permissiontree: any, permissions: string[], setPermissions: React.Dispatch<React.SetStateAction<string[]>> }) {
-
+const RenderTree = ({ permissiontree, permissions, setPermissions, prefix }: { permissiontree: IMenu, permissions: string[], setPermissions: React.Dispatch<React.SetStateAction<string[]>>, prefix: string }) => {
     if (Array.isArray(permissiontree)) {
-        return permissiontree.map((item: IMenu, index: number) => (
-            <div key={index} style={{ padding: 10 }}>
-                <h3 style={{ paddingLeft: item.menues && item.permissions ? '10px' : '25px' }}>{item.label}</h3>
-                {item.permissions && (
-                    <Stack flexDirection={'row'} paddingTop={2}>
-                        {item.permissions.map((perm: IPermission, idx: number) => (
-                            <Stack flexDirection={'row'} pl={item.menues && item.permissions ? '10px' : '25px'} key={idx}>
-                                {permissions.includes(perm.value) ?
-                                    <CheckCircleOutline color='success' onClick={() => {
-                                        let perms = permissions.filter((i) => { return i !== perm.value })
-                                        setPermissions(perms);
+        return permissiontree.map((item, index) => {
+            // Generate the index for this level
+            const currentIndex = prefix ? `${prefix}.${index + 1}` : `${index + 1}`;
 
-                                    }} />
-
-                                    :
-                                    <CheckBoxOutlineBlank
-                                        onClick={() => {
-                                            let perms = permissions.filter((i) => { return i !== perm.value })
-                                            perms.push(perm.value);
+            return (
+                <div key={currentIndex} style={{ paddingTop: 10 }}>
+                    <h3 style={{ paddingLeft: item.menues && item.permissions ? '10px' : '25px' }}>
+                        {currentIndex} : {item.label}
+                    </h3>
+                    {item.permissions && (
+                        <Stack flexDirection={'row'} flexWrap={'wrap'} gap={1} paddingTop={2}>
+                            {item.permissions.map((perm: IPermission, idx: number) => (
+                                <Stack flexDirection={'row'} pl={item.menues && item.permissions ? '10px' : '25px'} key={idx}>
+                                    {permissions.includes(perm.value) ?
+                                        <CheckCircleOutline color='success' onClick={() => {
+                                            let perms = permissions.filter((i) => { return i !== perm.value });
                                             setPermissions(perms);
-
-                                        }}
-                                    />}
-
-
-                                <span style={{ paddingLeft: 5 }}>{perm.label}</span>
-                            </Stack>
-                        ))}
-                    </Stack>
-                )}
-                {item.menues && RenderTree({ permissiontree: item.menues, permissions: permissions, setPermissions: setPermissions })}
-            </div>
-        ))
+                                        }} />
+                                        :
+                                        <CheckBoxOutlineBlank
+                                            onClick={() => {
+                                                let perms = permissions.filter((i) => { return i !== perm.value });
+                                                perms.push(perm.value);
+                                                setPermissions(perms);
+                                            }}
+                                        />}
+                                    <span style={{ paddingLeft: 5 }}>{perm.label}</span>
+                                </Stack>
+                            ))}
+                        </Stack>
+                    )}
+                    {item.menues && RenderTree({ permissiontree: item.menues, permissions: permissions, setPermissions: setPermissions, prefix: currentIndex })}
+                </div>
+            );
+        });
     }
-    else return null
-}
+};
+
 
 function AssignPermissionsToOneUserDialog({ user, dialog, setDialog }: Props) {
     const [permissiontree, setPermissiontree] = useState<IMenu>()
     const [permissions, setPermissions] = useState<string[]>(user.assigned_permissions)
     const { setAlert } = useContext(AlertContext)
-    const { mutate, isLoading, isSuccess} = useMutation
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 user_id: string,
@@ -71,7 +71,7 @@ function AssignPermissionsToOneUserDialog({ user, dialog, setDialog }: Props) {
             }
         }>
         (AssignPermissionsToOneUser, {
-              onSuccess: () => {
+            onSuccess: () => {
                 queryClient.invalidateQueries('users')
                 setAlert({ message: "success", color: 'success' })
             },
@@ -129,7 +129,7 @@ function AssignPermissionsToOneUserDialog({ user, dialog, setDialog }: Props) {
                     </Typography>
 
 
-                    {permissiontree && <RenderTree permissiontree={permissiontree} permissions={permissions} setPermissions={setPermissions} />}
+                    {permissiontree && <RenderTree permissiontree={permissiontree} permissions={permissions} setPermissions={setPermissions} prefix='' />}
 
                     <Button style={{ padding: 10, marginTop: 10 }} variant="contained" color="primary" type="submit"
                         disabled={Boolean(isLoading)}
@@ -147,7 +147,7 @@ function AssignPermissionsToOneUserDialog({ user, dialog, setDialog }: Props) {
 
 
                 </Stack>
-              
+
             </DialogContent>
         </Dialog >
     )

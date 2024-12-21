@@ -21,7 +21,7 @@ export function FetchAllPermissions() {
         }],
         menues: [
 
-           
+
             {
                 label: 'Cities',
                 permissions: [
@@ -149,7 +149,7 @@ export function FetchAllPermissions() {
             },
         ]
     }
-    
+
     let featureMenu: IMenu = {
         label: 'Feature',
         permissions: [
@@ -516,414 +516,7 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
-        ]
-    }
-    
 
-    let dropdownMenu: IMenu = {
-        label: 'Dropdown',
-        permissions: [{
-            value: 'dropdown_menu',
-            label: 'DropDown Button'
-        }],
-        menues: [
-            {
-                label: 'Article',
-                permissions: [
-                    {
-                        value: 'article_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'article_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'article_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'article_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'article_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Machine',
-                permissions: [
-                    {
-                        value: 'machine_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'machine_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'machine_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'machine_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'machine_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Machine Category',
-                permissions: [
-                    {
-                        value: 'machine_category_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'machine_category_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'machine_category_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'machine_category_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'machine_category_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Dye',
-                permissions: [
-                    {
-                        value: 'dye_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'dye_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'dye_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'dye_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'dye_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Dye Location',
-                permissions: [
-                    {
-                        value: 'dye_location_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'dye_location_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'dye_location_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'dye_location_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'dye_location_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Lead Type',
-                permissions: [
-                    {
-                        value: 'leadtype_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'leadtype_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'leadtype_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'leadtype_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'leadtype_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Lead Source',
-                permissions: [
-                    {
-                        value: 'lead_source_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'lead_source_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'lead_source_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'lead_source_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'lead_source_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Lead Stage',
-                permissions: [
-                    {
-                        value: 'leadstage_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'leadstage_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'leadstage_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'leadstage_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'leadstage_export',
-                        label: 'export'
-                    }
-                ]
-            }, 
-            {
-                label: 'Checklist Category',
-                permissions: [
-                    {
-                        value: 'checklist_category_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'checklist_category_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'checklist_category_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'checklist_category_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'checklist_category_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Payment Category',
-                permissions: [
-                    {
-                        value: 'payment_category_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'payment_category_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'payment_category_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'payment_category_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'payment_category_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Expense Location',
-                permissions: [
-                    {
-                        value: 'expense_location_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'expense_location_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'expense_location_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'expense_location_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'expense_location_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Item Unit',
-                permissions: [
-                    {
-                        value: 'item_unit_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'item_unit_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'item_unit_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'item_unit_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'item_unit_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Expense Category',
-                permissions: [
-                    {
-                        value: 'expense_category_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'expense_category_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'expense_category_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'expense_category_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'expense_category_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Expense Item',
-                permissions: [
-                    {
-                        value: 'expense_item_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'expense_item_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'expense_item_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'expense_item_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'expense_item_export',
-                        label: 'export'
-                    }
-                ]
-            },
-        ]
-    }
-   
-    let excelReportMenu: IMenu = {
-        label: 'ExcelDB',
-        permissions: [
-            {
-                value: 'excel_db_menu',
-                label: 'ExcelDB Button'
-            },
-        ],
-        menues: [
-            {
-                label: 'Grp Excel',
-                permissions: [
-                    {
-                        value: 'grp_excel_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'grp_excel_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'grp_excel_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'grp_excel_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'grp_excel_export',
-                        label: 'export'
-                    }
-                ]
-            },
-           
-        ]
-    }
-
-    let featureReportsMenu: IMenu = {
-        label: 'Reports',
-        permissions: [{
-            value: 'report_menu',
-            label: 'Report Button'
-        }], menues: [
             {
                 label: 'Shoe Weight Difference',
                 permissions: [
@@ -1154,6 +747,406 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
+
+        ]
+    }
+
+
+    let dropdownMenu: IMenu = {
+        label: 'Dropdown',
+        permissions: [{
+            value: 'dropdown_menu',
+            label: 'DropDown Button'
+        }],
+        menues: [
+            {
+                label: 'Article',
+                permissions: [
+                    {
+                        value: 'article_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'article_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'article_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'article_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'article_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Machine',
+                permissions: [
+                    {
+                        value: 'machine_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'machine_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'machine_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'machine_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'machine_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Machine Category',
+                permissions: [
+                    {
+                        value: 'machine_category_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'machine_category_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'machine_category_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'machine_category_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'machine_category_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Dye',
+                permissions: [
+                    {
+                        value: 'dye_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'dye_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'dye_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'dye_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'dye_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Dye Location',
+                permissions: [
+                    {
+                        value: 'dye_location_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'dye_location_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'dye_location_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'dye_location_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'dye_location_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Lead Type',
+                permissions: [
+                    {
+                        value: 'leadtype_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'leadtype_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'leadtype_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'leadtype_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'leadtype_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Lead Source',
+                permissions: [
+                    {
+                        value: 'lead_source_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'lead_source_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'lead_source_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'lead_source_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'lead_source_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Lead Stage',
+                permissions: [
+                    {
+                        value: 'leadstage_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'leadstage_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'leadstage_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'leadstage_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'leadstage_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Checklist Category',
+                permissions: [
+                    {
+                        value: 'checklist_category_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'checklist_category_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'checklist_category_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'checklist_category_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'checklist_category_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Payment Category',
+                permissions: [
+                    {
+                        value: 'payment_category_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'payment_category_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'payment_category_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'payment_category_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'payment_category_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Expense Location',
+                permissions: [
+                    {
+                        value: 'expense_location_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'expense_location_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'expense_location_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'expense_location_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'expense_location_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Item Unit',
+                permissions: [
+                    {
+                        value: 'item_unit_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'item_unit_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'item_unit_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'item_unit_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'item_unit_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Expense Category',
+                permissions: [
+                    {
+                        value: 'expense_category_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'expense_category_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'expense_category_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'expense_category_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'expense_category_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Expense Item',
+                permissions: [
+                    {
+                        value: 'expense_item_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'expense_item_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'expense_item_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'expense_item_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'expense_item_export',
+                        label: 'export'
+                    }
+                ]
+            },
+        ]
+    }
+
+    let excelReportMenu: IMenu = {
+        label: 'ExcelDB',
+        permissions: [
+            {
+                value: 'excel_db_menu',
+                label: 'ExcelDB Button'
+            },
+        ],
+        menues: [
+            {
+                label: 'Grp Excel',
+                permissions: [
+                    {
+                        value: 'grp_excel_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'grp_excel_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'grp_excel_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'grp_excel_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'grp_excel_export',
+                        label: 'export'
+                    }
+                ]
+            },
+
         ]
     }
 
@@ -1341,7 +1334,7 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
-            
+
         ]
     }
 
@@ -1350,7 +1343,6 @@ export function FetchAllPermissions() {
     permissions.push(featureMenu)
     permissions.push(dropdownMenu)
     permissions.push(excelReportMenu)
-    permissions.push(featureReportsMenu)
     permissions.push(salesMenu)
 
     return permissions;
