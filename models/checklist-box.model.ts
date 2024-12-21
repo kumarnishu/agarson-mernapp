@@ -5,8 +5,9 @@ import { IUser } from "./user.model";
 export type IChecklistBox = {
     _id: string,
     date: Date,
-    stage:string,
-    last_remark:string,
+    stage: string,
+    last_remark: string,
+    score: number
     checklist: IChecklist,
     created_at: Date,
     updated_at: Date,
@@ -17,13 +18,14 @@ export type IChecklistBox = {
 
 const ChecklistBoxSchema = new mongoose.Schema<IChecklistBox, mongoose.Model<IChecklistBox, {}, {}>, {}>({
     date: { type: Date, required: true },
-    stage: { type: String ,default:'open'},
+    stage: { type: String, default: 'open' },
     checklist: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Checklist',
         required: true
     },
-    last_remark:String,
+    last_remark: String,
+    score: { type: Number, default: 0 },
     created_at: {
         type: Date,
         default: new Date(),

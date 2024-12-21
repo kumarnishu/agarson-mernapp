@@ -3,17 +3,16 @@ import { IChecklistCategory } from "./checklist-category.model";
 import { Asset, IUser } from "./user.model";
 import { IChecklistBox } from "./checklist-box.model";
 
-export type IChecklistTitle = {
-    checklist: IChecklist,
-    condition: string // 'check-blank'||'check_yesno'||'check_expected_number'
-}
 
 export type IChecklist = {
     _id: string,
     active: boolean
-    titles: IChecklistTitle[]
     work_title: string,
+    condition: string // 'check-blank'||'check_yesno'||'check_expected_number',
+    expected_number: number,
     work_description: string,
+    last_remark: string,
+    subchecklists: IChecklist[],
     photo: Asset,
     serial_no: string,
     assigned_users: IUser[],
@@ -41,12 +40,15 @@ const ChecklistSchema = new mongoose.Schema<IChecklist, mongoose.Model<IChecklis
         lowercase: true,
         index: true
     },
+    last_remark: String,
     work_title: {
         type: String,
         lowercase: true,
         required: true,
         index: true
     },
+    condition: String,
+    expected_number: { type: Number, default: 0 },
     last_10_boxes: [
         {
             type: mongoose.Schema.Types.ObjectId,
