@@ -10,5 +10,7 @@ router.route("/attendances").get(isAuthenticatedUser, controller.GetSalesAttenda
 router.route("/attendances/:id").put(isAuthenticatedUser, controller.UpdateSalesAttendance)
     .delete(isAuthenticatedUser, controller.DeleteSalesAttendance)
 router.route("/attendances/auto-reports").get(isAuthenticatedUser, controller.GetSalesAttendancesAutoReport)
+router.route("/salesman-visit").get(isAuthenticatedUser, controller.GetSalesManVisitReport)
+router.route("/visit-reports").get(isAuthenticatedUser, controller.GetVisitReports)
 
 export default router

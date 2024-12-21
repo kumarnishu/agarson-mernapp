@@ -14,6 +14,6 @@ router.route("/refers/:id").delete(isAuthenticatedUser, controller.DeleteReferPa
 router.route("/update/refers/bulk").put(isAuthenticatedUser, upload.single('file'), controller.BulkReferUpdateFromExcel)
 router.route("/merge/refers/:id").put(isAuthenticatedUser, controller.MergeTwoRefers)
 router.route("/toogle-convert/refers/:id").patch(isAuthenticatedUser, controller.ToogleReferPartyConversion)
-
+router.route("/new/refers/report").get(isAuthenticatedUser, controller.GetNewRefers)
 
 export default router

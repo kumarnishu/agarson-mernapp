@@ -17,5 +17,7 @@ router.get("/assigned/referrals/:id", isAuthenticatedUser, controller.GetAssigne
 router.route("/refers/leads/:id").post(isAuthenticatedUser, controller.ReferLead)
 router.route("/refers/leads/:id").patch(isAuthenticatedUser, controller.RemoveLeadReferral)
 router.route("/merge/leads/:id").put(isAuthenticatedUser, controller.MergeTwoLeads)
+router.route("/assigned/refers/report").get(isAuthenticatedUser, controller.GetAssignedRefers)
+
 
 export default router

@@ -13,5 +13,5 @@ router.route("/weights/:id").put(isAuthenticatedUser, upload.single('media'), co
     router.put("/weights2/:id", isAuthenticatedUser, upload.single('media'), controller.UpdateShoeWeight2),
     router.put("/weights3/:id", isAuthenticatedUser, upload.single('media'), controller.UpdateShoeWeight3),
     router.patch("/weights/validate/:id", isAuthenticatedUser, controller.ValidateShoeWeight)
-
+    router.route("/shoeweight/diffreports").get(isAuthenticatedUser, controller.GetShoeWeightDifferenceReports)
 export default router
