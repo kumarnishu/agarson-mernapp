@@ -11,13 +11,13 @@ import { Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Menu
 import DBPagination from '../../components/pagination/DBpagination'
 import ExportToExcel from '../../utils/ExportToExcel'
 import PopUp from '../../components/popup/PopUp'
-import { GetSoleThickness } from '../../services/ProductionServices'
-import { GetUsersForDropdown } from '../../services/UserServices'
 import moment from 'moment'
 import CreateOrEditSoleThicknessDialog from '../../components/dialogs/production/CreateOrEditSoleThicknessDialog'
 import DeleteProductionItemDialog from '../../components/dialogs/production/DeleteProductionItemDialog'
 import { GetSoleThicknessDto } from '../../dtos/sole-thickness.dto'
 import { DropDownDto } from '../../dtos/dropdown.dto'
+import { FeatureService } from '../../services/FeatureServices'
+import { UserService } from '../../services/UserServices'
 
 
 export default function SoleThicknessPage() {
@@ -41,9 +41,9 @@ export default function SoleThicknessPage() {
         start_date: moment(new Date()).format("YYYY-MM-DD")
         , end_date: moment(new Date().setDate(new Date().getDate() + 1)).format("YYYY-MM-DD")
     })
-    const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetSoleThicknessDto[], page: number, total: number, limit: number }>, BackendError>(["thickness", userId, dates?.start_date, dates?.end_date], async () => GetSoleThickness({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
+    const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetSoleThicknessDto[], page: number, total: number, limit: number }>, BackendError>(["thickness", userId, dates?.start_date, dates?.end_date], async () => new FeatureService(). GetSoleThickness({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'sole_thickness_view', show_assigned_only: true }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'sole_thickness_view', show_assigned_only: true }))
 
     useEffect(() => {
         if (isUsersSuccess)

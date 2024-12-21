@@ -15,13 +15,13 @@ import { onlyUnique } from '../../utils/UniqueArray'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
 import AllReferralPageDialog from '../../components/dialogs/crm/AllReferralPageDialog'
 import ViewReferRemarksDialog from '../../components/dialogs/crm/ViewReferRemarksDialog'
-import { FuzzySearchRefers, GetPaginatedRefers } from '../../services/LeadsServices'
 import CreateOrEditBillDialog from '../../components/dialogs/crm/CreateOrEditBillDialog'
 import ViewRefersBillHistoryDialog from '../../components/dialogs/crm/ViewRefersBillHistoryDialog'
 import MergeTwoRefersDialog from '../../components/dialogs/crm/MergeTwoRefersDialog'
 import ExportToExcel from '../../utils/ExportToExcel'
 import ToogleReferConversionDialog from '../../components/dialogs/crm/ToogleReferConversionDialog.tsx'
 import { GetReferDto } from '../../dtos/refer.dto.ts'
+import { FeatureService } from '../../services/FeatureServices.ts'
 
 
 export default function RefersPage() {
@@ -39,12 +39,12 @@ export default function RefersPage() {
   const [filterCount, setFilterCount] = useState(0)
   const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{
     result: GetReferDto[], page: number, total: number, limit: number
-  }>, BackendError>(["refers"], async () => GetPaginatedRefers({ limit: paginationData?.limit, page: paginationData?.page }))
+  }>, BackendError>(["refers"], async () => new FeatureService().GetPaginatedRefers({ limit: paginationData?.limit, page: paginationData?.page }))
 
 
   const { data: fuzzyrefers, isLoading: isFuzzyLoading, refetch: refetchFuzzy, isFetching: isFuzzyRefetching } = useQuery<AxiosResponse<{
     result: GetReferDto[], page: number, total: number, limit: number
-  }>, BackendError>(["fuzzyrefers", filter], async () => FuzzySearchRefers({ searchString: filter, limit: paginationData?.limit, page: paginationData?.page }), {
+  }>, BackendError>(["fuzzyrefers", filter], async () => new FeatureService().FuzzySearchRefers({ searchString: filter, limit: paginationData?.limit, page: paginationData?.page }), {
     enabled: false
   })
 

@@ -11,7 +11,6 @@ import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { GetAllKeyCategoriesForDropdown, GetAllKeys } from '../../services/KeyServices'
 import CreateOrEditKeyDialog from '../../components/dialogs/keys/CreateOrEditKeyDialog'
 import AssignKeysDialog from '../../components/dialogs/keys/AssignKeysDialog'
 import { toTitleCase } from '../../utils/TitleCase'

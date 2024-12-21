@@ -445,81 +445,20 @@ export class FeatureService {
   public async GetReferRemarksHistory({ id }: { id: string }) {
     return await apiClient.get(`remarks/refers/${id}`)
   }
-
-
   public async FuzzySearchRefers({ searchString, limit, page }: { searchString?: string, limit: number | undefined, page: number | undefined }) {
     return await apiClient.get(`search/refers?key=${searchString}&limit=${limit}&page=${page}`)
   }
-
-
   public async CreateOrUpdateRefer({ id, body }: { body: FormData, id?: string }) {
     if (id) {
       return await apiClient.put(`refers/${id}`, body)
     }
     return await apiClient.post("refers", body)
   }
-
-
-
-
   public async BulkReferUpdateFromExcel(body: FormData) {
     return await apiClient.put(`update/refers/bulk`, body)
   }
-
-  //states
-
-
   //stages
-  public async GetAllStages() {
-    return await apiClient.get(`crm/stages`)
-  }
-
-
-  public async CreateOrEditStage({ body, id }: {
-    body: { key: string }
-    id?: string
-  }) {
-    if (id) {
-      return await apiClient.put(`crm/stages/${id}`, body)
-    }
-    return await apiClient.post(`crm/stages`, body)
-  }
-
-
-  //sources
-  public async GetAllSources() {
-    return await apiClient.get(`crm/sources`)
-  }
-
-
-  public async CreateOrEditSource({ body, id }: {
-    body: { key: string }
-    id?: string
-  }) {
-    if (id) {
-      return await apiClient.put(`crm/sources/${id}`, body)
-    }
-    return await apiClient.post(`crm/sources`, body)
-  }
-
-
-
-  //types
-  public async GetAllLeadTypes() {
-    return await apiClient.get(`crm/leadtypes`)
-  }
-
-
-  public async CreateOrEditLeadType({ body, id }: {
-    body: { key: string }
-    id?: string
-  }) {
-    if (id) {
-      return await apiClient.put(`crm/leadtypes/${id}`, body)
-    }
-    return await apiClient.post(`crm/leadtypes`, body)
-  }
-
+ 
 
   public async ReferLead({ id, body }: { id: string, body: { party_id: string, remark: string, remind_date?: string } }) {
     return await apiClient.post(`refers/leads/${id}`, body)
@@ -564,25 +503,7 @@ export class FeatureService {
     return await apiClient.get(`payments/topbar-details`)
   }
 
-  public async CreateOrEditPaymentCategory({ body, id }: {
-    body: { key: string }
-    id?: string
-  }) {
-    if (id) {
-      return await apiClient.put(`payments/categories/${id}`, body)
-    }
-    return await apiClient.post(`payments/categories`, body)
-  }
-  public async DeletePaymentsCategory(id: string) {
-    return await apiClient.delete(`payments/categories/${id}`)
-  }
-
-  public async CreateOrEditPayment({ body, id }: { body: CreateOrEditPaymentDto, id?: string }) {
-    if (id)
-      return await apiClient.put(`payments/${id}`, body);
-    return await apiClient.post(`payments`, body);
-  };
-
+ 
 
 
   public async GetPaymentss({ limit, page, id, stage }: { limit: number | undefined, page: number | undefined, id?: string, stage: string }) {
@@ -635,11 +556,7 @@ export class FeatureService {
 
 
 
-  public async CreateOrEditExpenseItem({ body, id }: { body: CreateOrEditExpenseItemDto, id?: string }) {
-    if (id)
-      return await apiClient.put(`expense-items/${id}`, body);
-    return await apiClient.post(`expense-items`, body);
-  };
+  
 
   public async IssueExpenseItem({ body, id }: { body: IssueOrAddExpenseItemDto, id?: string }) {
     return await apiClient.patch(`issue-expense-items/${id}`, body);
@@ -650,13 +567,6 @@ export class FeatureService {
   };
 
 
-  public async DeleteExpenseItem(id: string) {
-    return await apiClient.delete(`expense-items/${id}`)
-  }
-
-  public async GetExpenseItems() {
-    return await apiClient.get(`expense-items`)
-  }
 
   public async GetExpenseStore() {
     return await apiClient.get('expense-store')
@@ -665,71 +575,13 @@ export class FeatureService {
     return await apiClient.get(`expense-transactions/?start_date=${start_date}&end_date=${end_date}`)
   }
 
-  public async GetExpenseItemsForDropdown() {
-    return await apiClient.get(`dropdown/expense-items`)
-  }
-  public async CreateExpenseItemFromExcel(body: FormData) {
-    return await apiClient.put(`create-from-excel/expense-items`, body)
-  }
+ 
 
   public async DownloadExcelTemplateForCreateChecklist() {
     return await apiClient.get("download/template/checklists");
   };
 
-  public async GetAllExpenseCategories() {
-    return await apiClient.get(`expense/categories`)
-  }
-
-  public async CreateOrEditExpenseCategory({ body, id }: {
-    body: { key: string }
-    id?: string
-  }) {
-    if (id) {
-      return await apiClient.put(`expense/categories/${id}`, body)
-    }
-    return await apiClient.post(`expense/categories`, body)
-  }
-  public async DeleteExpenseCategory(id: string) {
-    return await apiClient.delete(`expense/categories/${id}`)
-  }
-
-
-
-  public async GetAllExpenseLocations() {
-    return await apiClient.get(`expense/locations`)
-  }
-
-  public async CreateOrEditExpenseLocation({ body, id }: {
-    body: { key: string }
-    id?: string
-  }) {
-    if (id) {
-      return await apiClient.put(`expense/locations/${id}`, body)
-    }
-    return await apiClient.post(`expense/locations`, body)
-  }
-  public async DeleteExpenseLocation(id: string) {
-    return await apiClient.delete(`expense/locations/${id}`)
-  }
-
-
-  public async GetAllItemUnits() {
-    return await apiClient.get(`item/unit`)
-  }
-
-
-  public async CreateOrEditItemUnit({ body, id }: {
-    body: { key: string }
-    id?: string
-  }) {
-    if (id) {
-      return await apiClient.put(`item/unit/${id}`, body)
-    }
-    return await apiClient.post(`item/unit`, body)
-  }
-  public async DeleteItemUnit(id: string) {
-    return await apiClient.delete(`item/unit/${id}`)
-  }
+  
 
   public async CreateOrEditDriverSystem({ id, body }: { id?: string, body: CreateOrEditDriverSystemDto }) {
     if (id)

@@ -10,8 +10,8 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtua
 import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import { GetShoeWeightDiffReports } from '../../services/ProductionServices'
 import { GetShoeWeightDiffReportDto } from '../../dtos/shoe-weight.dto'
+import { FeatureService } from '../../services/FeatureServices'
 
 
 export default function ShowWeightDifferenceReportPage() {
@@ -21,7 +21,7 @@ export default function ShowWeightDifferenceReportPage() {
     start_date: moment(new Date()).format("YYYY-MM-DD")
     , end_date: moment(new Date().setDate(new Date().getDate() + 1)).format("YYYY-MM-DD")
   })
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetShoeWeightDiffReportDto[]>, BackendError>(["shoeweight_diffreports", dates.start_date, dates.end_date], async () => GetShoeWeightDiffReports({ start_date: dates.start_date, end_date: dates.end_date }))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetShoeWeightDiffReportDto[]>, BackendError>(["shoeweight_diffreports", dates.start_date, dates.end_date], async () =>new FeatureService(). GetShoeWeightDiffReports({ start_date: dates.start_date, end_date: dates.end_date }))
 
    const isFirstRender = useRef(true);
 

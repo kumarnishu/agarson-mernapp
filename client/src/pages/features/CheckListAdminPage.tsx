@@ -13,7 +13,6 @@ import { DownloadFile } from '../../utils/DownloadFile'
 import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
-import { ChangeChecklistNextDate, GetChecklistReports, GetChecklistTopBarDetails } from '../../services/CheckListServices'
 import DeleteCheckListDialog from '../../components/dialogs/checklists/DeleteCheckListDialog'
 import CreateOrEditCheckListDialog from '../../components/dialogs/checklists/CreateOrEditCheckListDialog'
 import { queryClient } from '../../main'
@@ -25,10 +24,11 @@ import ViewChecklistBoxRemarksDialog from '../../components/dialogs/checklists/V
 import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
 import { GetChecklistBoxDto } from '../../dtos/checklist-box.dto'
 import { GetChecklistDto, GetChecklistFromExcelDto } from '../../dtos/checklist.dto'
-import { GetUsersForDropdown } from '../../services/UserServices'
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import { jsPDF } from 'jspdf'; //or use your library of choice here
 import autoTable from 'jspdf-autotable';
+import { FeatureService } from '../../services/FeatureServices'
+import { UserService } from '../../services/UserServices'
 
 function CheckListAdminPage() {
   const { user: LoggedInUser } = useContext(UserContext)
@@ -58,17 +58,17 @@ function CheckListAdminPage() {
   ];
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
-  const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<{ category: string, count: number }[]>, BackendError>("checklists", GetChecklistTopBarDetails)
+  const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<{ category: string, count: number }[]>, BackendError>("checklists", new FeatureService(). GetChecklistTopBarDetails)
   const [dialog, setDialog] = useState<string | undefined>()
   let previous_date = new Date()
   let day = previous_date.getDate() - 3
   previous_date.setDate(day)
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'checklist_view', show_assigned_only: false }))
-  const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date, stage], async () => GetChecklistReports({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date, stage: stage }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'checklist_view', show_assigned_only: false }))
+  const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date, stage], async () => new FeatureService(). GetChecklistReports({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date, stage: stage }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { mutate: changedate } = useMutation
     <AxiosResponse<any>, BackendError, { id: string, next_date: string }>
-    (ChangeChecklistNextDate, {
+    (new FeatureService(). ChangeChecklistNextDate, {
       onSuccess: () => {
         queryClient.invalidateQueries('checklists')
       }

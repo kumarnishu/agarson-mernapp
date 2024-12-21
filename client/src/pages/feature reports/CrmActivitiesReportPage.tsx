@@ -1,7 +1,6 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
-import { GetActivitiesTopBarDeatils, GetAllStages, GetRemarks } from '../../services/LeadsServices'
 import { BackendError } from '../..'
 import { Box, Button, Fade, IconButton, LinearProgress, Menu, MenuItem, Select, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
@@ -19,7 +18,10 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { GetActivitiesOrRemindersDto, GetActivitiesTopBarDetailsDto } from '../../dtos/crm-remarks.dto'
 import { DropDownDto } from '../../dtos/dropdown.dto'
-import { GetUsersForDropdown } from '../../services/UserServices'
+import { FeatureService } from '../../services/FeatureServices'
+import { DropdownService } from '../../services/DropDownServices'
+import { UserService } from '../../services/UserServices'
+
 
 function CrmActivitiesReportPage() {
     const { user } = useContext(UserContext)
@@ -35,15 +37,15 @@ function CrmActivitiesReportPage() {
         , end_date: moment(new Date().setDate(new Date().getDate() + 1)).format("YYYY-MM-DD")
     })
     const { user: LoggedInUser } = useContext(UserContext)
-    const { data: stagedata, isSuccess: stageSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("crm_stages", GetAllStages)
+    const { data: stagedata, isSuccess: stageSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("crm_stages", new DropdownService().GetAllStages)
 
-    const { data: activitiesTopBarData } = useQuery<AxiosResponse<GetActivitiesTopBarDetailsDto[]>, BackendError>(["activities_topbar", dates, userId], async () => GetActivitiesTopBarDeatils({ start_date: dates?.start_date, end_date: dates?.end_date, id: userId }))
+    const { data: activitiesTopBarData } = useQuery<AxiosResponse<GetActivitiesTopBarDetailsDto[]>, BackendError>(["activities_topbar", dates, userId], async () => new FeatureService().GetActivitiesTopBarDeatils({ start_date: dates?.start_date, end_date: dates?.end_date, id: userId }))
 
     let previous_date = new Date()
     let day = previous_date.getDate() - 1
     previous_date.setDate(day)
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'leads_view', show_assigned_only: true }))
-    const { data, isLoading, refetch: ReftechRemarks, isRefetching } = useQuery<AxiosResponse<{ result: GetActivitiesOrRemindersDto[], page: number, total: number, limit: number }>, BackendError>(["activities", stage, userId, dates?.start_date, dates?.end_date], async () => GetRemarks({ stage: stage, limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'leads_view', show_assigned_only: true }))
+    const { data, isLoading, refetch: ReftechRemarks, isRefetching } = useQuery<AxiosResponse<{ result: GetActivitiesOrRemindersDto[], page: number, total: number, limit: number }>, BackendError>(["activities", stage, userId, dates?.start_date, dates?.end_date], async () => new FeatureService().GetRemarks({ stage: stage, limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
     const [dialog, setDialog] = useState<string | undefined>()
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
@@ -287,22 +289,22 @@ function CrmActivitiesReportPage() {
                 color: 'white',
                 border: '1px solid lightgrey;',
             },
-        }),	muiTableHeadCellProps: ({ column }) => ({
+        }), muiTableHeadCellProps: ({ column }) => ({
             sx: {
-              '& div:nth-child(1) span': {
-                display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
-              },
-              '& div:nth-child(2)': {
-                display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
-              },
-              '&:hover div:nth-child(1) span': {
-                display: 'inline', // Visible on hover
-              },
-              '&:hover div:nth-child(2)': {
-                display: 'block', // Visible on hover
-              }
+                '& div:nth-child(1) span': {
+                    display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
+                },
+                '& div:nth-child(2)': {
+                    display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
+                },
+                '&:hover div:nth-child(1) span': {
+                    display: 'inline', // Visible on hover
+                },
+                '&:hover div:nth-child(2)': {
+                    display: 'block', // Visible on hover
+                }
             },
-          }),
+        }),
         renderTopToolbarCustomActions: ({ table }) => (
             <Box sx={{ width: '100%' }}>
                 <Stack direction={'row'} gap={1} sx={{ maxWidth: '100vw', height: 40, background: 'whitesmoke', p: 1, borderRadius: 1 }} className='scrollable-stack'>

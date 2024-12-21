@@ -10,7 +10,6 @@ import { Fade, IconButton, Menu, MenuItem, TextField, Tooltip, Typography } from
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { GetAllCities, GetAllStates } from '../../services/LeadsServices'
 import FindUknownCrmCitiesDialog from '../../components/dialogs/crm/FindUknownCrmCitiesDialog'
 import AssignCrmCitiesDialog from '../../components/dialogs/crm/AssignCrmCitiesDialog'
 import { toTitleCase } from '../../utils/TitleCase'
@@ -27,8 +26,8 @@ export default function CrmCitiesPage() {
   const [cities, setCities] = useState<GetCrmCityDto[]>([])
   const [flag, setFlag] = useState(1);
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data: citiesdata, isSuccess, isLoading } = useQuery<AxiosResponse<GetCrmCityDto[]>, BackendError>(["crm_cities", state], async () => GetAllCities({ state: state }))
-  const { data, isSuccess: isStateSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>("crm_cities", GetAllStates)
+  const { data: citiesdata, isSuccess, isLoading } = useQuery<AxiosResponse<GetCrmCityDto[]>, BackendError>(["crm_cities", state], async () =>new Dropdos GetAllCities({ state: state }))
+  const { data, isSuccess: isStateSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>("crm_cities", newGetAllStates)
 
   const [dialog,setDialog]=useState<string|undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);

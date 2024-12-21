@@ -6,18 +6,18 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
-import {  GetAllSalesmanReferences } from '../../services/SalesServices'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import PopUp from '../../components/popup/PopUp'
 import { Comment, Visibility } from '@mui/icons-material'
 import { GetReferenceReportForSalesmanDto } from '../../dtos/references.dto'
 import CreateOrEditReferenceRemarkDialog from '../../components/dialogs/reference/CreateOrEditReferenceRemarkDialog'
 import ViewReferenceRemarksDialog from '../../components/dialogs/reference/ViewReferenceRemarksDialog'
+import { SalesService } from '../../services/SalesServices'
 
 export default function ReferencesReportPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const [reports, setReports] = useState<GetReferenceReportForSalesmanDto[]>([])
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferenceReportForSalesmanDto[]>, BackendError>(["stages",], async () => GetAllSalesmanReferences())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferenceReportForSalesmanDto[]>, BackendError>(["stages",], async () => new SalesService().GetAllSalesmanReferences())
   const isFirstRender = useRef(true);
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
   const [dialog, setDialog] = useState<string | undefined>()
@@ -26,7 +26,7 @@ export default function ReferencesReportPage() {
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [party, setParty] = useState<string | undefined>()
   const [stage, setReference] = useState<string | undefined>()
-  
+
   const columns = useMemo<MRT_ColumnDef<GetReferenceReportForSalesmanDto>[]>(
     //column definitions...
     () => reports && [
@@ -96,8 +96,8 @@ export default function ReferencesReportPage() {
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
-     
-   
+
+
     ],
     [reports],
     //end
@@ -124,13 +124,13 @@ export default function ReferencesReportPage() {
         color: 'white'
       },
     }),
-	muiTableHeadCellProps: ({ column }) => ({
+    muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-child(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-child(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-child(1) span': {
           display: 'inline', // Visible on hover
@@ -251,7 +251,7 @@ export default function ReferencesReportPage() {
         >
           Salesman References
         </Typography>
-       
+
       </Stack >
       {party && stage && <CreateOrEditReferenceRemarkDialog dialog={dialog} setDialog={setDialog} stage={stage} party={party} />}
       {party && stage && <ViewReferenceRemarksDialog dialog={dialog} setDialog={setDialog} party={party} stage={stage} />}

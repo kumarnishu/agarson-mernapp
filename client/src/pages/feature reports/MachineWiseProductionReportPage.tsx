@@ -6,12 +6,12 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import moment from 'moment'
-import { GetproductionMachineWise } from '../../services/ProductionServices'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import ExportToExcel from '../../utils/ExportToExcel'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { IColumnRowData } from '../../dtos/table.dto'
+import { FeatureService } from '../../services/FeatureServices'
 
 export default function MachineWiseProductionReportPage() {
   const [reports, setReports] = useState<IColumnRowData['rows']>([])
@@ -21,7 +21,7 @@ export default function MachineWiseProductionReportPage() {
     , end_date: moment(new Date().setDate(31)).format("YYYY-MM-DD")
   })
   const { user } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["machine_wisereports", dates.start_date, dates.end_date], async () => GetproductionMachineWise({ start_date: dates.start_date, end_date: dates.end_date }))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["machine_wisereports", dates.start_date, dates.end_date], async () =>new FeatureService(). GetproductionMachineWise({ start_date: dates.start_date, end_date: dates.end_date }))
 
    const isFirstRender = useRef(true);
 

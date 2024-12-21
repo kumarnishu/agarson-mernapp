@@ -6,12 +6,12 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import moment from 'moment'
-import { GetproductionThekedarWise } from '../../services/ProductionServices'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import ExportToExcel from '../../utils/ExportToExcel'
 import { IColumnRowData } from '../../dtos/table.dto'
+import { FeatureService } from '../../services/FeatureServices'
 
 export default function ThekedarWiseProductionReportPage() {
   const [reports, setReports] = useState<IColumnRowData['rows']>([])
@@ -20,7 +20,7 @@ export default function ThekedarWiseProductionReportPage() {
     start_date: moment(new Date().setDate(1)).format("YYYY-MM-DD")
     , end_date: moment(new Date().setDate(31)).format("YYYY-MM-DD")
   })
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["thekedarwisereports", dates.start_date, dates.end_date], async () => GetproductionThekedarWise({ start_date: dates.start_date, end_date: dates.end_date }))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["thekedarwisereports", dates.start_date, dates.end_date], async () =>new FeatureService().GetproductionThekedarWise({ start_date: dates.start_date, end_date: dates.end_date }))
   const { user } = useContext(UserContext)
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 

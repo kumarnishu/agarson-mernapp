@@ -11,9 +11,7 @@ import { Check, Delete, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Men
 import DBPagination from '../../components/pagination/DBpagination'
 import ExportToExcel from '../../utils/ExportToExcel'
 import PopUp from '../../components/popup/PopUp'
-import { GetUsersForDropdown } from '../../services/UserServices'
 import moment from 'moment'
-import { GetShoeWeights } from '../../services/ProductionServices'
 import CreateOrEditShoeWeightDialog from '../../components/dialogs/production/CreateOrEditShoeWeightDialog'
 import DeleteProductionItemDialog from '../../components/dialogs/production/DeleteProductionItemDialog'
 import ValidateShoeWeightDialog from '../../components/dialogs/production/ValidateShoeWeightDialog'
@@ -21,6 +19,8 @@ import { months } from '../../utils/months'
 import ViewShoeWeightPhotoDialog from '../../components/dialogs/production/ViewShoeWeightPhotoDialog'
 import { GetShoeWeightDto } from '../../dtos/shoe-weight.dto'
 import { DropDownDto } from '../../dtos/dropdown.dto'
+import { FeatureService } from '../../services/FeatureServices'
+import { UserService } from '../../services/UserServices'
 
 
 export default function ShoeWeightPage() {
@@ -43,9 +43,9 @@ export default function ShoeWeightPage() {
     start_date: moment(new Date()).format("YYYY-MM-DD")
     , end_date: moment(new Date().setDate(new Date().getDate() + 1)).format("YYYY-MM-DD")
   })
-  const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetShoeWeightDto[], page: number, total: number, limit: number }>, BackendError>(["shoe_weights", userId, dates?.start_date, dates?.end_date], async () => GetShoeWeights({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
+  const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetShoeWeightDto[], page: number, total: number, limit: number }>, BackendError>(["shoe_weights", userId, dates?.start_date, dates?.end_date], async () =>new FeatureService(). GetShoeWeights({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'shoe_weight_view', show_assigned_only: true }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'shoe_weight_view', show_assigned_only: true }))
 
   useEffect(() => {
     if (isUsersSuccess)

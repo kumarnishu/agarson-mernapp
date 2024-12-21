@@ -11,15 +11,15 @@ import { Check, Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExi
 import DBPagination from '../../components/pagination/DBpagination'
 import ExportToExcel from '../../utils/ExportToExcel'
 import PopUp from '../../components/popup/PopUp'
-import { GetUsersForDropdown } from '../../services/UserServices'
 import moment from 'moment'
 import DeleteProductionItemDialog from '../../components/dialogs/production/DeleteProductionItemDialog'
-import { GetSpareDyes } from '../../services/ProductionServices'
 import ValidateSpareDyeDialog from '../../components/dialogs/production/ValidateSpareDyeDialog'
 import CreateOrEditSpareDyeDialog from '../../components/dialogs/production/CreateOrEditSpareDyeDialog'
 import ViewSpareDyePhotoDialog from '../../components/dialogs/production/ViewSpareDyePhotoDialog'
 import { GetSpareDyeDto } from '../../dtos/spare-dye.dto'
 import { DropDownDto } from '../../dtos/dropdown.dto'
+import { FeatureService } from '../../services/FeatureServices'
+import { UserService } from '../../services/UserServices'
 
 
 export default function SpareDyesPage() {
@@ -43,9 +43,9 @@ export default function SpareDyesPage() {
         start_date: moment(new Date()).format("YYYY-MM-DD")
         , end_date: moment(new Date().setDate(new Date().getDate() + 1)).format("YYYY-MM-DD")
     })
-    const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetSpareDyeDto[], page: number, total: number, limit: number }>, BackendError>(["spare_dyes", userId, dates?.start_date, dates?.end_date], async () => GetSpareDyes({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
+    const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetSpareDyeDto[], page: number, total: number, limit: number }>, BackendError>(["spare_dyes", userId, dates?.start_date, dates?.end_date], async () => new FeatureService().GetSpareDyes({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'spare_dye_view', show_assigned_only: true }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'spare_dye_view', show_assigned_only: true }))
 
     useEffect(() => {
         if (isUsersSuccess)
@@ -81,7 +81,7 @@ export default function SpareDyesPage() {
                                 {LoggedInUser?.assigned_permissions.includes('spare_dye_edit') && <>
                                     <IconButton color="info"
                                         onClick={() => {
-                                           setDialog('CreateOrEditSpareDyeDialog')
+                                            setDialog('CreateOrEditSpareDyeDialog')
                                             setSpareDye(cell.row.original)
                                         }}
 
@@ -205,20 +205,20 @@ export default function SpareDyesPage() {
         }),
         muiTableHeadCellProps: ({ column }) => ({
             sx: {
-              '& div:nth-child(1) span': {
-                display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
-              },
-              '& div:nth-child(2)': {
-                display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
-              },
-              '&:hover div:nth-child(1) span': {
-                display: 'inline', // Visible on hover
-              },
-              '&:hover div:nth-child(2)': {
-                display: 'block', // Visible on hover
-              }
+                '& div:nth-child(1) span': {
+                    display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
+                },
+                '& div:nth-child(2)': {
+                    display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
+                },
+                '&:hover div:nth-child(1) span': {
+                    display: 'inline', // Visible on hover
+                },
+                '&:hover div:nth-child(2)': {
+                    display: 'block', // Visible on hover
+                }
             },
-          }),
+        }),
         muiTableHeadRowProps: () => ({
             sx: {
                 backgroundColor: 'whitesmoke',

@@ -10,10 +10,10 @@ import { AddBoxOutlined, Input } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { GetExpenseStore } from '../../services/ExpenseServices'
 import { GetExpenseItemDto } from '../../dtos/expense-item.dto'
 import IssueExpenseItemDialog from '../../components/dialogs/expense/IssueExpenseItemDialog'
 import AddExpenseItemDialog from '../../components/dialogs/expense/AddExpenseItemDialog'
+import { FeatureService } from '../../services/FeatureServices'
 
 
 
@@ -21,7 +21,7 @@ export default function ExpenseStorePage() {
   const [item, setItem] = useState<GetExpenseItemDto>()
   const [items, setItems] = useState<GetExpenseItemDto[]>([])
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetExpenseItemDto[]>, BackendError>(["expense-store"], async () => GetExpenseStore())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetExpenseItemDto[]>, BackendError>(["expense-store"], async () => new FeatureService().GetExpenseStore())
 
 
 

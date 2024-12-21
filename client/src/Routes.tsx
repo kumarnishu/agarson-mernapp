@@ -48,7 +48,6 @@ import ItemUnitPage from './pages/dropdowns/ItemUnitPage.tsx'
 import MainNavbar from './components/navbar/MainNavbar.tsx'
 import AuthorizationNavbar from './components/navbar/AuthorizationNavbar.tsx'
 import FeatureNavbar from './components/navbar/FeatureNavbar.tsx'
-import FeatureReportsNavbar from './components/navbar/FeatureReportsNavbar.tsx'
 import DropDownNavbar from './components/navbar/DropDownNavbar.tsx'
 import ExcelDBNavbar from './components/navbar/ExcelDBNavbar.tsx'
 import SalesNavbar from './components/navbar/SalesNavbar.tsx'
@@ -58,7 +57,6 @@ import DropDownDashboard from './components/dashboards/DropDownDashboard.tsx'
 import ExcelDBDashboard from './components/dashboards/ExcelDBDashboard.tsx'
 import FeatureDashboard from './components/dashboards/FeatureDashboard.tsx'
 import SalesDashboard from './components/dashboards/SalesDashboard.tsx'
-import FeatureReportsDashboard from './components/dashboards/FeatureReportsDashboard.tsx'
 import UsersNavbar from './components/navbar/UsersNavbar.tsx'
 import ReferencesReportPage from './pages/sales/ReferencesReportPage.tsx'
 import ExpenseCategoriesPage from './pages/dropdowns/ExpenseCategoryPage.tsx'
@@ -205,16 +203,6 @@ function AppRoutes() {
                   <DriverAppSystemPage />
                 }
               />}
-
-            </Route>}
-
-          {user && user?.assigned_permissions.includes('report_menu') &&
-            < Route path="/FeatureReports" element={<FeatureReportsNavbar />}>
-              <Route index
-                element={
-                  <FeatureReportsDashboard />
-                }
-              />
               {user?.assigned_permissions.includes('activities_view') && <Route path="CrmActivitiesPage" element={
                 <CrmActivitiesPage />
               }
@@ -261,6 +249,8 @@ function AppRoutes() {
               }
               />}
             </Route>}
+
+
 
           {user && user?.assigned_permissions.includes('dropdown_menu') &&
             < Route path="/DropDown" element={<DropDownNavbar />}>

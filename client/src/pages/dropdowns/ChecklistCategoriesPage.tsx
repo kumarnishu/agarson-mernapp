@@ -11,7 +11,6 @@ import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { GetAllCheckCategories } from '../../services/CheckListServices'
 import CreateOrEditChecklistCategoryDialog from '../../components/dialogs/checklists/CreateOrEditChecklistCategoryDialog'
 import { DropDownDto } from '../../dtos/dropdown.dto'
 

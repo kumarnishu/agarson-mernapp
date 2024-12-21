@@ -6,7 +6,6 @@ import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
-import { GetNewRefers } from '../../services/LeadsServices'
 import CreateOrEditReferDialog from '../../components/dialogs/crm/CreateOrEditReferDialog'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
 import AllReferralPageDialog from '../../components/dialogs/crm/AllReferralPageDialog'
@@ -21,6 +20,7 @@ import CreateOrEditBillDialog from '../../components/dialogs/crm/CreateOrEditBil
 import ViewRefersBillHistoryDialog from '../../components/dialogs/crm/ViewRefersBillHistoryDialog'
 import ToogleReferConversionDialog from '../../components/dialogs/crm/ToogleReferConversionDialog.tsx'
 import { GetReferDto } from '../../dtos/refer.dto.ts'
+import { FeatureService } from '../../services/FeatureServices.ts'
 
 
 
@@ -32,7 +32,7 @@ export default function NewReferReportPage() {
     , end_date: moment(new Date().setDate(30)).format("YYYY-MM-DD")
   })
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferDto[]>, BackendError>(["new_refer_reports", dates.start_date, dates.end_date], async () => GetNewRefers({ start_date: dates.start_date, end_date: dates.end_date }))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferDto[]>, BackendError>(["new_refer_reports", dates.start_date, dates.end_date], async () => new FeatureService().GetNewRefers({ start_date: dates.start_date, end_date: dates.end_date }))
 
 
   const [dialog, setDialog] = useState<string | undefined>()

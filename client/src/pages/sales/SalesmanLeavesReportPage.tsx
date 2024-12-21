@@ -7,8 +7,8 @@ import { BackendError } from '../..'
 import { UserContext } from '../../contexts/userContext'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { SalesmanLeavesButton } from '../../components/buttons/SalesmanLeavesButton'
-import { GetSalesManLeavesReports } from '../../services/ExcelReportsServices'
 import { IColumnRowData } from '../../dtos/table.dto'
+import { SalesService } from '../../services/SalesServices'
 
 
 
@@ -16,7 +16,7 @@ export default function SalesmanLeavesReportPage() {
   const [reports, setReports] = useState<IColumnRowData['rows']>([])
   const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
   const { user } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["reports"], async () => GetSalesManLeavesReports())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["reports"], async () => new SalesService().GetSalesManLeavesReports())
 
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 

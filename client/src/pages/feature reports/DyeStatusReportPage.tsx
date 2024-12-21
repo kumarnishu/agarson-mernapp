@@ -9,9 +9,9 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtua
 import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import { GetDyeStatusReport } from '../../services/ProductionServices'
 import { UserContext } from '../../contexts/userContext'
 import { GetDyeStatusReportDto } from '../../dtos/dye.dto'
+import { FeatureService } from '../../services/FeatureServices'
 
 
 export default function DyeStatusReportPage() {
@@ -21,7 +21,7 @@ export default function DyeStatusReportPage() {
     , end_date: moment(new Date().setDate(new Date().getDate() + 1)).format("YYYY-MM-DD")
   })
   const { user } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetDyeStatusReportDto[]>, BackendError>(["reports", dates.start_date, dates.end_date], async () => GetDyeStatusReport({ start_date: dates.start_date, end_date: dates.end_date }))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetDyeStatusReportDto[]>, BackendError>(["reports", dates.start_date, dates.end_date], async () => new FeatureService().GetDyeStatusReport({ start_date: dates.start_date, end_date: dates.end_date }))
 
    const isFirstRender = useRef(true);
 

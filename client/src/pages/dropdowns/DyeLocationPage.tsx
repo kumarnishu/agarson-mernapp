@@ -9,7 +9,6 @@ import { Edit, RestartAltRounded } from '@mui/icons-material'
 import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { GetAllDyeLocations } from '../../services/ProductionServices'
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
 import CreateOrEditDyeLocationDialog from '../../components/dialogs/production/CreateOrEditDyeLocationDialog'

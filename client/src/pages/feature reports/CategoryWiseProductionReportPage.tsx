@@ -7,11 +7,11 @@ import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
-import { GetproductioncategoryWise } from '../../services/ProductionServices'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { UserContext } from '../../contexts/userContext'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { GetCategoryWiseProductionReportDto } from '../../dtos/production.dto'
+import { FeatureService } from '../../services/FeatureServices'
 
 
 
@@ -22,7 +22,7 @@ export default function CategoryWiseProductionReportPage() {
     , end_date: moment(new Date().setDate(31)).format("YYYY-MM-DD")
   })
   const { user } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetCategoryWiseProductionReportDto[]>, BackendError>(["categorywisereports", dates.start_date, dates.end_date], async () => GetproductioncategoryWise({ start_date: dates.start_date, end_date: dates.end_date }))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetCategoryWiseProductionReportDto[]>, BackendError>(["categorywisereports", dates.start_date, dates.end_date], async () =>new FeatureService(). GetproductioncategoryWise({ start_date: dates.start_date, end_date: dates.end_date }))
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
    const isFirstRender = useRef(true);

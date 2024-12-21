@@ -11,8 +11,8 @@ import { UserContext } from '../../contexts/userContext'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { GetExpenseTransactionsDto } from '../../dtos/expense.dto'
-import { GetAllExpenseTransactions } from '../../services/ExpenseServices'
 import { HandleNumbers } from '../../utils/IsDecimal'
+import { FeatureService } from '../../services/FeatureServices'
 
 export default function ExpenseTransactionReports() {
   const [transactions, seTransactions] = useState<GetExpenseTransactionsDto[]>([])
@@ -20,7 +20,7 @@ export default function ExpenseTransactionReports() {
     start_date: moment(new Date(new Date().setDate(1)).setFullYear(2023)).format("YYYY-MM-DD")
     , end_date: moment(new Date().setDate(30)).format("YYYY-MM-DD")
   })
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetExpenseTransactionsDto[]>, BackendError>(["expense_transaction_reports", dates.start_date, dates.end_date], async () => GetAllExpenseTransactions({ start_date: dates.start_date, end_date: dates.end_date }))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetExpenseTransactionsDto[]>, BackendError>(["expense_transaction_reports", dates.start_date, dates.end_date], async () =>new FeatureService(). GetAllExpenseTransactions({ start_date: dates.start_date, end_date: dates.end_date }))
   const { user: LoggedInUser } = useContext(UserContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);

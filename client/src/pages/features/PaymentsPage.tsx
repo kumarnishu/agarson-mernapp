@@ -13,13 +13,13 @@ import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import { queryClient } from '../../main'
-import { ChangePaymentsDueDate, ChangePaymentsNextDate, GetPaymentss, GetPaymentsTopBarDetails } from '../../services/PaymentsService'
 import { PaymentsExcelButtons } from '../../components/buttons/PaymentsExcelButtons'
 import AssignPaymentsDialog from '../../components/dialogs/payments/AssignPaymentsDialog'
 import BulkDeletePaymentsDialog from '../../components/dialogs/payments/BulkDeletePaymentsDialog'
 import { GetPaymentDto, GetPaymentsFromExcelDto } from '../../dtos/payment.dto'
-import { GetUsersForDropdown } from '../../services/UserServices'
 import { DropDownDto } from '../../dtos/dropdown.dto'
+import { FeatureService } from '../../services/FeatureServices'
+import { UserService } from '../../services/UserServices'
 
 
 function PaymentsPage() {
@@ -32,9 +32,9 @@ function PaymentsPage() {
   const [stage, setStage] = useState('all')
   const [categoriesData, setCategoriesData] = useState<{ category: string, count: number }[]>([])
   const [userId, setUserId] = useState<string>()
-  const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<{ category: string, count: number }[]>, BackendError>("payments", GetPaymentsTopBarDetails)
+  const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<{ category: string, count: number }[]>, BackendError>("payments", new FeatureService().GetPaymentsTopBarDetails)
   const [dialog, setDialog] = useState<string | undefined>()
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'payments_view', show_assigned_only: false }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'payments_view', show_assigned_only: false }))
 
 
   const isFirstRender = useRef(true);
@@ -43,18 +43,18 @@ function PaymentsPage() {
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-  const { data, isSuccess, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetPaymentDto[], page: number, total: number, limit: number }>, BackendError>(["payments", userId, stage], async () => GetPaymentss({ limit: paginationData?.limit, page: paginationData?.page, id: userId, stage: stage }))
+  const { data, isSuccess, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetPaymentDto[], page: number, total: number, limit: number }>, BackendError>(["payments", userId, stage], async () => new FeatureService().GetPaymentss({ limit: paginationData?.limit, page: paginationData?.page, id: userId, stage: stage }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { mutate: changedate } = useMutation
     <AxiosResponse<any>, BackendError, { id: string, next_date: string }>
-    (ChangePaymentsNextDate, {
+    (new FeatureService().ChangePaymentsNextDate, {
       onSuccess: () => {
         queryClient.invalidateQueries('payments')
       }
     })
   const { mutate: changeDuedate } = useMutation
     <AxiosResponse<any>, BackendError, { id: string, due_date: string }>
-    (ChangePaymentsDueDate, {
+    (new FeatureService().ChangePaymentsDueDate, {
       onSuccess: () => {
         queryClient.invalidateQueries('payments')
       }

@@ -23,7 +23,7 @@ type Props = {
 
 function AssignUsersDialog({ user, setUser, dialog, setDialog }: Props) {
     const [users, setUsers] = useState<DropDownDto[]>(user.assigned_users)
-    const { data, isSuccess: isUserSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
+    const { data, isSuccess: isUserSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<string>, BackendError, {

@@ -1,7 +1,6 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
-import { GetReminderRemarks } from '../../services/LeadsServices'
 import { BackendError } from '../..'
 import { Box, DialogTitle, Stack } from '@mui/material'
 
@@ -15,11 +14,12 @@ import { DownloadFile } from '../../utils/DownloadFile'
 import ViewRemarksDialog from '../../components/dialogs/crm/ViewRemarksDialog'
 import CreateOrEditRemarkDialog from '../../components/dialogs/crm/CreateOrEditRemarkDialog'
 import { GetActivitiesOrRemindersDto } from '../../dtos/crm-remarks.dto'
+import { FeatureService } from '../../services/FeatureServices'
 
 function CrmReminderPage() {
   const [remarks, setRemarks] = useState<GetActivitiesOrRemindersDto[]>([])
   const [remark, setRemark] = useState<GetActivitiesOrRemindersDto>()
-  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetActivitiesOrRemindersDto[]>, BackendError>(["reminders"], async () => GetReminderRemarks())
+  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetActivitiesOrRemindersDto[]>, BackendError>(["reminders"], async () => new FeatureService(). GetReminderRemarks())
   const { user: LoggedInUser } = useContext(UserContext)
 
   const [dialog, setDialog] = useState<string | undefined>()

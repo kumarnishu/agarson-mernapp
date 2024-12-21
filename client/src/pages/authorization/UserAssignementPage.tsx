@@ -10,7 +10,6 @@ import { Assignment, KeyOffOutlined } from '@mui/icons-material'
 import { UserContext } from '../../contexts/userContext'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { DownloadFile } from '../../utils/DownloadFile'
-import {  GetUsersForAssignment } from '../../services/UserServices'
 import AssignPermissionsToUsersDialog from '../../components/dialogs/users/AssignPermissionsToUsersDialog'
 import PopUp from '../../components/popup/PopUp'
 import AssignUsersDialog from '../../components/dialogs/users/AssignUsersDialog'

@@ -12,7 +12,6 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { DropDownDto } from '../../dtos/dropdown.dto'
-import { GetAllExpenseCategories } from '../../services/ExpenseServices'
 import CreateOrEditExpenseCategoryDialog from '../../components/dialogs/expense/CreateOrEditExpenseCategoryDialog'
 
 

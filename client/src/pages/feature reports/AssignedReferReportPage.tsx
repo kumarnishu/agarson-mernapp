@@ -13,7 +13,6 @@ import { UserContext } from '../../contexts/userContext'
 import CreateOrEditRemarkDialog from '../../components/dialogs/crm/CreateOrEditRemarkDialog'
 import ViewRemarksDialog from '../../components/dialogs/crm/ViewRemarksDialog'
 import { DownloadFile } from '../../utils/DownloadFile'
-import { GetAssignedRefers } from '../../services/LeadsServices'
 import BackHandIcon from '@mui/icons-material/BackHand';
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
 import ReferLeadDialog from '../../components/dialogs/crm/ReferLeadDialog'
@@ -25,6 +24,7 @@ import CreateOrEditBillDialog from '../../components/dialogs/crm/CreateOrEditBil
 import ViewLeadsBillHistoryDialog from '../../components/dialogs/crm/ViewLeadsBillHistoryDialog'
 import CreateOrEditLeadDialog from '../../components/dialogs/crm/CreateOrEditLeadDialog'
 import { GetLeadDto } from '../../dtos/lead.dto'
+import { FeatureService } from '../../services/FeatureServices'
 
 export default function AssignedReferReportPage() {
   const [leads, setLeads] = useState<GetLeadDto[]>([])
@@ -34,7 +34,7 @@ export default function AssignedReferReportPage() {
     , end_date: moment(new Date().setDate(30)).format("YYYY-MM-DD")
   })
   const [dialog, setDialog] = useState<string | undefined>()
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetLeadDto[]>, BackendError>(["assign_refer_reports", dates.start_date, dates.end_date], async () => GetAssignedRefers({ start_date: dates.start_date, end_date: dates.end_date }))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetLeadDto[]>, BackendError>(["assign_refer_reports", dates.start_date, dates.end_date], async () => new FeatureService().GetAssignedRefers({ start_date: dates.start_date, end_date: dates.end_date }))
   const { user: LoggedInUser } = useContext(UserContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
@@ -449,13 +449,13 @@ export default function AssignedReferReportPage() {
         color: 'white'
       },
     }),
-	muiTableHeadCellProps: ({ column }) => ({
+    muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-child(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-child(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-child(1) span': {
           display: 'inline', // Visible on hover

@@ -5,7 +5,6 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtua
 import { Button, IconButton, TextField, Tooltip, Typography } from '@mui/material'
 import { AxiosResponse } from "axios"
 import { BackendError } from "../.."
-import { GetSalesmanVisit } from '../../services/SalesServices'
 import moment from 'moment'
 import ViewVisitReportDialog from '../../components/dialogs/sales/VisitReportDialog'
 import PopUp from '../../components/popup/PopUp'
@@ -16,6 +15,7 @@ import CreateOrEditVisitReportRemarkDialog from '../../components/dialogs/sales/
 import CreateOrEditSalesmanAttendanceDialog from '../../components/dialogs/sales/CreateOrEditSalesmanAttendanceDialog'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { GetSalesManVisitSummaryReportDto } from '../../dtos/visit-report.dto'
+import { SalesService } from '../../services/SalesServices'
 
 
 export default function SalesmanVisitPage() {
@@ -23,7 +23,7 @@ export default function SalesmanVisitPage() {
   const [realdate, setRealDate] = useState<string | undefined>()
   const { user: LoggedInUser } = useContext(UserContext)
   const [reports, setReports] = useState<GetSalesManVisitSummaryReportDto[]>([])
-  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetSalesManVisitSummaryReportDto[]>, BackendError>(["visits", date], async () => GetSalesmanVisit({ date: date }))
+  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetSalesManVisitSummaryReportDto[]>, BackendError>(["visits", date], async () =>new SalesService().GetSalesmanVisit({ date: date }))
   const [employee, setEmployee] = useState<string>()
   const [dialog, setDialog] = useState<string | undefined>()
   const isFirstRender = useRef(true);

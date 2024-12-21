@@ -13,7 +13,6 @@ import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import CreateOrEditPaymentCategoryDialog from '../../components/dialogs/payments/CreateOrEditPaymentCategoryDialog'
-import { GetAllPaymentCategories } from '../../services/PaymentsService'
 
 
 

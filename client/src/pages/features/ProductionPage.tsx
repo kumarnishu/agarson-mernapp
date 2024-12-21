@@ -11,13 +11,13 @@ import { Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Menu
 import DBPagination from '../../components/pagination/DBpagination'
 import ExportToExcel from '../../utils/ExportToExcel'
 import PopUp from '../../components/popup/PopUp'
-import { GetProductions } from '../../services/ProductionServices'
 import DeleteProductionItemDialog from '../../components/dialogs/production/DeleteProductionItemDialog'
 import moment from 'moment'
 import CreateOrEditProductionDialog from '../../components/dialogs/production/CreateOrEditProductionDialog'
 import { GetProductionDto } from '../../dtos/production.dto'
-import { GetUsersForDropdown } from '../../services/UserServices'
 import { DropDownDto } from '../../dtos/dropdown.dto'
+import { FeatureService } from '../../services/FeatureServices'
+import { UserService } from '../../services/UserServices'
 
 
 export default function ProductionPage() {
@@ -40,9 +40,9 @@ export default function ProductionPage() {
     start_date: moment(new Date().setDate(new Date().getDate() - 3)).format("YYYY-MM-DD")
     , end_date: moment(new Date()).format("YYYY-MM-DD")
   })
-  const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetProductionDto[], page: number, total: number, limit: number }>, BackendError>(["productions", userId, dates?.start_date, dates?.end_date], async () => GetProductions({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
+  const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetProductionDto[], page: number, total: number, limit: number }>, BackendError>(["productions", userId, dates?.start_date, dates?.end_date], async () =>new FeatureService(). GetProductions({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'production_view', show_assigned_only: true }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'production_view', show_assigned_only: true }))
 
   useEffect(() => {
     if (isUsersSuccess)

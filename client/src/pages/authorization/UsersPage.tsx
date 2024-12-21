@@ -10,7 +10,6 @@ import { Assignment, Block, DeviceHubOutlined, Edit, GroupAdd, GroupRemove, Key,
 import { UserContext } from '../../contexts/userContext'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { DownloadFile } from '../../utils/DownloadFile'
-import { GetUsers, LoginByThisUser } from '../../services/UserServices'
 import NewUserDialog from '../../components/dialogs/users/NewUserDialog'
 import AssignPermissionsToUsersDialog from '../../components/dialogs/users/AssignPermissionsToUsersDialog'
 import PopUp from '../../components/popup/PopUp'

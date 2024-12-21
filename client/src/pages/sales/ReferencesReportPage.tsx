@@ -7,18 +7,18 @@ import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
 import { ReferencesExcelButtons } from '../../components/buttons/ReferencesExcelButtons'
-import { GetAllReferences } from '../../services/SalesServices'
 import { GetReferenceDto } from '../../dtos/references.dto'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import PopUp from '../../components/popup/PopUp'
 import { Comment, Visibility } from '@mui/icons-material'
 import CreateOrEditReferenceRemarkDialog from '../../components/dialogs/reference/CreateOrEditReferenceRemarkDialog'
 import ViewReferenceRemarksDialog from '../../components/dialogs/reference/ViewReferenceRemarksDialog'
+import { SalesService } from '../../services/SalesServices'
 
 export default function ReferencesReportPage() {
   const [reports, setReports] = useState<GetReferenceDto[]>([])
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferenceDto[]>, BackendError>(["references",], async () => GetAllReferences())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferenceDto[]>, BackendError>(["references",], async () => new SalesService().GetAllReferences())
   const [dialog, setDialog] = useState<string | undefined>()
   const isFirstRender = useRef(true);
   const [party, setParty] = useState<string | undefined>()

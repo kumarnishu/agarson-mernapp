@@ -12,12 +12,12 @@ import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 
-import { GetSalesmanKpis } from '../../services/SalesServices'
 import { previousYear } from '../../utils/datesHelper'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { GetSalesmanKpiDto } from '../../dtos/sales-attendance.dto'
-import { GetUsersForDropdown } from '../../services/UserServices'
 import { DropDownDto } from '../../dtos/dropdown.dto'
+import { SalesService } from '../../services/SalesServices'
+import { UserService } from '../../services/UserServices'
 
 
 function SalesmanKpiPage() {
@@ -43,8 +43,8 @@ function SalesmanKpiPage() {
   let day = previous_date.getDate() - 4
   previous_date.setDate(day)
   previous_date.setHours(0, 0, 0, 0)
-  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: false }))
-  const { data, isLoading, refetch } = useQuery<AxiosResponse<GetSalesmanKpiDto[]>, BackendError>(["salesmankpis", userId, dates?.start_date, dates?.end_date], async () => GetSalesmanKpis({ id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
+  const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: false }))
+  const { data, isLoading, refetch } = useQuery<AxiosResponse<GetSalesmanKpiDto[]>, BackendError>(["salesmankpis", userId, dates?.start_date, dates?.end_date], async () => new SalesService().GetSalesmanKpis({ id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const columns = useMemo<MRT_ColumnDef<GetSalesmanKpiDto>[]>(
@@ -72,7 +72,7 @@ function SalesmanKpiPage() {
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
         Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-      
+
       },
       {
         accessorKey: 'new_visit',
@@ -80,7 +80,7 @@ function SalesmanKpiPage() {
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
         Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-       
+
       },
       {
         accessorKey: 'new_clients',
@@ -93,13 +93,13 @@ function SalesmanKpiPage() {
         accessorKey: 'station.value',
         header: ' Station',
         aggregationFn: 'count',
-      
+
       },
       {
         accessorKey: 'state',
         header: ' State',
         aggregationFn: 'count',
-     
+
       },
       {
         accessorKey: 'working_time',
@@ -110,58 +110,58 @@ function SalesmanKpiPage() {
         accessorKey: 'currentsale_currentyear',
         header: moment(new Date()).format("MMM-YY") + " Sale",
         aggregationFn: 'max',
-        AggregatedCell:(cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-        Cell: (cell) =>cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'lastsale_currentyear',
         header: moment(new Date().setMonth(new Date().getMonth() - 1)).format("MMM-YY") + "Sale",
         aggregationFn: 'max',
-        AggregatedCell:(cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-        Cell: (cell) =>cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'current_collection',
         header: moment(new Date()).format("MMM-YY") + " Collection",
         aggregationFn: 'max',
-        AggregatedCell:(cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-        Cell: (cell) =>cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'currentsale_last_year',
         header: moment(new Date(new Date(previousYear).setMonth(new Date().getMonth()))).format("MMM-YY") + " Sale",
         aggregationFn: 'max',
-        AggregatedCell:(cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-        Cell: (cell) =>cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'lastsale_lastyear',
         header: moment(new Date(new Date(previousYear).setMonth(new Date().getMonth() - 1))).format("MMM-YY") + "Sale",
         aggregationFn: 'max',
-        AggregatedCell:(cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-        Cell: (cell) =>cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
 
       {
         accessorKey: 'ageing_above_90days',
         header: ' Ageing>90',
         aggregationFn: 'max',
-        AggregatedCell:(cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-        Cell: (cell) =>cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'sale_growth',
         header: 'Sale Growth',
         aggregationFn: 'max',
-        AggregatedCell:(cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-        Cell: (cell) =>cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'last_month_sale_growth',
         header: ' Last Month Sale Growth',
         aggregationFn: 'max',
-        AggregatedCell:(cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-        Cell: (cell) =>cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
 
     ],
@@ -182,13 +182,13 @@ function SalesmanKpiPage() {
     }),
     muiTableContainerProps: (table) => ({
       sx: { maxHeight: table.table.getState().isFullScreen ? 'auto' : '64vh' }
-    }),	muiTableHeadCellProps: ({ column }) => ({
+    }), muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-child(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-child(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-child(1) span': {
           display: 'inline', // Visible on hover
@@ -198,7 +198,7 @@ function SalesmanKpiPage() {
         }
       },
     }),
-   
+
     muiTableHeadRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',
@@ -291,7 +291,7 @@ function SalesmanKpiPage() {
                   <FilterAltOff />
                 </Button>
               </Tooltip>
-             
+
               <Tooltip title="Toogle FullScreen" >
                 <Button size="small" color="inherit" variant='contained'
                   onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
@@ -333,7 +333,7 @@ function SalesmanKpiPage() {
     enableTableFooter: true,
     enableRowVirtualization: true,
     onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
-   
+
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
