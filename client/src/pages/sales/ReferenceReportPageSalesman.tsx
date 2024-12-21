@@ -17,7 +17,7 @@ import { SalesService } from '../../services/SalesServices'
 export default function ReferencesReportPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const [reports, setReports] = useState<GetReferenceReportForSalesmanDto[]>([])
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferenceReportForSalesmanDto[]>, BackendError>(["stages",], async () => new SalesService().GetAllSalesmanReferences())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferenceReportForSalesmanDto[]>, BackendError>(["references",], async () => new SalesService().GetAllSalesmanReferences())
   const isFirstRender = useRef(true);
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
   const [dialog, setDialog] = useState<string | undefined>()
@@ -99,7 +99,7 @@ export default function ReferencesReportPage() {
 
 
     ],
-    [reports],
+    [reports, data],
     //end
   );
 
@@ -172,10 +172,10 @@ export default function ReferencesReportPage() {
     }
   });
   useEffect(() => {
-    if (typeof window !== 'undefined' && isSuccess) {
+    if (isSuccess) {
       setReports(data.data);
     }
-  }, [isSuccess]);
+  }, [isSuccess, data]);
 
   useEffect(() => {
     //scroll to the top of the table when the sorting changes

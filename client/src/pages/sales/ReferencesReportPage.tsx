@@ -16,9 +16,10 @@ import ViewReferenceRemarksDialog from '../../components/dialogs/reference/ViewR
 import { SalesService } from '../../services/SalesServices'
 
 export default function ReferencesReportPage() {
+  const [hidden, setHidden] = useState(false)
   const [reports, setReports] = useState<GetReferenceDto[]>([])
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferenceDto[]>, BackendError>(["references",], async () => new SalesService().GetAllReferences())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferenceDto[]>, BackendError>(["references",hidden], async () => new SalesService().GetAllReferences(hidden))
   const [dialog, setDialog] = useState<string | undefined>()
   const isFirstRender = useRef(true);
   const [party, setParty] = useState<string | undefined>()
@@ -87,6 +88,8 @@ export default function ReferencesReportPage() {
     const dynamicColumns: MRT_ColumnDef<GetReferenceDto>[] = dynamicKeys.map((key) => ({
       accessorKey: key,
       header: key, // Use the dynamic key as the column header
+      filterVariant: 'range',
+      filterFn: 'between',
       Cell: ({ cell }) => HandleNumbers(cell.getValue()), // Optional: Format the value if needed
       aggregationFn: 'sum', // Example: Aggregate total sale_scope
       AggregatedCell: (cell) => HandleNumbers(cell.cell.getValue()), // Format aggregated value
@@ -133,7 +136,7 @@ export default function ReferencesReportPage() {
       ...staticColumns,
       ...dynamicColumns,
     ];
-  }, [reports, LoggedInUser]);
+  }, [reports, data]);
 
 
   const table = useMaterialReactTable({
@@ -205,7 +208,7 @@ export default function ReferencesReportPage() {
     }
   });
   useEffect(() => {
-    if (typeof window !== 'undefined' && isSuccess) {
+    if (isSuccess) {
       setReports(data.data);
     }
   }, [isSuccess, data]);
@@ -286,6 +289,9 @@ export default function ReferencesReportPage() {
         </Typography>
         <Stack direction={'row'} gap={2} alignItems={'center'}>
           <>
+            <Stack direction={'row'} alignItems={'center'}>
+              <input type='checkbox' onChange={() => setHidden(!hidden)} /> <span style={{ paddingLeft: '5px' }}>{`< 50`}</span>
+            </Stack >
 
             {LoggedInUser?.assigned_permissions.includes("references_report_create") && <ReferencesExcelButtons />}
           </>

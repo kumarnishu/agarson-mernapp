@@ -58,8 +58,8 @@ export class SalesService {
     public async DeleteSalesManAttendance(id: string) {
         return await apiClient.delete(`attendances/${id}`)
     }
-    public async GetAllReferences() {
-        return await apiClient.get(`references`)
+    public async GetAllReferences(hidden: boolean) {
+        return await apiClient.get(`references/?hidden=${hidden}`)
     }
     public async GetAllSalesmanReferences() {
         return await apiClient.get(`references/salesman`)
