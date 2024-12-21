@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react"
 import { Button, CircularProgress, Stack, Typography } from "@mui/material"
 import { Upload } from "@mui/icons-material"
 import styled from "styled-components"
-import { CreateExcelDBFromExcel } from "../../services/ExcelDbService"
+import { CreateExcelDBFromExcel } from "../../services/ExcelReportsServices"
 import ExportToExcel from "../../utils/ExportToExcel"
 import { AlertContext } from "../../contexts/alertContext"
 

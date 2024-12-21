@@ -8,7 +8,7 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
 import moment from 'moment';
-import { CreateOrEditExcelDbRemark } from '../../../services/ExcelDbService';
+import { CreateOrEditExcelDbRemark } from '../../../services/ExcelReportsServices';
 import { GetExcelDBRemarksDto, CreateOrEditExcelDbRemarkDto } from '../../../dtos/excel-db-remark.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 

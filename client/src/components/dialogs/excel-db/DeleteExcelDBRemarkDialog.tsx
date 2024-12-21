@@ -6,7 +6,7 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 
-import { DeleteExcelDBRemark } from '../../../services/ExcelDbService';
+import { DeleteExcelDBRemark } from '../../../services/ExcelReportsServices';
 import { GetExcelDBRemarksDto } from '../../../dtos/excel-db-remark.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';

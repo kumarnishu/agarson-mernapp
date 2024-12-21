@@ -8,7 +8,7 @@ import { toTitleCase } from '../../../utils/TitleCase'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
-import { GetExcelDBRemarksHistory } from '../../../services/ExcelDbService'
+import { GetExcelDBRemarksHistory } from '../../../services/ExcelReportsServices'
 import { GetExcelDBRemarksDto } from '../../../dtos/excel-db-remark.dto'
 type Props = {
     dialog: string | undefined,

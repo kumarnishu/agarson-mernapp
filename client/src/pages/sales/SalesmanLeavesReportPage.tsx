@@ -7,7 +7,7 @@ import { BackendError } from '../..'
 import { UserContext } from '../../contexts/userContext'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { SalesmanLeavesButton } from '../../components/buttons/SalesmanLeavesButton'
-import { GetSalesManLeavesReports } from '../../services/ExcelDbService'
+import { GetSalesManLeavesReports } from '../../services/ExcelReportsServices'
 import { IColumnRowData } from '../../dtos/table.dto'
 
 
