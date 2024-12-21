@@ -28,6 +28,7 @@ import ExportToExcel from "../../utils/ExportToExcel"
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import { GetLeadDto } from '../../dtos/lead.dto'
 import { FeatureService } from '../../services/FeatureServices'
+import { DropdownService } from '../../services/DropDownServices'
 
 
 
@@ -45,7 +46,7 @@ export default function LeadsPage() {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null); const { data, isLoading, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetLeadDto[], page: number, total: number, limit: number }>, BackendError>(["leads"], async () =>new FeatureService(). GetLeads({ limit: paginationData?.limit, page: paginationData?.page, stage: stage }))
 
-  const { data: stagedata, isSuccess: stageSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("crm_stages", new FeatureService().GetAllStages)
+  const { data: stagedata, isSuccess: stageSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("crm_stages", new DropdownService().GetAllStages)
 
   const { data: fuzzyleads, isLoading: isFuzzyLoading, refetch: refetchFuzzy, isRefetching: isFuzzyRefetching } = useQuery<AxiosResponse<{ result: GetLeadDto[], page: number, total: number, limit: number }>, BackendError>(["fuzzyleads"], async () => new FeatureService().FuzzySearchLeads({ searchString: filter, limit: paginationData?.limit, page: paginationData?.page, stage: stage }), {
     enabled: false

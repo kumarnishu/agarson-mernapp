@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useQuery } from 'react-query'
 import { AxiosResponse } from 'axios'
-import { GetProfile } from "../services/UserServices";
 import { UserContext } from "./userContext";
 import { BackendError } from "..";
 import { GetUserDto } from "../dtos/user.dto";
+import { UserService } from "../services/UserServices";
 
 function useRemoteLoading() {
-    const { data, isLoading, isError } = useQuery<AxiosResponse<{ user: GetUserDto, token: string }>, BackendError>("profile", GetProfile, { refetchOnWindowFocus: true, refetchOnMount: true })
+    const { data, isLoading, isError } = useQuery<AxiosResponse<{ user: GetUserDto, token: string }>, BackendError>("profile", new UserService().GetProfile, { refetchOnWindowFocus: true, refetchOnMount: true })
     return { remoteUser: data?.data, remoteLoading: isLoading, isError: isError }
 }
 

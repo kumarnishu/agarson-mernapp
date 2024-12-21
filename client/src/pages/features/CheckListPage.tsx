@@ -21,6 +21,7 @@ import { GetChecklistDto, GetChecklistFromExcelDto } from '../../dtos/checklist.
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import { UserService } from '../../services/UserServices'
 import { FeatureService } from '../../services/FeatureServices'
+import { DropdownService } from '../../services/DropDownServices'
 
 
 function ChecklistPage() {
@@ -44,7 +45,7 @@ function ChecklistPage() {
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-  const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("checklist_categories", new FeatureService().GetAllCheckCategories)
+  const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("checklist_categories", new DropdownService().GetAllCheckCategories)
   const [dialog, setDialog] = useState<string | undefined>()
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   let previous_date = new Date()

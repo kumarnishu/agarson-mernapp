@@ -5,16 +5,16 @@ import { AxiosResponse } from "axios";
 import { useQuery } from "react-query";
 import { BackendError } from "../..";
 import { UserContext } from "../../contexts/userContext";
-import { GetAllKeyCategoriesForDropdown } from "../../services/KeyServices";
 import { DropDownDto } from "../../dtos/dropdown.dto";
 import { AssignmentOutlined } from "@mui/icons-material";
 import { toTitleCase } from "../../utils/TitleCase";
 import { ExcelDbButtons } from "../buttons/ExcelDbButtons";
+import { AuthorizationService } from "../../services/AuthorizationService";
 
 function ExcelDBDashboard() {
     const [features, setFeatures] = useState<{ feature: string, display_name: string, is_visible: boolean, url: string }[]>([])
     const { user } = useContext(UserContext)
-    const { data: categoryData } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_category_dropdown"], async () => GetAllKeyCategoriesForDropdown({ show_assigned_only: true }))
+    const { data: categoryData } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_category_dropdown"], async () => new AuthorizationService().GetAllKeyCategoriesForDropdown({ show_assigned_only: true }))
 
 
     useEffect(() => {
@@ -25,7 +25,7 @@ function ExcelDBDashboard() {
                 tmpfeatures.push({ feature: dt.label, display_name: dt.label && dt.label, is_visible: true, url: `ExcelDbReports/${dt.id}` })
             })
         }
-       
+
         setFeatures(tmpfeatures)
 
     }, [user, categoryData])
@@ -33,7 +33,7 @@ function ExcelDBDashboard() {
 
     return (
         <>
-          {user?.assigned_permissions.includes('grp_excel_create') && <Stack sx={{ width: '100%' }} direction={'row'} p={2} justifyContent={'end'}>
+            {user?.assigned_permissions.includes('grp_excel_create') && <Stack sx={{ width: '100%' }} direction={'row'} p={2} justifyContent={'end'}>
                 <ExcelDbButtons />
             </Stack>}
             <Grid container  >
@@ -44,7 +44,7 @@ function ExcelDBDashboard() {
                                 <Paper
                                     sx={{
                                         m: 0,
-                                        p:1,
+                                        p: 1,
                                         minHeight: 60,
                                         position: 'relative',
                                         overflow: 'hidden',

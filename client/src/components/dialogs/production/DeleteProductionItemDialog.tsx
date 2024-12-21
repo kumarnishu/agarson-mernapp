@@ -6,7 +6,6 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 
-import { DeleteProductionItem } from '../../../services/ProductionServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetProductionDto } from '../../../dtos/production.dto';
 import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
@@ -14,6 +13,7 @@ import { GetSoleThicknessDto } from '../../../dtos/sole-thickness.dto';
 import { GetSpareDyeDto } from '../../../dtos/spare-dye.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
+import { FeatureService } from '../../../services/FeatureServices';
 
 type Props = {
     dialog: string | undefined,
@@ -24,9 +24,9 @@ type Props = {
 
 function DeleteProductionItemDialog({ category, weight, thickness, spare_dye, production, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
-     const { mutate, isLoading, isSuccess, error, isError } = useMutation
+    const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, { category?: DropDownDto, weight?: GetShoeWeightDto, thickness?: GetSoleThicknessDto, spare_dye?: GetSpareDyeDto, production?: GetProductionDto }>
-        (DeleteProductionItem, {
+        (new FeatureService().DeleteProductionItem, {
             onSuccess: () => {
                 if (category)
                     queryClient.invalidateQueries('machine_categories')
@@ -38,7 +38,7 @@ function DeleteProductionItemDialog({ category, weight, thickness, spare_dye, pr
                     queryClient.invalidateQueries('spare_dyes')
                 else
                     queryClient.invalidateQueries('productions')
-                    setAlert({ message: "success", color: 'success' })
+                setAlert({ message: "success", color: 'success' })
             },
             onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
 
