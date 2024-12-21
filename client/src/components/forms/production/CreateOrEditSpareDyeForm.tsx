@@ -6,20 +6,19 @@ import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-
-import { CreateOrEditSpareDye, GetAllDyeLocations, GetDyes } from '../../../services/ProductionServices';
 import UploadFileButton from '../../buttons/UploadFileButton';
 import { GetUserDto } from '../../../dtos/user.dto';
 import { GetDyeLocationDto } from '../../../dtos/dye-location.dto';
 import { GetDyeDto } from '../../../dtos/dye.dto';
 import { GetSpareDyeDto } from '../../../dtos/spare-dye.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-
+import { DropdownService } from '../../../services/DropDownServices';
+import { FeatureService } from '../../../services/FeatureServices';
 
 function CreateOrEditSpareDyeForm({ sparedye, setDialog }: { sparedye?: GetSpareDyeDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
-    const { data: dyes } = useQuery<AxiosResponse<GetDyeDto[]>, BackendError>("dyes", async () => GetDyes('false'))
-    const { data: locations } = useQuery<AxiosResponse<GetDyeLocationDto[]>, BackendError>("locations", async () => GetAllDyeLocations())
+    const { data: dyes } = useQuery<AxiosResponse<GetDyeDto[]>, BackendError>("dyes", async () => new DropdownService().GetDyes('false'))
+    const { data: locations } = useQuery<AxiosResponse<GetDyeLocationDto[]>, BackendError>("locations", async () => new DropdownService().GetAllDyeLocations())
     const [file, setFile] = useState<File>()
     const [repairRequired, setRepairRequired] = useState(sparedye?.repair_required)
     const { mutate, isLoading, isSuccess } = useMutation
@@ -27,7 +26,7 @@ function CreateOrEditSpareDyeForm({ sparedye, setDialog }: { sparedye?: GetSpare
             id?: string,
             body: FormData
         }>
-        (CreateOrEditSpareDye, {
+        (new FeatureService().CreateOrEditSpareDye, {
             onSuccess: () => {
                 queryClient.refetchQueries('spare_dyes')
                 setAlert({ message: sparedye ? "updated" : "created", color: 'success' })

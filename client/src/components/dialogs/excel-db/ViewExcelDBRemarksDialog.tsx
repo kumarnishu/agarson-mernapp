@@ -8,8 +8,8 @@ import { toTitleCase } from '../../../utils/TitleCase'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
-import { GetExcelDBRemarksHistory } from '../../../services/ExcelReportsServices'
 import { GetExcelDBRemarksDto } from '../../../dtos/excel-db-remark.dto'
+import { ExcelReportsService } from '../../../services/ExcelReportsServices'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
@@ -20,7 +20,7 @@ function ViewExcelDBRemarksDialog({ id, obj, dialog, setDialog }: Props) {
     const [dialog1, setdialog1] = useState<string | undefined>()
     const [remark, setRemark] = useState<GetExcelDBRemarksDto>()
     const [remarks, setRemarks] = useState<GetExcelDBRemarksDto[]>()
-    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", id, obj], async () => GetExcelDBRemarksHistory(id, obj))
+    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", id, obj], async () => new ExcelReportsService().GetExcelDBRemarksHistory(id, obj))
 
 
     const { user } = useContext(UserContext)

@@ -6,10 +6,10 @@ import { useMutation, useQuery } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
-import { AssignPermissionsToOneUser, GetPermissions } from '../../../services/UserServices';
 import { IMenu, IPermission } from '../../../dtos/permission.dto';
 import { GetUserDto } from '../../../dtos/user.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { UserService } from '../../../services/UserServices';
 
 
 type Props = {
@@ -70,14 +70,14 @@ function AssignPermissionsToOneUserDialog({ user, dialog, setDialog }: Props) {
                 permissions: string[]
             }
         }>
-        (AssignPermissionsToOneUser, {
+        (new UserService(). AssignPermissionsToOneUser, {
             onSuccess: () => {
                 queryClient.invalidateQueries('users')
                 setAlert({ message: "success", color: 'success' })
             },
             onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
-    const { data: Permdata, isSuccess: isPermSuccess } = useQuery<AxiosResponse<IMenu>, BackendError>("permissions", GetPermissions)
+    const { data: Permdata, isSuccess: isPermSuccess } = useQuery<AxiosResponse<IMenu>, BackendError>("permissions",new UserService().  GetPermissions)
 
 
 

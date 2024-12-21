@@ -5,11 +5,10 @@ import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
-
-import { DeleteVisitReportRemark } from '../../../services/SalesServices';
 import { GetVisitSummaryReportRemarkDto } from '../../../dtos/visit_remark.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
+import { SalesService } from '../../../services/SalesServices';
 type Props = {
   dialog: string | undefined,
   setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
@@ -20,7 +19,7 @@ function DeleteVisitRemarkDialog({ remark, dialog, setDialog }: Props) {
   const { setAlert } = useContext(AlertContext)
   const { mutate, isLoading, isSuccess, error, isError } = useMutation
     <AxiosResponse<any>, BackendError, string>
-    (DeleteVisitReportRemark, {
+    (new SalesService().DeleteVisitReportRemark, {
 
       onSuccess: () => {
         queryClient.invalidateQueries('remarks')

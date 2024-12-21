@@ -6,10 +6,10 @@ import { BackendError } from '../../..';
 import { useMutation } from 'react-query';
 import { Cancel } from '@mui/icons-material';
 
-import { ToogleArticle } from '../../../services/ProductionServices';
 import { GetArticleDto } from '../../../dtos/article.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
+import { DropdownService } from '../../../services/DropDownServices';
 
 type Props = {
     dialog: string | undefined,
@@ -20,8 +20,8 @@ function ToogleArticleDialog({ article, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (ToogleArticle, {
-            
+        (new DropdownService().ToogleArticle, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('articles')
                 setAlert({ message: "success", color: 'success' })

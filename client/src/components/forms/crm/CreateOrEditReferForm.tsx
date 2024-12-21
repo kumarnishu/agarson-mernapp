@@ -4,7 +4,6 @@ import { useFormik } from 'formik';
 import { useEffect, useContext, useState } from 'react';
 import {  useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
-import { CreateOrUpdateRefer, GetAllCities, GetAllStates } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
@@ -14,6 +13,8 @@ import { GetCrmCityDto } from '../../../dtos/crm-city.dto';
 import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { FeatureService } from '../../../services/FeatureServices';
+import { AuthorizationService } from '../../../services/AuthorizationService';
 
 
 function CreateOrEditReferForm({ refer,setDialog }: { refer?: GetReferDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
@@ -22,12 +23,12 @@ function CreateOrEditReferForm({ refer,setDialog }: { refer?: GetReferDto, setDi
     const [cities, setCities] = useState<GetCrmCityDto[]>([])
     const [state, setState] = useState<string>();
     const { setAlert } = useContext(AlertContext)
-    const { data, isSuccess: isStateSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>("crm_states", GetAllStates)
-    const { data: citydata, isSuccess: isCitySuccess } = useQuery<AxiosResponse<GetCrmCityDto[]>, BackendError>(["crm_cities", state], async () => GetAllCities({ state: state }))
+    const { data, isSuccess: isStateSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>("crm_states",new AuthorizationService(). GetAllStates)
+    const { data: citydata, isSuccess: isCitySuccess } = useQuery<AxiosResponse<GetCrmCityDto[]>, BackendError>(["crm_cities", state], async () =>new AuthorizationService(). GetAllCities({ state: state }))
 
     const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<GetReferDto>, BackendError, { body: FormData, id?: string }>
-        (CreateOrUpdateRefer, {
+        (new FeatureService().CreateOrUpdateRefer, {
           
             onSuccess: () => {
                 queryClient.invalidateQueries('refers')

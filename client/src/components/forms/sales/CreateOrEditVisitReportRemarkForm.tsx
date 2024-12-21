@@ -7,9 +7,9 @@ import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
-import { CreateOrEditVisitReportRemark } from '../../../services/SalesServices';
 import { GetVisitSummaryReportRemarkDto, CreateOrEditVisitSummaryRemarkDto } from '../../../dtos/visit_remark.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { SalesService } from '../../../services/SalesServices';
 
 
 function CreateOrEditVisitReportRemarkForm({ employee, visit_date, remark, setDialog }: {
@@ -22,7 +22,7 @@ function CreateOrEditVisitReportRemarkForm({ employee, visit_date, remark, setDi
             remark?: GetVisitSummaryReportRemarkDto,
             body: CreateOrEditVisitSummaryRemarkDto
         }>
-        (CreateOrEditVisitReportRemark, {
+        (new SalesService().CreateOrEditVisitReportRemark, {
 
             onSuccess: () => {
                 queryClient.refetchQueries('remarks')

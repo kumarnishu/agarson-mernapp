@@ -1,4 +1,4 @@
-import { Button,  CircularProgress,  Stack, TextField } from '@mui/material';
+import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useContext, useEffect } from 'react';
@@ -8,12 +8,12 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import { CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto } from '../../../dtos/references-remark.dto';
-import { CreateOrEditReferenceRemark } from '../../../services/SalesServices';
 import { toTitleCase } from '../../../utils/TitleCase';
+import { SalesService } from '../../../services/SalesServices';
 
 
-function CreateOrEditReferenceRemarkForm({ party, stage,  remark, setDialog }: {
-    party: string,  stage: string, remark?: GetReferenceRemarksDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
+function CreateOrEditReferenceRemarkForm({ party, stage, remark, setDialog }: {
+    party: string, stage: string, remark?: GetReferenceRemarksDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 }) {
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess } = useMutation
@@ -21,7 +21,7 @@ function CreateOrEditReferenceRemarkForm({ party, stage,  remark, setDialog }: {
             remark?: GetReferenceRemarksDto,
             body: CreateOrEditReferenceRemarkDto
         }>
-        (CreateOrEditReferenceRemark, {
+        (new SalesService().CreateOrEditReferenceRemark, {
 
             onSuccess: () => {
                 queryClient.refetchQueries('remarks')
@@ -47,7 +47,7 @@ function CreateOrEditReferenceRemarkForm({ party, stage,  remark, setDialog }: {
             remark: Yup.string().required("required field")
                 .min(5, 'Must be 5 characters or more'),
             stage: Yup.string().required("required field"),
-           
+
             party: Yup.string().required(),
         }),
         onSubmit: (values) => {

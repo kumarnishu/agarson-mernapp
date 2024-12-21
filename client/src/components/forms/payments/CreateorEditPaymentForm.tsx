@@ -8,12 +8,13 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
 import Select from '@mui/material/Select';
-import { CreateOrEditPayment, GetAllPaymentCategories } from '../../../services/PaymentsService';
 import moment from 'moment';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetPaymentDto, CreateOrEditPaymentDto } from '../../../dtos/payment.dto';
-import { GetUsersForDropdown } from '../../../services/UserServices';
 import { AlertContext } from '../../../contexts/alertContext';
+import { FeatureService } from '../../../services/FeatureServices';
+import { UserService } from '../../../services/UserServices';
+import { DropdownService } from '../../../services/DropDownServices';
 
 
 function CreateorEditPaymentForm({ payment, setDialog }: { payment?: GetPaymentDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
@@ -22,7 +23,7 @@ function CreateorEditPaymentForm({ payment, setDialog }: { payment?: GetPaymentD
     const [users, setUsers] = useState<DropDownDto[]>([])
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, { body: CreateOrEditPaymentDto, id?: string }>
-        (CreateOrEditPayment, {
+        (new FeatureService().CreateOrEditPayment, {
 
             onSuccess: () => {
                 queryClient.refetchQueries('payments')
@@ -32,8 +33,8 @@ function CreateorEditPaymentForm({ payment, setDialog }: { payment?: GetPaymentD
         })
 
 
-    const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
-    const { data: categoriesData, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("payment_categories", GetAllPaymentCategories)
+    const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
+    const { data: categoriesData, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("payment_categories", new DropdownService().GetAllPaymentCategories)
 
     const formik = useFormik({
         initialValues: {

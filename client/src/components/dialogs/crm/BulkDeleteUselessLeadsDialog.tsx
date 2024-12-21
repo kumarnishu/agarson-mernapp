@@ -9,6 +9,7 @@ import { Cancel } from '@mui/icons-material';
 import { GetLeadDto } from '../../../dtos/lead.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
+import { FeatureService } from '../../../services/FeatureServices';
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
@@ -20,7 +21,7 @@ function BulkDeleteUselessLeadsDialog({ selectedLeads, removeSelectedLeads, dial
     const [leadsIds, setLeadsIds] = useState<string[]>()
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, { leads_ids: string[] }>
-        (BulkDeleteUselessLeads, {
+        (new FeatureService(). BulkDeleteUselessLeads, {
            
             onSuccess: () => {
                 queryClient.invalidateQueries('leads')

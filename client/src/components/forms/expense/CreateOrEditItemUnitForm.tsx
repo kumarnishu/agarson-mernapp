@@ -7,9 +7,9 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
 import * as yup from 'yup';
-import { CreateOrEditItemUnit } from '../../../services/ExpenseServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { DropdownService } from '../../../services/DropDownServices';
 
 
 type props = {
@@ -28,7 +28,7 @@ function CreateOrEditItemUnitForm({ unit, setDialog }: props) {
             },
             id?: string
         }>
-        (CreateOrEditItemUnit, {
+        (new DropdownService().CreateOrEditItemUnit, {
           
             onSuccess: () => {
                 queryClient.refetchQueries('units')

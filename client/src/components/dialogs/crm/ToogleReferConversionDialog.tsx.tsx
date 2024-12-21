@@ -3,11 +3,11 @@ import { useContext, useEffect } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { BackendError } from '../../..';
-import { ToogleReferPartyConversion } from '../../../services/LeadsServices';
 import { queryClient } from '../../../main';
-import {  useMutation } from 'react-query';
+import { useMutation } from 'react-query';
 import { GetReferDto } from '../../../dtos/refer.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { FeatureService } from '../../../services/FeatureServices';
 
 type Props = {
     dialog: string | undefined,
@@ -17,10 +17,10 @@ type Props = {
 
 function ToogleReferConversionDialog({ refer, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
-    const { mutate, isLoading, isSuccess} = useMutation
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetReferDto>, BackendError, string>
-        (ToogleReferPartyConversion, {
-           
+        (new FeatureService().ToogleReferPartyConversion, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('refers')
                 queryClient.invalidateQueries('fuzzyrefers')
@@ -45,7 +45,7 @@ function ToogleReferConversionDialog({ refer, dialog, setDialog }: Props) {
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
                 {refer.convertedfromlead ? "Convert To Old Customer" : "Convert To New Customer"}
             </DialogTitle>
-           
+
             <DialogContent sx={{ gap: 2 }}>
 
                 <Typography variant="body1" color="error">

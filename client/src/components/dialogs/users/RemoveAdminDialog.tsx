@@ -2,12 +2,12 @@ import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, Circular
 import { AxiosResponse } from 'axios';
 import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { RemoveAdmin } from '../../../services/UserServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
+import { UserService } from '../../../services/UserServices';
 
 
 
@@ -20,7 +20,7 @@ function RemoveAdminDialog({ id, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
      const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (RemoveAdmin, {
+        (new UserService().RemoveAdmin, {
               onSuccess: () => {
                 queryClient.invalidateQueries('users')
                 setAlert({ message: "success", color: 'success' })

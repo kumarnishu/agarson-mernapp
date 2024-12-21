@@ -2,13 +2,13 @@ import { Dialog, DialogContent, DialogActions, IconButton, DialogTitle, Stack, C
 import { useContext, useEffect, useState } from 'react'
 import { Cancel } from '@mui/icons-material'
 import { STable, STableBody, STableCell, STableHead, STableHeadCell, STableRow } from '../../styled/STyledTable'
-import { MergeTwoLeads } from '../../../services/LeadsServices'
 import { AxiosResponse } from 'axios'
 import {  useMutation } from 'react-query'
 import { BackendError } from '../../..'
 import { queryClient } from '../../../main'
 import { GetLeadDto, CreateOrEditMergeLeadsDto } from '../../../dtos/lead.dto'
 import { AlertContext } from '../../../contexts/alertContext'
+import { FeatureService } from '../../../services/FeatureServices'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
@@ -35,7 +35,7 @@ function MergeTwoLeadsDialog({ leads, removeSelectedLeads, dialog, setDialog }: 
 
     const { mutate, isLoading} = useMutation
         <AxiosResponse<GetLeadDto>, BackendError, { body: CreateOrEditMergeLeadsDto, id: string }>
-        (MergeTwoLeads, {
+        (new FeatureService(). MergeTwoLeads, {
             onSuccess: () => {
                 removeSelectedLeads()
                 queryClient.invalidateQueries('leads')

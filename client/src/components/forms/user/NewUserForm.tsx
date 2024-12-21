@@ -5,8 +5,7 @@ import { useFormik } from 'formik';
 import { useContext, useEffect,  useState } from 'react';
 import {  useMutation } from 'react-query';
 import * as Yup from "yup"
-
-import { NewUser } from '../../../services/UserServices';
+import { UserService } from '../../../services/UserServices';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
 import { GetUserDto } from '../../../dtos/user.dto';
@@ -28,7 +27,7 @@ function NewUserForm({setDialog}:{setDialog: React.Dispatch<React.SetStateAction
     const { setAlert } = useContext(AlertContext)
      const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<GetUserDto>, BackendError, FormData>
-        (NewUser,{
+        (new UserService().NewUser,{
            onSuccess: () => {
             queryClient.invalidateQueries('users')
             setAlert({ message: 'created new user', color: 'success' })

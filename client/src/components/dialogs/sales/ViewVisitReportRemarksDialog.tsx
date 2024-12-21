@@ -6,10 +6,10 @@ import { toTitleCase } from '../../../utils/TitleCase'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
-import { GetVisitReportRemarksHistory } from '../../../services/SalesServices'
 import DeleteVisitRemarkDialog from './DeleteVisitRemarkDialog'
 import CreateOrEditVisitReportRemarkDialog from './CreateOrEditVisitReportRemarkDialog'
 import { GetVisitSummaryReportRemarkDto } from '../../../dtos/visit_remark.dto'
+import { SalesService } from '../../../services/SalesServices'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
@@ -22,7 +22,7 @@ function ViewVisitReportRemarksDialog({ employee, visit_date, dialog, setDialog 
     const [remark, setRemark] = useState<GetVisitSummaryReportRemarkDto>()
     const [remarks, setRemarks] = useState<GetVisitSummaryReportRemarkDto[]>()
 
-    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", employee, visit_date], async () => GetVisitReportRemarksHistory(employee, visit_date))
+    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", employee, visit_date], async () => new SalesService().GetVisitReportRemarksHistory(employee, visit_date))
 
 
     const { user } = useContext(UserContext)

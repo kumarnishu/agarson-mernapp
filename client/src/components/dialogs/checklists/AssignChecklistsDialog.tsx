@@ -11,6 +11,8 @@ import * as Yup from "yup"
 import { GetChecklistDto } from '../../../dtos/checklist.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { UserService } from '../../../services/UserServices';
+import { FeatureService } from '../../../services/FeatureServices';
 
 
 type Props = {
@@ -22,7 +24,7 @@ type Props = {
 
 function AssignChecklistsDialog({ checklists, flag, dialog, setDialog }: Props) {
     const [users, setUsers] = useState<DropDownDto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'checklist_view', show_assigned_only: false }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () =>new UserService(). GetUsersForDropdown({ hidden: false, permission: 'checklist_view', show_assigned_only: false }))
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<string>, BackendError, {
@@ -32,7 +34,7 @@ function AssignChecklistsDialog({ checklists, flag, dialog, setDialog }: Props) 
                 flag: number
             }
         }>
-        (AssignChecklistsToUsers, {
+        (new FeatureService(). AssignChecklistsToUsers, {
            onSuccess: () => {
             queryClient.invalidateQueries('checklists')
             setAlert({ message: "success", color: 'success' })

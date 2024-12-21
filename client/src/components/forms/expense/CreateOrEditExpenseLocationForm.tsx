@@ -7,9 +7,9 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
 import * as yup from 'yup';
-import { CreateOrEditExpenseLocation } from '../../../services/ExpenseServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { DropdownService } from '../../../services/DropDownServices';
 
 
 type props = {
@@ -27,7 +27,7 @@ function CreateOrEditExpenseLocationForm({ location, setDialog }: props) {
             },
             id?: string
         }>
-        (CreateOrEditExpenseLocation, {
+        (new DropdownService().CreateOrEditExpenseLocation, {
           
             onSuccess: () => {
                 queryClient.refetchQueries('expense_locations')

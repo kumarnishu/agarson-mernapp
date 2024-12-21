@@ -6,13 +6,13 @@ import { toTitleCase } from '../../../utils/TitleCase'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
-import { GetCheckListBoxRemarksHistory } from '../../../services/CheckListServices'
 import DeleteChecklistRemarkDialog from './DeleteChecklistRemarkDialog'
 import CreateOrEditChecklistRemarkDialog from './CreateOrEditChecklistRemarkDialog'
 import moment from 'moment'
 import { GetChecklistBoxDto } from '../../../dtos/checklist-box.dto'
 import { GetChecklistRemarksDto } from '../../../dtos/checklist-remark.dto'
 import { GetChecklistDto } from '../../../dtos/checklist.dto'
+import { FeatureService } from '../../../services/FeatureServices'
 
 type Props = {
     dialog: string | undefined,
@@ -25,7 +25,7 @@ function ViewChecklistBoxRemarksDialog({ checklist_box, checklist, dialog, setDi
     const [remark, setRemark] = useState<GetChecklistRemarksDto>()
     const [remarks, setRemarks] = useState<GetChecklistRemarksDto[]>()
 
-    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", checklist_box._id], async () => GetCheckListBoxRemarksHistory(checklist_box._id))
+    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", checklist_box._id], async () =>new FeatureService(). GetCheckListBoxRemarksHistory(checklist_box._id))
 
 
     const { user } = useContext(UserContext)

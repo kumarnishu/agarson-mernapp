@@ -6,12 +6,10 @@ import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-
-import { GetMachineCategories, CreateOrEditMachine } from '../../../services/ProductionServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetMachineDto, CreateOrEditMachineDto } from '../../../dtos/machine.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-
+import { DropdownService } from '../../../services/DropDownServices';
 
 function CreateOrEditMachineForm({ machine, setDialog }: { machine?: GetMachineDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
@@ -19,7 +17,7 @@ function CreateOrEditMachineForm({ machine, setDialog }: { machine?: GetMachineD
         <AxiosResponse<GetMachineDto>, BackendError, {
             body: CreateOrEditMachineDto, id?: string
         }>
-        (CreateOrEditMachine, {
+        (new DropdownService().CreateOrEditMachine, {
 
             onSuccess: () => {
                 queryClient.refetchQueries('machines')
@@ -27,7 +25,7 @@ function CreateOrEditMachineForm({ machine, setDialog }: { machine?: GetMachineD
             },
             onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
-    const { data: catgeories } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("machine_catgeories", GetMachineCategories, {
+    const { data: catgeories } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("machine_catgeories", new DropdownService().GetMachineCategories, {
         staleTime: 10000
     })
 

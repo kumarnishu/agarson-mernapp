@@ -4,11 +4,12 @@ import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import {  useMutation } from 'react-query';
+import { useMutation } from 'react-query';
 
 import { GetLeadDto } from '../../../dtos/lead.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { FeatureService } from '../../../services/FeatureServices';
 
 type Props = {
     dialog: string | undefined,
@@ -17,16 +18,16 @@ type Props = {
 }
 function ConvertLeadToReferDialog({ lead, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
-     const [remark, setRemark] = useState("")
-    const { mutate, isLoading, isSuccess} = useMutation
+    const [remark, setRemark] = useState("")
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetReferDto>, BackendError, { id: string, body: { remark: string } }>
-        (ConvertLeadToRefer, {
-          
+        (new FeatureService().ConvertLeadToRefer, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('leads')
                 setAlert({ message: "success", color: 'success' })
-              },
-              onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
     useEffect(() => {
@@ -44,7 +45,7 @@ function ConvertLeadToReferDialog({ lead, dialog, setDialog }: Props) {
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
                 Convert  To Customer
             </DialogTitle>
-           
+
             <DialogContent sx={{ gap: 2 }}>
 
                 <TextField

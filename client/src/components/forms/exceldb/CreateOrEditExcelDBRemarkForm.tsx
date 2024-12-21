@@ -8,9 +8,9 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
 import moment from 'moment';
-import { CreateOrEditExcelDbRemark } from '../../../services/ExcelReportsServices';
 import { GetExcelDBRemarksDto, CreateOrEditExcelDbRemarkDto } from '../../../dtos/excel-db-remark.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { ExcelReportsService } from '../../../services/ExcelReportsServices';
 
 
 function CreateOrEditExcelDBRemarkForm({ category, obj, remark, setDialog }: {
@@ -23,7 +23,7 @@ function CreateOrEditExcelDBRemarkForm({ category, obj, remark, setDialog }: {
             remark?: GetExcelDBRemarksDto,
             body: CreateOrEditExcelDbRemarkDto
         }>
-        (CreateOrEditExcelDbRemark, {
+        (new ExcelReportsService(). CreateOrEditExcelDbRemark, {
            
             onSuccess: () => {
                 queryClient.refetchQueries('remarks')

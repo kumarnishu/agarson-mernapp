@@ -1,8 +1,8 @@
 import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Button, InputLabel, Select, OutlinedInput, MenuItem, Checkbox, ListItemText } from '@mui/material'
-import {  useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
-import {  useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
@@ -10,6 +10,8 @@ import { useFormik } from 'formik';
 import * as Yup from "yup"
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { UserService } from '../../../services/UserServices';
+import { AuthorizationService } from '../../../services/AuthorizationService';
 
 type Props = {
     dialog: string | undefined,
@@ -20,8 +22,8 @@ type Props = {
 function AssignCrmCitiesDialog({ cities, flag, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
     const [users, setUsers] = useState<DropDownDto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
-    const { mutate, isLoading, isSuccess} = useMutation
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 user_ids: string[],
@@ -29,13 +31,13 @@ function AssignCrmCitiesDialog({ cities, flag, dialog, setDialog }: Props) {
                 flag: number
             }
         }>
-        (AssignCRMCitiesToUsers, {
-           
+        (new AuthorizationService().AssignCRMCitiesToUsers, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('crm_cities')
                 setAlert({ message: "success", color: 'success' })
-              },
-              onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
     const formik = useFormik<{
         user_ids: string[],
@@ -81,7 +83,7 @@ function AssignCrmCitiesDialog({ cities, flag, dialog, setDialog }: Props) {
     return (
         <Dialog
             fullWidth
-            open={dialog ==='AssignCrmCitiesDialog'}
+            open={dialog === 'AssignCrmCitiesDialog'}
             onClose={() => {
                 setDialog(undefined)
                 formik.setValues({ user_ids: [], city_ids: [] });
@@ -136,7 +138,7 @@ function AssignCrmCitiesDialog({ cities, flag, dialog, setDialog }: Props) {
 
 
                 </Stack>
-               
+
             </DialogContent>
         </Dialog >
     )

@@ -1,10 +1,9 @@
 import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useContext, useEffect,  useState } from 'react';
-import {  useMutation, useQuery } from 'react-query';
+import { useContext, useEffect, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
-import { CreateOrUpdateLead, GetAllCities, GetAllLeadTypes, GetAllSources, GetAllStates } from '../../../services/LeadsServices';
 import { Countries } from '../../../utils/countries';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
@@ -15,19 +14,22 @@ import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetLeadDto } from '../../../dtos/lead.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { FeatureService } from '../../../services/FeatureServices';
+import { DropdownService } from '../../../services/DropDownServices';
+import { AuthorizationService } from '../../../services/AuthorizationService';
 
 
-function CreateOrEditLeadForm({ lead,setDialog }: { lead?: GetLeadDto , setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+function CreateOrEditLeadForm({ lead, setDialog }: { lead?: GetLeadDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const [states, setStates] = useState<GetCrmStateDto[]>([])
     const [cities, setCities] = useState<GetCrmCityDto[]>([])
     const [state, setState] = useState<string>();
     const [types, setTypes] = useState<DropDownDto[]>([])
     const { setAlert } = useContext(AlertContext)
     const [sources, setSources] = useState<DropDownDto[]>([])
-    const { mutate, isLoading, isSuccess} = useMutation
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetLeadDto>, BackendError, { body: FormData, id?: string }>
-        (CreateOrUpdateLead, {
-           
+        (new FeatureService().CreateOrUpdateLead, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('leads')
                 setAlert({ message: lead ? "updated" : "created", color: 'success' })
@@ -35,12 +37,12 @@ function CreateOrEditLeadForm({ lead,setDialog }: { lead?: GetLeadDto , setDialo
             onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
-    const { data: typesdata, isSuccess: isTypeSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("crm_types", GetAllLeadTypes)
+    const { data: typesdata, isSuccess: isTypeSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("crm_types", new DropdownService().GetAllLeadTypes)
 
-    const { data: sourcedata, isSuccess: isSourceSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("crm_sources", GetAllSources)
+    const { data: sourcedata, isSuccess: isSourceSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("crm_sources", new DropdownService().GetAllSources)
 
-    const { data, isSuccess: isStateSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>("crm_states", GetAllStates)
-    const { data: citydata, isSuccess: isCitySuccess } = useQuery<AxiosResponse<GetCrmCityDto[]>, BackendError>(["crm_cities", state], async () => GetAllCities({ state: state }))
+    const { data, isSuccess: isStateSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>("crm_states",new AuthorizationService(). GetAllStates)
+    const { data: citydata, isSuccess: isCitySuccess } = useQuery<AxiosResponse<GetCrmCityDto[]>, BackendError>(["crm_cities", state], async () =>new AuthorizationService(). GetAllCities({ state: state }))
 
 
     const formik = useFormik({
@@ -181,7 +183,7 @@ function CreateOrEditLeadForm({ lead,setDialog }: { lead?: GetLeadDto , setDialo
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined) 
+            setDialog(undefined)
         }
     }, [isSuccess])
 
@@ -439,7 +441,7 @@ function CreateOrEditLeadForm({ lead,setDialog }: { lead?: GetLeadDto , setDialo
                     }
                 </TextField>
 
-                
+
 
 
 
@@ -630,7 +632,7 @@ function CreateOrEditLeadForm({ lead,setDialog }: { lead?: GetLeadDto , setDialo
                     </>}
                 </Button>
             </Stack>
-           
+
 
         </form>
     )

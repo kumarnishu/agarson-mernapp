@@ -4,12 +4,11 @@ import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
 import { BackendError } from '../../..';
-import {  useMutation } from 'react-query';
-
-import { ValidateShoeWeight } from '../../../services/ProductionServices';
+import { useMutation } from 'react-query';
 import { GetUserDto } from '../../../dtos/user.dto';
 import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { FeatureService } from '../../../services/FeatureServices';
 
 type Props = {
     dialog: string | undefined,
@@ -18,9 +17,9 @@ type Props = {
 }
 function ValidateShoeWeightDialog({ weight, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
-     const { mutate, isLoading, isSuccess} = useMutation
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetUserDto>, BackendError, string>
-        (ValidateShoeWeight, {
+        (new FeatureService().ValidateShoeWeight, {
             onSuccess: () => {
                 queryClient.invalidateQueries('shoe_weights')
                 setAlert({ message: "success", color: 'success' })
@@ -36,7 +35,7 @@ function ValidateShoeWeightDialog({ weight, dialog, setDialog }: Props) {
     }, [isSuccess])
     return (
         <>
-           
+
 
             <Dialog open={dialog === "ValidateShoeWeightDialog"}
             > <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>

@@ -5,11 +5,10 @@ import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-
 import * as yup from 'yup';
-import { CreateOrEditCheckCategory } from '../../../services/CheckListServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { DropdownService } from '../../../services/DropDownServices';
 
 
 
@@ -25,7 +24,7 @@ function CreateOrEditCategoryForm({ category, setDialog }: {
             },
             id?: string
         }>
-        (CreateOrEditCheckCategory, {
+        (new DropdownService().CreateOrEditCheckCategory, {
 
             onSuccess: () => {
                 queryClient.invalidateQueries('check_categories')

@@ -3,13 +3,13 @@ import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
-import {  CreateOrEditLeadType } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
 import * as yup from 'yup';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { DropdownService } from '../../../services/DropDownServices';
 
 function CreateOrEditLeadTypeForm({ type ,setDialog}: { type?: DropDownDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
@@ -20,7 +20,7 @@ function CreateOrEditLeadTypeForm({ type ,setDialog}: { type?: DropDownDto, setD
             },
             id?: string
         }>
-        (CreateOrEditLeadType, {
+        (new DropdownService().CreateOrEditLeadType, {
            
             onSuccess: () => {
                 queryClient.invalidateQueries('crm_types')

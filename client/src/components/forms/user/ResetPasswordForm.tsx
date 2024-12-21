@@ -7,8 +7,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-
-import { ResetPassword } from '../../../services/UserServices';
+import { UserService } from '../../../services/UserServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
@@ -23,7 +22,7 @@ function ResetPasswordForm({ token, setDialog }: { token: string, setDialog: Rea
       BackendError,
       { token: string, body: { newPassword: string, confirmPassword: string } }
     >
-    (ResetPassword, {
+    (new UserService().ResetPassword, {
       onSuccess: () => {
         queryClient.invalidateQueries('users')
         setAlert({ message: 'successful', color: 'success' })

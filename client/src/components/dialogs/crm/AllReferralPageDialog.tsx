@@ -12,6 +12,7 @@ import { BackendError } from '../../..'
 import { GetActivitiesOrRemindersDto } from '../../../dtos/crm-remarks.dto'
 import { GetLeadFromExcelDto } from '../../../dtos/lead.dto'
 import { GetReferDto } from '../../../dtos/refer.dto'
+import { FeatureService } from '../../../services/FeatureServices'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
@@ -23,7 +24,7 @@ function AllReferralPageDialog({ refer, dialog, setDialog }: Props) {
     const [sent, setSent] = useState(false)
     const [leads, setLeads] = useState<GetActivitiesOrRemindersDto[]>([])
 
-    const { data, isLoading, isSuccess, refetch } = useQuery<AxiosResponse<GetActivitiesOrRemindersDto[]>, BackendError>(["assigned_leads", refer], async () => GetAllReferrals({ refer: refer }))
+    const { data, isLoading, isSuccess, refetch } = useQuery<AxiosResponse<GetActivitiesOrRemindersDto[]>, BackendError>(["assigned_leads", refer], async () => new FeatureService().GetAllReferrals({ refer: refer }))
 
 
     function handleExcel() {

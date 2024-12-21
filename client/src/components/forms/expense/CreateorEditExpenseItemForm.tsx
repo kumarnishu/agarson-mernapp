@@ -6,11 +6,11 @@ import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { CreateOrEditExpenseItemDto, GetExpenseItemDto } from '../../../dtos/expense-item.dto';
-import { CreateOrEditExpenseItem, GetAllExpenseCategories, GetAllItemUnits } from '../../../services/ExpenseServices';
+import { DropdownService } from '../../../services/DropDownServices';
+
 
 
 function CreateorEditExpenseItemForm({ item, setDialog }: { item?: GetExpenseItemDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
@@ -19,7 +19,7 @@ function CreateorEditExpenseItemForm({ item, setDialog }: { item?: GetExpenseIte
     const [units, setUnits] = useState<DropDownDto[]>([])
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, { body: CreateOrEditExpenseItemDto, id?: string }>
-        (CreateOrEditExpenseItem, {
+        (new DropdownService().CreateOrEditExpenseItem, {
             onSuccess: () => {
                 queryClient.invalidateQueries('items')
                 setAlert({ message: item ? "updated" : "created", color: 'success' })
@@ -28,8 +28,8 @@ function CreateorEditExpenseItemForm({ item, setDialog }: { item?: GetExpenseIte
         })
 
 
-    const { data: categoriesData, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("expense_categories", GetAllExpenseCategories)
-    const { data: unitsData, isSuccess: unitsSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("units", GetAllItemUnits)
+    const { data: categoriesData, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("expense_categories",new DropdownService(). GetAllExpenseCategories)
+    const { data: unitsData, isSuccess: unitsSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("units", new DropdownService().GetAllItemUnits)
 
     const formik = useFormik<CreateOrEditExpenseItemDto>({
         initialValues: {

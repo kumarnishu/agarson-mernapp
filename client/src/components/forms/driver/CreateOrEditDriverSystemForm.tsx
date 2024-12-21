@@ -8,18 +8,18 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import { CreateOrEditDriverSystemDto, GetDriverSystemDto } from '../../../dtos/driver.dto';
-import { CreateOrEditDriverSystem } from '../../../services/DriverServices';
 import moment from 'moment';
-import { GetUsersForDropdown } from '../../../services/UserServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
+import { UserService } from '../../../services/UserServices';
+import { FeatureService } from '../../../services/FeatureServices';
 
 
 function CreateOrEditDriverSystemForm({ item, setDialog }: { item?: GetDriverSystemDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
-    const { data: users } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'driver_system_view', show_assigned_only: true }))
+    const { data: users } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'driver_system_view', show_assigned_only: true }))
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, { body: CreateOrEditDriverSystemDto, id?: string }>
-        (CreateOrEditDriverSystem, {
+        (new FeatureService().CreateOrEditDriverSystem, {
             onSuccess: () => {
                 queryClient.invalidateQueries('items')
                 setAlert({ message: item ? "updated" : "created", color: 'success' })

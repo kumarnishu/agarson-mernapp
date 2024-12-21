@@ -6,12 +6,10 @@ import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-
-import { CreateOrEditDye, GetArticles } from '../../../services/ProductionServices';
 import { GetArticleDto } from '../../../dtos/article.dto';
 import { GetDyeDto, CreateOrEditDyeDTo } from '../../../dtos/dye.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-
+import { DropdownService } from '../../../services/DropDownServices';
 
 
 function CreateOrEditDyeForm({ dye, setDialog }: { dye?: GetDyeDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
@@ -20,7 +18,7 @@ function CreateOrEditDyeForm({ dye, setDialog }: { dye?: GetDyeDto, setDialog: R
         <AxiosResponse<GetDyeDto>, BackendError, {
             body: CreateOrEditDyeDTo, id?: string
         }>
-        (CreateOrEditDye, {
+        (new DropdownService().CreateOrEditDye, {
 
             onSuccess: () => {
                 queryClient.refetchQueries('dyes')
@@ -28,7 +26,7 @@ function CreateOrEditDyeForm({ dye, setDialog }: { dye?: GetDyeDto, setDialog: R
             },
             onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
-    const { data: articles, isLoading: articleLoading } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>("articles", async () => GetArticles())
+    const { data: articles, isLoading: articleLoading } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>("articles", async () => new DropdownService().GetArticles())
 
     const formik = useFormik({
         initialValues: {

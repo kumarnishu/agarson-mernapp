@@ -7,28 +7,29 @@ import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
-import { CreateOrEditProduction, GetArticles, GetMachines } from '../../../services/ProductionServices';
 import { UserContext } from '../../../contexts/userContext';
 import moment from 'moment';
 import { GetArticleDto } from '../../../dtos/article.dto';
 import { GetMachineDto } from '../../../dtos/machine.dto';
 import { GetProductionDto, CreateOrEditProductionDto } from '../../../dtos/production.dto';
-import { GetUsersForDropdown } from '../../../services/UserServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { UserService } from '../../../services/UserServices';
+import { DropdownService } from '../../../services/DropDownServices';
+import { FeatureService } from '../../../services/FeatureServices';
 
 function CreateOrEditProductionForm({ production, setDialog }: { production?: GetProductionDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
     const { user } = useContext(UserContext)
-    const { data: users } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'production_view', show_assigned_only: true }))
-    const { data: machines } = useQuery<AxiosResponse<GetMachineDto[]>, BackendError>("machines", async () => GetMachines())
-    const { data: articles } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>("articles", async () => GetArticles())
+    const { data: users } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'production_view', show_assigned_only: true }))
+    const { data: machines } = useQuery<AxiosResponse<GetMachineDto[]>, BackendError>("machines", async () => new DropdownService().GetMachines())
+    const { data: articles } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>("articles", async () => new DropdownService().GetArticles())
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetProductionDto>, BackendError, {
             id?: string,
             body: CreateOrEditProductionDto
         }>
-        (CreateOrEditProduction, {
+        (new FeatureService().CreateOrEditProduction, {
             onSuccess: () => {
                 queryClient.refetchQueries('productions')
                 setAlert({ message: production ? "updated" : "created", color: 'success' })

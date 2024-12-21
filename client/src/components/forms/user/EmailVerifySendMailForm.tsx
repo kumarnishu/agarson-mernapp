@@ -6,12 +6,11 @@ import { useContext, useEffect } from 'react';
 import {  useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { SendVerifyEmail } from '../../../services/UserServices';
 import { UserContext } from '../../../contexts/userContext';
 import { queryClient } from '../../../main';
 import { BackendError } from '../../..';
 import { AlertContext } from '../../../contexts/alertContext';
-
+import { UserService } from '../../../services/UserServices';
 
 
 
@@ -23,7 +22,7 @@ function EmailVerifySendMailForm({setDialog}:{setDialog: React.Dispatch<React.Se
     <AxiosResponse<string>,
       BackendError,
       { email: string }
-    >(SendVerifyEmail,{
+    >(new UserService().SendVerifyEmail,{
       onSuccess: () => {
         queryClient.invalidateQueries('users')
         setAlert({ message: 'email verification link sent to your provided email', color: 'success' })

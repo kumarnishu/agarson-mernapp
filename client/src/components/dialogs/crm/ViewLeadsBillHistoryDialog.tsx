@@ -6,11 +6,11 @@ import { toTitleCase } from '../../../utils/TitleCase'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
-import { GetLeadBillHistory } from '../../../services/LeadsServices'
 import DeleteBillDialog from './DeleteBillDialog'
 import CreateOrEditBillDialog from './CreateOrEditBillDialog'
 import ViewBillPhotoDialog from './ViewBillPhotoDialog'
 import { GetBillDto } from '../../../dtos/crm-bill.dto'
+import { FeatureService } from '../../../services/FeatureServices'
 
 
 type Props = {
@@ -24,7 +24,7 @@ function ViewLeadsBillHistoryDialog({ id, dialog, setDialog }: Props) {
     const [bill, setBill] = useState<GetBillDto>()
     const [bills, setBills] = useState<GetBillDto[]>()
 
-    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["bills", id], async () => GetLeadBillHistory({ id: id }))
+    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["bills", id], async () => new FeatureService().GetLeadBillHistory({ id: id }))
 
 
     const { user } = useContext(UserContext)

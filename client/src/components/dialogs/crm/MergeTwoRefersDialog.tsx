@@ -3,12 +3,12 @@ import { useContext, useEffect, useState } from 'react'
 import { Cancel } from '@mui/icons-material'
 import { STable, STableBody, STableCell, STableHead, STableHeadCell, STableRow } from '../../styled/STyledTable'
 import { AxiosResponse } from 'axios'
-import {  useMutation } from 'react-query'
+import { useMutation } from 'react-query'
 import { BackendError } from '../../..'
 import { queryClient } from '../../../main'
-import { MergeTwoRefers } from '../../../services/LeadsServices'
 import { GetReferDto, CreateOrEditMergeRefersDto } from '../../../dtos/refer.dto'
 import { AlertContext } from '../../../contexts/alertContext'
+import { FeatureService } from '../../../services/FeatureServices'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
@@ -30,9 +30,9 @@ function MergeTwoRefersDialog({ refers, removeSelectedRefers, dialog, setDialog 
         source_refer_id: refers[1]._id
     })
 
-    const { mutate, isLoading} = useMutation
+    const { mutate, isLoading } = useMutation
         <AxiosResponse<GetReferDto>, BackendError, { body: CreateOrEditMergeRefersDto, id: string }>
-        (MergeTwoRefers, {
+        (new FeatureService().MergeTwoRefers, {
 
             onSuccess: () => {
                 removeSelectedRefers()
@@ -61,7 +61,7 @@ function MergeTwoRefersDialog({ refers, removeSelectedRefers, dialog, setDialog 
             open={dialog === "MergeTwoRefersDialog"}
             onClose={() => setDialog(undefined)}
         >
-         
+
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>

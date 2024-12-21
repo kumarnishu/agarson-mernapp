@@ -5,9 +5,9 @@ import { AxiosResponse } from 'axios';
 import { BackendError } from '../../..';
 import { useMutation } from 'react-query';
 import { Cancel } from '@mui/icons-material';
-import { ToogleMachine } from '../../../services/ProductionServices';
 import { GetMachineDto } from '../../../dtos/machine.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { DropdownService } from '../../../services/DropDownServices';
 
 type Props = {
     dialog: string | undefined,
@@ -16,10 +16,10 @@ type Props = {
 }
 function ToogleMachineDialog({ machine, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
-     const { mutate, isLoading, isSuccess } = useMutation
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (ToogleMachine, {
-         
+        (new DropdownService().ToogleMachine, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('machines')
                 setAlert({ message: "success", color: 'success' })
@@ -36,7 +36,7 @@ function ToogleMachineDialog({ machine, dialog, setDialog }: Props) {
             <Dialog open={dialog === "ToogleMachineDialog"}
                 onClose={() => setDialog(undefined)}
             >
-              
+
                 <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                     <Cancel fontSize='large' />
                 </IconButton>

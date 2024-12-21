@@ -3,7 +3,6 @@ import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { CreateOrEditCity, GetAllStates } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
@@ -12,10 +11,11 @@ import { toTitleCase } from '../../../utils/TitleCase';
 import { CreateOrEditCrmCity } from '../../../dtos/crm-city.dto';
 import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { AuthorizationService } from '../../../services/AuthorizationService';
 
 function CreateOrEditCityForm({ city, setDialog }: { city?: CreateOrEditCrmCity, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const [states, setStates] = useState<GetCrmStateDto[]>([])
-    const { data, isSuccess: isStateSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>("crm_states", GetAllStates)
+    const { data, isSuccess: isStateSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>("crm_states",new AuthorizationService(). GetAllStates)
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
@@ -27,7 +27,7 @@ function CreateOrEditCityForm({ city, setDialog }: { city?: CreateOrEditCrmCity,
             },
             id?: string
         }>
-        (CreateOrEditCity, {
+        (new AuthorizationService().CreateOrEditCity, {
 
             onSuccess: () => {
                 queryClient.invalidateQueries('crm_cities')

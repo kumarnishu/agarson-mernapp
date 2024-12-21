@@ -6,9 +6,8 @@ import { useEffect, useContext, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from "yup"
-
+import { UserService } from '../../../services/UserServices';
 import { UserContext } from '../../../contexts/userContext';
-import { Signup } from '../../../services/UserServices';
 import { BackendError, Target } from '../../..';
 
 import { GetUserDto } from '../../../dtos/user.dto';
@@ -31,7 +30,7 @@ function OwnerSignUpForm({ setDialog }: { setDialog: React.Dispatch<React.SetSta
   const { setUser } = useContext(UserContext)
   const { mutate, data, isLoading, isSuccess } = useMutation
     <AxiosResponse<{ user: GetUserDto, token: string }>, BackendError, FormData>
-    (Signup, {
+    (new UserService().Signup, {
       onSuccess: () => {
         queryClient.invalidateQueries('users')
         setAlert({ message: 'registered successfully', color: 'success' })

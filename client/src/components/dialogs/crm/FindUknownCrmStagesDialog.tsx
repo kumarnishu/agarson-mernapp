@@ -2,10 +2,11 @@ import { Dialog, DialogContent, DialogTitle, IconButton, Stack, Button } from '@
 import { useContext, useEffect } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
-import {  useMutation } from 'react-query';
+import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
+import { FeatureService } from '../../../services/FeatureServices';
 
 
 type Props = {
@@ -16,10 +17,10 @@ type Props = {
 
 function FindUknownCrmStagesDialog({ dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
-    const { mutate, isSuccess} = useMutation
+    const { mutate, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError>
-        (FindUnknownCrmStages, {
-           
+        (new FeatureService().FindUnknownCrmStages, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('crm_stages')
                 setAlert({ message: "success", color: 'success' })
@@ -59,7 +60,7 @@ function FindUknownCrmStagesDialog({ dialog, setDialog }: Props) {
                     <Button variant='outlined' color='error' onClick={() => mutate()}>Submit</Button>
 
                 </Stack>
-               
+
             </DialogContent>
         </Dialog >
     )

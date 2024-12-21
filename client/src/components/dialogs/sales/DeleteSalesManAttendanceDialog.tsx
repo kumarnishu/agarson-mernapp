@@ -5,11 +5,10 @@ import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
-
-import { DeleteSalesManAttendance } from '../../../services/SalesServices';
 import { GetSalesAttendanceDto } from '../../../dtos/sales-attendance.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
+import { SalesService } from '../../../services/SalesServices';
 
 type Props = {
   dialog: string | undefined,
@@ -21,7 +20,7 @@ function DeleteSalesManAttendanceDialog({ attendance, dialog, setDialog }: Props
   const { setAlert } = useContext(AlertContext)
   const { mutate, isLoading, isSuccess, error, isError } = useMutation
     <AxiosResponse<any>, BackendError, string>
-    (DeleteSalesManAttendance, {
+    (new SalesService().DeleteSalesManAttendance, {
      
       onSuccess: () => {
         queryClient.invalidateQueries('attendances')

@@ -6,10 +6,10 @@ import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
-import { DeletePaymentsCategory } from '../../../services/PaymentsService';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
+import { DropdownService } from '../../../services/DropDownServices';
 
 
 type Props = {
@@ -21,8 +21,8 @@ function DeletePaymentsCategoryDialog({ category, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (DeletePaymentsCategory, {
-            
+        (new DropdownService().DeletePaymentsCategory, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('payment_categories')
                 setAlert({ message: "success", color: 'success' })

@@ -2,11 +2,12 @@ import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Butt
 import { useContext, useEffect } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
-import {  useMutation } from 'react-query';
+import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
 import { AlertContext } from '../../../contexts/alertContext';
+import { AuthorizationService } from '../../../services/AuthorizationService';
 
 type Props = {
     dialog: string | undefined,
@@ -16,10 +17,10 @@ type Props = {
 
 function FindUknownCrmCitiesDialog({ dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
-    const { mutate, isSuccess} = useMutation
+    const { mutate, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError>
-        (FindUnknownCrmCities, {
-           
+        (new AuthorizationService().FindUnknownCrmCities, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('crm_cities')
                 setAlert({ message: "success", color: 'success' })
@@ -62,7 +63,7 @@ function FindUknownCrmCitiesDialog({ dialog, setDialog }: Props) {
                     <Button variant='outlined' color='error' onClick={() => mutate()}>Submit</Button>
 
                 </Stack>
-             
+
             </DialogContent>
         </Dialog >
     )

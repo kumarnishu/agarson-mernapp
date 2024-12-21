@@ -6,8 +6,7 @@ import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-
-import { ResetPasswordSendMail } from '../../../services/UserServices';
+import { UserService } from '../../../services/UserServices';
 import { UserContext } from '../../../contexts/userContext';
 import { BackendError } from '../../..';
 import { AlertContext } from '../../../contexts/alertContext';
@@ -25,7 +24,7 @@ function ResetPasswordSendMailForm({ setDialog }: { setDialog: React.Dispatch<Re
       BackendError,
       { email: string }
     >
-    (ResetPasswordSendMail, {
+    (new UserService().ResetPasswordSendMail, {
       onSuccess: () => {
         queryClient.invalidateQueries('users')
         setAlert({ message: 'successfully sent a password reset link to your email id.', color: 'success' })

@@ -7,9 +7,9 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
 import * as yup from 'yup';
-import { CreateOrEditPaymentCategory } from '../../../services/PaymentsService';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { DropdownService } from '../../../services/DropDownServices';
 
 function CreateOrEditCategoryForm({ category, setDialog }: { category?: DropDownDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
@@ -20,7 +20,7 @@ function CreateOrEditCategoryForm({ category, setDialog }: { category?: DropDown
             },
             id?: string
         }>
-        (CreateOrEditPaymentCategory, {
+        (new DropdownService().CreateOrEditPaymentCategory, {
 
             onSuccess: () => {
                 queryClient.refetchQueries('payment_categories')

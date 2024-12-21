@@ -8,6 +8,7 @@ import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
+import { FeatureService } from '../../../services/FeatureServices';
 type Props = {
     dialog: string | undefined,
     ids: string[],
@@ -19,13 +20,13 @@ function BulkDeleteCheckListDialog({ ids, clearIds, dialog, setDialog }: Props) 
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, { ids: string[] }>
-        (BulkDeleteChecklists, {
-          
+        (new FeatureService().BulkDeleteChecklists, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('checklists')
                 setAlert({ message: "success", color: 'success' })
-              },
-              onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
     useEffect(() => {

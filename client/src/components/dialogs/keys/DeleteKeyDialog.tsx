@@ -6,10 +6,10 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 
-import { DeleteKey } from '../../../services/KeyServices';
 import { GetKeyDto } from '../../../dtos/keys.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
+import { AuthorizationService } from '../../../services/AuthorizationService';
 
 type Props = {
   dialog: string | undefined,
@@ -21,7 +21,7 @@ function DeleteKeyDialog({ item, dialog, setDialog }: Props) {
   const { setAlert } = useContext(AlertContext)
   const { mutate, isLoading, isSuccess, error, isError } = useMutation
     <AxiosResponse<any>, BackendError, string>
-    (DeleteKey, {
+    (new AuthorizationService().DeleteKey, {
       onSuccess: () => {
         queryClient.invalidateQueries('keys')
         setAlert({ message: "success", color: 'success' })

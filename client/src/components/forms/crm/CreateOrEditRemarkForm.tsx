@@ -4,7 +4,6 @@ import { useFormik } from 'formik';
 import { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
-import { CreateOrEditRemark, GetAllStages } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
@@ -13,6 +12,8 @@ import moment from 'moment';
 import { GetRemarksDto } from '../../../dtos/crm-remarks.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { DropdownService } from '../../../services/DropDownServices';
+import { FeatureService } from '../../../services/FeatureServices';
 
 
 function CreateOrEditRemarkForm({ lead, remark, setDialog }: { lead?: { _id: string, has_card?: boolean, stage: string }, remark?: GetRemarksDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
@@ -31,7 +32,7 @@ function CreateOrEditRemarkForm({ lead, remark, setDialog }: { lead?: { _id: str
                 remind_date?: string
             }
         }>
-        (CreateOrEditRemark, {
+        (new FeatureService().CreateOrEditRemark, {
             onSuccess: () => {
                 queryClient.refetchQueries('remarks')
                 queryClient.refetchQueries('activities')
@@ -42,7 +43,7 @@ function CreateOrEditRemarkForm({ lead, remark, setDialog }: { lead?: { _id: str
             },
             onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
-    const { data: stagedata, isSuccess: stageSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("crm_stages", GetAllStages)
+    const { data: stagedata, isSuccess: stageSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("crm_stages",new DropdownService(). GetAllStages)
 
 
     const formik = useFormik<{

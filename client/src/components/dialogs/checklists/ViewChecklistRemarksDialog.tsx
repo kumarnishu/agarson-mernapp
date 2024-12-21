@@ -6,11 +6,11 @@ import { toTitleCase } from '../../../utils/TitleCase'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
-import { GetCheckListRemarksHistory } from '../../../services/CheckListServices'
 import DeleteChecklistRemarkDialog from './DeleteChecklistRemarkDialog'
 import moment from 'moment'
 import { GetChecklistRemarksDto } from '../../../dtos/checklist-remark.dto'
 import { GetChecklistDto } from '../../../dtos/checklist.dto'
+import { FeatureService } from '../../../services/FeatureServices'
 
 type Props = {
     dialog: string | undefined,
@@ -21,7 +21,7 @@ function ViewChecklistRemarksDialog({ checklist, dialog, setDialog }: Props) {
     const [dialog1, setDialog1] = useState<string | undefined>()
     const [remark, setRemark] = useState<GetChecklistRemarksDto>()
     const [remarks, setRemarks] = useState<GetChecklistRemarksDto[]>()
-    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", checklist._id], async () => GetCheckListRemarksHistory(checklist._id))
+    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", checklist._id], async () => new FeatureService().GetCheckListRemarksHistory(checklist._id))
 
     const { user } = useContext(UserContext)
     let previous_date = new Date()

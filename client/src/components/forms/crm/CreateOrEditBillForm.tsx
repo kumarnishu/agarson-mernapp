@@ -4,13 +4,11 @@ import { useFormik } from 'formik';
 import { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
-import { CreateOrEditBill } from '../../../services/LeadsServices';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
 
 import { toTitleCase } from '../../../utils/TitleCase';
 import moment from 'moment';
-import { GetArticles } from '../../../services/ProductionServices';
 import { Delete } from '@mui/icons-material';
 import { GetArticleDto } from '../../../dtos/article.dto';
 import { CreateOrEditBillItemDto } from '../../../dtos/bill-item.dto';
@@ -18,6 +16,8 @@ import { GetBillDto } from '../../../dtos/crm-bill.dto';
 import { GetLeadDto } from '../../../dtos/lead.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { FeatureService } from '../../../services/FeatureServices';
+import { DropdownService } from '../../../services/DropDownServices';
 
 
 function CreateOrEditBillForm({ lead, refer, setDialog, bill }: { lead?: GetLeadDto, refer?: GetReferDto, bill?: GetBillDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
@@ -25,13 +25,13 @@ function CreateOrEditBillForm({ lead, refer, setDialog, bill }: { lead?: GetLead
     const [items, setItems] = useState<CreateOrEditBillItemDto[]>(bill?.items || [])
     const [item, setItem] = useState<CreateOrEditBillItemDto>()
     const [articles, setArticles] = useState<GetArticleDto[]>([])
-    const { data: articlesData, isSuccess: isSucessArticles } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>(["articles"], async () => GetArticles(String(false)))
+    const { data: articlesData, isSuccess: isSucessArticles } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>(["articles"], async () => new DropdownService().GetArticles(String(false)))
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: FormData,
             id?: string,
         }>
-        (CreateOrEditBill, {
+        (new FeatureService(). CreateOrEditBill, {
 
             onSuccess: () => {
                 queryClient.invalidateQueries('bills')

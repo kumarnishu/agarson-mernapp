@@ -11,6 +11,8 @@ import * as Yup from "yup"
 import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { UserService } from '../../../services/UserServices';
+import { AuthorizationService } from '../../../services/AuthorizationService';
 
 type Props = {
     dialog: string | undefined,
@@ -20,7 +22,7 @@ type Props = {
 function AssignCrmStatesDialog({ states, flag, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
     const [users, setUsers] = useState<DropDownDto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () =>new UserService(). GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
 
 
 
@@ -32,7 +34,7 @@ function AssignCrmStatesDialog({ states, flag, dialog, setDialog }: Props) {
                 flag: number
             }
         }>
-        (AssignCRMStatesToUsers, {
+        (new AuthorizationService(). AssignCRMStatesToUsers, {
            
             onSuccess: () => {
                 queryClient.invalidateQueries('crm_states')

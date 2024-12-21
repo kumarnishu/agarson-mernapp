@@ -54,11 +54,7 @@ export class DropdownService {
   public async DeletePaymentsCategory(id: string) {
     return await apiClient.delete(`payments/categories/${id}`)
   }
-  public async CreateOrEditPayment({ body, id }: { body: CreateOrEditPaymentDto, id?: string }) {
-    if (id)
-      return await apiClient.put(`payments/${id}`, body);
-    return await apiClient.post(`payments`, body);
-  };
+  
   public async CreateOrEditExpenseItem({ body, id }: { body: CreateOrEditExpenseItemDto, id?: string }) {
     if (id)
       return await apiClient.put(`expense-items/${id}`, body);

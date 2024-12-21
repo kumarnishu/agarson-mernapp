@@ -6,9 +6,9 @@ import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
-import { BulkDeletePaymentss } from '../../../services/PaymentsService';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
+import { FeatureService } from '../../../services/FeatureServices';
 
 type Props = {
     dialog: string | undefined,
@@ -19,8 +19,8 @@ function BulkDeletePaymentsDialog({ ids, clearIds, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, { ids: string[] }>
-        (BulkDeletePaymentss, {
-           
+        (new FeatureService().BulkDeletePaymentss, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('payments')
                 setAlert({ message: "success", color: 'success' })

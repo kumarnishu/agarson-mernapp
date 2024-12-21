@@ -9,8 +9,9 @@ import { queryClient } from '../../../main';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { GetExpenseItemDto } from '../../../dtos/expense-item.dto';
-import { GetAllExpenseLocations, IssueExpenseItem } from '../../../services/ExpenseServices';
 import { IssueOrAddExpenseItemDto } from '../../../dtos/expense.dto';
+import { FeatureService } from '../../../services/FeatureServices';
+import { DropdownService } from '../../../services/DropDownServices';
 
 
 function IssueExpenseItemForm({ item, setDialog }: { item: GetExpenseItemDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
@@ -18,7 +19,7 @@ function IssueExpenseItemForm({ item, setDialog }: { item: GetExpenseItemDto, se
     const [locations, setLocations] = useState<DropDownDto[]>([])
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, { body: IssueOrAddExpenseItemDto, id?: string }>
-        (IssueExpenseItem, {
+        (new FeatureService().IssueExpenseItem, {
             onSuccess: () => {
                 queryClient.invalidateQueries('expense-store')
                 setAlert({ message: 'successfull', color: 'success' })
@@ -27,7 +28,7 @@ function IssueExpenseItemForm({ item, setDialog }: { item: GetExpenseItemDto, se
         })
 
 
-    const { data: locationsData, isSuccess: locationSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("expense_locations", GetAllExpenseLocations)
+    const { data: locationsData, isSuccess: locationSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("expense_locations", new DropdownService().GetAllExpenseLocations)
 
 
     const formik = useFormik({

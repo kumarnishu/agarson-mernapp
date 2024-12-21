@@ -6,10 +6,10 @@ import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
-import { DeletePayment } from '../../../services/PaymentsService';
 import { GetChecklistDto } from '../../../dtos/checklist.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
+import { FeatureService } from '../../../services/FeatureServices';
 
 type Props = {
     dialog: string | undefined,
@@ -22,8 +22,8 @@ function DeletePaymentDialog({ payment, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (DeletePayment, {
-           
+        (new FeatureService().DeletePayment, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('payments')
                 setAlert({ message: "success", color: 'success' })

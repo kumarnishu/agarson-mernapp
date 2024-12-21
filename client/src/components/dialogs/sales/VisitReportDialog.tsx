@@ -4,11 +4,11 @@ import { AxiosResponse } from 'axios'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { GetVisitReports } from '../../../services/SalesServices'
 import { BackendError } from '../../..'
 import { onlyUnique } from '../../../utils/UniqueArray'
 import { Cancel } from '@mui/icons-material'
 import { GetVisitReportDto } from '../../../dtos/visit-report.dto'
+import { SalesService } from '../../../services/SalesServices'
 
 
 
@@ -16,7 +16,7 @@ import { GetVisitReportDto } from '../../../dtos/visit-report.dto'
 function VisitReportPage({ employee }: { employee: string }) {
     
      const [reports, setReports] = useState<GetVisitReportDto[]>([])
-    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetVisitReportDto[]>, BackendError>(["reports", employee], async () => GetVisitReports({ employee }))
+    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetVisitReportDto[]>, BackendError>(["reports", employee], async () =>new SalesService(). GetVisitReports({ employee }))
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const columns = useMemo<MRT_ColumnDef<GetVisitReportDto>[]>(
         //column definitions...

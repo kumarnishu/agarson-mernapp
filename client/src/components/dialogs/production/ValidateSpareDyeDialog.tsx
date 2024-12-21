@@ -5,11 +5,10 @@ import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
 import { BackendError } from '../../..';
 import { useMutation } from 'react-query';
-
-import { ValidateSpareDye } from '../../../services/ProductionServices';
 import { GetUserDto } from '../../../dtos/user.dto';
 import { GetSpareDyeDto } from '../../../dtos/spare-dye.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { FeatureService } from '../../../services/FeatureServices';
 
 type Props = {
     dialog: string | undefined,
@@ -20,7 +19,7 @@ function ValidateSpareDyeDialog({ sparedye, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetUserDto>, BackendError, string>
-        (ValidateSpareDye, {
+        (new FeatureService().ValidateSpareDye, {
 
             onSuccess: () => {
                 queryClient.invalidateQueries('spare_dyes')

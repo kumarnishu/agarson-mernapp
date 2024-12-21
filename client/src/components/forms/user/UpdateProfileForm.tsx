@@ -2,12 +2,11 @@ import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
-import { UpdateProfile } from '../../../services/UserServices';
 import { useContext, useEffect } from 'react';
 import { AxiosResponse } from 'axios';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
-
+import { UserService } from '../../../services/UserServices';
 import { GetUserDto } from '../../../dtos/user.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 
@@ -24,7 +23,7 @@ function UpdateProfileForm({ user, setDialog }: { user: GetUserDto, setDialog: R
   const { mutate, isLoading, isSuccess} = useMutation
   
     <AxiosResponse<GetUserDto>, BackendError, FormData>
-    (UpdateProfile, {
+    (new UserService().UpdateProfile, {
      onSuccess: () => {
       queryClient.invalidateQueries('users')
       setAlert({ message: 'updated profile', color: 'success' })

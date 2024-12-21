@@ -7,12 +7,13 @@ import * as Yup from "yup"
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
 
-import { CreateOrEditCheckList, GetAllCheckCategories } from '../../../services/CheckListServices';
 import Select from '@mui/material/Select';
 import { GetChecklistDto, CreateOrEditChecklistDto } from '../../../dtos/checklist.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
-import { GetUsersForDropdown } from '../../../services/UserServices';
 import { AlertContext } from '../../../contexts/alertContext';
+import { UserService } from '../../../services/UserServices';
+import { FeatureService } from '../../../services/FeatureServices';
+import { DropdownService } from '../../../services/DropDownServices';
 
 
 function CreateorEditCheckListForm({ checklist, setDialog }: { checklist?: GetChecklistDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
@@ -21,7 +22,7 @@ function CreateorEditCheckListForm({ checklist, setDialog }: { checklist?: GetCh
     const [users, setUsers] = useState<DropDownDto[]>([])
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, { body: FormData, id?: string }>
-        (CreateOrEditCheckList, {
+        (new FeatureService().CreateOrEditCheckList, {
 
             onSuccess: () => {
                 queryClient.invalidateQueries('checklists')
@@ -31,8 +32,8 @@ function CreateorEditCheckListForm({ checklist, setDialog }: { checklist?: GetCh
         })
 
 
-    const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
-    const { data: categoriesData, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("check_categories", GetAllCheckCategories)
+    const { data: userData, isSuccess: userSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
+    const { data: categoriesData, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("check_categories", new DropdownService().GetAllCheckCategories)
 
     const formik = useFormik<CreateOrEditChecklistDto>({
         initialValues: {

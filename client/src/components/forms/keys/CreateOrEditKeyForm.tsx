@@ -1,22 +1,21 @@
 import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useContext, useEffect,  useState } from 'react';
-import {  useMutation, useQuery } from 'react-query';
+import { useContext, useEffect, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-
 import * as yup from 'yup';
-import { CreateOrEditKey, GetAllKeyCategoriesForDropdown } from '../../../services/KeyServices';
 import { toTitleCase } from '../../../utils/TitleCase';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetKeyDto } from '../../../dtos/keys.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { AuthorizationService } from '../../../services/AuthorizationService';
 
-function CreateOrEditKeyForm({ keyitm,setDialog }: { keyitm?: GetKeyDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
+function CreateOrEditKeyForm({ keyitm, setDialog }: { keyitm?: GetKeyDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const [categories, setCategories] = useState<DropDownDto[]>([])
     const { setAlert } = useContext(AlertContext)
-     const { mutate, isLoading, isSuccess} = useMutation
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 key: string,
@@ -29,15 +28,15 @@ function CreateOrEditKeyForm({ keyitm,setDialog }: { keyitm?: GetKeyDto, setDial
             },
             id?: string
         }>
-        (CreateOrEditKey, {
-         
+        (new AuthorizationService().CreateOrEditKey, {
+
             onSuccess: () => {
                 queryClient.refetchQueries('keys')
                 setAlert({ message: keyitm ? "updated" : "created", color: 'success' })
             },
             onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
-    const { data, isSuccess: isSuccesskeysData } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategoriesForDropdown({ show_assigned_only: false }))
+    const { data, isSuccess: isSuccesskeysData } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => new AuthorizationService().GetAllKeyCategoriesForDropdown({ show_assigned_only: false }))
 
 
     const formik = useFormik<{
@@ -99,7 +98,7 @@ function CreateOrEditKeyForm({ keyitm,setDialog }: { keyitm?: GetKeyDto, setDial
 
     useEffect(() => {
         if (isSuccess) {
-          setDialog(undefined)
+            setDialog(undefined)
 
         }
     }, [isSuccess])
@@ -223,7 +222,7 @@ function CreateOrEditKeyForm({ keyitm,setDialog }: { keyitm?: GetKeyDto, setDial
                 </Button>
             </Stack>
 
-          
+
 
         </form>
     )

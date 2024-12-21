@@ -3,13 +3,13 @@ import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { CreateOrEditSource } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
 import * as yup from 'yup';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { DropdownService } from '../../../services/DropDownServices';
 
 function CreateOrEditLeadSourceForm({ source, setDialog }: { source?: DropDownDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
@@ -20,7 +20,7 @@ function CreateOrEditLeadSourceForm({ source, setDialog }: { source?: DropDownDt
             },
             id?: string
         }>
-        (CreateOrEditSource, {
+        (new DropdownService().CreateOrEditSource, {
 
             onSuccess: () => {
                 queryClient.invalidateQueries('crm_sources')

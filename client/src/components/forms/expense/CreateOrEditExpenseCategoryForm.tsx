@@ -7,9 +7,9 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
 import * as yup from 'yup';
-import { CreateOrEditExpenseCategory } from '../../../services/ExpenseServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { DropdownService } from '../../../services/DropDownServices';
 
 type props = {
     category?: DropDownDto,
@@ -26,7 +26,7 @@ function CreateOrEditExpenseCategoryForm({ category, setDialog }: props) {
             },
             id?: string
         }>
-        (CreateOrEditExpenseCategory, {
+        (new DropdownService(). CreateOrEditExpenseCategory, {
 
             onSuccess: () => {
                 queryClient.refetchQueries('expense_categories')

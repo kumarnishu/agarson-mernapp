@@ -7,8 +7,8 @@ import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
-import { DeleteDriverSystem } from '../../../services/DriverServices';
 import { GetDriverSystemDto } from '../../../dtos/driver.dto';
+import { FeatureService } from '../../../services/FeatureServices';
 
 type Props = {
   dialog: string | undefined,
@@ -20,7 +20,7 @@ function DeleteDriverSystemDialog({ item, dialog, setDialog }: Props) {
   const { setAlert } = useContext(AlertContext)
   const { mutate, isLoading, isSuccess, error, isError } = useMutation
     <AxiosResponse<any>, BackendError, string>
-    (DeleteDriverSystem, {
+    (new FeatureService().DeleteDriverSystem, {
       onSuccess: () => {
         queryClient.invalidateQueries('keys')
         setAlert({ message: "success", color: 'success' })

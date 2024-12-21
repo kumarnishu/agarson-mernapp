@@ -4,10 +4,9 @@ import { useFormik } from 'formik';
 import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from "yup"
-import { UpdateUser } from '../../../services/UserServices';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
-
+import { UserService } from '../../../services/UserServices';
 import { GetUserDto } from '../../../dtos/user.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 
@@ -28,7 +27,7 @@ function UpdateUserForm({ user, setDialog }: Props) {
   const { setAlert } = useContext(AlertContext)
   const { mutate, isLoading, isSuccess, } = useMutation
     <AxiosResponse<GetUserDto>, BackendError, { id: string, body: FormData }>
-    (UpdateUser, {
+    (new UserService().UpdateUser, {
       onSuccess: () => {
         queryClient.invalidateQueries('users')
         setAlert({ message: 'updated user', color: 'success' })

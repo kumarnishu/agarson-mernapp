@@ -6,8 +6,7 @@ import { useFormik } from 'formik';
 import React, { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from 'yup';
-
-import { UpdatePassword } from '../../../services/UserServices';
+import { UserService } from '../../../services/UserServices';
 import { BackendError } from '../../..';
 
 import { AlertContext } from '../../../contexts/alertContext';
@@ -22,7 +21,7 @@ function UpdatePasswordForm({ setDialog }: { setDialog: React.Dispatch<React.Set
         <AxiosResponse<string>,
             BackendError,
             { oldPassword: string, newPassword: string, confirmPassword: string }
-        >(UpdatePassword, {
+        >(new UserService().UpdatePassword, {
             onSuccess: () => {
                 queryClient.invalidateQueries('users')
                 setAlert({ message: 'updated password', color: 'success' })

@@ -5,8 +5,8 @@ import { toTitleCase } from '../../../utils/TitleCase'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
-import { GetReferRemarksHistory } from '../../../services/LeadsServices'
 import { GetRemarksDto } from '../../../dtos/crm-remarks.dto'
+import { FeatureService } from '../../../services/FeatureServices'
 
 type Props = {
     dialog: string | undefined,
@@ -16,8 +16,8 @@ type Props = {
 
 function ViewReferRemarksDialog({ id, dialog, setDialog }: Props) {
     const [remarks, setRemarks] = useState<GetRemarksDto[]>()
-    
-    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", id], async () => GetReferRemarksHistory({ id: id }))
+
+    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", id], async () => new FeatureService().GetReferRemarksHistory({ id: id }))
 
 
     let previous_date = new Date()

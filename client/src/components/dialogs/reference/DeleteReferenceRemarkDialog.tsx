@@ -7,8 +7,8 @@ import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
-import { DeleteReferenceRemark } from '../../../services/SalesServices';
 import { GetReferenceRemarksDto } from '../../../dtos/references-remark.dto';
+import { SalesService } from '../../../services/SalesServices';
 
 type Props = {
   dialog: string | undefined,
@@ -20,13 +20,13 @@ function DeleteReferenceRemarkDialog({ remark, dialog, setDialog }: Props) {
   const { setAlert } = useContext(AlertContext)
   const { mutate, isLoading, isSuccess, error, isError } = useMutation
     <AxiosResponse<any>, BackendError, string>
-    (DeleteReferenceRemark, {
-     
+    (new SalesService().DeleteReferenceRemark, {
+
       onSuccess: () => {
         queryClient.invalidateQueries('remarks')
         setAlert({ message: "success", color: 'success' })
-    },
-    onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+      },
+      onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
     })
 
   useEffect(() => {

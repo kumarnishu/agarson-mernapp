@@ -6,18 +6,17 @@ import {  useMutation } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-
-import { RemoveReferLead } from '../../../services/LeadsServices';
 import { GetLeadDto } from '../../../dtos/lead.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { FeatureService } from '../../../services/FeatureServices';
 
 
 function RemoveLeadReferForm({ lead ,setDialog}: { lead: GetLeadDto , setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
      const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<GetReferDto>, BackendError, { id: string, body: { remark: string } }>
-        (RemoveReferLead, {
+        (new FeatureService(). RemoveReferLead, {
            
             onSuccess: () => {
                 queryClient.refetchQueries('leads')

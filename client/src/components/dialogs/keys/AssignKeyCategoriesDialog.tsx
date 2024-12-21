@@ -2,17 +2,17 @@ import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Butt
 import { useContext, useEffect, useState } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
-import {  useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
 import { useFormik } from 'formik';
 import * as Yup from "yup"
-import { AssignKeyCategoryToUsers } from '../../../services/KeyServices';
 import { GetKeyCategoryDto } from '../../../dtos/key-category.dto';
-import { GetUsersForDropdown } from '../../../services/UserServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { UserService } from '../../../services/UserServices';
+import { AuthorizationService } from '../../../services/AuthorizationService';
 
 
 type Props = {
@@ -24,11 +24,11 @@ type Props = {
 function AssignKeyCategoriesDialog({ categories, flag, setDialog, dialog }: Props) {
     const { setAlert } = useContext(AlertContext)
     const [users, setUsers] = useState<DropDownDto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
 
 
 
-    const { mutate, isLoading, isSuccess} = useMutation
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 user_ids: string[],
@@ -36,8 +36,8 @@ function AssignKeyCategoriesDialog({ categories, flag, setDialog, dialog }: Prop
                 flag: number
             }
         }>
-        (AssignKeyCategoryToUsers, {
-        
+        (new AuthorizationService().AssignKeyCategoryToUsers, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('key_categories')
                 setAlert({ message: "success", color: 'success' })
@@ -145,7 +145,7 @@ function AssignKeyCategoriesDialog({ categories, flag, setDialog, dialog }: Prop
 
 
                 </Stack>
-               
+
             </DialogContent>
         </Dialog >
     )

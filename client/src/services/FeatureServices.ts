@@ -18,7 +18,7 @@ import { GetSpareDyeDto } from "../dtos/spare-dye.dto";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 export class FeatureService {
-  
+
   public async CreateOrEditProduction({ id, body }: {
     body: CreateOrEditProductionDto, id?: string
 
@@ -186,16 +186,9 @@ export class FeatureService {
   }
 
 
-  public async FindUnknownCrmSates() {
-    return await apiClient.post(`find/crm/states/unknown`)
-  }
 
   public async FindUnknownCrmStages() {
     return await apiClient.post(`find/crm/stages/unknown`)
-  }
-
-  public async FindUnknownCrmCities() {
-    return await apiClient.post(`find/crm/cities/unknown`)
   }
 
 
@@ -335,7 +328,7 @@ export class FeatureService {
     return await apiClient.put(`update/refers/bulk`, body)
   }
   //stages
- 
+
 
   public async ReferLead({ id, body }: { id: string, body: { party_id: string, remark: string, remind_date?: string } }) {
     return await apiClient.post(`refers/leads/${id}`, body)
@@ -344,24 +337,6 @@ export class FeatureService {
     return await apiClient.patch(`refers/leads/${id}`, body)
   }
 
-  public async AssignCRMStatesToUsers({ body }: {
-    body: {
-      user_ids: string[],
-      state_ids: string[],
-      flag: number
-    }
-  }) {
-    return await apiClient.patch(`crm/states/assign`, body)
-  }
-  public async AssignCRMCitiesToUsers({ body }: {
-    body: {
-      user_ids: string[],
-      city_ids: string[],
-      flag: number
-    }
-  }) {
-    return await apiClient.patch(`crm/cities/assign`, body)
-  }
 
   public async GetAssignedRefers({ start_date, end_date }: { start_date?: string, end_date?: string }) {
     return await apiClient.get(`assigned/refers/report/?start_date=${start_date}&end_date=${end_date}`)
@@ -372,12 +347,16 @@ export class FeatureService {
   }
 
 
-  
+
   public async GetPaymentsTopBarDetails() {
     return await apiClient.get(`payments/topbar-details`)
   }
 
- 
+  public async CreateOrEditPayment({ body, id }: { body: CreateOrEditPaymentDto, id?: string }) {
+    if (id)
+      return await apiClient.put(`payments/${id}`, body);
+    return await apiClient.post(`payments`, body);
+  };
 
 
   public async GetPaymentss({ limit, page, id, stage }: { limit: number | undefined, page: number | undefined, id?: string, stage: string }) {
@@ -430,7 +409,7 @@ export class FeatureService {
 
 
 
-  
+
 
   public async IssueExpenseItem({ body, id }: { body: IssueOrAddExpenseItemDto, id?: string }) {
     return await apiClient.patch(`issue-expense-items/${id}`, body);
@@ -449,13 +428,13 @@ export class FeatureService {
     return await apiClient.get(`expense-transactions/?start_date=${start_date}&end_date=${end_date}`)
   }
 
- 
+
 
   public async DownloadExcelTemplateForCreateChecklist() {
     return await apiClient.get("download/template/checklists");
   };
 
-  
+
 
   public async CreateOrEditDriverSystem({ id, body }: { id?: string, body: CreateOrEditDriverSystemDto }) {
     if (id)
@@ -475,12 +454,12 @@ export class FeatureService {
   }
 
 
-  
+
   public async GetChecklistTopBarDetails() {
     return await apiClient.get(`checklists/topbar-details`)
   }
-  
- 
+
+
 
 
   public async CreateOrEditCheckList({ body, id }: { body: FormData, id?: string }) {
@@ -553,5 +532,7 @@ export class FeatureService {
   }) {
     return await apiClient.post(`assign/checklists`, body)
   }
-
+  public async GetAllReferrals({ refer }: { refer: GetReferDto }) {
+    return await apiClient.get(`assigned/referrals/${refer._id}`)
+  }
 }

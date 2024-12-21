@@ -6,10 +6,10 @@ import { toTitleCase } from '../../../utils/TitleCase'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
-import { GetReferenceRemarksHistory } from '../../../services/SalesServices'
 import DeleteReferenceRemarkDialog from './DeleteReferenceRemarkDialog'
 import CreateOrEditReferenceRemarkDialog from './CreateOrEditReferenceRemarkDialog'
 import { GetReferenceRemarksDto } from '../../../dtos/references-remark.dto'
+import { SalesService } from '../../../services/SalesServices'
 
 type Props = {
     dialog: string | undefined,
@@ -21,7 +21,7 @@ function ViewReferenceRemarksDialog({  party,stage, dialog, setDialog }: Props) 
     const [dialog1, setdialog1] = useState<string | undefined>()
     const [remark, setRemark] = useState<GetReferenceRemarksDto>()
     const [remarks, setRemarks] = useState<GetReferenceRemarksDto[]>()
-    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks",  party], async () => GetReferenceRemarksHistory(party))
+    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks",  party], async () =>new SalesService(). GetReferenceRemarksHistory(party))
 
 
     const { user } = useContext(UserContext)

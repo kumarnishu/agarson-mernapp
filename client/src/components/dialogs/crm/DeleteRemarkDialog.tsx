@@ -9,6 +9,7 @@ import { Cancel } from '@mui/icons-material';
 import { GetRemarksDto } from '../../../dtos/crm-remarks.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
+import { FeatureService } from '../../../services/FeatureServices';
 
 
 type Props = {
@@ -21,7 +22,7 @@ function DeleteRemarkDialog({ remark, dialog, setDialog }: Props) {
   const { setAlert } = useContext(AlertContext)
   const { mutate, isLoading, isSuccess, error, isError } = useMutation
     <AxiosResponse<any>, BackendError, string>
-    (DeleteRemark, {
+    (new FeatureService(). DeleteRemark, {
 
       onSuccess: () => {
         queryClient.invalidateQueries('remarks')

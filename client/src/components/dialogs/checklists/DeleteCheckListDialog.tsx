@@ -5,11 +5,11 @@ import { Cancel } from '@mui/icons-material';
 import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { AxiosResponse } from 'axios';
-import { DeleteCheckList } from '../../../services/CheckListServices';
 import { queryClient } from '../../../main';
 import { GetChecklistDto } from '../../../dtos/checklist.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
+import { FeatureService } from '../../../services/FeatureServices';
 
 type Props = {
     dialog: string | undefined,
@@ -20,14 +20,14 @@ function DeleteCheckListDialog({ checklist, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (DeleteCheckList, {
-            
+        (new FeatureService().DeleteCheckList, {
+
             onSuccess: () => {
-                
+
                 queryClient.invalidateQueries('checklists')
                 setAlert({ message: "success", color: 'success' })
-              },
-              onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
     useEffect(() => {

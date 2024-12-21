@@ -6,10 +6,10 @@ import { BackendError } from '../../..';
 import { useMutation } from 'react-query';
 import { Cancel } from '@mui/icons-material';
 
-import { ToogleDyeLocation } from '../../../services/ProductionServices';
 import { GetDyeLocationDto } from '../../../dtos/dye-location.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
+import { DropdownService } from '../../../services/DropDownServices';
 
 
 type Props = {
@@ -20,10 +20,10 @@ type Props = {
 
 function ToogleDyeLocationDialog({ location, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
-      const { mutate, isLoading, isSuccess, error, isError } = useMutation
+    const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (ToogleDyeLocation, {
-           
+        (new DropdownService().ToogleDyeLocation, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('dyelocations')
                 setAlert({ message: "success", color: 'success' })

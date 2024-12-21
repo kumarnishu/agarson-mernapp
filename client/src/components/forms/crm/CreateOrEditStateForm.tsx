@@ -3,13 +3,13 @@ import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { CreateOrEditState } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
 import * as yup from 'yup';
 import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { AuthorizationService } from '../../../services/AuthorizationService';
 
 function CreateOrEditStateForm({ state, setDialog }: { state?: GetCrmStateDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
@@ -22,7 +22,7 @@ function CreateOrEditStateForm({ state, setDialog }: { state?: GetCrmStateDto, s
             },
             id?: string
         }>
-        (CreateOrEditState, {
+        (new AuthorizationService().CreateOrEditState, {
             onSuccess: () => {
                 queryClient.invalidateQueries('crm_states')
                 setAlert({ message: state ? "updated" : "created", color: 'success' })

@@ -2,12 +2,10 @@ import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useContext, useEffect, useState } from 'react';
-import {  useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-
-import { GetDyeById, GetDyes, GetMachines, UpdateShoeWeight2 } from '../../../services/ProductionServices';
 import { months } from '../../../utils/months';
 import UploadFileButton from '../../buttons/UploadFileButton';
 import { GetUserDto } from '../../../dtos/user.dto';
@@ -16,16 +14,17 @@ import { GetDyeDto } from '../../../dtos/dye.dto';
 import { GetMachineDto } from '../../../dtos/machine.dto';
 import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-
+import { DropdownService } from '../../../services/DropDownServices';
+import { FeatureService } from '../../../services/FeatureServices';
 
 
 function UpdateShoeWeightForm2({ shoe_weight, setDialog }: { shoe_weight: GetShoeWeightDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
-    const { data: dyes } = useQuery<AxiosResponse<GetDyeDto[]>, BackendError>("dyes", async () => GetDyes())
+    const { data: dyes } = useQuery<AxiosResponse<GetDyeDto[]>, BackendError>("dyes", async () => new DropdownService().GetDyes())
     const [dyeid, setDyeid] = useState<string>('');
     const [articles, setArticles] = useState<DropDownDto[]>([])
-    const { data: dyedata, isSuccess: isDyeSuccess, refetch: refetchDye } = useQuery<AxiosResponse<GetDyeDto>, BackendError>(["dye", dyeid], async () => GetDyeById(dyeid), { enabled: false })
-    const { data: machines } = useQuery<AxiosResponse<GetMachineDto[]>, BackendError>("machines", async () => GetMachines())
+    const { data: dyedata, isSuccess: isDyeSuccess, refetch: refetchDye } = useQuery<AxiosResponse<GetDyeDto>, BackendError>(["dye", dyeid], async () => new DropdownService().GetDyeById(dyeid), { enabled: false })
+    const { data: machines } = useQuery<AxiosResponse<GetMachineDto[]>, BackendError>("machines", async () => new DropdownService().GetMachines())
     const [file, setFile] = useState<File>()
 
     const { mutate, isLoading, isSuccess } = useMutation
@@ -33,7 +32,7 @@ function UpdateShoeWeightForm2({ shoe_weight, setDialog }: { shoe_weight: GetSho
             id: string,
             body: FormData
         }>
-        (UpdateShoeWeight2, {
+        (new FeatureService().UpdateShoeWeight2, {
             onSuccess: () => {
                 queryClient.refetchQueries('shoe_weights')
                 setAlert({ message: "updated shoe weight 2", color: 'success' })
@@ -295,7 +294,7 @@ function UpdateShoeWeightForm2({ shoe_weight, setDialog }: { shoe_weight: GetSho
                         }
                     </TextField>
                     <UploadFileButton name="media" required={true} camera={true} isLoading={isLoading} label="Upload Shoe Weight Photo" file={file} setFile={setFile} disabled={isLoading} />
-                  
+
                     <Button size="large" variant="contained" color="primary" type="submit"
                         disabled={Boolean(isLoading)}
                         fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Update"}

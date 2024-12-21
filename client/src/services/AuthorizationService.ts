@@ -1,4 +1,3 @@
-import { GetReferDto } from "../dtos/refer.dto"
 import { apiClient } from "./utils/AxiosInterceptor"
 
 export class AuthorizationService {
@@ -100,9 +99,7 @@ export class AuthorizationService {
             return await apiClient.get(`crm/cities/?state=${state}`)
         return await apiClient.get(`crm/cities`)
     }
-    public async GetAllReferrals({ refer }: { refer: GetReferDto }) {
-        return await apiClient.get(`assigned/referrals/${refer._id}`)
-    }
+
     public async CreateOrEditCity({ body, id }: {
         body: { state: string, city: string }
         id?: string
@@ -115,6 +112,34 @@ export class AuthorizationService {
     }
     public async BulkCityUpdateFromExcel({ state, body }: { state: string, body: FormData }) {
         return await apiClient.put(`crm/cities/excel/createorupdate/${state}`, body)
+    }
+
+    public async AssignCRMStatesToUsers({ body }: {
+        body: {
+            user_ids: string[],
+            state_ids: string[],
+            flag: number
+        }
+    }) {
+        return await apiClient.patch(`crm/states/assign`, body)
+    }
+    public async AssignCRMCitiesToUsers({ body }: {
+        body: {
+            user_ids: string[],
+            city_ids: string[],
+            flag: number
+        }
+    }) {
+        return await apiClient.patch(`crm/cities/assign`, body)
+    }
+    public async FindUnknownCrmSates() {
+        return await apiClient.post(`find/crm/states/unknown`)
+    }
+
+   
+
+    public async FindUnknownCrmCities() {
+        return await apiClient.post(`find/crm/cities/unknown`)
     }
 
 }

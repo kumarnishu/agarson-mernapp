@@ -7,10 +7,9 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
 import * as yup from 'yup';
-import { CreateOrEditMachineCategory } from '../../../services/ProductionServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-
+import { DropdownService } from '../../../services/DropDownServices';
 function CreateOrEditMachinecategoryForm({ machine_category, setDialog }: { machine_category?: DropDownDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess } = useMutation
@@ -20,7 +19,7 @@ function CreateOrEditMachinecategoryForm({ machine_category, setDialog }: { mach
             },
             id?: string
         }>
-        (CreateOrEditMachineCategory, {
+        (new DropdownService().CreateOrEditMachineCategory, {
 
             onSuccess: () => {
                 queryClient.refetchQueries('machine_categories')

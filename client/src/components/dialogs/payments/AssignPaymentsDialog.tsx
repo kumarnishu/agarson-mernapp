@@ -8,11 +8,11 @@ import { queryClient } from '../../../main';
 
 import { useFormik } from 'formik';
 import * as Yup from "yup"
-import { AssignPaymentssToUsers } from '../../../services/PaymentsService';
 import { GetPaymentDto } from '../../../dtos/payment.dto';
-import { GetUsersForDropdown } from '../../../services/UserServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { FeatureService } from '../../../services/FeatureServices';
+import { UserService } from '../../../services/UserServices';
 
 type Props = {
     dialog: string | undefined,
@@ -22,7 +22,7 @@ type Props = {
 
 function AssignPaymentsDialog({ payments, flag, dialog, setDialog }: Props) {
     const [users, setUsers] = useState<DropDownDto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, permission: 'payments_view', show_assigned_only: false }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'payments_view', show_assigned_only: false }))
     const { setAlert } = useContext(AlertContext)
 
 
@@ -34,7 +34,7 @@ function AssignPaymentsDialog({ payments, flag, dialog, setDialog }: Props) {
                 flag: number
             }
         }>
-        (AssignPaymentssToUsers, {
+        (new FeatureService().AssignPaymentssToUsers, {
             onSuccess: () => {
                 queryClient.invalidateQueries('payments')
                 setAlert({ message: "success", color: 'success' })

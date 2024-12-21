@@ -4,7 +4,6 @@ import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import {  useMutation, useQuery } from 'react-query';
 import { BackendError } from '../../..';
-import { AssignUsers, GetUsersForDropdown } from '../../../services/UserServices';
 import { queryClient } from '../../../main';
 
 import { useFormik } from 'formik';
@@ -12,6 +11,7 @@ import * as Yup from "yup"
 import { GetUserDto } from '../../../dtos/user.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { UserService } from '../../../services/UserServices';
 
 
 
@@ -32,7 +32,7 @@ function AssignUsersDialog({ user, setUser, dialog, setDialog }: Props) {
                 ids: string[]
             }
         }>
-        (AssignUsers, {
+        (new UserService().AssignUsers, {
               onSuccess: () => {
                 queryClient.invalidateQueries('users')
                 setAlert({ message: "success", color: 'success' })

@@ -6,10 +6,9 @@ import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-
-import { CreateOrEditArticle } from '../../../services/ProductionServices';
 import { GetArticleDto, CreateOrEditArticleDto } from '../../../dtos/article.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { DropdownService } from '../../../services/DropDownServices';
 
 
 
@@ -20,7 +19,7 @@ function CreateOrEditArticleForm({ article, setDialog }: { article?: GetArticleD
         <AxiosResponse<GetArticleDto>, BackendError, {
             body: CreateOrEditArticleDto, id?: string
         }>
-        (CreateOrEditArticle, {
+        (new DropdownService().CreateOrEditArticle, {
 
             onSuccess: () => {
                 queryClient.refetchQueries('articles')

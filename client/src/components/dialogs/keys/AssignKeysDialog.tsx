@@ -2,17 +2,17 @@ import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Stack, Butt
 import { useContext, useEffect, useState } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
-import {  useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
 import { useFormik } from 'formik';
 import * as Yup from "yup"
-import { AssignKeysToUsers } from '../../../services/KeyServices';
 import { GetKeyDto } from '../../../dtos/keys.dto';
-import { GetUsersForDropdown } from '../../../services/UserServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { UserService } from '../../../services/UserServices';
+import { AuthorizationService } from '../../../services/AuthorizationService';
 
 
 
@@ -24,10 +24,10 @@ type Props = {
 
 function AssignKeysDialog({ keys, flag, dialog, setDialog }: Props) {
     const [users, setUsers] = useState<DropDownDto[]>([])
-    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
+    const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
     const { setAlert } = useContext(AlertContext)
 
-    const { mutate, isLoading, isSuccess} = useMutation
+    const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, {
             body: {
                 user_ids: string[],
@@ -35,8 +35,8 @@ function AssignKeysDialog({ keys, flag, dialog, setDialog }: Props) {
                 flag: number
             }
         }>
-        (AssignKeysToUsers, {
-              onSuccess: () => {
+        (new AuthorizationService().AssignKeysToUsers, {
+            onSuccess: () => {
                 queryClient.invalidateQueries('keys')
                 setAlert({ message: "success", color: 'success' })
             },
@@ -141,7 +141,7 @@ function AssignKeysDialog({ keys, flag, dialog, setDialog }: Props) {
 
 
                 </Stack>
-              
+
             </DialogContent>
         </Dialog >
     )

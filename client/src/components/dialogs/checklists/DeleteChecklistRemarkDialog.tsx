@@ -6,10 +6,10 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 
-import { DeleteCheckListRemark } from '../../../services/CheckListServices';
 import { GetChecklistRemarksDto } from '../../../dtos/checklist-remark.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
+import { FeatureService } from '../../../services/FeatureServices';
 
 type Props = {
   dialog: string | undefined,
@@ -21,8 +21,8 @@ function DeleteChecklistRemarkDialog({ remark, dialog, setDialog }: Props) {
   const { setAlert } = useContext(AlertContext)
   const { mutate, isLoading, isSuccess, error, isError } = useMutation
     <AxiosResponse<any>, BackendError, string>
-    (DeleteCheckListRemark, {
-     
+    (new FeatureService().DeleteCheckListRemark, {
+
       onSuccess: () => {
         queryClient.invalidateQueries('remarks')
         queryClient.invalidateQueries('checklists')

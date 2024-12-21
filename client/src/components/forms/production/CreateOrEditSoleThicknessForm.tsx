@@ -2,31 +2,31 @@ import { Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
 import { useContext, useEffect, useState } from 'react';
-import {  useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-
-import { CreateOrEditSoleThickness, GetDyeById, GetDyes } from '../../../services/ProductionServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetDyeDto } from '../../../dtos/dye.dto';
 import { GetSoleThicknessDto, CreateOrEditSoleThicknessDto } from '../../../dtos/sole-thickness.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { DropdownService } from '../../../services/DropDownServices';
+import { FeatureService } from '../../../services/FeatureServices';
 
 function CreateOrEditSoleThicknessForm({ thickness, setDialog }: { thickness?: GetSoleThicknessDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
-    const { data: dyes } = useQuery<AxiosResponse<GetDyeDto[]>, BackendError>("dyes", async () => GetDyes())
+    const { data: dyes } = useQuery<AxiosResponse<GetDyeDto[]>, BackendError>("dyes", async () => new DropdownService().GetDyes())
     const [dyeid, setDyeid] = useState<string>('');
     const [articles, setArticles] = useState<DropDownDto[]>([])
-    const { data: dyedata, isSuccess: isDyeSuccess, refetch: refetchDye } = useQuery<AxiosResponse<GetDyeDto>, BackendError>(["dye", dyeid], async () => GetDyeById(dyeid), { enabled: false })
+    const { data: dyedata, isSuccess: isDyeSuccess, refetch: refetchDye } = useQuery<AxiosResponse<GetDyeDto>, BackendError>(["dye", dyeid], async () => new DropdownService().GetDyeById(dyeid), { enabled: false })
 
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetSoleThicknessDto>, BackendError, {
             id?: string,
             body: CreateOrEditSoleThicknessDto
         }>
-        (CreateOrEditSoleThickness, {
-           
+        (new FeatureService().CreateOrEditSoleThickness, {
+
             onSuccess: () => {
                 queryClient.refetchQueries('thickness')
                 setAlert({ message: thickness ? "updated" : "created", color: 'success' })

@@ -6,11 +6,11 @@ import {  useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import { GetRefers, ReferLead } from '../../../services/LeadsServices';
 
 import { GetLeadDto } from '../../../dtos/lead.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { FeatureService } from '../../../services/FeatureServices';
 
 
 
@@ -19,7 +19,7 @@ function ReferLeadForm({ lead,setDialog }: { lead: GetLeadDto , setDialog: React
      const [display, setDisplay] = useState(false)
     const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<GetReferDto>, BackendError, { id: string, body: { party_id: string, remark: string, remind_date?: string } }>
-        (ReferLead, {
+        (new FeatureService().ReferLead, {
            
             onSuccess: () => {
                 queryClient.invalidateQueries('refers')
@@ -28,7 +28,7 @@ function ReferLeadForm({ lead,setDialog }: { lead: GetLeadDto , setDialog: React
             },
             onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
-    const { data, isSuccess: isReferSuccess } = useQuery<AxiosResponse<GetReferDto[]>, BackendError>("refers", GetRefers)
+    const { data, isSuccess: isReferSuccess } = useQuery<AxiosResponse<GetReferDto[]>, BackendError>("refers",new FeatureService(). GetRefers)
 
     const [refers, setRefers] = useState<GetReferDto[]>()
     const formik = useFormik({

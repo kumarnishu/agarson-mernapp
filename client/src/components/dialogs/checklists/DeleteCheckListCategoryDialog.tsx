@@ -5,11 +5,11 @@ import { Cancel } from '@mui/icons-material';
 import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { AxiosResponse } from 'axios';
-import { DeleteChecklistCategory } from '../../../services/CheckListServices';
 import { queryClient } from '../../../main';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
+import { DropdownService } from '../../../services/DropDownServices';
 
 
 type Props = {
@@ -21,13 +21,13 @@ function DeleteCheckListCategoryDialog({ category, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (DeleteChecklistCategory, {
-           
+        (new DropdownService().DeleteChecklistCategory, {
+
             onSuccess: () => {
                 queryClient.invalidateQueries('check_categories')
                 setAlert({ message: "success", color: 'success' })
-              },
-              onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
+            },
+            onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
 
     useEffect(() => {

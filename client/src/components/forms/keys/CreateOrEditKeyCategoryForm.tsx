@@ -7,9 +7,9 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
 import * as yup from 'yup';
-import { CreateOrEditKeyCategory } from '../../../services/KeyServices';
 import { GetKeyCategoryDto } from '../../../dtos/key-category.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { AuthorizationService } from '../../../services/AuthorizationService';
 
 function CreateOrEditKeyCategoryForm({ category, setDialog }: { category?: GetKeyCategoryDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
@@ -22,7 +22,7 @@ function CreateOrEditKeyCategoryForm({ category, setDialog }: { category?: GetKe
             },
             id?: string
         }>
-        (CreateOrEditKeyCategory, {
+        (new AuthorizationService().CreateOrEditKeyCategory, {
 
             onSuccess: () => {
                 queryClient.refetchQueries('key_categories')

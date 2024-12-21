@@ -7,11 +7,11 @@ import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
-import { CreateOrEditChecklistRemark } from '../../../services/CheckListServices';
 import { GetChecklistBoxDto } from '../../../dtos/checklist-box.dto';
 import { GetChecklistRemarksDto, CreateOrEditChecklistRemarkDto } from '../../../dtos/checklist-remark.dto';
 import { GetChecklistDto } from '../../../dtos/checklist.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { FeatureService } from '../../../services/FeatureServices';
 
 
 function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box, setDialog }: { checklist: GetChecklistDto, checklist_box: GetChecklistBoxDto, remark?: GetChecklistRemarksDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
@@ -21,7 +21,7 @@ function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box, set
             body: CreateOrEditChecklistRemarkDto,
             remark?: GetChecklistRemarksDto
         }>
-        (CreateOrEditChecklistRemark, {
+        (new FeatureService().CreateOrEditChecklistRemark, {
 
             onSuccess: () => {
                 queryClient.invalidateQueries('remarks')
