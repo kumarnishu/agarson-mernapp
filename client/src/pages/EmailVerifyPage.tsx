@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios'
 import { useEffect, useMemo } from 'react'
 import { useMutation } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
-import { VerifyEmail } from '../services/UserServices'
+import { UserService } from '../services/UserServices'
 import { BackendError } from '..'
 
 
@@ -12,7 +12,7 @@ export default function EmailVerifyPage() {
   const { token } = useParams()
   const { mutate, isSuccess, isLoading } = useMutation
     <AxiosResponse<string>, BackendError, string>
-    (VerifyEmail)
+    (new UserService().VerifyEmail)
   const tokenmemo = useMemo(() => token, [token])
   useEffect(() => {
     if (tokenmemo)

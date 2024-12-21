@@ -9,12 +9,11 @@ import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 
 import { UserContext } from '../../../contexts/userContext';
-import { Login } from '../../../services/UserServices';
 import { BackendError } from '../../..';
-
 import { GetUserDto } from '../../../dtos/user.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { queryClient } from '../../../main';
+import { UserService } from '../../../services/UserServices';
 
 function LoginForm({ setDialog }: { setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
   const { setAlert } = useContext(AlertContext)
@@ -23,7 +22,7 @@ function LoginForm({ setDialog }: { setDialog: React.Dispatch<React.SetStateActi
     <AxiosResponse<{ user: GetUserDto, token: string }>,
       BackendError,
       { username: string, password: string, multi_login_token?: string }
-    >(Login, {
+    >(new UserService().Login, {
       onSuccess: () => {
         queryClient.invalidateQueries('users')
         setAlert({ message: 'logged in.', color: 'success' })
