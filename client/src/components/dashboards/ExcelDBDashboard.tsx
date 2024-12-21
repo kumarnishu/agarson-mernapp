@@ -19,13 +19,15 @@ function ExcelDBDashboard() {
 
     useEffect(() => {
         let tmpfeatures: { feature: string, is_visible: boolean, display_name: string, url: string }[] = []
-
         if (user && categoryData && categoryData.data) {
             categoryData.data.map((dt) => {
                 tmpfeatures.push({ feature: dt.label, display_name: dt.label && dt.label, is_visible: true, url: `ExcelDbReports/${dt.id}` })
             })
         }
+        console.log(tmpfeatures)
+        tmpfeatures.sort((a, b) => (a.feature || "").localeCompare(b.feature || "")); // Fallback to empty string if undefined
 
+        console.log(tmpfeatures)
         setFeatures(tmpfeatures)
 
     }, [user, categoryData])

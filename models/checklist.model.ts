@@ -3,16 +3,21 @@ import { IChecklistCategory } from "./checklist-category.model";
 import { Asset, IUser } from "./user.model";
 import { IChecklistBox } from "./checklist-box.model";
 
+export type IChecklistTitle = {
+    checklist: IChecklist,
+    condition: string // 'check-blank'||'check_yesno'||'check_expected_number'
+}
 
 export type IChecklist = {
     _id: string,
     active: boolean
+    titles: IChecklistTitle[]
     work_title: string,
     work_description: string,
     photo: Asset,
-    serial_no:string,
+    serial_no: string,
     assigned_users: IUser[],
-    last_10_boxes:IChecklistBox[]
+    last_10_boxes: IChecklistBox[]
     lastcheckedbox: IChecklistBox,
     checklist_boxes: IChecklistBox[]
     link: string,
@@ -31,10 +36,10 @@ const ChecklistSchema = new mongoose.Schema<IChecklist, mongoose.Model<IChecklis
         type: Boolean,
         default: true,
     },
-    serial_no:{
+    serial_no: {
         type: String,
         lowercase: true,
-        index: true  
+        index: true
     },
     work_title: {
         type: String,
@@ -42,7 +47,7 @@ const ChecklistSchema = new mongoose.Schema<IChecklist, mongoose.Model<IChecklis
         required: true,
         index: true
     },
-    last_10_boxes:[
+    last_10_boxes: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'ChecklistBox'
