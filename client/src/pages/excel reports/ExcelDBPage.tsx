@@ -16,6 +16,8 @@ import { DropDownDto } from '../../dtos/dropdown.dto'
 import { IColumnRowData } from '../../dtos/table.dto'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
+import { AuthorizationService } from '../../services/AuthorizationService'
+import { ExcelReportsService } from '../../services/ExcelReportsServices'
 
 export default function ExcelDBPage() {
   const [hidden, setHidden] = useState(false)
@@ -28,9 +30,9 @@ export default function ExcelDBPage() {
   const { id } = useParams()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-  const { data: categorydata, refetch: RefetchCategory, isSuccess: isSuccessCategorydata } = useQuery<AxiosResponse<DropDownDto>, BackendError>(["key_categories"], async () => GetKeyCategoryById(id || ""), { enabled: false })
+  const { data: categorydata, refetch: RefetchCategory, isSuccess: isSuccessCategorydata } = useQuery<AxiosResponse<DropDownDto>, BackendError>(["key_categories"], async () => new AuthorizationService().GetKeyCategoryById(id || ""), { enabled: false })
 
-  const { data, isLoading, isSuccess, refetch, isRefetching } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb", hidden], async () => GetExcelDbReport(id || "", hidden), { enabled: false })
+  const { data, isLoading, isSuccess, refetch, isRefetching } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb", hidden], async () => new ExcelReportsService().GetExcelDbReport(id || "", hidden), { enabled: false })
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
 

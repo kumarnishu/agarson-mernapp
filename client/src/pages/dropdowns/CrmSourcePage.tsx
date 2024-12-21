@@ -14,6 +14,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import CreateOrEditLeadSourceDialog from '../../components/dialogs/crm/CreateOrEditLeadSourceDialog'
 import { DropDownDto } from '../../dtos/dropdown.dto'
+import { DropdownService } from '../../services/DropDownServices'
 
 
 
@@ -22,7 +23,7 @@ export default function CrmLeadSourcesPage() {
   const [sources, setSources] = useState<DropDownDto[]>([])
 
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["sources"], async () => GetAllSources())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["sources"], async () =>new DropdownService(). GetAllSources())
 
 
   const [dialog,setDialog]=useState<string|undefined>()

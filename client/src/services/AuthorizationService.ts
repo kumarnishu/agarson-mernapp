@@ -1,7 +1,7 @@
 import { GetReferDto } from "../dtos/refer.dto"
 import { apiClient } from "./utils/AxiosInterceptor"
 
-export class ExcelReportsService {
+export class AuthorizationService {
     public async GetAllKeys({ category }: { category: string }) {
         return await apiClient.get(`keys/?category=${category}`)
     }

@@ -5,7 +5,6 @@ import { Cancel } from '@mui/icons-material';
 import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { AxiosResponse } from 'axios';
-import { BulkDeleteChecklists } from '../../../services/CheckListServices';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';

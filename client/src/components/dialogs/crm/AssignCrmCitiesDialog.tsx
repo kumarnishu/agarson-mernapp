@@ -8,9 +8,7 @@ import { queryClient } from '../../../main';
 
 import { useFormik } from 'formik';
 import * as Yup from "yup"
-import { AssignCRMCitiesToUsers } from '../../../services/LeadsServices';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
-import { GetUsersForDropdown } from '../../../services/UserServices';
 import { AlertContext } from '../../../contexts/alertContext';
 
 type Props = {

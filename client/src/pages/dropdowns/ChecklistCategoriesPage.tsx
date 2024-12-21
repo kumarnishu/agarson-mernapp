@@ -13,6 +13,7 @@ import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
 import CreateOrEditChecklistCategoryDialog from '../../components/dialogs/checklists/CreateOrEditChecklistCategoryDialog'
 import { DropDownDto } from '../../dtos/dropdown.dto'
+import { DropdownService } from '../../services/DropDownServices'
 
 
 
@@ -20,7 +21,7 @@ export default function ChecklistCategoriesPage() {
   const [category, setChecklistCategory] = useState<DropDownDto>()
   const [categories, setChecklistCategorys] = useState<DropDownDto[]>([])
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["check_categories"], async () => GetAllCheckCategories())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["check_categories"], async () => new DropdownService().GetAllCheckCategories())
 
 
   const [dialog,setDialog]=useState<string|undefined>()

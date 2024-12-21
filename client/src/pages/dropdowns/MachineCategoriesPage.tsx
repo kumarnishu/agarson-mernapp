@@ -14,6 +14,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import DeleteProductionItemDialog from '../../components/dialogs/production/DeleteProductionItemDialog'
 import CreateOrEditMachineCategoryDialog from '../../components/dialogs/production/CreateOrEditCategoryDialog'
+import { DropdownService } from '../../services/DropDownServices'
 
 
 
@@ -22,7 +23,7 @@ export default function MachineCategoryPage() {
     const [categories, setCategories] = useState<DropDownDto[]>([])
 
     const { user: LoggedInUser } = useContext(UserContext)
-    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["machine_categories"], async () => GetMachineCategories())
+    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["machine_categories"], async () => new DropdownService().GetMachineCategories())
 
 
     const isFirstRender = useRef(true);

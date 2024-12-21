@@ -13,6 +13,7 @@ import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import CreateOrEditPaymentCategoryDialog from '../../components/dialogs/payments/CreateOrEditPaymentCategoryDialog'
+import { DropdownService } from '../../services/DropDownServices'
 
 
 
@@ -20,7 +21,7 @@ export default function PaymentCategoriesPage() {
   const [category, setPaymentCategory] = useState<DropDownDto>()
   const [categories, setPaymentCategorys] = useState<DropDownDto[]>([])
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["payment_categories"], async () => GetAllPaymentCategories())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["payment_categories"], async () => new DropdownService().GetAllPaymentCategories())
 
 
   const isFirstRender = useRef(true);

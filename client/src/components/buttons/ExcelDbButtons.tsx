@@ -5,9 +5,9 @@ import { useContext, useEffect, useState } from "react"
 import { Button, CircularProgress, Stack, Typography } from "@mui/material"
 import { Upload } from "@mui/icons-material"
 import styled from "styled-components"
-import { CreateExcelDBFromExcel } from "../../services/ExcelReportsServices"
 import ExportToExcel from "../../utils/ExportToExcel"
 import { AlertContext } from "../../contexts/alertContext"
+import { ExcelReportsService } from "../../services/ExcelReportsServices"
 
 
 const FileInput = styled.input`
@@ -19,7 +19,7 @@ color:blue;
 export function ExcelDbButtons() {
     const { data, mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<any[]>, BackendError, FormData>
-        (CreateExcelDBFromExcel)
+        (new ExcelReportsService().CreateExcelDBFromExcel)
     const [file, setFile] = useState<File | null>(null)
     const { setAlert } = useContext(AlertContext)
 

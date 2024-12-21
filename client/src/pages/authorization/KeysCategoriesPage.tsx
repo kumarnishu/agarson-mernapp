@@ -14,6 +14,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import CreateOrEditKeyCategoryDialog from '../../components/dialogs/keys/CreateOrEditKeyCategoryDialog'
 import AssignKeyCategoriesDialog from '../../components/dialogs/keys/AssignKeyCategoriesDialog'
 import { GetKeyCategoryDto } from '../../dtos/key-category.dto'
+import { AuthorizationService } from '../../services/AuthorizationService'
 
 
 export default function KeysCategoriesPage() {
@@ -21,7 +22,7 @@ export default function KeysCategoriesPage() {
   const [category, setKeyCategory] = useState<GetKeyCategoryDto>()
   const { user: LoggedInUser } = useContext(UserContext)
   const [flag, setFlag] = useState(1);
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetKeyCategoryDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategories())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetKeyCategoryDto[]>, BackendError>(["key_categories"], async () =>  new AuthorizationService().GetAllKeyCategories())
 
 
   const [dialog, setDialog] = useState<string | undefined>()

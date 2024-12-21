@@ -14,6 +14,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import CreateOrEditDyeLocationDialog from '../../components/dialogs/production/CreateOrEditDyeLocationDialog'
 import ToogleDyeLocationDialog from '../../components/dialogs/production/ToogleDyeLocationDialog'
 import { GetDyeLocationDto } from '../../dtos/dye-location.dto'
+import { DropdownService } from '../../services/DropDownServices'
 
 
 
@@ -22,7 +23,7 @@ export default function DyeLocationPage() {
   const [dyelocations, setDyeLocations] = useState<GetDyeLocationDto[]>([])
   const [hidden, setHidden] = useState(false)
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetDyeLocationDto[]>, BackendError>(["dyelocations", hidden], async () => GetAllDyeLocations(String(hidden)))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetDyeLocationDto[]>, BackendError>(["dyelocations", hidden], async () => new DropdownService().GetAllDyeLocations(String(hidden)))
 
 
   const [dialog,setDialog]=useState<string|undefined>()

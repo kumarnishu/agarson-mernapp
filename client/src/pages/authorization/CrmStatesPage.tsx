@@ -16,6 +16,7 @@ import FindUknownCrmStatesDialog from '../../components/dialogs/crm/FindUknownCr
 import AssignCrmStatesDialog from '../../components/dialogs/crm/AssignCrmStatesDialog'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { GetCrmStateDto } from '../../dtos/crm-state.dto'
+import { AuthorizationService } from '../../services/AuthorizationService'
 
 
 export default function CrmStatesPage() {
@@ -23,7 +24,7 @@ export default function CrmStatesPage() {
   const [states, setStates] = useState<GetCrmStateDto[]>([])
   const [flag, setFlag] = useState(1);
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>(["crm_states"], async () => GetAllStates())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>(["crm_states"], async () => new AuthorizationService().GetAllStates())
 
 
   const [dialog,setDialog]=useState<string|undefined>()

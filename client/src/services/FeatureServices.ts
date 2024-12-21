@@ -18,130 +18,7 @@ import { GetSpareDyeDto } from "../dtos/spare-dye.dto";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 export class FeatureService {
-  public async CreateMachine(body: { name: string, display_name: string, serial_no: number, category: string }) {
-    return await apiClient.post(`machines`, body);
-  };
-
-
-  public async CreateOrEditMachine({ id, body }: { id?: string, body: CreateOrEditMachineDto }) {
-    if (id)
-      return await apiClient.put(`machines/${id}`, body);
-    return await apiClient.post(`machines`, body);
-  };
-
-  public async ToogleMachine(id: string) {
-
-    return await apiClient.patch(`machines/toogle/${id}`);
-  };
-
-  public async GetMachines(hidden?: string) {
-    if (hidden) {
-      return await apiClient.get(`machines?hidden=${hidden}`);
-    }
-    return await apiClient.get(`machines`);
-  };
-  public async GetMachinesForDropdown(hidden?: string) {
-    if (hidden) {
-      return await apiClient.get(`dropdown/machines?hidden=${hidden}`);
-    }
-    return await apiClient.get(`dropdown/machines`);
-  };
-
-  public async BulkUploadMachines(body: FormData) {
-    return await apiClient.put(`machines/upload/bulk`, body);
-  }
-  public async GetMachineCategories() {
-    return await apiClient.get(`machine/categories`)
-  }
-  public async CreateOrEditMachineCategory({ body, id }: {
-    body: { key: string }
-    id?: string
-  }) {
-    if (id) {
-      return await apiClient.put(`machine/categories/${id}`, body)
-    }
-    return await apiClient.post(`machine/categories`, body)
-  }
-
-
-
-  public async CreateOrEditDyeLocation({ body, id }: {
-    body: {
-      name: string,
-      display_name: string
-    }
-    id?: string
-  }) {
-    if (id) {
-      return await apiClient.put(`dye/locations/${id}`, body)
-    }
-    return await apiClient.post(`dye/locations`, body)
-  }
-  public async ToogleDyeLocation(id: string) {
-    return await apiClient.patch(`dye/locations/${id}`);
-  }
-
-  public async GetAllDyeLocations(hidden?: string) {
-    return await apiClient.get(`dye/locations/?hidden=${hidden}`)
-  }
-  public async GetAllDyeLocationsForDropdown(hidden?: string) {
-    return await apiClient.get(`dropdown/dye/locations/?hidden=${hidden}`)
-  }
-  public async BulkUploadDyes(body: FormData) {
-    return await apiClient.put(`dyes/upload/bulk`, body);
-  }
-  public async CreateOrEditDye({ body, id }: { body: CreateOrEditDyeDTo, id?: string, }) {
-    if (id)
-      return await apiClient.put(`dyes/${id}`, body);
-    return await apiClient.post(`dyes`, body);
-  };
-
-  public async GetDyeById(id: string) {
-    return await apiClient.get(`dyes/${id}`);
-  };
-  public async ToogleDye(id: string) {
-    return await apiClient.patch(`dyes/toogle/${id}`);
-  };
-
-  public async GetDyes(hidden?: string) {
-    if (hidden)
-      return await apiClient.get(`dyes?hidden=${hidden}`);
-    else
-      return await apiClient.get(`dyes`);
-  };
-  public async GetDyesForDropdown(hidden?: string) {
-    if (hidden)
-      return await apiClient.get(`dropdown/dyes?hidden=${hidden}`);
-    else
-      return await apiClient.get(`dropdown/dyes`);
-  };
-  public async CreateOrEditArticle({ body, id }: { body: CreateOrEditArticleDto, id?: string }) {
-    if (id)
-      return await apiClient.put(`articles/${id}`, body);
-    return await apiClient.post(`articles`, body);
-  };
-
-  public async ToogleArticle(id: string) {
-    return await apiClient.patch(`articles/toogle/${id}`);
-  };
-
-  public async GetArticles(hidden?: string) {
-    if (hidden)
-      return await apiClient.get(`articles?hidden=${hidden}`);
-    else
-      return await apiClient.get(`articles`);
-  };
-  public async GetArticlesForDropdown(hidden?: string) {
-    if (hidden)
-      return await apiClient.get(`dropdown/articles?hidden=${hidden}`);
-    else
-      return await apiClient.get(`dropdown/articles`);
-  };
-
-  public async BulkUploadArticles(body: FormData) {
-    return await apiClient.put(`articles/upload/bulk`, body);
-  }
-
+  
   public async CreateOrEditProduction({ id, body }: {
     body: CreateOrEditProductionDto, id?: string
 
@@ -495,10 +372,7 @@ export class FeatureService {
   }
 
 
-  public async GetAllPaymentCategories() {
-    return await apiClient.get(`payments/categories`)
-  }
-
+  
   public async GetPaymentsTopBarDetails() {
     return await apiClient.get(`payments/topbar-details`)
   }
@@ -601,27 +475,12 @@ export class FeatureService {
   }
 
 
-  public async GetAllCheckCategories() {
-    return await apiClient.get(`checklists/categories`)
-  }
-
+  
   public async GetChecklistTopBarDetails() {
     return await apiClient.get(`checklists/topbar-details`)
   }
-
-  public async CreateOrEditCheckCategory({ body, id }: {
-    body: { key: string }
-    id?: string
-  }) {
-    if (id) {
-      return await apiClient.put(`checklists/categories/${id}`, body)
-    }
-    return await apiClient.post(`checklists/categories`, body)
-  }
-  public async DeleteChecklistCategory(id: string) {
-    return await apiClient.delete(`checklists/categories/${id}`)
-  }
-
+  
+ 
 
 
   public async CreateOrEditCheckList({ body, id }: { body: FormData, id?: string }) {

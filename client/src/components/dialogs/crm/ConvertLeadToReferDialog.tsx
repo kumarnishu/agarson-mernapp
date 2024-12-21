@@ -3,7 +3,6 @@ import { useContext, useEffect, useState } from 'react';
 import { Cancel } from '@mui/icons-material';
 import { AxiosResponse } from 'axios';
 import { BackendError } from '../../..';
-import { ConvertLeadToRefer } from '../../../services/LeadsServices';
 import { queryClient } from '../../../main';
 import {  useMutation } from 'react-query';
 

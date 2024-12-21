@@ -13,6 +13,7 @@ import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import CreateOrEditExpenseCategoryDialog from '../../components/dialogs/expense/CreateOrEditExpenseCategoryDialog'
+import { DropdownService } from '../../services/DropDownServices'
 
 
 
@@ -20,7 +21,7 @@ export default function ExpenseCategoriesPage() {
   const [category, setExpenseCategory] = useState<DropDownDto>()
   const [categories, setExpenseCategorys] = useState<DropDownDto[]>([])
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["expense_categories"], async () => GetAllExpenseCategories())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["expense_categories"], async () =>new DropdownService(). GetAllExpenseCategories())
 
 
   const isFirstRender = useRef(true);

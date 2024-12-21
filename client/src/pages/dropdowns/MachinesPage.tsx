@@ -14,6 +14,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import CreateOrEditMachineDialog from '../../components/dialogs/production/CreateOrEditMachineDialog'
 import ToogleMachineDialog from '../../components/dialogs/production/ToogleMachineDialog'
 import { GetMachineDto } from '../../dtos/machine.dto'
+import { DropdownService } from '../../services/DropDownServices'
 
 
 
@@ -22,7 +23,7 @@ export default function MachinePage() {
   const [machines, setMachines] = useState<GetMachineDto[]>([])
   const [hidden, setHidden] = useState(false)
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetMachineDto[]>, BackendError>(["machines", hidden], async () => GetMachines(String(hidden)))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetMachineDto[]>, BackendError>(["machines", hidden], async () => new DropdownService().GetMachines(String(hidden)))
 
   const isFirstRender = useRef(true);
 

@@ -1,7 +1,7 @@
 import { Stack } from '@mui/system'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
-   import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import CreateOrEditCityDialog from '../../components/dialogs/crm/CreateOrEditCityDialog'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
 import { UserContext } from '../../contexts/userContext'
@@ -17,6 +17,7 @@ import { AxiosResponse } from "axios"
 import { BackendError } from "../.."
 import { GetCrmCityDto } from '../../dtos/crm-city.dto'
 import { GetCrmStateDto } from '../../dtos/crm-state.dto'
+import { AuthorizationService } from '../../services/AuthorizationService'
 
 
 export default function CrmCitiesPage() {
@@ -26,10 +27,10 @@ export default function CrmCitiesPage() {
   const [cities, setCities] = useState<GetCrmCityDto[]>([])
   const [flag, setFlag] = useState(1);
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data: citiesdata, isSuccess, isLoading } = useQuery<AxiosResponse<GetCrmCityDto[]>, BackendError>(["crm_cities", state], async () =>new Dropdos GetAllCities({ state: state }))
-  const { data, isSuccess: isStateSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>("crm_cities", newGetAllStates)
+  const { data: citiesdata, isSuccess, isLoading } = useQuery<AxiosResponse<GetCrmCityDto[]>, BackendError>(["crm_cities", state], async () => new AuthorizationService().GetAllCities({ state: state }))
+  const { data, isSuccess: isStateSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>("crm_cities", new AuthorizationService().GetAllStates)
 
-  const [dialog,setDialog]=useState<string|undefined>()
+  const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
@@ -69,7 +70,7 @@ export default function CrmCitiesPage() {
       {
         accessorKey: 'actions',
         header: '',
-        
+
         Footer: <b></b>,
         Cell: ({ cell }) => <PopUp
           element={
@@ -112,7 +113,7 @@ export default function CrmCitiesPage() {
       {
         accessorKey: 'city',
         header: 'City',
-        
+
         Cell: (cell) => <> {
           [cell.row.original.city, String(cell.row.original.alias1 || ""), String(cell.row.original.alias2 || "")].filter(value => value)
             .join(", ")
@@ -121,15 +122,15 @@ export default function CrmCitiesPage() {
       {
         accessorKey: 'state',
         header: 'State',
-      
-        
+
+
       },
 
       {
         // accessorKey: 'assigned_users.value',
         accessorFn: (Cell) => { return Cell.assigned_users },
         header: 'Assigned Users',
-      
+
         filterVariant: 'text',
         Cell: (cell) => <>{cell.row.original.assigned_users && cell.row.original.assigned_users.length > 0 ? cell.row.original.assigned_users : ""}</>,
       }
@@ -160,14 +161,14 @@ export default function CrmCitiesPage() {
         color: 'white'
       },
     }),
-	
+
     muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-child(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-child(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-child(1) span': {
           display: 'inline', // Visible on hover
@@ -200,7 +201,7 @@ export default function CrmCitiesPage() {
     enableTableFooter: true,
     enableRowVirtualization: true,
     onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
-   
+
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing,
     state: {
@@ -252,7 +253,7 @@ export default function CrmCitiesPage() {
     );
   }, [columnVisibility]);
 
- 
+
 
 
   useEffect(() => {
@@ -386,17 +387,17 @@ export default function CrmCitiesPage() {
 
 
           </Menu >
-          <CreateOrEditCityDialog  dialog={dialog} setDialog={setDialog}/>
-          {LoggedInUser?.is_admin && <FindUknownCrmCitiesDialog  dialog={dialog} setDialog={setDialog}/>}
-          {<AssignCrmCitiesDialog  dialog={dialog} setDialog={setDialog}flag={flag} cities={table.getSelectedRowModel().rows.map((item) => { return { id: item.original._id, label: item.original.city, value: item.original.city } })} />}
+          <CreateOrEditCityDialog dialog={dialog} setDialog={setDialog} />
+          {LoggedInUser?.is_admin && <FindUknownCrmCitiesDialog dialog={dialog} setDialog={setDialog} />}
+          {<AssignCrmCitiesDialog dialog={dialog} setDialog={setDialog} flag={flag} cities={table.getSelectedRowModel().rows.map((item) => { return { id: item.original._id, label: item.original.city, value: item.original.city } })} />}
           <>
             {
               city ?
                 <>
 
-                  <DeleteCrmItemDialog  dialog={dialog} setDialog={setDialog}city={city} />
-                  <CreateOrEditCityDialog  dialog={dialog} setDialog={setDialog}city={city} />
-                  <DeleteCrmItemDialog  dialog={dialog} setDialog={setDialog}city={city} />
+                  <DeleteCrmItemDialog dialog={dialog} setDialog={setDialog} city={city} />
+                  <CreateOrEditCityDialog dialog={dialog} setDialog={setDialog} city={city} />
+                  <DeleteCrmItemDialog dialog={dialog} setDialog={setDialog} city={city} />
                 </>
                 : null
             }

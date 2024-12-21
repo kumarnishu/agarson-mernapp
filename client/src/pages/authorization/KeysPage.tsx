@@ -18,6 +18,7 @@ import { KeyExcelButton } from '../../components/buttons/KeyExcelButton'
 import DeleteKeyDialog from '../../components/dialogs/keys/DeleteKeyDialog'
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import { GetKeyDto } from '../../dtos/keys.dto'
+import { AuthorizationService } from '../../services/AuthorizationService'
 
 
 export default function KeysPage() {
@@ -25,7 +26,7 @@ export default function KeysPage() {
     const [keys, setkeys] = useState<GetKeyDto[]>([])
     const [category, setKeyCategory] = useState<string>('all')
     const { user: LoggedInUser } = useContext(UserContext)
-    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetKeyDto[]>, BackendError>(["keys", category], async () => GetAllKeys({ category: category }))
+    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetKeyDto[]>, BackendError>(["keys", category], async () =>  new AuthorizationService().GetAllKeys({ category: category }))
     const [flag, setFlag] = useState(1);
     const [categories, setKeyCategorys] = useState<DropDownDto[]>([])
     const [dialog,setDialog]=useState<string|undefined>()
@@ -37,7 +38,7 @@ export default function KeysPage() {
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-    const { data: categoriesdata } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => GetAllKeyCategoriesForDropdown({ show_assigned_only: false }))
+    const { data: categoriesdata } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () =>  new AuthorizationService().GetAllKeyCategoriesForDropdown({ show_assigned_only: false }))
 
 
     const columns = useMemo<MRT_ColumnDef<GetKeyDto>[]>(

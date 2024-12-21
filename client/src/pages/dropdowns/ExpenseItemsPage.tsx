@@ -14,6 +14,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import CreateOrEditExpenseItemDialog from '../../components/dialogs/expense/CreateOrEditExpenseItemDialog'
 import { GetExpenseItemDto } from '../../dtos/expense-item.dto'
 import { ExpenseItemButtons } from '../../components/buttons/ExpenseItemButtons'
+import { DropdownService } from '../../services/DropDownServices'
 
 
 
@@ -21,7 +22,7 @@ export default function ExpenseItemsPage() {
   const [item, setItem] = useState<GetExpenseItemDto>()
   const [items, setItems] = useState<GetExpenseItemDto[]>([])
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetExpenseItemDto[]>, BackendError>(["items"], async () => GetExpenseItems())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetExpenseItemDto[]>, BackendError>(["items"], async () =>new DropdownService(). GetExpenseItems())
 
   const isFirstRender = useRef(true);
 

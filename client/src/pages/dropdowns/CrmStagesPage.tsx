@@ -15,6 +15,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import FindUknownCrmStagesDialog from '../../components/dialogs/crm/FindUknownCrmStagesDialog'
+import { DropdownService } from '../../services/DropDownServices'
 
 
 
@@ -23,7 +24,7 @@ export default function CrmStagesPage() {
   const [stages, setStages] = useState<DropDownDto[]>([])
 
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["stages"], async () => GetAllStages())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["stages"], async () =>new DropdownService(). GetAllStages())
 
 
   const [dialog, setDialog] = useState<string | undefined>()

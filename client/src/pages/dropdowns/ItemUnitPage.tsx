@@ -13,6 +13,7 @@ import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import CreateOrEditItemUnitDialog from '../../components/dialogs/expense/CreateOrEditItemUnitDialog'
+import { DropdownService } from '../../services/DropDownServices'
 
 
 
@@ -21,7 +22,7 @@ export default function ItemUnitPage() {
   const [unit, setItemUnit] = useState<DropDownDto>()
   const [units, setItemUnits] = useState<DropDownDto[]>([])
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["units"], async () => GetAllItemUnits())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["units"], async () => new DropdownService().GetAllItemUnits())
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);

@@ -8,8 +8,8 @@ import styled from "styled-components"
 import { saveAs } from 'file-saver';
 import ExportToExcel from "../../utils/ExportToExcel"
 import { queryClient } from "../../main"
-import { BulkSalesManLeavesReportFromExcel } from "../../services/ExcelReportsServices"
 import { AlertContext } from "../../contexts/alertContext"
+import { SalesService } from "../../services/SalesServices"
 
 
 const FileInput = styled.input`
@@ -21,7 +21,7 @@ color:blue;
 export function SalesmanLeavesButton() {
     const { data, mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<any[]>, BackendError, FormData>
-        (BulkSalesManLeavesReportFromExcel, { onSuccess: () => queryClient.refetchQueries('reports') })
+        (new SalesService(). BulkSalesManLeavesReportFromExcel, { onSuccess: () => queryClient.refetchQueries('reports') })
     const [file, setFile] = useState<File | null>(null)
     const { setAlert } = useContext(AlertContext)
 

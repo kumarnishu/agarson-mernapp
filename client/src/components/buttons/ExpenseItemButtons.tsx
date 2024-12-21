@@ -8,9 +8,9 @@ import styled from "styled-components"
 import { saveAs } from 'file-saver';
 import ExportToExcel from "../../utils/ExportToExcel"
 import { queryClient } from "../../main"
-import { CreateKeysFromExcel } from "../../services/KeyServices"
 import { GetKeyFromExcelDto } from "../../dtos/keys.dto"
 import { AlertContext } from "../../contexts/alertContext"
+import { AuthorizationService } from "../../services/AuthorizationService"
 
 
 const FileInput = styled.input`
@@ -22,7 +22,7 @@ color:blue;
 export function ExpenseItemButtons() {
     const { data, mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetKeyFromExcelDto[]>, BackendError, FormData>
-        (CreateKeysFromExcel, { onSuccess: () => queryClient.refetchQueries('keys') })
+        (new AuthorizationService().CreateKeysFromExcel, { onSuccess: () => queryClient.refetchQueries('keys') })
     const [file, setFile] = useState<File | null>(null)
     const { setAlert } = useContext(AlertContext)
 

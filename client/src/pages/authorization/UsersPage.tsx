@@ -28,12 +28,13 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { GetUserDto } from '../../dtos/user.dto'
 import { GetLoginByThisUserDto } from '../../dtos/auth.dto'
 import { AlertContext } from '../../contexts/alertContext'
+import { UserService } from '../../services/UserServices'
 
 export default function UsersPage() {
     const [hidden, setHidden] = useState(false)
     const [user, setUser] = useState<GetUserDto>()
     const [users, setUsers] = useState<GetUserDto[]>([])
-    const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>(["users", hidden], async () => GetUsers({ hidden: hidden }))
+    const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>(["users", hidden], async () => new UserService().GetUsers({ hidden: hidden }))
     const { user: LoggedInUser } = useContext(UserContext)
     const [dialog, setDialog] = useState<string | undefined>()
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -46,7 +47,7 @@ export default function UsersPage() {
         <AxiosResponse<{ user: GetUserDto, token: string }>,
             BackendError,
             { body: GetLoginByThisUserDto }
-        >(LoginByThisUser, {
+        >(new UserService().LoginByThisUser, {
             onSuccess: () => {
                 window.location.reload()
             },
@@ -259,7 +260,7 @@ export default function UsersPage() {
                             </Tooltip>}
                         </Stack >} />
 
-  
+
             },
 
             {

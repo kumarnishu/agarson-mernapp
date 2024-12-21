@@ -7,9 +7,9 @@ import { Download, Upload } from "@mui/icons-material"
 import styled from "styled-components"
 import { saveAs } from 'file-saver';
 import ExportToExcel from "../../utils/ExportToExcel"
-import { CreateChecklistFromExcel } from "../../services/CheckListServices"
 import { queryClient } from "../../main"
 import { AlertContext } from "../../contexts/alertContext"
+import { FeatureService } from "../../services/FeatureServices"
 
 
 const FileInput = styled.input`
@@ -21,7 +21,7 @@ color:blue;
 export function ChecklistExcelButtons() {
     const { data, mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<any[]>, BackendError, FormData>
-        (CreateChecklistFromExcel, { onSuccess: () => queryClient.refetchQueries('checklists') })
+        (new FeatureService().CreateChecklistFromExcel, { onSuccess: () => queryClient.refetchQueries('checklists') })
     const [file, setFile] = useState<File | null>(null)
     const { setAlert } = useContext(AlertContext)
 

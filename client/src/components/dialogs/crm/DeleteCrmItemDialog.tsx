@@ -2,7 +2,6 @@ import { Dialog, DialogContent, DialogTitle, Button, Typography, Stack, Circular
 import { AxiosResponse } from 'axios';
 import { useContext, useEffect } from 'react';
 import { useMutation } from 'react-query';
-import { DeleteCrmItem } from '../../../services/LeadsServices';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';

@@ -6,7 +6,6 @@ import {  useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
-import { FindUnknownCrmCities } from '../../../services/LeadsServices';
 import { AlertContext } from '../../../contexts/alertContext';
 
 type Props = {

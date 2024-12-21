@@ -16,11 +16,12 @@ import AssignUsersDialog from '../../components/dialogs/users/AssignUsersDialog'
 import AssignPermissionsToOneUserDialog from '../../components/dialogs/users/AssignPermissionsToOneUserDialog'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { GetUserDto } from '../../dtos/user.dto'
+import { UserService } from '../../services/UserServices'
 
 export default function UserAssignementPage() {
   const [user, setUser] = useState<GetUserDto>()
   const [users, setUsers] = useState<GetUserDto[]>([])
-  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>(["users"], async () => GetUsersForAssignment())
+  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>(["users"], async () =>new UserService(). GetUsersForAssignment())
   const { user: LoggedInUser } = useContext(UserContext)
   const [dialog,setDialog]=useState<string|undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);

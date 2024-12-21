@@ -14,6 +14,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import CreateOrEditLeadTypeDialog from '../../components/dialogs/crm/CreateOrEditLeadTypeDialog'
 import { DropDownDto } from '../../dtos/dropdown.dto'
+import { DropdownService } from '../../services/DropDownServices'
 
 
 
@@ -22,7 +23,7 @@ export default function CrmTypesPage() {
   const [types, setTypes] = useState<DropDownDto[]>([])
 
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["types"], async () => GetAllLeadTypes())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["types"], async () => new DropdownService().GetAllLeadTypes())
 
 
   const [dialog,setDialog]=useState<string|undefined>()

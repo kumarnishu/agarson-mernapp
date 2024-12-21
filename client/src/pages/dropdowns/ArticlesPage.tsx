@@ -14,6 +14,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import CreateOrEditArticleDialog from '../../components/dialogs/production/CreateOrEditArticleDialog'
 import ToogleArticleDialog from '../../components/dialogs/production/ToogleArticleDialog'
 import { GetArticleDto } from '../../dtos/article.dto'
+import { DropdownService } from '../../services/DropDownServices'
 
 
 
@@ -24,7 +25,7 @@ export default function ArticlePage() {
   const [articles, setArticles] = useState<GetArticleDto[]>([])
   const [hidden, setHidden] = useState(false)
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>(["articles", hidden], async () => GetArticles(String(hidden)))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>(["articles", hidden], async () =>new DropdownService(). GetArticles(String(hidden)))
 
 
   const [dialog, setDialog] = useState<string | undefined>()

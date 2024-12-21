@@ -15,6 +15,7 @@ import CreateOrEditDyeDialog from '../../components/dialogs/production/CreateOrE
 import { AxiosResponse } from "axios"
 import { GetDyeDto } from '../../dtos/dye.dto'
 import { BackendError } from '../..'
+import { DropdownService } from '../../services/DropDownServices'
 
 
 export default function DyePage() {
@@ -22,7 +23,7 @@ export default function DyePage() {
   const [dyes, setDyes] = useState<GetDyeDto[]>([])
   const [hidden, setHidden] = useState(false)
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetDyeDto[]>, BackendError>(["dyes", hidden], async () => GetDyes(String(hidden)))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetDyeDto[]>, BackendError>(["dyes", hidden], async () => new DropdownService().GetDyes(String(hidden)))
 
 
   const [dialog, setDialog] = useState<string | undefined>()
