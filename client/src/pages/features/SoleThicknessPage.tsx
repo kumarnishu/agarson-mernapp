@@ -41,7 +41,7 @@ export default function SoleThicknessPage() {
         start_date: moment(new Date()).format("YYYY-MM-DD")
         , end_date: moment(new Date().setDate(new Date().getDate() + 1)).format("YYYY-MM-DD")
     })
-    const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetSoleThicknessDto[], page: number, total: number, limit: number }>, BackendError>(["thickness", userId, dates?.start_date, dates?.end_date], async () => new FeatureService(). GetSoleThickness({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
+    const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetSoleThicknessDto[], page: number, total: number, limit: number }>, BackendError>(["thickness", userId, dates?.start_date, dates?.end_date], async () => new FeatureService().GetSoleThickness({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'sole_thickness_view', show_assigned_only: true }))
 
@@ -106,7 +106,7 @@ export default function SoleThicknessPage() {
             },
 
             {
-                accessorKey: 'dye',
+                accessorKey: 'dye.label',
                 header: 'Dye',
 
                 filterVariant: 'multi-select',
@@ -180,20 +180,20 @@ export default function SoleThicknessPage() {
         }),
         muiTableHeadCellProps: ({ column }) => ({
             sx: {
-              '& div:nth-child(1) span': {
-                display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
-              },
-              '& div:nth-child(2)': {
-                display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
-              },
-              '&:hover div:nth-child(1) span': {
-                display: 'inline', // Visible on hover
-              },
-              '&:hover div:nth-child(2)': {
-                display: 'block', // Visible on hover
-              }
+                '& div:nth-child(1) span': {
+                    display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
+                },
+                '& div:nth-child(2)': {
+                    display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
+                },
+                '&:hover div:nth-child(1) span': {
+                    display: 'inline', // Visible on hover
+                },
+                '&:hover div:nth-child(2)': {
+                    display: 'block', // Visible on hover
+                }
             },
-          }),
+        }),
         muiTableHeadRowProps: () => ({
             sx: {
                 backgroundColor: 'whitesmoke',
@@ -447,10 +447,43 @@ export default function SoleThicknessPage() {
 
                     > Add New</MenuItem>}
 
-                    {LoggedInUser?.assigned_permissions.includes('sole_thickness_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+                    {LoggedInUser?.assigned_permissions.includes('sole_thickness_export') && < MenuItem onClick={() => {
+                        let data: any[] = []
+                        data = table.getRowModel().rows.map((row) => {
+                            return {
+                                _id: row.original._id,
+                                dye: row.original.dye.label,
+                                article: row.original.article.label,
+                                size: row.original.size,
+                                left_thickness: row.original.left_thickness,
+                                right_thickness: row.original.right_thickness,
+                                created_at: row.original.created_at,
+                                created_by: row.original.created_by.label,
+                            }
+                        }
+                        )
+                        ExportToExcel(data, " Data")
+                    }
+                    }
 
                     >Export All</MenuItem>}
-                    {LoggedInUser?.assigned_permissions.includes('sole_thickness_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+                    {LoggedInUser?.assigned_permissions.includes('sole_thickness_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => {
+                        let data: any[] = []
+                        data = table.getSelectedRowModel().rows.map((row) => {
+                            return {
+                                _id: row.original._id,
+                                dye: row.original.dye.label,
+                                article: row.original.article.label,
+                                size: row.original.size,
+                                left_thickness: row.original.left_thickness,
+                                right_thickness: row.original.right_thickness,
+                                created_at: row.original.created_at,
+                                created_by: row.original.created_by.label,
+                            }
+                        }
+                        )
+                        ExportToExcel(data, " Data")
+                    }}
 
                     >Export Selected</MenuItem>}
 
