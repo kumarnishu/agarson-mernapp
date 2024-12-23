@@ -97,7 +97,7 @@ function ChecklistPage() {
       {
         accessorKey: 'work_title',
         header: ' Work Title',
-        AggregatedCell: (cell) => <h4 style={{ textAlign: 'center', width: '100%' }} title={toTitleCase(cell.row.original.group_title)}>{toTitleCase(cell.row.original.group_title)}</h4>,
+        AggregatedCell: (cell) => <h4 style={{ textAlign: 'center', width: '100%' }} title={toTitleCase(cell.row.original.group_title || "")}>{toTitleCase(cell.row.original.group_title || "")}</h4>,
 
         Cell: (cell) => <span title={cell.row.original.group_title} >
           {cell.row.original.link && cell.row.original.link != "" ?

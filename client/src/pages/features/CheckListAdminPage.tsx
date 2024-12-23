@@ -146,7 +146,7 @@ function CheckListAdminPage() {
       {
         accessorKey: 'work_title',
         header: ' Work Title',
-        AggregatedCell: (cell) => <h4 style={{textAlign:'center',width:'100%'}}title={toTitleCase(cell.row.original.group_title)}>{toTitleCase(cell.row.original.group_title)}</h4>,
+        AggregatedCell: (cell) => <h4 style={{ textAlign: 'center', width: '100%' }} title={toTitleCase(cell.row.original.group_title || "")}>{toTitleCase(cell.row.original.group_title || "")}</h4>,
         Cell: (cell) => <span title={cell.row.original.work_title} >
           {cell.row.original.link && cell.row.original.link != "" ?
             <a style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}><pre>{cell.row.original.work_title}</pre></a>
@@ -345,7 +345,7 @@ function CheckListAdminPage() {
           }
         </>
       },
-       {
+      {
         accessorKey: 'last_remark',
         header: ' Last Remark',
         Cell: (cell) => <>{toTitleCase(cell.row.original.last_remark || "")}</>
@@ -624,10 +624,10 @@ function CheckListAdminPage() {
         backgroundColor: row.row.getIsGrouped() ? 'lightgrey' : 'inherit', // Light blue for grouped rows
         fontWeight: row.row.getIsGrouped() ? 'bold' : 'normal', // Bold text for grouped rows
         border: 'none',
-        outline:0
+        outline: 0
       },
     }),
-    muiTableBodyCellProps:() => ({
+    muiTableBodyCellProps: () => ({
       sx: {
         border: 'none', // Remove border from each cell
       },
