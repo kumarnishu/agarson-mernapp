@@ -140,13 +140,13 @@ function CheckListAdminPage() {
           <Button onClick={() => {
             setChecklist(cell.row.original)
             setDialog('ViewChecklistRemarksDialog')
-          }} size="small" sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0, p: 0.5 }} color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? toTitleCase(cell.row.original.last_checked_box.stage) : "Open"}</Button>
+          }} size="small" sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0, p: 0.5,fontSize:9 }} color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? toTitleCase(cell.row.original.last_checked_box.stage) : "Open"}</Button>
         </Tooltip>
       },
       {
         accessorKey: 'work_title',
         header: ' Work Title',
-        AggregatedCell: (cell) => <h4 style={{ textAlign: 'center', width: '100%' }} title={toTitleCase(cell.row.original.group_title || "")}>{toTitleCase(cell.row.original.group_title || "")}</h4>,
+        AggregatedCell: (cell) => <h4 style={{ textAlign: 'left', width: '100%' }} title={cell.row.original.group_title && cell.row.original.group_title.toUpperCase()}>{cell.row.original.group_title && cell.row.original.group_title.toUpperCase()}</h4>,
         Cell: (cell) => <span title={cell.row.original.work_title} >
           {cell.row.original.link && cell.row.original.link != "" ?
             <a style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}><pre>{cell.row.original.work_title}</pre></a>
