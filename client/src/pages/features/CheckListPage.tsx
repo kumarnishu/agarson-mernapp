@@ -90,8 +90,14 @@ function ChecklistPage() {
         </Tooltip>
       },
       {
+        accessorKey: 'group_title',
+        header: ' Group Title',
+        Cell: (cell) => <>{toTitleCase(cell.row.original.group_title)}</>
+      },
+      {
         accessorKey: 'work_title',
         header: ' Work Title',
+        AggregatedCell: (cell) => <h4 style={{textAlign:'center',width:'100%'}}title={toTitleCase(cell.row.original.group_title)}>{toTitleCase(cell.row.original.group_title)}</h4>,
 
         Cell: (cell) => <span title={cell.row.original.group_title} >
           {cell.row.original.link && cell.row.original.link != "" ?
@@ -421,9 +427,17 @@ function ChecklistPage() {
       <DBPagination paginationData={paginationData} refetch={refetch} setPaginationData={setPaginationData} />
 
     ),
-    muiTableBodyCellProps: () => ({
+    muiTableBodyRowProps: (row) => ({
       sx: {
-        border: '1px solid lightgrey;',
+        backgroundColor: row.row.getIsGrouped() ? 'lightgrey' : 'inherit', // Light blue for grouped rows
+        fontWeight: row.row.getIsGrouped() ? 'bold' : 'normal', // Bold text for grouped rows
+        border: 'none',
+        outline:0
+      },
+    }),
+    muiTableBodyCellProps:() => ({
+      sx: {
+        border: 'none', // Remove border from each cell
       },
     }),
     positionToolbarAlertBanner: 'none',
@@ -439,8 +453,9 @@ function ChecklistPage() {
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
-
+      grouping: ['group_title'],
       sorting,
+      expanded: true,
       columnSizing: columnSizing
     },
     enableBottomToolbar: true,

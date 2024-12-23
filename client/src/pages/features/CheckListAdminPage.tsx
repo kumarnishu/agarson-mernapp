@@ -58,17 +58,17 @@ function CheckListAdminPage() {
   ];
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
-  const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<{ category: string, count: number }[]>, BackendError>("checklists", new FeatureService(). GetChecklistTopBarDetails)
+  const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<{ category: string, count: number }[]>, BackendError>("checklists", new FeatureService().GetChecklistTopBarDetails)
   const [dialog, setDialog] = useState<string | undefined>()
   let previous_date = new Date()
   let day = previous_date.getDate() - 3
   previous_date.setDate(day)
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'checklist_view', show_assigned_only: false }))
-  const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date, stage], async () => new FeatureService(). GetChecklistReports({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date, stage: stage }))
+  const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date, stage], async () => new FeatureService().GetChecklistReports({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date, stage: stage }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { mutate: changedate } = useMutation
     <AxiosResponse<any>, BackendError, { id: string, next_date: string }>
-    (new FeatureService(). ChangeChecklistNextDate, {
+    (new FeatureService().ChangeChecklistNextDate, {
       onSuccess: () => {
         queryClient.invalidateQueries('checklists')
       }
@@ -146,8 +146,8 @@ function CheckListAdminPage() {
       {
         accessorKey: 'work_title',
         header: ' Work Title',
-
-        Cell: (cell) => <span title={cell.row.original.group_title} >
+        AggregatedCell: (cell) => <h4 style={{textAlign:'center',width:'100%'}}title={toTitleCase(cell.row.original.group_title)}>{toTitleCase(cell.row.original.group_title)}</h4>,
+        Cell: (cell) => <span title={cell.row.original.work_title} >
           {cell.row.original.link && cell.row.original.link != "" ?
             <a style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}><pre>{cell.row.original.work_title}</pre></a>
             :
@@ -345,7 +345,12 @@ function CheckListAdminPage() {
           }
         </>
       },
+      {
+        accessorKey: 'group_title',
+        header: ' Group Title',
 
+        Cell: (cell) => <>{toTitleCase(cell.row.original.group_title)}</>
+      },
       {
         accessorKey: 'category.label',
         header: ' Category',
@@ -609,9 +614,17 @@ function CheckListAdminPage() {
       <DBPagination paginationData={paginationData} refetch={refetch} setPaginationData={setPaginationData} />
 
     ),
-    muiTableBodyCellProps: () => ({
+    muiTableBodyRowProps: (row) => ({
       sx: {
-        border: '1px solid lightgrey;',
+        backgroundColor: row.row.getIsGrouped() ? 'lightgrey' : 'inherit', // Light blue for grouped rows
+        fontWeight: row.row.getIsGrouped() ? 'bold' : 'normal', // Bold text for grouped rows
+        border: 'none',
+        outline:0
+      },
+    }),
+    muiTableBodyCellProps:() => ({
+      sx: {
+        border: 'none', // Remove border from each cell
       },
     }),
     positionToolbarAlertBanner: 'none',
@@ -627,8 +640,10 @@ function CheckListAdminPage() {
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
+      grouping: ['group_title'],
 
       sorting,
+      expanded: true,
       columnSizing: columnSizing
     },
     enableBottomToolbar: true,

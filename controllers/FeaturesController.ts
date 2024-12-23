@@ -380,13 +380,13 @@ export class FeatureController {
             if (req.user?.is_admin && id == 'all') {
                 {
 
-                    checklists = await Checklist.find().populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('assigned_users').populate('last_10_boxes').sort('created_at').skip((page - 1) * limit).limit(limit)
+                    checklists = await Checklist.find().populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('assigned_users').populate('last_10_boxes').sort('group_title').sort('serial_no').skip((page - 1) * limit).limit(limit)
 
                     count = await Checklist.find().countDocuments()
                 }
             }
             else if (id == 'all') {
-                checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('last_10_boxes').populate('assigned_users').sort('created_at').skip((page - 1) * limit).limit(limit)
+                checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('last_10_boxes').populate('assigned_users').sort('group_title').sort('serial_no').skip((page - 1) * limit).limit(limit)
                 count = await Checklist.find({ user: req.user?._id }).countDocuments()
             }
 
@@ -396,7 +396,7 @@ export class FeatureController {
                         path: 'checklist_boxes',
                         match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
                     })
-                    .sort('created_at').skip((page - 1) * limit).limit(limit)
+                    .sort('group_title').sort('serial_no').skip((page - 1) * limit).limit(limit)
                 count = await Checklist.find({ user: id }).countDocuments()
             }
 
@@ -810,7 +810,7 @@ export class FeatureController {
                 let checklistboxes: IChecklistBox[] = []
                 let work_title: string | null = checklist.work_title
                 let serial_no: string | null = checklist.serial_no
-                let group_title: string | null = checklist.group_title
+                let group_title: string | null = checklist.group_title || ""
                 let category: string | null = checklist.category
                 let link: string | null = checklist.link
                 let frequency: string | null = checklist.frequency
@@ -1061,7 +1061,7 @@ export class FeatureController {
         template.push({ sheet_name: 'conditions', data: [{ condition: 'check-blank' }, { condition: 'check_yesno' }, { condition: 'check_expected_number' }] })
         template.push({ sheet_name: 'frequency', data: [{ frequency: "daily" }, { frequency: "weekly" }, { frequency: "monthly" }, { frequency: "yearly" }] })
         ConvertJsonToExcel(template)
-        let fileName = "CreateChecklistTemplate.xlsx" 
+        let fileName = "CreateChecklistTemplate.xlsx"
         return res.download("./file", fileName)
     }
 
