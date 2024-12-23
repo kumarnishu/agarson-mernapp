@@ -3,11 +3,16 @@ import express from 'express'
 import { KeyCategory } from '../models/key-category.model';
 import { ExcelDBRemark } from '../models/excel-db-remark.model';
 import { Reference } from '../models/references.model';
+import { Dye } from '../models/dye.model';
 
 export class TestController {
-   
+
     public async test(req: Request, res: Response, next: NextFunction) {
 
+        await Dye.updateMany(
+            {}, // Empty filter matches all documents
+            { $inc: { stdshoe_weight: -100 } } // Decrease stdshoe_weight by 100
+        );
         // const category = req.query.category
         // let dt1 = new Date()
         // dt1.setHours(0, 0, 0, 0)
@@ -32,9 +37,8 @@ export class TestController {
         //     today: remarks.length,
         //     remarks: remarks
         // });
-        let items = await Reference.findOne({ amount: 20000 })
-        return res.status(200).json(items)
+        return res.status(200).json({ message: "success" })
 
     }
-    
+
 }

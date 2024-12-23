@@ -76,7 +76,7 @@ export default function SoleThicknessPage() {
                         <Stack direction="row" spacing={1}>
 
                             <>
-                                {LoggedInUser?.assigned_permissions.includes('production_edit') && <Tooltip title="edit">
+                                {LoggedInUser?.assigned_permissions.includes('sole_thickness_edit') && <Tooltip title="edit">
                                     <IconButton color="info"
 
                                         onClick={() => {
@@ -87,7 +87,7 @@ export default function SoleThicknessPage() {
                                         <Edit />
                                     </IconButton>
                                 </Tooltip>}
-                                {LoggedInUser?.is_admin && LoggedInUser?.assigned_permissions.includes('production_delete') && <Tooltip title="delete">
+                                {LoggedInUser?.is_admin && LoggedInUser?.assigned_permissions.includes('sole_thickness_delete') && <Tooltip title="delete">
                                     <IconButton color="error"
 
                                         onClick={() => {
@@ -437,7 +437,7 @@ export default function SoleThicknessPage() {
                     }}
                     sx={{ borderRadius: 2 }}
                 >
-                    {LoggedInUser?.assigned_permissions.includes('production_create') && <MenuItem
+                    {LoggedInUser?.assigned_permissions.includes('sole_thickness_create') && <MenuItem
                         onClick={() => {
                             setDialog('CreateOrEditSoleThicknessDialog')
                             setThickness(undefined);
@@ -447,10 +447,10 @@ export default function SoleThicknessPage() {
 
                     > Add New</MenuItem>}
 
-                    {LoggedInUser?.assigned_permissions.includes('production_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+                    {LoggedInUser?.assigned_permissions.includes('sole_thickness_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
                     >Export All</MenuItem>}
-                    {LoggedInUser?.assigned_permissions.includes('production_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+                    {LoggedInUser?.assigned_permissions.includes('sole_thickness_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
                     >Export Selected</MenuItem>}
 

@@ -1061,7 +1061,7 @@ export class FeatureController {
         template.push({ sheet_name: 'conditions', data: [{ condition: 'check-blank' }, { condition: 'check_yesno' }, { condition: 'check_expected_number' }] })
         template.push({ sheet_name: 'frequency', data: [{ frequency: "daily" }, { frequency: "weekly" }, { frequency: "monthly" }, { frequency: "yearly" }] })
         ConvertJsonToExcel(template)
-        let fileName = "CreateChecklistTemplate.xlsx"
+        let fileName = "CreateChecklistTemplate.xlsx" 
         return res.download("./file", fileName)
     }
 
