@@ -446,7 +446,7 @@ function ChecklistPage() {
     positionToolbarAlertBanner: 'none',
     enableToolbarInternalActions: false,
     initialState: { density: 'compact' },
-    enableRowSelection: true,
+    enableRowSelection: false,
     enableColumnPinning: true,
     onSortingChange: setSorting,
     enableTableFooter: true,
