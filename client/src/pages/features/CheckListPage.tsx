@@ -441,7 +441,6 @@ function ChecklistPage() {
     }),
     muiTableBodyCellProps: () => ({
       sx: {
-        border: 'none', // Remove border from each cell
       },
     }),
     positionToolbarAlertBanner: 'none',

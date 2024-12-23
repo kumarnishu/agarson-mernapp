@@ -629,7 +629,6 @@ function CheckListAdminPage() {
     }),
     muiTableBodyCellProps: () => ({
       sx: {
-        border: 'none', // Remove border from each cell
       },
     }),
     positionToolbarAlertBanner: 'none',
@@ -644,7 +643,7 @@ function CheckListAdminPage() {
 
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
-      columnVisibility,
+      columnVisibility: { 'group_title': false },
       grouping: ['group_title'],
 
       sorting,
