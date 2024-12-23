@@ -140,7 +140,7 @@ function CheckListAdminPage() {
           <Button onClick={() => {
             setChecklist(cell.row.original)
             setDialog('ViewChecklistRemarksDialog')
-          }} size="small" sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0, p: 0.5,fontSize:9 }} color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? toTitleCase(cell.row.original.last_checked_box.stage) : "Open"}</Button>
+          }} size="small" sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0, p: 0.5, fontSize: 9 }} color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? toTitleCase(cell.row.original.last_checked_box.stage) : "Open"}</Button>
         </Tooltip>
       },
       {
@@ -348,13 +348,13 @@ function CheckListAdminPage() {
       {
         accessorKey: 'last_remark',
         header: ' Last Remark',
-        Cell: (cell) => <>{toTitleCase(cell.row.original.last_remark || "")}</>
+        Cell: (cell) => <>{cell.row.original.last_remark || ""}</>
       },
       {
         accessorKey: 'group_title',
         header: ' Group Title',
 
-        Cell: (cell) => <>{toTitleCase(cell.row.original.group_title)}</>
+        Cell: (cell) => <>{cell.row.original.group_title || ""}</>
       },
       {
         accessorKey: 'category.label',

@@ -92,7 +92,7 @@ function ChecklistPage() {
       {
         accessorKey: 'group_title',
         header: ' Group Title',
-        Cell: (cell) => <>{toTitleCase(cell.row.original.group_title)}</>
+        Cell: (cell) => <>{cell.row.original.group_title || ""}</>
       },
       {
         accessorKey: 'work_title',
@@ -238,7 +238,7 @@ function ChecklistPage() {
       {
         accessorKey: 'last_remark',
         header: ' Last Remark',
-        Cell: (cell) => <>{toTitleCase(cell.row.original.last_remark || "")}</>
+        Cell: (cell) => <>{cell.row.original.last_remark || ""}</>
       },
       {
         accessorKey: 'category.label',
