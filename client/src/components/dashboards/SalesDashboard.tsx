@@ -21,7 +21,7 @@ function SalesDashboard() {
         user?.assigned_permissions.includes('references_report_view') && tmpfeatures.push({ feature: 'References Report ', is_visible: false, url: "ReferencesReportPage" })
         user?.assigned_permissions.includes('salesman_references_report_view') && tmpfeatures.push({ feature: 'Salesman References Report ', is_visible: false, url: "ReferenceReportPageSalesman" })
 
-        tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
+        // tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
     }, [user])
 
     return (

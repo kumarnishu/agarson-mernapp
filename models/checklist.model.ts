@@ -10,7 +10,7 @@ export type IChecklist = {
     work_title: string,
     condition: string // 'check-blank'||'check_yesno'||'check_expected_number',
     expected_number: number,
-    work_description: string,
+    group_title: string,
     last_remark: string,
     subchecklists: IChecklist[],
     photo: Asset,
@@ -47,7 +47,11 @@ const ChecklistSchema = new mongoose.Schema<IChecklist, mongoose.Model<IChecklis
         required: true,
         index: true
     },
-    condition: String,
+    condition: {
+        type: String,
+        trim: true,
+        lowercase: true
+    },
     expected_number: { type: Number, default: 0 },
     last_10_boxes: [
         {
@@ -64,7 +68,7 @@ const ChecklistSchema = new mongoose.Schema<IChecklist, mongoose.Model<IChecklis
         ref: 'ChecklistBox',
         index: false
     }],
-    work_description: {
+    group_title: {
         type: String,
         index: true
     },

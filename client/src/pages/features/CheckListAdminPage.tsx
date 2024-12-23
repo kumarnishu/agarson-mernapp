@@ -147,7 +147,7 @@ function CheckListAdminPage() {
         accessorKey: 'work_title',
         header: ' Work Title',
 
-        Cell: (cell) => <span title={cell.row.original.work_description} >
+        Cell: (cell) => <span title={cell.row.original.group_title} >
           {cell.row.original.link && cell.row.original.link != "" ?
             <a style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}><pre>{cell.row.original.work_title}</pre></a>
             :
@@ -770,7 +770,7 @@ function CheckListAdminPage() {
               _id: row.original._id,
               serial_no: row.original.serial_no,
               work_title: row.original.work_title,
-              work_description: row.original.work_description,
+              group_title: row.original.group_title,
               category: row.original.category.label,
               frequency: row.original.frequency,
               link: row.original.link,
@@ -789,7 +789,7 @@ function CheckListAdminPage() {
               _id: row.original._id,
               serial_no: row.original.serial_no,
               work_title: row.original.work_title,
-              work_description: row.original.work_description,
+              group_title: row.original.group_title,
               category: row.original.category.label,
               frequency: row.original.frequency,
               link: row.original.link,

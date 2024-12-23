@@ -24,10 +24,8 @@ function ExcelDBDashboard() {
                 tmpfeatures.push({ feature: dt.label, display_name: dt.label && dt.label, is_visible: true, url: `ExcelDbReports/${dt.id}` })
             })
         }
-        console.log(tmpfeatures)
-        tmpfeatures.sort((a, b) => (a.feature || "").localeCompare(b.feature || "")); // Fallback to empty string if undefined
+        // tmpfeatures.sort((a, b) => (a.feature || "").localeCompare(b.feature || "")); // Fallback to empty string if undefined
 
-        console.log(tmpfeatures)
         setFeatures(tmpfeatures)
 
     }, [user, categoryData])

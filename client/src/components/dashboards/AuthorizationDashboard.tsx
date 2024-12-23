@@ -19,7 +19,7 @@ function AuthorizationDashboard() {
         user?.assigned_permissions.includes('user_assignment_view') && tmpfeatures.push({ feature: 'User Assignement ', is_visible: true, url: "UserAssignementPage" })
 
 
-        tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
+        // tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
 
         setFeatures(tmpfeatures)
 

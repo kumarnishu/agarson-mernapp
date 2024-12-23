@@ -1,7 +1,7 @@
 import { CronJob } from "cron";
 import { Checklist } from "../models/checklist.model";
 import { ChecklistBox } from "../models/checklist-box.model";
-import {  getNextMonday, getPrevMonday, } from "../utils/datesHelper";
+import { getNextMonday, getPrevMonday, } from "../utils/datesHelper";
 
 
 export async function activateChecklist() {
@@ -20,7 +20,9 @@ export async function activateChecklist() {
             let work = works[i]
             let box = await ChecklistBox.findOne({ checklist: works[i], date: { $gte: dt1, $lt: dt2 } })
             if (box) {
-                let boxes = work.last_10_boxes.slice(1)
+                let boxes = work.last_10_boxes
+                if (boxes && boxes.length == 6)
+                    boxes = boxes.slice(1)
                 boxes.push(box)
                 work.last_10_boxes = boxes;
                 await work.save();
@@ -36,8 +38,10 @@ export async function activateChecklist() {
         for (let i = 0; i < works.length; i++) {
             let work = works[i]
             let box = await ChecklistBox.findOne({ checklist: works[i], date: { $gte: getPrevMonday(), $lt: getNextMonday() } })
-            if (box) {
-                let boxes = work.last_10_boxes.slice(1)
+           if (box) {
+                let boxes = work.last_10_boxes
+                if (boxes && boxes.length == 6)
+                    boxes = boxes.slice(1)
                 boxes.push(box)
                 work.last_10_boxes = boxes;
                 await work.save();
@@ -60,8 +64,10 @@ export async function activateChecklist() {
         for (let i = 0; i < works.length; i++) {
             let work = works[i];
             let box = await ChecklistBox.findOne({ checklist: works[i], date: { $gte: dt1, $lt: dt2 } })
-            if (box) {
-                let boxes = work.last_10_boxes.slice(1)
+           if (box) {
+                let boxes = work.last_10_boxes
+                if (boxes && boxes.length == 6)
+                    boxes = boxes.slice(1)
                 boxes.push(box)
                 work.last_10_boxes = boxes;
                 await work.save();
@@ -83,8 +89,10 @@ export async function activateChecklist() {
         for (let i = 0; i < works.length; i++) {
             let work = works[i];
             let box = await ChecklistBox.findOne({ checklist: works[i], date: { $gte: dt1, $lt: dt2 } })
-            if (box) {
-                let boxes = work.last_10_boxes.slice(1)
+           if (box) {
+                let boxes = work.last_10_boxes
+                if (boxes && boxes.length == 6)
+                    boxes = boxes.slice(1)
                 boxes.push(box)
                 work.last_10_boxes = boxes;
                 await work.save();

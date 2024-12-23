@@ -248,7 +248,9 @@ export class FeatureController {
                     active: ch.active,
                     serial_no: ch.serial_no,
                     work_title: ch.work_title,
-                    work_description: ch.work_description,
+                    group_title: ch.group_title,
+                    condition: ch.condition,
+                    expected_number: ch.expected_number,
                     link: ch.link,
                     last_checked_box: ch.lastcheckedbox && {
                         _id: ch.lastcheckedbox._id,
@@ -326,8 +328,10 @@ export class FeatureController {
                 active: ch.active,
                 serial_no: ch.serial_no,
                 work_title: ch.work_title,
-                work_description: ch.work_description,
+                group_title: ch.group_title,
                 link: ch.link,
+                condition: ch.condition,
+                expected_number: ch.expected_number,
                 last_checked_box: ch.lastcheckedbox && {
                     _id: ch.lastcheckedbox._id,
                     stage: ch.lastcheckedbox.stage,
@@ -407,7 +411,9 @@ export class FeatureController {
                         active: ch.active,
                         work_title: ch.work_title,
                         serial_no: ch.serial_no,
-                        work_description: ch.work_description,
+                        group_title: ch.group_title,
+                        condition: ch.condition,
+                        expected_number: ch.expected_number,
                         link: ch.link,
                         last_checked_box: ch.last_10_boxes[1] && {
                             _id: ch.last_10_boxes[1]._id,
@@ -481,7 +487,9 @@ export class FeatureController {
                         active: ch.active,
                         work_title: ch.work_title,
                         serial_no: ch.serial_no,
-                        work_description: ch.work_description,
+                        condition: ch.condition,
+                        expected_number: ch.expected_number,
+                        group_title: ch.group_title,
                         link: ch.link,
                         last_checked_box: ch.lastcheckedbox && {
                             _id: ch.lastcheckedbox._id,
@@ -540,14 +548,21 @@ export class FeatureController {
             category,
             work_title,
             serial_no,
-            work_description,
+            group_title,
+            condition,
+            expected_number,
             link,
             assigned_users,
             frequency } = body as CreateOrEditChecklistDto
 
         console.log(req.body)
-        if (!category || !work_title || !frequency)
+        if (!category || !work_title || !frequency || !condition)
             return res.status(400).json({ message: "please provide all required fields" })
+
+        let conditions = ['check-blank', 'check_yesno', 'check_expected_number']
+        if (!conditions.includes(condition))
+            return res.status(400).json({ message: `must be one from given :  ${conditions.toString()}` })
+
 
         if (await Checklist.findOne({ serial_no: serial_no })) {
             return res.status(400).json({ message: "serial no already exists" })
@@ -558,7 +573,9 @@ export class FeatureController {
             category: category,
             work_title: work_title,
             serial_no: serial_no,
-            work_description: work_description,
+            condition,
+            expected_number,
+            group_title: group_title,
             assigned_users: assigned_users,
             link: link,
             frequency: frequency,
@@ -674,12 +691,15 @@ export class FeatureController {
             category,
             work_title,
             serial_no,
-            work_description,
+            group_title,
+            condition, expected_number,
             link,
             assigned_users } = body as CreateOrEditChecklistDto
         if (!work_title)
             return res.status(400).json({ message: "please provide all required fields" })
-
+        let conditions = ['check-blank', 'check_yesno', 'check_expected_number']
+        if (!conditions.includes(condition))
+            return res.status(400).json({ message: `must be one from given :  ${conditions.toString()}` })
         let id = req.params.id
 
         let checklist = await Checklist.findById(id)
@@ -711,8 +731,10 @@ export class FeatureController {
         await Checklist.findByIdAndUpdate(checklist._id, {
             work_title: work_title,
             serial_no: serial_no,
-            work_description: work_description,
+            group_title: group_title,
             category: category,
+            condition,
+            expected_number,
             link: link,
             assigned_users: assigned_users,
             updated_at: new Date(),
@@ -788,10 +810,12 @@ export class FeatureController {
                 let checklistboxes: IChecklistBox[] = []
                 let work_title: string | null = checklist.work_title
                 let serial_no: string | null = checklist.serial_no
-                let work_description: string | null = checklist.work_description
+                let group_title: string | null = checklist.group_title
                 let category: string | null = checklist.category
                 let link: string | null = checklist.link
                 let frequency: string | null = checklist.frequency
+                let condition: string | null = checklist.condition
+                let expected_number: number | null = checklist.expected_number
                 let assigned_users: string | null = checklist.assigned_users
                 let _id: string | undefined = checklist._id
 
@@ -811,7 +835,16 @@ export class FeatureController {
                     validated = false
                     statusText = "required category"
                 }
-                if (await Checklist.findOne({ serial_no: serial_no })) {
+                if (!condition) {
+                    validated = false
+                    statusText = "required condition"
+                }
+                let conditions = ['check-blank', 'check_yesno', 'check_expected_number']
+                if (!conditions.includes(condition)) {
+                    validated = false
+                    statusText = `must be one from given :  ${conditions.toString()}`
+                }
+                if (!_id && await Checklist.findOne({ serial_no: serial_no })) {
                     validated = false
                     statusText = `serial no ${serial_no} exists`
                 }
@@ -870,7 +903,9 @@ export class FeatureController {
                         await Checklist.findByIdAndUpdate(checklist._id, {
                             work_title: work_title,
                             serial_no: serial_no,
-                            work_description: work_description,
+                            group_title: group_title,
+                            condition: condition,
+                            expected_number: expected_number,
                             category: category,
                             link: link,
                             assigned_users: users,
@@ -882,8 +917,10 @@ export class FeatureController {
                     else {
                         let checklist = new Checklist({
                             work_title,
-                            work_description,
+                            group_title,
                             serial_no,
+                            condition: condition,
+                            expected_number: expected_number,
                             assigned_users: users,
                             frequency,
                             link,
@@ -989,9 +1026,11 @@ export class FeatureController {
             serial_no: '1',
             category: 'maintenance',
             work_title: 'machine work',
-            work_description: 'please check all the parts',
+            group_title: 'please check all the parts',
             link: 'http://www.bo.agarson.in',
             assigned_users: 'sujata,pawan',
+            condition: 'check-blank',// 'check-blank'||'check_yesno'||'check_expected_number
+            expected_number: 0,
             frequency: "daily"
         }]
 
@@ -1007,7 +1046,9 @@ export class FeatureController {
                     serial_no: ch.serial_no,
                     category: ch.category && ch.category.category || "",
                     work_title: ch.work_title,
-                    work_description: ch.work_description,
+                    group_title: ch.group_title,
+                    condition: ch.condition,
+                    expected_number: ch.expected_number,
                     link: ch.link,
                     assigned_users: ch.assigned_users.map((a) => { return a.username }).toString(),
                     frequency: ch.frequency
@@ -1017,11 +1058,13 @@ export class FeatureController {
         template.push({ sheet_name: 'template', data: checklists })
         template.push({ sheet_name: 'categories', data: categories })
         template.push({ sheet_name: 'users', data: users })
+        template.push({ sheet_name: 'conditions', data: [{ condition: 'check-blank' }, { condition: 'check_yesno' }, { condition: 'check_expected_number' }] })
         template.push({ sheet_name: 'frequency', data: [{ frequency: "daily" }, { frequency: "weekly" }, { frequency: "monthly" }, { frequency: "yearly" }] })
         ConvertJsonToExcel(template)
         let fileName = "CreateChecklistTemplate.xlsx"
         return res.download("./file", fileName)
     }
+
     public async AssignChecklistToUsers(req: Request, res: Response, next: NextFunction) {
         const { checklist_ids, user_ids, flag } = req.body as { checklist_ids: string[], user_ids: string[], flag: number }
         if (checklist_ids && checklist_ids.length === 0)
@@ -5797,8 +5840,8 @@ export class FeatureController {
             });
     }
 
-   
-    
+
+
     public async GetDyeStatusReport(req: Request, res: Response, next: NextFunction) {
         let start_date = req.query.start_date
         let end_date = req.query.end_date
@@ -6169,6 +6212,6 @@ export class FeatureController {
         })
         return res.status(200).json(reports)
     }
-    
-   
+
+
 }

@@ -27,7 +27,7 @@ function DropDownDashboard() {
     user?.assigned_permissions.includes('expense_location_view') && tmpfeatures.push({ feature: 'expense location ', is_visible: true, url: "ExpenseLocationPage" })
     user?.assigned_permissions.includes('item_unit_view') && tmpfeatures.push({ feature: 'Item unit ', is_visible: true, url: "ItemUnitPage" })
     user?.assigned_permissions.includes('expense_item_view') && tmpfeatures.push({ feature: 'Expense Item ', is_visible: true, url: "ExpenseItemsPage" })
-    tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
+    // tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
     setFeatures(tmpfeatures)
 
   }, [user])

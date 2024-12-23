@@ -33,7 +33,7 @@ function FeatureDashboard() {
         user?.assigned_permissions.includes('machine_category_wise_production_report_view') && tmpfeatures.push({ feature: 'Category wise production', is_visible: true, url: "CategoryWiseProductionReportPage" }),
           user?.assigned_permissions.includes('thekedar_wise_production_report_view') && tmpfeatures.push({ feature: 'Thekedar wise production', is_visible: true, url: "ThekedarWiseProductionReportPage" })
         user?.assigned_permissions.includes('expense-transaction_report_view') && tmpfeatures.push({ feature: 'Expense Transactions Report', is_visible: true, url: "ExpenseTransactionReports" })
-        tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
+        // tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
         setFeatures(tmpfeatures)
     }, [user])
 

@@ -40,7 +40,9 @@ function CreateorEditCheckListForm({ checklist, setDialog }: { checklist?: GetCh
             category: checklist ? checklist.category.id : "",
             serial_no: checklist ? checklist.serial_no : "",
             work_title: checklist ? checklist.work_title : "",
-            work_description: checklist ? checklist.work_description : "",
+            group_title: checklist ? checklist.group_title : "",
+            condition: checklist ? checklist.condition : "",
+            expected_number: checklist ? checklist.expected_number : 0,
             link: checklist ? checklist.link : "",
             assigned_users: checklist ? checklist.assigned_users.map((user) => { return user.id }) : [],
             frequency: checklist ? checklist.frequency : "daily",
@@ -51,7 +53,9 @@ function CreateorEditCheckListForm({ checklist, setDialog }: { checklist?: GetCh
             work_title: Yup.string().required("required field")
                 .min(5, 'Must be 5 characters or more')
             ,
-            work_description: Yup.string(),
+            group_title: Yup.string(),
+            condition: Yup.string(),
+            expected_number: Yup.number(),
             link: Yup.string(),
             category: Yup.string().required("required field"),
             frequency: Yup.string().required("required"),
@@ -122,6 +126,11 @@ function CreateorEditCheckListForm({ checklist, setDialog }: { checklist?: GetCh
         }
     }, [isSuccess])
 
+    useEffect(() => {
+        if (formik.values.condition !== "check_expected_number")
+            formik.values.expected_number = 0
+
+    }, [formik.values.condition])
 
     return (
         <form onSubmit={formik.handleSubmit}>
@@ -162,31 +171,63 @@ function CreateorEditCheckListForm({ checklist, setDialog }: { checklist?: GetCh
                     multiline
                     rows={4}
                     error={
-                        formik.touched.work_description && formik.errors.work_description ? true : false
+                        formik.touched.group_title && formik.errors.group_title ? true : false
                     }
-                    id="work_description"
-                    label="Work Description"
+                    id="group_title"
+                    label="Group Title"
                     fullWidth
                     helperText={
-                        formik.touched.work_description && formik.errors.work_description ? formik.errors.work_description : ""
+                        formik.touched.group_title && formik.errors.group_title ? formik.errors.group_title : ""
                     }
-                    {...formik.getFieldProps('work_description')}
+                    {...formik.getFieldProps('group_title')}
                 />
-                <TextField
+                < TextField
+                    select
+                    SelectProps={{
+                        native: true
+                    }}
+                    focused
+                    error={
+                        formik.touched.condition && formik.errors.condition ? true : false
+                    }
+                    id="condition"
+                    label="Condition"
+                    fullWidth
+                    helperText={
+                        formik.touched.condition && formik.errors.condition ? formik.errors.condition : ""
+                    }
+                    {...formik.getFieldProps('condition')}
+                >
+                    ''||''||'
+                    <option key={1} value="check-blank">
+                        Check Blank Or Not
+                    </option>
+
+                    <option key={2} value='check_expected_number'>
+                        Check Expected Number
+                    </option>
+                    <option key={3} value="check_yesno">
+                        Check Pending/Done
+                    </option>
+                </TextField>
+                {formik.values.condition == "check_expected_number" && <TextField
 
                     multiline
                     minRows={2}
                     error={
-                        formik.touched.link && formik.errors.link ? true : false
+                        formik.touched.expected_number && formik.errors.expected_number ? true : false
                     }
-                    id="link"
-                    label="Link"
+                    id="expected_number"
+                    label="Expected Number"
                     fullWidth
                     helperText={
-                        formik.touched.link && formik.errors.link ? formik.errors.link : ""
+                        formik.touched.expected_number && formik.errors.expected_number ? formik.errors.expected_number : ""
                     }
-                    {...formik.getFieldProps('link')}
-                />
+                    {...formik.getFieldProps('expected_number')}
+                />}
+
+
+
                 < TextField
                     select
                     SelectProps={{
@@ -221,6 +262,25 @@ function CreateorEditCheckListForm({ checklist, setDialog }: { checklist?: GetCh
                     </option>
 
                 </TextField>
+                <InputLabel id="demo-multiple-checkbox-label">Users</InputLabel>
+                <Select
+                    label="Users"
+                    variant='filled'
+                    fullWidth
+                    labelId="demo-multiple-checkbox-label"
+                    id="demo-multiple-checkbox"
+                    multiple
+                    input={<OutlinedInput label="User" />}
+                    renderValue={() => `${formik.values.assigned_users.length} users`}
+                    {...formik.getFieldProps('assigned_users')}
+                >
+                    {users.map((user) => (
+                        <MenuItem key={user.id} value={user.id}>
+                            <Checkbox checked={formik.values.assigned_users.includes(user.id)} />
+                            <ListItemText primary={user.label} />
+                        </MenuItem>
+                    ))}
+                </Select>
                 < TextField
                     select
                     variant='filled'
@@ -251,26 +311,22 @@ function CreateorEditCheckListForm({ checklist, setDialog }: { checklist?: GetCh
                     }
                 </TextField>
 
-                <InputLabel id="demo-multiple-checkbox-label">Users</InputLabel>
-                <Select
-                    label="Users"
-                    variant='filled'
-                    fullWidth
-                    labelId="demo-multiple-checkbox-label"
-                    id="demo-multiple-checkbox"
-                    multiple
-                    input={<OutlinedInput label="User" />}
-                    renderValue={() => `${formik.values.assigned_users.length} users`}
-                    {...formik.getFieldProps('assigned_users')}
-                >
-                    {users.map((user) => (
-                        <MenuItem key={user.id} value={user.id}>
-                            <Checkbox checked={formik.values.assigned_users.includes(user.id)} />
-                            <ListItemText primary={user.label} />
-                        </MenuItem>
-                    ))}
-                </Select>
 
+                <TextField
+
+                    multiline
+                    minRows={2}
+                    error={
+                        formik.touched.link && formik.errors.link ? true : false
+                    }
+                    id="link"
+                    label="Link"
+                    fullWidth
+                    helperText={
+                        formik.touched.link && formik.errors.link ? formik.errors.link : ""
+                    }
+                    {...formik.getFieldProps('link')}
+                />
 
 
                 <TextField
