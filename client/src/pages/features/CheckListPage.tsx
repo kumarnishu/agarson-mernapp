@@ -97,7 +97,7 @@ function ChecklistPage() {
       {
         accessorKey: 'work_title',
         header: ' Work Title',
-        AggregatedCell: (cell) => <h4 style={{textAlign:'center',width:'100%'}}title={toTitleCase(cell.row.original.group_title)}>{toTitleCase(cell.row.original.group_title)}</h4>,
+        AggregatedCell: (cell) => <h4 style={{ textAlign: 'center', width: '100%' }} title={toTitleCase(cell.row.original.group_title)}>{toTitleCase(cell.row.original.group_title)}</h4>,
 
         Cell: (cell) => <span title={cell.row.original.group_title} >
           {cell.row.original.link && cell.row.original.link != "" ?
@@ -235,7 +235,11 @@ function ChecklistPage() {
           </Stack>
         </>
       },
-
+      {
+        accessorKey: 'last_remark',
+        header: ' Last Remark',
+        Cell: (cell) => <>{toTitleCase(cell.row.original.last_remark || "")}</>
+      },
       {
         accessorKey: 'category.label',
         header: ' Category',
@@ -432,10 +436,10 @@ function ChecklistPage() {
         backgroundColor: row.row.getIsGrouped() ? 'lightgrey' : 'inherit', // Light blue for grouped rows
         fontWeight: row.row.getIsGrouped() ? 'bold' : 'normal', // Bold text for grouped rows
         border: 'none',
-        outline:0
+        outline: 0
       },
     }),
-    muiTableBodyCellProps:() => ({
+    muiTableBodyCellProps: () => ({
       sx: {
         border: 'none', // Remove border from each cell
       },

@@ -345,6 +345,11 @@ function CheckListAdminPage() {
           }
         </>
       },
+       {
+        accessorKey: 'last_remark',
+        header: ' Last Remark',
+        Cell: (cell) => <>{toTitleCase(cell.row.original.last_remark || "")}</>
+      },
       {
         accessorKey: 'group_title',
         header: ' Group Title',
