@@ -1,7 +1,5 @@
 import xlsx from "xlsx"
-import { NextFunction, Request, Response, Router } from 'express';
-import express from 'express'
-
+import { NextFunction, Request, Response } from 'express';
 import isMongoId from "validator/lib/isMongoId";
 import moment, { isDate } from "moment";
 import { Types } from "mongoose";
@@ -15,7 +13,7 @@ import { User, Asset, IUser } from "../models/user.model";
 import { destroyCloudFile } from "../services/destroyCloudFile";
 import { uploadFileToCloud } from "../services/uploadFileToCloud";
 import { CreateOrEditChecklistRemarkDto, GetChecklistRemarksDto } from "../dtos/checklist-remark.dto";
-import { GetChecklistDto, CreateOrEditChecklistDto, GetChecklistFromExcelDto } from "../dtos/checklist.dto";
+import { GetChecklistDto, CreateOrEditChecklistDto, GetChecklistFromExcelDto, GroupedChecklistDto } from "../dtos/checklist.dto";
 import { CreateOrEditBillDto, GetBillDto } from "../dtos/crm-bill.dto";
 import { CreateOrEditRemarkDto, GetRemarksDto, GetActivitiesTopBarDetailsDto, GetActivitiesOrRemindersDto } from "../dtos/crm-remarks.dto";
 import { GetDriverSystemDto, CreateOrEditDriverSystemDto, UploadDriverSystemPhotoDto } from "../dtos/driver.dto";
@@ -51,12 +49,8 @@ import { SpareDye, ISpareDye } from "../models/spare-dye.model";
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
 import { getBoxes } from "../utils/checklistHelper";
 import { areDatesEqual, previousYear, nextYear, getFirstMonday, parseExcelDate, decimalToTimeForXlsx, hundredDaysAgo } from "../utils/datesHelper";
-import { CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto } from "../dtos/visit_remark.dto";
-import { VisitRemark, IVisitRemark } from "../models/visit_remark.model";
 import { GetDyeStatusReportDto } from "../dtos/dye.dto";
 import { IColumnRowData, IRowData } from "../dtos/table.dto";
-import { GetVisitReportDto } from "../dtos/visit-report.dto";
-import { VisitReport } from "../models/visit-report.model";
 
 export class FeatureController {
 
@@ -251,7 +245,7 @@ export class FeatureController {
                     active: ch.active,
                     serial_no: ch.serial_no,
                     last_remark: ch.last_remark,
-                    score:0,
+                    score: 0,
                     work_title: ch.work_title,
                     group_title: ch.group_title,
                     condition: ch.condition,
@@ -299,71 +293,138 @@ export class FeatureController {
     }
 
     public async GetMobileChecklists(req: Request, res: Response, next: NextFunction) {
-        let checklists: IChecklist[] = []
-        let result: GetChecklistDto[] = []
+        let result: GroupedChecklistDto[] = []
+        let groupedChecklists: { group_title: string, checklists: IChecklist[] }[] = []
         let category = req.query.category
         let stage = req.query.stage
-        if (category !== 'all') {
-            checklists = await Checklist.find({ category: category, assigned_users: req.user?._id }).populate('created_by').populate({
-                path: 'checklist_boxes',
-                match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-            }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users').sort('group_title')
-        }
-        else
-            checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate({
-                path: 'checklist_boxes',
-                match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-            }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users').sort('group_title')
+        groupedChecklists = await Checklist.aggregate([
+            { $match: category !== 'all' ? { category: category, assigned_users: req.user?._id } : { assigned_users: req.user?._id } }
+            ,
+            {
+                $lookup: {
+                    from: 'users', // Replace with the actual collection name for users
+                    localField: 'created_by',
+                    foreignField: '_id',
+                    as: 'created_by'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'checklistcategories', // Replace with the actual collection name for categories
+                    localField: 'category',
+                    foreignField: '_id',
+                    as: 'category'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'updated_by',
+                    foreignField: '_id',
+                    as: 'updated_by'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'checklistboxes',
+                    localField: 'last_10_boxes',
+                    foreignField: '_id',
+                    as: 'last_10_boxes'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'checklistboxes', // Replace with the actual collection name for boxes
+                    localField: 'lastcheckedbox',
+                    foreignField: '_id',
+                    as: 'lastcheckedbox'
+                }
+            },
 
-        if (stage == "open") {
-            checklists = checklists.filter((ch) => {
-                return Boolean(!ch.lastcheckedbox)
-            })
-        }
-        if (stage == "pending" || stage == "done") {
-            checklists = checklists.filter((ch) => {
-                if (ch.lastcheckedbox)
-                    return Boolean(ch.lastcheckedbox.stage == stage)
-            })
-        }
+            {
+                $group: {
+                    _id: '$group_title', // Grouping by group_title
+                    group_title: { $first: '$group_title' }, // Add group title for clarity
+                    checklists: { $push: '$$ROOT' } // Push all checklist items into a group
+                }
+            },
+            {
+                $sort: { group_title: 1 } // Optional: Sort groups alphabetically by work_title
+            }
+        ]);
+        console.log(groupedChecklists[0].checklists[0].last_10_boxes)
+        // checklists = await Checklist.find({ category: category, assigned_users: req.user?._id }).populate('created_by').populate({
+        //     path: 'checklist_boxes',
+        //     match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
+        // }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users').sort('group_title')
 
-        result = checklists.map((ch) => {
+
+        // if (stage == "open") {
+        //     checklists = checklists.filter((ch) => {
+        //         return Boolean(!ch.lastcheckedbox)
+        //     })
+        // }
+        // if (stage == "pending" || stage == "done") {
+        //     checklists = checklists.filter((ch) => {
+        //         if (ch.lastcheckedbox)
+        //             return Boolean(ch.lastcheckedbox.stage == stage)
+        //     })
+        // }
+
+        result = groupedChecklists.map((g) => {
             return {
-                _id: ch._id,
-                active: ch.active,
-                serial_no: ch.serial_no,
-                work_title: ch.work_title,
-                last_remark: ch.last_remark,
-                score:0,
-                group_title: ch.group_title,
-                link: ch.link,
-                condition: ch.condition,
-                expected_number: ch.expected_number,
-                last_checked_box: ch.lastcheckedbox && {
-                    _id: ch.lastcheckedbox._id,
-                    stage: ch.lastcheckedbox.stage,
-                    last_remark: ch.lastcheckedbox.last_remark,
-                    checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                    date: ch.lastcheckedbox.date.toString()
-                }, last_10_boxes: ch.last_10_boxes && ch.last_10_boxes.map((bo) => {
+                group_title: g.group_title,
+                checklists: g.checklists.map((ch) => {
+                    
                     return {
-                        _id: bo._id,
-                        stage: bo.stage,
-                        last_remark: bo.last_remark,
-                        checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                        date: bo.date.toString()
+
+                        _id: ch._id,
+                        active: ch.active,
+                        serial_no: ch.serial_no,
+                        work_title: ch.work_title,
+                        last_remark: ch.last_remark,
+                        score: 0,
+                        group_title: ch.group_title,
+                        link: ch.link,
+                        condition: ch.condition,
+                        expected_number: ch.expected_number,
+                        last_checked_box: ch.lastcheckedbox && {
+                            _id: ch.lastcheckedbox._id,
+                            stage: ch.lastcheckedbox.stage,
+                            last_remark: ch.lastcheckedbox.last_remark,
+                            checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+                            date: new Date(ch.lastcheckedbox.date).toString()
+                        },//@ts-ignore
+                        boxes:  ch.last_10_boxes && ch.last_10_boxes.sort((a, b) => new Date(a.date) - new Date(b.date)).map((bo) => {
+                            return {
+                                _id: bo._id,
+                                stage: bo.stage,
+                                last_remark: bo.last_remark,
+                                checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+                                date: bo.date.toString()
+                            }
+                        }),
+                        category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
+                        frequency: ch.frequency,
+                        assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
+                        created_at: ch.created_at.toString(),
+                        updated_at: ch.updated_at.toString(),//@ts-ignore
+                        last_10_boxes: ch.last_10_boxes && ch.last_10_boxes.sort((a, b) => new Date(a.date) - new Date(b.date)).map((bo) => {
+                            return {
+                                _id: bo._id,
+                                stage: bo.stage,
+                                last_remark: bo.last_remark,
+                                checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+                                date: bo.date.toString()
+                            }
+                        }),
+                        next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
+                        photo: ch.photo?.public_url || "",
+                        created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
+                        updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
+
                     }
-                }),
-                category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
-                frequency: ch.frequency,
-                assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
-                created_at: ch.created_at.toString(),
-                updated_at: ch.updated_at.toString(),
-                boxes: getBoxes(ch, ch.checklist_boxes),
-                next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
-                photo: ch.photo?.public_url || "",
-                created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
-                updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
+                })
             }
         })
         return res.status(200).json(result)
@@ -420,7 +481,7 @@ export class FeatureController {
                         serial_no: ch.serial_no,
                         group_title: ch.group_title,
                         last_remark: ch.last_remark,
-                        score:0,
+                        score: 0,
                         condition: ch.condition,
                         expected_number: ch.expected_number,
                         link: ch.link,
@@ -497,7 +558,7 @@ export class FeatureController {
                         work_title: ch.work_title,
                         serial_no: ch.serial_no,
                         last_remark: ch.last_remark,
-                        score:0,
+                        score: 0,
                         condition: ch.condition,
                         expected_number: ch.expected_number,
                         group_title: ch.group_title,

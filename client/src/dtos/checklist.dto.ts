@@ -1,6 +1,11 @@
 import { GetChecklistBoxDto } from "./checklist-box.dto"
 import { DropDownDto } from "./dropdown.dto"
 
+export type GroupedChecklistDto = {
+    group_title: string, // The grouping key
+    checklists: GetChecklistDto[] // Array of checklists within this group
+}
+
 export type GetChecklistDto = {
     _id: string,
     active: boolean
