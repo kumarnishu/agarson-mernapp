@@ -235,6 +235,12 @@ function ChecklistPage() {
           </Stack>
         </>
       },
+        {
+        accessorKey: 'score',
+        header: ' Score',
+        Cell: (cell) => <>{cell.row.original.score || ""}</>
+      },
+     
       {
         accessorKey: 'last_remark',
         header: ' Last Remark',
@@ -445,7 +451,7 @@ function ChecklistPage() {
     }),
     positionToolbarAlertBanner: 'none',
     enableToolbarInternalActions: false,
-    initialState: { density: 'compact' },
+    initialState: { density: 'compact', grouping: ['group_title'], expanded: true },
     enableRowSelection: false,
     enableColumnPinning: true,
     onSortingChange: setSorting,
@@ -455,10 +461,8 @@ function ChecklistPage() {
 
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
-      columnVisibility,
-      grouping: ['group_title'],
+      columnVisibility: { 'group_title': false },
       sorting,
-      expanded: true,
       columnSizing: columnSizing
     },
     enableBottomToolbar: true,

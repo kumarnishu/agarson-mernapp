@@ -35,13 +35,16 @@ function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box, set
     const formik = useFormik<{
         remark: string,
         stage: string,
+        expected_number: number,
     }>({
         initialValues: {
             remark: remark ? remark.remark : "",
+            expected_number: 0,
             stage: checklist_box ? checklist_box.stage : ""
         },
         validationSchema: Yup.object({
             stage: Yup.string(),
+            expected_number: Yup.number(),
             remark: Yup.string().required("required field")
                 .min(5, 'Must be 5 characters or more')
 
@@ -49,14 +52,26 @@ function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box, set
         }),
         onSubmit: (values: {
             remark: string,
-            stage: string
+            stage: string,
+            expected_number: number
         }) => {
+            let score = 0;
+            if (checklist.condition == 'check-blank' && values.remark && values.stage == 'done') {
+                score = 1
+            }
+            if (checklist.condition == 'check_yesno' && values.remark && values.stage == 'done') {
+                score = 1
+            }
+            if (checklist.condition == 'check_expected_number' && values.remark && values.stage == 'done' && checklist.expected_number > 0) {
+                score = values.expected_number / checklist.expected_number
+            }
             if (remark) {
                 mutate({
                     remark,
                     body: {
                         remark: values.remark,
                         stage: values.stage,
+                        score: score,
                         checklist_box: checklist_box._id,
                         checklist: checklist._id
                     }
@@ -67,6 +82,7 @@ function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box, set
                     body: {
                         remark: values.remark,
                         stage: values.stage,
+                        score: score,
                         checklist_box: checklist_box._id,
                         checklist: checklist._id
                     }
@@ -106,6 +122,21 @@ function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box, set
                     }
                     {...formik.getFieldProps('remark')}
                 />
+                {checklist.condition == "check_expected_number" && <TextField
+                    type='number'
+                    error={
+                        formik.touched.expected_number && formik.errors.expected_number ? true : false
+                    }
+                    required={true}
+                    autoFocus
+                    id="expected_number"
+                    label="Number"
+                    fullWidth
+                    helperText={
+                        formik.touched.expected_number && formik.errors.expected_number ? formik.errors.expected_number : `Expected Number is : ${checklist.expected_number}`
+                    }
+                    {...formik.getFieldProps('expected_number')}
+                />}
 
                 {!remark &&
                     < TextField

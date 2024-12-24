@@ -136,7 +136,7 @@ export class FeatureController {
     }
 
     public async NewChecklistRemark(req: Request, res: Response, next: NextFunction) {
-        const { remark, stage, checklist, checklist_box } = req.body as CreateOrEditChecklistRemarkDto
+        const { remark, stage, checklist, checklist_box, score } = req.body as CreateOrEditChecklistRemarkDto
         if (!remark || !checklist_box || !checklist) return res.status(403).json({ message: "please fill required fields" })
 
         let box = await ChecklistBox.findById(checklist_box).populate('checklist')
@@ -154,6 +154,8 @@ export class FeatureController {
         })
         if (stage)
             box.stage = stage;
+        if (score)
+            box.score = score
         await new_remark.save()
 
         if (req.user) {
@@ -184,6 +186,7 @@ export class FeatureController {
                 checklistTmp.active = true
             checklistTmp.updated_by = req.user
             checklistTmp.updated_at = new Date(Date.now())
+            checklistTmp.last_remark = remark
             await checklistTmp.save()
         }
         return res.status(200).json({ message: "remark added successfully" })
@@ -247,7 +250,8 @@ export class FeatureController {
                     _id: ch._id,
                     active: ch.active,
                     serial_no: ch.serial_no,
-                    last_remark:ch.last_remark,
+                    last_remark: ch.last_remark,
+                    score:0,
                     work_title: ch.work_title,
                     group_title: ch.group_title,
                     condition: ch.condition,
@@ -329,11 +333,12 @@ export class FeatureController {
                 active: ch.active,
                 serial_no: ch.serial_no,
                 work_title: ch.work_title,
+                last_remark: ch.last_remark,
+                score:0,
                 group_title: ch.group_title,
                 link: ch.link,
                 condition: ch.condition,
                 expected_number: ch.expected_number,
-                last_remark:ch.last_remark,
                 last_checked_box: ch.lastcheckedbox && {
                     _id: ch.lastcheckedbox._id,
                     stage: ch.lastcheckedbox.stage,
@@ -414,7 +419,8 @@ export class FeatureController {
                         work_title: ch.work_title,
                         serial_no: ch.serial_no,
                         group_title: ch.group_title,
-                        last_remark:ch.last_remark,
+                        last_remark: ch.last_remark,
+                        score:0,
                         condition: ch.condition,
                         expected_number: ch.expected_number,
                         link: ch.link,
@@ -490,7 +496,8 @@ export class FeatureController {
                         active: ch.active,
                         work_title: ch.work_title,
                         serial_no: ch.serial_no,
-                        last_remark:ch.last_remark,
+                        last_remark: ch.last_remark,
+                        score:0,
                         condition: ch.condition,
                         expected_number: ch.expected_number,
                         group_title: ch.group_title,

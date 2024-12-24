@@ -11,6 +11,7 @@ export type GetChecklistRemarksDto = {
 export type CreateOrEditChecklistRemarkDto = {
     remark: string,
     stage: string,
+    score:number,
     checklist_box: string,
     checklist: string
 }

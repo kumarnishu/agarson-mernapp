@@ -6,6 +6,7 @@ export type GetChecklistDto = {
     active: boolean
     serial_no: string
     last_10_boxes: GetChecklistBoxDto[]
+    score:number
     work_title: string,
     group_title: string,
     photo: string,

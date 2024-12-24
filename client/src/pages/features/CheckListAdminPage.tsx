@@ -346,6 +346,11 @@ function CheckListAdminPage() {
         </>
       },
       {
+        accessorKey: 'score',
+        header: ' Score',
+        Cell: (cell) => <>{cell.row.original.score || ""}</>
+      },
+      {
         accessorKey: 'last_remark',
         header: ' Last Remark',
         Cell: (cell) => <>{cell.row.original.last_remark || ""}</>
@@ -633,7 +638,7 @@ function CheckListAdminPage() {
     }),
     positionToolbarAlertBanner: 'none',
     enableToolbarInternalActions: false,
-    initialState: { density: 'compact' },
+    initialState: { density: 'compact', grouping: ['group_title'], expanded: true, },
     enableRowSelection: false,
     enableColumnPinning: true,
     onSortingChange: setSorting,
@@ -644,10 +649,8 @@ function CheckListAdminPage() {
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility: { 'group_title': false },
-      grouping: ['group_title'],
 
       sorting,
-      expanded: true,
       columnSizing: columnSizing
     },
     enableBottomToolbar: true,
