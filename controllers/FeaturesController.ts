@@ -340,7 +340,13 @@ export class FeatureController {
                     as: 'lastcheckedbox'
                 }
             },
-
+            {
+                $match: stage === 'open'
+                    ? { lastcheckedbox: { $eq: [] } } // No lastcheckedbox
+                    : (stage === 'pending' || stage === 'done')
+                        ? { 'lastcheckedbox.stage': stage } // Match stage in lastcheckedbox
+                        : {}
+            },
             {
                 $group: {
                     _id: '$group_title', // Grouping by group_title
@@ -352,30 +358,13 @@ export class FeatureController {
                 $sort: { group_title: 1 } // Optional: Sort groups alphabetically by work_title
             }
         ]);
-        console.log(groupedChecklists[0].checklists[0].last_10_boxes)
-        // checklists = await Checklist.find({ category: category, assigned_users: req.user?._id }).populate('created_by').populate({
-        //     path: 'checklist_boxes',
-        //     match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-        // }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users').sort('group_title')
 
-
-        // if (stage == "open") {
-        //     checklists = checklists.filter((ch) => {
-        //         return Boolean(!ch.lastcheckedbox)
-        //     })
-        // }
-        // if (stage == "pending" || stage == "done") {
-        //     checklists = checklists.filter((ch) => {
-        //         if (ch.lastcheckedbox)
-        //             return Boolean(ch.lastcheckedbox.stage == stage)
-        //     })
-        // }
-
+        
         result = groupedChecklists.map((g) => {
             return {
                 group_title: g.group_title,
                 checklists: g.checklists.map((ch) => {
-                    
+
                     return {
 
                         _id: ch._id,
@@ -395,7 +384,7 @@ export class FeatureController {
                             checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
                             date: new Date(ch.lastcheckedbox.date).toString()
                         },//@ts-ignore
-                        boxes:  ch.last_10_boxes && ch.last_10_boxes.sort((a, b) => new Date(a.date) - new Date(b.date)).map((bo) => {
+                        boxes: ch.last_10_boxes && ch.last_10_boxes.sort((a, b) => new Date(a.date) - new Date(b.date)).map((bo) => {
                             return {
                                 _id: bo._id,
                                 stage: bo.stage,

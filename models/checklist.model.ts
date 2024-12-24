@@ -12,7 +12,6 @@ export type IChecklist = {
     expected_number: number,
     group_title: string,
     last_remark: string,
-    subchecklists: IChecklist[],
     photo: Asset,
     serial_no: string,
     assigned_users: IUser[],

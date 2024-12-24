@@ -49,10 +49,10 @@ function ChecklistPage() {
   const [dialog, setDialog] = useState<string | undefined>()
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   let previous_date = new Date()
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   let day = previous_date.getDate() - 1
   previous_date.setDate(day)
   previous_date.setHours(0, 0, 0, 0)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'checklist_view', show_assigned_only: true }))
   const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, stage], async () => new FeatureService().GetChecklists({ limit: paginationData?.limit, page: paginationData?.page, id: userId, stage: stage }))
   const { mutate: changedate } = useMutation

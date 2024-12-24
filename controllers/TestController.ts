@@ -5,7 +5,7 @@ import { ExcelDBRemark } from '../models/excel-db-remark.model';
 import { Reference } from '../models/references.model';
 import { Dye } from '../models/dye.model';
 import { Checklist } from '../models/checklist.model';
-import { ChecklistBox } from '../models/checklist-box.model';
+import { ChecklistBox, IChecklistBox } from '../models/checklist-box.model';
 
 export class TestController {
 
@@ -20,8 +20,15 @@ export class TestController {
         let checklists = await Checklist.find({})
         for (let i = 0; i < checklists.length; i++) {
             let ch = checklists[i]
-            let boxes = await ChecklistBox.find({ checklist: checklists[i], date: { $lt: dt2 } }).sort("-date").limit(5)
-
+            let boxes: IChecklistBox[] = []
+            if (ch.frequency == 'daily')
+                boxes = await ChecklistBox.find({ checklist: checklists[i], date: { $lt: dt2 } }).sort("-date").limit(5)
+            if (ch.frequency == 'monthly')
+                boxes = await ChecklistBox.find({ checklist: checklists[i], date: { $lt: dt2 } }).sort("-date").limit(2)
+            if (ch.frequency == 'weekly')
+                boxes = await ChecklistBox.find({ checklist: checklists[i], date: { $lt: dt2 } }).sort("-date").limit(3)
+            if (ch.frequency == 'yearly')
+                boxes = await ChecklistBox.find({ checklist: checklists[i], date: { $lt: dt2 } }).sort("-date").limit(2)
             console.log(boxes)
             //@ts-ignore
             boxes.sort((a, b) => new Date(a.date) - new Date(b.date));
