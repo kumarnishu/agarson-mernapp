@@ -29,10 +29,8 @@ export class TestController {
                 boxes = await ChecklistBox.find({ checklist: checklists[i], date: { $lt: dt2 } }).sort("-date").limit(3)
             if (ch.frequency == 'yearly')
                 boxes = await ChecklistBox.find({ checklist: checklists[i], date: { $lt: dt2 } }).sort("-date").limit(2)
-            console.log(boxes)
             //@ts-ignore
             boxes.sort((a, b) => new Date(a.date) - new Date(b.date));
-
             ch.last_10_boxes = boxes
             await ch.save()
         }

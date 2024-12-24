@@ -628,7 +628,13 @@ export class FeatureController {
         if (await Checklist.findOne({ serial_no: serial_no })) {
             return res.status(400).json({ message: "serial no already exists" })
         }
+        let dt1 = new Date()
+        dt1.setHours(0, 0, 0, 0)
+        let dt2 = new Date()
 
+        dt2.setDate(dt1.getDate() + 1)
+        dt2.setHours(0)
+        dt2.setMinutes(0)
         let checklistboxes: IChecklistBox[] = []
         let checklist = new Checklist({
             category: category,
@@ -740,9 +746,23 @@ export class FeatureController {
                 current_date.setFullYear(new Date(current_date).getFullYear() + 1)
             }
         }
-        console.log(checklistboxes.length)
         checklist.checklist_boxes = checklistboxes;
         await checklist.save();
+
+        let ch = checklist
+        let boxes: IChecklistBox[] = []
+        if (ch.frequency == 'daily')
+            boxes = await ChecklistBox.find({ checklist: checklist, date: { $lt: dt2 } }).sort("-date").limit(5)
+        if (ch.frequency == 'monthly')
+            boxes = await ChecklistBox.find({ checklist: checklist, date: { $lt: dt2 } }).sort("-date").limit(2)
+        if (ch.frequency == 'weekly')
+            boxes = await ChecklistBox.find({ checklist: checklist, date: { $lt: dt2 } }).sort("-date").limit(3)
+        if (ch.frequency == 'yearly')
+            boxes = await ChecklistBox.find({ checklist: checklist, date: { $lt: dt2 } }).sort("-date").limit(2)
+        //@ts-ignore
+        boxes.sort((a, b) => new Date(a.date) - new Date(b.date));
+        ch.last_10_boxes = boxes
+        await ch.save()
         return res.status(201).json({ message: `new Checklist added` });
     }
     public async EditChecklist(req: Request, res: Response, next: NextFunction) {
