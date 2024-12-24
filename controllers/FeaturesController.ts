@@ -361,7 +361,7 @@ export class FeatureController {
         })
         return res.status(200).json(result)
     }
-    
+
     // public async GetMobileChecklists(req: Request, res: Response, next: NextFunction) {
     //     let result: GroupedChecklistDto[] = []
     //     let groupedChecklists: { group_title: string, checklists: IChecklist[] }[] = []
@@ -995,10 +995,10 @@ export class FeatureController {
                     validated = false
                     statusText = `must be one from given :  ${conditions.toString()}`
                 }
-                if (!_id && await Checklist.findOne({ serial_no: serial_no })) {
-                    validated = false
-                    statusText = `serial no ${serial_no} exists`
-                }
+                // if (!_id && await Checklist.findOne({ serial_no: serial_no })) {
+                //     validated = false
+                //     statusText = `serial no ${serial_no} exists`
+                // }
                 if (category) {
                     let cat = await ChecklistCategory.findOne({ category: category.trim().toLowerCase() })
                     if (!cat) {
@@ -1046,10 +1046,11 @@ export class FeatureController {
                 if (validated) {
                     if (_id && isMongoId(String(_id))) {
                         let ch = await Checklist.findById(_id)
-                        if (ch && ch.serial_no && ch.serial_no !== String(serial_no).trim().toLowerCase())
-                            if (await Checklist.findOne({ serial_no: serial_no })) {
-                                return res.status(400).json({ message: "serial no already exists" })
-                            }
+                        // if (ch && ch.serial_no && ch.serial_no !== String(serial_no).trim().toLowerCase())
+                        //     if (await Checklist.findOne({ serial_no: serial_no })) {
+                        //         return res.status(400).json({ message: "serial no already exists" })
+                        //     }
+                            
 
                         await Checklist.findByIdAndUpdate(checklist._id, {
                             work_title: work_title,
