@@ -52,7 +52,7 @@ function ChecklistPage() {
   previous_date.setHours(0, 0, 0, 0)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'checklist_view', show_assigned_only: true }))
-  const { data, isLoading } = useQuery<AxiosResponse<GetChecklistDto[]>, BackendError>(["checklists", userId, stage], async () => new FeatureService().GetChecklists({  id: userId, stage: stage }))
+  const { data, isLoading } = useQuery<AxiosResponse<GetChecklistDto[]>, BackendError>(["checklists", userId, stage], async () => new FeatureService().GetChecklists({ id: userId, stage: stage }))
   const { mutate: changedate } = useMutation
     <AxiosResponse<any>, BackendError, { id: string, next_date: string }>
     (new FeatureService().ChangeChecklistNextDate, {
@@ -90,11 +90,13 @@ function ChecklistPage() {
       {
         accessorKey: 'group_title',
         header: ' Group Title',
-        Cell: (cell) => <>{cell.row.original.group_title || ""}</>
+        Cell: (cell) => <>{cell.row.original.group_title || ""}</>,
+
       },
       {
         accessorKey: 'work_title',
         header: ' Work Title',
+        Footer: "Score",
         AggregatedCell: (cell) => <h4 style={{ textAlign: 'left', width: '100%' }} title={cell.row.original.group_title && cell.row.original.group_title.toUpperCase()}>{cell.row.original.group_title && cell.row.original.group_title.toUpperCase()}</h4>,
 
         Cell: (cell) => <span title={cell.row.original.group_title} >
@@ -281,7 +283,8 @@ function ChecklistPage() {
       {
         accessorKey: 'score',
         header: ' Score',
-        Cell: (cell) => <>{cell.row.original.score || 0}</>
+        Cell: (cell) => <>{cell.row.original.score || 0}</>,
+        Footer: ({ table }) => <b>{parseFloat(Number(table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.score) }, 0) / table.getFilteredRowModel().rows.length).toFixed(2))}</b>
       },
       {
         accessorKey: 'photo',

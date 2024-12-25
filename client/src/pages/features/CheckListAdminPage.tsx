@@ -144,6 +144,7 @@ function CheckListAdminPage() {
       {
         accessorKey: 'work_title',
         header: ' Work Title',
+        Footer: "Score",
         AggregatedCell: (cell) => <h4 style={{ textAlign: 'left', width: '100%' }} title={cell.row.original.group_title && cell.row.original.group_title.toUpperCase()}>{cell.row.original.group_title && cell.row.original.group_title.toUpperCase()}</h4>,
         Cell: (cell) => <span title={cell.row.original.work_title} >
           {cell.row.original.link && cell.row.original.link != "" ?
@@ -394,7 +395,8 @@ function CheckListAdminPage() {
        {
         accessorKey: 'score',
         header: ' Score',
-        Cell: (cell) => <>{cell.row.original.score || 0}</>
+        Cell: (cell) => <>{cell.row.original.score || 0}</>,
+        Footer: ({ table }) => <b>{parseFloat(Number(table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.score) }, 0) / table.getFilteredRowModel().rows.length).toFixed(2))}</b>
       },
       {
         accessorKey: 'photo',
