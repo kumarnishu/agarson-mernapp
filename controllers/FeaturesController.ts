@@ -291,203 +291,203 @@ export class FeatureController {
         else
             return res.status(400).json({ message: "bad request" })
     }
-    public async GetMobileChecklists(req: Request, res: Response, next: NextFunction) {
-        let checklists: IChecklist[] = []
-        let result: GetChecklistDto[] = []
-        let category = req.query.category
-        let stage = req.query.stage
-        if (category !== 'all') {
-            checklists = await Checklist.find({ category: category, assigned_users: req.user?._id }).populate('created_by').populate({
-                path: 'checklist_boxes',
-                match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-            }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users').sort('group_title')
-        }
-        else
-            checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate({
-                path: 'checklist_boxes',
-                match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-            }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users').sort('group_title')
-
-        if (stage == "open") {
-            checklists = checklists.filter((ch) => {
-                return Boolean(!ch.lastcheckedbox)
-            })
-        }
-        if (stage == "pending" || stage == "done") {
-            checklists = checklists.filter((ch) => {
-                if (ch.lastcheckedbox)
-                    return Boolean(ch.lastcheckedbox.stage == stage)
-            })
-        }
-
-        result = checklists.map((ch) => {
-            return {
-                _id: ch._id,
-                active: ch.active,
-                serial_no: ch.serial_no,
-                work_title: ch.work_title,
-                last_remark: ch.last_remark,
-                score:0,
-                group_title: ch.group_title,
-                link: ch.link,
-                condition: ch.condition,
-                expected_number: ch.expected_number,
-                last_checked_box: ch.lastcheckedbox && {
-                    _id: ch.lastcheckedbox._id,
-                    stage: ch.lastcheckedbox.stage,
-                    last_remark: ch.lastcheckedbox.last_remark,
-                    checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                    date: ch.lastcheckedbox.date.toString()
-                }, last_10_boxes: ch.last_10_boxes && ch.last_10_boxes.map((bo) => {
-                    return {
-                        _id: bo._id,
-                        stage: bo.stage,
-                        last_remark: bo.last_remark,
-                        checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                        date: bo.date.toString()
-                    }
-                }),
-                category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
-                frequency: ch.frequency,
-                assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
-                created_at: ch.created_at.toString(),
-                updated_at: ch.updated_at.toString(),
-                boxes: getBoxes(ch, ch.checklist_boxes),
-                next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
-                photo: ch.photo?.public_url || "",
-                created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
-                updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
-            }
-        })
-        return res.status(200).json(result)
-    }
-
     // public async GetMobileChecklists(req: Request, res: Response, next: NextFunction) {
-    //     let result: GroupedChecklistDto[] = []
-    //     let groupedChecklists: { group_title: string, checklists: IChecklist[] }[] = []
+    //     let checklists: IChecklist[] = []
+    //     let result: GetChecklistDto[] = []
     //     let category = req.query.category
     //     let stage = req.query.stage
-    //     groupedChecklists = await Checklist.aggregate([
-    //         { $match: category !== 'all' ? { category: category, assigned_users: req.user?._id } : { assigned_users: req.user?._id } }
-    //         ,
-    //         {
-    //             $lookup: {
-    //                 from: 'users', // Replace with the actual collection name for users
-    //                 localField: 'created_by',
-    //                 foreignField: '_id',
-    //                 as: 'created_by'
-    //             }
-    //         },
-    //         {
-    //             $lookup: {
-    //                 from: 'checklistcategories', // Replace with the actual collection name for categories
-    //                 localField: 'category',
-    //                 foreignField: '_id',
-    //                 as: 'category'
-    //             }
-    //         },
-    //         {
-    //             $lookup: {
-    //                 from: 'users',
-    //                 localField: 'updated_by',
-    //                 foreignField: '_id',
-    //                 as: 'updated_by'
-    //             }
-    //         },
-    //         {
-    //             $lookup: {
-    //                 from: 'checklistboxes',
-    //                 localField: 'last_10_boxes',
-    //                 foreignField: '_id',
-    //                 as: 'last_10_boxes'
-    //             }
-    //         },
-    //         {
-    //             $lookup: {
-    //                 from: 'checklistboxes', // Replace with the actual collection name for boxes
-    //                 localField: 'lastcheckedbox',
-    //                 foreignField: '_id',
-    //                 as: 'lastcheckedbox'
-    //             }
-    //         },
-    //         {
-    //             $match: stage === 'open'
-    //                 ? { lastcheckedbox: { $eq: [] } } // No lastcheckedbox
-    //                 : (stage === 'pending' || stage === 'done')
-    //                     ? { 'lastcheckedbox.stage': stage } // Match stage in lastcheckedbox
-    //                     : {}
-    //         },
-    //         {
-    //             $group: {
-    //                 _id: '$group_title', // Grouping by group_title
-    //                 group_title: { $first: '$group_title' }, // Add group title for clarity
-    //                 checklists: { $push: '$$ROOT' } // Push all checklist items into a group
-    //             }
-    //         },
-    //         {
-    //             $sort: { group_title: 1 } // Optional: Sort groups alphabetically by work_title
-    //         }
-    //     ]);
+    //     if (category !== 'all') {
+    //         checklists = await Checklist.find({ category: category, assigned_users: req.user?._id }).populate('created_by').populate({
+    //             path: 'checklist_boxes',
+    //             match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
+    //         }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users').sort('group_title')
+    //     }
+    //     else
+    //         checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate({
+    //             path: 'checklist_boxes',
+    //             match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
+    //         }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users').sort('group_title')
 
-        
-    //     result = groupedChecklists.map((g) => {
+    //     if (stage == "open") {
+    //         checklists = checklists.filter((ch) => {
+    //             return Boolean(!ch.lastcheckedbox)
+    //         })
+    //     }
+    //     if (stage == "pending" || stage == "done") {
+    //         checklists = checklists.filter((ch) => {
+    //             if (ch.lastcheckedbox)
+    //                 return Boolean(ch.lastcheckedbox.stage == stage)
+    //         })
+    //     }
+
+    //     result = checklists.map((ch) => {
     //         return {
-    //             group_title: g.group_title,
-    //             checklists: g.checklists.map((ch) => {
-
+    //             _id: ch._id,
+    //             active: ch.active,
+    //             serial_no: ch.serial_no,
+    //             work_title: ch.work_title,
+    //             last_remark: ch.last_remark,
+    //             score:0,
+    //             group_title: ch.group_title,
+    //             link: ch.link,
+    //             condition: ch.condition,
+    //             expected_number: ch.expected_number,
+    //             last_checked_box: ch.lastcheckedbox && {
+    //                 _id: ch.lastcheckedbox._id,
+    //                 stage: ch.lastcheckedbox.stage,
+    //                 last_remark: ch.lastcheckedbox.last_remark,
+    //                 checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+    //                 date: ch.lastcheckedbox.date.toString()
+    //             }, last_10_boxes: ch.last_10_boxes && ch.last_10_boxes.map((bo) => {
     //                 return {
-
-    //                     _id: ch._id,
-    //                     active: ch.active,
-    //                     serial_no: ch.serial_no,
-    //                     work_title: ch.work_title,
-    //                     last_remark: ch.last_remark,
-    //                     score: 0,
-    //                     group_title: ch.group_title,
-    //                     link: ch.link,
-    //                     condition: ch.condition,
-    //                     expected_number: ch.expected_number,
-    //                     last_checked_box: ch.lastcheckedbox && {
-    //                         _id: ch.lastcheckedbox._id,
-    //                         stage: ch.lastcheckedbox.stage,
-    //                         last_remark: ch.lastcheckedbox.last_remark,
-    //                         checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-    //                         date: new Date(ch.lastcheckedbox.date).toString()
-    //                     },//@ts-ignore
-    //                     boxes: ch.last_10_boxes && ch.last_10_boxes.sort((a, b) => new Date(a.date) - new Date(b.date)).map((bo) => {
-    //                         return {
-    //                             _id: bo._id,
-    //                             stage: bo.stage,
-    //                             last_remark: bo.last_remark,
-    //                             checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-    //                             date: bo.date.toString()
-    //                         }
-    //                     }),
-    //                     category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
-    //                     frequency: ch.frequency,
-    //                     assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
-    //                     created_at: ch.created_at.toString(),
-    //                     updated_at: ch.updated_at.toString(),//@ts-ignore
-    //                     last_10_boxes: ch.last_10_boxes && ch.last_10_boxes.sort((a, b) => new Date(a.date) - new Date(b.date)).map((bo) => {
-    //                         return {
-    //                             _id: bo._id,
-    //                             stage: bo.stage,
-    //                             last_remark: bo.last_remark,
-    //                             checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-    //                             date: bo.date.toString()
-    //                         }
-    //                     }),
-    //                     next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
-    //                     photo: ch.photo?.public_url || "",
-    //                     created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
-    //                     updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
-
+    //                     _id: bo._id,
+    //                     stage: bo.stage,
+    //                     last_remark: bo.last_remark,
+    //                     checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+    //                     date: bo.date.toString()
     //                 }
-    //             })
+    //             }),
+    //             category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
+    //             frequency: ch.frequency,
+    //             assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
+    //             created_at: ch.created_at.toString(),
+    //             updated_at: ch.updated_at.toString(),
+    //             boxes: getBoxes(ch, ch.checklist_boxes),
+    //             next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
+    //             photo: ch.photo?.public_url || "",
+    //             created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
+    //             updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
     //         }
     //     })
     //     return res.status(200).json(result)
     // }
+
+    public async GetMobileChecklists(req: Request, res: Response, next: NextFunction) {
+        let result: GroupedChecklistDto[] = []
+        let groupedChecklists: { group_title: string, checklists: IChecklist[] }[] = []
+        let category = req.query.category
+        let stage = req.query.stage
+        groupedChecklists = await Checklist.aggregate([
+            { $match: category !== 'all' ? { category: category, assigned_users: req.user?._id } : { assigned_users: req.user?._id } }
+            ,
+            {
+                $lookup: {
+                    from: 'users', // Replace with the actual collection name for users
+                    localField: 'created_by',
+                    foreignField: '_id',
+                    as: 'created_by'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'checklistcategories', // Replace with the actual collection name for categories
+                    localField: 'category',
+                    foreignField: '_id',
+                    as: 'category'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'updated_by',
+                    foreignField: '_id',
+                    as: 'updated_by'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'checklistboxes',
+                    localField: 'last_10_boxes',
+                    foreignField: '_id',
+                    as: 'last_10_boxes'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'checklistboxes', // Replace with the actual collection name for boxes
+                    localField: 'lastcheckedbox',
+                    foreignField: '_id',
+                    as: 'lastcheckedbox'
+                }
+            },
+            {
+                $match: stage === 'open'
+                    ? { lastcheckedbox: { $eq: [] } } // No lastcheckedbox
+                    : (stage === 'pending' || stage === 'done')
+                        ? { 'lastcheckedbox.stage': stage } // Match stage in lastcheckedbox
+                        : {}
+            },
+            {
+                $group: {
+                    _id: '$group_title', // Grouping by group_title
+                    group_title: { $first: '$group_title' }, // Add group title for clarity
+                    checklists: { $push: '$$ROOT' } // Push all checklist items into a group
+                }
+            },
+            {
+                $sort: { group_title: 1 } // Optional: Sort groups alphabetically by work_title
+            }
+        ]);
+
+        
+        result = groupedChecklists.map((g) => {
+            return {
+                group_title: g.group_title,
+                checklists: g.checklists.map((ch) => {
+
+                    return {
+
+                        _id: ch._id,
+                        active: ch.active,
+                        serial_no: ch.serial_no,
+                        work_title: ch.work_title,
+                        last_remark: ch.last_remark,
+                        score: 0,
+                        group_title: ch.group_title,
+                        link: ch.link,
+                        condition: ch.condition,
+                        expected_number: ch.expected_number,
+                        last_checked_box: ch.lastcheckedbox && {
+                            _id: ch.lastcheckedbox._id,
+                            stage: ch.lastcheckedbox.stage,
+                            last_remark: ch.lastcheckedbox.last_remark,
+                            checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+                            date: new Date(ch.lastcheckedbox.date).toString()
+                        },//@ts-ignore
+                        boxes: ch.last_10_boxes && ch.last_10_boxes.sort((a, b) => new Date(a.date) - new Date(b.date)).map((bo) => {
+                            return {
+                                _id: bo._id,
+                                stage: bo.stage,
+                                last_remark: bo.last_remark,
+                                checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+                                date: bo.date.toString()
+                            }
+                        }),
+                        category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
+                        frequency: ch.frequency,
+                        assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
+                        created_at: ch.created_at.toString(),
+                        updated_at: ch.updated_at.toString(),//@ts-ignore
+                        last_10_boxes: ch.last_10_boxes && ch.last_10_boxes.sort((a, b) => new Date(a.date) - new Date(b.date)).map((bo) => {
+                            return {
+                                _id: bo._id,
+                                stage: bo.stage,
+                                last_remark: bo.last_remark,
+                                checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+                                date: bo.date.toString()
+                            }
+                        }),
+                        next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
+                        photo: ch.photo?.public_url || "",
+                        created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
+                        updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
+
+                    }
+                })
+            }
+        })
+        return res.status(200).json(result)
+    }
     public async GetChecklistsReport(req: Request, res: Response, next: NextFunction) {
         let stage = req.query.stage
         let limit = Number(req.query.limit)
