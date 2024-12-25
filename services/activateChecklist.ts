@@ -21,7 +21,7 @@ export async function activateChecklist() {
             let box = await ChecklistBox.findOne({ checklist: works[i], date: { $gte: dt1, $lt: dt2 } })
             if (box) {
                 let boxes = work.last_10_boxes
-                if (boxes && boxes.length == 6)
+                if (boxes && boxes.length == 5)
                     boxes = boxes.slice(1)
                 boxes.push(box)
                 work.last_10_boxes = boxes;
@@ -40,7 +40,7 @@ export async function activateChecklist() {
             let box = await ChecklistBox.findOne({ checklist: works[i], date: { $gte: getPrevMonday(), $lt: getNextMonday() } })
            if (box) {
                 let boxes = work.last_10_boxes
-                if (boxes && boxes.length == 6)
+                if (boxes && boxes.length == 5)
                     boxes = boxes.slice(1)
                 boxes.push(box)
                 work.last_10_boxes = boxes;
@@ -66,7 +66,7 @@ export async function activateChecklist() {
             let box = await ChecklistBox.findOne({ checklist: works[i], date: { $gte: dt1, $lt: dt2 } })
            if (box) {
                 let boxes = work.last_10_boxes
-                if (boxes && boxes.length == 6)
+                if (boxes && boxes.length == 5)
                     boxes = boxes.slice(1)
                 boxes.push(box)
                 work.last_10_boxes = boxes;
@@ -91,7 +91,7 @@ export async function activateChecklist() {
             let box = await ChecklistBox.findOne({ checklist: works[i], date: { $gte: dt1, $lt: dt2 } })
            if (box) {
                 let boxes = work.last_10_boxes
-                if (boxes && boxes.length == 6)
+                if (boxes && boxes.length == 5)
                     boxes = boxes.slice(1)
                 boxes.push(box)
                 work.last_10_boxes = boxes;
