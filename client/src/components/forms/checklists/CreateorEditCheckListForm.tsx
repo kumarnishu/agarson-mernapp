@@ -41,7 +41,7 @@ function CreateorEditCheckListForm({ checklist, setDialog }: { checklist?: GetCh
             serial_no: checklist ? checklist.serial_no : "",
             work_title: checklist ? checklist.work_title : "",
             group_title: checklist ? checklist.group_title : "",
-            condition: checklist ? checklist.condition : "",
+            condition: checklist ? checklist.condition : "check-blank",
             expected_number: checklist ? checklist.expected_number : 0,
             link: checklist ? checklist.link : "",
             assigned_users: checklist ? checklist.assigned_users.map((user) => { return user.id }) : [],

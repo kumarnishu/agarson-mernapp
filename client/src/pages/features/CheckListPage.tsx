@@ -86,7 +86,7 @@ function ChecklistPage() {
           <Button onClick={() => {
             setChecklist(cell.row.original)
             setDialog('ViewChecklistRemarksDialog')
-          }} size="small" sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0, p: 0.5,fontSize:9 }} color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? toTitleCase(cell.row.original.last_checked_box.stage) : "Open"}</Button>
+          }} size="small" sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0, p: 0.5, fontSize: 9 }} color={cell.row.original.last_checked_box?.stage != 'done' ? (cell.row.original.last_checked_box?.stage == 'pending' ? "warning" : 'error') : 'success'} variant='contained'>{cell.row.original.last_checked_box ? toTitleCase(cell.row.original.last_checked_box.stage) : "Open"}</Button>
         </Tooltip>
       },
       {
@@ -235,12 +235,12 @@ function ChecklistPage() {
           </Stack>
         </>
       },
-        {
+      {
         accessorKey: 'score',
         header: ' Score',
         Cell: (cell) => <>{cell.row.original.score || ""}</>
       },
-     
+
       {
         accessorKey: 'last_remark',
         header: ' Last Remark',
@@ -298,7 +298,6 @@ function ChecklistPage() {
     columns, columnFilterDisplayMode: 'popover',
     data: checklists, //10,000 rows       
     enableColumnResizing: true,
-    enableGrouping: true,
     enableColumnVirtualization: true, enableStickyFooter: true,
     muiTableFooterRowProps: () => ({
       sx: {
@@ -441,18 +440,19 @@ function ChecklistPage() {
       sx: {
         backgroundColor: row.row.getIsGrouped() ? 'lightgrey' : 'inherit', // Light blue for grouped rows
         fontWeight: row.row.getIsGrouped() ? 'bold' : 'normal', // Bold text for grouped rows
-        border: 'none',
-        outline: 0
+
       },
     }),
-    muiTableBodyCellProps: () => ({
+    muiTableBodyCellProps: (cell) => ({
       sx: {
+        border: cell.row.original.group_title != "" ? 'none' : '1px solid lightgrey;',
       },
     }),
     positionToolbarAlertBanner: 'none',
     enableToolbarInternalActions: false,
     initialState: { density: 'compact', grouping: ['group_title'], expanded: true },
-    enableRowSelection: false,
+    enableRowSelection: true,
+    enableGrouping: true,
     enableColumnPinning: true,
     onSortingChange: setSorting,
     enableTableFooter: true,
@@ -461,8 +461,8 @@ function ChecklistPage() {
 
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
-      columnVisibility: { 'group_title': false },
-      sorting,
+      columnVisibility: { 'group_title': false, "mrt-row-expand": false, },
+      sorting: [{ desc: false, id: 'group_title' }],
       columnSizing: columnSizing
     },
     enableBottomToolbar: true,

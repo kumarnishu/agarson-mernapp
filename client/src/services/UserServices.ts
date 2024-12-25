@@ -20,7 +20,7 @@ export class UserService {
     return await apiClient.post("signup", body);
   };
   public async NewUser(body: FormData) {
-    return await apiClient.post("user_dropdowns", body);
+    return await apiClient.post("users", body);
   };
   public async NewCustomer(body: FormData) {
     return await apiClient.post("customers", body);

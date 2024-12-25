@@ -252,7 +252,7 @@ function NewUserForm({setDialog}:{setDialog: React.Dispatch<React.SetStateAction
                
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
-                    fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Register"}
+                    fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Submit"}
                 </Button>
             </Stack>
         </form>

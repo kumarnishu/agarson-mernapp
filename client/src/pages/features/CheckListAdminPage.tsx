@@ -628,18 +628,17 @@ function CheckListAdminPage() {
       sx: {
         backgroundColor: row.row.getIsGrouped() ? 'lightgrey' : 'inherit', // Light blue for grouped rows
         fontWeight: row.row.getIsGrouped() ? 'bold' : 'normal', // Bold text for grouped rows
-        border: 'none',
-        outline: 0
       },
     }),
-    muiTableBodyCellProps: () => ({
+    muiTableBodyCellProps: (cell) => ({
       sx: {
+        border: cell.row.original.group_title != "" ? 'none' : '1px solid lightgrey;',
       },
     }),
     positionToolbarAlertBanner: 'none',
     enableToolbarInternalActions: false,
-    initialState: { density: 'compact', grouping: ['group_title'], expanded: true, },
-    enableRowSelection: false,
+    initialState: { density: 'compact', grouping: ['group_title'], expanded: true },
+    enableRowSelection: true,
     enableColumnPinning: true,
     onSortingChange: setSorting,
     enableTableFooter: true,
@@ -648,9 +647,9 @@ function CheckListAdminPage() {
 
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
-      columnVisibility: { 'group_title': false },
+      columnVisibility: { 'group_title': false, "mrt-row-expand": false, },
 
-      sorting,
+      sorting: [{ desc: false, id: 'group_title' }],
       columnSizing: columnSizing
     },
     enableBottomToolbar: true,
