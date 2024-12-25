@@ -13,7 +13,7 @@ export type IChecklist = {
     group_title: string,
     last_remark: string,
     photo: Asset,
-    serial_no: string,
+    serial_no: number,
     assigned_users: IUser[],
     last_10_boxes: IChecklistBox[]
     lastcheckedbox: IChecklistBox,
@@ -35,9 +35,8 @@ const ChecklistSchema = new mongoose.Schema<IChecklist, mongoose.Model<IChecklis
         default: true,
     },
     serial_no: {
-        type: String,
-        lowercase: true,
-        index: true
+        type: Number,
+        unique: true
     },
     last_remark: String,
     work_title: {

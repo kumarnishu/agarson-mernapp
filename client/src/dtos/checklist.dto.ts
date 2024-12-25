@@ -9,7 +9,7 @@ export type GroupedChecklistDto = {
 export type GetChecklistDto = {
     _id: string,
     active: boolean
-    serial_no: string
+    serial_no: number
     last_10_boxes: GetChecklistBoxDto[]
     work_title: string,
     group_title: string,
@@ -32,7 +32,7 @@ export type GetChecklistDto = {
 }
 export type CreateOrEditChecklistDto = {
     work_title: string,
-    serial_no: string,
+    serial_no: number,
     group_title: string,
     category: string,
     link: string,
@@ -45,7 +45,7 @@ export type CreateOrEditChecklistDto = {
 export type GetChecklistFromExcelDto = {
     _id?: string,
     work_title: string,
-    serial_no: string,
+    serial_no: number,
     group_title: string,
     category: string,
     link: string,

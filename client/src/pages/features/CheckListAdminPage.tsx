@@ -635,7 +635,8 @@ function CheckListAdminPage() {
     }),
     muiTableBodyCellProps: (cell) => ({
       sx: {
-        border: cell.row.original.group_title != "" ? 'none' : '1px solid lightgrey;',
+        border: '1px solid lightgrey;',
+        borderBottom: cell.row.original.group_title != "" ? 'none' : '1px solid lightgrey;',
       },
     }),
     positionToolbarAlertBanner: 'none',

@@ -212,19 +212,19 @@ export class FeatureController {
         if (!Number.isNaN(limit) && !Number.isNaN(page)) {
             if (req.user?.assigned_users && req.user?.assigned_users.length > 0 && id == 'all') {
                 {
-                    checklists = await Checklist.find({ assigned_users: { $in: user_ids } }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes').sort('group_title').skip((page - 1) * limit).limit(limit)
+                    checklists = await Checklist.find({ assigned_users: { $in: user_ids } }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes').sort('serial_no').skip((page - 1) * limit).limit(limit)
                     count = await Checklist.find().countDocuments()
 
                 }
             }
             else if (id == 'all') {
-                checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('lastcheckedbox').populate('last_10_boxes').populate('assigned_users').sort('group_title').skip((page - 1) * limit).limit(limit)
+                checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('lastcheckedbox').populate('last_10_boxes').populate('assigned_users').sort('serial_no').skip((page - 1) * limit).limit(limit)
                 count = await Checklist.find({ assigned_users: req.user?._id }).countDocuments()
 
             }
 
             else {
-                checklists = await Checklist.find({ assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes').sort('group_title').skip((page - 1) * limit).limit(limit)
+                checklists = await Checklist.find({ assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes').sort('serial_no').skip((page - 1) * limit).limit(limit)
                 count = await Checklist.find({ assigned_users: id }).countDocuments()
             }
             if (stage == "open") {
@@ -300,13 +300,13 @@ export class FeatureController {
     //         checklists = await Checklist.find({ category: category, assigned_users: req.user?._id }).populate('created_by').populate({
     //             path: 'checklist_boxes',
     //             match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-    //         }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users').sort('group_title')
+    //         }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users').sort('serial_no')
     //     }
     //     else
     //         checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate({
     //             path: 'checklist_boxes',
     //             match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-    //         }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users').sort('group_title')
+    //         }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users').sort('serial_no')
 
     //     if (stage == "open") {
     //         checklists = checklists.filter((ch) => {
@@ -429,7 +429,7 @@ export class FeatureController {
             }
         ]);
 
-        
+
         result = groupedChecklists.map((g) => {
             return {
                 group_title: g.group_title,
@@ -507,13 +507,13 @@ export class FeatureController {
             if (req.user?.is_admin && id == 'all') {
                 {
 
-                    checklists = await Checklist.find().populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('assigned_users').populate('last_10_boxes').sort('group_title').skip((page - 1) * limit).limit(limit)
+                    checklists = await Checklist.find().populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('assigned_users').populate('last_10_boxes').sort('serial_no').skip((page - 1) * limit).limit(limit)
 
                     count = await Checklist.find().countDocuments()
                 }
             }
             else if (id == 'all') {
-                checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('last_10_boxes').populate('assigned_users').sort('group_title').skip((page - 1) * limit).limit(limit)
+                checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('last_10_boxes').populate('assigned_users').sort('serial_no').skip((page - 1) * limit).limit(limit)
                 count = await Checklist.find({ user: req.user?._id }).countDocuments()
             }
 
@@ -523,7 +523,7 @@ export class FeatureController {
                         path: 'checklist_boxes',
                         match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
                     })
-                    .sort('group_title').skip((page - 1) * limit).limit(limit)
+                    .sort('serial_no').skip((page - 1) * limit).limit(limit)
                 count = await Checklist.find({ user: id }).countDocuments()
             }
 
@@ -875,7 +875,7 @@ export class FeatureController {
                 return res.status(500).json({ message: "file uploading error" })
             }
         }
-        if (checklist.serial_no !== serial_no.trim().toLowerCase())
+        if (checklist.serial_no !== serial_no)
             if (await Checklist.findOne({ serial_no: serial_no })) {
                 return res.status(400).json({ message: "serial no already exists" })
             }
@@ -967,7 +967,7 @@ export class FeatureController {
                 let checklist = workbook_response[i]
                 let checklistboxes: IChecklistBox[] = []
                 let work_title: string | null = checklist.work_title
-                let serial_no: string | null = checklist.serial_no
+                let serial_no: number | null = checklist.serial_no
                 let group_title: string | null = checklist.group_title || ""
                 let category: string | null = checklist.category
                 let link: string | null = checklist.link
@@ -1002,10 +1002,10 @@ export class FeatureController {
                     validated = false
                     statusText = `must be one from given :  ${conditions.toString()}`
                 }
-                // if (!_id && await Checklist.findOne({ serial_no: serial_no })) {
-                //     validated = false
-                //     statusText = `serial no ${serial_no} exists`
-                // }
+                if (await Checklist.findOne({ serial_no: serial_no })) {
+                    validated = false
+                    statusText = `serial no ${serial_no} exists`
+                }
                 if (category) {
                     let cat = await ChecklistCategory.findOne({ category: category.trim().toLowerCase() })
                     if (!cat) {
@@ -1053,25 +1053,27 @@ export class FeatureController {
                 if (validated) {
                     if (_id && isMongoId(String(_id))) {
                         let ch = await Checklist.findById(_id)
-                        // if (ch && ch.serial_no && ch.serial_no !== String(serial_no).trim().toLowerCase())
-                        //     if (await Checklist.findOne({ serial_no: serial_no })) {
-                        //         return res.status(400).json({ message: "serial no already exists" })
-                        //     }
-                            
+                        if (ch && ch.serial_no && ch.serial_no !== serial_no)
+                            if (await Checklist.findOne({ serial_no: serial_no })) {
+                                validated = false
+                                statusText = `serial no ${serial_no} exists`
+                            }
 
-                        await Checklist.findByIdAndUpdate(checklist._id, {
-                            work_title: work_title,
-                            serial_no: serial_no,
-                            group_title: group_title,
-                            condition: condition,
-                            expected_number: expected_number,
-                            category: category,
-                            link: link,
-                            assigned_users: users,
-                            updated_at: new Date(),
-                            updated_by: req.user
-                        })
-                        statusText = "updated"
+                        if (validated) {
+                            await Checklist.findByIdAndUpdate(checklist._id, {
+                                work_title: work_title,
+                                serial_no: serial_no,
+                                group_title: group_title,
+                                condition: condition,
+                                expected_number: expected_number,
+                                category: category,
+                                link: link,
+                                assigned_users: users,
+                                updated_at: new Date(),
+                                updated_by: req.user
+                            })
+                            statusText = "updated"
+                        }
                     }
                     else {
                         let checklist = new Checklist({
@@ -1180,7 +1182,7 @@ export class FeatureController {
                         boxes.sort((a, b) => new Date(a.date) - new Date(b.date));
                         ch.last_10_boxes = boxes
                         await ch.save()
-                        
+
                         statusText = "created"
                     }
 
@@ -1197,7 +1199,7 @@ export class FeatureController {
     public async DownloadExcelTemplateForCreatechecklists(req: Request, res: Response, next: NextFunction) {
         let checklists: GetChecklistFromExcelDto[] = [{
             _id: "umc3m9344343vn934",
-            serial_no: '1',
+            serial_no: 1,
             category: 'maintenance',
             work_title: 'machine work',
             group_title: 'please check all the parts',

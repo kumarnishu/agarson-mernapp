@@ -43,41 +43,49 @@ export class TestController {
 
     public async test(req: Request, res: Response, next: NextFunction) {
         try {
-            const dt1 = new Date();
-            dt1.setHours(0, 0, 0, 0);
+            const documents = await Checklist.find({}, '_id').sort({ _id: 1 });
 
-            const dt2 = new Date(dt1);
-            dt2.setDate(dt2.getDate() + 1);
-            const cat = req.query.category
-            // Pre-fetch all checklists
-            const checklists = await Checklist.find({ category: cat });
+            for (let i = 0; i < documents.length; i++) {
+                await Checklist.updateOne(
+                    { _id: documents[i]._id }, 
+                    { $set: { serial_no: i + 1 } }
+                );
+            }
+            // const dt1 = new Date();
+            // dt1.setHours(0, 0, 0, 0);
 
-            const frequencyLimits: Record<string, number> = {
-                daily: 5,
-                weekly: 3,
-                monthly: 2,
-                yearly: 2,
-            };
+            // const dt2 = new Date(dt1);
+            // dt2.setDate(dt2.getDate() + 1);
+            // const cat = req.query.category
+            // // Pre-fetch all checklists
+            // const checklists = await Checklist.find({ category: cat });
 
-            // Process each checklist
-            const checklistUpdates = checklists.map(async (ch) => {
-                const limit = frequencyLimits[ch.frequency] || 0;
+            // const frequencyLimits: Record<string, number> = {
+            //     daily: 5,
+            //     weekly: 3,
+            //     monthly: 2,
+            //     yearly: 2,
+            // };
 
-                if (limit > 0) {
-                    const boxes = await ChecklistBox.find({
-                        checklist: ch._id,
-                        date: { $lt: dt2 }
-                    })
-                        .sort({ date: -1 }) // Sort by date descending
-                        .limit(limit);
+            // // Process each checklist
+            // const checklistUpdates = checklists.map(async (ch) => {
+            //     const limit = frequencyLimits[ch.frequency] || 0;
 
-                    ch.last_10_boxes = boxes.reverse(); // Reverse to have ascending order
-                    return ch.save();
-                }
-            });
+            //     if (limit > 0) {
+            //         const boxes = await ChecklistBox.find({
+            //             checklist: ch._id,
+            //             date: { $lt: dt2 }
+            //         })
+            //             .sort({ date: -1 }) // Sort by date descending
+            //             .limit(limit);
 
-            // Await all save operations
-            await Promise.all(checklistUpdates);
+            //         ch.last_10_boxes = boxes.reverse(); // Reverse to have ascending order
+            //         return ch.save();
+            //     }
+            // });
+
+            // // Await all save operations
+            // await Promise.all(checklistUpdates);
 
             return res.status(200).json({ message: "success" });
         } catch (error) {
