@@ -38,7 +38,7 @@ function CreateorEditCheckListForm({ checklist, setDialog }: { checklist?: GetCh
     const formik = useFormik<CreateOrEditChecklistDto>({
         initialValues: {
             category: checklist ? checklist.category.id : "",
-            serial_no: checklist ? checklist.serial_no : "",
+            serial_no: checklist ? checklist.serial_no : 0,
             work_title: checklist ? checklist.work_title : "",
             group_title: checklist ? checklist.group_title : "",
             condition: checklist ? checklist.condition : "check-blank",

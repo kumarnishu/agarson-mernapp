@@ -46,10 +46,9 @@ export class TestController {
             const documents = await Checklist.find({}, '_id').sort({ _id: 1 });
 
             for (let i = 0; i < documents.length; i++) {
-                await Checklist.updateOne(
-                    { _id: documents[i]._id }, 
-                    { $set: { serial_no: i + 1 } }
-                );
+                let ch = documents[i]
+                ch.serial_no = Number(ch.serial_no)
+                await ch.save()
             }
             // const dt1 = new Date();
             // dt1.setHours(0, 0, 0, 0);
