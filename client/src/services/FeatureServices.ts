@@ -466,17 +466,17 @@ export class FeatureService {
 
 
 
-  public async GetChecklists({ limit, page, start_date, end_date, id, stage }: { limit: number | undefined, page: number | undefined, start_date?: string, end_date?: string, id?: string, stage: string }) {
+  public async GetChecklists({ start_date, end_date, id, stage }: { start_date?: string, end_date?: string, id?: string, stage: string }) {
     if (id)
-      return await apiClient.get(`checklists/?id=${id}&start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&stage=${stage}`)
+      return await apiClient.get(`checklists/?id=${id}&start_date=${start_date}&end_date=${end_date}&stage=${stage}`)
     else
-      return await apiClient.get(`checklists/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&stage=${stage}`)
+      return await apiClient.get(`checklists/?start_date=${start_date}&end_date=${end_date}&stage=${stage}`)
   }
-  public async GetChecklistReports({ limit, page, start_date, end_date, id, stage }: { limit: number | undefined, page: number | undefined, start_date?: string, end_date?: string, id?: string, stage: string }) {
+  public async GetChecklistReports({ start_date, end_date, id, stage }: { start_date?: string, end_date?: string, id?: string, stage: string }) {
     if (id)
-      return await apiClient.get(`checklists/report/?id=${id}&start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&stage=${stage}`)
+      return await apiClient.get(`checklists/report/?id=${id}&start_date=${start_date}&end_date=${end_date}&stage=${stage}`)
     else
-      return await apiClient.get(`checklists/report/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&stage=${stage}`)
+      return await apiClient.get(`checklists/report/?start_date=${start_date}&end_date=${end_date}&stage=${stage}`)
   }
   public async BulkDeleteChecklists(body: { ids: string[] }) {
     return await apiClient.post(`bulk/delete/checklists`, body)

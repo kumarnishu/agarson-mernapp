@@ -115,8 +115,16 @@ export default function ExcelDBPage() {
         }
       else if (item.type == "string") {
         if (item.key == 'last remark' || item.key == 'next call')
-          return { accessorKey: item.key, header: item.header, Footer: "", Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip> }
-        return { accessorKey: item.key, header: item.header, Footer: "", }
+          return {
+            accessorKey: item.key,
+            header: item.header,
+            Footer: "", Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>
+          }
+        return {
+          accessorKey: item.key,
+          header: item.header,
+          Footer: "",
+        }
       }
       else if (item.type == "timestamp")
         return { accessorKey: item.key, header: item.header, Footer: "", }

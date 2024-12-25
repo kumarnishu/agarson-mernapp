@@ -10,7 +10,6 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_Row, MRT_
 import PopUp from '../../components/popup/PopUp'
 import { Delete, Edit, FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
 import { DownloadFile } from '../../utils/DownloadFile'
-import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import DeleteCheckListDialog from '../../components/dialogs/checklists/DeleteCheckListDialog'
@@ -35,7 +34,6 @@ function CheckListAdminPage() {
   const [users, setUsers] = useState<DropDownDto[]>([])
   const [checklist, setChecklist] = useState<GetChecklistDto>()
   const [checklists, setChecklists] = useState<GetChecklistDto[]>([])
-  const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
   const [flag, setFlag] = useState(1);
   const [stage, setStage] = useState('open')
   const [checklistBox, setChecklistBox] = useState<GetChecklistBoxDto>()
@@ -64,7 +62,7 @@ function CheckListAdminPage() {
   let day = previous_date.getDate() - 3
   previous_date.setDate(day)
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'checklist_view', show_assigned_only: false }))
-  const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date, stage], async () => new FeatureService().GetChecklistReports({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date, stage: stage }))
+  const { data, isLoading } = useQuery<AxiosResponse<GetChecklistDto[]>, BackendError>(["checklists", userId, dates?.start_date, dates?.end_date, stage], async () => new FeatureService().GetChecklistReports({ id: userId, start_date: dates?.start_date, end_date: dates?.end_date, stage: stage }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { mutate: changedate } = useMutation
     <AxiosResponse<any>, BackendError, { id: string, next_date: string }>
@@ -330,11 +328,7 @@ function CheckListAdminPage() {
           }
         </>
       },
-      {
-        accessorKey: 'score',
-        header: ' Score',
-        Cell: (cell) => <>{cell.row.original.score || ""}</>
-      },
+     
       {
         accessorKey: 'last_remark',
         header: ' Last Remark',
@@ -397,6 +391,11 @@ function CheckListAdminPage() {
 
         </>
       },
+       {
+        accessorKey: 'score',
+        header: ' Score',
+        Cell: (cell) => <>{cell.row.original.score || 0}</>
+      },
       {
         accessorKey: 'photo',
         header: 'Photo',
@@ -452,10 +451,10 @@ function CheckListAdminPage() {
         }
       },
     }),
+    
     muiTableContainerProps: (table) => ({
-      sx: { maxHeight: table.table.getState().isFullScreen ? 'auto' : '64vh' }
+      sx: { maxHeight: table.table.getState().isFullScreen ? 'auto' : '70vh' }
     }),
-
     muiTableHeadRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',
@@ -623,10 +622,6 @@ function CheckListAdminPage() {
         </Stack>
       </Box >
     ),
-    renderBottomToolbarCustomActions: () => (
-      <DBPagination paginationData={paginationData} refetch={refetch} setPaginationData={setPaginationData} />
-
-    ),
     muiTableBodyRowProps: (row) => ({
       sx: {
         backgroundColor: row.row.getIsGrouped() ? 'lightgrey' : 'inherit', // Light blue for grouped rows
@@ -655,7 +650,6 @@ function CheckListAdminPage() {
       sorting: [{ desc: false, id: 'group_title' }],
       columnSizing: columnSizing
     },
-    enableBottomToolbar: true,
     enableGlobalFilter: false,
     enablePagination: false,
     manualPagination: true
@@ -673,13 +667,7 @@ function CheckListAdminPage() {
 
   useEffect(() => {
     if (data) {
-      setChecklists(data.data.result)
-      setPaginationData({
-        ...paginationData,
-        page: data.data.page,
-        limit: data.data.limit,
-        total: data.data.total
-      })
+      setChecklists(data.data)
     }
   }, [data])
   useEffect(() => {

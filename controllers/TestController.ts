@@ -43,13 +43,7 @@ export class TestController {
 
     public async test(req: Request, res: Response, next: NextFunction) {
         try {
-            const documents = await Checklist.find()
-
-            for (let i = 0; i < documents.length; i++) {
-                let ch = documents[i]
-                ch.serial_no = Number(ch.serial_no)
-                await ch.save()
-            }
+            await ChecklistBox.updateMany({ stage: { $eq: 'done' } }, { score: 1 })
             // const dt1 = new Date();
             // dt1.setHours(0, 0, 0, 0);
 

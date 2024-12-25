@@ -8,7 +8,6 @@ import moment from 'moment'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
 import { DownloadFile } from '../../utils/DownloadFile'
-import DBPagination from '../../components/pagination/DBpagination'
 import { queryClient } from '../../main'
 import { currentYear, getNextMonday, getPrevMonday, nextMonth, nextYear, previousMonth, previousYear } from '../../utils/datesHelper'
 import { toTitleCase } from '../../utils/TitleCase'
@@ -30,7 +29,6 @@ function ChecklistPage() {
   const [stage, setStage] = useState('open')
   const [checklist, setChecklist] = useState<GetChecklistDto>()
   const [checklists, setChecklists] = useState<GetChecklistDto[]>([])
-  const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
   const [checklistBox, setChecklistBox] = useState<GetChecklistBoxDto>()
   const [categories, setCategories] = useState<DropDownDto[]>([])
   const [userId, setUserId] = useState<string>('all')
@@ -54,7 +52,7 @@ function ChecklistPage() {
   previous_date.setHours(0, 0, 0, 0)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'checklist_view', show_assigned_only: true }))
-  const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetChecklistDto[], page: number, total: number, limit: number }>, BackendError>(["checklists", userId, stage], async () => new FeatureService().GetChecklists({ limit: paginationData?.limit, page: paginationData?.page, id: userId, stage: stage }))
+  const { data, isLoading } = useQuery<AxiosResponse<GetChecklistDto[]>, BackendError>(["checklists", userId, stage], async () => new FeatureService().GetChecklists({  id: userId, stage: stage }))
   const { mutate: changedate } = useMutation
     <AxiosResponse<any>, BackendError, { id: string, next_date: string }>
     (new FeatureService().ChangeChecklistNextDate, {
@@ -222,11 +220,7 @@ function ChecklistPage() {
           </Stack>
         </>
       },
-      {
-        accessorKey: 'score',
-        header: ' Score',
-        Cell: (cell) => <>{cell.row.original.score || ""}</>
-      },
+
 
       {
         accessorKey: 'last_remark',
@@ -283,6 +277,11 @@ function ChecklistPage() {
           />
 
         </>
+      },
+      {
+        accessorKey: 'score',
+        header: ' Score',
+        Cell: (cell) => <>{cell.row.original.score || 0}</>
       },
       {
         accessorKey: 'photo',
@@ -437,10 +436,6 @@ function ChecklistPage() {
         </Stack>
       </Box >
     ),
-    renderBottomToolbarCustomActions: () => (
-      <DBPagination paginationData={paginationData} refetch={refetch} setPaginationData={setPaginationData} />
-
-    ),
     muiTableBodyRowProps: (row) => ({
       sx: {
         backgroundColor: row.row.getIsGrouped() ? 'lightgrey' : 'inherit', // Light blue for grouped rows
@@ -450,7 +445,8 @@ function ChecklistPage() {
     }),
     muiTableBodyCellProps: (cell) => ({
       sx: {
-        border: cell.row.original.group_title != "" ? 'none' : '1px solid lightgrey;',
+        border: '1px solid lightgrey;',
+        borderBottom: cell.row.original.group_title != "" ? 'none' : '1px solid lightgrey;',
       },
     }),
     positionToolbarAlertBanner: 'none',
@@ -488,13 +484,7 @@ function ChecklistPage() {
 
   useEffect(() => {
     if (data) {
-      setChecklists(data.data.result)
-      setPaginationData({
-        ...paginationData,
-        page: data.data.page,
-        limit: data.data.limit,
-        total: data.data.total
-      })
+      setChecklists(data.data)
     }
   }, [data])
   useEffect(() => {

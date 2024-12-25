@@ -47,10 +47,10 @@ import { IShoeWeight, ShoeWeight } from "../models/shoe-weight.model";
 import { ISoleThickness, SoleThickness } from "../models/sole-thickness.model";
 import { SpareDye, ISpareDye } from "../models/spare-dye.model";
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
-import { getBoxes } from "../utils/checklistHelper";
 import { areDatesEqual, previousYear, nextYear, getFirstMonday, parseExcelDate, decimalToTimeForXlsx, hundredDaysAgo } from "../utils/datesHelper";
 import { GetDyeStatusReportDto } from "../dtos/dye.dto";
 import { IColumnRowData, IRowData } from "../dtos/table.dto";
+import { getChecklistScore } from "../utils/getChecklistScore";
 
 export class FeatureController {
 
@@ -202,95 +202,81 @@ export class FeatureController {
 
     public async GetChecklists(req: Request, res: Response, next: NextFunction) {
         let stage = req.query.stage
-        let limit = Number(req.query.limit)
-        let page = Number(req.query.page)
         let id = req.query.id
         let checklists: IChecklist[] = []
-        let count = 0
         let result: GetChecklistDto[] = []
+        let score = 0
         let user_ids = req.user?.assigned_users.map((user: IUser) => { return user._id }) || []
-        if (!Number.isNaN(limit) && !Number.isNaN(page)) {
-            if (req.user?.assigned_users && req.user?.assigned_users.length > 0 && id == 'all') {
-                {
-                    checklists = await Checklist.find({ assigned_users: { $in: user_ids } }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes').skip((page - 1) * limit).limit(limit)
-                    count = await Checklist.find().countDocuments()
-
-                }
+        if (req.user?.assigned_users && req.user?.assigned_users.length > 0 && id == 'all') {
+            {
+                checklists = await Checklist.find({ assigned_users: { $in: user_ids } }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes')
             }
-            else if (id == 'all') {
-                checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('lastcheckedbox').populate('last_10_boxes').populate('assigned_users').skip((page - 1) * limit).limit(limit)
-                count = await Checklist.find({ assigned_users: req.user?._id }).countDocuments()
+        }
+        else if (id == 'all') {
+            checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('lastcheckedbox').populate('last_10_boxes').populate('assigned_users')
 
-            }
+        }
 
-            else {
-                checklists = await Checklist.find({ assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes').skip((page - 1) * limit).limit(limit)
-                count = await Checklist.find({ assigned_users: id }).countDocuments()
-            }
-            if (stage == "open") {
-                checklists = checklists.filter((ch) => {
-                    return Boolean(!ch.lastcheckedbox)
-                })
-            }
-            if (stage == "pending" || stage == "done") {
-                checklists = checklists.filter((ch) => {
-                    if (ch.lastcheckedbox)
-                        return Boolean(ch.lastcheckedbox.stage == stage)
-                })
-            }
-
-            result = checklists.map((ch) => {
-                return {
-                    _id: ch._id,
-                    active: ch.active,
-                    serial_no: ch.serial_no,
-                    last_remark: ch.last_remark,
-                    score: 0,
-                    work_title: ch.work_title,
-                    group_title: ch.group_title,
-                    condition: ch.condition,
-                    expected_number: ch.expected_number,
-                    link: ch.link,
-                    last_checked_box: ch.lastcheckedbox && {
-                        _id: ch.lastcheckedbox._id,
-                        stage: ch.lastcheckedbox.stage,
-                        last_remark: ch.lastcheckedbox.last_remark,
-                        checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                        date: ch.lastcheckedbox.date.toString()
-                    },
-                    last_10_boxes: ch.last_10_boxes && ch.last_10_boxes.map((bo) => {
-                        return {
-                            _id: bo._id,
-                            stage: bo.stage,
-                            last_remark: bo.last_remark,
-                            checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                            date: bo.date.toString()
-                        }
-                    }),
-                    category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
-                    frequency: ch.frequency,
-                    assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
-                    created_at: ch.created_at.toString(),
-                    updated_at: ch.updated_at.toString(),
-                    boxes: [],
-                    next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
-                    photo: ch.photo?.public_url || "",
-                    created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
-                    updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
-                }
-            })
-
-
-            return res.status(200).json({
-                result,
-                total: Math.ceil(count / limit),
-                page: page,
-                limit: limit
+        else {
+            checklists = await Checklist.find({ assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes')
+        }
+        if (stage == "open") {
+            checklists = checklists.filter((ch) => {
+                return Boolean(!ch.lastcheckedbox)
             })
         }
-        else
-            return res.status(400).json({ message: "bad request" })
+        if (stage == "pending" || stage == "done") {
+            checklists = checklists.filter((ch) => {
+                if (ch.lastcheckedbox)
+                    return Boolean(ch.lastcheckedbox.stage == stage)
+            })
+        }
+
+        result = checklists.map((ch) => {
+            return {
+                _id: ch._id,
+                active: ch.active,
+                serial_no: ch.serial_no,
+                last_remark: ch.last_remark,
+                score: getChecklistScore(ch.last_10_boxes),
+                work_title: ch.work_title,
+                group_title: ch.group_title,
+                condition: ch.condition,
+                expected_number: ch.expected_number,
+                link: ch.link,
+                last_checked_box: ch.lastcheckedbox && {
+                    _id: ch.lastcheckedbox._id,
+                    stage: ch.lastcheckedbox.stage,
+                    last_remark: ch.lastcheckedbox.last_remark,
+                    checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+                    date: ch.lastcheckedbox.date.toString()
+                },
+                last_10_boxes: ch.last_10_boxes && ch.last_10_boxes.map((bo) => {
+                    return {
+                        _id: bo._id,
+                        stage: bo.stage,
+                        last_remark: bo.last_remark,
+                        checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+                        date: bo.date.toString()
+                    }
+                }),
+                category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
+                frequency: ch.frequency,
+                assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
+                created_at: ch.created_at.toString(),
+                updated_at: ch.updated_at.toString(),
+                boxes: [],
+                next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
+                photo: ch.photo?.public_url || "",
+                created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
+                updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
+            }
+        })
+
+
+        return res.status(200).json(result)
     }
+
     // public async GetMobileChecklists(req: Request, res: Response, next: NextFunction) {
     //     let checklists: IChecklist[] = []
     //     let result: GetChecklistDto[] = []
@@ -367,6 +353,7 @@ export class FeatureController {
         let groupedChecklists: { group_title: string, checklists: IChecklist[] }[] = []
         let category = req.query.category
         let stage = req.query.stage
+        let score = 0
         groupedChecklists = await Checklist.aggregate([
             { $match: category !== 'all' ? { category: category, assigned_users: req.user?._id } : { assigned_users: req.user?._id } }
             ,
@@ -442,7 +429,7 @@ export class FeatureController {
                         serial_no: ch.serial_no,
                         work_title: ch.work_title,
                         last_remark: ch.last_remark,
-                        score: 0,
+                        score: getChecklistScore(ch.last_10_boxes),
                         group_title: ch.group_title,
                         link: ch.link,
                         condition: ch.condition,
@@ -490,8 +477,6 @@ export class FeatureController {
     }
     public async GetChecklistsReport(req: Request, res: Response, next: NextFunction) {
         let stage = req.query.stage
-        let limit = Number(req.query.limit)
-        let page = Number(req.query.page)
         let id = req.query.id
         let start_date = req.query.start_date
         let end_date = req.query.end_date
@@ -502,176 +487,98 @@ export class FeatureController {
         dt1.setHours(0, 0, 0, 0)
         dt2.setHours(0, 0, 0, 0)
         let result: GetChecklistDto[] = []
+        let score = 0
+        if (req.user?.is_admin && id == 'all') {
+            {
 
-        if (!Number.isNaN(limit) && !Number.isNaN(page)) {
-            if (req.user?.is_admin && id == 'all') {
-                {
+                checklists = await Checklist.find().populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('assigned_users').populate('last_10_boxes')
 
-                    checklists = await Checklist.find().populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('assigned_users').populate('last_10_boxes').skip((page - 1) * limit).limit(limit)
-
-                    count = await Checklist.find().countDocuments()
-                }
+                count = await Checklist.find().countDocuments()
             }
-            else if (id == 'all') {
-                checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('last_10_boxes').populate('assigned_users').skip((page - 1) * limit).limit(limit)
-                count = await Checklist.find({ user: req.user?._id }).countDocuments()
-            }
+        }
+        else if (id == 'all') {
+            checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('last_10_boxes').populate('assigned_users')
+            count = await Checklist.find({ user: req.user?._id }).countDocuments()
+        }
 
-            else {
-                checklists = await Checklist.find({ assigned_users: id }).populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('last_10_boxes').populate('assigned_users')
-                    .populate({
-                        path: 'checklist_boxes',
-                        match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-                    })
-                    .skip((page - 1) * limit).limit(limit)
-                count = await Checklist.find({ user: id }).countDocuments()
-            }
-
-
-
-            if (dt2.getDate() - dt1.getDate() == 1 && id == 'all') {
-
-
-                result = checklists.map((ch) => {
-                    return {
-                        _id: ch._id,
-                        active: ch.active,
-                        work_title: ch.work_title,
-                        serial_no: ch.serial_no,
-                        group_title: ch.group_title,
-                        last_remark: ch.last_remark,
-                        score: 0,
-                        condition: ch.condition,
-                        expected_number: ch.expected_number,
-                        link: ch.link,
-                        last_checked_box: ch.last_10_boxes[1] && {
-                            _id: ch.last_10_boxes[1]._id,
-                            stage: ch.last_10_boxes[1].stage,
-                            last_remark: ch.last_10_boxes[1].last_remark,
-                            checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                            date: ch.last_10_boxes[1].date.toString()
-                        },
-                        category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
-                        frequency: ch.frequency,
-                        assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
-                        created_at: ch.created_at.toString(),
-                        updated_at: ch.updated_at.toString(),
-                        last_10_boxes: ch.last_10_boxes && ch.last_10_boxes.filter((b) => {
-                            return b.date >= dt1 && b.date < dt2
-                        }).map((bo) => {
-                            return {
-                                _id: bo._id,
-                                stage: bo.stage,
-                                last_remark: bo.last_remark,
-                                checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                                date: bo.date.toString()
-                            }
-                        }),
-                        boxes: ch.last_10_boxes && ch.last_10_boxes.filter((b) => {
-                            return b.date >= dt1 && b.date < dt2
-                        }).map((bo) => {
-                            return {
-                                _id: bo._id,
-                                stage: bo.stage,
-                                last_remark: bo.last_remark,
-                                checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                                date: bo.date.toString()
-                            }
-                        }),
-                        next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
-                        photo: ch.photo?.public_url || "",
-                        created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
-                        updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
-                    }
+        else {
+            checklists = await Checklist.find({ assigned_users: id }).populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('last_10_boxes').populate('assigned_users')
+                .populate({
+                    path: 'checklist_boxes',
+                    match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
                 })
 
-                if (stage == "open") {
-                    result = result.filter((ch) => {
-                        return Boolean(ch.last_checked_box?.stage == 'open')
-                    })
-                }
-                if (stage == "pending" || stage == "done") {
-                    result = result.filter((ch) => {
-                        if (ch.last_checked_box)
-                            return Boolean(ch.last_checked_box.stage == stage)
-                    })
-                }
-            }
-            else {
-
-                if (stage == "open") {
-                    checklists = checklists.filter((ch) => {
-                        return Boolean(!ch.lastcheckedbox)
-                    })
-                }
-                if (stage == "pending" || stage == "done") {
-                    checklists = checklists.filter((ch) => {
-                        if (ch.lastcheckedbox)
-                            return Boolean(ch.lastcheckedbox.stage == stage)
-                    })
-                }
-                result = checklists.map((ch) => {
-                    return {
-                        _id: ch._id,
-                        active: ch.active,
-                        work_title: ch.work_title,
-                        serial_no: ch.serial_no,
-                        last_remark: ch.last_remark,
-                        score: 0,
-                        condition: ch.condition,
-                        expected_number: ch.expected_number,
-                        group_title: ch.group_title,
-                        link: ch.link,
-                        last_checked_box: ch.lastcheckedbox && {
-                            _id: ch.lastcheckedbox._id,
-                            stage: ch.lastcheckedbox.stage,
-                            last_remark: ch.lastcheckedbox.last_remark,
-                            checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                            date: ch.lastcheckedbox.date.toString()
-                        },
-                        category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
-                        frequency: ch.frequency,
-                        assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
-                        created_at: ch.created_at.toString(),
-                        updated_at: ch.updated_at.toString(),
-                        last_10_boxes: ch.last_10_boxes && ch.last_10_boxes.map((bo) => {
-                            return {
-                                _id: bo._id,
-                                stage: bo.stage,
-                                last_remark: bo.last_remark,
-                                checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                                date: bo.date.toString()
-                            }
-                        }),
-                        boxes: ch.checklist_boxes.filter((b) => {
-                            return b.date >= dt1 && b.date < dt2
-                        }).map((bo) => {
-                            return {
-                                _id: bo._id,
-                                stage: bo.stage,
-                                last_remark: bo.last_remark,
-                                checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-                                date: bo.date.toString()
-                            }
-                        }),
-                        next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
-                        photo: ch.photo?.public_url || "",
-                        created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
-                        updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
-                    }
-                })
-            }
+            count = await Checklist.find({ user: id }).countDocuments()
+        }
 
 
-            return res.status(200).json({
-                result,
-                total: Math.ceil(count / limit),
-                page: page,
-                limit: limit
+
+
+
+        if (stage == "open") {
+            checklists = checklists.filter((ch) => {
+                return Boolean(!ch.lastcheckedbox)
             })
         }
-        else
-            return res.status(400).json({ message: "bad request" })
+        if (stage == "pending" || stage == "done") {
+            checklists = checklists.filter((ch) => {
+                if (ch.lastcheckedbox)
+                    return Boolean(ch.lastcheckedbox.stage == stage)
+            })
+        }
+        result = checklists.map((ch) => {
+            return {
+                _id: ch._id,
+                active: ch.active,
+                work_title: ch.work_title,
+                serial_no: ch.serial_no,
+                last_remark: ch.last_remark,
+                score: id == 'all' ? getChecklistScore(ch.last_10_boxes) : getChecklistScore(ch.checklist_boxes.filter((b) => {
+                    return b.date >= dt1 && b.date < dt2
+                })),
+                condition: ch.condition,
+                expected_number: ch.expected_number,
+                group_title: ch.group_title,
+                link: ch.link,
+                last_checked_box: ch.lastcheckedbox && {
+                    _id: ch.lastcheckedbox._id,
+                    stage: ch.lastcheckedbox.stage,
+                    last_remark: ch.lastcheckedbox.last_remark,
+                    checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+                    date: ch.lastcheckedbox.date.toString()
+                },
+                category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
+                frequency: ch.frequency,
+                assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
+                created_at: ch.created_at.toString(),
+                updated_at: ch.updated_at.toString(),
+                last_10_boxes: ch.last_10_boxes && ch.last_10_boxes.map((bo) => {
+                    return {
+                        _id: bo._id,
+                        stage: bo.stage,
+                        last_remark: bo.last_remark,
+                        checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+                        date: bo.date.toString()
+                    }
+                }),
+                boxes: ch.checklist_boxes.filter((b) => {
+                    return b.date >= dt1 && b.date < dt2
+                }).map((bo) => {
+                    return {
+                        _id: bo._id,
+                        stage: bo.stage,
+                        last_remark: bo.last_remark,
+                        checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
+                        date: bo.date.toString()
+                    }
+                }),
+                next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
+                photo: ch.photo?.public_url || "",
+                created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
+                updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
+            }
+        })
+        return res.status(200).json(result)
     }
     public async CreateChecklist(req: Request, res: Response, next: NextFunction) {
         let body = JSON.parse(req.body.body)
