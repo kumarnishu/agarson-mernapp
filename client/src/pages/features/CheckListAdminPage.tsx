@@ -157,21 +157,7 @@ function CheckListAdminPage() {
           }
         </span>
       },
-      {
-        accessorKey: 'assigned_users.value',
-        header: 'Responsible',
 
-        filter: 'custom',
-        enableColumnFilter: true,
-        Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.label }).toString() || ""}</>,
-        filterFn: (row, columnId, filterValue) => {
-          console.log(columnId)
-          if (!Array.isArray(row.original.assigned_users)) return false;
-          return row.original.assigned_users.some((user) =>
-            user.label.toLowerCase().includes(filterValue.toLowerCase())
-          );
-        },
-      },
 
       {
         accessorKey: 'last_10_boxes',
@@ -183,79 +169,78 @@ function CheckListAdminPage() {
               {cell.row.original && cell.row.original.last_10_boxes.map((b) => (
                 <>
                   {
-                    cell.row.original.frequency == 'daily' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
-                      <Button
-                        sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0.3, pl: 1 }}
-                        onClick={() => {
-                          setChecklistBox(b);
-                          setChecklist(cell.row.original)
-                          setDialog('ViewChecklistBoxRemarksDialog')
-                        }}
-                        size="small"
-                        disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) > new Date()}
-                        variant="contained"
-                        color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
-                      >
-                        {new Date(b.date).getDate()}
-                      </Button>
-                    </Tooltip>
-                  }
-                  {
-                    cell.row.original.frequency == 'weekly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
-                      <Button
-                        sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0.3, pl: 1 }}
-                        onClick={() => {
-                          setChecklistBox(b);
-                          setChecklist(cell.row.original)
-                          setDialog('ViewChecklistBoxRemarksDialog')
-                        }}
-                        size="small"
-                        disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= new Date(getNextMonday())}
-                        variant="contained"
-                        color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
-                      >
-                        {new Date(b.date).getDate()}
-                      </Button>
-                    </Tooltip>
-                  }
-                  {
-                    cell.row.original.frequency == 'monthly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
-                      <Button
-                        sx={{ borderRadius: 4, maxHeight: '15px', minWidth: '10px', m: 0.3 }}
-                        onClick={() => {
-                          setChecklistBox(b);
-                          setChecklist(cell.row.original)
-                          setDialog('ViewChecklistBoxRemarksDialog')
+                    cell.row.original.frequency == 'daily' &&
+                    <Button title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark}
+                      sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0.3, pl: 1 }}
+                      onClick={() => {
+                        setChecklistBox(b);
+                        setChecklist(cell.row.original)
+                        setDialog('ViewChecklistBoxRemarksDialog')
+                      }}
+                      size="small"
+                      disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) > new Date()}
+                      variant="contained"
+                      color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
+                    >
+                      {new Date(b.date).getDate()}
+                    </Button>
 
-                        }}
-                        size="small"
-                        disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= nextMonth}
-                        variant="contained"
-                        color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
-                      >
-                        {monthNames[new Date(b.date).getMonth()]}
-                      </Button>
-                    </Tooltip>
                   }
                   {
-                    cell.row.original.frequency == 'yearly' && <Tooltip title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark} key={b.date}>
-                      <Button
-                        sx={{ borderRadius: 4, maxHeight: '15px', minWidth: '10px', m: 0.3 }}
-                        onClick={() => {
-                          console.log(new Date(b.date))
-                          console.log(new Date(previous_date))
-                          setChecklistBox(b);
-                          setChecklist(cell.row.original)
-                          setDialog('ViewChecklistBoxRemarksDialog')
-                        }}
-                        size="small"
-                        disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) > currentYear}
-                        variant="contained"
-                        color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
-                      >
-                        {new Date(b.date).getFullYear()}
-                      </Button>
-                    </Tooltip>
+                    cell.row.original.frequency == 'weekly' &&
+                    <Button title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark}
+                      sx={{ borderRadius: 10, maxHeight: '15px', minWidth: '10px', m: 0.3, pl: 1 }}
+                      onClick={() => {
+                        setChecklistBox(b);
+                        setChecklist(cell.row.original)
+                        setDialog('ViewChecklistBoxRemarksDialog')
+                      }}
+                      size="small"
+                      disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= new Date(getNextMonday())}
+                      variant="contained"
+                      color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
+                    >
+                      {new Date(b.date).getDate()}
+                    </Button>
+                  }
+                  {
+                    cell.row.original.frequency == 'monthly' &&
+                    <Button title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark}
+                      sx={{ borderRadius: 4, maxHeight: '15px', minWidth: '10px', m: 0.3 }}
+                      onClick={() => {
+                        setChecklistBox(b);
+                        setChecklist(cell.row.original)
+                        setDialog('ViewChecklistBoxRemarksDialog')
+
+                      }}
+                      size="small"
+                      disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) >= nextMonth}
+                      variant="contained"
+                      color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
+                    >
+                      {monthNames[new Date(b.date).getMonth()]}
+                    </Button>
+
+                  }
+                  {
+                    cell.row.original.frequency == 'yearly' &&
+                    <Button title={b.stage == "open" ? moment(new Date(b.date)).format('LL') : b.last_remark}
+                      sx={{ borderRadius: 4, maxHeight: '15px', minWidth: '10px', m: 0.3 }}
+                      onClick={() => {
+                        console.log(new Date(b.date))
+                        console.log(new Date(previous_date))
+                        setChecklistBox(b);
+                        setChecklist(cell.row.original)
+                        setDialog('ViewChecklistBoxRemarksDialog')
+                      }}
+                      size="small"
+                      disabled={new Date(new Date(b.date).setHours(0, 0, 0, 0)) > currentYear}
+                      variant="contained"
+                      color={b.stage != 'done' ? (b.stage == 'pending' ? "warning" : 'error') : 'success'}
+                    >
+                      {new Date(b.date).getFullYear()}
+                    </Button>
+
                   }
                 </>
               ))}
@@ -353,7 +338,11 @@ function CheckListAdminPage() {
       {
         accessorKey: 'last_remark',
         header: ' Last Remark',
-        Cell: (cell) => <>{cell.row.original.last_remark || ""}</>
+        Cell: (cell) => <p style={{
+          wordWrap: 'break-word',
+          overflowWrap: 'break-word',
+          whiteSpace: 'normal'
+        }}>{cell.row.original.last_remark || ""}</p>
       },
       {
         accessorKey: 'group_title',
@@ -373,7 +362,21 @@ function CheckListAdminPage() {
 
         Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
       },
+      {
+        accessorKey: 'assigned_users.value',
+        header: 'Responsible',
 
+        filter: 'custom',
+        enableColumnFilter: true,
+        Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.label }).toString() || ""}</>,
+        filterFn: (row, columnId, filterValue) => {
+          console.log(columnId)
+          if (!Array.isArray(row.original.assigned_users)) return false;
+          return row.original.assigned_users.some((user) =>
+            user.label.toLowerCase().includes(filterValue.toLowerCase())
+          );
+        },
+      },
 
       {
         accessorKey: 'next_date',
@@ -647,8 +650,7 @@ function CheckListAdminPage() {
 
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
-      columnVisibility: { 'group_title': false, "mrt-row-expand": false, },
-
+      columnVisibility: { ...columnVisibility, 'group_title': false, "mrt-row-expand": false, },
       sorting: [{ desc: false, id: 'group_title' }],
       columnSizing: columnSizing
     },

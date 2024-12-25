@@ -110,20 +110,7 @@ function ChecklistPage() {
         </span>
       },
 
-      {
-        accessorKey: 'assigned_users.value',
-        header: 'Responsible',
-        enableColumnFilter: true,
-        Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.label }).toString() || ""}</>,
-        filter: 'custom',
-        filterFn: (row, columnId, filterValue) => {
-          console.log(columnId)
-          if (!Array.isArray(row.original.assigned_users)) return false;
-          return row.original.assigned_users.some((user) =>
-            user.label.toLowerCase().includes(filterValue.toLowerCase())
-          );
-        },
-      },
+
       {
         accessorKey: 'last_10_boxes',
         header: 'Filtered Dates',
@@ -244,13 +231,31 @@ function ChecklistPage() {
       {
         accessorKey: 'last_remark',
         header: ' Last Remark',
-        Cell: (cell) => <>{cell.row.original.last_remark || ""}</>
+        Cell: (cell) => <p style={{
+          wordWrap: 'break-word',
+          overflowWrap: 'break-word',
+          whiteSpace: 'normal'
+        }}>{cell.row.original.last_remark || ""}</p>
       },
       {
         accessorKey: 'category.label',
         header: ' Category',
 
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
+      },
+      {
+        accessorKey: 'assigned_users.value',
+        header: 'Responsible',
+        enableColumnFilter: true,
+        Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.label }).toString() || ""}</>,
+        filter: 'custom',
+        filterFn: (row, columnId, filterValue) => {
+          console.log(columnId)
+          if (!Array.isArray(row.original.assigned_users)) return false;
+          return row.original.assigned_users.some((user) =>
+            user.label.toLowerCase().includes(filterValue.toLowerCase())
+          );
+        },
       },
       {
         accessorKey: 'frequency',
@@ -461,7 +466,7 @@ function ChecklistPage() {
 
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
-      columnVisibility: { 'group_title': false, "mrt-row-expand": false, },
+      columnVisibility: { ...columnVisibility, 'group_title': false, "mrt-row-expand": false, },
       sorting: [{ desc: false, id: 'group_title' }],
       columnSizing: columnSizing
     },
