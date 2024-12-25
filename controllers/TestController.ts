@@ -43,7 +43,7 @@ export class TestController {
 
     public async test(req: Request, res: Response, next: NextFunction) {
         try {
-            const documents = await Checklist.find({}, '_id').sort({ _id: 1 });
+            const documents = await Checklist.find()
 
             for (let i = 0; i < documents.length; i++) {
                 let ch = documents[i]
