@@ -205,7 +205,7 @@ export class FeatureController {
         let id = req.query.id
         let checklists: IChecklist[] = []
         let result: GetChecklistDto[] = []
-        let score = 0
+
         let user_ids = req.user?.assigned_users.map((user: IUser) => { return user._id }) || []
         if (req.user?.assigned_users && req.user?.assigned_users.length > 0 && id == 'all') {
             {
@@ -238,7 +238,8 @@ export class FeatureController {
                 active: ch.active,
                 serial_no: ch.serial_no,
                 last_remark: ch.last_remark,
-                score: getChecklistScore(ch.last_10_boxes),
+                today_score: ch.lastcheckedbox && ch.lastcheckedbox.score || 0,
+                filtered_score: getChecklistScore(ch.last_10_boxes),
                 work_title: ch.work_title,
                 group_title: ch.group_title,
                 condition: ch.condition,
@@ -353,7 +354,7 @@ export class FeatureController {
         let groupedChecklists: { group_title: string, checklists: IChecklist[] }[] = []
         let category = req.query.category
         let stage = req.query.stage
-        let score = 0
+
         groupedChecklists = await Checklist.aggregate([
             { $match: category !== 'all' ? { category: category, assigned_users: req.user?._id } : { assigned_users: req.user?._id } }
             ,
@@ -429,7 +430,9 @@ export class FeatureController {
                         serial_no: ch.serial_no,
                         work_title: ch.work_title,
                         last_remark: ch.last_remark,
-                        score: getChecklistScore(ch.last_10_boxes),
+                        today_score: ch.lastcheckedbox && ch.lastcheckedbox.score || 0,
+    
+                        filtered_score: getChecklistScore(ch.last_10_boxes),
                         group_title: ch.group_title,
                         link: ch.link,
                         condition: ch.condition,
@@ -487,7 +490,7 @@ export class FeatureController {
         dt1.setHours(0, 0, 0, 0)
         dt2.setHours(0, 0, 0, 0)
         let result: GetChecklistDto[] = []
-        let score = 0
+
         if (req.user?.is_admin && id == 'all') {
             {
 
@@ -533,7 +536,8 @@ export class FeatureController {
                 work_title: ch.work_title,
                 serial_no: ch.serial_no,
                 last_remark: ch.last_remark,
-                score: id == 'all' ? getChecklistScore(ch.last_10_boxes) : getChecklistScore(ch.checklist_boxes.filter((b) => {
+                today_score: ch.lastcheckedbox && ch.lastcheckedbox.score || 0,
+                filtered_score: id == 'all' ? getChecklistScore(ch.last_10_boxes) : getChecklistScore(ch.checklist_boxes.filter((b) => {
                     return b.date >= dt1 && b.date < dt2
                 })),
                 condition: ch.condition,

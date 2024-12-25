@@ -20,7 +20,8 @@ export type GetChecklistDto = {
     category: DropDownDto,
     frequency: string,
     next_date: string,
-    score:number
+    today_score:number
+    filtered_score:number
     last_remark:string,
     boxes: GetChecklistBoxDto[],
     created_at: string,

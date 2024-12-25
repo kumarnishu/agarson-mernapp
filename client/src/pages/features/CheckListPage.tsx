@@ -281,11 +281,18 @@ function ChecklistPage() {
         </>
       },
       {
-        accessorKey: 'score',
-        header: ' Score',
-        Cell: (cell) => <>{cell.row.original.score || 0}</>,
-        Footer: ({ table }) => <b>{parseFloat(Number(table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.score) }, 0) / table.getFilteredRowModel().rows.length).toFixed(2))}</b>
+        accessorKey: 'filtered_score',
+        header: 'Filtered Score',
+        Cell: (cell) => <>{cell.row.original.filtered_score || 0}</>,
+        Footer: ({ table }) => <b>{parseFloat(Number(table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.filtered_score) }, 0) / table.getFilteredRowModel().rows.length).toFixed(2))}</b>
       },
+      {
+        accessorKey: 'today_score',
+        header: 'Today Score',
+        Cell: (cell) => <>{cell.row.original.today_score || 0}</>,
+        Footer: ({ table }) => <b>{parseFloat(Number(table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.today_score) }, 0) / table.getFilteredRowModel().rows.length).toFixed(2))}</b>
+      },
+     
       {
         accessorKey: 'photo',
         header: 'Photo',
