@@ -212,19 +212,19 @@ export class FeatureController {
         if (!Number.isNaN(limit) && !Number.isNaN(page)) {
             if (req.user?.assigned_users && req.user?.assigned_users.length > 0 && id == 'all') {
                 {
-                    checklists = await Checklist.find({ assigned_users: { $in: user_ids } }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes').sort('serial_no').skip((page - 1) * limit).limit(limit)
+                    checklists = await Checklist.find({ assigned_users: { $in: user_ids } }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes').skip((page - 1) * limit).limit(limit)
                     count = await Checklist.find().countDocuments()
 
                 }
             }
             else if (id == 'all') {
-                checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('lastcheckedbox').populate('last_10_boxes').populate('assigned_users').sort('serial_no').skip((page - 1) * limit).limit(limit)
+                checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('updated_by').populate('category').populate('lastcheckedbox').populate('last_10_boxes').populate('assigned_users').skip((page - 1) * limit).limit(limit)
                 count = await Checklist.find({ assigned_users: req.user?._id }).countDocuments()
 
             }
 
             else {
-                checklists = await Checklist.find({ assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes').sort('serial_no').skip((page - 1) * limit).limit(limit)
+                checklists = await Checklist.find({ assigned_users: id }).populate('created_by').populate('updated_by').populate('category').populate('assigned_users').populate('lastcheckedbox').populate('last_10_boxes').skip((page - 1) * limit).limit(limit)
                 count = await Checklist.find({ assigned_users: id }).countDocuments()
             }
             if (stage == "open") {
@@ -300,13 +300,13 @@ export class FeatureController {
     //         checklists = await Checklist.find({ category: category, assigned_users: req.user?._id }).populate('created_by').populate({
     //             path: 'checklist_boxes',
     //             match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-    //         }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users').sort('serial_no')
+    //         }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users')
     //     }
     //     else
     //         checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate({
     //             path: 'checklist_boxes',
     //             match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-    //         }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users').sort('serial_no')
+    //         }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users')
 
     //     if (stage == "open") {
     //         checklists = checklists.filter((ch) => {
@@ -507,13 +507,13 @@ export class FeatureController {
             if (req.user?.is_admin && id == 'all') {
                 {
 
-                    checklists = await Checklist.find().populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('assigned_users').populate('last_10_boxes').sort('serial_no').skip((page - 1) * limit).limit(limit)
+                    checklists = await Checklist.find().populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('assigned_users').populate('last_10_boxes').skip((page - 1) * limit).limit(limit)
 
                     count = await Checklist.find().countDocuments()
                 }
             }
             else if (id == 'all') {
-                checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('last_10_boxes').populate('assigned_users').sort('serial_no').skip((page - 1) * limit).limit(limit)
+                checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate('lastcheckedbox').populate('updated_by').populate('category').populate('last_10_boxes').populate('assigned_users').skip((page - 1) * limit).limit(limit)
                 count = await Checklist.find({ user: req.user?._id }).countDocuments()
             }
 
@@ -523,7 +523,7 @@ export class FeatureController {
                         path: 'checklist_boxes',
                         match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
                     })
-                    .sort('serial_no').skip((page - 1) * limit).limit(limit)
+                    .skip((page - 1) * limit).limit(limit)
                 count = await Checklist.find({ user: id }).countDocuments()
             }
 
@@ -6290,7 +6290,7 @@ export class FeatureController {
         dt2.setHours(0)
         dt2.setMinutes(0)
         const oneDay = 24 * 60 * 60 * 1000;
-        let machines = await Machine.find({ active: true }).sort('serial_no')
+        let machines = await Machine.find({ active: true })
         //columns
         production.columns.push({ key: 'date', header: 'Date', type: 'date' });
         for (let k = 0; k < machines.length; k++) {
