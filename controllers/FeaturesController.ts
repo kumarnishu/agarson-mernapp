@@ -158,6 +158,7 @@ export class FeatureController {
         }
         await new_remark.save()
         await box.save()
+        await Checklist.findByIdAndUpdate(checklist, { last_remark: remark })
         return res.status(200).json({ message: "remark added successfully" })
     }
     public async NewChecklistRemark(req: Request, res: Response, next: NextFunction) {
