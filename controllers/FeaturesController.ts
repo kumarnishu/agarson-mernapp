@@ -295,6 +295,7 @@ export class FeatureController {
                 last_checked_box: ch.lastcheckedbox && {
                     _id: ch.lastcheckedbox._id,
                     stage: ch.lastcheckedbox.stage,
+                    score: ch.lastcheckedbox.score,
                     last_remark: ch.lastcheckedbox.last_remark,
                     checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
                     date: ch.lastcheckedbox.date.toString()
@@ -303,6 +304,7 @@ export class FeatureController {
                     return {
                         _id: bo._id,
                         stage: bo.stage,
+                        score: bo.score,
                         last_remark: bo.last_remark,
                         checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
                         date: bo.date.toString()
@@ -408,7 +410,6 @@ export class FeatureController {
                         work_title: ch.work_title,
                         last_remark: ch.last_remark,
                         today_score: ch.lastcheckedbox && ch.lastcheckedbox.score || 0,
-
                         filtered_score: getChecklistScore(ch.last_10_boxes),
                         group_title: ch.group_title,
                         link: ch.link,
@@ -417,6 +418,7 @@ export class FeatureController {
                         last_checked_box: ch.lastcheckedbox && {
                             _id: ch.lastcheckedbox._id,
                             stage: ch.lastcheckedbox.stage,
+                            score: ch.lastcheckedbox.score,
                             last_remark: ch.lastcheckedbox.last_remark,
                             checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
                             date: new Date(ch.lastcheckedbox.date).toString()
@@ -425,6 +427,7 @@ export class FeatureController {
                             return {
                                 _id: bo._id,
                                 stage: bo.stage,
+                                score: bo.score,
                                 last_remark: bo.last_remark,
                                 checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
                                 date: bo.date.toString()
@@ -439,6 +442,7 @@ export class FeatureController {
                             return {
                                 _id: bo._id,
                                 stage: bo.stage,
+                                score: bo.score,
                                 last_remark: bo.last_remark,
                                 checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
                                 date: bo.date.toString()
@@ -524,6 +528,7 @@ export class FeatureController {
                 last_checked_box: ch.lastcheckedbox && {
                     _id: ch.lastcheckedbox._id,
                     stage: ch.lastcheckedbox.stage,
+                    score: ch.lastcheckedbox.score,
                     last_remark: ch.lastcheckedbox.last_remark,
                     checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
                     date: ch.lastcheckedbox.date.toString()
@@ -537,6 +542,7 @@ export class FeatureController {
                     return {
                         _id: bo._id,
                         stage: bo.stage,
+                        score: bo.score,
                         last_remark: bo.last_remark,
                         checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
                         date: bo.date.toString()
@@ -547,6 +553,7 @@ export class FeatureController {
                 }).map((bo) => {
                     return {
                         _id: bo._id,
+                        score: bo.score,
                         stage: bo.stage,
                         last_remark: bo.last_remark,
                         checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },

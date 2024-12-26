@@ -51,7 +51,7 @@ function ViewChecklistBoxRemarksDialog({ checklist_box, checklist, dialog, setDi
             </IconButton>
 
             <Typography sx={{ textAlign: 'center', pt: 2, fontWeight: 600 }}>{moment(new Date(checklist_box.date)).format("DD/MM/YYYY")}</Typography>
-            <Typography sx={{ textAlign: 'center', px: 2, mx: 2, fontWeight: 600, minWidth: 300 }}>{checklist.work_title.slice(0, 70)}</Typography>
+            <Typography sx={{ textAlign: 'center', px: 2, mx: 2, fontWeight: 600, minWidth: 300 }}>Score : {`${checklist_box.score} | `}{checklist.work_title.slice(0, 70)} </Typography>
             <DialogContent>
 
                 <Stack direction="column" gap={2} >
