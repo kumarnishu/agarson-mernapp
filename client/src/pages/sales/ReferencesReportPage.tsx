@@ -10,10 +10,11 @@ import { ReferencesExcelButtons } from '../../components/buttons/ReferencesExcel
 import { GetReferenceDto } from '../../dtos/references.dto'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import PopUp from '../../components/popup/PopUp'
-import { Comment, Visibility } from '@mui/icons-material'
+import { Comment, Edit, Visibility } from '@mui/icons-material'
 import CreateOrEditReferenceRemarkDialog from '../../components/dialogs/reference/CreateOrEditReferenceRemarkDialog'
 import ViewReferenceRemarksDialog from '../../components/dialogs/reference/ViewReferenceRemarksDialog'
 import { SalesService } from '../../services/SalesServices'
+import EditReferenceStateDialog from '../../components/dialogs/reference/EditReferenceStateDialog'
 
 export default function ReferencesReportPage() {
   const [hidden, setHidden] = useState(false)
@@ -23,6 +24,8 @@ export default function ReferencesReportPage() {
   const [dialog, setDialog] = useState<string | undefined>()
   const isFirstRender = useRef(true);
   const [party, setParty] = useState<string | undefined>()
+  const [gst, setGst] = useState<string | undefined>()
+  const [state, setState] = useState<string | undefined>()
   const [stage, setStage] = useState<string | undefined>('open')
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
 
@@ -32,7 +35,11 @@ export default function ReferencesReportPage() {
 
   const columns = useMemo<MRT_ColumnDef<GetReferenceDto>[]>(() => {
     // Step 1: Extract dynamic keys from the first row of reports (if available)
-    const dynamicKeys = ['a', 'b', 'c', 'd', 'e']
+    const dynamicKeys = [
+      'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+      'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+      'u', 'v', 'w', 'x', 'y', 'z'
+    ]
 
     // Step 2: Define static columns
     const staticColumns: MRT_ColumnDef<GetReferenceDto>[] = [
@@ -99,6 +106,17 @@ export default function ReferencesReportPage() {
         Cell: (cell) => <PopUp key={'action'}
           element={
             <Stack direction="row" spacing={1} >
+              {LoggedInUser?.assigned_permissions.includes('references_report_edit') && <Tooltip title="edit state">
+                <IconButton color="primary"
+                  onClick={() => {
+                    setDialog('EditReferenceStateDialog')
+                    setGst(cell.row.original.gst)
+                    setState(cell.row.original.state)
+                  }}
+                >
+                  <Edit />
+                </IconButton>
+              </Tooltip>}
               {LoggedInUser?.assigned_permissions.includes('references_report_view') && <Tooltip title="view remarks">
                 <IconButton color="primary"
                   onClick={() => {
@@ -296,6 +314,7 @@ export default function ReferencesReportPage() {
       {party && stage && <CreateOrEditReferenceRemarkDialog dialog={dialog} setDialog={setDialog} stage={stage} party={party} />}
       {party && stage && <ViewReferenceRemarksDialog dialog={dialog} setDialog={setDialog} party={party} stage={stage} />}
       {/* table */}
+      {gst && <EditReferenceStateDialog gst={gst} state={state} dialog={dialog} setDialog={setDialog} />}
       <MaterialReactTable table={table} />
     </>
 

@@ -7,6 +7,7 @@ const router = express.Router()
 
 router.route("/references").get(isAuthenticatedUser, controller.GetReferencesReport)
 router.route("/references/salesman").get(isAuthenticatedUser, controller.GetReferencesReportForSalesman)
+router.post("/references/edit", isAuthenticatedUser, controller.EditReferenceState)
 router.route("/create-references-from-excel").post(isAuthenticatedUser, upload.single('excel'), controller.BulkCreateAndUpdateReferenceFromExcel)
 router.get("/download/template/references", isAuthenticatedUser, controller.DownloadExcelTemplateForCreateReferenceReport)
 

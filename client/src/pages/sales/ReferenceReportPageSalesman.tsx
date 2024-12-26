@@ -8,14 +8,17 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtua
 import { UserContext } from '../../contexts/userContext'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import PopUp from '../../components/popup/PopUp'
-import { Comment, Visibility } from '@mui/icons-material'
+import { Comment, Edit, Visibility } from '@mui/icons-material'
 import { GetReferenceReportForSalesmanDto } from '../../dtos/references.dto'
 import CreateOrEditReferenceRemarkDialog from '../../components/dialogs/reference/CreateOrEditReferenceRemarkDialog'
 import ViewReferenceRemarksDialog from '../../components/dialogs/reference/ViewReferenceRemarksDialog'
 import { SalesService } from '../../services/SalesServices'
+import EditReferenceStateDialog from '../../components/dialogs/reference/EditReferenceStateDialog'
 
 export default function ReferencesReportPage() {
   const { user: LoggedInUser } = useContext(UserContext)
+  const [gst, setGst] = useState<string | undefined>()
+  const [state, setState] = useState<string | undefined>()
   const [reports, setReports] = useState<GetReferenceReportForSalesmanDto[]>([])
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferenceReportForSalesmanDto[]>, BackendError>(["references",], async () => new SalesService().GetAllSalesmanReferences())
   const isFirstRender = useRef(true);
@@ -36,6 +39,17 @@ export default function ReferencesReportPage() {
         Cell: (cell) => <PopUp key={'action'}
           element={
             <Stack direction="row" spacing={1} >
+               {LoggedInUser?.assigned_permissions.includes('salesman_references_report_edit') && <Tooltip title="edit state">
+                              <IconButton color="primary"
+                                onClick={() => {
+                                  setDialog('EditReferenceStateDialog')
+                                  setGst(cell.row.original.gst)
+                                  setState(cell.row.original.state)
+                                }}
+                              >
+                                <Edit />
+                              </IconButton>
+                            </Tooltip>}
               {LoggedInUser?.assigned_permissions.includes('salesman_references_report_view') && <Tooltip title="view remarks">
                 <IconButton color="primary"
                   onClick={() => {
@@ -256,6 +270,7 @@ export default function ReferencesReportPage() {
       {party && stage && <CreateOrEditReferenceRemarkDialog dialog={dialog} setDialog={setDialog} stage={stage} party={party} />}
       {party && stage && <ViewReferenceRemarksDialog dialog={dialog} setDialog={setDialog} party={party} stage={stage} />}
       {/* table */}
+      {gst && <EditReferenceStateDialog gst={gst} state={state} dialog={dialog} setDialog={setDialog} />}
       <MaterialReactTable table={table} />
     </>
 

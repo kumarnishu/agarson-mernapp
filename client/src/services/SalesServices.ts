@@ -67,6 +67,10 @@ export class SalesService {
     public async CreateOrUpdateReferencesFromExcel(body: FormData) {
         return await apiClient.post(`create-references-from-excel`, body)
     }
+    public async EditReferenceState({ body }: { body: { gst: string, state: string } }) {
+        return await apiClient.post(`references/edit`, body)
+    }
+
     public async CreateOrEditReferenceRemark({ body, remark }: {
         body: CreateOrEditReferenceRemarkDto,
         remark?: GetReferenceRemarksDto

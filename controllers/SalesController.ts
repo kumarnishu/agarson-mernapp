@@ -23,6 +23,7 @@ import { CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto } from '../dtos/
 import { IReferenceRemark, ReferenceRemark } from '../models/reference-remarks.model';
 import { Reference } from '../models/references.model';
 import { CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto } from '../dtos/visit_remark.dto';
+import { stat } from 'fs';
 
 export class SalesController {
 
@@ -1062,7 +1063,7 @@ export class SalesController {
                         total_sale_scope: { $sum: "$sale_scope" },
                         party: { $first: "$party" },
                         address: { $first: "$address" },
-                        state: { $push: "$state" },
+                        state: { $first: "$state" },
                         pincode: { $first: "$pincode" },
                         business: { $first: "$business" },
                         last_remark: { $first: "$last_remark" },
@@ -1087,19 +1088,7 @@ export class SalesController {
                         total_sale_scope: 1,
                         party: 1,
                         address: 1,
-                        state: {
-                            $reduce: {
-                                input: "$state",
-                                initialValue: "",
-                                in: {
-                                    $concat: [
-                                        "$$value",
-                                        { $cond: [{ $eq: ["$$value", ""] }, "", " "] }, // Add space if not the first element
-                                        "$$this"
-                                    ]
-                                }
-                            }
-                        },
+                        state: 1,
                         stage: 1,
                         pincode: 1,
                         business: 1,
@@ -1168,7 +1157,7 @@ export class SalesController {
                     total_sale_scope: { $sum: "$sale_scope" },
                     party: { $first: "$party" },
                     address: { $first: "$address" },
-                    state: { $push: "$state" },
+                    state: { $first: "$state" },
                     pincode: { $first: "$pincode" },
                     business: { $first: "$business" },
                     last_remark: { $first: "$last_remark" },
@@ -1189,19 +1178,7 @@ export class SalesController {
                     reference: "$_id.reference",
                     total_sale_scope: 1,
                     address: 1,
-                    state: {
-                        $reduce: {
-                            input: "$state",
-                            initialValue: "",
-                            in: {
-                                $concat: [
-                                    "$$value",
-                                    { $cond: [{ $eq: ["$$value", ""] }, "", " "] }, // Add space if not the first element
-                                    "$$this"
-                                ]
-                            }
-                        }
-                    },
+                    state: 1,
                     stage: 1,
                     last_remark: 1,
                 },
@@ -1212,13 +1189,14 @@ export class SalesController {
         const pivotResult: any = {};
 
         data.forEach((item) => {
-            const { party, stage, address, state, last_remark, total_sale_scope } = item;
+            const { party, stage, address, state, gst,last_remark, total_sale_scope } = item;
 
             // Initialize row for each party
             if (!pivotResult[party] && item.total_sale_scope >= 50) {
                 pivotResult[party] = {
                     party,
                     address,
+                    gst,
                     state,
                     stage: stage ? stage : "open",
                     last_remark,
@@ -1232,7 +1210,14 @@ export class SalesController {
         return res.status(200).json(finalResult);
 
     }
-
+    public async EditReferenceState(req: Request, res: Response, next: NextFunction) {
+        const { gst, state } = req.body as { gst: string, state: string }
+        if (!gst || !state)
+            return res.status(400).json({ message: "fill all required fields" })
+        await Reference.updateMany({ gst: gst }, { state: state })
+        return res.status(200).json({ message: "success" })
+    }
+    
     public async BulkCreateAndUpdateReferenceFromExcel(req: Request, res: Response, next: NextFunction) {
         let result: GetReferenceExcelDto[] = []
         let validated = true
@@ -1280,7 +1265,7 @@ export class SalesController {
                     validated = false
                     statusText = "party required"
                 }
-             
+
                 if (!reference) {
                     validated = false
                     statusText = "reference required"
@@ -1315,7 +1300,7 @@ export class SalesController {
                     }
 
                     if (!item._id || !isMongoId(String(item._id))) {
-                        let oldref = await Reference.findOne({  party: party.toLowerCase(), reference: item.reference.toLowerCase(), date: nedate, sale_scope: sale_scope })
+                        let oldref = await Reference.findOne({ party: party.toLowerCase(), reference: item.reference.toLowerCase(), date: nedate, sale_scope: sale_scope })
                         if (!oldref) {
                             await new Reference({
                                 date: nedate,
