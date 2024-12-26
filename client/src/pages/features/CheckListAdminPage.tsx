@@ -22,7 +22,7 @@ import BulkDeleteCheckListDialog from '../../components/dialogs/checklists/BulkD
 import ViewChecklistBoxRemarksDialog from '../../components/dialogs/checklists/ViewChecklistBoxRemarksDialog'
 import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
 import { GetChecklistBoxDto } from '../../dtos/checklist-box.dto'
-import { GetChecklistDto, GetChecklistFromExcelDto } from '../../dtos/checklist.dto'
+import { GetChecklistDto, GetChecklistFromExcelDto, GetChecklistTopBarDto } from '../../dtos/checklist.dto'
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import { jsPDF } from 'jspdf'; //or use your library of choice here
 import autoTable from 'jspdf-autotable';
@@ -35,9 +35,9 @@ function CheckListAdminPage() {
   const [checklist, setChecklist] = useState<GetChecklistDto>()
   const [checklists, setChecklists] = useState<GetChecklistDto[]>([])
   const [flag, setFlag] = useState(1);
-  const [stage, setStage] = useState('open')
+  const [stage, setStage] = useState('all')
   const [checklistBox, setChecklistBox] = useState<GetChecklistBoxDto>()
-  const [categoriesData, setCategoriesData] = useState<{ category: string, count: number }[]>([])
+  const [categoriesData, setCategoriesData] = useState<GetChecklistTopBarDto>()
   const [userId, setUserId] = useState<string>('all')
   const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
     start_date: moment(new Date().setDate(new Date().getDate() - 4)).format("YYYY-MM-DD")
@@ -56,7 +56,7 @@ function CheckListAdminPage() {
   ];
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
-  const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<{ category: string, count: number }[]>, BackendError>("checklists", new FeatureService().GetChecklistTopBarDetails)
+  const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<GetChecklistTopBarDto>, BackendError>(["checklists_top_bar", userId], async () => new FeatureService().GetChecklistTopBarDetails(userId || "all"))
   const [dialog, setDialog] = useState<string | undefined>()
   let previous_date = new Date()
   let day = previous_date.getDate() - 3
@@ -392,7 +392,7 @@ function CheckListAdminPage() {
 
         </>
       },
-       {
+      {
         accessorKey: 'filtered_score',
         header: 'Filtered Score',
         Cell: (cell) => <>{cell.row.original.filtered_score || 0}</>,
@@ -404,7 +404,7 @@ function CheckListAdminPage() {
         Cell: (cell) => <>{cell.row.original.today_score || 0}</>,
         Footer: ({ table }) => <b>{parseFloat(Number(table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.today_score) }, 0) / table.getFilteredRowModel().rows.length).toFixed(2))}</b>
       },
-     
+
       {
         accessorKey: 'photo',
         header: 'Photo',
@@ -474,7 +474,7 @@ function CheckListAdminPage() {
     renderTopToolbarCustomActions: ({ table }) => (
       <Box minWidth={'100vw'} >
         <Stack direction={'row'} gap={1} sx={{ maxWidth: '100vw', height: 40, background: 'whitesmoke', p: 1, borderRadius: 1 }} className='scrollable-stack'>
-          {categoriesData.map((category, index) => (
+          {categoriesData?.categorydData.map((category, index) => (
             <Stack style={{ minWidth: '100px', overflowY: 'hidden' }}
               key={index}
             >
@@ -483,7 +483,7 @@ function CheckListAdminPage() {
           ))}
         </Stack>
         <Stack sx={{ p: 1 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
-          <Typography variant='h6'>Checklists : {checklists.length}</Typography>
+          <Typography fontWeight={'00'} fontSize={17}>Checklists : {`${checklists.length} | `} LM Score : {`${categoriesData?.lastmonthscore} | `}CM Score : {categoriesData?.currentmonthscore}</Typography>
           <Stack
             pt={1}
             direction="row"

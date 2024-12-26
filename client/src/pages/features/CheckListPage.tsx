@@ -16,11 +16,10 @@ import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/View
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import { GetChecklistBoxDto } from '../../dtos/checklist-box.dto'
-import { GetChecklistDto, GetChecklistFromExcelDto } from '../../dtos/checklist.dto'
+import { GetChecklistDto, GetChecklistFromExcelDto, GetChecklistTopBarDto } from '../../dtos/checklist.dto'
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import { UserService } from '../../services/UserServices'
 import { FeatureService } from '../../services/FeatureServices'
-import { DropdownService } from '../../services/DropDownServices'
 
 
 function ChecklistPage() {
@@ -30,20 +29,18 @@ function ChecklistPage() {
   const [checklist, setChecklist] = useState<GetChecklistDto>()
   const [checklists, setChecklists] = useState<GetChecklistDto[]>([])
   const [checklistBox, setChecklistBox] = useState<GetChecklistBoxDto>()
-  const [categories, setCategories] = useState<DropDownDto[]>([])
   const [userId, setUserId] = useState<string>('all')
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   ];
-
+  const [categoriesData, setCategoriesData] = useState<GetChecklistTopBarDto>()
   const isFirstRender = useRef(true);
 
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
-
+  const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<GetChecklistTopBarDto>, BackendError>(["checklists_top_bar", userId], async () => new FeatureService().GetChecklistTopBarDetails(userId || "all"))
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-  const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("checklist_categories", new DropdownService().GetAllCheckCategories)
   const [dialog, setDialog] = useState<string | undefined>()
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   let previous_date = new Date()
@@ -67,7 +64,12 @@ function ChecklistPage() {
       setUserId(LoggedInUser._id)
     }
   }, [LoggedInUser])
-  console.log(categories[0])
+
+  useEffect(() => {
+    if (categorySuccess && categorydata)
+      setCategoriesData(categorydata.data)
+  }, [categorySuccess])
+
   const columns = useMemo<MRT_ColumnDef<GetChecklistDto>[]>(
     //column definitions...
     () => checklists && [
@@ -292,7 +294,7 @@ function ChecklistPage() {
         Cell: (cell) => <>{cell.row.original.today_score || 0}</>,
         Footer: ({ table }) => <b>{parseFloat(Number(table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.today_score) }, 0) / table.getFilteredRowModel().rows.length).toFixed(2))}</b>
       },
-     
+
       {
         accessorKey: 'photo',
         header: 'Photo',
@@ -348,7 +350,7 @@ function ChecklistPage() {
     renderTopToolbarCustomActions: ({ table }) => (
       <Box minWidth={'100vw'} >
         <Stack sx={{ p: 1 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
-          <Typography variant='h6'>Checklists : {checklists.length}</Typography>
+          {userId !== 'all' ? <Typography fontWeight={'500'} fontSize={17}>Checklists : {`${checklists.length} | `} LM Score : {`${categoriesData?.lastmonthscore} | `}CM Score : {categoriesData?.currentmonthscore}</Typography> : <Typography fontWeight={'500'} fontSize={17}>Checklists : {`${checklists.length} | `}</Typography>}
           <Stack
             pt={1}
             direction="row"
@@ -481,11 +483,6 @@ function ChecklistPage() {
     enablePagination: false,
     manualPagination: true
   });
-
-  useEffect(() => {
-    if (categorySuccess)
-      setCategories(categorydata?.data)
-  }, [categorySuccess])
 
   useEffect(() => {
     if (isUsersSuccess)

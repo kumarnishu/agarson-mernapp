@@ -451,8 +451,8 @@ export class FeatureService {
 
 
 
-  public async GetChecklistTopBarDetails() {
-    return await apiClient.get(`checklists/topbar-details`)
+  public async GetChecklistTopBarDetails(emp: string) {
+    return await apiClient.get(`checklists/topbar-details/?emp=${emp}`)
   }
 
 

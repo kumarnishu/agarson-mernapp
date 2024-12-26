@@ -1,6 +1,7 @@
 import moment from "moment";
 
 const currentDate = new Date();
+currentDate.setHours(0, 0, 0, 0)
 
 export const previousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
 export const currentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -49,7 +50,7 @@ export function excelSerialToDate(serial: any) {
     return date;
 }
 
-export function getFirstMonday(){
+export function getFirstMonday() {
     const today = new Date();
     const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 

@@ -6,6 +6,11 @@ export type GroupedChecklistDto = {
     checklists: GetChecklistDto[] // Array of checklists within this group
 }
 
+export type GetChecklistTopBarDto = {
+    categorydData: { category: string, count: number }[],
+    lastmonthscore: number,
+    currentmonthscore: number
+}
 export type GetChecklistDto = {
     _id: string,
     active: boolean
@@ -20,13 +25,13 @@ export type GetChecklistDto = {
     category: DropDownDto,
     frequency: string,
     next_date: string,
-    today_score:number
-    filtered_score:number
-    last_remark:string,
+    today_score: number
+    filtered_score: number
+    last_remark: string,
     boxes: GetChecklistBoxDto[],
     created_at: string,
-    condition:string,
-    expected_number:number,
+    condition: string,
+    expected_number: number,
     updated_at: string,
     created_by: DropDownDto,
     updated_by: DropDownDto
@@ -39,8 +44,8 @@ export type CreateOrEditChecklistDto = {
     link: string,
     assigned_users: string[]
     frequency?: string,
-    condition:string,
-    expected_number:number,
+    condition: string,
+    expected_number: number,
     photo: string
 }
 export type GetChecklistFromExcelDto = {
@@ -52,7 +57,7 @@ export type GetChecklistFromExcelDto = {
     link: string,
     assigned_users: string
     frequency: string,
-    condition:string,
-    expected_number:number,
+    condition: string,
+    expected_number: number,
     status?: string
 }

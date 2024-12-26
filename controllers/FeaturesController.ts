@@ -13,7 +13,7 @@ import { User, Asset, IUser } from "../models/user.model";
 import { destroyCloudFile } from "../services/destroyCloudFile";
 import { uploadFileToCloud } from "../services/uploadFileToCloud";
 import { CreateOrEditChecklistRemarkDto, GetChecklistRemarksDto } from "../dtos/checklist-remark.dto";
-import { GetChecklistDto, CreateOrEditChecklistDto, GetChecklistFromExcelDto, GroupedChecklistDto } from "../dtos/checklist.dto";
+import { GetChecklistDto, CreateOrEditChecklistDto, GetChecklistFromExcelDto, GroupedChecklistDto, GetChecklistTopBarDto } from "../dtos/checklist.dto";
 import { CreateOrEditBillDto, GetBillDto } from "../dtos/crm-bill.dto";
 import { CreateOrEditRemarkDto, GetRemarksDto, GetActivitiesTopBarDetailsDto, GetActivitiesOrRemindersDto } from "../dtos/crm-remarks.dto";
 import { GetDriverSystemDto, CreateOrEditDriverSystemDto, UploadDriverSystemPhotoDto } from "../dtos/driver.dto";
@@ -47,7 +47,7 @@ import { IShoeWeight, ShoeWeight } from "../models/shoe-weight.model";
 import { ISoleThickness, SoleThickness } from "../models/sole-thickness.model";
 import { SpareDye, ISpareDye } from "../models/spare-dye.model";
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
-import { areDatesEqual, previousYear, nextYear, getFirstMonday, parseExcelDate, decimalToTimeForXlsx, hundredDaysAgo } from "../utils/datesHelper";
+import { areDatesEqual, previousYear, nextYear, getFirstMonday, parseExcelDate, decimalToTimeForXlsx, hundredDaysAgo, currentMonth, previousMonth, nextMonth } from "../utils/datesHelper";
 import { GetDyeStatusReportDto } from "../dtos/dye.dto";
 import { IColumnRowData, IRowData } from "../dtos/table.dto";
 import { getChecklistScore } from "../utils/getChecklistScore";
@@ -55,7 +55,7 @@ import { getChecklistScore } from "../utils/getChecklistScore";
 export class FeatureController {
 
     public async UpdateChecklistRemark(req: Request, res: Response, next: NextFunction) {
-        const { remark } = req.body as CreateOrEditChecklistRemarkDto
+        const { remark, checklist } = req.body as CreateOrEditChecklistRemarkDto
         if (!remark) return res.status(403).json({ message: "please fill required fields" })
 
         const id = req.params.id;
@@ -66,6 +66,7 @@ export class FeatureController {
         }
         rremark.remark = remark
         await rremark.save()
+        await Checklist.findByIdAndUpdate(checklist, { last_remark: remark })
         return res.status(200).json({ message: "remark updated successfully" })
     }
 
@@ -187,15 +188,31 @@ export class FeatureController {
     }
 
     public async GetChecklistTopBarDetails(req: Request, res: Response, next: NextFunction) {
-        let result: { category: string, count: number }[] = []
+        let result: GetChecklistTopBarDto | null = null;
+        const emp = req.query.emp
+        let categorydata: { category: string, count: number }[] = []
         let categories = await ChecklistCategory.find().sort('category')
         let count = await Checklist.find({ category: { $in: categories } }).countDocuments()
-        result.push({ category: 'total', count: count })
+        categorydata.push({ category: 'total', count: count })
         for (let i = 0; i < categories.length; i++) {
             let cat = categories[i]
             let count = await Checklist.find({ category: categories[i]._id }).countDocuments()
-            result.push({ category: cat.category, count: count })
+            categorydata.push({ category: cat.category, count: count })
         }
+        let score = 0;
+        if (emp == 'all') {
+            let checklists = await Checklist.find()
+            let boxes = await ChecklistBox.find({ checklist: { $in: checklists }, date: { $gte: currentMonth, $lte: nextMonth } })
+            let boxes2 = await ChecklistBox.find({ checklist: { $in: checklists }, date: { $gte: previousMonth, $lte: currentMonth } })
+            result = { categorydData: categorydata, lastmonthscore: getChecklistScore(boxes2), currentmonthscore: getChecklistScore(boxes) }
+        }
+        else {
+            let checklists = await Checklist.find({ assigned_users: emp })
+            let boxes = await ChecklistBox.find({ checklist: { $in: checklists }, date: { $gte: currentMonth, $lte: nextMonth } })
+            let boxes2 = await ChecklistBox.find({ checklist: { $in: checklists }, date: { $gte: previousMonth, $lte: currentMonth } })
+            result = { categorydData: categorydata, lastmonthscore: getChecklistScore(boxes2), currentmonthscore: getChecklistScore(boxes) }
+        }
+
         return res.status(200).json(result)
     }
 
@@ -278,76 +295,6 @@ export class FeatureController {
         return res.status(200).json(result)
     }
 
-    // public async GetMobileChecklists(req: Request, res: Response, next: NextFunction) {
-    //     let checklists: IChecklist[] = []
-    //     let result: GetChecklistDto[] = []
-    //     let category = req.query.category
-    //     let stage = req.query.stage
-    //     if (category !== 'all') {
-    //         checklists = await Checklist.find({ category: category, assigned_users: req.user?._id }).populate('created_by').populate({
-    //             path: 'checklist_boxes',
-    //             match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-    //         }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users')
-    //     }
-    //     else
-    //         checklists = await Checklist.find({ assigned_users: req.user?._id }).populate('created_by').populate({
-    //             path: 'checklist_boxes',
-    //             match: { date: { $gte: previousYear, $lte: nextYear } }, // Filter by date range
-    //         }).populate('lastcheckedbox').populate('last_10_boxes').populate('updated_by').populate('category').populate('assigned_users')
-
-    //     if (stage == "open") {
-    //         checklists = checklists.filter((ch) => {
-    //             return Boolean(!ch.lastcheckedbox)
-    //         })
-    //     }
-    //     if (stage == "pending" || stage == "done") {
-    //         checklists = checklists.filter((ch) => {
-    //             if (ch.lastcheckedbox)
-    //                 return Boolean(ch.lastcheckedbox.stage == stage)
-    //         })
-    //     }
-
-    //     result = checklists.map((ch) => {
-    //         return {
-    //             _id: ch._id,
-    //             active: ch.active,
-    //             serial_no: ch.serial_no,
-    //             work_title: ch.work_title,
-    //             last_remark: ch.last_remark,
-    //             score:0,
-    //             group_title: ch.group_title,
-    //             link: ch.link,
-    //             condition: ch.condition,
-    //             expected_number: ch.expected_number,
-    //             last_checked_box: ch.lastcheckedbox && {
-    //                 _id: ch.lastcheckedbox._id,
-    //                 stage: ch.lastcheckedbox.stage,
-    //                 last_remark: ch.lastcheckedbox.last_remark,
-    //                 checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-    //                 date: ch.lastcheckedbox.date.toString()
-    //             }, last_10_boxes: ch.last_10_boxes && ch.last_10_boxes.map((bo) => {
-    //                 return {
-    //                     _id: bo._id,
-    //                     stage: bo.stage,
-    //                     last_remark: bo.last_remark,
-    //                     checklist: { id: ch._id, label: ch.work_title, value: ch.work_title },
-    //                     date: bo.date.toString()
-    //                 }
-    //             }),
-    //             category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
-    //             frequency: ch.frequency,
-    //             assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
-    //             created_at: ch.created_at.toString(),
-    //             updated_at: ch.updated_at.toString(),
-    //             boxes: getBoxes(ch, ch.checklist_boxes),
-    //             next_date: ch.next_date ? moment(ch.next_date).format("YYYY-MM-DD") : "",
-    //             photo: ch.photo?.public_url || "",
-    //             created_by: { id: ch.created_by._id, value: ch.created_by.username, label: ch.created_by.username },
-    //             updated_by: { id: ch.updated_by._id, value: ch.updated_by.username, label: ch.updated_by.username }
-    //         }
-    //     })
-    //     return res.status(200).json(result)
-    // }
 
     public async GetMobileChecklists(req: Request, res: Response, next: NextFunction) {
         let result: GroupedChecklistDto[] = []
@@ -431,7 +378,7 @@ export class FeatureController {
                         work_title: ch.work_title,
                         last_remark: ch.last_remark,
                         today_score: ch.lastcheckedbox && ch.lastcheckedbox.score || 0,
-    
+
                         filtered_score: getChecklistScore(ch.last_10_boxes),
                         group_title: ch.group_title,
                         link: ch.link,
