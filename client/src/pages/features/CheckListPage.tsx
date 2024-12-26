@@ -615,7 +615,7 @@ function ChecklistPage() {
         >Export Selected</MenuItem>}
       </Menu>
       <MaterialReactTable table={table} />
-      {checklist && checklistBox && <ViewChecklistBoxRemarksDialog dialog={dialog} setDialog={setDialog} checklist={checklist} checklist_box={checklistBox} />}
+      {checklist && checklistBox && <ViewChecklistBoxRemarksDialog is_admin={false} dialog={dialog} setDialog={setDialog} checklist={checklist} checklist_box={checklistBox} />}
       {checklist && <ViewChecklistRemarksDialog dialog={dialog} setDialog={setDialog} checklist={checklist} />}
     </>
   )
