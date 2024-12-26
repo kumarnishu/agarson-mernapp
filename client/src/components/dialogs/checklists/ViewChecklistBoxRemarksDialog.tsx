@@ -13,19 +13,21 @@ import { GetChecklistBoxDto } from '../../../dtos/checklist-box.dto'
 import { GetChecklistRemarksDto } from '../../../dtos/checklist-remark.dto'
 import { GetChecklistDto } from '../../../dtos/checklist.dto'
 import { FeatureService } from '../../../services/FeatureServices'
+import CreateChecklistRemarkDialogFromAdmin from './CreateChecklistRemarkDialogFromAdmin'
 
 type Props = {
+    is_admin: boolean,
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
     checklist: GetChecklistDto, checklist_box: GetChecklistBoxDto
 }
 
-function ViewChecklistBoxRemarksDialog({ checklist_box, checklist, dialog, setDialog }: Props) {
+function ViewChecklistBoxRemarksDialog({ checklist_box, checklist, dialog, setDialog, is_admin }: Props) {
     const [dialog1, setDialog1] = useState<string | undefined>()
     const [remark, setRemark] = useState<GetChecklistRemarksDto>()
     const [remarks, setRemarks] = useState<GetChecklistRemarksDto[]>()
 
-    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", checklist_box._id], async () =>new FeatureService(). GetCheckListBoxRemarksHistory(checklist_box._id))
+    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", checklist_box._id], async () => new FeatureService().GetCheckListBoxRemarksHistory(checklist_box._id))
 
 
     const { user } = useContext(UserContext)
@@ -88,7 +90,7 @@ function ViewChecklistBoxRemarksDialog({ checklist_box, checklist, dialog, setDi
                 {(checklist_box.stage !== 'done' || user?.is_admin) && <Button variant='contained'
                     fullWidth
                     onClick={() => {
-                        setDialog1('CreateOrEditChecklistRemarkDialog')
+                        setDialog1(is_admin ? 'CreateChecklistRemarkDialogFromAdmin' : 'CreateOrEditChecklistRemarkDialog')
                         setRemark(undefined)
                     }}>Add Remark</Button>}
             </DialogTitle>
@@ -96,6 +98,9 @@ function ViewChecklistBoxRemarksDialog({ checklist_box, checklist, dialog, setDi
             <CreateOrEditChecklistRemarkDialog
                 checklist={checklist} checklist_box={checklist_box}
                 remark={remark}
+                dialog={dialog1} setDialog={setDialog1} />
+            <CreateChecklistRemarkDialogFromAdmin
+                checklist={checklist} checklist_box={checklist_box}
                 dialog={dialog1} setDialog={setDialog1} />
         </Dialog>
     )

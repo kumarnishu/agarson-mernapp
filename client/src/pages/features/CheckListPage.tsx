@@ -294,7 +294,10 @@ function ChecklistPage() {
         Cell: (cell) => <>{cell.row.original.today_score || 0}</>,
         Footer: ({ table }) => <b>{parseFloat(Number(table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.today_score) }, 0) / table.getFilteredRowModel().rows.length).toFixed(2))}</b>
       },
-
+      {
+        accessorKey: 'expected_number',
+        header: 'Expected No'
+      },
       {
         accessorKey: 'photo',
         header: 'Photo',

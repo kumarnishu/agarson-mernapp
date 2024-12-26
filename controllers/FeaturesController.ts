@@ -130,6 +130,36 @@ export class FeatureController {
         return res.json(result)
     }
 
+    public async NewChecklistRemarkFromAdmin(req: Request, res: Response, next: NextFunction) {
+        const { remark, stage, checklist, checklist_box, score } = req.body as CreateOrEditChecklistRemarkDto
+        if (!remark || !checklist_box || !checklist) return res.status(403).json({ message: "please fill required fields" })
+
+        let box = await ChecklistBox.findById(checklist_box).populate('checklist')
+        if (!box) {
+            return res.status(404).json({ message: "box not found" })
+        }
+        let new_remark = new ChecklistRemark({
+            remark,
+            checklist_box,
+            created_at: new Date(Date.now()),
+            created_by: req.user,
+            updated_at: new Date(Date.now()),
+            updated_by: req.user
+        })
+        if (stage)
+            box.stage = stage;
+        if (score)
+            box.score = score
+        await new_remark.save()
+
+        if (req.user) {
+            box.updated_by = req.user
+            box.updated_at = new Date(Date.now())
+        }
+        await new_remark.save()
+        await box.save()
+        return res.status(200).json({ message: "remark added successfully" })
+    }
     public async NewChecklistRemark(req: Request, res: Response, next: NextFunction) {
         const { remark, stage, checklist, checklist_box, score } = req.body as CreateOrEditChecklistRemarkDto
         if (!remark || !checklist_box || !checklist) return res.status(403).json({ message: "please fill required fields" })

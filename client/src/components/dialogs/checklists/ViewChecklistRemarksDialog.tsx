@@ -51,7 +51,7 @@ function ViewChecklistRemarksDialog({ checklist, dialog, setDialog }: Props) {
                         return (
 
                             <div key={index} style={{ borderRadius: '1px 10px', padding: '10px', paddingLeft: '20px', border: '1px solid grey' }}>
-                                <pre>{toTitleCase(item.created_by.label)} : {item.remark} </pre>
+                                <p>{toTitleCase(item.created_by.label)} : {item.remark} </p>
                                 <br></br>
                                 <p>{moment(item.created_date).format('lll')}</p>
                                 {

@@ -7,6 +7,7 @@ const router = express.Router()
 
 router.route("/checklists").get(isAuthenticatedUser, controller.GetChecklists).post(isAuthenticatedUser, upload.single('photo'), controller.CreateChecklist)
 router.route("/checklists/report").get(isAuthenticatedUser, controller.GetChecklistsReport)
+
 router.route("/checklists/me").get(isAuthenticatedUser, controller.GetMobileChecklists)
 router.route("/checklists/:id").put(isAuthenticatedUser, upload.single('photo'), controller.EditChecklist)
 router.route("/checklists/:id").delete(isAuthenticatedUser, controller.DeleteChecklist)

@@ -404,7 +404,10 @@ function CheckListAdminPage() {
         Cell: (cell) => <>{cell.row.original.today_score || 0}</>,
         Footer: ({ table }) => <b>{parseFloat(Number(table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.today_score) }, 0) / table.getFilteredRowModel().rows.length).toFixed(2))}</b>
       },
-
+      {
+        accessorKey: 'expected_number',
+        header: 'Expected No'
+      },
       {
         accessorKey: 'photo',
         header: 'Photo',
@@ -841,7 +844,7 @@ function CheckListAdminPage() {
       <CreateOrEditCheckListDialog dialog={dialog} setDialog={setDialog} checklist={checklist} setChecklist={setChecklist} />
       {checklist && <DeleteCheckListDialog dialog={dialog} setDialog={setDialog} checklist={checklist} />}
       {checklist && <CreateOrEditCheckListDialog dialog={dialog} setDialog={setDialog} checklist={checklist} setChecklist={setChecklist} />}
-      {checklist && checklistBox && <ViewChecklistBoxRemarksDialog dialog={dialog} setDialog={setDialog} checklist={checklist} checklist_box={checklistBox} />}
+      {checklist && checklistBox && <ViewChecklistBoxRemarksDialog dialog={dialog} setDialog={setDialog} is_admin={true} checklist={checklist} checklist_box={checklistBox} />}
       {checklist && <ViewChecklistRemarksDialog dialog={dialog} setDialog={setDialog} checklist={checklist} />}
       <MaterialReactTable table={table} />
       {<AssignChecklistsDialog dialog={dialog} setDialog={setDialog} flag={flag} checklists={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}

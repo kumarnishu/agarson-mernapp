@@ -483,6 +483,16 @@ export class FeatureService {
   }
 
 
+
+
+  public async CreateChecklistRemarkFromAdmin({ body }: {
+    body: CreateOrEditChecklistRemarkDto,
+    remark?: GetChecklistRemarksDto
+
+  }) {
+    return await apiClient.post(`checklist/remarks-admin`, body)
+  }
+
   public async CreateOrEditChecklistRemark({ body, remark }: {
     body: CreateOrEditChecklistRemarkDto,
     remark?: GetChecklistRemarksDto
