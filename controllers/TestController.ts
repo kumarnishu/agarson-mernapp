@@ -43,42 +43,40 @@ export class TestController {
 
     public async test(req: Request, res: Response, next: NextFunction) {
         try {
-            await ChecklistBox.updateMany({ stage: { $eq: 'done' } }, { score: 1 })
-            // const dt1 = new Date();
-            // dt1.setHours(0, 0, 0, 0);
+            const dt1 = new Date();
+            dt1.setHours(0, 0, 0, 0);
+            const dt2 = new Date(dt1);
+            dt2.setDate(dt2.getDate() + 1);
+            const cat = req.query.category
+            // Pre-fetch all checklists
+            const checklists = await Checklist.find({ category: cat });
 
-            // const dt2 = new Date(dt1);
-            // dt2.setDate(dt2.getDate() + 1);
-            // const cat = req.query.category
-            // // Pre-fetch all checklists
-            // const checklists = await Checklist.find({ category: cat });
+            const frequencyLimits: Record<string, number> = {
+                daily: 5,
+                weekly: 3,
+                monthly: 2,
+                yearly: 2,
+            };
 
-            // const frequencyLimits: Record<string, number> = {
-            //     daily: 5,
-            //     weekly: 3,
-            //     monthly: 2,
-            //     yearly: 2,
-            // };
+            // Process each checklist
+            const checklistUpdates = checklists.map(async (ch) => {
+                const limit = frequencyLimits[ch.frequency] || 0;
 
-            // // Process each checklist
-            // const checklistUpdates = checklists.map(async (ch) => {
-            //     const limit = frequencyLimits[ch.frequency] || 0;
+                if (limit > 0) {
+                    const boxes = await ChecklistBox.find({
+                        checklist: ch._id,
+                        date: { $lt: dt2 }
+                    })
+                        .sort({ date: -1 }) // Sort by date descending
+                        .limit(limit);
 
-            //     if (limit > 0) {
-            //         const boxes = await ChecklistBox.find({
-            //             checklist: ch._id,
-            //             date: { $lt: dt2 }
-            //         })
-            //             .sort({ date: -1 }) // Sort by date descending
-            //             .limit(limit);
+                    ch.last_10_boxes = boxes.reverse(); // Reverse to have ascending order
+                    return ch.save();
+                }
+            });
 
-            //         ch.last_10_boxes = boxes.reverse(); // Reverse to have ascending order
-            //         return ch.save();
-            //     }
-            // });
-
-            // // Await all save operations
-            // await Promise.all(checklistUpdates);
+            // Await all save operations
+            await Promise.all(checklistUpdates);
 
             return res.status(200).json({ message: "success" });
         } catch (error) {
