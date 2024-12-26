@@ -229,11 +229,7 @@ function ChecklistPage() {
       {
         accessorKey: 'last_remark',
         header: ' Last Remark',
-        Cell: (cell) => <p style={{
-          wordWrap: 'break-word',
-          overflowWrap: 'break-word',
-          whiteSpace: 'normal'
-        }}>{cell.row.original.last_remark || ""}</p>
+        Cell: (cell) => cell.row.original.last_remark && cell.row.original.last_remark.includes("\n") ? <pre title={cell.row.original.last_remark || ""}>{cell.row.original.last_remark || ""}</pre> : <p title={cell.row.original.last_remark || ""}>{cell.row.original.last_remark || ""}</p>
       },
       {
         accessorKey: 'category.label',

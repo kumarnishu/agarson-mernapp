@@ -49,7 +49,7 @@ function ViewExcelDBRemarksDialog({ id, obj, dialog, setDialog }: Props) {
                         return (
 
                             <div key={index} style={{ borderRadius: '1px 10px', padding: '10px', background: 'lightblue', paddingLeft: '20px', border: '1px solid grey' }}>
-                                <p>{toTitleCase(item.created_by)} : {item.remark} </p>
+                                <pre>{toTitleCase(item.created_by)} : {item.remark} </pre>
                                 <p>{item.next_date && `Next Call : ${item.next_date}`} </p>
                                 <br></br>
                                 {item.created_date && <p>{new Date(item.created_date).toLocaleString()}</p>}
