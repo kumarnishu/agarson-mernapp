@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Box, Button, Fade, IconButton, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Fade, IconButton, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
@@ -56,7 +56,7 @@ function CheckListAdminPage() {
   ];
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
-  const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<GetChecklistTopBarDto>, BackendError>(["checklists_top_bar", userId], async () => new FeatureService().GetChecklistTopBarDetails(userId || "all"))
+  const { data: categorydata, isSuccess: categorySuccess, isLoading: isScoreLoading } = useQuery<AxiosResponse<GetChecklistTopBarDto>, BackendError>(["checklists_top_bar", userId], async () => new FeatureService().GetChecklistTopBarDetails(userId || "all"))
   const [dialog, setDialog] = useState<string | undefined>()
   let previous_date = new Date()
   let day = previous_date.getDate() - 3
@@ -483,7 +483,8 @@ function CheckListAdminPage() {
           ))}
         </Stack>
         <Stack sx={{ p: 1 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
-          <Typography fontWeight={'00'} fontSize={17}>Checklists : {`${checklists.length} | `} LM Score : {`${categoriesData?.lastmonthscore} | `}CM Score : {categoriesData?.currentmonthscore}</Typography>
+          {isScoreLoading ? <CircularProgress /> :
+            <Typography fontWeight={'00'} fontSize={17}>Checklists : {`${checklists.length} | `} LM Score : {`${categoriesData?.lastmonthscore} | `}CM Score : {categoriesData?.currentmonthscore}</Typography>}
           <Stack
             pt={1}
             direction="row"

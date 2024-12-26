@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Box, Button, Fade, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Fade, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import moment from 'moment'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
@@ -39,7 +39,7 @@ function ChecklistPage() {
 
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
-  const { data: categorydata, isSuccess: categorySuccess } = useQuery<AxiosResponse<GetChecklistTopBarDto>, BackendError>(["checklists_top_bar", userId], async () => new FeatureService().GetChecklistTopBarDetails(userId || "all"))
+  const { data: categorydata, isSuccess: categorySuccess, isLoading: isScoreLoading } = useQuery<AxiosResponse<GetChecklistTopBarDto>, BackendError>(["checklists_top_bar", userId], async () => new FeatureService().GetChecklistTopBarDetails(userId || "all"))
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const [dialog, setDialog] = useState<string | undefined>()
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
@@ -350,7 +350,12 @@ function ChecklistPage() {
     renderTopToolbarCustomActions: ({ table }) => (
       <Box minWidth={'100vw'} >
         <Stack sx={{ p: 1 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
-          {userId !== 'all' ? <Typography fontWeight={'500'} fontSize={17}>Checklists : {`${checklists.length} | `} LM Score : {`${categoriesData?.lastmonthscore} | `}CM Score : {categoriesData?.currentmonthscore}</Typography> : <Typography fontWeight={'500'} fontSize={17}>Checklists : {`${checklists.length}`}</Typography>}
+
+          {isScoreLoading ? <CircularProgress /> :
+            <>
+              {userId !== 'all' ? <Typography fontWeight={'500'} fontSize={17}>Checklists : {`${checklists.length} | `} LM Score : {`${categoriesData?.lastmonthscore} | `}CM Score : {categoriesData?.currentmonthscore}</Typography> : <Typography fontWeight={'500'} fontSize={17}>Checklists : {`${checklists.length}`}</Typography>}
+            </>}
+
           <Stack
             pt={1}
             direction="row"
