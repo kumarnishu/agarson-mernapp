@@ -102,16 +102,16 @@ export default function ExpenseCategoriesPage() {
     }),
 	muiTableHeadCellProps: ({ column }) => ({
       sx: {
-        '& div:nth-child(1) span': {
+        '& div:nth-of-type(1) span': {
           display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
         },
-        '& div:nth-child(2)': {
+        '& div:nth-of-type(2)': {
           display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
         },
-        '&:hover div:nth-child(1) span': {
+        '&:hover div:nth-of-type(1) span': {
           display: 'inline', // Visible on hover
         },
-        '&:hover div:nth-child(2)': {
+        '&:hover div:nth-of-type(2)': {
           display: 'block', // Visible on hover
         }
       },
