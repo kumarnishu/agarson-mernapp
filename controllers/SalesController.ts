@@ -1058,9 +1058,9 @@ export class SalesController {
             const data = await Reference.aggregate([
                 {
                     $group: {
-                        _id: { party: "$party", reference: "$reference" },
+                        _id: { gst: "$gst", reference: "$reference" },
                         total_sale_scope: { $sum: "$sale_scope" },
-                        gst: { $first: "$gst" },
+                        party: { $first: "$party" },
                         address: { $first: "$address" },
                         state: { $first: "$state" },
                         pincode: { $first: "$pincode" },
@@ -1074,18 +1074,18 @@ export class SalesController {
                     $match: {
                         total_sale_scope: { $lt: 50000 }
                     }
-                }] :[{
+                }] : [{
                     $match: {
                         total_sale_scope: { $gte: 50000 }
                     }
-                }] ),
+                }]),
                 {
                     $project: {
                         _id: 0,
-                        party: "$_id.party",
+                        gst: "$_id.gst",
                         reference: "$_id.reference",
                         total_sale_scope: 1,
-                        gst: 1,
+                        party: 1,
                         address: 1,
                         state: 1,
                         stage: 1,
@@ -1152,13 +1152,17 @@ export class SalesController {
             },
             {
                 $group: {
-                    _id: { party: "$party", reference: "$reference" },
+                    _id: { gst: "$gst", reference: "$reference" },
                     total_sale_scope: { $sum: "$sale_scope" },
+                    party: { $first: "$party" },
                     address: { $first: "$address" },
                     state: { $first: "$state" },
-                    stage: { $first: "$stage" },
+                    pincode: { $first: "$pincode" },
+                    business: { $first: "$business" },
                     last_remark: { $first: "$last_remark" },
-                }
+                    next_call: { $first: "$next_call" },
+                    stage: { $first: "$stage" }
+                },
             },
             {
                 $match: {
@@ -1168,6 +1172,7 @@ export class SalesController {
             {
                 $project: {
                     _id: 0,
+                    gst: "$_id.gst",
                     party: "$_id.party",
                     reference: "$_id.reference",
                     total_sale_scope: 1,
@@ -1251,10 +1256,7 @@ export class SalesController {
                     validated = false
                     statusText = "party required"
                 }
-                if (!state) {
-                    validated = false
-                    statusText = "state required"
-                }
+             
                 if (!reference) {
                     validated = false
                     statusText = "reference required"
@@ -1289,7 +1291,7 @@ export class SalesController {
                     }
 
                     if (!item._id || !isMongoId(String(item._id))) {
-                        let oldref = await Reference.findOne({ state: state.toLowerCase(), party: party.toLowerCase(), reference: item.reference.toLowerCase(), date: nedate, sale_scope: sale_scope })
+                        let oldref = await Reference.findOne({  party: party.toLowerCase(), reference: item.reference.toLowerCase(), date: nedate, sale_scope: sale_scope })
                         if (!oldref) {
                             await new Reference({
                                 date: nedate,

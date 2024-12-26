@@ -19,7 +19,7 @@ export default function ReferencesReportPage() {
   const [hidden, setHidden] = useState(false)
   const [reports, setReports] = useState<GetReferenceDto[]>([])
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferenceDto[]>, BackendError>(["references",hidden], async () => new SalesService().GetAllReferences(hidden))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetReferenceDto[]>, BackendError>(["references", hidden], async () => new SalesService().GetAllReferences(hidden))
   const [dialog, setDialog] = useState<string | undefined>()
   const isFirstRender = useRef(true);
   const [party, setParty] = useState<string | undefined>()
@@ -32,11 +32,7 @@ export default function ReferencesReportPage() {
 
   const columns = useMemo<MRT_ColumnDef<GetReferenceDto>[]>(() => {
     // Step 1: Extract dynamic keys from the first row of reports (if available)
-    const dynamicKeys = reports?.length
-      ? Object.keys(reports[0]).filter(
-        (key) => !['party', 'gst', 'address', 'state', 'stage', 'last_remark', 'next_call', 'pincode', 'business'].includes(key) // Exclude static keys
-      )
-      : [];
+    const dynamicKeys = ['a', 'b', 'c', 'd', 'e']
 
     // Step 2: Define static columns
     const staticColumns: MRT_ColumnDef<GetReferenceDto>[] = [
