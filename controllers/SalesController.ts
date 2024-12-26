@@ -1062,7 +1062,7 @@ export class SalesController {
                         total_sale_scope: { $sum: "$sale_scope" },
                         party: { $first: "$party" },
                         address: { $first: "$address" },
-                        state: { $first: "$state" },
+                        state: { $push: "$state" },
                         pincode: { $first: "$pincode" },
                         business: { $first: "$business" },
                         last_remark: { $first: "$last_remark" },
@@ -1087,7 +1087,19 @@ export class SalesController {
                         total_sale_scope: 1,
                         party: 1,
                         address: 1,
-                        state: 1,
+                        state: {
+                            $reduce: {
+                                input: "$state",
+                                initialValue: "",
+                                in: {
+                                    $concat: [
+                                        "$$value",
+                                        { $cond: [{ $eq: ["$$value", ""] }, "", " "] }, // Add space if not the first element
+                                        "$$this"
+                                    ]
+                                }
+                            }
+                        },
                         stage: 1,
                         pincode: 1,
                         business: 1,
@@ -1156,7 +1168,7 @@ export class SalesController {
                     total_sale_scope: { $sum: "$sale_scope" },
                     party: { $first: "$party" },
                     address: { $first: "$address" },
-                    state: { $first: "$state" },
+                    state: { $push: "$state" },
                     pincode: { $first: "$pincode" },
                     business: { $first: "$business" },
                     last_remark: { $first: "$last_remark" },
@@ -1173,11 +1185,23 @@ export class SalesController {
                 $project: {
                     _id: 0,
                     gst: "$_id.gst",
-                    party: "$_id.party",
+                    party: "$party",
                     reference: "$_id.reference",
                     total_sale_scope: 1,
                     address: 1,
-                    state: 1,
+                    state: {
+                        $reduce: {
+                            input: "$state",
+                            initialValue: "",
+                            in: {
+                                $concat: [
+                                    "$$value",
+                                    { $cond: [{ $eq: ["$$value", ""] }, "", " "] }, // Add space if not the first element
+                                    "$$this"
+                                ]
+                            }
+                        }
+                    },
                     stage: 1,
                     last_remark: 1,
                 },
