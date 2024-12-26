@@ -350,7 +350,7 @@ function ChecklistPage() {
     renderTopToolbarCustomActions: ({ table }) => (
       <Box minWidth={'100vw'} >
         <Stack sx={{ p: 1 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
-          {userId !== 'all' ? <Typography fontWeight={'500'} fontSize={17}>Checklists : {`${checklists.length} | `} LM Score : {`${categoriesData?.lastmonthscore} | `}CM Score : {categoriesData?.currentmonthscore}</Typography> : <Typography fontWeight={'500'} fontSize={17}>Checklists : {`${checklists.length} | `}</Typography>}
+          {userId !== 'all' ? <Typography fontWeight={'500'} fontSize={17}>Checklists : {`${checklists.length} | `} LM Score : {`${categoriesData?.lastmonthscore} | `}CM Score : {categoriesData?.currentmonthscore}</Typography> : <Typography fontWeight={'500'} fontSize={17}>Checklists : {`${checklists.length}`}</Typography>}
           <Stack
             pt={1}
             direction="row"
