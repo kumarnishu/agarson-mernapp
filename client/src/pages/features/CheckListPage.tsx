@@ -362,7 +362,7 @@ function ChecklistPage() {
     renderTopToolbarCustomActions: () => (
       < >
         {isScoreLoading ? <CircularProgress /> :
-          <Typography sx={{ maxWidth: 260, overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Checklists : {`${checklists.length} - `} LM:{`${categoriesData?.lastmonthscore} - `}CM: {categoriesData?.currentmonthscore}</Typography>}
+          <Typography sx={{  overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Checklists : {`${checklists.length} - `} LM:{`${categoriesData?.lastmonthscore} - `}CM: {categoriesData?.currentmonthscore}</Typography>}
         <Stack justifyContent={'center'} direction={'row'} gap={1} sx={{ backgroundColor: 'white' }} >
           {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
             < TextField

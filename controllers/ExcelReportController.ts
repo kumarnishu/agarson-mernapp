@@ -13,9 +13,6 @@ import { VisitReport } from "../models/visit-report.model";
 import { ExcelDBRemark, IExcelDBRemark } from "../models/excel-db-remark.model";
 import isMongoId from "validator/lib/isMongoId";
 import { CreateOrEditExcelDbRemarkDto, GetExcelDBRemarksDto } from "../dtos/excel-db-remark.dto";
-import { CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto } from "../dtos/visit_remark.dto";
-import { VisitRemark, IVisitRemark } from "../models/visit_remark.model";
-
 
 export class ExcelReportController {
     

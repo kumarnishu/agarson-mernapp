@@ -447,7 +447,7 @@ function CheckListAdminPage() {
     positionToolbarAlertBanner: 'none',
     enableColumnVirtualization: true,
     enableStickyFooter: true,
-    initialState: {sorting: [{ id: "group_title", desc: false }], density: 'compact', grouping: ['group_title'], showGlobalFilter: true, expanded: true, pagination: { pageIndex: 0, pageSize: 1000 } },
+    initialState: { sorting: [{ id: "group_title", desc: false }], density: 'compact', grouping: ['group_title'], showGlobalFilter: true, expanded: true, pagination: { pageIndex: 0, pageSize: 1000 } },
     enableGrouping: true,
     enableRowSelection: true,
     enablePagination: true,
@@ -488,7 +488,7 @@ function CheckListAdminPage() {
     renderTopToolbarCustomActions: () => (
       < >
         {isScoreLoading ? <CircularProgress /> :
-          <Typography sx={{ maxWidth: 260, overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Checklists : {`${checklists.length} - `} LM:{`${categoriesData?.lastmonthscore} - `}CM: {categoriesData?.currentmonthscore}</Typography>}
+          <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Checklists : {`${checklists.length} - `} LM:{`${categoriesData?.lastmonthscore} - `}CM: {categoriesData?.currentmonthscore}</Typography>}
         <Stack justifyContent={'center'} direction={'row'} gap={1} sx={{ backgroundColor: 'white' }} >
 
           < TextField
