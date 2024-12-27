@@ -2,18 +2,16 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Box, Button, CircularProgress, Fade, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Button, CircularProgress, Fade, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import moment from 'moment'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
 import { DownloadFile } from '../../utils/DownloadFile'
 import { queryClient } from '../../main'
 import { currentYear, getNextMonday, getPrevMonday, nextMonth, nextYear, previousMonth, previousYear } from '../../utils/datesHelper'
 import { toTitleCase } from '../../utils/TitleCase'
 import ViewChecklistBoxRemarksDialog from '../../components/dialogs/checklists/ViewChecklistBoxRemarksDialog'
 import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
-import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import { GetChecklistBoxDto } from '../../dtos/checklist-box.dto'
 import { GetChecklistDto, GetChecklistFromExcelDto, GetChecklistTopBarDto } from '../../dtos/checklist.dto'
@@ -99,13 +97,16 @@ function ChecklistPage() {
         accessorKey: 'work_title',
         header: ' Work Title',
         Footer: "Score",
-        AggregatedCell: (cell) => <h4 style={{ textAlign: 'left', width: '100%' }} title={cell.row.original.group_title && cell.row.original.group_title.toUpperCase()}>{cell.row.original.group_title && cell.row.original.group_title.toUpperCase()}</h4>,
-
-        Cell: (cell) => <span title={cell.row.original.group_title} >
+        AggregatedCell: (cell) => <h4 style={{
+          textAlign: 'left', fontSize: '1.1em', width: '100%', wordWrap: 'break-word',
+          overflowWrap: 'break-word',
+          whiteSpace: 'normal'
+        }} title={cell.row.original.group_title && cell.row.original.group_title.toUpperCase()}>{cell.row.original.group_title && cell.row.original.group_title.toUpperCase()}</h4>,
+        Cell: (cell) => <span title={cell.row.original.work_title} >
           {cell.row.original.link && cell.row.original.link != "" ?
-            <a style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}><pre>{cell.row.original.work_title}</pre></a>
+            <a style={{ fontSize: '1.1em', fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}><pre>{cell.row.original.work_title}</pre></a>
             :
-            <pre style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }}>
+            <pre style={{ fontSize: '1.1em', fontWeight: '400', textDecoration: 'none' }}>
               {cell.row.original.work_title}
             </pre>
           }
@@ -317,12 +318,30 @@ function ChecklistPage() {
     columns, columnFilterDisplayMode: 'popover',
     data: checklists, //10,000 rows       
     enableColumnResizing: true,
-    enableColumnVirtualization: true, enableStickyFooter: true,
+    positionToolbarAlertBanner: 'none',
+    enableColumnVirtualization: true,
+    enableStickyFooter: true,
+    initialState: { sorting: [{ id: "group_title", desc: false }], density: 'compact', grouping: ['group_title'], showGlobalFilter: true, expanded: true, pagination: { pageIndex: 0, pageSize: 1000 } },
+    enableGrouping: true,
+    enableRowSelection: true,
+    enablePagination: true,
+    enableColumnPinning: true,
+    enableTableFooter: true,
+    enableDensityToggle: false,
     muiTableFooterRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white',
       }
+    }),
+    muiTableContainerProps: (table) => ({
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
+    }),
+    muiTableHeadRowProps: () => ({
+      sx: {
+        backgroundColor: 'whitesmoke',
+        color: 'white'
+      },
     }),
     muiTableHeadCellProps: ({ column }) => ({
       sx: {
@@ -340,127 +359,77 @@ function ChecklistPage() {
         }
       },
     }),
-    muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '71vh' }
-    }),
-    muiTableHeadRowProps: () => ({
-      sx: {
-        backgroundColor: 'whitesmoke',
-        color: 'white',
-        border: '1px solid lightgrey;',
-      },
-    }),
-    renderTopToolbarCustomActions: ({ table }) => (
-      <Box minWidth={'100vw'} >
-        <Stack sx={{ p: 1 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
+    renderTopToolbarCustomActions: () => (
+      < >
+        {isScoreLoading ? <CircularProgress /> :
+          <Typography sx={{ maxWidth: 260, overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Checklists : {`${checklists.length} - `} LM:{`${categoriesData?.lastmonthscore} - `}CM: {categoriesData?.currentmonthscore}</Typography>}
+        <Stack justifyContent={'center'} direction={'row'} gap={1} sx={{ backgroundColor: 'white' }} >
+          {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
+            < TextField
 
-          {isScoreLoading ? <CircularProgress /> :
-            <>
-              {userId !== 'all' ? <Typography fontWeight={'500'} fontSize={17}>Checklists : {`${checklists.length} | `} LM Score : {`${categoriesData?.lastmonthscore} | `}CM Score : {categoriesData?.currentmonthscore}</Typography> : <Typography fontWeight={'500'} fontSize={17}>Checklists : {`${checklists.length}`}</Typography>}
-            </>}
+              select
+              size="small"
+              SelectProps={{
+                native: true,
+              }}
+              onChange={(e) => {
+                setStage(e.target.value)
+              }}
+              value={stage}
 
-          <Stack
-            pt={1}
-            direction="row"
-            alignItems={'center'}
-            justifyContent="right">
+              required
+              id="Stage"
+              label="Checklist Stage"
+              fullWidth
+            >
+              {
+                ['all', 'open', 'pending', 'done'].map((st, index) => {
 
-            <Stack justifyContent={'right'} pr={2} direction={'row'} gap={1}>
+                  return (<option key={index} value={st}>
+                    {toTitleCase(st)}
+                  </option>)
+                })
+              }
+            </TextField>}
 
-              < TextField
-                variant='filled'
-                select
-                size="small"
-                SelectProps={{
-                  native: true,
-                }}
-                onChange={(e) => {
-                  setStage(e.target.value)
-                }}
-                value={stage}
+          {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
+            < TextField
 
-                required
-                id="Stage"
-                label="Checklist Stage"
-                fullWidth
-              >
-                {
-                  ['all', 'open', 'pending', 'done'].map((st, index) => {
+              select
+              size="small"
+              SelectProps={{
+                native: true,
+              }}
+              onChange={(e) => {
+                setUserId(e.target.value)
+              }}
+              required
+              id="checklist_owners"
+              label="Person"
+              fullWidth
+            >
+              <option key={'00'} value={'all'}>All
+              </option>
+              {
+                users.map((user, index) => {
 
-                    return (<option key={index} value={st}>
-                      {toTitleCase(st)}
-                    </option>)
-                  })
-                }
-              </TextField>
+                  return (<option key={index} value={user.id}>
+                    {toTitleCase(user.label)}
+                  </option>)
 
-              {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
-                < TextField
-                  variant='filled'
-                  select
-                  size="small"
-                  SelectProps={{
-                    native: true,
-                  }}
-                  onChange={(e) => {
-                    setUserId(e.target.value)
-                  }}
-                  required
-                  id="checklist_owners"
-                  label="Person"
-                  fullWidth
-                >
-                  <option key={'00'} value={'all'}>All
-                  </option>
-                  {
-                    users.map((user, index) => {
+                })
+              }
+            </TextField>}
 
-                      return (<option key={index} value={user.id}>
-                        {toTitleCase(user.label)}
-                      </option>)
-
-                    })
-                  }
-                </TextField>}
-
-              <Tooltip title="Toogle Filter">
-                <Button size="small" color="inherit" variant='contained'
-                  onClick={() => {
-                    table.resetColumnFilters(true)
-                  }
-                  }
-                >
-                  <FilterAltOff />
-                </Button>
-              </Tooltip>
-
-              <Tooltip title="Toogle FullScreen" >
-                <Button size="small" color="inherit" variant='contained'
-                  onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
-                  }
-                >
-                  {table.getState().isFullScreen ? <FullscreenExit /> : <Fullscreen />}
-                </Button>
-              </Tooltip>
-              <Tooltip title="Menu" sx={{ pl: 1 }}>
-                <Button size="small" color="inherit" variant='contained'
-                  onClick={(e) => setAnchorEl(e.currentTarget)
-                  }
-                >
-                  <MenuIcon />
-                  <Typography pl={1}> {`Menu `}</Typography>
-                </Button>
-              </Tooltip>
-            </Stack>
-          </Stack>
         </Stack>
-      </Box >
+
+      </>
     ),
     muiTableBodyRowProps: (row) => ({
       sx: {
         backgroundColor: row.row.getIsGrouped() ? 'lightgrey' : 'inherit', // Light blue for grouped rows
+        visibility: row.row.getIsGrouped() && row.row.original.work_title == "" ? 'none' : 'block',
         fontWeight: row.row.getIsGrouped() ? 'bold' : 'normal', // Bold text for grouped rows
-
       },
     }),
     muiTableBodyCellProps: (cell) => ({
@@ -469,27 +438,22 @@ function ChecklistPage() {
         borderBottom: cell.row.original.group_title != "" ? 'none' : '1px solid lightgrey;',
       },
     }),
-    positionToolbarAlertBanner: 'none',
-    enableToolbarInternalActions: false,
-    initialState: { density: 'compact', grouping: ['group_title'], expanded: true },
-    enableRowSelection: true,
-    enableGrouping: true,
-    enableColumnPinning: true,
-    onSortingChange: setSorting,
-    enableTableFooter: true,
-    enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+    muiPaginationProps: {
+      rowsPerPageOptions: [100, 200, 500, 1000, 2000, 5000, 7000, 10000],
+      shape: 'rounded',
+      variant: 'outlined',
+    },
 
+    enableRowVirtualization: true,
+    rowVirtualizerInstanceRef, //optional
+    //optionally customize the column virtualizer
+    onColumnVisibilityChange: setColumnVisibility,
+    onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility: { ...columnVisibility, 'group_title': false, "mrt-row-expand": false, },
-      sorting: [{ desc: false, id: 'group_title' }],
       columnSizing: columnSizing
     },
-    enableBottomToolbar: true,
-    enableGlobalFilter: false,
-    enablePagination: false,
-    manualPagination: true
   });
 
   useEffect(() => {

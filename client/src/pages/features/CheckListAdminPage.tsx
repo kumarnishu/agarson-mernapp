@@ -2,13 +2,13 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Box, Button, CircularProgress, Fade, IconButton, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Button, CircularProgress, Fade, IconButton, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_Row, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import PopUp from '../../components/popup/PopUp'
-import { Delete, Edit, FilterAltOff } from '@mui/icons-material'
+import { Delete, Edit } from '@mui/icons-material'
 import { DownloadFile } from '../../utils/DownloadFile'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
@@ -445,7 +445,15 @@ function CheckListAdminPage() {
     data: checklists, //10,000 rows       
     enableColumnResizing: true,
     positionToolbarAlertBanner: 'none',
-    enableColumnVirtualization: true, enableStickyFooter: true,
+    enableColumnVirtualization: true,
+    enableStickyFooter: true,
+    initialState: {sorting: [{ id: "group_title", desc: false }], density: 'compact', grouping: ['group_title'], showGlobalFilter: true, expanded: true, pagination: { pageIndex: 0, pageSize: 1000 } },
+    enableGrouping: true,
+    enableRowSelection: true,
+    enablePagination: true,
+    enableColumnPinning: true,
+    enableTableFooter: true,
+    enableDensityToggle: false,
     muiTableFooterRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',
@@ -478,10 +486,10 @@ function CheckListAdminPage() {
       },
     }),
     renderTopToolbarCustomActions: () => (
-      <>
+      < >
         {isScoreLoading ? <CircularProgress /> :
-          <Typography sx={{ maxWidth: 260, overflow: 'hidden', fontSize: '1.2em', fontWeight: 'bold', textAlign: 'center' }} >Checklists : {`${checklists.length} - `} LM:{`${categoriesData?.lastmonthscore} - `}CM: {categoriesData?.currentmonthscore}</Typography>}
-        <Stack justifyContent={'right'} direction={'row'} gap={1} sx={{ backgroundColor: 'white' }} >
+          <Typography sx={{ maxWidth: 260, overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Checklists : {`${checklists.length} - `} LM:{`${categoriesData?.lastmonthscore} - `}CM: {categoriesData?.currentmonthscore}</Typography>}
+        <Stack justifyContent={'center'} direction={'row'} gap={1} sx={{ backgroundColor: 'white' }} >
 
           < TextField
 
@@ -576,36 +584,7 @@ function CheckListAdminPage() {
                 })
               }
             </TextField>}
-          <Stack sx={{ flexDirection: 'row', justifyContent: 'right', gap: 1 }}>
-            {LoggedInUser?._id === LoggedInUser?.created_by.id && LoggedInUser?.assigned_permissions.includes('checklist_admin_delete') &&
-              <Button variant='text' color='inherit' size='large'
-                onClick={() => {
-                  let data: any[] = [];
-                  data = table.getSelectedRowModel().rows
-                  if (data.length == 0)
-                    alert("select some checklists")
-                  else
-                    setDialog('BulkDeleteCheckListDialog')
-                }}
-              >
-                <Delete sx={{ width: 15, height: 15 }} />
-              </Button>}
-            {LoggedInUser?.assigned_permissions.includes('checklist_create') && <ChecklistExcelButtons />}
-            <Button size="small" color="inherit" variant='text'
-              onClick={() => {
-                table.resetColumnFilters(true)
-              }
-              }
-            >
-              <FilterAltOff />
-            </Button>
-            <Button size="small" color="inherit" variant='text'
-              onClick={(e) => setAnchorEl(e.currentTarget)
-              }
-            >
-              <MenuIcon />
-            </Button>
-          </Stack>
+
         </Stack>
 
       </>
@@ -628,14 +607,7 @@ function CheckListAdminPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-    initialState: { density: 'compact', grouping: ['group_title'], expanded: true, sorting: [{ desc: false, id: 'group_title' }], pagination: { pageIndex: 0, pageSize: 1000 } },
-    enableGrouping: true,
-    enableRowSelection: true,
-    manualPagination: false,
-    enablePagination: true,
-    enableColumnPinning: true,
-    enableTableFooter: true,
-    enableDensityToggle: false,
+
     enableRowVirtualization: true,
     rowVirtualizerInstanceRef, //optional
     //optionally customize the column virtualizer
@@ -644,7 +616,6 @@ function CheckListAdminPage() {
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility: { ...columnVisibility, 'group_title': false, "mrt-row-expand": false, },
-      sorting,
       columnSizing: columnSizing
     },
   });
@@ -721,14 +692,39 @@ function CheckListAdminPage() {
   return (
     <>
 
-      <Stack direction={'row'} gap={1} sx={{ maxWidth: '100vw', height: 40, background: 'whitesmoke', p: 1, borderRadius: 1 }} className='scrollable-stack'>
-        {categoriesData?.categorydData.map((category, index) => (
-          <Stack style={{ minWidth: '100px', overflowY: 'hidden' }}
-            key={index}
+      <Stack flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'} p={1}>
+        <Stack direction={'row'} gap={1} sx={{ maxWidth: '70vw', borderRadius: 1 }} className='scrollable-stack'>
+          {categoriesData?.categorydData.map((category, index) => (
+            <Stack style={{ minWidth: '150px', overflowY: 'hidden' }}
+              key={index}
+            >
+              <span key={category.category} style={{ fontSize: '1.1em' }}> {category.count} : {toTitleCase(category.category).slice(0, 10)} </span>
+            </Stack>
+          ))}
+        </Stack>
+        <Stack sx={{ flexDirection: 'row', justifyContent: 'right', gap: 1 }}>
+          {LoggedInUser?._id === LoggedInUser?.created_by.id && LoggedInUser?.assigned_permissions.includes('checklist_admin_delete') &&
+            <Button variant='text' color='inherit' size='large'
+              onClick={() => {
+                let data: any[] = [];
+                data = table.getSelectedRowModel().rows
+                if (data.length == 0)
+                  alert("select some checklists")
+                else
+                  setDialog('BulkDeleteCheckListDialog')
+              }}
+            >
+              <Delete sx={{ width: 15, height: 15 }} />
+            </Button>}
+          {LoggedInUser?.assigned_permissions.includes('checklist_create') && <ChecklistExcelButtons />}
+
+          <Button size="small" color="inherit" variant='text'
+            onClick={(e) => setAnchorEl(e.currentTarget)
+            }
           >
-            <span key={category.category} style={{ paddingLeft: '5px', fontSize: '13px' }}> {category.count} : {toTitleCase(category.category).slice(0, 10)} </span>
-          </Stack>
-        ))}
+            <MenuIcon />
+          </Button>
+        </Stack>
       </Stack>
       <Menu
         anchorEl={anchorEl}
