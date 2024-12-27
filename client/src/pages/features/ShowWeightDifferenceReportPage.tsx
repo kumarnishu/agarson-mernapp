@@ -21,12 +21,12 @@ export default function ShowWeightDifferenceReportPage() {
     start_date: moment(new Date()).format("YYYY-MM-DD")
     , end_date: moment(new Date().setDate(new Date().getDate() + 1)).format("YYYY-MM-DD")
   })
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetShoeWeightDiffReportDto[]>, BackendError>(["shoeweight_diffreports", dates.start_date, dates.end_date], async () =>new FeatureService(). GetShoeWeightDiffReports({ start_date: dates.start_date, end_date: dates.end_date }))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetShoeWeightDiffReportDto[]>, BackendError>(["shoeweight_diffreports", dates.start_date, dates.end_date], async () => new FeatureService().GetShoeWeightDiffReports({ start_date: dates.start_date, end_date: dates.end_date }))
 
-   const isFirstRender = useRef(true);
+  const isFirstRender = useRef(true);
 
-    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-  
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
@@ -41,10 +41,10 @@ export default function ShowWeightDifferenceReportPage() {
       },
       {
         accessorKey: 'dye_no',
-      
+
         header: 'Dye',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.dye_no)
@@ -54,10 +54,10 @@ export default function ShowWeightDifferenceReportPage() {
       },
       {
         accessorKey: 'article',
-      
+
         header: 'Article',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.article)
@@ -67,10 +67,10 @@ export default function ShowWeightDifferenceReportPage() {
       },
       {
         accessorKey: 'size',
-     
+
         header: 'Size',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.size)
@@ -80,10 +80,10 @@ export default function ShowWeightDifferenceReportPage() {
       },
       {
         accessorKey: 'st_weight',
-      
+
         header: 'St Weight',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.st_weight)
@@ -93,10 +93,10 @@ export default function ShowWeightDifferenceReportPage() {
       },
       {
         accessorKey: 'machine',
-       
+
         header: 'Machine',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.machine)
@@ -106,73 +106,73 @@ export default function ShowWeightDifferenceReportPage() {
       },
       {
         accessorKey: 'w1',
-     
+
         header: 'Weight1',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'u1',
-      
+
         header: 'Upper1',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'd1',
-     
+
         header: 'Diff-1',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'w2',
-    
+
         header: 'Weight2',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'u2',
-     
+
         header: 'Upper2',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'd2',
-       
+
         header: 'Diff-2',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'w3',
-      
+
         header: 'Weight3',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'u3',
-   
+
         header: 'Upper3',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'd3',
-      
+
         header: 'Diff-3',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'person',
-      
+
         header: 'Person',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
         filterVariant: 'multi-select',
         filterSelectOptions: reports && reports.map((i) => {
           if (i.person)
@@ -201,7 +201,7 @@ export default function ShowWeightDifferenceReportPage() {
     const columnSizing = localStorage.getItem(
       'mrt_columnSizing_table_1',
     );
-    
+
 
 
 
@@ -210,10 +210,10 @@ export default function ShowWeightDifferenceReportPage() {
       setColumnVisibility(JSON.parse(columnVisibility));
     }
 
-    
+
     if (columnSizing)
       setColumnSizing(JSON.parse(columnSizing))
-    
+
     isFirstRender.current = false;
   }, []);
 
@@ -225,7 +225,7 @@ export default function ShowWeightDifferenceReportPage() {
     );
   }, [columnVisibility]);
 
- 
+
 
 
   useEffect(() => {
@@ -245,7 +245,7 @@ export default function ShowWeightDifferenceReportPage() {
   }, [isSuccess]);
 
   const table = useMaterialReactTable({
-    columns, columnFilterDisplayMode: 'popover', 
+    columns, columnFilterDisplayMode: 'popover',
     data: reports, //10,000 rows       
     enableColumnResizing: true,
     enableColumnVirtualization: true, enableStickyFooter: true,
@@ -264,13 +264,13 @@ export default function ShowWeightDifferenceReportPage() {
         color: 'white'
       },
     }),
-	muiTableHeadCellProps: ({ column }) => ({
+    muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-of-type(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-of-type(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-of-type(1) span': {
           display: 'inline', // Visible on hover
@@ -340,7 +340,6 @@ export default function ShowWeightDifferenceReportPage() {
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
-      
       sorting,
       columnSizing: columnSizing
     }

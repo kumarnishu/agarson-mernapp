@@ -8,7 +8,7 @@ import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_Row, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import PopUp from '../../components/popup/PopUp'
-import { Delete, Edit, FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
+import { Delete, Edit, FilterAltOff } from '@mui/icons-material'
 import { DownloadFile } from '../../utils/DownloadFile'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
@@ -145,12 +145,16 @@ function CheckListAdminPage() {
         accessorKey: 'work_title',
         header: ' Work Title',
         Footer: "Score",
-        AggregatedCell: (cell) => <h4 style={{ textAlign: 'left', width: '100%' }} title={cell.row.original.group_title && cell.row.original.group_title.toUpperCase()}>{cell.row.original.group_title && cell.row.original.group_title.toUpperCase()}</h4>,
+        AggregatedCell: (cell) => <h4 style={{
+          textAlign: 'left', fontSize: '1.1em', width: '100%', wordWrap: 'break-word',
+          overflowWrap: 'break-word',
+          whiteSpace: 'normal'
+        }} title={cell.row.original.group_title && cell.row.original.group_title.toUpperCase()}>{cell.row.original.group_title && cell.row.original.group_title.toUpperCase()}</h4>,
         Cell: (cell) => <span title={cell.row.original.work_title} >
           {cell.row.original.link && cell.row.original.link != "" ?
-            <a style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}><pre>{cell.row.original.work_title}</pre></a>
+            <a style={{ fontSize: '1.1em', fontWeight: '400', textDecoration: 'none' }} target='blank' href={cell.row.original.link}><pre>{cell.row.original.work_title}</pre></a>
             :
-            <pre style={{ fontSize: 11, fontWeight: '400', textDecoration: 'none' }}>
+            <pre style={{ fontSize: '1.1em', fontWeight: '400', textDecoration: 'none' }}>
               {cell.row.original.work_title}
             </pre>
           }
@@ -435,17 +439,27 @@ function CheckListAdminPage() {
     [checklists, data],
   );
 
+
   const table = useMaterialReactTable({
     columns, columnFilterDisplayMode: 'popover',
     data: checklists, //10,000 rows       
     enableColumnResizing: true,
-    enableGrouping: true,
+    positionToolbarAlertBanner: 'none',
     enableColumnVirtualization: true, enableStickyFooter: true,
     muiTableFooterRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white',
       }
+    }),
+    muiTableContainerProps: (table) => ({
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
+    }),
+    muiTableHeadRowProps: () => ({
+      sx: {
+        backgroundColor: 'whitesmoke',
+        color: 'white'
+      },
     }),
     muiTableHeadCellProps: ({ column }) => ({
       sx: {
@@ -463,181 +477,143 @@ function CheckListAdminPage() {
         }
       },
     }),
+    renderTopToolbarCustomActions: () => (
+      <>
+        {isScoreLoading ? <CircularProgress /> :
+          <Typography sx={{ maxWidth: 260, overflow: 'hidden', fontSize: '1.2em', fontWeight: 'bold', textAlign: 'center' }} >Checklists : {`${checklists.length} - `} LM:{`${categoriesData?.lastmonthscore} - `}CM: {categoriesData?.currentmonthscore}</Typography>}
+        <Stack justifyContent={'right'} direction={'row'} gap={1} sx={{ backgroundColor: 'white' }} >
 
-    muiTableContainerProps: (table) => ({
-      sx: { maxHeight: table.table.getState().isFullScreen ? 'auto' : '70vh' }
-    }),
-    muiTableHeadRowProps: () => ({
-      sx: {
-        backgroundColor: 'whitesmoke',
-        color: 'white',
+          < TextField
 
-      },
-    }),
-    renderTopToolbarCustomActions: ({ table }) => (
-      <Box minWidth={'100vw'} >
-        <Stack direction={'row'} gap={1} sx={{ maxWidth: '100vw', height: 40, background: 'whitesmoke', p: 1, borderRadius: 1 }} className='scrollable-stack'>
-          {categoriesData?.categorydData.map((category, index) => (
-            <Stack style={{ minWidth: '100px', overflowY: 'hidden' }}
-              key={index}
+            size="small"
+            type="date"
+            id="start_date"
+            label="Start Date"
+            fullWidth
+
+            value={dates.start_date}
+            onChange={(e) => {
+              if (e.currentTarget.value) {
+                setDates({
+                  ...dates,
+                  start_date: moment(e.target.value).format("YYYY-MM-DD")
+                })
+              }
+            }}
+          />
+          < TextField
+
+            type="date"
+            id="end_date"
+            size="small"
+            label="End Date"
+            value={dates.end_date}
+
+            fullWidth
+            onChange={(e) => {
+              setDates({
+                ...dates,
+                end_date: moment(e.target.value).format("YYYY-MM-DD")
+              })
+            }}
+          />
+
+
+
+          {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
+            < TextField
+
+              select
+              size="small"
+              SelectProps={{
+                native: true,
+              }}
+              onChange={(e) => {
+                setStage(e.target.value)
+              }}
+              value={stage}
+
+              required
+              id="Stage"
+              label="Checklist Stage"
+              fullWidth
             >
-              <span key={category.category} style={{ paddingLeft: '5px', fontSize: '13px' }}> {category.count} : {toTitleCase(category.category).slice(0, 10)} </span>
-            </Stack>
-          ))}
-        </Stack>
-        <Stack sx={{ p: 1 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
-          {isScoreLoading ? <CircularProgress /> :
-            <Typography fontWeight={'00'} fontSize={17}>Checklists : {`${checklists.length} | `} LM Score : {`${categoriesData?.lastmonthscore} | `}CM Score : {categoriesData?.currentmonthscore}</Typography>}
-          <Stack
-            pt={1}
-            direction="row"
-            alignItems={'center'}
-            justifyContent="right">
+              {
+                ['all', 'open', 'pending', 'done'].map((st, index) => {
 
-            <Stack justifyContent={'right'} direction={'row'} gap={1}>
-              < TextField
-                variant='filled'
-                size="small"
-                type="date"
-                id="start_date"
-                label="Start Date"
-                fullWidth
+                  return (<option key={index} value={st}>
+                    {toTitleCase(st)}
+                  </option>)
+                })
+              }
+            </TextField>}
 
-                value={dates.start_date}
-                onChange={(e) => {
-                  if (e.currentTarget.value) {
-                    setDates({
-                      ...dates,
-                      start_date: moment(e.target.value).format("YYYY-MM-DD")
-                    })
-                  }
+          {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
+            < TextField
+
+              select
+              size="small"
+              SelectProps={{
+                native: true,
+              }}
+              onChange={(e) => {
+                setUserId(e.target.value)
+              }}
+              required
+              id="checklist_owners"
+              label="Person"
+              fullWidth
+            >
+              <option key={'00'} value={'all'}>All
+              </option>
+              {
+                users.map((user, index) => {
+
+                  return (<option key={index} value={user.id}>
+                    {toTitleCase(user.label)}
+                  </option>)
+
+                })
+              }
+            </TextField>}
+          <Stack sx={{ flexDirection: 'row', justifyContent: 'right', gap: 1 }}>
+            {LoggedInUser?._id === LoggedInUser?.created_by.id && LoggedInUser?.assigned_permissions.includes('checklist_admin_delete') &&
+              <Button variant='text' color='inherit' size='large'
+                onClick={() => {
+                  let data: any[] = [];
+                  data = table.getSelectedRowModel().rows
+                  if (data.length == 0)
+                    alert("select some checklists")
+                  else
+                    setDialog('BulkDeleteCheckListDialog')
                 }}
-              />
-              < TextField
-                variant='filled'
-                type="date"
-                id="end_date"
-                size="small"
-                label="End Date"
-                value={dates.end_date}
-
-                fullWidth
-                onChange={(e) => {
-                  setDates({
-                    ...dates,
-                    end_date: moment(e.target.value).format("YYYY-MM-DD")
-                  })
-                }}
-              />
-
-
-
-              {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
-                < TextField
-                  variant='filled'
-                  select
-                  size="small"
-                  SelectProps={{
-                    native: true,
-                  }}
-                  onChange={(e) => {
-                    setStage(e.target.value)
-                  }}
-                  value={stage}
-
-                  required
-                  id="Stage"
-                  label="Checklist Stage"
-                  fullWidth
-                >
-                  {
-                    ['all', 'open', 'pending', 'done'].map((st, index) => {
-
-                      return (<option key={index} value={st}>
-                        {toTitleCase(st)}
-                      </option>)
-                    })
-                  }
-                </TextField>}
-
-              {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
-                < TextField
-                  variant='filled'
-                  select
-                  size="small"
-                  SelectProps={{
-                    native: true,
-                  }}
-                  onChange={(e) => {
-                    setUserId(e.target.value)
-                  }}
-                  required
-                  id="checklist_owners"
-                  label="Person"
-                  fullWidth
-                >
-                  <option key={'00'} value={'all'}>All
-                  </option>
-                  {
-                    users.map((user, index) => {
-
-                      return (<option key={index} value={user.id}>
-                        {toTitleCase(user.label)}
-                      </option>)
-
-                    })
-                  }
-                </TextField>}
-              {LoggedInUser?._id === LoggedInUser?.created_by.id && LoggedInUser?.assigned_permissions.includes('checklist_admin_delete') &&
-                <Button variant='contained' color='inherit' size='large'
-                  onClick={() => {
-                    let data: any[] = [];
-                    data = table.getSelectedRowModel().rows
-                    if (data.length == 0)
-                      alert("select some checklists")
-                    else
-                      setDialog('BulkDeleteCheckListDialog')
-                  }}
-                >
-                  <Delete sx={{ width: 15, height: 15 }} />
-                </Button>}
-              {LoggedInUser?.assigned_permissions.includes('checklist_create') && <ChecklistExcelButtons />}
-              <Tooltip title="Toogle Filter">
-                <Button size="small" color="inherit" variant='contained'
-                  onClick={() => {
-                    table.resetColumnFilters(true)
-                  }
-                  }
-                >
-                  <FilterAltOff />
-                </Button>
-              </Tooltip>
-
-              <Tooltip title="Toogle FullScreen" >
-                <Button size="small" color="inherit" variant='contained'
-                  onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
-                  }
-                >
-                  {table.getState().isFullScreen ? <FullscreenExit /> : <Fullscreen />}
-                </Button>
-              </Tooltip>
-              <Tooltip title="Menu" sx={{ pl: 1 }}>
-                <Button size="small" color="inherit" variant='contained'
-                  onClick={(e) => setAnchorEl(e.currentTarget)
-                  }
-                >
-                  <MenuIcon />
-                  <Typography pl={1}> {`Menu `}</Typography>
-                </Button>
-              </Tooltip>
-            </Stack>
+              >
+                <Delete sx={{ width: 15, height: 15 }} />
+              </Button>}
+            {LoggedInUser?.assigned_permissions.includes('checklist_create') && <ChecklistExcelButtons />}
+            <Button size="small" color="inherit" variant='text'
+              onClick={() => {
+                table.resetColumnFilters(true)
+              }
+              }
+            >
+              <FilterAltOff />
+            </Button>
+            <Button size="small" color="inherit" variant='text'
+              onClick={(e) => setAnchorEl(e.currentTarget)
+              }
+            >
+              <MenuIcon />
+            </Button>
           </Stack>
         </Stack>
-      </Box >
+
+      </>
     ),
     muiTableBodyRowProps: (row) => ({
       sx: {
         backgroundColor: row.row.getIsGrouped() ? 'lightgrey' : 'inherit', // Light blue for grouped rows
+        visibility: row.row.getIsGrouped() && row.row.original.work_title == "" ? 'none' : 'block',
         fontWeight: row.row.getIsGrouped() ? 'bold' : 'normal', // Bold text for grouped rows
       },
     }),
@@ -647,25 +623,30 @@ function CheckListAdminPage() {
         borderBottom: cell.row.original.group_title != "" ? 'none' : '1px solid lightgrey;',
       },
     }),
-    positionToolbarAlertBanner: 'none',
-    enableToolbarInternalActions: false,
-    initialState: { density: 'compact', grouping: ['group_title'], expanded: true },
+    muiPaginationProps: {
+      rowsPerPageOptions: [100, 200, 500, 1000, 2000, 5000, 7000, 10000],
+      shape: 'rounded',
+      variant: 'outlined',
+    },
+    initialState: { density: 'compact', grouping: ['group_title'], expanded: true, sorting: [{ desc: false, id: 'group_title' }], pagination: { pageIndex: 0, pageSize: 1000 } },
+    enableGrouping: true,
     enableRowSelection: true,
+    manualPagination: false,
+    enablePagination: true,
     enableColumnPinning: true,
-    onSortingChange: setSorting,
     enableTableFooter: true,
+    enableDensityToggle: false,
     enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
-
+    rowVirtualizerInstanceRef, //optional
+    //optionally customize the column virtualizer
+    onColumnVisibilityChange: setColumnVisibility,
+    onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility: { ...columnVisibility, 'group_title': false, "mrt-row-expand": false, },
-      sorting: [{ desc: false, id: 'group_title' }],
+      sorting,
       columnSizing: columnSizing
     },
-    enableGlobalFilter: false,
-    enablePagination: false,
-    manualPagination: true
   });
 
   useEffect(() => {
@@ -739,6 +720,16 @@ function CheckListAdminPage() {
 
   return (
     <>
+
+      <Stack direction={'row'} gap={1} sx={{ maxWidth: '100vw', height: 40, background: 'whitesmoke', p: 1, borderRadius: 1 }} className='scrollable-stack'>
+        {categoriesData?.categorydData.map((category, index) => (
+          <Stack style={{ minWidth: '100px', overflowY: 'hidden' }}
+            key={index}
+          >
+            <span key={category.category} style={{ paddingLeft: '5px', fontSize: '13px' }}> {category.count} : {toTitleCase(category.category).slice(0, 10)} </span>
+          </Stack>
+        ))}
+      </Stack>
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -840,13 +831,14 @@ function CheckListAdminPage() {
 
 
       </Menu>
+      <MaterialReactTable table={table} />
+
 
       <CreateOrEditCheckListDialog dialog={dialog} setDialog={setDialog} checklist={checklist} setChecklist={setChecklist} />
       {checklist && <DeleteCheckListDialog dialog={dialog} setDialog={setDialog} checklist={checklist} />}
       {checklist && <CreateOrEditCheckListDialog dialog={dialog} setDialog={setDialog} checklist={checklist} setChecklist={setChecklist} />}
       {checklist && checklistBox && <ViewChecklistBoxRemarksDialog dialog={dialog} setDialog={setDialog} is_admin={true} checklist={checklist} checklist_box={checklistBox} />}
       {checklist && <ViewChecklistRemarksDialog dialog={dialog} setDialog={setDialog} checklist={checklist} />}
-      <MaterialReactTable table={table} />
       {<AssignChecklistsDialog dialog={dialog} setDialog={setDialog} flag={flag} checklists={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
       {table.getSelectedRowModel().rows && table.getSelectedRowModel().rows.length > 0 && <BulkDeleteCheckListDialog dialog={dialog} setDialog={setDialog} ids={table.getSelectedRowModel().rows.map((l) => { return l.original._id })} clearIds={() => { table.resetRowSelection() }} />}
     </>

@@ -66,7 +66,7 @@ export function ChecklistExcelButtons() {
 
                                 component="label"
                                 color="inherit"
-                                variant="contained"
+                                variant="text"
                             >
                                 <Upload />
                                 <FileInput
@@ -83,7 +83,7 @@ export function ChecklistExcelButtons() {
                         </>
                 }
             </>
-            <Button variant="contained" color="inherit" startIcon={<Download />} onClick={() => HandleExport()}> Template</Button>
+            <Button variant="text" color="inherit" startIcon={<Download />} onClick={() => HandleExport()}> Template</Button>
         </Stack>
 
     )

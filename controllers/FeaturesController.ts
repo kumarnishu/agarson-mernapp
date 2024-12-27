@@ -219,33 +219,54 @@ export class FeatureController {
     }
 
     public async GetChecklistTopBarDetails(req: Request, res: Response, next: NextFunction) {
-        let result: GetChecklistTopBarDto | null = null;
-        const emp = req.query.emp
-        let categorydata: { category: string, count: number }[] = []
-        let categories = await ChecklistCategory.find().sort('category')
-        let count = await Checklist.find({ category: { $in: categories } }).countDocuments()
-        categorydata.push({ category: 'total', count: count })
-        for (let i = 0; i < categories.length; i++) {
-            let cat = categories[i]
-            let count = await Checklist.find({ category: categories[i]._id }).countDocuments()
-            categorydata.push({ category: cat.category, count: count })
+        try {
+            const emp = req.query.emp;
+         
+    
+            // Aggregate category counts
+            const categoryCounts = await Checklist.aggregate([
+                {
+                    $group: {
+                        _id: "$category",
+                        count: { $sum: 1 }
+                    }
+                }
+            ]);
+    
+            const categories = await ChecklistCategory.find().sort('category');
+            let categorydata = categories.map(cat => {
+                const found = categoryCounts.find(c => c._id?.toString() === cat._id.toString());
+                return { category: cat.category, count: found ? found.count : 0 };
+            });
+    
+            const total = categoryCounts.reduce((sum, cat) => sum + cat.count, 0);
+            categorydata.unshift({ category: 'total', count: total });
+    
+            let checklistFilter: any = {};
+            if (emp !== 'all') {
+                checklistFilter.assigned_users = emp;
+            }
+    
+            const checklists = await Checklist.find(checklistFilter).select('_id');
+            const checklistIds = checklists.map(ch => ch._id);
+    
+            const [boxes, boxes2] = await Promise.all([
+                ChecklistBox.find({ checklist: { $in: checklistIds }, date: { $gte: currentMonth, $lte: nextMonth } }),
+                ChecklistBox.find({ checklist: { $in: checklistIds }, date: { $gte: previousMonth, $lte: currentMonth } })
+            ]);
+    
+            const result: GetChecklistTopBarDto = {
+                categorydData: categorydata,
+                lastmonthscore: getChecklistScore(boxes2),
+                currentmonthscore: getChecklistScore(boxes)
+            };
+    
+            return res.status(200).json(result);
+        } catch (error) {
+            next(error);
         }
-        let score = 0;
-        if (emp == 'all') {
-            let checklists = await Checklist.find()
-            let boxes = await ChecklistBox.find({ checklist: { $in: checklists }, date: { $gte: currentMonth, $lte: nextMonth } })
-            let boxes2 = await ChecklistBox.find({ checklist: { $in: checklists }, date: { $gte: previousMonth, $lte: currentMonth } })
-            result = { categorydData: categorydata, lastmonthscore: getChecklistScore(boxes2), currentmonthscore: getChecklistScore(boxes) }
-        }
-        else {
-            let checklists = await Checklist.find({ assigned_users: emp })
-            let boxes = await ChecklistBox.find({ checklist: { $in: checklists }, date: { $gte: currentMonth, $lte: nextMonth } })
-            let boxes2 = await ChecklistBox.find({ checklist: { $in: checklists }, date: { $gte: previousMonth, $lte: currentMonth } })
-            result = { categorydData: categorydata, lastmonthscore: getChecklistScore(boxes2), currentmonthscore: getChecklistScore(boxes) }
-        }
-
-        return res.status(200).json(result)
     }
+    
 
 
     public async GetChecklists(req: Request, res: Response, next: NextFunction) {
