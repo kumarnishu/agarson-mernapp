@@ -90,7 +90,7 @@ function SalesmanKpiPage() {
         Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
-        accessorKey: 'station.value',
+        accessorKey: 'station.label',
         header: ' Station',
         aggregationFn: 'count',
 

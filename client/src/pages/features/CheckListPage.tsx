@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Button, CircularProgress, Fade, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Button, CircularProgress, Fade, LinearProgress, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import moment from 'moment'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
@@ -335,7 +335,7 @@ function ChecklistPage() {
       }
     }),
     muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '85vh' }
     }),
     muiTableHeadRowProps: () => ({
       sx: {
@@ -362,7 +362,7 @@ function ChecklistPage() {
     renderTopToolbarCustomActions: () => (
       < >
         {isScoreLoading ? <CircularProgress /> :
-          <Typography sx={{  overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Checklists : {`${checklists.length} - `} LM:{`${categoriesData?.lastmonthscore} - `}CM: {categoriesData?.currentmonthscore}</Typography>}
+          <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Checklists : {`${checklists.length} - `} LM:{`${categoriesData?.lastmonthscore} - `}CM: {categoriesData?.currentmonthscore}</Typography>}
         <Stack justifyContent={'center'} direction={'row'} gap={1} sx={{ backgroundColor: 'white' }} >
           {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
             < TextField
@@ -450,7 +450,6 @@ function ChecklistPage() {
     onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
-      isLoading: isLoading,
       columnVisibility: { ...columnVisibility, 'group_title': false, "mrt-row-expand": false, },
       columnSizing: columnSizing
     },
@@ -522,6 +521,7 @@ function ChecklistPage() {
 
   return (
     <>
+      {isLoading && <LinearProgress />}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}

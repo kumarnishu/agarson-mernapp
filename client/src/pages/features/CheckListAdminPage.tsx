@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Button, CircularProgress, Fade, IconButton, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Button, CircularProgress, Fade, IconButton, LinearProgress, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
@@ -461,7 +461,7 @@ function CheckListAdminPage() {
       }
     }),
     muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '80vh' }
     }),
     muiTableHeadRowProps: () => ({
       sx: {
@@ -614,7 +614,6 @@ function CheckListAdminPage() {
     onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
-      isLoading: isLoading,
       columnVisibility: { ...columnVisibility, 'group_title': false, "mrt-row-expand": false, },
       columnSizing: columnSizing
     },
@@ -691,7 +690,7 @@ function CheckListAdminPage() {
 
   return (
     <>
-
+      {isLoading && <LinearProgress />}
       <Stack flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'} p={1}>
         <Stack direction={'row'} gap={1} sx={{ maxWidth: '70vw', borderRadius: 1 }} className='scrollable-stack'>
           {categoriesData?.categorydData.map((category, index) => (
