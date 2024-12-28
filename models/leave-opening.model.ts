@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { IUser } from "./user.model";
 
-export type ILeave = {
+export type ILeaveBalance = {
     _id: string,
     sl: number,
     fl: number,
@@ -16,7 +16,7 @@ export type ILeave = {
 }
 
 
-const LeaveSchema = new mongoose.Schema<ILeave, mongoose.Model<ILeave, {}, {}>, {}>({
+const LeaveSchema = new mongoose.Schema<ILeaveBalance, mongoose.Model<ILeaveBalance, {}, {}>, {}>({
 
     sl: {
         type: Number,
@@ -72,4 +72,4 @@ const LeaveSchema = new mongoose.Schema<ILeave, mongoose.Model<ILeave, {}, {}>, 
     }
 })
 
-export const Leave = mongoose.model<ILeave, mongoose.Model<ILeave, {}, {}>>("Leave", LeaveSchema)
+export const LeaveBalance = mongoose.model<ILeaveBalance, mongoose.Model<ILeaveBalance, {}, {}>>("LeaveBalance", LeaveSchema)
