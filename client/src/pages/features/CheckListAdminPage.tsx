@@ -461,7 +461,7 @@ function CheckListAdminPage() {
       }
     }),
     muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '80vh' }
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '78vh' }
     }),
     muiTableHeadRowProps: () => ({
       sx: {

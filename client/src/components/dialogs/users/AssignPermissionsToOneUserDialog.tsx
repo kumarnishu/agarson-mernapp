@@ -26,9 +26,9 @@ const RenderTree = ({ permissiontree, permissions, setPermissions, prefix }: { p
 
             return (
                 <div key={currentIndex} style={{ paddingTop: 10 }}>
-                    <h3 style={{ paddingLeft: item.menues && item.permissions ? '10px' : '25px' }}>
+                    <h5 style={{ paddingLeft: item.menues && item.permissions ? '10px' : '25px' }}>
                         {currentIndex} : {item.label}
-                    </h3>
+                    </h5>
                     {item.permissions && (
                         <Stack flexDirection={'row'} flexWrap={'wrap'} gap={1} paddingTop={2}>
                             {item.permissions.map((perm: IPermission, idx: number) => (

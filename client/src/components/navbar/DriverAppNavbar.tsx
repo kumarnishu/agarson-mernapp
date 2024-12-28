@@ -8,7 +8,7 @@ import { AssignmentOutlined } from "@mui/icons-material";
 import { ProfileMenu } from '../logo/ProfileLogo';
 
 
-function FeatureNavbar() {
+function DriverAppNavbar() {
   const { user } = useContext(UserContext)
   const [anchorEl, setAnchorEl] = useState<Element | null>(null);
   const navigate = useNavigate()
@@ -38,12 +38,12 @@ function FeatureNavbar() {
             alignItems="center"
             gap={2}
           >
-            <Link to={"/Features"} title="Double-click to access the main dashboard, or single-click to return." onDoubleClick={() => navigate("/")} replace={true} style={{ textDecoration: 'none' }}>
+            <Link to={"/DriverApp"} title="Double-click to access the main dashboard, or single-click to return." onDoubleClick={() => navigate("/")} replace={true} style={{ textDecoration: 'none' }}>
               <Paper sx={{ ml: 2, p: 0.5, bgcolor: 'white', boxShadow: 1, borderRadius: 1, borderColor: 'white' }}>
                 <Stack flexDirection={"row"} gap={2} sx={{ alignItems: 'center' }}>
                   <AssignmentOutlined />
                   <Typography variant="button" sx={{ fontSize: 12 }} component="div">
-                    Features
+                    Driver App
                   </Typography>
                 </Stack>
               </Paper>
@@ -64,4 +64,4 @@ function FeatureNavbar() {
 }
 
 
-export default FeatureNavbar
+export default DriverAppNavbar

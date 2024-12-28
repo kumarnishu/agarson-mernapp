@@ -47,7 +47,7 @@ import SalesmanAttendancePageAuto from './pages/sales/SalesmanVisitPageAuto.tsx'
 import ItemUnitPage from './pages/dropdowns/ItemUnitPage.tsx'
 import MainNavbar from './components/navbar/MainNavbar.tsx'
 import AuthorizationNavbar from './components/navbar/AuthorizationNavbar.tsx'
-import FeatureNavbar from './components/navbar/FeatureNavbar.tsx'
+import FeatureNavbar from './components/navbar/ChecklistNavbar.tsx'
 import DropDownNavbar from './components/navbar/DropDownNavbar.tsx'
 import ExcelDBNavbar from './components/navbar/ExcelDBNavbar.tsx'
 import SalesNavbar from './components/navbar/SalesNavbar.tsx'
@@ -55,7 +55,6 @@ import MainDashBoard from './components/dashboards/MainDashBoard.tsx'
 import AuthorizationDashboard from './components/dashboards/AuthorizationDashboard.tsx'
 import DropDownDashboard from './components/dashboards/DropDownDashboard.tsx'
 import ExcelDBDashboard from './components/dashboards/ExcelDBDashboard.tsx'
-import FeatureDashboard from './components/dashboards/FeatureDashboard.tsx'
 import SalesDashboard from './components/dashboards/SalesDashboard.tsx'
 import UsersNavbar from './components/navbar/UsersNavbar.tsx'
 import ReferencesReportPage from './pages/sales/ReferencesReportPage.tsx'
@@ -66,6 +65,17 @@ import ExpenseStorePage from './pages/features/ExpenseStorePage.tsx'
 import ExpenseTransactionReports from './pages/features/ExpenseTransactionReports.tsx'
 import DriverAppSystemPage from './pages/features/DriverAppSystemPage.tsx'
 import ReferenceReportPageSalesman from './pages/sales/ReferenceReportPageSalesman.tsx'
+import ProductionDashboard from './components/dashboards/ProductionDashboard.tsx'
+import DriverAppDashboard from './components/dashboards/DriverAppDashboard.tsx'
+import DriverAppNavbar from './components/navbar/DriverAppNavbar.tsx'
+import ChecklistDashboard from './components/dashboards/ChecklistDashboard.tsx'
+import ChecklistNavbar from './components/navbar/ChecklistNavbar.tsx'
+import PaymentsNavbar from './components/navbar/PaymentsNavbar.tsx'
+import ExpenseDashboard from './components/dashboards/ExpenseDashboard.tsx'
+import ExpenseNavbar from './components/navbar/Expensenavbar.tsx'
+import CRMDashboard from './components/dashboards/CRMDashboard.tsx'
+import CrmNavbar from './components/navbar/CrmNavbar.tsx'
+import ProductionNavbar from './components/navbar/ProductionNavbar.tsx'
 
 
 function AppRoutes() {
@@ -129,14 +139,13 @@ function AppRoutes() {
               />}
             </Route>}
 
-          {user && user?.assigned_permissions.includes('feature_menu') &&
-            < Route path="/Features" element={<FeatureNavbar />}>
+          {user && user?.assigned_permissions.includes('production_menu') &&
+            < Route path="/Production" element={<ProductionNavbar />}>
               <Route index
                 element={
-                  <FeatureDashboard />
+                  <ProductionDashboard />
                 }
               />
-
               {user?.assigned_permissions.includes('production_view') && <Route
                 path="ProductionPage" element={
                   <ProductionPage />
@@ -152,62 +161,11 @@ function AppRoutes() {
                   <SpareDyesPage />
                 }
               />}
-              {user?.assigned_permissions.includes('leads_view') && <Route path="LeadsPage" element={
-                <LeadsPage />
-              }
-              />}
-              {user?.assigned_permissions.includes('refer_view') && <Route path="RefersPage" element={
-                <RefersPage />
-              }
-              />}
-              {user?.assigned_permissions.includes('reminders_view') && <Route path="RemindersPage" element={
-                < RemindersPage />
-              }
-              />}
-
-              {user?.assigned_permissions.includes('checklist_view') && <Route path="CheckListPage" element={
-                < CheckListPage />
-              }
-              />}
-              {user?.assigned_permissions.includes('checklist_view') && <Route path="CheckListPage" element={
-                < CheckListPage />
-              }
-              />}
-              {user?.assigned_permissions.includes('checklist_admin_view') && <Route path="CheckListAdminPage" element={
-                < CheckListAdminPage />
-              }
-              />}
-              {user?.assigned_permissions.includes('payments_view') && <Route path="PaymentsPage" element={
-                < PaymentsPage />
-              }
-              />}
-              {user?.assigned_permissions.includes('excel_db_view') && <Route path="ExcelDBPage" element={
-                < ExcelDBPage />
-              }
-              />}
-
-
               {user?.assigned_permissions.includes('sole_thickness_view') && <Route
                 path="SoleThicknessPage" element={
                   <SoleThicknessPage />
                 }
               />}
-
-              {user?.assigned_permissions.includes('expense_store_view') && <Route
-                path="ExpenseStorePage" element={
-                  <ExpenseStorePage />
-                }
-              />}
-              {user?.assigned_permissions.includes('driver_system_view') && <Route
-                path="DriverAppSystemPage" element={
-                  <DriverAppSystemPage />
-                }
-              />}
-              {user?.assigned_permissions.includes('activities_view') && <Route path="CrmActivitiesPage" element={
-                <CrmActivitiesPage />
-              }
-              />}
-
               {user?.assigned_permissions.includes('thekedar_wise_production_report_view') && <Route
                 path="ThekedarWiseProductionReportPage" element={
                   <ThekedarWiseProductionReportPage />
@@ -233,24 +191,104 @@ function AppRoutes() {
                   <DyeStatusReportPage />
                 }
               />}
+            </Route>}
+          {user && user?.assigned_permissions.includes('crm_menu') &&
+            < Route path="/CRM" element={<CrmNavbar />}>
+              <Route index
+                element={
+                  <CRMDashboard />
+                }
+              />
 
+              {user?.assigned_permissions.includes('leads_view') && <Route path="LeadsPage" element={
+                <LeadsPage />
+              }
+              />}
+              {user?.assigned_permissions.includes('refer_view') && <Route path="RefersPage" element={
+                <RefersPage />
+              }
+              />}
+              {user?.assigned_permissions.includes('reminders_view') && <Route path="RemindersPage" element={
+                < RemindersPage />
+              }
+              />}
               {user?.assigned_permissions.includes('assignedrefer_view') && <Route path="AssignedReferReportPage" element={
                 <AssignedReferReportPage />
               }
               />}
+              {user?.assigned_permissions.includes('newrefer_view') && <Route path="NewReferReportPage" element={
+                <NewReferReportPage />
+              }
+              />}
+              {user?.assigned_permissions.includes('activities_view') && <Route path="CrmActivitiesPage" element={
+                <CrmActivitiesPage />
+              }
+              />}
+            </Route>}
+          {user && user?.assigned_permissions.includes('expense_menu') &&
+            < Route path="/Expense" element={<ExpenseNavbar />}>
+              <Route index
+                element={
+                  <ExpenseDashboard />
+                }
+              />
+
+              {user?.assigned_permissions.includes('expense_store_view') && <Route
+                path="ExpenseStorePage" element={
+                  <ExpenseStorePage />
+                }
+              />}
+
               {user?.assigned_permissions.includes('expense-transaction_report_view') && <Route path="ExpenseTransactionReports" element={
                 <ExpenseTransactionReports />
               }
               />}
 
+            </Route>}
+          {user && user?.assigned_permissions.includes('payment_menu') &&
+            < Route path="/Payments" element={<PaymentsNavbar />}>
+              <Route index
+                element={
+                  <PaymentsNavbar />
+                }
+              />
 
-              {user?.assigned_permissions.includes('newrefer_view') && <Route path="NewReferReportPage" element={
-                <NewReferReportPage />
+              {user?.assigned_permissions.includes('payments_view') && <Route path="PaymentsPage" element={
+                < PaymentsPage />
+              }
+              />}
+
+
+            </Route>}
+          {user && user?.assigned_permissions.includes('checklist_menu') &&
+            < Route path="/Checklists" element={<ChecklistNavbar />}>
+              <Route index
+                element={
+                  <ChecklistDashboard />
+                }
+              />
+              {user?.assigned_permissions.includes('checklist_view') && <Route path="CheckListPage" element={
+                < CheckListPage />
+              }
+              />}
+              {user?.assigned_permissions.includes('checklist_admin_view') && <Route path="CheckListAdminPage" element={
+                < CheckListAdminPage />
               }
               />}
             </Route>}
-
-
+          {user && user?.assigned_permissions.includes('driver_app_menu') &&
+            < Route path="/DriverApp" element={<DriverAppNavbar />}>
+              <Route index
+                element={
+                  <DriverAppDashboard />
+                }
+              />
+              {user?.assigned_permissions.includes('driver_system_view') && <Route
+                path="DriverAppSystemPage" element={
+                  <DriverAppSystemPage />
+                }
+              />}
+            </Route>}
 
           {user && user?.assigned_permissions.includes('dropdown_menu') &&
             < Route path="/DropDown" element={<DropDownNavbar />}>

@@ -13,7 +13,12 @@ function MainDashBoard() {
     user?.is_admin && tmpfeatures.push({ feature: 'Users', is_visible: true, url: "/Users" })
     user?.assigned_permissions.includes('sales_menu') && tmpfeatures.push({ feature: 'Sales', is_visible: true, url: "/Sales" })
     user?.assigned_permissions.includes('authorization_menu') && tmpfeatures.push({ feature: 'Authorization', is_visible: true, url: "/Authorization" })
-    user?.assigned_permissions.includes('feature_menu') && tmpfeatures.push({ feature: 'Features', is_visible: true, url: "/Features" })
+    user?.assigned_permissions.includes('checklist_menu') && tmpfeatures.push({ feature: 'Checklists', is_visible: true, url: "/Checklists" })
+    user?.assigned_permissions.includes('production_menu') && tmpfeatures.push({ feature: 'Production', is_visible: true, url: "/Production" })
+    user?.assigned_permissions.includes('crm_menu') && tmpfeatures.push({ feature: 'CRM', is_visible: true, url: "/CRM" })
+    user?.assigned_permissions.includes('expense_menu') && tmpfeatures.push({ feature: 'Expense', is_visible: true, url: "/Expense" })
+    user?.assigned_permissions.includes('payment_menu') && tmpfeatures.push({ feature: 'Payments', is_visible: true, url: "/Payments" })
+    user?.assigned_permissions.includes('driver_app_menu') && tmpfeatures.push({ feature: 'Driver App', is_visible: true, url: "/DriverApp" })
     user?.assigned_permissions.includes('dropdown_menu') && tmpfeatures.push({ feature: 'Dropdowns', is_visible: true, url: "/DropDown" })
     user?.assigned_permissions.includes('excel_db_menu') && tmpfeatures.push({ feature: 'Excel Reports', is_visible: true, url: "/ExcelDB" })
     // tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
