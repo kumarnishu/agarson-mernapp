@@ -1,8 +1,8 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
+import { ExpenseController } from "../controllers/ExpenseController";
 
-import { FeatureController } from "../controllers/FeaturesController";
-let controller = new FeatureController()
+let controller = new ExpenseController()
 const router = express.Router()
 
 router.route("/issue-expense-items/:id").patch(isAuthenticatedUser, controller.IssueExpenseItem)

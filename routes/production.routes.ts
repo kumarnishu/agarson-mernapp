@@ -1,7 +1,7 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { FeatureController } from "../controllers/FeaturesController";
-let controller = new FeatureController()
+import { ProductionController } from "../controllers/ProductionController";
+let controller = new ProductionController()
 const router = express.Router()
 
 router.route("/productions/me").get(isAuthenticatedUser, controller.GetMyTodayProductions)

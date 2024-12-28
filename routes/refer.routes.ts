@@ -1,8 +1,8 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
 import { upload } from ".";
-import { FeatureController } from "../controllers/FeaturesController";
-let controller = new FeatureController()
+import { CrmController } from "../controllers/CrmController";
+let controller = new CrmController()
 const router = express.Router()
 
 router.route("/refers").get(isAuthenticatedUser, controller.GetRefers)

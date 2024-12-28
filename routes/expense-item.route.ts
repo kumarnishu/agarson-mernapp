@@ -3,7 +3,6 @@ import { isAuthenticatedUser } from "../middlewares/auth.middleware";
 
 import { upload } from ".";
 
-import { FeatureController } from "../controllers/FeaturesController";
 import { DropDownController } from "../controllers/DropDownController";
 let controller = new DropDownController()
 const router = express.Router()

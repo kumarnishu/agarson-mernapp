@@ -1,7 +1,7 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { FeatureController } from "../controllers/FeaturesController";
-let controller = new FeatureController()
+import { CrmController } from "../controllers/CrmController";
+let controller = new CrmController()
 const router = express.Router()
 
 router.route("/remarks/:id").get(isAuthenticatedUser, controller.GetRemarkHistory)

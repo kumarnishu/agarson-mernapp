@@ -149,13 +149,12 @@ export function FetchAllPermissions() {
             },
         ]
     }
-
-    let featureMenu: IMenu = {
-        label: 'Feature',
+    let productionMenu: IMenu = {
+        label: 'Production',
         permissions: [
             {
-                value: 'feature_menu',
-                label: 'Feature Button'
+                value: 'production_menu',
+                label: 'Production Button'
             },
         ],
         menues: [
@@ -180,6 +179,131 @@ export function FetchAllPermissions() {
                     },
                     {
                         value: 'production_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Shoe Weight Difference',
+                permissions: [
+                    {
+                        value: 'shoe_weight_report_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'shoe_weight_report_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'shoe_weight_report_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'shoe_weight_report_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'shoe_weight_report_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Dye Status',
+                permissions: [
+                    {
+                        value: 'dye_status_report_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'dye_status_report_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'dye_status_report_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'dye_status_report_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'dye_status_report_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Machine Wise Production',
+                permissions: [
+                    {
+                        value: 'machine_wise_production_report_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'machine_wise_production_report_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'machine_wise_production_report_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'machine_wise_production_report_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'machine_wise_production_report_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Thekedar Wise Production',
+                permissions: [
+                    {
+                        value: 'thekedar_wise_production_report_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'thekedar_wise_production_report_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'thekedar_wise_production_report_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'thekedar_wise_production_report_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'thekedar_wise_production_report_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Machine-category Wise Production',
+                permissions: [
+                    {
+                        value: 'machine_category_wise_production_report_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'machine_category_wise_production_report_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'machine_category_wise_production_report_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'machine_category_wise_production_report_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'machine_category_wise_production_report_export',
                         label: 'export'
                     }
                 ]
@@ -258,7 +382,19 @@ export function FetchAllPermissions() {
                         label: 'export'
                     }
                 ]
-            }, {
+            },
+        ]
+    }
+    let crmMenu: IMenu = {
+        label: 'CRM',
+        permissions: [
+            {
+                value: 'crm_menu',
+                label: 'CRM Button'
+            },
+        ],
+        menues: [
+            {
                 label: 'Leads',
                 permissions: [
                     {
@@ -390,259 +526,6 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
-
-            {
-                label: 'Checklists',
-                permissions: [
-                    {
-                        value: 'checklist_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'checklist_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'checklist_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'checklist_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'checklist_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Checklist Admin',
-                permissions: [
-                    {
-                        value: 'checklist_admin_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'checklist_admin_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'checklist_admin_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'checklist_admin_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'checklist_admin_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Payments',
-                permissions: [
-                    {
-                        value: 'payments_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'payments_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'payments_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'payments_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'payments_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Expense Store',
-                permissions: [
-                    {
-                        value: 'expense_store_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'expense_store_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'expense_store_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'expense_store_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'expense_store_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Driver App System',
-                permissions: [
-                    {
-                        value: 'driver_system_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'driver_system_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'driver_system_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'driver_system_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'driver_system_export',
-                        label: 'export'
-                    }
-                ]
-            },
-
-            {
-                label: 'Shoe Weight Difference',
-                permissions: [
-                    {
-                        value: 'shoe_weight_report_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'shoe_weight_report_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'shoe_weight_report_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'shoe_weight_report_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'shoe_weight_report_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Dye Status',
-                permissions: [
-                    {
-                        value: 'dye_status_report_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'dye_status_report_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'dye_status_report_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'dye_status_report_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'dye_status_report_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Machine Wise Production',
-                permissions: [
-                    {
-                        value: 'machine_wise_production_report_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'machine_wise_production_report_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'machine_wise_production_report_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'machine_wise_production_report_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'machine_wise_production_report_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Thekedar Wise Production',
-                permissions: [
-                    {
-                        value: 'thekedar_wise_production_report_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'thekedar_wise_production_report_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'thekedar_wise_production_report_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'thekedar_wise_production_report_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'thekedar_wise_production_report_export',
-                        label: 'export'
-                    }
-                ]
-            },
-            {
-                label: 'Machine-category Wise Production',
-                permissions: [
-                    {
-                        value: 'machine_category_wise_production_report_view',
-                        label: 'view'
-                    },
-                    {
-                        value: 'machine_category_wise_production_report_create',
-                        label: 'create'
-                    },
-                    {
-                        value: 'machine_category_wise_production_report_edit',
-                        label: 'edit'
-                    },
-                    {
-                        value: 'machine_category_wise_production_report_delete',
-                        label: 'delete'
-                    },
-                    {
-                        value: 'machine_category_wise_production_report_export',
-                        label: 'export'
-                    }
-                ]
-            },
-
             {
                 label: 'Assigned Refer',
                 permissions: [
@@ -722,6 +605,42 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
+        ]
+    }
+    let expenseMenu: IMenu = {
+        label: 'Expense',
+        permissions: [
+            {
+                value: 'expense_menu',
+                label: 'Expense Button'
+            },
+        ],
+        menues: [
+            {
+                label: 'Expense Store',
+                permissions: [
+                    {
+                        value: 'expense_store_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'expense_store_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'expense_store_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'expense_store_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'expense_store_export',
+                        label: 'export'
+                    }
+                ]
+            },
             {
                 label: 'Expense Tranactions',
                 permissions: [
@@ -747,10 +666,141 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
-
         ]
     }
-
+    let paymentMenu: IMenu = {
+        label: 'Payment',
+        permissions: [
+            {
+                value: 'payment_menu',
+                label: 'Payment Button'
+            },
+        ],
+        menues: [
+            {
+                label: 'Payments',
+                permissions: [
+                    {
+                        value: 'payments_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'payments_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'payments_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'payments_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'payments_export',
+                        label: 'export'
+                    }
+                ]
+            },
+        ]
+    }
+    let checklistMenu: IMenu = {
+        label: 'Checklist',
+        permissions: [
+            {
+                value: 'checklist_menu',
+                label: 'Checklist Button'
+            },
+        ],
+        menues: [
+            {
+                label: 'Checklists',
+                permissions: [
+                    {
+                        value: 'checklist_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'checklist_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'checklist_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'checklist_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'checklist_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Checklist Admin',
+                permissions: [
+                    {
+                        value: 'checklist_admin_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'checklist_admin_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'checklist_admin_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'checklist_admin_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'checklist_admin_export',
+                        label: 'export'
+                    }
+                ]
+            },
+        ]
+    }
+    let driverAppMenu: IMenu = {
+        label: 'Driver App',
+        permissions: [
+            {
+                value: 'driver_app_menu',
+                label: 'Driver App Button'
+            },
+        ],
+        menues: [
+            {
+                label: 'Driver App System',
+                permissions: [
+                    {
+                        value: 'driver_system_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'driver_system_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'driver_system_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'driver_system_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'driver_system_export',
+                        label: 'export'
+                    }
+                ]
+            },
+        ]
+    }
 
     let dropdownMenu: IMenu = {
         label: 'Dropdown',
@@ -1113,11 +1163,11 @@ export function FetchAllPermissions() {
     }
 
     let excelReportMenu: IMenu = {
-        label: 'ExcelDB',
+        label: 'Excel Report',
         permissions: [
             {
                 value: 'excel_db_menu',
-                label: 'ExcelDB Button'
+                label: 'Excel Reports Button'
             },
         ],
         menues: [
@@ -1340,10 +1390,15 @@ export function FetchAllPermissions() {
 
     permissions.push(dashboardMenu)
     permissions.push(authorizationMenu)
-    permissions.push(featureMenu)
-    permissions.push(dropdownMenu)
     permissions.push(excelReportMenu)
     permissions.push(salesMenu)
+    permissions.push(crmMenu)
+    permissions.push(checklistMenu)
+    permissions.push(productionMenu)
+    permissions.push(driverAppMenu)
+    permissions.push(expenseMenu)
+    permissions.push(paymentMenu)
+    permissions.push(dropdownMenu)
 
     return permissions;
 }

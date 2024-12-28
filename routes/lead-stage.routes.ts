@@ -1,6 +1,5 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { FeatureController } from "../controllers/FeaturesController";
 import { DropDownController } from "../controllers/DropDownController";
 let controller = new DropDownController()
 const router = express.Router()

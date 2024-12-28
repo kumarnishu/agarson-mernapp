@@ -1,5 +1,4 @@
-import { NextFunction, Request, Response, Router } from 'express';
-import express from 'express'
+import { NextFunction, Request, Response } from 'express';
 import moment from 'moment';
 import xlsx from "xlsx";
 import { GetArticleDto, CreateOrEditArticleDto } from '../dtos/article.dto';

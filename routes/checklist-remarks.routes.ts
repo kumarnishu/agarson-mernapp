@@ -1,7 +1,7 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
-import { FeatureController } from "../controllers/FeaturesController";
-let controller = new FeatureController()
+import { ChecklistController } from "../controllers/ChecklistController";
+let controller = new ChecklistController()
 const router = express.Router()
 
 router.route("/checklist/remarks").post(isAuthenticatedUser, controller.NewChecklistRemark)

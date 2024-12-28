@@ -1,8 +1,8 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
 import { upload } from ".";
-import { FeatureController } from "../controllers/FeaturesController";
-let controller = new FeatureController()
+import { ProductionController } from "../controllers/ProductionController";
+let controller = new ProductionController()
 
 const router = express.Router()
 

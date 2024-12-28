@@ -1,6 +1,5 @@
 import xlsx from "xlsx"
-import { NextFunction, Request, Response, Router } from 'express';
-import express from 'express'
+import { NextFunction, Request, Response } from 'express';
 
 import isMongoId from "validator/lib/isMongoId";
 import { GetCrmCityDto, CreateOrEditCrmCity, GetCityFromExcelDto } from "../dtos/crm-city.dto";

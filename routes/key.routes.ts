@@ -2,7 +2,6 @@ import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
 import { upload } from ".";
 
-import { FeatureController } from "../controllers/FeaturesController";
 import { AuthorizationController } from "../controllers/AuthorizationController";
 let controller = new AuthorizationController()
 const router = express.Router()

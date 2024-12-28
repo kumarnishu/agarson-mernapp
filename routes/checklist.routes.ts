@@ -1,8 +1,8 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.middleware";
 import { upload } from ".";
-import { FeatureController } from "../controllers/FeaturesController";
-let controller = new FeatureController()
+import { ChecklistController } from "../controllers/ChecklistController";
+let controller = new ChecklistController()
 const router = express.Router()
 
 router.route("/checklists").get(isAuthenticatedUser, controller.GetChecklists).post(isAuthenticatedUser, upload.single('photo'), controller.CreateChecklist)
