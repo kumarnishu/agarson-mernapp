@@ -47,7 +47,6 @@ import SalesmanAttendancePageAuto from './pages/sales/SalesmanVisitPageAuto.tsx'
 import ItemUnitPage from './pages/dropdowns/ItemUnitPage.tsx'
 import MainNavbar from './components/navbar/MainNavbar.tsx'
 import AuthorizationNavbar from './components/navbar/AuthorizationNavbar.tsx'
-import FeatureNavbar from './components/navbar/ChecklistNavbar.tsx'
 import DropDownNavbar from './components/navbar/DropDownNavbar.tsx'
 import ExcelDBNavbar from './components/navbar/ExcelDBNavbar.tsx'
 import SalesNavbar from './components/navbar/SalesNavbar.tsx'
@@ -72,10 +71,11 @@ import ChecklistDashboard from './components/dashboards/ChecklistDashboard.tsx'
 import ChecklistNavbar from './components/navbar/ChecklistNavbar.tsx'
 import PaymentsNavbar from './components/navbar/PaymentsNavbar.tsx'
 import ExpenseDashboard from './components/dashboards/ExpenseDashboard.tsx'
-import ExpenseNavbar from './components/navbar/Expensenavbar.tsx'
 import CRMDashboard from './components/dashboards/CRMDashboard.tsx'
 import CrmNavbar from './components/navbar/CrmNavbar.tsx'
 import ProductionNavbar from './components/navbar/ProductionNavbar.tsx'
+import PaymentsDashboard from './components/dashboards/PaymentsDashboard.tsx'
+import ExpenseNavbar from './components/navbar/ExpenseNavbar.tsx'
 
 
 function AppRoutes() {
@@ -249,7 +249,7 @@ function AppRoutes() {
             < Route path="/Payments" element={<PaymentsNavbar />}>
               <Route index
                 element={
-                  <PaymentsNavbar />
+                  <PaymentsDashboard />
                 }
               />
 
