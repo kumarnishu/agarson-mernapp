@@ -76,6 +76,11 @@ import CrmNavbar from './components/navbar/CrmNavbar.tsx'
 import ProductionNavbar from './components/navbar/ProductionNavbar.tsx'
 import PaymentsDashboard from './components/dashboards/PaymentsDashboard.tsx'
 import ExpenseNavbar from './components/navbar/ExpenseNavbar.tsx'
+import AttendanceNavbar from './components/navbar/AttendanceNavbar.tsx'
+import AttendanceDashboard from './components/dashboards/AttendanceDashboard.tsx'
+import LeavebalancePage from './pages/attendance/LeavebalancePage.tsx'
+import LeavesAppliedpage from './pages/attendance/LeavesAppliedpage.tsx'
+import SalesAttendanceReportPage from './pages/attendance/SalesAttendanceReportPage.tsx'
 
 
 function AppRoutes() {
@@ -102,7 +107,29 @@ function AppRoutes() {
           } >
             <Route index element={<UsersPage />} />
           </Route>}
+          {user && user?.assigned_permissions.includes('attendnace_menu') &&
+            < Route path="/Attendance" element={<AttendanceNavbar />} >
+              <Route index element={
+                <AttendanceDashboard />
+              }
+              />
 
+              {user && <Route path="LeavebalancePage" element={
+                <LeavebalancePage />
+              }
+              />}
+              {user && <Route path="LeavesAppliedpage" element={
+                <LeavesAppliedpage />
+              }
+              />}
+
+              {user && <Route path="SalesAttendanceReportPage" element={
+                <SalesAttendanceReportPage />
+              }
+              />}
+
+
+            </Route>}
           {user && user?.assigned_permissions.includes('authorization_menu') &&
             < Route path="/Authorization" element={<AuthorizationNavbar />} >
               <Route index element={

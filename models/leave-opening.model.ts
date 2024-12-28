@@ -17,7 +17,7 @@ export type ILeaveBalance = {
 
 
 const LeaveSchema = new mongoose.Schema<ILeaveBalance, mongoose.Model<ILeaveBalance, {}, {}>, {}>({
-
+    
     sl: {
         type: Number,
         default: 0,

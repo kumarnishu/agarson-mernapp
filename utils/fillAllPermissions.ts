@@ -802,6 +802,92 @@ export function FetchAllPermissions() {
         ]
     }
 
+    let AttendanceMenu: IMenu = {
+        label: 'Attendance',
+        permissions: [
+            {
+                value: 'attendnace_menu',
+                label: 'Attendance Button'
+            },
+        ],
+        menues: [
+            {
+                label: 'Leave Balance',
+                permissions: [
+                    {
+                        value: 'leave_balance_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'leave_balance_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'leave_balance_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'leave_balance_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'leave_balance_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Leave Applied',
+                permissions: [
+                    {
+                        value: 'leave_applied_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'leave_applied_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'leave_applied_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'leave_applied_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'leave_applied_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Sales Attendance Report',
+                permissions: [
+                    {
+                        value: 'sale_attendance_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'sale_attendance_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'sale_attendance_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'sale_attendance_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'sale_attendance_export',
+                        label: 'export'
+                    }
+                ]
+            },
+        ]
+    }
     let dropdownMenu: IMenu = {
         label: 'Dropdown',
         permissions: [{
@@ -1391,6 +1477,7 @@ export function FetchAllPermissions() {
     permissions.push(dashboardMenu)
     permissions.push(authorizationMenu)
     permissions.push(excelReportMenu)
+    permissions.push(AttendanceMenu)
     permissions.push(salesMenu)
     permissions.push(crmMenu)
     permissions.push(checklistMenu)

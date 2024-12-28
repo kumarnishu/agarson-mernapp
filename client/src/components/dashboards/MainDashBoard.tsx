@@ -12,6 +12,7 @@ function MainDashBoard() {
     let tmpfeatures: { feature: string, is_visible?: boolean, url: string }[] = []
     user?.is_admin && tmpfeatures.push({ feature: 'Users', is_visible: true, url: "/Users" })
     user?.assigned_permissions.includes('sales_menu') && tmpfeatures.push({ feature: 'Sales', is_visible: true, url: "/Sales" })
+    user?.assigned_permissions.includes('attendnace_menu') && tmpfeatures.push({ feature: 'Attendance', is_visible: true, url: "/Attendance" })
     user?.assigned_permissions.includes('authorization_menu') && tmpfeatures.push({ feature: 'Authorization', is_visible: true, url: "/Authorization" })
     user?.assigned_permissions.includes('checklist_menu') && tmpfeatures.push({ feature: 'Checklists', is_visible: true, url: "/Checklists" })
     user?.assigned_permissions.includes('production_menu') && tmpfeatures.push({ feature: 'Production', is_visible: true, url: "/Production" })
