@@ -1,12 +1,12 @@
-import { Stack } from '@mui/system'
+import { Box, Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
-import { MaterialReactTable,  MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
+import { MaterialReactTable, MRT_Column, MRT_ColumnDef, MRT_ColumnFiltersState, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_TableInstance, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { onlyUniqueByKey } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import { Edit } from '@mui/icons-material'
-import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
+import { Button, Checkbox, Fade, IconButton, ListItemText, Menu, MenuItem, TextField, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
@@ -15,7 +15,45 @@ import CreateOrEditChecklistCategoryDialog from '../../components/dialogs/checkl
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import { DropdownService } from '../../services/DropDownServices'
 
+const MultiSelectFilter = ({ column, table, options }: { column: MRT_Column<DropDownDto>, table: MRT_TableInstance<DropDownDto>, options: DropDownDto[] }) => {
+  const [filters, setFilters] = useState<MRT_ColumnFiltersState>(table.getState().columnFilters)
+  const [filter, setFilter] = useState<string>()
+  const [selected, setSelected] = useState<DropDownDto[]>([])
+  const [filteredOptions, setFilteredOptions] = useState<DropDownDto[]>([])
 
+  useEffect(() => {
+    if (filter) {
+      setFilteredOptions(options.filter(option => option.label.toLowerCase().includes(filter.toLowerCase())))
+    } else {
+      setFilteredOptions(options)
+    }
+  }, [filter])
+
+  console.log(selected, filter)
+  return (
+    <Box sx={{ maxHeight: 500, overflowY: 'auto', pt: 2 }}>
+      <TextField size="small" variant="outlined" label="Search" onChange={(e) => {
+        const value = e.target.value
+        setFilter(value)
+      }} />
+      <br />
+      <Button fullWidth onClick={() => setSelected([])}>Clear All</Button>
+      {filteredOptions.map((option) => (
+        <MenuItem key={option.id} value={option.label}>
+          <Checkbox checked={Boolean(selected.find(item => item.id == option.id))} onChange={(e) => {
+            if (e.target.checked) {
+              setSelected([...selected, option])
+            }
+            else {
+              setSelected(selected.filter(item => item.id !== option.id))
+            }
+          }} />
+          <ListItemText>{option.label.slice(0, 50)}</ListItemText>
+        </MenuItem>
+      ))}
+    </Box>
+  );
+}
 
 export default function ChecklistCategoriesPage() {
   const [category, setChecklistCategory] = useState<DropDownDto>()
@@ -70,14 +108,9 @@ export default function ChecklistCategoriesPage() {
         grow: false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
-        filterSelectOptions: categories && categories.map((i) => {
-          return i.label;
-        }).filter(onlyUnique),
-        Filter: (props) => <>
-          {
-            console.log(props.column)
-          }
-        </>
+        Filter: (props) => <MultiSelectFilter column={props.column} table={props.table} options={onlyUniqueByKey(categories && categories.map((i) => {
+          return { id: i.id, label: i.label };
+        }), 'label')} />
       },
 
       {
@@ -86,15 +119,16 @@ export default function ChecklistCategoriesPage() {
         grow: false,
         filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
-        filterSelectOptions: categories && categories.map((i) => {
-          return i.label;
-        }).filter(onlyUnique)
+        Filter: (props) => <MultiSelectFilter column={props.column} table={props.table} options={onlyUniqueByKey(categories && categories.map((i) => {
+          return { id: i.id, label: i.label };
+        }), 'label')} />
       },
 
     ],
     [categories],
     //end
   );
+
 
 
   const table = useMaterialReactTable({
