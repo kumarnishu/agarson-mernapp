@@ -23,7 +23,6 @@ import { CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto } from '../dtos/
 import { IReferenceRemark, ReferenceRemark } from '../models/reference-remarks.model';
 import { Reference } from '../models/references.model';
 import { CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto } from '../dtos/visit_remark.dto';
-import { stat } from 'fs';
 
 export class SalesController {
 
