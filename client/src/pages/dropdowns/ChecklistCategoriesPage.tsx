@@ -30,6 +30,7 @@ const MultiSelectFilter = ({ column, table, options }: { column: MRT_Column<Drop
   }, [filter])
 
   console.log(selected, filter)
+  console.log("nishu kumar is")
   return (
     <Box sx={{ maxHeight: 500, overflowY: 'auto', pt: 2 }}>
       <TextField size="small" variant="outlined" label="Search" onChange={(e) => {

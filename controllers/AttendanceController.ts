@@ -5,7 +5,7 @@ import { CreateOrEditLeaveDto, GetApprovedLeaveDto, GetLeaveDto, GetSalesmanAtte
 import { ILeaveApproved, LeaveApproved } from "../models/leave-approved.model"
 
 export class AttendanceController {
-
+    
     //leave approved controller
     public async GetAllLeaveApproved(req: Request, res: Response, next: NextFunction) {
         let result: GetApprovedLeaveDto[] = []
@@ -171,7 +171,6 @@ export class AttendanceController {
 
         return res.status(200).json({ message: "item deleted successfully" })
     }
-
 
     //attendance report controller
     public async GetAllAttendanceReport(req: Request, res: Response, next: NextFunction) {
