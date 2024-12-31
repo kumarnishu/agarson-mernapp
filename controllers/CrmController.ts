@@ -2001,7 +2001,7 @@ export class CrmController {
             let workbook_response: GetLeadFromExcelDto[] = xlsx.utils.sheet_to_json(
                 workbook.Sheets[workbook_sheet[0]]
             );
-            if (workbook_response.length > 3000) {
+            if (workbook_response.length > 50000) {
                 return res.status(400).json({ message: "Maximum 3000 records allowed at one time" })
             }
             let checkednumbers: string[] = []
