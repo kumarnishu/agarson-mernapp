@@ -6,6 +6,7 @@ let controller = new CrmController()
 const router = express.Router()
 
 router.route("/refers").get(isAuthenticatedUser, controller.GetRefers)
+router.get("/download/template/refers", isAuthenticatedUser, controller.DownloadExcelTemplateForCreateRefer)
 router.route("/refers/paginated").get(isAuthenticatedUser, controller.GetPaginatedRefers)
 router.route("/search/refers").get(isAuthenticatedUser, controller.FuzzySearchRefers)
 router.route("/refers").post(isAuthenticatedUser, upload.none(), controller.CreateReferParty)

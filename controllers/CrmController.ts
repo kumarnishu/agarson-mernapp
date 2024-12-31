@@ -16,11 +16,12 @@ import { CreateOrEditBillDto, GetBillDto } from "../dtos/crm-bill.dto";
 import { CreateOrEditRemarkDto, GetRemarksDto, GetActivitiesTopBarDetailsDto, GetActivitiesOrRemindersDto } from "../dtos/crm-remarks.dto";
 import { CreateOrEditMergeRefersDto, GetReferDto, CreateOrEditReferDto, GetReferFromExcelDto } from "../dtos/refer.dto";
 import { BillItem } from "../models/bill-item.model";
-import {  hundredDaysAgo } from "../utils/datesHelper";
+import { hundredDaysAgo } from "../utils/datesHelper";
+import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
 
 
-export class CrmController{
-    
+export class CrmController {
+
     public async CreateBill(req: Request, res: Response, next: NextFunction) {
         let body = JSON.parse(req.body.body)
         const {
@@ -614,7 +615,7 @@ export class CrmController{
         await lead.save()
         return res.status(200).json({ message: "new remark added successfully" })
     }
-    
+
     public async MergeTwoLeads(req: Request, res: Response, next: NextFunction) {
         const id = req.params.id;
         const { name, mobiles, city, stage, state, email, alternate_email, address, merge_refer, merge_bills, merge_remarks, source_lead_id } = req.body as CreateOrEditMergeLeadsDto
@@ -1949,6 +1950,39 @@ export class CrmController{
         return res.status(200).json({ message: "lead and related remarks are deleted" })
     }
 
+    public async DownloadExcelTemplateForCreateLeads(req: Request, res: Response, next: NextFunction) {
+        let data: GetLeadFromExcelDto[] = [{
+            _id: "ere3rer",
+            name: "ABC footwear",
+            customer_name: 'ABC',
+            customer_designation: 'CEO',
+            gst: "",
+            mobile: "7078789898",
+            email: "",
+            city: "hisar",
+            state: "haryana",
+            country: "india",
+            address: "",
+            work_description: "",
+            turnover: "",
+            alternate_mobile1: "",
+            alternate_mobile2: "",
+            alternate_email: "",
+            lead_type: "",
+            stage: "open",
+            lead_source: "internet",
+            status: ""
+        }]
+
+
+
+        let template: { sheet_name: string, data: any[] }[] = []
+        template.push({ sheet_name: 'template', data: data })
+        ConvertJsonToExcel(template)
+        let fileName = "CreateLeadTemplate.xlsx"
+        return res.download("./file", fileName)
+    }
+
     public async BulkLeadUpdateFromExcel(req: Request, res: Response, next: NextFunction) {
         let result: GetLeadFromExcelDto[] = []
         let statusText: string = ""
@@ -2155,630 +2189,91 @@ export class CrmController{
         }
         return res.status(200).json({ message: "lead and related remarks are deleted" })
     }
-     public async MergeTwoRefers(req: Request, res: Response, next: NextFunction) {
-            const id = req.params.id;
-            const { name, mobiles, city, state, address, merge_assigned_refers, merge_bills, merge_remarks, source_refer_id } = req.body as CreateOrEditMergeRefersDto
-            let refer = await ReferredParty.findById(id);
-            let sourcerefer = await ReferredParty.findById(source_refer_id);
-    
-            if (!refer || !sourcerefer)
-                return res.status(404).json({ message: "refers not found" })
-    
-            await ReferredParty.findByIdAndUpdate(id, {
-                name: name,
-                city: city,
-                state: state,
-                mobile: mobiles[0] || null,
-                mobile2: mobiles[1] || null,
-                mobile3: mobiles[2] || null,
-                address: address
-            });
-    
-            if (merge_assigned_refers) {
-                await Lead.updateMany({ referred_party: source_refer_id }, { referred_party: id });
-            }
-            if (merge_remarks) {
-                await Remark.updateMany({ refer: source_refer_id }, { refer: id });
-            }
-            if (merge_bills) {
-                await Bill.updateMany({ refer: source_refer_id }, { refer: id });
-            }
-            await ReferredParty.findByIdAndDelete(source_refer_id);
-            return res.status(200).json({ message: "merge refers successfully" })
+    public async MergeTwoRefers(req: Request, res: Response, next: NextFunction) {
+        const id = req.params.id;
+        const { name, mobiles, city, state, address, merge_assigned_refers, merge_bills, merge_remarks, source_refer_id } = req.body as CreateOrEditMergeRefersDto
+        let refer = await ReferredParty.findById(id);
+        let sourcerefer = await ReferredParty.findById(source_refer_id);
+
+        if (!refer || !sourcerefer)
+            return res.status(404).json({ message: "refers not found" })
+
+        await ReferredParty.findByIdAndUpdate(id, {
+            name: name,
+            city: city,
+            state: state,
+            mobile: mobiles[0] || null,
+            mobile2: mobiles[1] || null,
+            mobile3: mobiles[2] || null,
+            address: address
+        });
+
+        if (merge_assigned_refers) {
+            await Lead.updateMany({ referred_party: source_refer_id }, { referred_party: id });
         }
-    
-        public async GetRefers(req: Request, res: Response, next: NextFunction) {
-            let refers: IReferredParty[] = []
-            let result: GetReferDto[] = []
-            let user = await User.findById(req.user).populate('assigned_crm_states').populate('assigned_crm_cities');
-            let states = user?.assigned_crm_states.map((item) => { return item.state })
-            let cities = user?.assigned_crm_cities.map((item) => { return item.city })
-            refers = await ReferredParty.find({ 'state': { $in: states }, 'city': { $in: cities } }).sort('name')
-    
-            result = refers.map((r) => {
-                return {
-                    _id: r._id,
-                    name: r.name,
-                    last_remark: r.last_remark,
-                    refers: 0,
-                    uploaded_bills: r.uploaded_bills,
-                    customer_name: r.customer_name,
-                    mobile: r.mobile,
-                    mobile2: r.mobile2,
-                    mobile3: r.mobile3,
-                    address: r.address,
-                    gst: r.gst,
-                    city: r.city,
-                    state: r.state,
-                    convertedfromlead: r.convertedfromlead,
-                    created_at: moment(r.created_at).format("DD/MM/YYYY"),
-                    updated_at: moment(r.updated_at).format("DD/MM/YYYY"),
-                    created_by: { id: r.created_by._id, value: r.created_by.username, label: r.created_by.username },
-                    updated_by: { id: r.updated_by._id, value: r.updated_by.username, label: r.updated_by.username },
-                }
-            })
-    
-            return res.status(200).json(refers);
+        if (merge_remarks) {
+            await Remark.updateMany({ refer: source_refer_id }, { refer: id });
         }
-    
-    
-        public async GetPaginatedRefers(req: Request, res: Response, next: NextFunction) {
-            let limit = Number(req.query.limit)
-            let page = Number(req.query.page)
-            let result: GetReferDto[] = []
-            let user = await User.findById(req.user).populate('assigned_crm_states').populate('assigned_crm_cities');
-            let states = user?.assigned_crm_states.map((item) => { return item.state })
-            let cities = user?.assigned_crm_cities.map((item) => { return item.city })
-            let parties: IReferredParty[] = []
-            if (!Number.isNaN(limit) && !Number.isNaN(page)) {
-                parties = await ReferredParty.find({ state: { $in: states }, city: { $in: cities } }).populate('created_by').populate('updated_by').sort('-updated_at')
-                let count = parties.length
-                parties = parties.slice((page - 1) * limit, limit * page)
-                result = parties.map((r) => {
-                    return {
-                        _id: r._id,
-                        name: r.name,
-                        refers: r.refers,
-                        last_remark: r.last_remark,
-                        customer_name: r.customer_name,
-                        mobile: r.mobile,
-                        mobile2: r.mobile2,
-                        mobile3: r.mobile3,
-                        uploaded_bills: r.uploaded_bills,
-                        address: r.address,
-                        gst: r.gst,
-                        city: r.city,
-                        state: r.state,
-                        convertedfromlead: r.convertedfromlead,
-                        created_at: moment(r.created_at).format("DD/MM/YYYY"),
-                        updated_at: moment(r.updated_at).format("DD/MM/YYYY"),
-                        created_by: { id: r.created_by._id, value: r.created_by.username, label: r.created_by.username },
-                        updated_by: { id: r.updated_by._id, value: r.updated_by.username, label: r.updated_by.username },
-                    }
-                })
-                return res.status(200).json({
-                    result: result,
-                    total: Math.ceil(count / limit),
-                    page: page,
-                    limit: limit
-                })
-            }
-            else return res.status(400).json({ message: 'bad request' })
-    
+        if (merge_bills) {
+            await Bill.updateMany({ refer: source_refer_id }, { refer: id });
         }
-    
-    
-        public async FuzzySearchRefers(req: Request, res: Response, next: NextFunction) {
-            let limit = Number(req.query.limit)
-            let page = Number(req.query.page)
-            let key = String(req.query.key).split(",")
-            let user = await User.findById(req.user).populate('assigned_crm_states').populate('assigned_crm_cities');
-            let states = user?.assigned_crm_states.map((item) => { return item.state })
-            let cities = user?.assigned_crm_cities.map((item) => { return item.city })
-            let result: GetReferDto[] = []
-            if (!key)
-                return res.status(500).json({ message: "bad request" })
-            let parties: IReferredParty[] = []
-            if (!Number.isNaN(limit) && !Number.isNaN(page)) {
-                if (key.length == 1 || key.length > 4) {
-    
-                    parties = await ReferredParty.find({
-                        state: { $in: states }, city: { $in: cities },
-                        $or: [
-                            { name: { $regex: key[0], $options: 'i' } },
-                            { gst: { $regex: key[0], $options: 'i' } },
-                            { customer_name: { $regex: key[0], $options: 'i' } },
-                            { mobile: { $regex: key[0], $options: 'i' } },
-                            { mobile2: { $regex: key[0], $options: 'i' } },
-                            { mobile3: { $regex: key[0], $options: 'i' } },
-                            { city: { $regex: key[0], $options: 'i' } },
-                            { state: { $regex: key[0], $options: 'i' } },
-                        ]
-                    }).populate('created_by').populate('updated_by').sort('-updated_at')
-    
-                }
-                if (key.length == 2) {
-    
-                    parties = await ReferredParty.find({
-                        state: { $in: states }, city: { $in: cities },
-    
-                        $and: [
-                            {
-                                $or: [
-                                    { name: { $regex: key[0], $options: 'i' } },
-                                    { customer_name: { $regex: key[0], $options: 'i' } },
-                                    { gst: { $regex: key[0], $options: 'i' } },
-                                    { mobile: { $regex: key[0], $options: 'i' } },
-                                    { mobile2: { $regex: key[0], $options: 'i' } },
-                                    { mobile3: { $regex: key[0], $options: 'i' } },
-                                    { city: { $regex: key[0], $options: 'i' } },
-                                    { state: { $regex: key[0], $options: 'i' } },
-                                ]
-                            },
-                            {
-                                $or: [
-                                    { name: { $regex: key[0], $options: 'i' } },
-                                    { customer_name: { $regex: key[0], $options: 'i' } },
-                                    { gst: { $regex: key[0], $options: 'i' } },
-                                    { mobile: { $regex: key[0], $options: 'i' } },
-                                    { mobile2: { $regex: key[0], $options: 'i' } },
-                                    { mobile3: { $regex: key[0], $options: 'i' } },
-                                    { city: { $regex: key[0], $options: 'i' } },
-                                    { state: { $regex: key[0], $options: 'i' } },
-                                ]
-                            }
-                        ]
-                        ,
-    
-                    }
-                    ).populate('created_by').populate('updated_by').sort('-updated_at')
-    
-                }
-    
-                if (key.length == 3) {
-    
-                    parties = await ReferredParty.find({
-                        state: { $in: states }, city: { $in: cities },
-    
-                        $and: [
-                            {
-                                $or: [
-                                    { name: { $regex: key[0], $options: 'i' } },
-                                    { customer_name: { $regex: key[0], $options: 'i' } },
-                                    { gst: { $regex: key[0], $options: 'i' } },
-                                    { mobile: { $regex: key[0], $options: 'i' } },
-                                    { mobile2: { $regex: key[0], $options: 'i' } },
-                                    { mobile3: { $regex: key[0], $options: 'i' } },
-                                    { city: { $regex: key[0], $options: 'i' } },
-                                    { state: { $regex: key[0], $options: 'i' } },
-                                ]
-                            },
-                            {
-                                $or: [
-                                    { name: { $regex: key[0], $options: 'i' } },
-                                    { customer_name: { $regex: key[0], $options: 'i' } },
-                                    { gst: { $regex: key[0], $options: 'i' } },
-                                    { mobile: { $regex: key[0], $options: 'i' } },
-                                    { mobile2: { $regex: key[0], $options: 'i' } },
-                                    { mobile3: { $regex: key[0], $options: 'i' } },
-                                    { city: { $regex: key[0], $options: 'i' } },
-                                    { state: { $regex: key[0], $options: 'i' } },
-                                ]
-                            },
-                            {
-                                $or: [
-                                    { name: { $regex: key[0], $options: 'i' } },
-                                    { customer_name: { $regex: key[0], $options: 'i' } },
-                                    { gst: { $regex: key[0], $options: 'i' } },
-                                    { mobile: { $regex: key[0], $options: 'i' } },
-                                    { mobile2: { $regex: key[0], $options: 'i' } },
-                                    { mobile3: { $regex: key[0], $options: 'i' } },
-                                    { city: { $regex: key[0], $options: 'i' } },
-                                    { state: { $regex: key[0], $options: 'i' } },
-                                ]
-                            }
-                        ]
-                        ,
-    
-                    }
-                    ).populate('created_by').populate('updated_by').sort('-updated_at')
-    
-                }
-                if (key.length == 4) {
-    
-                    parties = await ReferredParty.find({
-                        state: { $in: states }, city: { $in: cities },
-                        $and: [
-                            {
-                                $or: [
-                                    { name: { $regex: key[0], $options: 'i' } },
-                                    { customer_name: { $regex: key[0], $options: 'i' } },
-                                    { gst: { $regex: key[0], $options: 'i' } },
-                                    { mobile: { $regex: key[0], $options: 'i' } },
-                                    { mobile2: { $regex: key[0], $options: 'i' } },
-                                    { mobile3: { $regex: key[0], $options: 'i' } },
-                                    { city: { $regex: key[0], $options: 'i' } },
-                                    { state: { $regex: key[0], $options: 'i' } },
-                                ]
-                            },
-                            {
-                                $or: [
-                                    { name: { $regex: key[0], $options: 'i' } },
-                                    { customer_name: { $regex: key[0], $options: 'i' } },
-                                    { gst: { $regex: key[0], $options: 'i' } },
-                                    { mobile: { $regex: key[0], $options: 'i' } },
-                                    { mobile2: { $regex: key[0], $options: 'i' } },
-                                    { mobile3: { $regex: key[0], $options: 'i' } },
-                                    { city: { $regex: key[0], $options: 'i' } },
-                                    { state: { $regex: key[0], $options: 'i' } },
-                                ]
-                            },
-                            {
-                                $or: [
-                                    { name: { $regex: key[0], $options: 'i' } },
-                                    { customer_name: { $regex: key[0], $options: 'i' } },
-                                    { gst: { $regex: key[0], $options: 'i' } },
-                                    { mobile: { $regex: key[0], $options: 'i' } },
-                                    { mobile2: { $regex: key[0], $options: 'i' } },
-                                    { mobile3: { $regex: key[0], $options: 'i' } },
-                                    { city: { $regex: key[0], $options: 'i' } },
-                                    { state: { $regex: key[0], $options: 'i' } },
-                                ]
-                            },
-                            {
-                                $or: [
-                                    { name: { $regex: key[0], $options: 'i' } },
-                                    { customer_name: { $regex: key[0], $options: 'i' } },
-                                    { gst: { $regex: key[0], $options: 'i' } },
-                                    { mobile: { $regex: key[0], $options: 'i' } },
-                                    { mobile2: { $regex: key[0], $options: 'i' } },
-                                    { mobile3: { $regex: key[0], $options: 'i' } },
-                                    { city: { $regex: key[0], $options: 'i' } },
-                                    { state: { $regex: key[0], $options: 'i' } },
-                                ]
-                            }
-                        ]
-                        ,
-    
-                    }
-                    ).populate('created_by').populate('updated_by').sort('-updated_at')
-    
-                }
-    
-                let count = parties.length
-                parties = parties.slice((page - 1) * limit, limit * page)
-                result = parties.map((r) => {
-                    return {
-                        _id: r._id,
-                        name: r.name,
-                        refers: r.refers,
-                        last_remark: r?.last_remark || "",
-                        customer_name: r.customer_name,
-                        uploaded_bills: r.uploaded_bills,
-                        mobile: r.mobile,
-                        mobile2: r.mobile2,
-                        mobile3: r.mobile3,
-                        address: r.address,
-                        gst: r.gst,
-                        city: r.city,
-                        state: r.state,
-                        convertedfromlead: r.convertedfromlead,
-                        created_at: moment(r.created_at).format("DD/MM/YYYY"),
-                        updated_at: moment(r.updated_at).format("DD/MM/YYYY"),
-                        created_by: { id: r.created_by._id, value: r.created_by.username, label: r.created_by.username },
-                        updated_by: { id: r.updated_by._id, value: r.updated_by.username, label: r.updated_by.username },
-                    }
-                })
-                return res.status(200).json({
-                    result: result,
-                    total: Math.ceil(count / limit),
-                    page: page,
-                    limit: limit
-                })
+        await ReferredParty.findByIdAndDelete(source_refer_id);
+        return res.status(200).json({ message: "merge refers successfully" })
+    }
+
+    public async GetRefers(req: Request, res: Response, next: NextFunction) {
+        let refers: IReferredParty[] = []
+        let result: GetReferDto[] = []
+        let user = await User.findById(req.user).populate('assigned_crm_states').populate('assigned_crm_cities');
+        let states = user?.assigned_crm_states.map((item) => { return item.state })
+        let cities = user?.assigned_crm_cities.map((item) => { return item.city })
+        refers = await ReferredParty.find({ 'state': { $in: states }, 'city': { $in: cities } }).sort('name')
+
+        result = refers.map((r) => {
+            return {
+                _id: r._id,
+                name: r.name,
+                last_remark: r.last_remark,
+                refers: 0,
+                uploaded_bills: r.uploaded_bills,
+                customer_name: r.customer_name,
+                mobile: r.mobile,
+                mobile2: r.mobile2,
+                mobile3: r.mobile3,
+                address: r.address,
+                gst: r.gst,
+                city: r.city,
+                state: r.state,
+                convertedfromlead: r.convertedfromlead,
+                created_at: moment(r.created_at).format("DD/MM/YYYY"),
+                updated_at: moment(r.updated_at).format("DD/MM/YYYY"),
+                created_by: { id: r.created_by._id, value: r.created_by.username, label: r.created_by.username },
+                updated_by: { id: r.updated_by._id, value: r.updated_by.username, label: r.updated_by.username },
             }
-    
-            else
-                return res.status(400).json({ message: "bad request" })
-    
-        }
-    
-    
-        public async CreateReferParty(req: Request, res: Response, next: NextFunction) {
-            let body = JSON.parse(req.body.body)
-            const { name, customer_name, city, state, gst, mobile, mobile2, mobile3 } = body as CreateOrEditReferDto
-            if (!name || !city || !state || !mobile || !gst) {
-                return res.status(400).json({ message: "please fill all required fields" })
-            }
-    
-            let uniqueNumbers = []
-            if (mobile)
-                uniqueNumbers.push(mobile)
-            if (mobile2)
-                uniqueNumbers.push(mobile2)
-            if (mobile3)
-                uniqueNumbers.push(mobile3)
-    
-            uniqueNumbers = uniqueNumbers.filter((item, i, ar) => ar.indexOf(item) === i);
-    
-            if (uniqueNumbers[0] && await ReferredParty.findOne({ $or: [{ mobile: uniqueNumbers[0] }, { mobile2: uniqueNumbers[0] }, { mobile3: uniqueNumbers[0] }] }))
-                return res.status(400).json({ message: `${mobile} already exists ` })
-    
-    
-            if (uniqueNumbers[1] && await ReferredParty.findOne({ $or: [{ mobile: uniqueNumbers[1] }, { mobile2: uniqueNumbers[1] }, { mobile3: uniqueNumbers[1] }] }))
-                return res.status(400).json({ message: `${uniqueNumbers[1]} already exists ` })
-    
-            if (uniqueNumbers[2] && await ReferredParty.findOne({ $or: [{ mobile: uniqueNumbers[2] }, { mobile2: uniqueNumbers[2] }, { mobile3: uniqueNumbers[2] }] }))
-                return res.status(400).json({ message: `${uniqueNumbers[2]} already exists ` })
-    
-    
-            let resultParty = await ReferredParty.findOne({ $or: [{ gst: String(gst).toLowerCase().trim() }, { mobile: String(mobile).toLowerCase().trim() }] })
-            if (resultParty) {
-                return res.status(400).json({ message: "already exists  gst" })
-            }
-    
-    
-            let party = await new ReferredParty({
-                name, customer_name, city, state,
-                mobile: uniqueNumbers[0] || null,
-                mobile2: uniqueNumbers[1] || null,
-                mobile3: uniqueNumbers[2] || null,
-                gst,
-                created_at: new Date(),
-                updated_at: new Date(),
-                created_by: req.user,
-                updated_by: req.user
-            }).save()
-            return res.status(201).json(party)
-        }
-    
-        public async UpdateReferParty(req: Request, res: Response, next: NextFunction) {
-            const id = req.params.id
-            if (!isMongoId(id))
-                return res.status(400).json({ message: "bad mongo id" })
-            let body = JSON.parse(req.body.body)
-            const { name, customer_name, city, state, mobile, mobile2, mobile3, gst } = body as CreateOrEditReferDto
-            if (!name || !city || !state || !mobile) {
-                return res.status(400).json({ message: "please fill all required fields" })
-            }
-            let party = await ReferredParty.findById(id)
-    
-            if (!party)
-                return res.status(404).json({ message: "party not found" })
-            if (gst !== party.gst) {
-                let resultParty = await ReferredParty.findOne({ gst: gst });
-                if (resultParty) {
-                    return res.status(400).json({ message: "already exists this  gst" })
-                }
-            }
-            let uniqueNumbers = []
-            if (mobile) {
-                if (mobile === party.mobile) {
-                    uniqueNumbers[0] = party.mobile
-                }
-                if (mobile !== party.mobile) {
-                    uniqueNumbers[0] = mobile
-                }
-            }
-            if (mobile2) {
-                if (mobile2 === party.mobile2) {
-                    uniqueNumbers[1] = party.mobile2
-                }
-                if (mobile2 !== party.mobile2) {
-                    uniqueNumbers[1] = mobile2
-                }
-            }
-            if (mobile3) {
-                if (mobile3 === party.mobile3) {
-                    uniqueNumbers[2] = party.mobile3
-                }
-                if (mobile3 !== party.mobile3) {
-                    uniqueNumbers[2] = mobile3
-                }
-            }
-    
-            uniqueNumbers = uniqueNumbers.filter((item, i, ar) => ar.indexOf(item) === i);
-    
-    
-            if (uniqueNumbers[0] && uniqueNumbers[0] !== party.mobile && await ReferredParty.findOne({ $or: [{ mobile: uniqueNumbers[0] }, { mobile2: uniqueNumbers[0] }, { mobile3: uniqueNumbers[0] }] }))
-                return res.status(400).json({ message: `${mobile} already exists ` })
-    
-    
-            if (uniqueNumbers[1] && uniqueNumbers[1] !== party.mobile2 && await ReferredParty.findOne({ $or: [{ mobile: uniqueNumbers[1] }, { mobile2: uniqueNumbers[1] }, { mobile3: uniqueNumbers[1] }] }))
-                return res.status(400).json({ message: `${uniqueNumbers[1]} already exists ` })
-    
-            if (uniqueNumbers[2] && uniqueNumbers[2] !== party.mobile3 && await ReferredParty.findOne({ $or: [{ mobile: uniqueNumbers[2] }, { mobile2: uniqueNumbers[2] }, { mobile3: uniqueNumbers[2] }] }))
-                return res.status(400).json({ message: `${uniqueNumbers[2]} already exists ` })
-    
-            await ReferredParty.findByIdAndUpdate(id, {
-                name, customer_name, city, state,
-                mobile: uniqueNumbers[0] || null,
-                mobile2: uniqueNumbers[1] || null,
-                mobile3: uniqueNumbers[2] || null,
-                gst,
-                created_at: new Date(),
-                updated_at: new Date(),
-                created_by: req.user,
-                updated_by: req.user
-            })
-            return res.status(200).json({ message: "updated" })
-        }
-    
-    
-        public async DeleteReferParty(req: Request, res: Response, next: NextFunction) {
-            const id = req.params.id
-            if (!isMongoId(id))
-                return res.status(400).json({ message: "bad mongo id" })
-            let party = await ReferredParty.findById(id)
-            if (!party)
-                return res.status(404).json({ message: "party not found" })
-            await ReferredParty.findByIdAndDelete(id)
-            return res.status(200).json({ message: "deleted" })
-        }
-    
-    
-        public async ToogleReferPartyConversion(req: Request, res: Response, next: NextFunction) {
-            const id = req.params.id
-            if (!isMongoId(id))
-                return res.status(400).json({ message: "bad mongo id" })
-            let party = await ReferredParty.findById(id)
-            if (!party)
-                return res.status(404).json({ message: "party not found" })
-            await ReferredParty.findByIdAndUpdate(id, { convertedfromlead: !party.convertedfromlead })
-            return res.status(200).json({ message: "converted successfully" })
-        }
-    
-        public async BulkReferUpdateFromExcel(req: Request, res: Response, next: NextFunction) {
-            let result: GetReferFromExcelDto[] = []
-            let statusText: string = ""
-            if (!req.file)
-                return res.status(400).json({
-                    message: "please provide an Excel file",
-                });
-            if (req.file) {
-                const allowedFiles = ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv"];
-                if (!allowedFiles.includes(req.file.mimetype))
-                    return res.status(400).json({ message: `${req.file.originalname} is not valid, only excel and csv are allowed to upload` })
-                if (req.file.size > 100 * 1024 * 1024)
-                    return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
-                const workbook = xlsx.read(req.file.buffer);
-                let workbook_sheet = workbook.SheetNames;
-                let workbook_response: GetReferFromExcelDto[] = xlsx.utils.sheet_to_json(
-                    workbook.Sheets[workbook_sheet[0]]
-                );
-                if (workbook_response.length > 3000) {
-                    return res.status(400).json({ message: "Maximum 3000 records allowed at one time" })
-                }
-                for (let i = 0; i < workbook_response.length; i++) {
-                    let refer = workbook_response[i]
-                    let name: string | null = refer.name
-                    let mobile: string | null = refer.mobile
-                    let city: string | null = refer.city
-                    let state: string | null = refer.state
-                    let gst: string | null = refer.gst
-    
-                    let validated = true
-    
-                    //important
-                    if (!mobile) {
-                        validated = false
-                        statusText = "required mobile"
-                    }
-                    if (!name) {
-                        validated = false
-                        statusText = "required name"
-                    }
-                    if (!city) {
-                        validated = false
-                        statusText = "required city"
-                    }
-                    if (!state) {
-                        validated = false
-                        statusText = "required state"
-                    }
-                    if (!gst) {
-                        validated = false
-                        statusText = "required gst"
-                    }
-                    if (gst && gst.length !== 15) {
-                        validated = false
-                        statusText = "invalid gst"
-                    }
-                    if (mobile && Number.isNaN(Number(mobile))) {
-                        validated = false
-                        statusText = "invalid mobile"
-                    }
-    
-    
-                    if (mobile && String(mobile).length !== 10) {
-                        validated = false
-                        statusText = "invalid mobile"
-                    }
-                    //update and create new nead
-                    if (validated) {
-                        if (refer._id && isMongoId(String(refer._id))) {
-                            let targetLead = await ReferredParty.findById(refer._id)
-                            if (targetLead) {
-                                if (targetLead.mobile != String(mobile).toLowerCase().trim() || targetLead.gst !== String(gst).toLowerCase().trim()) {
-                                    let refertmp = await ReferredParty.findOne({ mobile: String(mobile).toLowerCase().trim() })
-                                    let refertmp2 = await ReferredParty.findOne({ gst: String(gst).toLowerCase().trim() })
-    
-                                    if (refertmp) {
-                                        validated = false
-                                        statusText = "exists mobile"
-                                    }
-                                    if (refertmp2) {
-                                        validated = false
-                                        statusText = "exists  gst"
-                                    }
-                                    else {
-                                        await ReferredParty.findByIdAndUpdate(refer._id, {
-                                            ...refer,
-                                            city: city ? city : "unknown",
-                                            state: state ? state : "unknown",
-                                            updated_by: req.user,
-                                            updated_at: new Date(Date.now())
-                                        })
-                                        statusText = "updated"
-                                    }
-                                }
-                            }
-                        }
-    
-                        if (!refer._id || !isMongoId(String(refer._id))) {
-                            let refertmp = await ReferredParty.findOne({
-                                $or: [
-                                    { mobile: String(mobile).toLowerCase().trim() },
-                                    { gst: String(gst).toLowerCase().trim() }
-                                ]
-                            })
-                            if (refertmp) {
-                                validated = false
-                                statusText = "duplicate mobile or gst"
-                            }
-                            else {
-                                let referParty = new ReferredParty({
-                                    ...refer,
-                                    _id: new Types.ObjectId(),
-                                    city: city ? city : "unknown",
-                                    state: state ? state : "unknown",
-                                    mobile: refer.mobile,
-                                    created_by: req.user,
-                                    updated_by: req.user,
-                                    updated_at: new Date(Date.now()),
-                                    created_at: new Date(Date.now()),
-                                    remarks: undefined
-                                })
-    
-                                await referParty.save()
-                                statusText = "created"
-                            }
-    
-                        }
-                    }
-                    result.push({
-                        ...refer,
-                        status: statusText
-                    })
-                }
-            }
-            return res.status(200).json(result);
-        }
-     public async GetNewRefers(req: Request, res: Response, next: NextFunction) {
-            let result: GetReferDto[] = [];
-            let start_date = req.query.start_date
-            let end_date = req.query.end_date
-            let dt1 = new Date(String(start_date))
-            let dt2 = new Date(String(end_date))
-            let parties: IReferredParty[] = []
-    
-            parties = await ReferredParty.find({ created_at: { $gte: dt1, $lt: dt2 }, convertedfromlead: true }).populate('created_by').populate('updated_by').sort('-created_at');
-    
+        })
+
+        return res.status(200).json(refers);
+    }
+
+
+    public async GetPaginatedRefers(req: Request, res: Response, next: NextFunction) {
+        let limit = Number(req.query.limit)
+        let page = Number(req.query.page)
+        let result: GetReferDto[] = []
+        let user = await User.findById(req.user).populate('assigned_crm_states').populate('assigned_crm_cities');
+        let states = user?.assigned_crm_states.map((item) => { return item.state })
+        let cities = user?.assigned_crm_cities.map((item) => { return item.city })
+        let parties: IReferredParty[] = []
+        if (!Number.isNaN(limit) && !Number.isNaN(page)) {
+            parties = await ReferredParty.find({ state: { $in: states }, city: { $in: cities } }).populate('created_by').populate('updated_by').sort('-updated_at')
+            let count = parties.length
+            parties = parties.slice((page - 1) * limit, limit * page)
             result = parties.map((r) => {
                 return {
                     _id: r._id,
                     name: r.name,
                     refers: r.refers,
-                    last_remark: r.last_remark || "",
+                    last_remark: r.last_remark,
                     customer_name: r.customer_name,
                     mobile: r.mobile,
                     mobile2: r.mobile2,
@@ -2795,128 +2290,688 @@ export class CrmController{
                     updated_by: { id: r.updated_by._id, value: r.updated_by.username, label: r.updated_by.username },
                 }
             })
-            return res.status(200).json(result)
-        }
-    
-        public async GetAssignedRefers(req: Request, res: Response, next: NextFunction) {
-            let start_date = req.query.start_date
-            let end_date = req.query.end_date
-            let dt1 = new Date(String(start_date))
-            let dt2 = new Date(String(end_date))
-            let result: GetLeadDto[] = []
-            let leads: ILead[] = []
-    
-            leads = await Lead.find({ referred_date: { $gte: dt1, $lt: dt2 } }).populate('created_by').populate('updated_by').populate('referred_party').sort('-referred_date')
-            result = leads.map((lead) => {
-                return {
-                    _id: lead._id,
-                    name: lead.name,
-                    customer_name: lead.customer_name,
-                    customer_designation: lead.customer_designation,
-                    mobile: lead.mobile,
-                    gst: lead.gst,
-                    uploaded_bills: lead.uploaded_bills,
-                    has_card: lead.has_card,
-                    email: lead.email,
-                    city: lead.city,
-                    state: lead.state,
-                    country: lead.country,
-                    address: lead.address,
-                    work_description: lead.work_description,
-                    turnover: lead.turnover,
-                    alternate_mobile1: lead.alternate_mobile1,
-                    alternate_mobile2: lead.alternate_mobile2,
-                    alternate_email: lead.alternate_email,
-                    lead_type: lead.lead_type,
-                    stage: lead.stage,
-                    lead_source: lead.lead_source,
-                    visiting_card: lead.visiting_card?.public_url || "",
-                    referred_party_name: lead.referred_party && lead.referred_party.name,
-                    referred_party_mobile: lead.referred_party && lead.referred_party.mobile,
-                    referred_date: lead.referred_party && moment(lead.referred_date).format("DD/MM/YYYY"),
-                    last_remark: lead.last_remark || "",
-                    created_at: moment(lead.created_at).format("DD/MM/YYYY"),
-                    updated_at: moment(lead.updated_at).format("DD/MM/YYYY"),
-                    created_by: { id: lead.created_by._id, value: lead.created_by.username, label: lead.created_by.username },
-                    updated_by: { id: lead.updated_by._id, value: lead.updated_by.username, label: lead.updated_by.username },
-                }
+            return res.status(200).json({
+                result: result,
+                total: Math.ceil(count / limit),
+                page: page,
+                limit: limit
             })
-            return res.status(200).json(result)
         }
-    
-        public async GetMyReminders(req: Request, res: Response, next: NextFunction) {
-            let previous_date = new Date()
-            let day = previous_date.getDate() - 100
-            previous_date.setDate(day)
-            let remarks = await Remark.find({ created_at: { $gte: previous_date, $lte: new Date() } }).populate('created_by').populate('updated_by').populate({
-                path: 'lead',
-                populate: [
-                    {
-                        path: 'created_by',
-                        model: 'User'
-                    },
-                    {
-                        path: 'updated_by',
-                        model: 'User'
-                    },
-                    {
-                        path: 'referred_party',
-                        model: 'ReferredParty'
-                    }
-                ]
-            }).sort('-created_at')
-            let result: GetActivitiesOrRemindersDto[] = []
-            let ids: string[] = []
-            let filteredRemarks: IRemark[] = []
-    
-            for (let i = 0; i < remarks.length; i++) {
-                let rem = remarks[i]
-                if (rem && rem.lead && !ids.includes(rem.lead._id)) {
-                    ids.push(rem.lead._id);
-                    if (rem.created_by._id.valueOf() == req.user?._id && rem.remind_date && rem.remind_date >= hundredDaysAgo && rem.remind_date < new Date())
-                        filteredRemarks.push(rem);
-                }
+        else return res.status(400).json({ message: 'bad request' })
+
+    }
+
+
+    public async FuzzySearchRefers(req: Request, res: Response, next: NextFunction) {
+        let limit = Number(req.query.limit)
+        let page = Number(req.query.page)
+        let key = String(req.query.key).split(",")
+        let user = await User.findById(req.user).populate('assigned_crm_states').populate('assigned_crm_cities');
+        let states = user?.assigned_crm_states.map((item) => { return item.state })
+        let cities = user?.assigned_crm_cities.map((item) => { return item.city })
+        let result: GetReferDto[] = []
+        if (!key)
+            return res.status(500).json({ message: "bad request" })
+        let parties: IReferredParty[] = []
+        if (!Number.isNaN(limit) && !Number.isNaN(page)) {
+            if (key.length == 1 || key.length > 4) {
+
+                parties = await ReferredParty.find({
+                    state: { $in: states }, city: { $in: cities },
+                    $or: [
+                        { name: { $regex: key[0], $options: 'i' } },
+                        { gst: { $regex: key[0], $options: 'i' } },
+                        { customer_name: { $regex: key[0], $options: 'i' } },
+                        { mobile: { $regex: key[0], $options: 'i' } },
+                        { mobile2: { $regex: key[0], $options: 'i' } },
+                        { mobile3: { $regex: key[0], $options: 'i' } },
+                        { city: { $regex: key[0], $options: 'i' } },
+                        { state: { $regex: key[0], $options: 'i' } },
+                    ]
+                }).populate('created_by').populate('updated_by').sort('-updated_at')
+
             }
-            filteredRemarks.sort(function (a, b) {
-                //@ts-ignore
-                return new Date(b.remind_date) - new Date(a.remind_date);
-            });
-    
-            result = filteredRemarks.map((rem) => {
+            if (key.length == 2) {
+
+                parties = await ReferredParty.find({
+                    state: { $in: states }, city: { $in: cities },
+
+                    $and: [
+                        {
+                            $or: [
+                                { name: { $regex: key[0], $options: 'i' } },
+                                { customer_name: { $regex: key[0], $options: 'i' } },
+                                { gst: { $regex: key[0], $options: 'i' } },
+                                { mobile: { $regex: key[0], $options: 'i' } },
+                                { mobile2: { $regex: key[0], $options: 'i' } },
+                                { mobile3: { $regex: key[0], $options: 'i' } },
+                                { city: { $regex: key[0], $options: 'i' } },
+                                { state: { $regex: key[0], $options: 'i' } },
+                            ]
+                        },
+                        {
+                            $or: [
+                                { name: { $regex: key[0], $options: 'i' } },
+                                { customer_name: { $regex: key[0], $options: 'i' } },
+                                { gst: { $regex: key[0], $options: 'i' } },
+                                { mobile: { $regex: key[0], $options: 'i' } },
+                                { mobile2: { $regex: key[0], $options: 'i' } },
+                                { mobile3: { $regex: key[0], $options: 'i' } },
+                                { city: { $regex: key[0], $options: 'i' } },
+                                { state: { $regex: key[0], $options: 'i' } },
+                            ]
+                        }
+                    ]
+                    ,
+
+                }
+                ).populate('created_by').populate('updated_by').sort('-updated_at')
+
+            }
+
+            if (key.length == 3) {
+
+                parties = await ReferredParty.find({
+                    state: { $in: states }, city: { $in: cities },
+
+                    $and: [
+                        {
+                            $or: [
+                                { name: { $regex: key[0], $options: 'i' } },
+                                { customer_name: { $regex: key[0], $options: 'i' } },
+                                { gst: { $regex: key[0], $options: 'i' } },
+                                { mobile: { $regex: key[0], $options: 'i' } },
+                                { mobile2: { $regex: key[0], $options: 'i' } },
+                                { mobile3: { $regex: key[0], $options: 'i' } },
+                                { city: { $regex: key[0], $options: 'i' } },
+                                { state: { $regex: key[0], $options: 'i' } },
+                            ]
+                        },
+                        {
+                            $or: [
+                                { name: { $regex: key[0], $options: 'i' } },
+                                { customer_name: { $regex: key[0], $options: 'i' } },
+                                { gst: { $regex: key[0], $options: 'i' } },
+                                { mobile: { $regex: key[0], $options: 'i' } },
+                                { mobile2: { $regex: key[0], $options: 'i' } },
+                                { mobile3: { $regex: key[0], $options: 'i' } },
+                                { city: { $regex: key[0], $options: 'i' } },
+                                { state: { $regex: key[0], $options: 'i' } },
+                            ]
+                        },
+                        {
+                            $or: [
+                                { name: { $regex: key[0], $options: 'i' } },
+                                { customer_name: { $regex: key[0], $options: 'i' } },
+                                { gst: { $regex: key[0], $options: 'i' } },
+                                { mobile: { $regex: key[0], $options: 'i' } },
+                                { mobile2: { $regex: key[0], $options: 'i' } },
+                                { mobile3: { $regex: key[0], $options: 'i' } },
+                                { city: { $regex: key[0], $options: 'i' } },
+                                { state: { $regex: key[0], $options: 'i' } },
+                            ]
+                        }
+                    ]
+                    ,
+
+                }
+                ).populate('created_by').populate('updated_by').sort('-updated_at')
+
+            }
+            if (key.length == 4) {
+
+                parties = await ReferredParty.find({
+                    state: { $in: states }, city: { $in: cities },
+                    $and: [
+                        {
+                            $or: [
+                                { name: { $regex: key[0], $options: 'i' } },
+                                { customer_name: { $regex: key[0], $options: 'i' } },
+                                { gst: { $regex: key[0], $options: 'i' } },
+                                { mobile: { $regex: key[0], $options: 'i' } },
+                                { mobile2: { $regex: key[0], $options: 'i' } },
+                                { mobile3: { $regex: key[0], $options: 'i' } },
+                                { city: { $regex: key[0], $options: 'i' } },
+                                { state: { $regex: key[0], $options: 'i' } },
+                            ]
+                        },
+                        {
+                            $or: [
+                                { name: { $regex: key[0], $options: 'i' } },
+                                { customer_name: { $regex: key[0], $options: 'i' } },
+                                { gst: { $regex: key[0], $options: 'i' } },
+                                { mobile: { $regex: key[0], $options: 'i' } },
+                                { mobile2: { $regex: key[0], $options: 'i' } },
+                                { mobile3: { $regex: key[0], $options: 'i' } },
+                                { city: { $regex: key[0], $options: 'i' } },
+                                { state: { $regex: key[0], $options: 'i' } },
+                            ]
+                        },
+                        {
+                            $or: [
+                                { name: { $regex: key[0], $options: 'i' } },
+                                { customer_name: { $regex: key[0], $options: 'i' } },
+                                { gst: { $regex: key[0], $options: 'i' } },
+                                { mobile: { $regex: key[0], $options: 'i' } },
+                                { mobile2: { $regex: key[0], $options: 'i' } },
+                                { mobile3: { $regex: key[0], $options: 'i' } },
+                                { city: { $regex: key[0], $options: 'i' } },
+                                { state: { $regex: key[0], $options: 'i' } },
+                            ]
+                        },
+                        {
+                            $or: [
+                                { name: { $regex: key[0], $options: 'i' } },
+                                { customer_name: { $regex: key[0], $options: 'i' } },
+                                { gst: { $regex: key[0], $options: 'i' } },
+                                { mobile: { $regex: key[0], $options: 'i' } },
+                                { mobile2: { $regex: key[0], $options: 'i' } },
+                                { mobile3: { $regex: key[0], $options: 'i' } },
+                                { city: { $regex: key[0], $options: 'i' } },
+                                { state: { $regex: key[0], $options: 'i' } },
+                            ]
+                        }
+                    ]
+                    ,
+
+                }
+                ).populate('created_by').populate('updated_by').sort('-updated_at')
+
+            }
+
+            let count = parties.length
+            parties = parties.slice((page - 1) * limit, limit * page)
+            result = parties.map((r) => {
                 return {
-                    _id: rem._id,
-                    remark: rem.remark,
-                    created_at: rem.created_at && moment(rem.created_at).format("DD/MM/YYYY"),
-                    remind_date: rem.remind_date && moment(rem.remind_date).format("DD/MM/YYYY"),
-                    created_by: { id: rem.created_by._id, value: rem.created_by.username, label: rem.created_by.username },
-                    lead_id: rem.lead && rem.lead._id,
-                    name: rem.lead && rem.lead.name,
-                    customer_name: rem.lead && rem.lead.customer_name,
-                    customer_designation: rem.lead && rem.lead.customer_designation,
-                    mobile: rem.lead && rem.lead.mobile,
-                    gst: rem.lead && rem.lead.gst,
-                    has_card: rem.lead && rem.lead.has_card,
-                    email: rem.lead && rem.lead.email,
-                    city: rem.lead && rem.lead.city,
-                    state: rem.lead && rem.lead.state,
-                    country: rem.lead && rem.lead.country,
-                    address: rem.lead && rem.lead.address,
-                    work_description: rem.lead && rem.lead.work_description,
-                    turnover: rem.lead && rem.lead.turnover,
-                    alternate_mobile1: rem.lead && rem.lead.alternate_mobile1,
-                    alternate_mobile2: rem.lead && rem.lead.alternate_mobile2,
-                    alternate_email: rem.lead && rem.lead.alternate_email,
-                    lead_type: rem.lead && rem.lead.lead_type,
-                    stage: rem.lead && rem.lead.stage,
-                    lead_source: rem.lead && rem.lead.lead_source,
-                    visiting_card: rem.lead && rem.lead.visiting_card?.public_url || "",
-                    referred_party_name: rem.lead && rem.lead.referred_party?.name || "",
-                    referred_party_mobile: rem.lead && rem.lead.referred_party?.mobile || "",
-                    referred_date: rem.lead && rem.lead.referred_date && moment(rem.lead && rem.lead.referred_date).format("DD/MM/YYYY") || "",
+                    _id: r._id,
+                    name: r.name,
+                    refers: r.refers,
+                    last_remark: r?.last_remark || "",
+                    customer_name: r.customer_name,
+                    uploaded_bills: r.uploaded_bills,
+                    mobile: r.mobile,
+                    mobile2: r.mobile2,
+                    mobile3: r.mobile3,
+                    address: r.address,
+                    gst: r.gst,
+                    city: r.city,
+                    state: r.state,
+                    convertedfromlead: r.convertedfromlead,
+                    created_at: moment(r.created_at).format("DD/MM/YYYY"),
+                    updated_at: moment(r.updated_at).format("DD/MM/YYYY"),
+                    created_by: { id: r.created_by._id, value: r.created_by.username, label: r.created_by.username },
+                    updated_by: { id: r.updated_by._id, value: r.updated_by.username, label: r.updated_by.username },
                 }
             })
-    
-    
-            return res.status(200).json(result)
+            return res.status(200).json({
+                result: result,
+                total: Math.ceil(count / limit),
+                page: page,
+                limit: limit
+            })
         }
+
+        else
+            return res.status(400).json({ message: "bad request" })
+
+    }
+
+
+    public async CreateReferParty(req: Request, res: Response, next: NextFunction) {
+        let body = JSON.parse(req.body.body)
+        const { name, customer_name, city, state, gst, mobile, mobile2, mobile3 } = body as CreateOrEditReferDto
+        if (!name || !city || !state || !mobile || !gst) {
+            return res.status(400).json({ message: "please fill all required fields" })
+        }
+
+        let uniqueNumbers = []
+        if (mobile)
+            uniqueNumbers.push(mobile)
+        if (mobile2)
+            uniqueNumbers.push(mobile2)
+        if (mobile3)
+            uniqueNumbers.push(mobile3)
+
+        uniqueNumbers = uniqueNumbers.filter((item, i, ar) => ar.indexOf(item) === i);
+
+        if (uniqueNumbers[0] && await ReferredParty.findOne({ $or: [{ mobile: uniqueNumbers[0] }, { mobile2: uniqueNumbers[0] }, { mobile3: uniqueNumbers[0] }] }))
+            return res.status(400).json({ message: `${mobile} already exists ` })
+
+
+        if (uniqueNumbers[1] && await ReferredParty.findOne({ $or: [{ mobile: uniqueNumbers[1] }, { mobile2: uniqueNumbers[1] }, { mobile3: uniqueNumbers[1] }] }))
+            return res.status(400).json({ message: `${uniqueNumbers[1]} already exists ` })
+
+        if (uniqueNumbers[2] && await ReferredParty.findOne({ $or: [{ mobile: uniqueNumbers[2] }, { mobile2: uniqueNumbers[2] }, { mobile3: uniqueNumbers[2] }] }))
+            return res.status(400).json({ message: `${uniqueNumbers[2]} already exists ` })
+
+
+        let resultParty = await ReferredParty.findOne({ $or: [{ gst: String(gst).toLowerCase().trim() }, { mobile: String(mobile).toLowerCase().trim() }] })
+        if (resultParty) {
+            return res.status(400).json({ message: "already exists  gst" })
+        }
+
+
+        let party = await new ReferredParty({
+            name, customer_name, city, state,
+            mobile: uniqueNumbers[0] || null,
+            mobile2: uniqueNumbers[1] || null,
+            mobile3: uniqueNumbers[2] || null,
+            gst,
+            created_at: new Date(),
+            updated_at: new Date(),
+            created_by: req.user,
+            updated_by: req.user
+        }).save()
+        return res.status(201).json(party)
+    }
+
+    public async UpdateReferParty(req: Request, res: Response, next: NextFunction) {
+        const id = req.params.id
+        if (!isMongoId(id))
+            return res.status(400).json({ message: "bad mongo id" })
+        let body = JSON.parse(req.body.body)
+        const { name, customer_name, city, state, mobile, mobile2, mobile3, gst } = body as CreateOrEditReferDto
+        if (!name || !city || !state || !mobile) {
+            return res.status(400).json({ message: "please fill all required fields" })
+        }
+        let party = await ReferredParty.findById(id)
+
+        if (!party)
+            return res.status(404).json({ message: "party not found" })
+        if (gst !== party.gst) {
+            let resultParty = await ReferredParty.findOne({ gst: gst });
+            if (resultParty) {
+                return res.status(400).json({ message: "already exists this  gst" })
+            }
+        }
+        let uniqueNumbers = []
+        if (mobile) {
+            if (mobile === party.mobile) {
+                uniqueNumbers[0] = party.mobile
+            }
+            if (mobile !== party.mobile) {
+                uniqueNumbers[0] = mobile
+            }
+        }
+        if (mobile2) {
+            if (mobile2 === party.mobile2) {
+                uniqueNumbers[1] = party.mobile2
+            }
+            if (mobile2 !== party.mobile2) {
+                uniqueNumbers[1] = mobile2
+            }
+        }
+        if (mobile3) {
+            if (mobile3 === party.mobile3) {
+                uniqueNumbers[2] = party.mobile3
+            }
+            if (mobile3 !== party.mobile3) {
+                uniqueNumbers[2] = mobile3
+            }
+        }
+
+        uniqueNumbers = uniqueNumbers.filter((item, i, ar) => ar.indexOf(item) === i);
+
+
+        if (uniqueNumbers[0] && uniqueNumbers[0] !== party.mobile && await ReferredParty.findOne({ $or: [{ mobile: uniqueNumbers[0] }, { mobile2: uniqueNumbers[0] }, { mobile3: uniqueNumbers[0] }] }))
+            return res.status(400).json({ message: `${mobile} already exists ` })
+
+
+        if (uniqueNumbers[1] && uniqueNumbers[1] !== party.mobile2 && await ReferredParty.findOne({ $or: [{ mobile: uniqueNumbers[1] }, { mobile2: uniqueNumbers[1] }, { mobile3: uniqueNumbers[1] }] }))
+            return res.status(400).json({ message: `${uniqueNumbers[1]} already exists ` })
+
+        if (uniqueNumbers[2] && uniqueNumbers[2] !== party.mobile3 && await ReferredParty.findOne({ $or: [{ mobile: uniqueNumbers[2] }, { mobile2: uniqueNumbers[2] }, { mobile3: uniqueNumbers[2] }] }))
+            return res.status(400).json({ message: `${uniqueNumbers[2]} already exists ` })
+
+        await ReferredParty.findByIdAndUpdate(id, {
+            name, customer_name, city, state,
+            mobile: uniqueNumbers[0] || null,
+            mobile2: uniqueNumbers[1] || null,
+            mobile3: uniqueNumbers[2] || null,
+            gst,
+            created_at: new Date(),
+            updated_at: new Date(),
+            created_by: req.user,
+            updated_by: req.user
+        })
+        return res.status(200).json({ message: "updated" })
+    }
+
+
+    public async DeleteReferParty(req: Request, res: Response, next: NextFunction) {
+        const id = req.params.id
+        if (!isMongoId(id))
+            return res.status(400).json({ message: "bad mongo id" })
+        let party = await ReferredParty.findById(id)
+        if (!party)
+            return res.status(404).json({ message: "party not found" })
+        await ReferredParty.findByIdAndDelete(id)
+        return res.status(200).json({ message: "deleted" })
+    }
+
+
+    public async ToogleReferPartyConversion(req: Request, res: Response, next: NextFunction) {
+        const id = req.params.id
+        if (!isMongoId(id))
+            return res.status(400).json({ message: "bad mongo id" })
+        let party = await ReferredParty.findById(id)
+        if (!party)
+            return res.status(404).json({ message: "party not found" })
+        await ReferredParty.findByIdAndUpdate(id, { convertedfromlead: !party.convertedfromlead })
+        return res.status(200).json({ message: "converted successfully" })
+    }
+
+    public async DownloadExcelTemplateForCreateRefer(req: Request, res: Response, next: NextFunction) {
+        let data: GetReferFromExcelDto[] = [{
+            _id: "ere3rer",
+            name: "ABC footwear",
+            customer_name: "ABC",
+            mobile: '7878676567',
+            mobile2: '',
+            mobile3: '',
+            address: 'abc street',
+            gst: '',
+            city: 'hisar',
+            state: 'haryana',
+            status: ''
+        }]
+
+        let template: { sheet_name: string, data: any[] }[] = []
+        template.push({ sheet_name: 'template', data: data })
+        ConvertJsonToExcel(template)
+        let fileName = "CreateReferTemplate.xlsx"
+        return res.download("./file", fileName)
+    }
+    public async BulkReferUpdateFromExcel(req: Request, res: Response, next: NextFunction) {
+        let result: GetReferFromExcelDto[] = []
+        let statusText: string = ""
+        if (!req.file)
+            return res.status(400).json({
+                message: "please provide an Excel file",
+            });
+        if (req.file) {
+            const allowedFiles = ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv"];
+            if (!allowedFiles.includes(req.file.mimetype))
+                return res.status(400).json({ message: `${req.file.originalname} is not valid, only excel and csv are allowed to upload` })
+            if (req.file.size > 100 * 1024 * 1024)
+                return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
+            const workbook = xlsx.read(req.file.buffer);
+            let workbook_sheet = workbook.SheetNames;
+            let workbook_response: GetReferFromExcelDto[] = xlsx.utils.sheet_to_json(
+                workbook.Sheets[workbook_sheet[0]]
+            );
+            if (workbook_response.length > 3000) {
+                return res.status(400).json({ message: "Maximum 3000 records allowed at one time" })
+            }
+            for (let i = 0; i < workbook_response.length; i++) {
+                let refer = workbook_response[i]
+                let name: string | null = refer.name
+                let mobile: string | null = refer.mobile
+                let city: string | null = refer.city
+                let state: string | null = refer.state
+                let gst: string | null = refer.gst
+
+                let validated = true
+
+                //important
+                if (!mobile) {
+                    validated = false
+                    statusText = "required mobile"
+                }
+                if (!name) {
+                    validated = false
+                    statusText = "required name"
+                }
+                if (!city) {
+                    validated = false
+                    statusText = "required city"
+                }
+                if (!state) {
+                    validated = false
+                    statusText = "required state"
+                }
+                if (!gst) {
+                    validated = false
+                    statusText = "required gst"
+                }
+                if (gst && gst.length !== 15) {
+                    validated = false
+                    statusText = "invalid gst"
+                }
+                if (mobile && Number.isNaN(Number(mobile))) {
+                    validated = false
+                    statusText = "invalid mobile"
+                }
+
+
+                if (mobile && String(mobile).length !== 10) {
+                    validated = false
+                    statusText = "invalid mobile"
+                }
+                //update and create new nead
+                if (validated) {
+                    if (refer._id && isMongoId(String(refer._id))) {
+                        let targetLead = await ReferredParty.findById(refer._id)
+                        if (targetLead) {
+                            if (targetLead.mobile != String(mobile).toLowerCase().trim() || targetLead.gst !== String(gst).toLowerCase().trim()) {
+                                let refertmp = await ReferredParty.findOne({ mobile: String(mobile).toLowerCase().trim() })
+                                let refertmp2 = await ReferredParty.findOne({ gst: String(gst).toLowerCase().trim() })
+
+                                if (refertmp) {
+                                    validated = false
+                                    statusText = "exists mobile"
+                                }
+                                if (refertmp2) {
+                                    validated = false
+                                    statusText = "exists  gst"
+                                }
+                                else {
+                                    await ReferredParty.findByIdAndUpdate(refer._id, {
+                                        ...refer,
+                                        city: city ? city : "unknown",
+                                        state: state ? state : "unknown",
+                                        updated_by: req.user,
+                                        updated_at: new Date(Date.now())
+                                    })
+                                    statusText = "updated"
+                                }
+                            }
+                        }
+                    }
+
+                    if (!refer._id || !isMongoId(String(refer._id))) {
+                        let refertmp = await ReferredParty.findOne({
+                            $or: [
+                                { mobile: String(mobile).toLowerCase().trim() },
+                                { gst: String(gst).toLowerCase().trim() }
+                            ]
+                        })
+                        if (refertmp) {
+                            validated = false
+                            statusText = "duplicate mobile or gst"
+                        }
+                        else {
+                            let referParty = new ReferredParty({
+                                ...refer,
+                                _id: new Types.ObjectId(),
+                                city: city ? city : "unknown",
+                                state: state ? state : "unknown",
+                                mobile: refer.mobile,
+                                created_by: req.user,
+                                updated_by: req.user,
+                                updated_at: new Date(Date.now()),
+                                created_at: new Date(Date.now()),
+                                remarks: undefined
+                            })
+
+                            await referParty.save()
+                            statusText = "created"
+                        }
+
+                    }
+                }
+                result.push({
+                    ...refer,
+                    status: statusText
+                })
+            }
+        }
+        return res.status(200).json(result);
+    }
+    public async GetNewRefers(req: Request, res: Response, next: NextFunction) {
+        let result: GetReferDto[] = [];
+        let start_date = req.query.start_date
+        let end_date = req.query.end_date
+        let dt1 = new Date(String(start_date))
+        let dt2 = new Date(String(end_date))
+        let parties: IReferredParty[] = []
+
+        parties = await ReferredParty.find({ created_at: { $gte: dt1, $lt: dt2 }, convertedfromlead: true }).populate('created_by').populate('updated_by').sort('-created_at');
+
+        result = parties.map((r) => {
+            return {
+                _id: r._id,
+                name: r.name,
+                refers: r.refers,
+                last_remark: r.last_remark || "",
+                customer_name: r.customer_name,
+                mobile: r.mobile,
+                mobile2: r.mobile2,
+                mobile3: r.mobile3,
+                uploaded_bills: r.uploaded_bills,
+                address: r.address,
+                gst: r.gst,
+                city: r.city,
+                state: r.state,
+                convertedfromlead: r.convertedfromlead,
+                created_at: moment(r.created_at).format("DD/MM/YYYY"),
+                updated_at: moment(r.updated_at).format("DD/MM/YYYY"),
+                created_by: { id: r.created_by._id, value: r.created_by.username, label: r.created_by.username },
+                updated_by: { id: r.updated_by._id, value: r.updated_by.username, label: r.updated_by.username },
+            }
+        })
+        return res.status(200).json(result)
+    }
+
+    public async GetAssignedRefers(req: Request, res: Response, next: NextFunction) {
+        let start_date = req.query.start_date
+        let end_date = req.query.end_date
+        let dt1 = new Date(String(start_date))
+        let dt2 = new Date(String(end_date))
+        let result: GetLeadDto[] = []
+        let leads: ILead[] = []
+
+        leads = await Lead.find({ referred_date: { $gte: dt1, $lt: dt2 } }).populate('created_by').populate('updated_by').populate('referred_party').sort('-referred_date')
+        result = leads.map((lead) => {
+            return {
+                _id: lead._id,
+                name: lead.name,
+                customer_name: lead.customer_name,
+                customer_designation: lead.customer_designation,
+                mobile: lead.mobile,
+                gst: lead.gst,
+                uploaded_bills: lead.uploaded_bills,
+                has_card: lead.has_card,
+                email: lead.email,
+                city: lead.city,
+                state: lead.state,
+                country: lead.country,
+                address: lead.address,
+                work_description: lead.work_description,
+                turnover: lead.turnover,
+                alternate_mobile1: lead.alternate_mobile1,
+                alternate_mobile2: lead.alternate_mobile2,
+                alternate_email: lead.alternate_email,
+                lead_type: lead.lead_type,
+                stage: lead.stage,
+                lead_source: lead.lead_source,
+                visiting_card: lead.visiting_card?.public_url || "",
+                referred_party_name: lead.referred_party && lead.referred_party.name,
+                referred_party_mobile: lead.referred_party && lead.referred_party.mobile,
+                referred_date: lead.referred_party && moment(lead.referred_date).format("DD/MM/YYYY"),
+                last_remark: lead.last_remark || "",
+                created_at: moment(lead.created_at).format("DD/MM/YYYY"),
+                updated_at: moment(lead.updated_at).format("DD/MM/YYYY"),
+                created_by: { id: lead.created_by._id, value: lead.created_by.username, label: lead.created_by.username },
+                updated_by: { id: lead.updated_by._id, value: lead.updated_by.username, label: lead.updated_by.username },
+            }
+        })
+        return res.status(200).json(result)
+    }
+
+    public async GetMyReminders(req: Request, res: Response, next: NextFunction) {
+        let previous_date = new Date()
+        let day = previous_date.getDate() - 100
+        previous_date.setDate(day)
+        let remarks = await Remark.find({ created_at: { $gte: previous_date, $lte: new Date() } }).populate('created_by').populate('updated_by').populate({
+            path: 'lead',
+            populate: [
+                {
+                    path: 'created_by',
+                    model: 'User'
+                },
+                {
+                    path: 'updated_by',
+                    model: 'User'
+                },
+                {
+                    path: 'referred_party',
+                    model: 'ReferredParty'
+                }
+            ]
+        }).sort('-created_at')
+        let result: GetActivitiesOrRemindersDto[] = []
+        let ids: string[] = []
+        let filteredRemarks: IRemark[] = []
+
+        for (let i = 0; i < remarks.length; i++) {
+            let rem = remarks[i]
+            if (rem && rem.lead && !ids.includes(rem.lead._id)) {
+                ids.push(rem.lead._id);
+                if (rem.created_by._id.valueOf() == req.user?._id && rem.remind_date && rem.remind_date >= hundredDaysAgo && rem.remind_date < new Date())
+                    filteredRemarks.push(rem);
+            }
+        }
+        filteredRemarks.sort(function (a, b) {
+            //@ts-ignore
+            return new Date(b.remind_date) - new Date(a.remind_date);
+        });
+
+        result = filteredRemarks.map((rem) => {
+            return {
+                _id: rem._id,
+                remark: rem.remark,
+                created_at: rem.created_at && moment(rem.created_at).format("DD/MM/YYYY"),
+                remind_date: rem.remind_date && moment(rem.remind_date).format("DD/MM/YYYY"),
+                created_by: { id: rem.created_by._id, value: rem.created_by.username, label: rem.created_by.username },
+                lead_id: rem.lead && rem.lead._id,
+                name: rem.lead && rem.lead.name,
+                customer_name: rem.lead && rem.lead.customer_name,
+                customer_designation: rem.lead && rem.lead.customer_designation,
+                mobile: rem.lead && rem.lead.mobile,
+                gst: rem.lead && rem.lead.gst,
+                has_card: rem.lead && rem.lead.has_card,
+                email: rem.lead && rem.lead.email,
+                city: rem.lead && rem.lead.city,
+                state: rem.lead && rem.lead.state,
+                country: rem.lead && rem.lead.country,
+                address: rem.lead && rem.lead.address,
+                work_description: rem.lead && rem.lead.work_description,
+                turnover: rem.lead && rem.lead.turnover,
+                alternate_mobile1: rem.lead && rem.lead.alternate_mobile1,
+                alternate_mobile2: rem.lead && rem.lead.alternate_mobile2,
+                alternate_email: rem.lead && rem.lead.alternate_email,
+                lead_type: rem.lead && rem.lead.lead_type,
+                stage: rem.lead && rem.lead.stage,
+                lead_source: rem.lead && rem.lead.lead_source,
+                visiting_card: rem.lead && rem.lead.visiting_card?.public_url || "",
+                referred_party_name: rem.lead && rem.lead.referred_party?.name || "",
+                referred_party_mobile: rem.lead && rem.lead.referred_party?.mobile || "",
+                referred_date: rem.lead && rem.lead.referred_date && moment(rem.lead && rem.lead.referred_date).format("DD/MM/YYYY") || "",
+            }
+        })
+
+
+        return res.status(200).json(result)
+    }
 }

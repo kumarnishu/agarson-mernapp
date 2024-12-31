@@ -22,6 +22,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import ToogleReferConversionDialog from '../../components/dialogs/crm/ToogleReferConversionDialog.tsx'
 import { GetReferDto } from '../../dtos/refer.dto.ts'
 import { FeatureService } from '../../services/FeatureServices.ts'
+import { ReferExcelButtons } from '../../components/buttons/ReferExcelButtons.tsx'
 
 
 export default function RefersPage() {
@@ -384,6 +385,10 @@ export default function RefersPage() {
           }}
         />
         <Stack justifyContent={'right'} direction={'row'} gap={1}>
+
+          {LoggedInUser?.is_admin && LoggedInUser?.assigned_permissions.includes('refer_export') && <Tooltip title="Export">
+            <ReferExcelButtons />
+          </Tooltip>}
           <Tooltip title="Toogle Filter">
             <Button color="inherit" variant='contained'
               onClick={() => {

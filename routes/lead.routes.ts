@@ -6,6 +6,7 @@ import { CrmController } from "../controllers/CrmController";
 let controller = new CrmController()
 const router = express.Router()
 
+router.get("/download/template/leads", isAuthenticatedUser, controller.DownloadExcelTemplateForCreateLeads)
 router.route("/leads").get(isAuthenticatedUser, controller.GetLeads).post(isAuthenticatedUser, upload.single('visiting_card'), controller.CreateLead)
 router.route("/leads/:id").put(isAuthenticatedUser, upload.single('visiting_card'), controller.UpdateLead).delete(isAuthenticatedUser, controller.DeleteLead)
 

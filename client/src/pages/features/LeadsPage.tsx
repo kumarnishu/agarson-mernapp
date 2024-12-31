@@ -29,6 +29,7 @@ import { DropDownDto } from '../../dtos/dropdown.dto'
 import { GetLeadDto } from '../../dtos/lead.dto'
 import { FeatureService } from '../../services/FeatureServices'
 import { DropdownService } from '../../services/DropDownServices'
+import { LeadExcelButtons } from '../../components/buttons/LeadExcelButtons'
 
 
 
@@ -44,7 +45,7 @@ export default function LeadsPage() {
   const [stages, setStages] = useState<DropDownDto[]>([])
   const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null); const { data, isLoading, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetLeadDto[], page: number, total: number, limit: number }>, BackendError>(["leads"], async () =>new FeatureService(). GetLeads({ limit: paginationData?.limit, page: paginationData?.page, stage: stage }))
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null); const { data, isLoading, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetLeadDto[], page: number, total: number, limit: number }>, BackendError>(["leads"], async () => new FeatureService().GetLeads({ limit: paginationData?.limit, page: paginationData?.page, stage: stage }))
 
   const { data: stagedata, isSuccess: stageSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("crm_stages", new DropdownService().GetAllStages)
 
@@ -532,6 +533,9 @@ export default function LeadsPage() {
             >
               <Delete />
             </Button>
+          </Tooltip>}
+          {LoggedInUser?.is_admin && LoggedInUser?.assigned_permissions.includes('leads_export') && <Tooltip title="Export">
+            <LeadExcelButtons />
           </Tooltip>}
 
           <Tooltip title="Toogle Filter">

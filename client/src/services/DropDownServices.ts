@@ -8,6 +8,7 @@ export class DropdownService {
   public async GetAllStages() {
     return await apiClient.get(`crm/stages`)
   }
+  
   public async CreateOrEditStage({ body, id }: {
     body: { key: string }
     id?: string

@@ -5,6 +5,7 @@ import { CreateOrEditDriverSystemDto } from "../dtos/driver.dto";
 import { DropDownDto } from "../dtos/dropdown.dto";
 import { IssueOrAddExpenseItemDto } from "../dtos/expense.dto";
 import { CreateOrEditMergeLeadsDto } from "../dtos/lead.dto";
+import { CreateOrEditLeaveDto } from "../dtos/leave.dto";
 import { CreateOrEditPaymentDto } from "../dtos/payment.dto";
 import { CreateOrEditProductionDto, GetProductionDto } from "../dtos/production.dto";
 import { CreateOrEditMergeRefersDto, GetReferDto } from "../dtos/refer.dto";
@@ -541,4 +542,39 @@ export class FeatureService {
   public async GetAllReferrals({ refer }: { refer: GetReferDto }) {
     return await apiClient.get(`assigned/referrals/${refer._id}`)
   }
+
+
+  // public async CreateOrEditLeaveBalance({ body, id }: { body: CreateOrEditLeaveDto, id?: string }) {
+  //   if (id)
+  //     return await apiClient.put(`leaves-balance/${id}`, body);
+  //   return await apiClient.post(`leaves-balance`, body);
+  // };
+
+  // public async DeleteLeaveBalance(id: string) {
+  //   return await apiClient.delete(`leaves-balance/${id}`);
+  // };
+
+  // public async GetLeaveBalances(hidden?: string) {
+  //   if (hidden)
+  //     return await apiClient.get(`leaves-balance?hidden=${hidden}`);
+  //   else
+  //     return await apiClient.get(`leaves-balance`);
+  // };
+  public async CreateOrEditLeaveBalance({ body, id }: { body: CreateOrEditLeaveDto, id?: string }) {
+    if (id)
+      return await apiClient.put(`leaves-balance/${id}`, body);
+    return await apiClient.post(`leaves-balance`, body);
+  };
+
+  public async DeleteLeaveBalance(id: string) {
+    return await apiClient.delete(`leaves-balance/${id}`);
+  };
+
+  public async GetLeaveBalances(hidden?: string) {
+    if (hidden)
+      return await apiClient.get(`leaves-approved/?hidden=${hidden}`);
+    else
+      return await apiClient.get(`leaves-approved/`);
+  };
 }
+
