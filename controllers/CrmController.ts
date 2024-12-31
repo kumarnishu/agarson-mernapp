@@ -726,7 +726,7 @@ export class CrmController {
             if (stage != "all") {
                 leads = await Lead.find({
                     stage: stage, state: { $in: states }, city: { $in: cities }
-                }).populate('updated_by').populate('referred_party').populate('created_by').sort('created_at').skip((page - 1) * limit).limit(limit)
+                }).populate('updated_by').populate('referred_party').populate('created_by').sort('-created_at').skip((page - 1) * limit).limit(limit)
                 count = await Lead.find({
                     stage: stage, state: { $in: states }, city: { $in: cities }
                 }).countDocuments()
@@ -734,7 +734,7 @@ export class CrmController {
             else if (showonlycardleads) {
                 leads = await Lead.find({
                     has_card: showonlycardleads, state: { $in: states }, city: { $in: cities }
-                }).populate('updated_by').populate('referred_party').populate('created_by').sort('created_at').skip((page - 1) * limit).limit(limit)
+                }).populate('updated_by').populate('referred_party').populate('created_by').sort('-created_at').skip((page - 1) * limit).limit(limit)
                 count = await Lead.find({
                     has_card: showonlycardleads, state: { $in: states }, city: { $in: cities }
                 }).countDocuments()
@@ -742,7 +742,7 @@ export class CrmController {
             else {
                 leads = await Lead.find({
                     stage: { $in: stages }, state: { $in: states }, city: { $in: cities }
-                }).populate('updated_by').populate('referred_party').populate('created_by').sort('created_at').skip((page - 1) * limit).limit(limit)
+                }).populate('updated_by').populate('referred_party').populate('created_by').sort('-created_at').skip((page - 1) * limit).limit(limit)
                 count = await Lead.find({
                     stage: { $in: stages }, state: { $in: states }, city: { $in: cities }
                 }).countDocuments()
