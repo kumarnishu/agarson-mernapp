@@ -6,16 +6,20 @@ import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
 import { Add } from '@mui/icons-material'
-import { Button, Fade, IconButton, Menu, MenuItem, TextField, Tooltip, Typography } from '@mui/material'
+import { Button, Fade, IconButton, Menu, MenuItem, TextField, Typography } from '@mui/material'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { GetSalesmanAttendanceReportDto } from '../../dtos/leave.dto'
 import { AttendanceService } from '../../services/AttendanceService'
+import ApplyLeaveFromAdminDialog from '../../components/dialogs/attendance/ApplyLeaveFromAdminDialog'
+import ApplyLeaveDialog from '../../components/dialogs/attendance/ApplyLeaveDialog'
+import { useNavigate } from 'react-router-dom'
 
 export default function SalesAttendanceReportPage() {
   const [balance, setBalance] = useState<GetSalesmanAttendanceReportDto>()
   const [balances, setBalances] = useState<GetSalesmanAttendanceReportDto[]>([])
   const { user: LoggedInUser } = useContext(UserContext)
+  const navigate = useNavigate()
   const getCurrentYearMonth = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -58,17 +62,18 @@ export default function SalesAttendanceReportPage() {
         enableColumnFilter: false,
 
         Cell: ({ cell }) => <>
-          {LoggedInUser?.assigned_permissions.includes('leave_edit') && <Tooltip title="Apply Leave">
-            <Button color="inherit" size="small"
-              variant='text'
-              onClick={() => {
-                setBalance(cell.row.original)
-                setDialog('DeleteLeavebalanceDialog')
-              }}
-            >
-              <Add /> Apply Leave
-            </Button>
-          </Tooltip>}
+          <Button color="inherit" size="small"
+            variant='text'
+            onClick={() => {
+              setBalance(cell.row.original)
+              if (LoggedInUser?.is_admin)
+                setDialog('ApplyLeaveFromAdminDialog')
+              else
+                setDialog('ApplyLeaveDialog')
+            }}
+          >
+            <Add /> Apply Leave
+          </Button>
         </>
       },
 
@@ -79,7 +84,7 @@ export default function SalesAttendanceReportPage() {
       },
       {
         accessorKey: 'created_at',
-        header: 'SL',
+        header: '',
         Cell: () => <Stack direction={'column'}>
           <Typography sx={{ fontWeight: '500' }} fontSize='0.9rem'>{"Provided"}</Typography>
           <Typography sx={{ fontWeight: '500' }} fontSize='0.9rem'>{"Balance"}</Typography>
@@ -200,7 +205,7 @@ export default function SalesAttendanceReportPage() {
     enableDensityToggle: false, initialState: {
       density: 'compact', pagination: { pageIndex: 0, pageSize: 500 }
     },
-    columnFilterDisplayMode:'popover',
+    columnFilterDisplayMode: 'popover',
     enableRowSelection: true,
     enablePagination: true,
     enableRowNumbers: true,
@@ -292,8 +297,9 @@ export default function SalesAttendanceReportPage() {
         <Typography
           variant={'h6'}
           component={'h1'}
-          sx={{ pl: 1 }}
+          sx={{ pl: 1,cursor:'pointer' }}
           color="red"
+          onClick={() => { navigate('/Attendance/LeavesPage') }}
         >
           5  leaves pending For Approval
         </Typography>
@@ -349,7 +355,7 @@ export default function SalesAttendanceReportPage() {
             }}
             sx={{ borderRadius: 2 }}
           >
-          
+
             {LoggedInUser?.assigned_permissions.includes('leave_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
             >Export All</MenuItem>}
@@ -362,6 +368,8 @@ export default function SalesAttendanceReportPage() {
       </Stack >
       {/* table */}
       < MaterialReactTable table={table} />
+      {balance && <ApplyLeaveFromAdminDialog dialog={dialog} setDialog={setDialog} leavedata={balance} />}
+      {balance && <ApplyLeaveDialog dialog={dialog} setDialog={setDialog} leavedata={balance} />}
     </>
 
   )

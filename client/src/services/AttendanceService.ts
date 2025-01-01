@@ -1,4 +1,4 @@
-import { CreateOrEditLeaveBalanceDto } from "../dtos/leave.dto";
+import { ApplyLeaveDto, ApplyLeaveDtoFromAdmin, CreateOrEditLeaveBalanceDto } from "../dtos/leave.dto";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 export class AttendanceService {
@@ -13,6 +13,15 @@ export class AttendanceService {
   public async GetLeaves(status: string) {
     return await apiClient.get(`leaves/?status=${status}`);
   };
+
+  public async ApplyLeaveFromAdmin({ body }: { body: ApplyLeaveDtoFromAdmin }) {
+    return await apiClient.post(`apply-leave/admin`, body);
+  };
+  public async ApplyLeave({ body }: { body: ApplyLeaveDto }) {
+    return await apiClient.post(`apply-leave`, body);
+  };
+
+
   public async CreateOrEditLeaveBalance({ body, id }: { body: CreateOrEditLeaveBalanceDto, id?: string }) {
     if (id)
       return await apiClient.put(`leaves-balance/${id}`, body);
