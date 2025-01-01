@@ -6,21 +6,21 @@ import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
 import { Delete, Edit } from '@mui/icons-material'
-import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
+import { Fade, IconButton, Menu, MenuItem, TextField, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { GetLeaveBalanceDto } from '../../dtos/leave.dto'
-import DeleteLeavebalanceDialog from '../../components/dialogs/attendance/DeleteLeavebalanceDialog'
-import CreateOrEditLeaveBalanceDialog from '../../components/dialogs/attendance/CreateOrEditLeaveBalanceDialog'
+import { GetLeaveDto } from '../../dtos/leave.dto'
 import { AttendanceService } from '../../services/AttendanceService'
+import { toTitleCase } from '../../utils/TitleCase'
 
 
-export default function LeaveBalancePage() {
-  const [balance, setBalance] = useState<GetLeaveBalanceDto>()
-  const [balances, setBalances] = useState<GetLeaveBalanceDto[]>([])
+export default function LeavesPage() {
+  const [balance, setBalance] = useState<GetLeaveDto>()
+  const [balances, setBalances] = useState<GetLeaveDto[]>([])
+  const [status, setStatus] = useState('all')
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetLeaveBalanceDto[]>, BackendError>(["balances"], async () => new AttendanceService().GetLeaveBalances())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetLeaveDto[]>, BackendError>(["leaves", status], async () => new AttendanceService().GetLeaves(String(status)))
   const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
@@ -30,7 +30,7 @@ export default function LeaveBalancePage() {
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-  const columns = useMemo<MRT_ColumnDef<GetLeaveBalanceDto>[]>(
+  const columns = useMemo<MRT_ColumnDef<GetLeaveDto>[]>(
     //column definitions...
     () => balances && [
       {
@@ -44,7 +44,7 @@ export default function LeaveBalancePage() {
             <Stack direction="row">
               <>
 
-                {LoggedInUser?.assigned_permissions.includes('leave_balance_edit') && <Tooltip title="delete">
+                {LoggedInUser?.assigned_permissions.includes('leave_edit') && <Tooltip title="delete">
                   <IconButton color="error"
 
                     onClick={() => {
@@ -56,7 +56,7 @@ export default function LeaveBalancePage() {
                   </IconButton>
                 </Tooltip>}
 
-                {LoggedInUser?.assigned_permissions.includes('leave_balance_edit') && <Tooltip title="edit">
+                {LoggedInUser?.assigned_permissions.includes('leave_edit') && <Tooltip title="edit">
                   <IconButton
 
                     onClick={() => {
@@ -76,25 +76,21 @@ export default function LeaveBalancePage() {
       },
 
       {
-        accessorKey: 'sl',
-        header: 'sl',
-        Cell: (cell) => <>{cell.row.original.sl ? cell.row.original.sl : ""}</>,
+        accessorKey: 'status',
+        header: 'status',
+        Cell: (cell) => <>{cell.row.original.status ? cell.row.original.status : ""}</>,
       },
       {
-        accessorKey: 'fl',
-        header: 'fl',
-        Cell: (cell) => <>{cell.row.original.fl ? cell.row.original.fl : ""}</>,
+        accessorKey: 'leave_type',
+        header: 'leave_type',
+        Cell: (cell) => <>{cell.row.original.leave_type ? cell.row.original.leave_type : ""}</>,
       },
       {
-        accessorKey: 'cl',
-        header: 'cl',
-        Cell: (cell) => <>{cell.row.original.cl ? cell.row.original.cl : ""}</>,
+        accessorKey: 'leave',
+        header: 'leave',
+        Cell: (cell) => <>{cell.row.original.leave ? cell.row.original.leave : ""}</>,
       },
-      {
-        accessorKey: 'sw',
-        header: 'sw',
-        Cell: (cell) => <>{cell.row.original.sw ? cell.row.original.sw : ""}</>,
-      },
+
       {
         accessorKey: 'yearmonth',
         header: 'year Month',
@@ -139,7 +135,7 @@ export default function LeaveBalancePage() {
     muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-of-type(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially status
         },
         '& div:nth-of-type(2)': {
           display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
@@ -269,62 +265,74 @@ export default function LeaveBalancePage() {
           component={'h1'}
           sx={{ pl: 1 }}
         >
-          Leave Balance
+          Applied Leaves
         </Typography>
-        <Stack
-          spacing={2}
-          padding={1}
-          direction="row"
-          justifyContent="space-between"
-          alignItems={'end'}
+
+
+        < TextField
+          select
+          SelectProps={{
+            native: true
+          }}
+          id="state"
+          size="small"
+          label="Select Status"
+          sx={{ width: '200px' }}
+          value={status}
+          onChange={(e) => {
+            setStatus(e.target.value);
+          }
+          }
         >
+          <option key={0} value={'all'}>
+            All
+          </option>
+          {
+            ['pending', 'rejected', 'approved'].map(cat => {
+              return (<option key={cat} value={cat}>
+                {cat && toTitleCase(cat)}
+              </option>)
+            })
+          }
+        </TextField>
+        <IconButton size="small" color="primary"
+          onClick={(e) => setAnchorEl(e.currentTarget)
+          }
+          sx={{ border: 2, borderRadius: 3, marginLeft: 1 }}
+        >
+          <MenuIcon />
+        </IconButton>
 
-
-          <IconButton size="small" color="primary"
-            onClick={(e) => setAnchorEl(e.currentTarget)
-            }
-            sx={{ border: 2, borderRadius: 3, marginLeft: 1 }}
-          >
-            <MenuIcon />
-          </IconButton>
-
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={() => setAnchorEl(null)
-            }
-            TransitionComponent={Fade}
-            MenuListProps={{
-              'aria-labelledby': 'basic-button',
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={() => setAnchorEl(null)
+          }
+          TransitionComponent={Fade}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button',
+          }}
+          sx={{ borderRadius: 2 }}
+        >
+          {LoggedInUser?.assigned_permissions.includes("leave_create") && <MenuItem
+            onClick={() => {
+              setBalance(undefined)
+              setAnchorEl(null)
+              setDialog('CreateOrEditLeaveBalanceDialog')
             }}
-            sx={{ borderRadius: 2 }}
-          >
-            {LoggedInUser?.assigned_permissions.includes("leave_balance_create") && <MenuItem
-              onClick={() => {
-                setBalance(undefined)
-                setAnchorEl(null)
-                setDialog('CreateOrEditLeaveBalanceDialog')
-              }}
 
-            > Add New</MenuItem>}
-            {LoggedInUser?.assigned_permissions.includes('leave_balance_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+          > Add New</MenuItem>}
+          {LoggedInUser?.assigned_permissions.includes('leave_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
-            >Export All</MenuItem>}
-            {LoggedInUser?.assigned_permissions.includes('leave_balance_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+          >Export All</MenuItem>}
+          {LoggedInUser?.assigned_permissions.includes('leave_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
-            >Export Selected</MenuItem>}
+          >Export Selected</MenuItem>}
 
-          </Menu >
-        </Stack>
-
-        <CreateOrEditLeaveBalanceDialog dialog={dialog} setDialog={setDialog} balance={balance} />
-
-        {balance && <DeleteLeavebalanceDialog dialog={dialog} setDialog={setDialog} balance={balance} />}
-
-      </Stack >
-
+        </Menu >
+      </Stack>
       {/* table */}
-      <MaterialReactTable table={table} />
+      < MaterialReactTable table={table} />
     </>
 
   )

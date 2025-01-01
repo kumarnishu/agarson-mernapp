@@ -1,15 +1,14 @@
 import { DropDownDto } from "./dropdown.dto"
 
-export type GetApprovedLeaveDto = {
+export type GetLeaveDto = {
     _id: string,
     leave_type: string,
     leave: number,
     status: string,
-    approved: boolean,
     yearmonth: number,
     employee: DropDownDto,
-    created_at: Date,
-    updated_at: Date,
+    created_at: string,
+    updated_at: string,
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
@@ -27,12 +26,12 @@ export type GetSalesmanAttendanceReportDto = {
     total: LeavesDto,
     consumed: LeavesDto,
     employee: DropDownDto,
-    created_at: Date,
-    updated_at: Date,
+    created_at: string,
+    updated_at: string,
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-export type GetLeaveDto = {
+export type GetLeaveBalanceDto = {
     _id: string,
     sl: number,
     fl: number,
@@ -40,13 +39,13 @@ export type GetLeaveDto = {
     cl: number,
     yearmonth: number,
     employee: DropDownDto,
-    created_at: Date,
-    updated_at: Date,
+    created_at: string,
+    updated_at: string,
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
 
-export type CreateOrEditLeaveDto = {
+export type CreateOrEditLeaveBalanceDto = {
     sl: number,
     fl: number,
     sw: number,

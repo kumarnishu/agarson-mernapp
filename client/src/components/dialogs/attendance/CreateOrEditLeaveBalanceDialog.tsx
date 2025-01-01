@@ -1,33 +1,34 @@
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
 import { Cancel } from '@mui/icons-material';
-import CreateOrEditArticleForm from '../../forms/dropdown/CreateOrEditArticleForm';
-import { GetArticleDto } from '../../../dtos/article.dto';
+import { GetLeaveBalanceDto } from '../../../dtos/leave.dto';
+import CreateOrEditLeaveForm from '../../forms/leaves/CreateOrEditLeaveForm';
 
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-    article?: GetArticleDto
+    balance?: GetLeaveBalanceDto
+
 }
-function CreateOrEditArticleDialog({ article, dialog, setDialog }: Props) {
+function CreateOrEditLeaveBalanceDialog({ balance, dialog, setDialog }: Props) {
 
     return (
-        <Dialog fullScreen={Boolean(window.screen.width < 500)} open={dialog === "CreateOrEditArticleDialog"}
+        <Dialog fullScreen={Boolean(window.screen.width < 500)} open={dialog === "CreateOrEditLeaveBalanceDialog"}
             onClose={() => setDialog(undefined)}
         >
             <IconButton style={{ display: 'inline-block', position: 'absolute', right: '0px' }} color="error" onClick={() => setDialog(undefined)}>
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
-                {article ? "Update Article" : "Create Article"}
+                {balance ? "Update Leave balance" : "Create Leave balance"}
             </DialogTitle>
 
             <DialogContent>
-                <CreateOrEditArticleForm setDialog={
+                <CreateOrEditLeaveForm setDialog={
                     setDialog
-                }article={article} />
+                } balance={balance} />
             </DialogContent>
         </Dialog >
     )
 }
 
-export default CreateOrEditArticleDialog
+export default CreateOrEditLeaveBalanceDialog

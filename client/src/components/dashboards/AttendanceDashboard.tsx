@@ -13,7 +13,7 @@ function AttendanceDashboard() {
     useEffect(() => {
         let tmpfeatures: { feature: string, is_visible: boolean, url: string }[] = []
         user?.assigned_permissions.includes('leave_balance_view') && tmpfeatures.push({ feature: 'leave balance', is_visible: true, url: "LeavebalancePage" })
-        user?.assigned_permissions.includes('leave_applied_view') && tmpfeatures.push({ feature: 'leave applied', is_visible: true, url: "LeavesAppliedpage" })
+        user?.assigned_permissions.includes('leave_view') && tmpfeatures.push({ feature: 'leaves', is_visible: true, url: "LeavesPage" })
         user?.assigned_permissions.includes('sale_attendance_view') && tmpfeatures.push({ feature: 'Salesman Attendance Report ', is_visible: true, url: "SalesAttendanceReportPage" })
     
 

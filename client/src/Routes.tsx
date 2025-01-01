@@ -78,9 +78,9 @@ import ExpenseNavbar from './components/navbar/ExpenseNavbar.tsx'
 import AttendanceNavbar from './components/navbar/AttendanceNavbar.tsx'
 import AttendanceDashboard from './components/dashboards/AttendanceDashboard.tsx'
 import LeavebalancePage from './pages/attendance/LeavebalancePage.tsx'
-import LeavesAppliedpage from './pages/attendance/LeavesAppliedpage.tsx'
 import SalesAttendanceReportPage from './pages/attendance/SalesAttendanceReportPage.tsx'
 import EmailVerifyPage from './pages/EmailVerifyPage.tsx'
+import LeavesPage from './pages/attendance/LeavesPage.tsx'
 
 
 function AppRoutes() {
@@ -118,8 +118,8 @@ function AppRoutes() {
                 <LeavebalancePage />
               }
               />}
-              {user && <Route path="LeavesAppliedpage" element={
-                <LeavesAppliedpage />
+              {user && <Route path="LeavesPage" element={
+                <LeavesPage />
               }
               />}
 

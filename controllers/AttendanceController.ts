@@ -1,27 +1,32 @@
 import { Response, Request, NextFunction } from "express"
 import isMongoId from "validator/lib/isMongoId"
-import { ILeaveBalance, LeaveBalance } from "../models/leave-opening.model"
-import { CreateOrEditLeaveDto, GetApprovedLeaveDto, GetLeaveDto, GetSalesmanAttendanceReportDto } from "../dtos/leave.dto"
-import { ILeaveApproved, LeaveApproved } from "../models/leave-approved.model"
+import { ILeaveBalance, LeaveBalance } from "../models/leave-balance.model"
+import { GetLeaveDto, GetLeaveBalanceDto, GetSalesmanAttendanceReportDto, CreateOrEditLeaveBalanceDto } from "../dtos/leave.dto"
+import { ILeave, Leave } from "../models/leave.model"
+import moment from "moment"
 
 export class AttendanceController {
-    
+
     //leave approved controller
-    public async GetAllLeaveApproved(req: Request, res: Response, next: NextFunction) {
-        let result: GetApprovedLeaveDto[] = []
-        let items: ILeaveApproved[] = []
-        items = await LeaveApproved.find({ approved: true, status: 'completed' }).populate('employee').populate('created_by').populate('updated_by').sort('item')
+    public async GetAllLeaves(req: Request, res: Response, next: NextFunction) {
+        let result: GetLeaveDto[] = []
+        let items: ILeave[] = []
+        let status = req.query.status
+        let filter: { status?: string } | {} = {}
+        if (status)
+            filter = { status: status }
+        items = await Leave.find(filter).populate('employee').populate('created_by').populate('updated_by').sort('item')
+
         result = items.map((item) => {
             return {
                 _id: item._id,
                 leave_type: item.leave_type,
                 status: item.status,
-                approved: item.approved,
                 leave: item.leave,
                 yearmonth: item.yearmonth,
                 employee: { id: item.employee._id, label: item.employee.username },
-                created_at: item.created_at,
-                updated_at: item.updated_at,
+                created_at: moment(item.created_at).format('YYYY-MM-DD'),
+                updated_at: moment(item.updated_at).format('YYYY-MM-DD'),
                 created_by: { id: item.created_by._id, label: item.created_by.username },
                 updated_by: { id: item.updated_by._id, label: item.updated_by.username }
             }
@@ -29,33 +34,13 @@ export class AttendanceController {
         return res.status(200).json(result)
     }
 
-    public async GetAllLeavePending(req: Request, res: Response, next: NextFunction) {
-        let result: GetApprovedLeaveDto[] = []
-        let items: ILeaveApproved[] = []
-        items = await LeaveApproved.find({ approved: false, status: 'pending' }).populate('employee').populate('created_by').populate('updated_by').sort('item')
-        result = items.map((item) => {
-            return {
-                _id: item._id,
-                leave_type: item.leave_type,
-                leave: item.leave,
-                status: item.status,
-                approved: item.approved,
-                yearmonth: item.yearmonth,
-                employee: { id: item.employee._id, label: item.employee.username },
-                created_at: item.created_at,
-                updated_at: item.updated_at,
-                created_by: { id: item.created_by._id, label: item.created_by.username },
-                updated_by: { id: item.updated_by._id, label: item.updated_by.username }
-            }
-        })
-        return res.status(200).json(result)
-    }
+
     public async ApplyLeave(req: Request, res: Response, next: NextFunction) {
         const { leave_type, leave, yearmonth, employee } = req.body as { leave_type: string, leave: number, yearmonth: number, employee: string }
         if (!leave_type || !leave || !yearmonth) {
             return res.status(400).json({ message: "please provide required fields" })
         }
-        await new LeaveApproved({
+        await new Leave({
             leave_type, leave, yearmonth, employee,
             created_at: new Date(),
             created_by: req.user,
@@ -70,22 +55,18 @@ export class AttendanceController {
         if (!status) {
             return res.status(400).json({ message: "please provide required fields" })
         }
-
         const id = req.params.id
-        let leave = await LeaveApproved.findById(id)
+        let leave = await Leave.findById(id)
         if (!leave)
             return res.status(404).json({ message: "item not found" })
-        if (status === 'approve') { leave.approved = true, leave.status = 'completed' }
-        else if (status === 'reject') { leave.approved = false, leave.status = 'completed' }
-        else {
-            return res.status(400).json({ message: "status not valid" })
-        }
+        leave.status = status
+        await leave.save()
         return res.status(200).json({ message: "success" })
 
     }
     //leave balance controller
     public async GetAllLeaveBalances(req: Request, res: Response, next: NextFunction) {
-        let result: GetLeaveDto[] = []
+        let result: GetLeaveBalanceDto[] = []
         let items: ILeaveBalance[] = []
         items = await LeaveBalance.find().populate('employee').populate('created_by').populate('updated_by').sort('item')
         result = items.map((item) => {
@@ -97,8 +78,8 @@ export class AttendanceController {
                 cl: item.cl,
                 yearmonth: item.yearmonth,
                 employee: { id: item.employee._id, label: item.employee.username },
-                created_at: item.created_at,
-                updated_at: item.updated_at,
+                created_at: moment(item.created_at).format('YYYY-MM-DD'),
+                updated_at: moment(item.updated_at).format('YYYY-MM-DD'),
                 created_by: { id: item.created_by._id, label: item.created_by.username },
                 updated_by: { id: item.updated_by._id, label: item.updated_by.username }
             }
@@ -112,7 +93,7 @@ export class AttendanceController {
             sw,
             cl,
             yearmonth,
-            employee } = req.body as CreateOrEditLeaveDto
+            employee } = req.body as CreateOrEditLeaveBalanceDto
         if (!yearmonth || !employee) {
             return res.status(400).json({ message: "please provide required fields" })
         }
@@ -136,7 +117,7 @@ export class AttendanceController {
             sw,
             cl,
             yearmonth,
-            employee } = req.body as CreateOrEditLeaveDto
+            employee } = req.body as CreateOrEditLeaveBalanceDto
         if (!yearmonth || !employee) {
             return res.status(400).json({ message: "please provide required fields" })
         }
@@ -206,8 +187,8 @@ export class AttendanceController {
                 },
                 yearmonth: item.yearmonth,
                 employee: { id: item.employee._id, label: item.employee.username },
-                created_at: item.created_at,
-                updated_at: item.updated_at,
+                created_at: moment(item.created_at).format('YYYY-MM-DD'),
+                updated_at: moment(item.updated_at).format('YYYY-MM-DD'),
                 created_by: { id: item.created_by._id, label: item.created_by.username },
                 updated_by: { id: item.updated_by._id, label: item.updated_by.username }
             }

@@ -12,7 +12,7 @@ import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { GetExpenseItemDto } from '../../dtos/expense-item.dto'
 import IssueExpenseItemDialog from '../../components/dialogs/expense/IssueExpenseItemDialog'
-import AddExpenseItemDialog from '../../components/dialogs/dropdown/AddExpenseItemDialog'
+import AddExpenseItemDialog from '../../components/dialogs/expense/AddExpenseItemDialog'
 import { ExpenseService } from '../../services/ExpenseService'
 
 

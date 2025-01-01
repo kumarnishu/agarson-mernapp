@@ -837,26 +837,26 @@ export function FetchAllPermissions() {
                 ]
             },
             {
-                label: 'Leave Applied',
+                label: 'Leaves',
                 permissions: [
                     {
-                        value: 'leave_applied_view',
+                        value: 'leave_view',
                         label: 'view'
                     },
                     {
-                        value: 'leave_applied_create',
+                        value: 'leave_create',
                         label: 'create'
                     },
                     {
-                        value: 'leave_applied_edit',
+                        value: 'leave_edit',
                         label: 'edit'
                     },
                     {
-                        value: 'leave_applied_delete',
+                        value: 'leave_delete',
                         label: 'delete'
                     },
                     {
-                        value: 'leave_applied_export',
+                        value: 'leave_export',
                         label: 'export'
                     }
                 ]

@@ -1,12 +1,11 @@
 import mongoose from "mongoose";
 import { IUser } from "./user.model";
 
-export type ILeaveApproved = {
+export type ILeave = {
     _id: string,
     status: string,
     leave_type: string,//sl,fl,sw,cl
     leave: number,
-    approved: boolean,
     yearmonth: number,
     employee: IUser,
     created_at: Date,
@@ -16,7 +15,7 @@ export type ILeaveApproved = {
 }
 
 
-const LeaveApprovedSchema = new mongoose.Schema<ILeaveApproved, mongoose.Model<ILeaveApproved, {}, {}>, {}>({
+const LeaveSchema = new mongoose.Schema<ILeave, mongoose.Model<ILeave, {}, {}>, {}>({
     status: { type: String, required: true, default: 'pending' },
     leave_type: {
         type: String,
@@ -42,7 +41,6 @@ const LeaveApprovedSchema = new mongoose.Schema<ILeaveApproved, mongoose.Model<I
         required: true,
 
     },
-    approved: { type: Boolean, default: false },
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -61,4 +59,4 @@ const LeaveApprovedSchema = new mongoose.Schema<ILeaveApproved, mongoose.Model<I
     }
 })
 
-export const LeaveApproved = mongoose.model<ILeaveApproved, mongoose.Model<ILeaveApproved, {}, {}>>("LeaveApproved", LeaveApprovedSchema)
+export const Leave = mongoose.model<ILeave, mongoose.Model<ILeave, {}, {}>>("Leave", LeaveSchema)

@@ -3,7 +3,7 @@ import { apiClient } from "./utils/AxiosInterceptor";
 
 export class AttendanceService {
 
- 
+
   // public async CreateOrEditLeaveBalance({ body, id }: { body: CreateOrEditLeaveDto, id?: string }) {
   //   if (id)
   //     return await apiClient.put(`leaves-balance/${id}`, body);
@@ -14,12 +14,9 @@ export class AttendanceService {
   //   return await apiClient.delete(`leaves-balance/${id}`);
   // };
 
-  // public async GetLeaveBalances(hidden?: string) {
-  //   if (hidden)
-  //     return await apiClient.get(`leaves-balance?hidden=${hidden}`);
-  //   else
-  //     return await apiClient.get(`leaves-balance`);
-  // };
+  public async GetLeaves(status: string) {
+    return await apiClient.get(`leaves/?status=${status}`);
+  };
   public async CreateOrEditLeaveBalance({ body, id }: { body: CreateOrEditLeaveDto, id?: string }) {
     if (id)
       return await apiClient.put(`leaves-balance/${id}`, body);
@@ -30,11 +27,8 @@ export class AttendanceService {
     return await apiClient.delete(`leaves-balance/${id}`);
   };
 
-  public async GetLeaveBalances(hidden?: string) {
-    if (hidden)
-      return await apiClient.get(`leaves-approved/?hidden=${hidden}`);
-    else
-      return await apiClient.get(`leaves-approved/`);
+  public async GetLeaveBalances() {
+    return await apiClient.get(`leaves-balance/`);
   };
 }
 
