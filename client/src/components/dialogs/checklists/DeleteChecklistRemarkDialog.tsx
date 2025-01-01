@@ -9,7 +9,8 @@ import { Cancel } from '@mui/icons-material';
 import { GetChecklistRemarksDto } from '../../../dtos/checklist-remark.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
-import { FeatureService } from '../../../services/FeatureServices';
+import { ChecklistService } from '../../../services/ChecklistService';
+
 
 type Props = {
   dialog: string | undefined,
@@ -21,7 +22,7 @@ function DeleteChecklistRemarkDialog({ remark, dialog, setDialog }: Props) {
   const { setAlert } = useContext(AlertContext)
   const { mutate, isLoading, isSuccess, error, isError } = useMutation
     <AxiosResponse<any>, BackendError, string>
-    (new FeatureService().DeleteCheckListRemark, {
+    (new ChecklistService().DeleteCheckListRemark, {
 
       onSuccess: () => {
         queryClient.invalidateQueries('remarks')

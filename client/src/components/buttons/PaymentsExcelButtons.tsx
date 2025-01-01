@@ -9,7 +9,7 @@ import { saveAs } from 'file-saver';
 import ExportToExcel from "../../utils/ExportToExcel"
 import { queryClient } from "../../main"
 import { AlertContext } from "../../contexts/alertContext"
-import { FeatureService } from "../../services/FeatureServices"
+import { PaymentsService } from "../../services/PaymentsService"
 
 
 const FileInput = styled.input`
@@ -21,7 +21,7 @@ color:blue;
 export function PaymentsExcelButtons() {
     const { data, mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<any[]>, BackendError, FormData>
-        (new FeatureService(). CreatePaymentsFromExcel, { onSuccess: () => queryClient.refetchQueries('payments') })
+        (new PaymentsService(). CreatePaymentsFromExcel, { onSuccess: () => queryClient.refetchQueries('payments') })
     const [file, setFile] = useState<File | null>(null)
     const { setAlert } = useContext(AlertContext)
 

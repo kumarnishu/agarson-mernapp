@@ -11,7 +11,8 @@ import { GetDyeDto } from '../../../dtos/dye.dto';
 import { GetSoleThicknessDto, CreateOrEditSoleThicknessDto } from '../../../dtos/sole-thickness.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
-import { FeatureService } from '../../../services/FeatureServices';
+import { ProductionService } from '../../../services/ProductionService';
+
 
 function CreateOrEditSoleThicknessForm({ thickness, setDialog }: { thickness?: GetSoleThicknessDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
@@ -25,7 +26,7 @@ function CreateOrEditSoleThicknessForm({ thickness, setDialog }: { thickness?: G
             id?: string,
             body: CreateOrEditSoleThicknessDto
         }>
-        (new FeatureService().CreateOrEditSoleThickness, {
+        (new ProductionService().CreateOrEditSoleThickness, {
 
             onSuccess: () => {
                 queryClient.refetchQueries('thickness')

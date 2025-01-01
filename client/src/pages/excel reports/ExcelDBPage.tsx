@@ -9,8 +9,6 @@ import { useParams } from 'react-router-dom'
 import PopUp from '../../components/popup/PopUp'
 import { UserContext } from '../../contexts/userContext'
 import { Comment, Refresh, Visibility } from '@mui/icons-material'
-import CreateOrEditExcelDBRemarkDialog from '../../components/dialogs/excel-db/CreateOrEditExcelDBRemarkDialog'
-import ViewExcelDBRemarksDialog from '../../components/dialogs/excel-db/ViewExcelDBRemarksDialog'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import { IColumnRowData } from '../../dtos/table.dto'
@@ -18,6 +16,8 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import { AuthorizationService } from '../../services/AuthorizationService'
 import { ExcelReportsService } from '../../services/ExcelReportsServices'
+import CreateOrEditExcelDBRemarkDialog from '../../components/dialogs/excelreports/CreateOrEditExcelDBRemarkDialog'
+import ViewExcelDBRemarksDialog from '../../components/dialogs/excelreports/ViewExcelDBRemarksDialog'
 
 export default function ExcelDBPage() {
   const [hidden, setHidden] = useState(false)

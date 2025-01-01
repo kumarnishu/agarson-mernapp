@@ -12,8 +12,8 @@ import moment from 'moment'
 import { GetChecklistBoxDto } from '../../../dtos/checklist-box.dto'
 import { GetChecklistRemarksDto } from '../../../dtos/checklist-remark.dto'
 import { GetChecklistDto } from '../../../dtos/checklist.dto'
-import { FeatureService } from '../../../services/FeatureServices'
 import CreateChecklistRemarkDialogFromAdmin from './CreateChecklistRemarkDialogFromAdmin'
+import { ChecklistService } from '../../../services/ChecklistService'
 
 type Props = {
     is_admin: boolean,
@@ -27,7 +27,7 @@ function ViewChecklistBoxRemarksDialog({ checklist_box, checklist, dialog, setDi
     const [remark, setRemark] = useState<GetChecklistRemarksDto>()
     const [remarks, setRemarks] = useState<GetChecklistRemarksDto[]>()
 
-    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", checklist_box._id], async () => new FeatureService().GetCheckListBoxRemarksHistory(checklist_box._id))
+    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", checklist_box._id], async () => new ChecklistService().GetCheckListBoxRemarksHistory(checklist_box._id))
 
 
     const { user } = useContext(UserContext)

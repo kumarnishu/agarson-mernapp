@@ -9,7 +9,8 @@ import { useMutation } from 'react-query';
 import { GetLeadDto } from '../../../dtos/lead.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-import { FeatureService } from '../../../services/FeatureServices';
+import { CrmService } from '../../../services/CrmService';
+
 
 type Props = {
     dialog: string | undefined,
@@ -21,7 +22,7 @@ function ConvertLeadToReferDialog({ lead, dialog, setDialog }: Props) {
     const [remark, setRemark] = useState("")
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetReferDto>, BackendError, { id: string, body: { remark: string } }>
-        (new FeatureService().ConvertLeadToRefer, {
+        (new CrmService().ConvertLeadToRefer, {
 
             onSuccess: () => {
                 queryClient.invalidateQueries('leads')

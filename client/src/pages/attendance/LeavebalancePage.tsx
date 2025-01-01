@@ -253,7 +253,7 @@ export default function LeaveBalancePage() {
           component={'h1'}
           sx={{ pl: 1 }}
         >
-          Articles
+          Leave Balance
         </Typography>
         <Stack
           spacing={2}

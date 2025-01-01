@@ -8,7 +8,7 @@ import { BackendError } from '../../..'
 import { queryClient } from '../../../main'
 import { GetLeadDto, CreateOrEditMergeLeadsDto } from '../../../dtos/lead.dto'
 import { AlertContext } from '../../../contexts/alertContext'
-import { FeatureService } from '../../../services/FeatureServices'
+import { CrmService } from '../../../services/CrmService'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
@@ -35,7 +35,7 @@ function MergeTwoLeadsDialog({ leads, removeSelectedLeads, dialog, setDialog }: 
 
     const { mutate, isLoading} = useMutation
         <AxiosResponse<GetLeadDto>, BackendError, { body: CreateOrEditMergeLeadsDto, id: string }>
-        (new FeatureService(). MergeTwoLeads, {
+        (new CrmService(). MergeTwoLeads, {
             onSuccess: () => {
                 removeSelectedLeads()
                 queryClient.invalidateQueries('leads')

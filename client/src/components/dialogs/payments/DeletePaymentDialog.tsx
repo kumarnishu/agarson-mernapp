@@ -9,7 +9,8 @@ import { queryClient } from '../../../main';
 import { GetChecklistDto } from '../../../dtos/checklist.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
-import { FeatureService } from '../../../services/FeatureServices';
+import { PaymentsService } from '../../../services/PaymentsService';
+
 
 type Props = {
     dialog: string | undefined,
@@ -22,7 +23,7 @@ function DeletePaymentDialog({ payment, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, string>
-        (new FeatureService().DeletePayment, {
+        (new PaymentsService().DeletePayment, {
 
             onSuccess: () => {
                 queryClient.invalidateQueries('payments')

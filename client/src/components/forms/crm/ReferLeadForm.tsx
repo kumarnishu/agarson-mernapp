@@ -10,7 +10,8 @@ import { queryClient } from '../../../main';
 import { GetLeadDto } from '../../../dtos/lead.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-import { FeatureService } from '../../../services/FeatureServices';
+import { CrmService } from '../../../services/CrmService';
+
 
 
 
@@ -19,7 +20,7 @@ function ReferLeadForm({ lead,setDialog }: { lead: GetLeadDto , setDialog: React
      const [display, setDisplay] = useState(false)
     const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<GetReferDto>, BackendError, { id: string, body: { party_id: string, remark: string, remind_date?: string } }>
-        (new FeatureService().ReferLead, {
+        (new CrmService().ReferLead, {
            
             onSuccess: () => {
                 queryClient.invalidateQueries('refers')
@@ -28,7 +29,7 @@ function ReferLeadForm({ lead,setDialog }: { lead: GetLeadDto , setDialog: React
             },
             onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
         })
-    const { data, isSuccess: isReferSuccess } = useQuery<AxiosResponse<GetReferDto[]>, BackendError>("refers",new FeatureService(). GetRefers)
+    const { data, isSuccess: isReferSuccess } = useQuery<AxiosResponse<GetReferDto[]>, BackendError>("refers",new CrmService(). GetRefers)
 
     const [refers, setRefers] = useState<GetReferDto[]>()
     const formik = useFormik({

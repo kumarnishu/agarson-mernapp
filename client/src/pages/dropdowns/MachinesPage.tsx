@@ -11,8 +11,8 @@ import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Tooltip, Ty
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import CreateOrEditMachineDialog from '../../components/dialogs/production/CreateOrEditMachineDialog'
-import ToogleMachineDialog from '../../components/dialogs/production/ToogleMachineDialog'
+import CreateOrEditMachineDialog from '../../components/dialogs/dropdown/CreateOrEditMachineDialog'
+import ToogleMachineDialog from '../../components/dialogs/dropdown/ToogleMachineDialog'
 import { GetMachineDto } from '../../dtos/machine.dto'
 import { DropdownService } from '../../services/DropDownServices'
 

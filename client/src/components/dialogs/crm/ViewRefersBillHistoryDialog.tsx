@@ -10,7 +10,7 @@ import DeleteBillDialog from './DeleteBillDialog'
 import CreateOrEditBillDialog from './CreateOrEditBillDialog'
 import ViewBillPhotoDialog from './ViewBillPhotoDialog'
 import { GetBillDto } from '../../../dtos/crm-bill.dto'
-import { FeatureService } from '../../../services/FeatureServices'
+import { CrmService } from '../../../services/CrmService'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
@@ -22,7 +22,7 @@ function ViewRefersBillHistoryDialog({ id, dialog, setDialog }: Props) {
     const [bill, setBill] = useState<GetBillDto>()
     const [bills, setBills] = useState<GetBillDto[]>()
 
-    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["bills", id], async () => new FeatureService().GetReferBillHistory({ id: id }))
+    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["bills", id], async () => new CrmService().GetReferBillHistory({ id: id }))
 
 
     const { user } = useContext(UserContext)

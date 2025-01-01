@@ -16,7 +16,8 @@ import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
 import { DropdownService } from '../../../services/DropDownServices';
-import { FeatureService } from '../../../services/FeatureServices';
+import { ProductionService } from '../../../services/ProductionService';
+
 
 function CreateOrEditProductionForm({ production, setDialog }: { production?: GetProductionDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
@@ -29,7 +30,7 @@ function CreateOrEditProductionForm({ production, setDialog }: { production?: Ge
             id?: string,
             body: CreateOrEditProductionDto
         }>
-        (new FeatureService().CreateOrEditProduction, {
+        (new ProductionService().CreateOrEditProduction, {
             onSuccess: () => {
                 queryClient.refetchQueries('productions')
                 setAlert({ message: production ? "updated" : "created", color: 'success' })

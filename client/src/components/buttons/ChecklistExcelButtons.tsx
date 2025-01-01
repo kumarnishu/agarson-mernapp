@@ -9,7 +9,7 @@ import { saveAs } from 'file-saver';
 import ExportToExcel from "../../utils/ExportToExcel"
 import { queryClient } from "../../main"
 import { AlertContext } from "../../contexts/alertContext"
-import { FeatureService } from "../../services/FeatureServices"
+import { ChecklistService } from "../../services/ChecklistService"
 
 
 const FileInput = styled.input`
@@ -21,7 +21,8 @@ color:blue;
 export function ChecklistExcelButtons() {
     const { data, mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<any[]>, BackendError, FormData>
-        (new FeatureService().CreateChecklistFromExcel, { onSuccess: () => queryClient.refetchQueries('checklists') })
+        (new ChecklistService
+        ().CreateChecklistFromExcel, { onSuccess: () => queryClient.refetchQueries('checklists') })
     const [file, setFile] = useState<File | null>(null)
     const { setAlert } = useContext(AlertContext)
 

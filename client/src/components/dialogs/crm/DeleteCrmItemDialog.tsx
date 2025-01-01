@@ -11,7 +11,8 @@ import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
-import { FeatureService } from '../../../services/FeatureServices';
+import { CrmService } from '../../../services/CrmService';
+
 
 type Props = {
     dialog: string | undefined,
@@ -23,7 +24,7 @@ function DeleteCrmItemDialog({ refer, lead, state, city, type, source, stage, di
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, { refer?: DropDownDto, lead?: DropDownDto, state?: GetCrmStateDto, city?: GetCrmCityDto, type?: DropDownDto, source?: DropDownDto, stage?: DropDownDto }>
-        (new FeatureService().DeleteCrmItem, {
+        (new CrmService().DeleteCrmItem, {
             onSuccess: () => {
                 if (refer)
                     queryClient.invalidateQueries('refers')

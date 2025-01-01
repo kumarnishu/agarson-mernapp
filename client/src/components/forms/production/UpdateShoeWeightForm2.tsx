@@ -15,7 +15,8 @@ import { GetMachineDto } from '../../../dtos/machine.dto';
 import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
-import { FeatureService } from '../../../services/FeatureServices';
+import { ProductionService } from '../../../services/ProductionService';
+
 
 
 function UpdateShoeWeightForm2({ shoe_weight, setDialog }: { shoe_weight: GetShoeWeightDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
@@ -32,7 +33,7 @@ function UpdateShoeWeightForm2({ shoe_weight, setDialog }: { shoe_weight: GetSho
             id: string,
             body: FormData
         }>
-        (new FeatureService().UpdateShoeWeight2, {
+        (new ProductionService().UpdateShoeWeight2, {
             onSuccess: () => {
                 queryClient.refetchQueries('shoe_weights')
                 setAlert({ message: "updated shoe weight 2", color: 'success' })

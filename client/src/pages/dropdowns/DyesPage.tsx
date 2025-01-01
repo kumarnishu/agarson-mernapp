@@ -9,8 +9,8 @@ import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Tooltip, Ty
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import ToogleDyeDialog from '../../components/dialogs/production/ToogleDyeDialog'
-import CreateOrEditDyeDialog from '../../components/dialogs/production/CreateOrEditDyeDialog'
+import ToogleDyeDialog from '../../components/dialogs/dropdown/ToogleDyeDialog'
+import CreateOrEditDyeDialog from '../../components/dialogs/dropdown/CreateOrEditDyeDialog'
 
 import { AxiosResponse } from "axios"
 import { GetDyeDto } from '../../dtos/dye.dto'

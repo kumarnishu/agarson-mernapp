@@ -12,7 +12,8 @@ import { GetChecklistDto } from '../../../dtos/checklist.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
-import { FeatureService } from '../../../services/FeatureServices';
+import { ChecklistService } from '../../../services/ChecklistService';
+
 
 
 type Props = {
@@ -34,7 +35,7 @@ function AssignChecklistsDialog({ checklists, flag, dialog, setDialog }: Props) 
                 flag: number
             }
         }>
-        (new FeatureService(). AssignChecklistsToUsers, {
+        (new ChecklistService(). AssignChecklistsToUsers, {
            onSuccess: () => {
             queryClient.invalidateQueries('checklists')
             setAlert({ message: "success", color: 'success' })

@@ -10,7 +10,7 @@ import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
-import CreateOrEditChecklistCategoryDialog from '../../components/dialogs/checklists/CreateOrEditChecklistCategoryDialog'
+import CreateOrEditChecklistCategoryDialog from '../../components/dialogs/dropdown/CreateOrEditChecklistCategoryDialog'
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import { DropdownService } from '../../services/DropDownServices'
 

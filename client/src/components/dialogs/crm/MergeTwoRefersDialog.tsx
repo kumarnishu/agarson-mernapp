@@ -8,7 +8,7 @@ import { BackendError } from '../../..'
 import { queryClient } from '../../../main'
 import { GetReferDto, CreateOrEditMergeRefersDto } from '../../../dtos/refer.dto'
 import { AlertContext } from '../../../contexts/alertContext'
-import { FeatureService } from '../../../services/FeatureServices'
+import { CrmService } from '../../../services/CrmService'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
@@ -32,7 +32,7 @@ function MergeTwoRefersDialog({ refers, removeSelectedRefers, dialog, setDialog 
 
     const { mutate, isLoading } = useMutation
         <AxiosResponse<GetReferDto>, BackendError, { body: CreateOrEditMergeRefersDto, id: string }>
-        (new FeatureService().MergeTwoRefers, {
+        (new CrmService().MergeTwoRefers, {
 
             onSuccess: () => {
                 removeSelectedRefers()

@@ -12,9 +12,10 @@ import moment from 'moment';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetPaymentDto, CreateOrEditPaymentDto } from '../../../dtos/payment.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-import { FeatureService } from '../../../services/FeatureServices';
+
 import { UserService } from '../../../services/UserServices';
 import { DropdownService } from '../../../services/DropDownServices';
+import { PaymentsService } from '../../../services/PaymentsService';
 
 
 function CreateorEditPaymentForm({ payment, setDialog }: { payment?: GetPaymentDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
@@ -23,7 +24,7 @@ function CreateorEditPaymentForm({ payment, setDialog }: { payment?: GetPaymentD
     const [users, setUsers] = useState<DropDownDto[]>([])
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, { body: CreateOrEditPaymentDto, id?: string }>
-        (new FeatureService().CreateOrEditPayment, {
+        (new PaymentsService().CreateOrEditPayment, {
 
             onSuccess: () => {
                 queryClient.refetchQueries('payments')

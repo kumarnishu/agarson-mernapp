@@ -8,7 +8,8 @@ import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
-import { FeatureService } from '../../../services/FeatureServices';
+import { PaymentsService } from '../../../services/PaymentsService';
+
 
 type Props = {
     dialog: string | undefined,
@@ -19,7 +20,7 @@ function BulkDeletePaymentsDialog({ ids, clearIds, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess, error, isError } = useMutation
         <AxiosResponse<any>, BackendError, { ids: string[] }>
-        (new FeatureService().BulkDeletePaymentss, {
+        (new PaymentsService().BulkDeletePaymentss, {
 
             onSuccess: () => {
                 queryClient.invalidateQueries('payments')

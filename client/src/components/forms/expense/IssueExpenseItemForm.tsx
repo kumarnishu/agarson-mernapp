@@ -10,8 +10,9 @@ import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { GetExpenseItemDto } from '../../../dtos/expense-item.dto';
 import { IssueOrAddExpenseItemDto } from '../../../dtos/expense.dto';
-import { FeatureService } from '../../../services/FeatureServices';
+
 import { DropdownService } from '../../../services/DropDownServices';
+import { ExpenseService } from '../../../services/ExpenseService';
 
 
 function IssueExpenseItemForm({ item, setDialog }: { item: GetExpenseItemDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
@@ -19,7 +20,7 @@ function IssueExpenseItemForm({ item, setDialog }: { item: GetExpenseItemDto, se
     const [locations, setLocations] = useState<DropDownDto[]>([])
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, { body: IssueOrAddExpenseItemDto, id?: string }>
-        (new FeatureService().IssueExpenseItem, {
+        (new ExpenseService().IssueExpenseItem, {
             onSuccess: () => {
                 queryClient.invalidateQueries('expense-store')
                 setAlert({ message: 'successfull', color: 'success' })

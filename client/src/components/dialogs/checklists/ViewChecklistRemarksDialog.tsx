@@ -10,7 +10,7 @@ import DeleteChecklistRemarkDialog from './DeleteChecklistRemarkDialog'
 import moment from 'moment'
 import { GetChecklistRemarksDto } from '../../../dtos/checklist-remark.dto'
 import { GetChecklistDto } from '../../../dtos/checklist.dto'
-import { FeatureService } from '../../../services/FeatureServices'
+import { ChecklistService } from '../../../services/ChecklistService'
 
 type Props = {
     dialog: string | undefined,
@@ -21,7 +21,7 @@ function ViewChecklistRemarksDialog({ checklist, dialog, setDialog }: Props) {
     const [dialog1, setDialog1] = useState<string | undefined>()
     const [remark, setRemark] = useState<GetChecklistRemarksDto>()
     const [remarks, setRemarks] = useState<GetChecklistRemarksDto[]>()
-    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", checklist._id], async () => new FeatureService().GetCheckListRemarksHistory(checklist._id))
+    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", checklist._id], async () => new ChecklistService().GetCheckListRemarksHistory(checklist._id))
 
     const { user } = useContext(UserContext)
     let previous_date = new Date()

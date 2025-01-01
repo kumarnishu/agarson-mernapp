@@ -10,10 +10,10 @@ import { HandleNumbers } from '../../utils/IsDecimal'
 import PopUp from '../../components/popup/PopUp'
 import { Comment, Edit, Visibility } from '@mui/icons-material'
 import { GetReferenceReportForSalesmanDto } from '../../dtos/references.dto'
-import CreateOrEditReferenceRemarkDialog from '../../components/dialogs/reference/CreateOrEditReferenceRemarkDialog'
-import ViewReferenceRemarksDialog from '../../components/dialogs/reference/ViewReferenceRemarksDialog'
+import CreateOrEditReferenceRemarkDialog from '../../components/dialogs/sales/CreateOrEditReferenceRemarkDialog'
+import ViewReferenceRemarksDialog from '../../components/dialogs/sales/ViewReferenceRemarksDialog'
 import { SalesService } from '../../services/SalesServices'
-import EditReferenceStateDialog from '../../components/dialogs/reference/EditReferenceStateDialog'
+import EditReferenceStateDialog from '../../components/dialogs/sales/EditReferenceStateDialog'
 
 export default function ReferencesReportPage() {
   const { user: LoggedInUser } = useContext(UserContext)

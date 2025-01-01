@@ -8,7 +8,8 @@ import { useMutation } from 'react-query';
 import { GetUserDto } from '../../../dtos/user.dto';
 import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-import { FeatureService } from '../../../services/FeatureServices';
+import { ProductionService } from '../../../services/ProductionService';
+
 
 type Props = {
     dialog: string | undefined,
@@ -19,7 +20,7 @@ function ValidateShoeWeightDialog({ weight, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetUserDto>, BackendError, string>
-        (new FeatureService().ValidateShoeWeight, {
+        (new ProductionService().ValidateShoeWeight, {
             onSuccess: () => {
                 queryClient.invalidateQueries('shoe_weights')
                 setAlert({ message: "success", color: 'success' })

@@ -16,8 +16,9 @@ import { GetBillDto } from '../../../dtos/crm-bill.dto';
 import { GetLeadDto } from '../../../dtos/lead.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-import { FeatureService } from '../../../services/FeatureServices';
+
 import { DropdownService } from '../../../services/DropDownServices';
+import { CrmService } from '../../../services/CrmService';
 
 
 function CreateOrEditBillForm({ lead, refer, setDialog, bill }: { lead?: GetLeadDto, refer?: GetReferDto, bill?: GetBillDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
@@ -31,7 +32,7 @@ function CreateOrEditBillForm({ lead, refer, setDialog, bill }: { lead?: GetLead
             body: FormData,
             id?: string,
         }>
-        (new FeatureService(). CreateOrEditBill, {
+        (new CrmService(). CreateOrEditBill, {
 
             onSuccess: () => {
                 queryClient.invalidateQueries('bills')

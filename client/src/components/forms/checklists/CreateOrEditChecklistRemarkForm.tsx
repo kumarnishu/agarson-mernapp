@@ -11,7 +11,8 @@ import { GetChecklistBoxDto } from '../../../dtos/checklist-box.dto';
 import { GetChecklistRemarksDto, CreateOrEditChecklistRemarkDto } from '../../../dtos/checklist-remark.dto';
 import { GetChecklistDto } from '../../../dtos/checklist.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-import { FeatureService } from '../../../services/FeatureServices';
+import { ChecklistService } from '../../../services/ChecklistService';
+
 
 
 function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box, setDialog }: { checklist: GetChecklistDto, checklist_box: GetChecklistBoxDto, remark?: GetChecklistRemarksDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
@@ -21,7 +22,7 @@ function CreateOrEditChecklistRemarkForm({ remark, checklist, checklist_box, set
             body: CreateOrEditChecklistRemarkDto,
             remark?: GetChecklistRemarksDto
         }>
-        (new FeatureService().CreateOrEditChecklistRemark, {
+        (new ChecklistService().CreateOrEditChecklistRemark, {
 
             onSuccess: () => {
                 queryClient.invalidateQueries('remarks')

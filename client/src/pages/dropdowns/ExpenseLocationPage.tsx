@@ -12,7 +12,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { DropDownDto } from '../../dtos/dropdown.dto'
-import CreateOrEditExpenseLocationDialog from '../../components/dialogs/expense/CreateOrEditExpenseLocationDialog'
+import CreateOrEditExpenseLocationDialog from '../../components/dialogs/dropdown/CreateOrEditExpenseLocationDialog'
 import { DropdownService } from '../../services/DropDownServices'
 
 

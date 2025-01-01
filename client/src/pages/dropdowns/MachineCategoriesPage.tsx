@@ -12,8 +12,8 @@ import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { DropDownDto } from '../../dtos/dropdown.dto'
-import DeleteProductionItemDialog from '../../components/dialogs/production/DeleteProductionItemDialog'
-import CreateOrEditMachineCategoryDialog from '../../components/dialogs/production/CreateOrEditCategoryDialog'
+import DeleteProductionItemDialog from '../../components/dialogs/dropdown/DeleteProductionItemDialog'
+import CreateOrEditMachineCategoryDialog from '../../components/dialogs/dropdown/CreateOrEditCategoryDialog'
 import { DropdownService } from '../../services/DropDownServices'
 
 

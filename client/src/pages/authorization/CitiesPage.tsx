@@ -2,7 +2,7 @@ import { Stack } from '@mui/system'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import CreateOrEditCityDialog from '../../components/dialogs/crm/CreateOrEditCityDialog'
+import CreateOrEditCityDialog from '../../components/dialogs/authorization/CreateOrEditCityDialog'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
 import { UserContext } from '../../contexts/userContext'
 import { Delete, Edit } from '@mui/icons-material'
@@ -10,8 +10,8 @@ import { Fade, IconButton, Menu, MenuItem, TextField, Tooltip, Typography } from
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import FindUknownCrmCitiesDialog from '../../components/dialogs/crm/FindUknownCrmCitiesDialog'
-import AssignCrmCitiesDialog from '../../components/dialogs/crm/AssignCrmCitiesDialog'
+import FindUknownCrmCitiesDialog from '../../components/dialogs/authorization/FindUknownCrmCitiesDialog'
+import AssignCrmCitiesDialog from '../../components/dialogs/authorization/AssignCrmCitiesDialog'
 import { toTitleCase } from '../../utils/TitleCase'
 import { AxiosResponse } from "axios"
 import { BackendError } from "../.."

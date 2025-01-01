@@ -12,7 +12,7 @@ import { Fade, IconButton, Menu, MenuItem,  Tooltip, Typography } from '@mui/mat
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import CreateOrEditLeadTypeDialog from '../../components/dialogs/crm/CreateOrEditLeadTypeDialog'
+import CreateOrEditLeadTypeDialog from '../../components/dialogs/dropdown/CreateOrEditLeadTypeDialog'
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import { DropdownService } from '../../services/DropDownServices'
 

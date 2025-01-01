@@ -12,8 +12,9 @@ import { GetChecklistDto, CreateOrEditChecklistDto } from '../../../dtos/checkli
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
-import { FeatureService } from '../../../services/FeatureServices';
+
 import { DropdownService } from '../../../services/DropDownServices';
+import { ChecklistService } from '../../../services/ChecklistService';
 
 
 function CreateorEditCheckListForm({ checklist, setDialog }: { checklist?: GetChecklistDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
@@ -22,7 +23,7 @@ function CreateorEditCheckListForm({ checklist, setDialog }: { checklist?: GetCh
     const [users, setUsers] = useState<DropDownDto[]>([])
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<string>, BackendError, { body: FormData, id?: string }>
-        (new FeatureService().CreateOrEditCheckList, {
+        (new ChecklistService().CreateOrEditCheckList, {
 
             onSuccess: () => {
                 queryClient.invalidateQueries('checklists')

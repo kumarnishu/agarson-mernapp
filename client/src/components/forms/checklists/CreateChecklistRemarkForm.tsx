@@ -10,7 +10,8 @@ import { GetChecklistBoxDto } from '../../../dtos/checklist-box.dto';
 import { CreateOrEditChecklistRemarkDto } from '../../../dtos/checklist-remark.dto';
 import { GetChecklistDto } from '../../../dtos/checklist.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-import { FeatureService } from '../../../services/FeatureServices';
+import { ChecklistService } from '../../../services/ChecklistService';
+
 
 
 function CreateChecklistRemarkForm({ checklist, checklist_box, setDialog }: { checklist: GetChecklistDto, checklist_box: GetChecklistBoxDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
@@ -19,7 +20,7 @@ function CreateChecklistRemarkForm({ checklist, checklist_box, setDialog }: { ch
         <AxiosResponse<string>, BackendError, {
             body: CreateOrEditChecklistRemarkDto
         }>
-        (new FeatureService().CreateChecklistRemarkFromAdmin, {
+        (new ChecklistService().CreateChecklistRemarkFromAdmin, {
 
             onSuccess: () => {
                 queryClient.invalidateQueries('remarks')

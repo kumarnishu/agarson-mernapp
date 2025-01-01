@@ -7,7 +7,8 @@ import { queryClient } from '../../../main';
 import { useMutation } from 'react-query';
 import { GetReferDto } from '../../../dtos/refer.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-import { FeatureService } from '../../../services/FeatureServices';
+import { CrmService } from '../../../services/CrmService';
+
 
 type Props = {
     dialog: string | undefined,
@@ -19,7 +20,7 @@ function ToogleReferConversionDialog({ refer, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetReferDto>, BackendError, string>
-        (new FeatureService().ToogleReferPartyConversion, {
+        (new CrmService().ToogleReferPartyConversion, {
 
             onSuccess: () => {
                 queryClient.invalidateQueries('refers')

@@ -8,7 +8,8 @@ import { useMutation } from 'react-query';
 import { GetUserDto } from '../../../dtos/user.dto';
 import { GetSpareDyeDto } from '../../../dtos/spare-dye.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-import { FeatureService } from '../../../services/FeatureServices';
+import { ProductionService } from '../../../services/ProductionService';
+
 
 type Props = {
     dialog: string | undefined,
@@ -19,7 +20,7 @@ function ValidateSpareDyeDialog({ sparedye, dialog, setDialog }: Props) {
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetUserDto>, BackendError, string>
-        (new FeatureService().ValidateSpareDye, {
+        (new ProductionService().ValidateSpareDye, {
 
             onSuccess: () => {
                 queryClient.invalidateQueries('spare_dyes')

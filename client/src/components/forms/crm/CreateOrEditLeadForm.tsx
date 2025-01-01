@@ -14,9 +14,10 @@ import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { GetLeadDto } from '../../../dtos/lead.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-import { FeatureService } from '../../../services/FeatureServices';
+
 import { DropdownService } from '../../../services/DropDownServices';
 import { AuthorizationService } from '../../../services/AuthorizationService';
+import { CrmService } from '../../../services/CrmService';
 
 
 function CreateOrEditLeadForm({ lead, setDialog }: { lead?: GetLeadDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
@@ -28,7 +29,7 @@ function CreateOrEditLeadForm({ lead, setDialog }: { lead?: GetLeadDto, setDialo
     const [sources, setSources] = useState<DropDownDto[]>([])
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetLeadDto>, BackendError, { body: FormData, id?: string }>
-        (new FeatureService().CreateOrUpdateLead, {
+        (new CrmService().CreateOrUpdateLead, {
 
             onSuccess: () => {
                 queryClient.invalidateQueries('leads')

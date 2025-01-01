@@ -11,8 +11,8 @@ import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
-import CreateOrEditDyeLocationDialog from '../../components/dialogs/production/CreateOrEditDyeLocationDialog'
-import ToogleDyeLocationDialog from '../../components/dialogs/production/ToogleDyeLocationDialog'
+import CreateOrEditDyeLocationDialog from '../../components/dialogs/dropdown/CreateOrEditDyeLocationDialog'
+import ToogleDyeLocationDialog from '../../components/dialogs/dropdown/ToogleDyeLocationDialog'
 import { GetDyeLocationDto } from '../../dtos/dye-location.dto'
 import { DropdownService } from '../../services/DropDownServices'
 

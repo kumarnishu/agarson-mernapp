@@ -11,8 +11,9 @@ import * as Yup from "yup"
 import { GetPaymentDto } from '../../../dtos/payment.dto';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-import { FeatureService } from '../../../services/FeatureServices';
+
 import { UserService } from '../../../services/UserServices';
+import { PaymentsService } from '../../../services/PaymentsService';
 
 type Props = {
     dialog: string | undefined,
@@ -34,7 +35,7 @@ function AssignPaymentsDialog({ payments, flag, dialog, setDialog }: Props) {
                 flag: number
             }
         }>
-        (new FeatureService().AssignPaymentssToUsers, {
+        (new PaymentsService().AssignPaymentssToUsers, {
             onSuccess: () => {
                 queryClient.invalidateQueries('payments')
                 setAlert({ message: "success", color: 'success' })

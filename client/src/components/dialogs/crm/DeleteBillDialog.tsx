@@ -9,7 +9,8 @@ import { Cancel } from '@mui/icons-material';
 import { GetBillDto } from '../../../dtos/crm-bill.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
-import { FeatureService } from '../../../services/FeatureServices';
+import { CrmService } from '../../../services/CrmService';
+
 
 type Props = {
   dialog: string | undefined,
@@ -21,7 +22,7 @@ function DeleteBillDialog({ bill, dialog, setDialog }: Props) {
   const { setAlert } = useContext(AlertContext)
   const { mutate, isLoading, isSuccess, error, isError } = useMutation
     <AxiosResponse<any>, BackendError, string>
-    (new FeatureService(). DeleteBill, {
+    (new CrmService(). DeleteBill, {
       
       onSuccess: () => {
         queryClient.invalidateQueries('bills')

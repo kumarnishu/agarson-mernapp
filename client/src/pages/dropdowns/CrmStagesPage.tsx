@@ -5,7 +5,7 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
-import CreateOrEditStageDialog from '../../components/dialogs/crm/CreateOrEditStageDialog'
+import CreateOrEditStageDialog from '../../components/dialogs/dropdown/CreateOrEditStageDialog'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
 import { UserContext } from '../../contexts/userContext'
 import { Delete, Edit } from '@mui/icons-material'
@@ -14,7 +14,7 @@ import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { DropDownDto } from '../../dtos/dropdown.dto'
-import FindUknownCrmStagesDialog from '../../components/dialogs/crm/FindUknownCrmStagesDialog'
+import FindUknownCrmStagesDialog from '../../components/dialogs/dropdown/FindUknownCrmStagesDialog'
 import { DropdownService } from '../../services/DropDownServices'
 
 

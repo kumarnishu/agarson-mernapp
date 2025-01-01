@@ -11,8 +11,8 @@ import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
-import CreateOrEditKeyCategoryDialog from '../../components/dialogs/keys/CreateOrEditKeyCategoryDialog'
-import AssignKeyCategoriesDialog from '../../components/dialogs/keys/AssignKeyCategoriesDialog'
+import CreateOrEditKeyCategoryDialog from '../../components/dialogs/authorization/CreateOrEditKeyCategoryDialog'
+import AssignKeyCategoriesDialog from '../../components/dialogs/authorization/AssignKeyCategoriesDialog'
 import { GetKeyCategoryDto } from '../../dtos/key-category.dto'
 import { AuthorizationService } from '../../services/AuthorizationService'
 

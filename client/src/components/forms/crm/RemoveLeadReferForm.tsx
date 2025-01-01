@@ -9,14 +9,15 @@ import { queryClient } from '../../../main';
 import { GetLeadDto } from '../../../dtos/lead.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-import { FeatureService } from '../../../services/FeatureServices';
+import { CrmService } from '../../../services/CrmService';
+
 
 
 function RemoveLeadReferForm({ lead ,setDialog}: { lead: GetLeadDto , setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
      const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<GetReferDto>, BackendError, { id: string, body: { remark: string } }>
-        (new FeatureService(). RemoveReferLead, {
+        (new CrmService(). RemoveReferLead, {
            
             onSuccess: () => {
                 queryClient.refetchQueries('leads')

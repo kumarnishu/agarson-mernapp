@@ -9,7 +9,7 @@ import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
 import { GetRemarksDto } from '../../../dtos/crm-remarks.dto'
-import { FeatureService } from '../../../services/FeatureServices'
+import { CrmService } from '../../../services/CrmService'
 
 type Props = {
     dialog: string | undefined,
@@ -20,7 +20,7 @@ function ViewRemarksDialog({ id, dialog, setDialog }: Props) {
     const [dialog1, setDialog1] = useState<string | undefined>()
     const [remark, setRemark] = useState<GetRemarksDto>()
     const [remarks, setRemarks] = useState<GetRemarksDto[]>()
-    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", id], async () => new FeatureService().GetRemarksHistory({ id: id }))
+    const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", id], async () => new CrmService().GetRemarksHistory({ id: id }))
 
 
     const { user } = useContext(UserContext)

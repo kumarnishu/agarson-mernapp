@@ -13,8 +13,9 @@ import { GetCrmCityDto } from '../../../dtos/crm-city.dto';
 import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
 import { GetReferDto } from '../../../dtos/refer.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-import { FeatureService } from '../../../services/FeatureServices';
+
 import { AuthorizationService } from '../../../services/AuthorizationService';
+import { CrmService } from '../../../services/CrmService';
 
 
 function CreateOrEditReferForm({ refer,setDialog }: { refer?: GetReferDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {
@@ -28,7 +29,7 @@ function CreateOrEditReferForm({ refer,setDialog }: { refer?: GetReferDto, setDi
 
     const { mutate, isLoading, isSuccess} = useMutation
         <AxiosResponse<GetReferDto>, BackendError, { body: FormData, id?: string }>
-        (new FeatureService().CreateOrUpdateRefer, {
+        (new CrmService().CreateOrUpdateRefer, {
           
             onSuccess: () => {
                 queryClient.invalidateQueries('refers')

@@ -13,7 +13,8 @@ import { GetDyeDto } from '../../../dtos/dye.dto';
 import { GetSpareDyeDto } from '../../../dtos/spare-dye.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
-import { FeatureService } from '../../../services/FeatureServices';
+import { ProductionService } from '../../../services/ProductionService';
+
 
 function CreateOrEditSpareDyeForm({ sparedye, setDialog }: { sparedye?: GetSpareDyeDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
@@ -26,7 +27,7 @@ function CreateOrEditSpareDyeForm({ sparedye, setDialog }: { sparedye?: GetSpare
             id?: string,
             body: FormData
         }>
-        (new FeatureService().CreateOrEditSpareDye, {
+        (new ProductionService().CreateOrEditSpareDye, {
             onSuccess: () => {
                 queryClient.refetchQueries('spare_dyes')
                 setAlert({ message: sparedye ? "updated" : "created", color: 'success' })

@@ -11,7 +11,7 @@ import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/mate
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import CreateOrEditExpenseItemDialog from '../../components/dialogs/expense/CreateOrEditExpenseItemDialog'
+import CreateOrEditExpenseItemDialog from '../../components/dialogs/dropdown/CreateOrEditExpenseItemDialog'
 import { GetExpenseItemDto } from '../../dtos/expense-item.dto'
 import { ExpenseItemButtons } from '../../components/buttons/ExpenseItemButtons'
 import { DropdownService } from '../../services/DropDownServices'
