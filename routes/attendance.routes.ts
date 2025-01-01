@@ -10,6 +10,6 @@ router.route("/leaves").get(isAuthenticatedUser, controller.GetAllLeaves).post(i
 router.route("/leaves-balance").get(isAuthenticatedUser, controller.GetAllLeaveBalances).post(isAuthenticatedUser, controller.CreateLeaveBalance)
 router.route("/leaves-balance/:id").put(isAuthenticatedUser, controller.UpdateLeaveBalance).delete(isAuthenticatedUser, controller.DeleteLeaveBalance)
 
-
+router.route("/attendance-report").get(isAuthenticatedUser, controller.GetAllAttendanceReport)
 
 export default router

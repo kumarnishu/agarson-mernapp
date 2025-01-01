@@ -141,7 +141,7 @@ export default function MachineCategoryPage() {
             shape: 'rounded',
             variant: 'outlined',
         },
-        initialState: {
+       enableDensityToggle: false, initialState: {
             density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
         },
         enableGrouping: true,

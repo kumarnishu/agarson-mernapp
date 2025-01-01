@@ -322,13 +322,12 @@ function ChecklistPage() {
     positionToolbarAlertBanner: 'none',
     enableColumnVirtualization: true,
     enableStickyFooter: true,
-    initialState: { sorting: [{ id: "group_title", desc: false }], density: 'compact', grouping: ['group_title'], showGlobalFilter: true, expanded: true, pagination: { pageIndex: 0, pageSize: 1000 } },
+   enableDensityToggle: false, initialState: { sorting: [{ id: "group_title", desc: false }], density: 'compact', grouping: ['group_title'], showGlobalFilter: true, expanded: true, pagination: { pageIndex: 0, pageSize: 1000 } },
     enableGrouping: true,
     enableRowSelection: true,
     enablePagination: true,
     enableColumnPinning: true,
     enableTableFooter: true,
-    enableDensityToggle: false,
     muiTableFooterRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',

@@ -156,11 +156,16 @@ export class AttendanceController {
     //attendance report controller
     public async GetAllAttendanceReport(req: Request, res: Response, next: NextFunction) {
         let result: GetSalesmanAttendanceReportDto[] = []
+        let employee = req.query.employee
+        let yearmonth = req.query.yearmonth
+        console.log(employee, yearmonth)
         let items: ILeaveBalance[] = []
-        items = await LeaveBalance.find().populate('employee').populate('created_by').populate('updated_by').sort('item')
+        items = await LeaveBalance.find().populate('employee').populate('created_by').populate('updated_by').sort('-yearmonth')
+
         result = items.map((item) => {
             return {
                 _id: item._id,
+                attendance: 20,
                 provided: {
                     sl: 0,
                     fl: 0,

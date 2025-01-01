@@ -233,7 +233,7 @@ export default function SalesmanVisitPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-    initialState: {
+   enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 2000 }
     },
     enableGrouping: true,

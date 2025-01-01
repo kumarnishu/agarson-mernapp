@@ -142,7 +142,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
       shape: 'rounded',
       variant: 'outlined',
     },
-    initialState: {
+   enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
     },
     enableGrouping: true,

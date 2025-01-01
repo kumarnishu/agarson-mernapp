@@ -226,7 +226,7 @@ export default function ExcelDBPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-    initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
     },
     enableGrouping: true,
@@ -235,8 +235,6 @@ export default function ExcelDBPage() {
     enablePagination: true,
     enableColumnPinning: true,
     enableTableFooter: true,
-    enableDensityToggle: false,
-
     onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing,

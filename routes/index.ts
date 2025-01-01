@@ -45,7 +45,7 @@ import ReferencesRoutes from "./references.routes"
 import DriverSystemRoutes from "./driver-system.route"
 import ReferenceROutes from "./references.routes"
 import ReferenceRemarkRoutes from "./reference-remark.routes"
-import LeaveRoutes from "./leave.routes"
+import LeaveRoutes from "./attendance.routes"
 
 
 router.use(ArticlesRoutes);

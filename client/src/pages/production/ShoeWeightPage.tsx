@@ -446,7 +446,7 @@ export default function ShoeWeightPage() {
         border: '1px solid lightgrey;',
       },
     }),
-    initialState: { density: 'compact' },
+   enableDensityToggle: false, initialState: { density: 'compact' },
     enableRowSelection: true,
     enableRowNumbers: true,
     enableColumnPinning: true,

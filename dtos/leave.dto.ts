@@ -20,6 +20,7 @@ export type LeavesDto = {
 }
 export type GetSalesmanAttendanceReportDto = {
     _id: string,
+    attendance: number,
     yearmonth: number,
     provided: LeavesDto,
     brought_forward: LeavesDto,

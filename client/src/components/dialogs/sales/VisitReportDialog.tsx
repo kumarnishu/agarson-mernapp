@@ -128,7 +128,7 @@ function VisitReportPage({ employee }: { employee: string }) {
             shape: 'rounded',
             variant: 'outlined',
         },
-        initialState: {
+       enableDensityToggle: false, initialState: {
             density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
         },
         enableGrouping: true,

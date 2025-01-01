@@ -409,7 +409,7 @@ export default function UsersPage() {
             shape: 'rounded',
             variant: 'outlined',
         },
-        initialState: {
+       enableDensityToggle: false, initialState: {
             density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 100 }
         },
         enableGrouping: true,

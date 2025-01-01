@@ -439,7 +439,7 @@ export default function RefersPage() {
         border: '1px solid lightgrey;',
       },
     }),
-    initialState: { density: 'compact' },
+   enableDensityToggle: false, initialState: { density: 'compact' },
     enableRowSelection: true,
     enableRowNumbers: true,
     enableColumnPinning: true,

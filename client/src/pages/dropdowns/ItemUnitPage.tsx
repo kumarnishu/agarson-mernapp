@@ -124,7 +124,7 @@ export default function ItemUnitPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-    initialState: {
+   enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
     },
     enableGrouping: true,
