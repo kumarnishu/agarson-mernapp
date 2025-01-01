@@ -5,20 +5,19 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
-import { Delete, Edit } from '@mui/icons-material'
-import { Fade, IconButton, Menu, MenuItem, TextField, Tooltip, Typography } from '@mui/material'
-import PopUp from '../../components/popup/PopUp'
+import { Button, Fade, IconButton, Menu, MenuItem, TextField, Typography } from '@mui/material'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { GetLeaveDto } from '../../dtos/leave.dto'
 import { AttendanceService } from '../../services/AttendanceService'
 import { toTitleCase } from '../../utils/TitleCase'
+import ApproveOrRejectLeaveDialog from '../../components/dialogs/attendance/ApproveOrRejectLeaveDialog'
 
 
 export default function LeavesPage() {
   const [balance, setBalance] = useState<GetLeaveDto>()
   const [balances, setBalances] = useState<GetLeaveDto[]>([])
-  const [status, setStatus] = useState('pending')
+  const [status, setStatus] = useState('all')
   const { user: LoggedInUser } = useContext(UserContext)
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetLeaveDto[]>, BackendError>(["leaves", status], async () => new AttendanceService().GetLeaves(String(status)))
   const [dialog, setDialog] = useState<string | undefined>()
@@ -36,43 +35,19 @@ export default function LeavesPage() {
       {
         accessorKey: 'actions',
         header: '',
-
         enableColumnFilter: false,
+        Cell: ({ cell }) => <>
+          {LoggedInUser?.is_admin &&
+            <Button color="error"
 
-        Cell: ({ cell }) => <PopUp
-          element={
-            <Stack direction="row">
-              <>
-
-                {LoggedInUser?.assigned_permissions.includes('leave_edit') && <Tooltip title="delete">
-                  <IconButton color="error"
-
-                    onClick={() => {
-                      setBalance(cell.row.original)
-                      setDialog('DeleteLeavebalanceDialog')
-                    }}
-                  >
-                    <Delete />
-                  </IconButton>
-                </Tooltip>}
-
-                {LoggedInUser?.assigned_permissions.includes('leave_edit') && <Tooltip title="edit">
-                  <IconButton
-
-                    onClick={() => {
-                      setBalance(cell.row.original)
-                      setDialog('CreateOrEditLeaveBalanceDialog')
-                    }}
-
-                  >
-                    <Edit />
-                  </IconButton>
-                </Tooltip>}
-
-              </>
-
-            </Stack>}
-        />
+              onClick={() => {
+                setBalance(cell.row.original)
+                setDialog('ApproveOrRejectLeaveDialog')
+              }}
+            >
+              Approve or Reject
+            </Button>
+          }</>
       },
 
       {
@@ -165,7 +140,7 @@ export default function LeavesPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
     },
     enableGrouping: true,
@@ -333,6 +308,7 @@ export default function LeavesPage() {
       </Stack>
       {/* table */}
       < MaterialReactTable table={table} />
+      {balance && <ApproveOrRejectLeaveDialog leavedata={balance} dialog={dialog} setDialog={setDialog} />}
     </>
 
   )

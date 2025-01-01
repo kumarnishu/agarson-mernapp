@@ -21,6 +21,10 @@ export class AttendanceService {
     return await apiClient.post(`apply-leave`, body);
   };
 
+  public async ApproveOrRejectLeave({ body, id }: { body: { status: string }, id: string }) {
+    return await apiClient.post(`approve-reject-leave/${id}`, body);
+  };
+
 
   public async CreateOrEditLeaveBalance({ body, id }: { body: CreateOrEditLeaveBalanceDto, id?: string }) {
     if (id)

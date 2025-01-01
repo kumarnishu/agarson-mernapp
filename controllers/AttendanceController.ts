@@ -1,7 +1,7 @@
 import { Response, Request, NextFunction } from "express"
 import isMongoId from "validator/lib/isMongoId"
 import { ILeaveBalance, LeaveBalance } from "../models/leave-balance.model"
-import { GetLeaveDto, GetLeaveBalanceDto, GetSalesmanAttendanceReportDto, CreateOrEditLeaveBalanceDto } from "../dtos/leave.dto"
+import { GetLeaveDto, GetLeaveBalanceDto, GetSalesmanAttendanceReportDto, CreateOrEditLeaveBalanceDto, ApplyLeaveDtoFromAdmin } from "../dtos/leave.dto"
 import { ILeave, Leave } from "../models/leave.model"
 import moment from "moment"
 
@@ -13,7 +13,7 @@ export class AttendanceController {
         let items: ILeave[] = []
         let status = req.query.status
         let filter: { status?: string } | {} = {}
-        if (status)
+        if (status !== 'all')
             filter = { status: status }
         items = await Leave.find(filter).populate('employee').populate('created_by').populate('updated_by').sort('item')
 
@@ -37,11 +37,28 @@ export class AttendanceController {
 
     public async ApplyLeave(req: Request, res: Response, next: NextFunction) {
         const { leave_type, leave, yearmonth, employee } = req.body as { leave_type: string, leave: number, yearmonth: number, employee: string }
-        if (!leave_type || !leave || !yearmonth) {
+        if (!leave_type || !leave || !yearmonth || !employee) {
             return res.status(400).json({ message: "please provide required fields" })
         }
         await new Leave({
             leave_type, leave, yearmonth, employee,
+            status: 'pending',
+            created_at: new Date(),
+            created_by: req.user,
+            updated_at: new Date(),
+            updated_by: req.user
+        }).save()
+        return res.status(201).json({ message: "success" })
+    }
+
+    public async ApplyLeaveFromAdmin(req: Request, res: Response, next: NextFunction) {
+        const { leave_type, leave, status, yearmonth, employee } = req.body as ApplyLeaveDtoFromAdmin
+        if (!leave_type || !leave || !yearmonth || !status || !employee) {
+            return res.status(400).json({ message: "please provide required fields" })
+        }
+        await new Leave({
+            leave_type, leave, yearmonth, employee,
+            status: status,
             created_at: new Date(),
             created_by: req.user,
             updated_at: new Date(),
@@ -211,4 +228,5 @@ export class AttendanceController {
         })
         return res.status(200).json(result)
     }
+
 }

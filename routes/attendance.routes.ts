@@ -1,5 +1,5 @@
 import express from "express";
-import { isAuthenticatedUser } from "../middlewares/auth.middleware";
+import { isAdmin, isAuthenticatedUser } from "../middlewares/auth.middleware";
 import { upload } from ".";
 import { AttendanceController } from "../controllers/AttendanceController";
 
@@ -9,6 +9,9 @@ const router = express.Router()
 router.route("/leaves").get(isAuthenticatedUser, controller.GetAllLeaves).post(isAuthenticatedUser, upload.single('document'), controller.ApplyLeave)
 router.route("/leaves-balance").get(isAuthenticatedUser, controller.GetAllLeaveBalances).post(isAuthenticatedUser, controller.CreateLeaveBalance)
 router.route("/leaves-balance/:id").put(isAuthenticatedUser, controller.UpdateLeaveBalance).delete(isAuthenticatedUser, controller.DeleteLeaveBalance)
+router.route("/apply-leave/admin").post(isAuthenticatedUser, controller.ApplyLeaveFromAdmin)
+router.route("/apply-leave").post(isAuthenticatedUser, controller.ApplyLeave)
+router.route("/approve-reject-leave/:id").post(isAuthenticatedUser, isAdmin, controller.ApproveOrRejectLeave)
 
 router.route("/attendance-report").get(isAuthenticatedUser, controller.GetAllAttendanceReport)
 
