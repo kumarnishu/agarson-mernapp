@@ -163,33 +163,44 @@ export class AttendanceController {
         items = await LeaveBalance.find().populate('employee').populate('created_by').populate('updated_by').sort('-yearmonth')
 
         result = items.map((item) => {
+            let provided = {
+                sl: 1,
+                fl: 1,
+                sw: 3,
+                cl: 1
+            }
+            let brought_forward = {
+                sl: 2,
+                fl: 5,
+                sw: 5,
+                cl: 2
+            }
+            let total = {
+                sl: provided.sl + brought_forward.sl,
+                fl: provided.fl + brought_forward.fl,
+                sw: provided.sw + brought_forward.sw,
+                cl: provided.cl + brought_forward.cl
+            }
+            let consumed = {
+                sl: 0,
+                fl: 1,
+                sw: 0,
+                cl: 0
+            }
+            let carryforward = {
+                sl: total.sl - consumed.sl,
+                fl: total.fl - consumed.fl,
+                sw: total.sw - consumed.sw,
+                cl: total.cl - consumed.cl
+            }
             return {
                 _id: item._id,
                 attendance: 20,
-                provided: {
-                    sl: 0,
-                    fl: 0,
-                    sw: 0,
-                    cl: 0
-                },
-                brought_forward: {
-                    sl: 0,
-                    fl: 0,
-                    sw: 0,
-                    cl: 0
-                },
-                total: {
-                    sl: 0,
-                    fl: 0,
-                    sw: 0,
-                    cl: 0
-                },
-                consumed: {
-                    sl: 0,
-                    fl: 0,
-                    sw: 0,
-                    cl: 0
-                },
+                provided: provided,
+                brought_forward: brought_forward,
+                total: total,
+                consumed: consumed,
+                carryforward: carryforward,
                 yearmonth: item.yearmonth,
                 employee: { id: item.employee._id, label: item.employee.username },
                 created_at: moment(item.created_at).format('YYYY-MM-DD'),

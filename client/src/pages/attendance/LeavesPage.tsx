@@ -18,7 +18,7 @@ import { toTitleCase } from '../../utils/TitleCase'
 export default function LeavesPage() {
   const [balance, setBalance] = useState<GetLeaveDto>()
   const [balances, setBalances] = useState<GetLeaveDto[]>([])
-  const [status, setStatus] = useState('all')
+  const [status, setStatus] = useState('pending')
   const { user: LoggedInUser } = useContext(UserContext)
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetLeaveDto[]>, BackendError>(["leaves", status], async () => new AttendanceService().GetLeaves(String(status)))
   const [dialog, setDialog] = useState<string | undefined>()

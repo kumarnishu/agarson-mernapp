@@ -5,9 +5,9 @@ export class AttendanceService {
 
 
   public async GetAttendanceReport(
-    { yearmonth, employee }: { yearmonth: number, employee: string }
+    { yearmonth }: { yearmonth: number }
   ) {
-    return await apiClient.get(`attendance-report/?yearmonth=${yearmonth}&employee=${employee}`);
+    return await apiClient.get(`attendance-report/?yearmonth=${yearmonth}`);
   };
 
   public async GetLeaves(status: string) {

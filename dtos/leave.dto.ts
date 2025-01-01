@@ -12,6 +12,22 @@ export type GetLeaveDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
+
+export type ApplyLeaveDtoFromAdmin = {
+    leave_type: string,
+    leave: number,
+    status: string,
+    yearmonth: number,
+    employee: string,
+}
+export type ApplyLeaveDto = {
+    leave_type: string,
+    leave: number,
+    yearmonth: number,
+    employee: string,
+}
+
+
 export type LeavesDto = {
     sl: number,
     fl: number,
@@ -24,6 +40,7 @@ export type GetSalesmanAttendanceReportDto = {
     yearmonth: number,
     provided: LeavesDto,
     brought_forward: LeavesDto,
+    carryforward: LeavesDto,
     total: LeavesDto,
     consumed: LeavesDto,
     employee: DropDownDto,
@@ -32,6 +49,8 @@ export type GetSalesmanAttendanceReportDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
+
+
 export type GetLeaveBalanceDto = {
     _id: string,
     sl: number,
