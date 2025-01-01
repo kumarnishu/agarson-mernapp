@@ -95,7 +95,7 @@ export default function SalesAttendanceReportPage() {
       },
       {
         accessorKey: 'provided.sl',
-        header: 'SL',
+        header: 'Sick Leave',
         Cell: (cell) => <Stack direction={'column'}>
           <Typography >{cell.row.original.provided.sl ? cell.row.original.provided.sl : "."}</Typography>
           <Typography >{cell.row.original.brought_forward.sl ? cell.row.original.brought_forward.sl : "."}</Typography>
@@ -106,7 +106,7 @@ export default function SalesAttendanceReportPage() {
       },
       {
         accessorKey: 'brought_forward.fl',
-        header: 'FL',
+        header: 'Festive Leave',
         Cell: (cell) => <Stack direction={'column'}>
           <Typography >{cell.row.original.provided.fl ? cell.row.original.provided.fl : "."}</Typography>
           <Typography >{cell.row.original.brought_forward.fl ? cell.row.original.brought_forward.fl : "."}</Typography>
@@ -118,7 +118,7 @@ export default function SalesAttendanceReportPage() {
       },
       {
         accessorKey: 'total.sw',
-        header: 'SW',
+        header: 'Sunday Working',
         Cell: (cell) => <Stack direction={'column'}>
           <Typography >{cell.row.original.provided.sw ? cell.row.original.provided.sw : "."}</Typography>
           <Typography >{cell.row.original.brought_forward.sw ? cell.row.original.brought_forward.sw : "."}</Typography>
@@ -129,7 +129,7 @@ export default function SalesAttendanceReportPage() {
       },
       {
         accessorKey: 'consumed.cl',
-        header: 'CL',
+        header: 'Casual Leave',
         Cell: (cell) => <Stack direction={'column'}>
           <Typography >{cell.row.original.provided.cl ? cell.row.original.provided.cl : "."}</Typography>
           <Typography >{cell.row.original.brought_forward.cl ? cell.row.original.brought_forward.cl : "."}</Typography>
