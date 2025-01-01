@@ -18,7 +18,7 @@ function ApplyLeaveFromAdminDialog({ leavedata, dialog, setDialog }: Props) {
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
-                Apply leave - CL/FL
+                Consume leave - CL/FL/Sunday Working
             </DialogTitle>
 
             <DialogContent>

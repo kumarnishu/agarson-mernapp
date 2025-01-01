@@ -86,10 +86,10 @@ export default function SalesAttendanceReportPage() {
         accessorKey: 'created_at',
         header: '',
         Cell: () => <Stack direction={'column'}>
-          <Typography sx={{ fontWeight: '500' }} fontSize='0.9rem'>{"Provided"}</Typography>
-          <Typography sx={{ fontWeight: '500' }} fontSize='0.9rem'>{"Balance"}</Typography>
+          <Typography sx={{ fontWeight: '500' }} fontSize='0.9rem'>{"This Month Provided"}</Typography>
+          <Typography sx={{ fontWeight: '500' }} fontSize='0.9rem'>{"Old Balance"}</Typography>
           <Typography sx={{ fontWeight: '500' }} fontSize='0.9rem'>{"Total"}</Typography>
-          <Typography sx={{ fontWeight: '500' }} fontSize='0.9rem'>{"Consumed"}</Typography>
+          <Typography sx={{ fontWeight: '500' }} fontSize='0.9rem'>{"Consumed this Month"}</Typography>
           <Typography sx={{ fontWeight: '500' }} fontSize='0.9rem'>{"Carry Forward"}</Typography>
         </Stack>
       },
@@ -294,15 +294,15 @@ export default function SalesAttendanceReportPage() {
         >
           Sales Attendance Report
         </Typography>
-        <Typography
+        {LoggedInUser?.is_admin && <Typography
           variant={'h6'}
           component={'h1'}
-          sx={{ pl: 1,cursor:'pointer' }}
+          sx={{ pl: 1, cursor: 'pointer' }}
           color="red"
           onClick={() => { navigate('/Attendance/LeavesPage') }}
         >
           5  leaves pending For Approval
-        </Typography>
+        </Typography>}
 
         <Stack spacing={2}
           padding={1}

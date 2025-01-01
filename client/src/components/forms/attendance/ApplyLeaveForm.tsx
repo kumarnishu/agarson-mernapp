@@ -50,6 +50,7 @@ function ApplyLeaveForm({ leavedata, setDialog }: { leavedata: GetSalesmanAttend
         },
         validationSchema: Yup.object({
             leave_type: Yup.string().required("required"),
+            employee: Yup.string().required("required"),
             leave: Yup.number().required("required").max(leavedata.total.sl || 0),
             yearmonth: Yup.number()
                 .required('Year and month are required')

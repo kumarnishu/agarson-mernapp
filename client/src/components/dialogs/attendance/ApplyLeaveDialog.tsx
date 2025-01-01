@@ -19,7 +19,7 @@ function ApplyLeaveDialog({ leavedata, dialog, setDialog }: Props) {
                 <Cancel fontSize='large' />
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign="center">
-                Apply leave - SL
+               Consume leave - SL
             </DialogTitle>
 
             <DialogContent>

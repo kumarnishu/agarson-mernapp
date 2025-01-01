@@ -43,16 +43,19 @@ function ApplyLeaveFromAdminForm({ leavedata, setDialog }: { leavedata: GetSales
 
     const formik = useFormik({
         initialValues: {
-            leave_type: 'cl',
-            leave: 1,
-            status: 'approved',
+            cl: 0,
+            fl: 0,
+            sw: 0,
+            status: 'pending',
             yearmonth: leavedata?.yearmonth || getCurrentYearMonth(),
             employee: leavedata && leavedata.employee.id || "",
         },
         validationSchema: Yup.object({
-            leave_type: Yup.string().required("required"),
-            leave: Yup.number().required("required"),
+            cl: Yup.number().required("required").max(leavedata.total.cl || 0),
+            fl: Yup.number().required("required").max(leavedata.total.fl || 0),
+            sw: Yup.number().required("required").max(leavedata.total.sw || 0),
             status: Yup.string().required("required"),
+            employee: Yup.string().required("required"),
             yearmonth: Yup.number()
                 .required('Year and month are required')
                 .test(
@@ -71,7 +74,37 @@ function ApplyLeaveFromAdminForm({ leavedata, setDialog }: { leavedata: GetSales
                 ),
         }),
         onSubmit: (values) => {
-            mutate({ body: values })
+            let data: ApplyLeaveDtoFromAdmin;
+            if (values.cl > 0) {
+                data = {
+                    leave_type: 'cl',
+                    leave: values.cl,
+                    status: values.status,
+                    yearmonth: values.yearmonth,
+                    employee: values.employee
+                }
+                mutate({ body: data })
+            }
+            if (values.fl > 0) {
+                data = {
+                    leave_type: 'fl',
+                    leave: values.fl,
+                    status: values.status,
+                    yearmonth: values.yearmonth,
+                    employee: values.employee
+                }
+                mutate({ body: data })
+            }
+            if (values.sw > 0) {
+                data = {
+                    leave_type: 'sw',
+                    leave: values.sw,
+                    status: values.status,
+                    yearmonth: values.yearmonth,
+                    employee: values.employee
+                }
+                mutate({ body: data })
+            }
         }
     });
 
@@ -96,27 +129,32 @@ function ApplyLeaveFromAdminForm({ leavedata, setDialog }: { leavedata: GetSales
                 pt={2}
             >
                 <TextField
-                    select
                     required
                     fullWidth
-                    error={formik.touched.leave_type && formik.errors.leave_type ? true : false}
-                    id="leave_type"
-                    label="Leave Type"
-                    helperText={formik.touched.leave_type && formik.errors.leave_type ? formik.errors.leave_type : ""}
-                    {...formik.getFieldProps('leave_type')}
-                    SelectProps={{
-                        native: true,
-                    }}
-                >
-                    <option key={1} value={'cl'}>
-                        CL
-                    </option>
-                    <option key={2} value={'fl'}>
-                        FL
-                    </option>
-                </TextField>
-                <TextField required fullWidth error={formik.touched.leave && formik.errors.leave ? true : false} id="leave" label="No Of Leaves" helperText={formik.touched.leave && formik.errors.leave ? formik.errors.leave : ""}    {...formik.getFieldProps('leave')} />
-
+                    error={formik.touched.cl && formik.errors.cl ? true : false}
+                    id="cl"
+                    label="Casual Leave"
+                    helperText={formik.touched.cl && formik.errors.cl ? formik.errors.cl : `Available ${leavedata.total.cl || 0}`}
+                    {...formik.getFieldProps('cl')}
+                />
+                <TextField
+                    required
+                    fullWidth
+                    error={formik.touched.fl && formik.errors.fl ? true : false}
+                    id="fl"
+                    label="Festive Leave"
+                    helperText={formik.touched.fl && formik.errors.fl ? formik.errors.fl : `Available ${leavedata.total.fl || 0}`}
+                    {...formik.getFieldProps('fl')}
+                />
+                <TextField
+                    required
+                    fullWidth
+                    error={formik.touched.sw && formik.errors.sw ? true : false}
+                    id="sw"
+                    label="Sunday Working"
+                    helperText={formik.touched.sw && formik.errors.sw ? formik.errors.sw : `Available ${leavedata.total.sw || 0}`}
+                    {...formik.getFieldProps('sw')}
+                />
                 <TextField required fullWidth error={formik.touched.yearmonth && formik.errors.yearmonth ? true : false} id="yearmonth" label="Year Month" helperText={formik.touched.yearmonth && formik.errors.yearmonth ? formik.errors.yearmonth : "202501"}    {...formik.getFieldProps('yearmonth')} />
 
                 < TextField
