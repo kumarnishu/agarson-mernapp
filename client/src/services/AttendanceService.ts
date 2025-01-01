@@ -1,4 +1,4 @@
-import { CreateOrEditLeaveDto } from "../dtos/leave.dto";
+import { CreateOrEditLeaveBalanceDto } from "../dtos/leave.dto";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 export class AttendanceService {
@@ -17,7 +17,7 @@ export class AttendanceService {
   public async GetLeaves(status: string) {
     return await apiClient.get(`leaves/?status=${status}`);
   };
-  public async CreateOrEditLeaveBalance({ body, id }: { body: CreateOrEditLeaveDto, id?: string }) {
+  public async CreateOrEditLeaveBalance({ body, id }: { body: CreateOrEditLeaveBalanceDto, id?: string }) {
     if (id)
       return await apiClient.put(`leaves-balance/${id}`, body);
     return await apiClient.post(`leaves-balance`, body);
