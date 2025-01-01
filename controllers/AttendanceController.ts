@@ -15,7 +15,7 @@ export class AttendanceController {
         let filter: { status?: string } | {} = {}
         if (status !== 'all')
             filter = { status: status }
-        items = await Leave.find(filter).populate('employee').populate('created_by').populate('updated_by').sort('item')
+        items = await Leave.find(filter).populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
 
         result = items.map((item) => {
             return {
