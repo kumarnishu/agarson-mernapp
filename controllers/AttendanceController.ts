@@ -264,17 +264,16 @@ export class AttendanceController {
                     cl: provided.cl + brought_forward.cl
                 };
                 let consumedleave = await Leave.find({ yearmonth: yearmonth, employee: user._id, status: 'approved' });
-                console.log(consumedleave)
                 let consumed = { sl: 0, fl: 0, sw: 0, cl: 0 };
                 consumedleave.forEach(leave => {
                     if (leave.leave_type === 'sl') {
-                        consumed.sl += 1;
+                        consumed.sl += leave.leave;
                     } else if (leave.leave_type === 'fl') {
-                        consumed.fl += 1;
+                        consumed.fl += leave.leave;
                     } else if (leave.leave_type === 'sw') {
-                        consumed.sw += 1;
+                        consumed.sw += leave.leave;
                     } else if (leave.leave_type === 'cl') {
-                        consumed.cl += 1;
+                        consumed.cl += leave.leave;
                     }
                 });
 
@@ -297,7 +296,6 @@ export class AttendanceController {
                 };
             }));
 
-            console.log(result);
 
             return res.status(200).json(result);
         } catch (error) {

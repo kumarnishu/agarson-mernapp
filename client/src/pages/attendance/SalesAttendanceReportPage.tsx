@@ -65,6 +65,7 @@ export default function SalesAttendanceReportPage() {
         Cell: ({ cell }) => <>
           <Button color="inherit" size="small"
             variant='text'
+            disabled={(cell.row.original.attendance + cell.row.original.consumed.sl + cell.row.original.consumed.fl + cell.row.original.consumed.sw + cell.row.original.consumed.cl) == new Date(new Date().getFullYear(), new Date().getMonth(), 0).getDate()}
             onClick={() => {
               setBalance(cell.row.original)
               if (LoggedInUser?.is_admin)
@@ -80,18 +81,26 @@ export default function SalesAttendanceReportPage() {
 
       {
         accessorKey: 'attendance',
-        header: 'Attendance',
-        Cell: (cell) => <>{cell.row.original.attendance ? cell.row.original.attendance : ""}</>,
+        header: '',
+        Cell: (cell) => <Stack direction={'column'}>
+          <Typography sx={{ fontWeight: '500' }} fontSize='0.8rem'>{`Present : ${cell.row.original.attendance}`}</Typography>
+          <Typography sx={{ fontWeight: '500' }} fontSize='0.8rem'>{`SL : ${cell.row.original.consumed.sl}`}</Typography>
+          <Typography sx={{ fontWeight: '500' }} fontSize='0.8rem'>{`CL : ${cell.row.original.consumed.cl}`}</Typography>
+          <Typography sx={{ fontWeight: '500' }} fontSize='0.8rem'>{`Sunday : ${cell.row.original.consumed.sw}`}</Typography>
+          <Typography sx={{ fontWeight: '500' }} fontSize='0.8rem'>{`FL : ${cell.row.original.consumed.fl}`}</Typography>
+          <Typography sx={{ fontWeight: '500' }} fontSize='0.8rem'>{`Net Payable : ${cell.row.original.attendance + cell.row.original.consumed.sl + cell.row.original.consumed.cl + cell.row.original.consumed.fl + cell.row.original.consumed.sw} days`}</Typography>
+
+        </Stack>,
       },
       {
         accessorKey: 'created_at',
         header: '',
         Cell: () => <Stack direction={'column'}>
-          <Typography sx={{ fontWeight: '500' }} fontSize='0.9rem'>{"This Month Provided"}</Typography>
-          <Typography sx={{ fontWeight: '500' }} fontSize='0.9rem'>{"Old Balance"}</Typography>
-          <Typography sx={{ fontWeight: '500' }} fontSize='0.9rem'>{"Total"}</Typography>
-          <Typography sx={{ fontWeight: '500' }} fontSize='0.9rem'>{"Consumed this Month"}</Typography>
-          <Typography sx={{ fontWeight: '500' }} fontSize='0.9rem'>{"Carry Forward"}</Typography>
+          <Typography  fontSize='0.9rem'>{"This Month Provided"}</Typography>
+          <Typography  fontSize='0.9rem'>{"Old Balance"}</Typography>
+          <Typography  fontSize='0.9rem'>{"Total"}</Typography>
+          <Typography  fontSize='0.9rem'>{"Consumed this Month"}</Typography>
+          <Typography  fontSize='0.9rem'>{"Carry Forward"}</Typography>
         </Stack>
       },
       {
