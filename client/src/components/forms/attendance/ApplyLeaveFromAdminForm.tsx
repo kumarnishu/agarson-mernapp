@@ -143,19 +143,20 @@ function ApplyLeaveFromAdminForm({ leavedata, setDialog }: { leavedata: GetSales
                     error={formik.touched.fl && formik.errors.fl ? true : false}
                     id="fl"
                     label="Festive Leave"
-                    helperText={formik.touched.fl && formik.errors.fl ? formik.errors.fl : `Available ${leavedata.total.fl-leavedata.consumed.fl}`}
+                    helperText={formik.touched.fl && formik.errors.fl ? formik.errors.fl : `Available ${leavedata.total.fl - leavedata.consumed.fl}`}
                     {...formik.getFieldProps('fl')}
                 />
                 <TextField
                     required
                     fullWidth
+
                     error={formik.touched.sw && formik.errors.sw ? true : false}
                     id="sw"
                     label="Sunday Working"
                     helperText={formik.touched.sw && formik.errors.sw ? formik.errors.sw : `Available ${leavedata.total.sw - leavedata.consumed.sw}`}
                     {...formik.getFieldProps('sw')}
                 />
-                <TextField required fullWidth error={formik.touched.yearmonth && formik.errors.yearmonth ? true : false} id="yearmonth" label="Year Month" helperText={formik.touched.yearmonth && formik.errors.yearmonth ? formik.errors.yearmonth : "202501"}    {...formik.getFieldProps('yearmonth')} />
+                <TextField disabled required fullWidth error={formik.touched.yearmonth && formik.errors.yearmonth ? true : false} id="yearmonth" label="Year Month" helperText={formik.touched.yearmonth && formik.errors.yearmonth ? formik.errors.yearmonth : "202501"}    {...formik.getFieldProps('yearmonth')} />
 
                 < TextField
                     select
@@ -163,8 +164,9 @@ function ApplyLeaveFromAdminForm({ leavedata, setDialog }: { leavedata: GetSales
                         native: true
                     }}
                     fullWidth
+                    disabled
                     focused
-                    error={formik.touched.employee && formik.errors.employee ? true : false} id="employee" label="Year Month" helperText={formik.touched.employee && formik.errors.employee ? formik.errors.employee : ""}    {...formik.getFieldProps('employee')}
+                    error={formik.touched.employee && formik.errors.employee ? true : false} id="employee" label="Employee" helperText={formik.touched.employee && formik.errors.employee ? formik.errors.employee : ""}    {...formik.getFieldProps('employee')}
                 >
                     <option key={0} value={'all'}>
                         Select Users
