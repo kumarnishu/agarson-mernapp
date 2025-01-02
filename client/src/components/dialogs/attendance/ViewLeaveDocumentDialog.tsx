@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle, IconButton, Stack, Typography } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, IconButton, Stack } from '@mui/material';
 import { Cancel } from '@mui/icons-material';
 import { DownloadFile } from '../../../utils/DownloadFile';
 
@@ -20,8 +20,7 @@ function ViewLeaveDocumentDialog({ url, dialog, setDialog }: Props) {
             }}>
                     <Cancel fontSize='large' />
                 </IconButton>
-                <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{url.url_no}</DialogTitle>
-                <Typography sx={{ minWidth: '350px' }} textAlign={"center"}>{url.url_date}</Typography>
+                <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>Document</DialogTitle>
                 <DialogContent>
                     <Stack justifyContent={'center'}
                         onDoubleClick={() => {
