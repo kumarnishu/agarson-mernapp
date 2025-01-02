@@ -1307,7 +1307,7 @@ export class ChecklistController {
         for (let i = 0; i < checklists.length; i++) {
             let ch = checklists[i]
             let boxes: IChecklistBox[] = []
-            if (ch.checklist_boxes.length < 5) {
+            if (ch.checklist_boxes.length > 5) {
                 if (ch.frequency == 'daily')
                     boxes = await ChecklistBox.find({ checklist: checklists[i], date: { $lt: dt2 } }).sort("-date").limit(5)
                 if (ch.frequency == 'monthly')
