@@ -4,6 +4,8 @@ import { ILeaveBalance, LeaveBalance } from "../models/leave-balance.model"
 import { GetLeaveDto, GetLeaveBalanceDto, GetSalesmanAttendanceReportDto, CreateOrEditLeaveBalanceDto, ApplyLeaveDtoFromAdmin } from "../dtos/leave.dto"
 import { ILeave, Leave } from "../models/leave.model"
 import moment from "moment"
+import { uploadFileToCloud } from "../services/uploadFileToCloud"
+import { Asset } from "../models/user.model"
 
 export class AttendanceController {
 
@@ -22,6 +24,7 @@ export class AttendanceController {
                 _id: item._id,
                 leave_type: item.leave_type,
                 status: item.status,
+                photo: item.photo ? item.photo.public_url : '',
                 leave: item.leave,
                 yearmonth: item.yearmonth,
                 employee: { id: item.employee._id, label: item.employee.username },
@@ -36,12 +39,31 @@ export class AttendanceController {
 
 
     public async ApplyLeave(req: Request, res: Response, next: NextFunction) {
-        const { leave_type, leave, yearmonth, employee } = req.body as { leave_type: string, leave: number, yearmonth: number, employee: string }
+        let body = JSON.parse(req.body.body)
+        const { leave_type, leave, yearmonth, employee } = body as { leave_type: string, leave: number, yearmonth: number, employee: string }
         if (!leave_type || !leave || !yearmonth || !employee) {
             return res.status(400).json({ message: "please provide required fields" })
         }
+        console.log(body)
+        if (!req.file)
+            return res.status(400).json({ message: "please provide required fields" })
+        let document: Asset = undefined
+        if (req.file) {
+            const allowedFiles = ["image/png", "image/jpeg", "image/gif", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv", "application/pdf"];
+            const storageLocation = `leaves/media`;
+            if (!allowedFiles.includes(req.file.mimetype))
+                return res.status(400).json({ message: `${req.file.originalname} is not valid, only ${allowedFiles} types are allowed to upload` })
+            if (req.file.size > 20 * 1024 * 1024)
+                return res.status(400).json({ message: `${req.file.originalname} is too large limit is :10mb` })
+            const doc = await uploadFileToCloud(req.file.buffer, storageLocation, req.file.originalname)
+            if (doc)
+                document = doc
+            else {
+                return res.status(500).json({ message: "file uploading error" })
+            }
+        }
         await new Leave({
-            leave_type, leave, yearmonth, employee,
+            leave_type, leave, yearmonth, employee, photo: document,
             status: 'pending',
             created_at: new Date(),
             created_by: req.user,

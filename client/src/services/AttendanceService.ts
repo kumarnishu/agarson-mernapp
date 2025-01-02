@@ -17,7 +17,7 @@ export class AttendanceService {
   public async ApplyLeaveFromAdmin({ body }: { body: ApplyLeaveDtoFromAdmin }) {
     return await apiClient.post(`apply-leave/admin`, body);
   };
-  public async ApplyLeave({ body }: { body: ApplyLeaveDto }) {
+  public async ApplyLeave({ body }: { body: FormData }) {
     return await apiClient.post(`apply-leave`, body);
   };
 

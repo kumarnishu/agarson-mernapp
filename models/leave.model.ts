@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IUser } from "./user.model";
+import { Asset, IUser } from "./user.model";
 
 export type ILeave = {
     _id: string,
@@ -9,6 +9,7 @@ export type ILeave = {
     yearmonth: number,
     employee: IUser,
     created_at: Date,
+    photo:Asset
     updated_at: Date,
     created_by: IUser,
     updated_by: IUser
@@ -25,6 +26,15 @@ const LeaveSchema = new mongoose.Schema<ILeave, mongoose.Model<ILeave, {}, {}>, 
         type: Number,
         default: 0,
         required: true
+    },
+    photo: {
+        _id: { type: String },
+        filename: { type: String },
+        public_url: { type: String },
+        content_type: { type: String },
+        size: { type: String },
+        bucket: { type: String },
+        created_at: Date
     },
     yearmonth: {
         type: Number,

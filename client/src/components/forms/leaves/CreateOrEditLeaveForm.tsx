@@ -7,8 +7,10 @@ import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
-import { CreateOrEditLeaveBalanceDto,
-     GetLeaveBalanceDto } from '../../../dtos/leave.dto';
+import {
+    CreateOrEditLeaveBalanceDto,
+    GetLeaveBalanceDto
+} from '../../../dtos/leave.dto';
 import { AttendanceService } from '../../../services/AttendanceService';
 import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { UserService } from '../../../services/UserServices';
@@ -68,7 +70,8 @@ function CreateOrEditLeaveForm({ balance, setDialog }: { balance?: GetLeaveBalan
 
                         return year >= 1900 && year <= 2100 && month >= 1 && month <= 12;
                     }
-                ),
+                )
+          
         }),
         onSubmit: (values) => {
             if (balance)
@@ -135,8 +138,7 @@ function CreateOrEditLeaveForm({ balance, setDialog }: { balance?: GetLeaveBalan
                         </option>
                     ))}
                 </TextField>
-
-
+                
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}
                     fullWidth>{Boolean(isLoading) ? <CircularProgress /> : "Submit"}

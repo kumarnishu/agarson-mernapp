@@ -6,6 +6,7 @@ export type GetLeaveDto = {
     leave: number,
     status: string,
     yearmonth: number,
+    photo:string,
     employee: DropDownDto,
     created_at: string,
     updated_at: string,

@@ -7,11 +7,12 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtua
 import { UserContext } from '../../contexts/userContext'
 import { Button, Fade, IconButton, Menu, MenuItem, TextField, Typography } from '@mui/material'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { Menu as MenuIcon } from '@mui/icons-material';
+import { Menu as MenuIcon, Photo } from '@mui/icons-material';
 import { GetLeaveDto } from '../../dtos/leave.dto'
 import { AttendanceService } from '../../services/AttendanceService'
 import { toTitleCase } from '../../utils/TitleCase'
 import ApproveOrRejectLeaveDialog from '../../components/dialogs/attendance/ApproveOrRejectLeaveDialog'
+import ViewLeaveDocumentDialog from '../../components/dialogs/attendance/ViewLeaveDocumentDialog'
 
 
 export default function LeavesPage() {
@@ -24,7 +25,7 @@ export default function LeavesPage() {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
-
+  const [url, setUrl] = useState<string>("")
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
@@ -75,6 +76,13 @@ export default function LeavesPage() {
         accessorKey: 'employee.label',
         header: 'Employee',
         Cell: (cell) => <>{cell.row.original.employee ? cell.row.original.employee.label : ""}</>,
+      },
+      {
+        accessorKey: 'photo',
+        header: 'Photo',
+        Cell: (cell) => <>
+          {!cell.row.original.photo || cell.row.original.photo == "" ? <></> : <Photo onClick={() => { setUrl(cell.row.original.photo); setDialog('ViewLeaveDocumentDialog') }} />}
+        </>,
       },
       {
         accessorKey: 'created_at',
@@ -308,6 +316,7 @@ export default function LeavesPage() {
       </Stack>
       {/* table */}
       < MaterialReactTable table={table} />
+      {url !== "" && <ViewLeaveDocumentDialog url={url} dialog={dialog} setDialog={setDialog} />}
       {balance && <ApproveOrRejectLeaveDialog leavedata={balance} dialog={dialog} setDialog={setDialog} />}
     </>
 

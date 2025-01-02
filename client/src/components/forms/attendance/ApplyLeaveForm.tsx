@@ -4,11 +4,10 @@ import { useFormik } from 'formik';
 import { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
-import { BackendError } from '../../..';
+import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import {
-    ApplyLeaveDto,
     GetSalesmanAttendanceReportDto
 } from '../../../dtos/leave.dto';
 import { AttendanceService } from '../../../services/AttendanceService';
@@ -21,7 +20,7 @@ function ApplyLeaveForm({ leavedata, setDialog }: { leavedata: GetSalesmanAttend
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetSalesmanAttendanceReportDto>, BackendError, {
-            body: ApplyLeaveDto
+            body: FormData
         }>
         (new AttendanceService().ApplyLeave, {
 
@@ -45,6 +44,7 @@ function ApplyLeaveForm({ leavedata, setDialog }: { leavedata: GetSalesmanAttend
         initialValues: {
             leave_type: 'sl',
             leave: 1,
+            photo: "",
             yearmonth: leavedata?.yearmonth || getCurrentYearMonth(),
             employee: leavedata && leavedata.employee.id || "",
         },
@@ -68,9 +68,37 @@ function ApplyLeaveForm({ leavedata, setDialog }: { leavedata: GetSalesmanAttend
                         return year >= 1900 && year <= 2100 && month >= 1 && month <= 12;
                     }
                 ),
+            photo: Yup.mixed<File>()
+                .test("size", "size is allowed only less than 20mb",
+                    file => {
+                        if (file)
+                            if (!file.size) //file not provided
+                                return true
+                            else
+                                return Boolean(file.size <= 20 * 1024 * 1024)
+                        return true
+                    }
+                )
+                .test("type", " allowed only .jpg, .jpeg, .png, .gif .pdf .csv .xlsx .docs",
+                    file => {
+                        const Allowed = ["image/png", "image/jpeg", "image/gif", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv", "application/pdf"]
+                        if (file)
+                            if (!file.size) //file not provided
+                                return true
+                            else
+                                return Boolean(Allowed.includes(file.type))
+                        return true
+                    }
+                )
         }),
         onSubmit: (values) => {
-            mutate({ body: values })
+
+            let formdata = new FormData()
+            formdata.append("body", JSON.stringify(values))
+            if (values.photo)
+                formdata.append("file", values.photo)
+            if (leavedata)
+                mutate({ body: formdata })
         }
     });
 
@@ -134,6 +162,31 @@ function ApplyLeaveForm({ leavedata, setDialog }: { leavedata: GetSalesmanAttend
                         </option>
                     ))}
                 </TextField>
+                <TextField
+                    fullWidth
+                    variant='filled'
+                    error={
+                        formik.touched.photo && formik.errors.photo ? true : false
+                    }
+                    helperText={
+                        formik.touched.photo && formik.errors.photo ? (formik.errors.photo) : ""
+                    }
+                    label="Document/Photo"
+                    focused
+
+                    type="file"
+                    name="photo"
+                    onBlur={formik.handleBlur}
+                    onChange={(e) => {
+                        e.preventDefault()
+                        const target: Target = e.currentTarget
+                        let files = target.files
+                        if (files) {
+                            let file = files[0]
+                            formik.setFieldValue("photo", file)
+                        }
+                    }}
+                />
 
 
                 <Button variant="contained" color="primary" type="submit"
