@@ -40,7 +40,7 @@ export default function LeavesPage() {
         Cell: ({ cell }) => <>
           {LoggedInUser?.is_admin &&
             <Button color="error"
-              disabled={cell.row.original.status === 'rejected' || cell.row.original.status === 'approved'}
+              disabled={cell.row.original.status === 'rejected'}
               onClick={() => {
                 setBalance(cell.row.original)
                 setDialog('ApproveOrRejectLeaveDialog')
