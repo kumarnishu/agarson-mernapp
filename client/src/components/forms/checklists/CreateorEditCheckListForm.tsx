@@ -239,7 +239,6 @@ function CreateorEditCheckListForm({ checklist, setDialog }: { checklist?: GetCh
                         formik.touched.frequency && formik.errors.frequency ? true : false
                     }
                     id="frequency"
-                    disabled={checklist ? true : false}
                     label="Frequency"
                     fullWidth
                     helperText={

@@ -811,7 +811,6 @@ export class ChecklistController {
         return res.status(201).json({ message: `new Checklist added` });
     }
     public async EditChecklist(req: Request, res: Response, next: NextFunction) {
-
         let body = JSON.parse(req.body.body)
         const {
             category,
@@ -820,6 +819,7 @@ export class ChecklistController {
             group_title,
             condition, expected_number,
             link,
+            frequency,
             assigned_users } = body as CreateOrEditChecklistDto
         if (!work_title)
             return res.status(400).json({ message: "please provide all required fields" })
@@ -833,6 +833,8 @@ export class ChecklistController {
             return res.status(404).json({ message: 'checklist not exists' })
 
         let document: Asset = checklist.photo
+
+
         if (req.file) {
             const allowedFiles = ["image/png", "image/jpeg", "image/gif", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv", "application/pdf"];
             const storageLocation = `checklist/media`;
@@ -859,6 +861,7 @@ export class ChecklistController {
             serial_no: serial_no,
             group_title: group_title,
             category: category,
+            frequency: frequency,
             condition,
             expected_number,
             link: link,
@@ -867,6 +870,120 @@ export class ChecklistController {
             updated_by: req.user,
             photo: document
         })
+        let checklistboxes: IChecklistBox[] = [];
+        let last10boxes: IChecklistBox[] = []
+        let dt1 = new Date()
+        dt1.setHours(0, 0, 0, 0)
+        let dt2 = new Date()
+
+        dt2.setDate(dt1.getDate() + 1)
+        dt2.setHours(0)
+        dt2.setMinutes(0)
+        let end_date = new Date();
+        end_date.setFullYear(end_date.getFullYear() + 30)
+        let limit = 0
+        if (frequency == 'daily')
+            limit = 5
+        if (frequency == 'monthly')
+            limit = 2
+        if (frequency == 'weekly')
+            limit = 3
+        if (frequency == 'yearly')
+            limit = 2
+        const ch = await Checklist.findById(checklist._id)
+        if (frequency !== checklist.frequency) {
+            await ChecklistBox.deleteMany({ checklist: checklist._id })
+            if (frequency == "daily") {
+                let current_date = new Date()
+                current_date.setDate(1)
+                current_date.setMonth(0)
+                while (current_date <= new Date(end_date)) {
+                    let checklistbox = await new ChecklistBox({
+                        date: new Date(current_date),
+                        stage: 'open',
+                        checklist: checklist._id,
+                        created_at: new Date(),
+                        updated_at: new Date(),
+                        created_by: req.user,
+                        updated_by: req.user
+                    }).save()
+                    checklistboxes.push(checklistbox)
+                    current_date.setDate(new Date(current_date).getDate() + 1)
+                }
+            }
+            if (frequency == "weekly") {
+                let mon = getFirstMonday()
+                let current_date = mon;
+
+                console.log(mon)
+                while (current_date <= new Date(end_date)) {
+                    let checklist_box = await new ChecklistBox({
+                        date: new Date(current_date),
+                        stage: 'open',
+                        checklist: checklist._id,
+                        created_at: new Date(),
+                        updated_at: new Date(),
+                        created_by: req.user,
+                        updated_by: req.user
+                    }).save()
+                    checklistboxes.push(checklist_box)
+                    current_date.setDate(new Date(current_date).getDate() + 7)
+                }
+            }
+            if (frequency == "monthly") {
+                let current_date = new Date()
+                current_date.setDate(1)
+                current_date.setMonth(0)
+                while (current_date <= new Date(end_date)) {
+                    let box = await new ChecklistBox({
+                        date: new Date(current_date),
+                        stage: 'open',
+                        checklist: checklist._id,
+                        created_at: new Date(),
+                        updated_at: new Date(),
+                        created_by: req.user,
+                        updated_by: req.user
+                    }).save()
+                    checklistboxes.push(box)
+                    current_date.setMonth(new Date(current_date).getMonth() + 1)
+                }
+            }
+            if (frequency == "yearly") {
+                let current_date = new Date()
+                current_date.setDate(1)
+                current_date.setMonth(0)
+                current_date.setFullYear(2020)
+                while (current_date <= new Date(end_date)) {
+                    let box = await new ChecklistBox({
+                        date: new Date(current_date),
+                        stage: 'open',
+                        checklist: checklist._id,
+                        created_at: new Date(),
+                        updated_at: new Date(),
+                        created_by: req.user,
+                        updated_by: req.user
+                    }).save()
+                    checklistboxes.push(box)
+                    current_date.setFullYear(new Date(current_date).getFullYear() + 1)
+                }
+            }
+
+            if (ch) {
+                console.log(last10boxes.length)
+                ch.last_10_boxes = last10boxes
+                ch.checklist_boxes = checklistboxes
+                await ch.save();
+            }
+        }
+        console.log(frequency)
+
+        last10boxes = await ChecklistBox.find({ checklist: checklist, date: { $lt: dt2 } }).sort("-date").limit(limit)
+        if (ch) {
+            //@ts-ignore
+            last10boxes.sort((a, b) => new Date(a.date) - new Date(b.date));
+            ch.last_10_boxes = last10boxes
+            await ch?.save()
+        }
         return res.status(200).json({ message: `Checklist updated` });
     }
     public async ChangeNextDate(req: Request, res: Response, next: NextFunction) {
@@ -1177,9 +1294,8 @@ export class ChecklistController {
         }
         return res.status(200).json({ message: "checklists are deleted" })
     }
-    public async ChangeChecklistFrequency(req: Request, res: Response, next: NextFunction) {
-        const { frequency } = req.body as { frequency: string }
-        if (!frequency) return res.status(403).json({ message: "please fill required fields" })
+
+    public async FixLast10boxes(req: Request, res: Response, next: NextFunction) {
         let dt1 = new Date()
         dt1.setHours(0, 0, 0, 0)
         let dt2 = new Date()
@@ -1187,102 +1303,26 @@ export class ChecklistController {
         dt2.setDate(dt1.getDate() + 1)
         dt2.setHours(0)
         dt2.setMinutes(0)
-        let end_date = new Date();
-        end_date.setFullYear(end_date.getFullYear() + 30)
-        let checklistboxes: IChecklistBox[] = []
-        let id = req.params.id
-        let checklist = await Checklist.findById(id)
-        if (!checklist)
-            return res.status(404).json({ message: "checklist not found" })
-        if (frequency == "daily") {
-            let current_date = new Date()
-            current_date.setDate(1)
-            current_date.setMonth(0)
-            while (current_date <= new Date(end_date)) {
-                let checklistbox = await new ChecklistBox({
-                    date: new Date(current_date),
-                    stage: 'open',
-                    checklist: checklist._id,
-                    created_at: new Date(),
-                    updated_at: new Date(),
-                    created_by: req.user,
-                    updated_by: req.user
-                }).save()
-                checklistboxes.push(checklistbox)
-                current_date.setDate(new Date(current_date).getDate() + 1)
+        let checklists = await Checklist.find({})
+        for (let i = 0; i < checklists.length; i++) {
+            let ch = checklists[i]
+            let boxes: IChecklistBox[] = []
+            if (ch.checklist_boxes.length < 5) {
+                if (ch.frequency == 'daily')
+                    boxes = await ChecklistBox.find({ checklist: checklists[i], date: { $lt: dt2 } }).sort("-date").limit(5)
+                if (ch.frequency == 'monthly')
+                    boxes = await ChecklistBox.find({ checklist: checklists[i], date: { $lt: dt2 } }).sort("-date").limit(2)
+                if (ch.frequency == 'weekly')
+                    boxes = await ChecklistBox.find({ checklist: checklists[i], date: { $lt: dt2 } }).sort("-date").limit(3)
+                if (ch.frequency == 'yearly')
+                    boxes = await ChecklistBox.find({ checklist: checklists[i], date: { $lt: dt2 } }).sort("-date").limit(2)
+                //@ts-ignore
+                boxes.sort((a, b) => new Date(a.date) - new Date(b.date));
+                ch.last_10_boxes = boxes
+                await ch.save()
             }
         }
-        if (frequency == "weekly") {
-            let mon = getFirstMonday()
-            let current_date = mon;
+        return res.status(200).json({ message: "success" })
 
-            console.log(mon)
-            while (current_date <= new Date(end_date)) {
-                let checklist_box = await new ChecklistBox({
-                    date: new Date(current_date),
-                    stage: 'open',
-                    checklist: checklist._id,
-                    created_at: new Date(),
-                    updated_at: new Date(),
-                    created_by: req.user,
-                    updated_by: req.user
-                }).save()
-                checklistboxes.push(checklist_box)
-                current_date.setDate(new Date(current_date).getDate() + 7)
-            }
-        }
-        if (frequency == "monthly") {
-            let current_date = new Date()
-            current_date.setDate(1)
-            current_date.setMonth(0)
-            while (current_date <= new Date(end_date)) {
-                let box = await new ChecklistBox({
-                    date: new Date(current_date),
-                    stage: 'open',
-                    checklist: checklist._id,
-                    created_at: new Date(),
-                    updated_at: new Date(),
-                    created_by: req.user,
-                    updated_by: req.user
-                }).save()
-                checklistboxes.push(box)
-                current_date.setMonth(new Date(current_date).getMonth() + 1)
-            }
-        }
-        if (frequency == "yearly") {
-            let current_date = new Date()
-            current_date.setDate(1)
-            current_date.setMonth(0)
-            current_date.setFullYear(2020)
-            while (current_date <= new Date(end_date)) {
-                let box = await new ChecklistBox({
-                    date: new Date(current_date),
-                    stage: 'open',
-                    checklist: checklist._id,
-                    created_at: new Date(),
-                    updated_at: new Date(),
-                    created_by: req.user,
-                    updated_by: req.user
-                }).save()
-                checklistboxes.push(box)
-                current_date.setFullYear(new Date(current_date).getFullYear() + 1)
-            }
-        }
-        checklist.checklist_boxes = checklistboxes;
-
-        let boxes: IChecklistBox[] = []
-        if (checklist.frequency == 'daily')
-            boxes = await ChecklistBox.find({ checklist: checklist, date: { $lt: dt2 } }).sort("-date").limit(5)
-        if (checklist.frequency == 'monthly')
-            boxes = await ChecklistBox.find({ checklist: checklist, date: { $lt: dt2 } }).sort("-date").limit(2)
-        if (checklist.frequency == 'weekly')
-            boxes = await ChecklistBox.find({ checklist: checklist, date: { $lt: dt2 } }).sort("-date").limit(3)
-        if (checklist.frequency == 'yearly')
-            boxes = await ChecklistBox.find({ checklist: checklist, date: { $lt: dt2 } }).sort("-date").limit(2)
-        //@ts-ignore
-        boxes.sort((a, b) => new Date(a.date) - new Date(b.date));
-        checklist.last_10_boxes = boxes
-        await checklist.save();
-        return res.status(200).json({ message: "frequency updated successfully" })
     }
 }

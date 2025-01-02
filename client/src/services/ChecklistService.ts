@@ -37,6 +37,9 @@ export class ChecklistService {
     return await apiClient.post(`bulk/delete/checklists`, body)
   }
 
+  public async FixChecklistboxes() {
+    return await apiClient.post(`checklists/fixboxes`)
+  }
 
 
 
@@ -93,7 +96,7 @@ export class ChecklistService {
   }) {
     return await apiClient.post(`assign/checklists`, body)
   }
-  
+
 
 }
 

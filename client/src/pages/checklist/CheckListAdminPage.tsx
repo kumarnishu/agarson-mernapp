@@ -29,6 +29,7 @@ import autoTable from 'jspdf-autotable';
 
 import { UserService } from '../../services/UserServices'
 import { ChecklistService } from '../../services/ChecklistService'
+import FixCheckListBoxesDialog from '../../components/dialogs/checklists/FixCheckListBoxesDialog'
 
 function CheckListAdminPage() {
   const { user: LoggedInUser } = useContext(UserContext)
@@ -448,7 +449,7 @@ function CheckListAdminPage() {
     positionToolbarAlertBanner: 'none',
     enableColumnVirtualization: true,
     enableStickyFooter: true,
-   enableDensityToggle: false, initialState: { sorting: [{ id: "group_title", desc: false }], density: 'compact', grouping: ['group_title'], showGlobalFilter: true, expanded: true, pagination: { pageIndex: 0, pageSize: 1000 } },
+    enableDensityToggle: false, initialState: { sorting: [{ id: "group_title", desc: false }], density: 'compact', grouping: ['group_title'], showGlobalFilter: true, expanded: true, pagination: { pageIndex: 0, pageSize: 1000 } },
     enableGrouping: true,
     enableRowSelection: true,
     enablePagination: true,
@@ -773,6 +774,12 @@ function CheckListAdminPage() {
             setAnchorEl(null)
           }}
         > Remove Users</MenuItem>}
+        {LoggedInUser?.assigned_permissions.includes('checklist_admin_edit') && <MenuItem
+          onClick={() => {
+            setDialog('FixCheckListBoxesDialog')
+            setAnchorEl(null)
+          }}
+        > Fixed Date Boxes</MenuItem>}
         {LoggedInUser?.assigned_permissions.includes('checklist_admin_export') && < MenuItem onClick={() => {
 
           let data: GetChecklistFromExcelDto[] = []
@@ -831,6 +838,7 @@ function CheckListAdminPage() {
 
       <CreateOrEditCheckListDialog dialog={dialog} setDialog={setDialog} checklist={checklist} setChecklist={setChecklist} />
       {checklist && <DeleteCheckListDialog dialog={dialog} setDialog={setDialog} checklist={checklist} />}
+      <FixCheckListBoxesDialog dialog={dialog} setDialog={setDialog} />
       {checklist && <CreateOrEditCheckListDialog dialog={dialog} setDialog={setDialog} checklist={checklist} setChecklist={setChecklist} />}
       {checklist && checklistBox && <ViewChecklistBoxRemarksDialog dialog={dialog} setDialog={setDialog} is_admin={true} checklist={checklist} checklist_box={checklistBox} />}
       {checklist && <ViewChecklistRemarksDialog dialog={dialog} setDialog={setDialog} checklist={checklist} />}
