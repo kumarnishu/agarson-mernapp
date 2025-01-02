@@ -17,7 +17,11 @@ export class AttendanceController {
         let filter: { status?: string } | {} = {}
         if (status !== 'all')
             filter = { status: status }
-        items = await Leave.find(filter).populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
+        if (req.user.is_admin) {
+            items = await Leave.find(filter).populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
+        }
+        else
+            items = await Leave.find({ $and: [filter, { employee: req.user._id }] }).populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
 
         result = items.map((item) => {
             return {
@@ -107,7 +111,10 @@ export class AttendanceController {
     public async GetAllLeaveBalances(req: Request, res: Response, next: NextFunction) {
         let result: GetLeaveBalanceDto[] = []
         let items: ILeaveBalance[] = []
-        items = await LeaveBalance.find().populate('employee').populate('created_by').populate('updated_by').sort('item')
+        if (req.user.is_admin)
+            items = await LeaveBalance.find().populate('employee').populate('created_by').populate('updated_by').sort('item')
+        else
+            items = await LeaveBalance.find({ employee: req.user._id }).populate('employee').populate('created_by').populate('updated_by').sort('item')
         result = items.map((item) => {
             return {
                 _id: item._id,
@@ -195,9 +202,7 @@ export class AttendanceController {
     //attendance report controller
     public async GetAllAttendanceReport(req: Request, res: Response, next: NextFunction) {
         let result: GetSalesmanAttendanceReportDto[] = []
-        let employee = req.query.employee
         let yearmonth = req.query.yearmonth
-        console.log(employee, yearmonth)
         let items: ILeaveBalance[] = []
         items = await LeaveBalance.find().populate('employee').populate('created_by').populate('updated_by').sort('-yearmonth')
 
