@@ -13,7 +13,9 @@ export class AttendanceService {
   public async GetLeaves(status: string) {
     return await apiClient.get(`leaves/?status=${status}`);
   };
-
+  public async GetPendingLeaves() {
+    return await apiClient.get(`leaves/pending`);
+  };
   public async ApplyLeaveFromAdmin({ body }: { body: ApplyLeaveDtoFromAdmin }) {
     return await apiClient.post(`apply-leave/admin`, body);
   };

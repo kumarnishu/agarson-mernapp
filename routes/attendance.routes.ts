@@ -7,6 +7,7 @@ let controller = new AttendanceController()
 const router = express.Router()
 
 router.route("/leaves").get(isAuthenticatedUser, controller.GetAllLeaves)
+router.route("/leaves/pending").get(isAuthenticatedUser, controller.GetLeavesPendingForApprovalCount)
 router.route("/leaves-balance").get(isAuthenticatedUser, controller.GetAllLeaveBalances).post(isAuthenticatedUser, controller.CreateLeaveBalance)
 router.route("/leaves-balance/:id").put(isAuthenticatedUser, controller.UpdateLeaveBalance).delete(isAuthenticatedUser, controller.DeleteLeaveBalance)
 router.route("/apply-leave/admin").post(isAuthenticatedUser, controller.ApplyLeaveFromAdmin)

@@ -26,7 +26,7 @@ function ApplyLeaveFromAdminForm({ leavedata, setDialog }: { leavedata: GetSales
         (new AttendanceService().ApplyLeaveFromAdmin, {
 
             onSuccess: () => {
-                queryClient.refetchQueries('leavedatas')
+                queryClient.refetchQueries('attendance_report')
                 setAlert({ message: "success", color: 'success' })
             },
             onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
@@ -51,9 +51,9 @@ function ApplyLeaveFromAdminForm({ leavedata, setDialog }: { leavedata: GetSales
             employee: leavedata && leavedata.employee.id || "",
         },
         validationSchema: Yup.object({
-            cl: Yup.number().required("required").max(leavedata.total.cl || 0),
-            fl: Yup.number().required("required").max(leavedata.total.fl || 0),
-            sw: Yup.number().required("required").max(leavedata.total.sw || 0),
+            cl: Yup.number().required("required").max(leavedata.total.cl - leavedata.consumed.cl),
+            fl: Yup.number().required("required").max(leavedata.total.fl - leavedata.consumed.fl),
+            sw: Yup.number().required("required").max(leavedata.total.sw - leavedata.consumed.sw),
             status: Yup.string().required("required"),
             employee: Yup.string().required("required"),
             yearmonth: Yup.number()
@@ -134,7 +134,7 @@ function ApplyLeaveFromAdminForm({ leavedata, setDialog }: { leavedata: GetSales
                     error={formik.touched.cl && formik.errors.cl ? true : false}
                     id="cl"
                     label="Casual Leave"
-                    helperText={formik.touched.cl && formik.errors.cl ? formik.errors.cl : `Available ${leavedata.total.cl || 0}`}
+                    helperText={formik.touched.cl && formik.errors.cl ? formik.errors.cl : `Available ${leavedata.total.cl - leavedata.consumed.cl}`}
                     {...formik.getFieldProps('cl')}
                 />
                 <TextField
@@ -143,7 +143,7 @@ function ApplyLeaveFromAdminForm({ leavedata, setDialog }: { leavedata: GetSales
                     error={formik.touched.fl && formik.errors.fl ? true : false}
                     id="fl"
                     label="Festive Leave"
-                    helperText={formik.touched.fl && formik.errors.fl ? formik.errors.fl : `Available ${leavedata.total.fl || 0}`}
+                    helperText={formik.touched.fl && formik.errors.fl ? formik.errors.fl : `Available ${leavedata.total.fl-leavedata.consumed.fl}`}
                     {...formik.getFieldProps('fl')}
                 />
                 <TextField
@@ -152,7 +152,7 @@ function ApplyLeaveFromAdminForm({ leavedata, setDialog }: { leavedata: GetSales
                     error={formik.touched.sw && formik.errors.sw ? true : false}
                     id="sw"
                     label="Sunday Working"
-                    helperText={formik.touched.sw && formik.errors.sw ? formik.errors.sw : `Available ${leavedata.total.sw || 0}`}
+                    helperText={formik.touched.sw && formik.errors.sw ? formik.errors.sw : `Available ${leavedata.total.sw - leavedata.consumed.sw}`}
                     {...formik.getFieldProps('sw')}
                 />
                 <TextField required fullWidth error={formik.touched.yearmonth && formik.errors.yearmonth ? true : false} id="yearmonth" label="Year Month" helperText={formik.touched.yearmonth && formik.errors.yearmonth ? formik.errors.yearmonth : "202501"}    {...formik.getFieldProps('yearmonth')} />

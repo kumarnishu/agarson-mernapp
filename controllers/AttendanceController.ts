@@ -5,7 +5,8 @@ import { GetLeaveDto, GetLeaveBalanceDto, GetSalesmanAttendanceReportDto, Create
 import { ILeave, Leave } from "../models/leave.model"
 import moment from "moment"
 import { uploadFileToCloud } from "../services/uploadFileToCloud"
-import { Asset } from "../models/user.model"
+import { Asset, IUser, User } from "../models/user.model"
+import { SalesAttendance } from "../models/sales-attendance.model"
 
 export class AttendanceController {
 
@@ -40,7 +41,16 @@ export class AttendanceController {
         })
         return res.status(200).json(result)
     }
+    public async GetLeavesPendingForApprovalCount(req: Request, res: Response, next: NextFunction) {
+        let count = 0
+        if (req.user.is_admin) {
+            count = await Leave.countDocuments({ status: 'pending' })
+        }
+        else
+            count = await Leave.countDocuments({ $and: [{ status: 'pending' }, { employee: req.user._id }] })
 
+        return res.status(200).json(count)
+    }
 
     public async ApplyLeave(req: Request, res: Response, next: NextFunction) {
         let body = JSON.parse(req.body.body)
@@ -201,59 +211,99 @@ export class AttendanceController {
 
     //attendance report controller
     public async GetAllAttendanceReport(req: Request, res: Response, next: NextFunction) {
-        let result: GetSalesmanAttendanceReportDto[] = []
-        let yearmonth = req.query.yearmonth
-        let items: ILeaveBalance[] = []
-        items = await LeaveBalance.find().populate('employee').populate('created_by').populate('updated_by').sort('-yearmonth')
+        try {
+            let yearmonth = Number(req.query.yearmonth);
+            if (!yearmonth) {
+                return res.status(400).json({ error: 'Yearmonth is required' });
+            }
+            let salesmen: IUser[] = []
+            if (req.user.is_admin)
+                salesmen = (await User.find()).filter((user) => user.assigned_permissions.includes('sales_menu'));
+            let slm = await User.findById(req.user._id)
+            if (slm && slm.assigned_permissions.includes('sales_menu'))
+                salesmen.push(slm)
+            let year = String(yearmonth).slice(0, 4);
+            let month = String(yearmonth).slice(4, 6);
+            let result = await Promise.all(salesmen.map(async (user) => {
+                let attendance = await SalesAttendance.countDocuments({
+                    date: { $gte: new Date(`${year}-${month}-01`), $lte: new Date(`${year}-${month}-31`) },
+                    employee: user._id,
+                    attendance: 'present'
+                });
+                let sw = await SalesAttendance.countDocuments({
+                    date: { $gte: new Date(`${year}-${month}-01`), $lte: new Date(`${year}-${month}-31`) },
+                    employee: user._id,
+                    attendance: 'present',
+                    is_sunday_working: true
+                });
+                let provided = { sl: attendance > 20 ? 1 : 0, fl: attendance > 20 ? 1 : 0, sw: sw, cl: attendance > 20 ? 1 : 0 };
 
-        result = items.map((item) => {
-            let provided = {
-                sl: 1,
-                fl: 1,
-                sw: 3,
-                cl: 1
-            }
-            let brought_forward = {
-                sl: 2,
-                fl: 5,
-                sw: 5,
-                cl: 2
-            }
-            let total = {
-                sl: provided.sl + brought_forward.sl,
-                fl: provided.fl + brought_forward.fl,
-                sw: provided.sw + brought_forward.sw,
-                cl: provided.cl + brought_forward.cl
-            }
-            let consumed = {
-                sl: 0,
-                fl: 1,
-                sw: 0,
-                cl: 0
-            }
-            let carryforward = {
-                sl: total.sl - consumed.sl,
-                fl: total.fl - consumed.fl,
-                sw: total.sw - consumed.sw,
-                cl: total.cl - consumed.cl
-            }
-            return {
-                _id: item._id,
-                attendance: 20,
-                provided: provided,
-                brought_forward: brought_forward,
-                total: total,
-                consumed: consumed,
-                carryforward: carryforward,
-                yearmonth: item.yearmonth,
-                employee: { id: item.employee._id, label: item.employee.username },
-                created_at: moment(item.created_at).format('YYYY-MM-DD'),
-                updated_at: moment(item.updated_at).format('YYYY-MM-DD'),
-                created_by: { id: item.created_by._id, label: item.created_by.username },
-                updated_by: { id: item.updated_by._id, label: item.updated_by.username }
-            }
-        })
-        return res.status(200).json(result)
+                let yr = Math.floor(yearmonth / 100); // Extract the yr
+                let mt = yearmonth % 100;           // Extract the mt
+
+                if (mt === 1) {
+                    // If January, go back to December of the previous yr
+                    yr--;
+                    mt = 12;
+                } else {
+                    // Otherwise, just decrease the mt
+                    mt--;
+                }
+
+                // Return the new value formatted as YYYYMM
+                let lastyrmt = yr * 100 + mt;
+
+
+                let balance = await LeaveBalance.findOne({ yearmonth: lastyrmt, employee: user._id });
+                let brought_forward = { sl: balance?.sl || 0, fl: balance?.fl || 0, sw: balance?.sw || 0, cl: balance?.cl || 0 };
+
+                let total = {
+                    sl: provided.sl + brought_forward.sl,
+                    fl: provided.fl + brought_forward.fl,
+                    sw: provided.sw + brought_forward.sw,
+                    cl: provided.cl + brought_forward.cl
+                };
+                let consumedleave = await Leave.find({ yearmonth: yearmonth, employee: user._id, status: 'approved' });
+                console.log(consumedleave)
+                let consumed = { sl: 0, fl: 0, sw: 0, cl: 0 };
+                consumedleave.forEach(leave => {
+                    if (leave.leave_type === 'sl') {
+                        consumed.sl += 1;
+                    } else if (leave.leave_type === 'fl') {
+                        consumed.fl += 1;
+                    } else if (leave.leave_type === 'sw') {
+                        consumed.sw += 1;
+                    } else if (leave.leave_type === 'cl') {
+                        consumed.cl += 1;
+                    }
+                });
+
+                let carryforward = {
+                    sl: total.sl - consumed.sl,
+                    fl: total.fl - consumed.fl,
+                    sw: total.sw - consumed.sw,
+                    cl: total.cl - consumed.cl
+                };
+
+                return {
+                    attendance: attendance,
+                    provided: provided,
+                    brought_forward: brought_forward,
+                    total: total,
+                    consumed: consumed,
+                    carryforward: carryforward,
+                    yearmonth: Number(yearmonth),
+                    employee: { id: user._id, label: user.username }
+                };
+            }));
+
+            console.log(result);
+
+            return res.status(200).json(result);
+        } catch (error) {
+            console.error('Error fetching attendance report:', error);
+            return res.status(500).json({ error: 'Failed to fetch attendance report' });
+        }
     }
 
 }

@@ -43,6 +43,7 @@ export default function SalesAttendanceReportPage() {
 
 
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetSalesmanAttendanceReportDto[]>, BackendError>(["attendance_report", yearmonth], async () => new AttendanceService().GetAttendanceReport({ yearmonth: yearmonth }))
+  const { data: count } = useQuery<AxiosResponse<number>, BackendError>(["count_leaves_pending", yearmonth], async () => new AttendanceService().GetPendingLeaves())
   const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
@@ -294,15 +295,16 @@ export default function SalesAttendanceReportPage() {
         >
           Sales Attendance Report
         </Typography>
-        {LoggedInUser?.is_admin && <Typography
+        {count && count.data && count.data !== 0 ? <Typography
           variant={'h6'}
           component={'h1'}
           sx={{ pl: 1, cursor: 'pointer' }}
           color="red"
           onClick={() => { navigate('/Attendance/LeavesPage') }}
         >
-          5  leaves pending For Approval
-        </Typography>}
+          {count?.data}  Leaves pending for approval !!
+        </Typography> : <></>
+        }
 
         <Stack spacing={2}
           padding={1}
@@ -324,9 +326,7 @@ export default function SalesAttendanceReportPage() {
             }
             }
           >
-            <option key={getYearMonthLabels()[3].value} value={getYearMonthLabels()[3].value}>
-              Current Month
-            </option>
+
             {
               getYearMonthLabels().map(cat => {
                 return (<option key={cat.value} value={cat.value}>

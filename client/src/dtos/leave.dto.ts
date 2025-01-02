@@ -36,7 +36,6 @@ export type LeavesDto = {
     cl: number
 }
 export type GetSalesmanAttendanceReportDto = {
-    _id: string,
     attendance: number,
     yearmonth: number,
     provided: LeavesDto,
@@ -44,11 +43,7 @@ export type GetSalesmanAttendanceReportDto = {
     carryforward: LeavesDto,
     total: LeavesDto,
     consumed: LeavesDto,
-    employee: DropDownDto,
-    created_at: string,
-    updated_at: string,
-    created_by: DropDownDto,
-    updated_by: DropDownDto
+    employee: DropDownDto
 }
 
 

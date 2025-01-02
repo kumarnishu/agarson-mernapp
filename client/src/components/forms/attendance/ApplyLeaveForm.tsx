@@ -25,7 +25,7 @@ function ApplyLeaveForm({ leavedata, setDialog }: { leavedata: GetSalesmanAttend
         (new AttendanceService().ApplyLeave, {
 
             onSuccess: () => {
-                queryClient.refetchQueries('leavedatas')
+                queryClient.refetchQueries('attendance_report')
                 setAlert({ message: "success", color: 'success' })
             },
             onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
@@ -51,7 +51,7 @@ function ApplyLeaveForm({ leavedata, setDialog }: { leavedata: GetSalesmanAttend
         validationSchema: Yup.object({
             leave_type: Yup.string().required("required"),
             employee: Yup.string().required("required"),
-            leave: Yup.number().required("required").max(leavedata.total.sl || 0),
+            leave: Yup.number().required("required").max(leavedata.total.sl-leavedata.consumed.sl),
             yearmonth: Yup.number()
                 .required('Year and month are required')
                 .test(
@@ -129,7 +129,8 @@ function ApplyLeaveForm({ leavedata, setDialog }: { leavedata: GetSalesmanAttend
                     error={formik.touched.leave_type && formik.errors.leave_type ? true : false}
                     id="leave_type"
                     label="Leave Type"
-                    helperText={formik.touched.leave_type && formik.errors.leave_type ? formik.errors.leave_type : ""}
+                    disabled
+                    helperText={formik.touched.leave_type && formik.errors.leave_type ? formik.errors.leave_type : `${leavedata.total.sl-leavedata.consumed.sl} SL, ${leavedata.total.fl-leavedata.consumed.fl} FL, ${leavedata.total.sw-leavedata.consumed.sw} SW, ${leavedata.total.cl-leavedata.consumed.cl} CL`}
                     {...formik.getFieldProps('leave_type')}
                     SelectProps={{
                         native: true,
@@ -151,7 +152,10 @@ function ApplyLeaveForm({ leavedata, setDialog }: { leavedata: GetSalesmanAttend
                     }}
                     fullWidth
                     focused
-                    error={formik.touched.employee && formik.errors.employee ? true : false} id="employee" label="Employee" disabled helperText={formik.touched.employee && formik.errors.employee ? formik.errors.employee : ""}    {...formik.getFieldProps('employee')}
+                    error={formik.touched.employee && formik.errors.employee ? true : false} id="employee" label="Employee" disabled
+                    helperText={formik.touched.employee && formik.errors.employee ? formik.errors.employee : `Available ${leavedata.total.sl}`}
+                    {...formik.getFieldProps('employee')}
+
                 >
                     <option key={0} value={'all'}>
                         Select Users
