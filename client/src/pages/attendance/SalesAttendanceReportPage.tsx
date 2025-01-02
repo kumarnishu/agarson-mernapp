@@ -41,6 +41,11 @@ export default function SalesAttendanceReportPage() {
   };
   const [yearmonth, setYearMonth] = useState<number>(getCurrentYearMonth())
 
+  function getDaysInMonth(monthYear: number): number {
+    const year = parseInt(String(monthYear).substring(0, 4));
+    const month = parseInt(String(monthYear).substring(4, 6));
+    return new Date(year, month, 0).getDate();
+  }
 
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetSalesmanAttendanceReportDto[]>, BackendError>(["attendance_report", yearmonth], async () => new AttendanceService().GetAttendanceReport({ yearmonth: yearmonth }))
   const { data: count } = useQuery<AxiosResponse<number>, BackendError>(["count_leaves_pending", yearmonth], async () => new AttendanceService().GetPendingLeaves())
@@ -64,7 +69,7 @@ export default function SalesAttendanceReportPage() {
 
         Cell: ({ cell }) => <>
           <Button color="inherit" size="small"
-            disabled={(cell.row.original.attendance + cell.row.original.consumed.sl + cell.row.original.consumed.fl + cell.row.original.consumed.sw + cell.row.original.consumed.cl) == new Date(new Date().getFullYear(), new Date().getMonth(), 0).getDate()}
+            disabled={(cell.row.original.attendance + cell.row.original.consumed.sl + cell.row.original.consumed.fl + cell.row.original.consumed.sw + cell.row.original.consumed.cl) == getDaysInMonth(yearmonth)}
             onClick={() => {
               setBalance(cell.row.original)
               if (LoggedInUser?.is_admin)
@@ -163,7 +168,7 @@ export default function SalesAttendanceReportPage() {
     //end
   );
 
-
+  console.log(new Date(new Date().getFullYear(), new Date().getMonth(), 0).getDate())
   const table = useMaterialReactTable({
     columns,
     data: balances, //10,000 rows       
@@ -201,9 +206,9 @@ export default function SalesAttendanceReportPage() {
       },
     }),
     muiTableBodyRowProps: (props) => ({
-     
+
       sx: {
-        backgroundColor: (props.row.original.attendance + props.row.original.consumed.sl + props.row.original.consumed.fl + props.row.original.consumed.sw + props.row.original.consumed.cl) == new Date(new Date().getFullYear(), new Date().getMonth(), 0).getDate() ? 'yellow' : 'white'
+        backgroundColor: (props.row.original.attendance + props.row.original.consumed?.sl + props.row.original.consumed?.fl + props.row.original.consumed?.sw + props.row.original.consumed?.cl) === getDaysInMonth(yearmonth) ? 'white' : 'yellow'
       }
     }),
     muiTableBodyCellProps: () => ({
