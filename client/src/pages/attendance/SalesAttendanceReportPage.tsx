@@ -64,7 +64,6 @@ export default function SalesAttendanceReportPage() {
 
         Cell: ({ cell }) => <>
           <Button color="inherit" size="small"
-            variant='text'
             disabled={(cell.row.original.attendance + cell.row.original.consumed.sl + cell.row.original.consumed.fl + cell.row.original.consumed.sw + cell.row.original.consumed.cl) == new Date(new Date().getFullYear(), new Date().getMonth(), 0).getDate()}
             onClick={() => {
               setBalance(cell.row.original)
@@ -96,11 +95,11 @@ export default function SalesAttendanceReportPage() {
         accessorKey: 'created_at',
         header: '',
         Cell: () => <Stack direction={'column'}>
-          <Typography  fontSize='0.9rem'>{"This Month Provided"}</Typography>
-          <Typography  fontSize='0.9rem'>{"Old Balance"}</Typography>
-          <Typography  fontSize='0.9rem'>{"Total"}</Typography>
-          <Typography  fontSize='0.9rem'>{"Consumed this Month"}</Typography>
-          <Typography  fontSize='0.9rem'>{"Carry Forward"}</Typography>
+          <Typography fontSize='0.9rem'>{"This Month Provided"}</Typography>
+          <Typography fontSize='0.9rem'>{"Old Balance"}</Typography>
+          <Typography fontSize='0.9rem'>{"Total"}</Typography>
+          <Typography fontSize='0.9rem'>{"Consumed this Month"}</Typography>
+          <Typography fontSize='0.9rem'>{"Carry Forward"}</Typography>
         </Stack>
       },
       {
@@ -201,7 +200,12 @@ export default function SalesAttendanceReportPage() {
         color: 'white'
       },
     }),
-
+    muiTableBodyRowProps: (props) => ({
+     
+      sx: {
+        backgroundColor: (props.row.original.attendance + props.row.original.consumed.sl + props.row.original.consumed.fl + props.row.original.consumed.sw + props.row.original.consumed.cl) == new Date(new Date().getFullYear(), new Date().getMonth(), 0).getDate() ? 'yellow' : 'white'
+      }
+    }),
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid #c2beba;',
