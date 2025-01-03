@@ -111,20 +111,20 @@ export default function MachineCategoryPage() {
             sx: { height: table.table.getState().isFullScreen ? '62vh' : '65vh' }
         }), muiTableHeadCellProps: ({ column }) => ({
             sx: {
-              '& div:nth-of-type(1) span': {
-                display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
-              },
-              '& div:nth-of-type(2)': {
-                display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
-              },
-              '&:hover div:nth-of-type(1) span': {
-                display: 'inline', // Visible on hover
-              },
-              '&:hover div:nth-of-type(2)': {
-                display: 'block', // Visible on hover
-              }
+                '& div:nth-of-type(1) span': {
+                    display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
+                },
+                '& div:nth-of-type(2)': {
+                    display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
+                },
+                '&:hover div:nth-of-type(1) span': {
+                    display: 'inline', // Visible on hover
+                },
+                '&:hover div:nth-of-type(2)': {
+                    display: 'block', // Visible on hover
+                }
             },
-          }),
+        }),
         muiTableHeadRowProps: () => ({
             sx: {
                 backgroundColor: 'whitesmoke',
@@ -141,7 +141,7 @@ export default function MachineCategoryPage() {
             shape: 'rounded',
             variant: 'outlined',
         },
-       enableDensityToggle: false, initialState: {
+        enableDensityToggle: false, initialState: {
             density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
         },
         enableGrouping: true,
@@ -225,7 +225,7 @@ export default function MachineCategoryPage() {
         if (isFirstRender.current) return;
         localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
     }, [columnSizing]);
-
+    console.log(table.getState().columnFilters)
 
     return (
         <>

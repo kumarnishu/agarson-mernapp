@@ -13,47 +13,9 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import CreateOrEditChecklistCategoryDialog from '../../components/dialogs/dropdown/CreateOrEditChecklistCategoryDialog'
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import { DropdownService } from '../../services/DropDownServices'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { onlyUnique } from '../../utils/UniqueArray'
 
-// const MultiSelectFilter = ({ key, table, options }: { key: string, table: MRT_TableInstance<DropDownDto>, options: DropDownDto[] }) => {
-//   const [filter, setFilter] = useState<string>()
-//   const [columnFilter, setColumFilter] = useState<MRT_ColumnFiltersState>(table.getState().columnFilters)
-//   const [selected, setSelected] = useState<DropDownDto[]>([])
-//   const [filteredOptions, setFilteredOptions] = useState<DropDownDto[]>([])
-
-//   useEffect(() => {
-//     if (filter) {
-//       setFilteredOptions(options.filter(option => option.label.toLowerCase().includes(filter.toLowerCase())))
-//     } else {
-//       setFilteredOptions(options)
-//     }
-//   }, [filter])
-
-
-//   console.log(columnFilter)
-//   return (
-//     <Box sx={{ maxHeight: 500, overflowY: 'auto', pt: 2 }}>
-//       <TextField size="small" variant="outlined" label="Search" onChange={(e) => {
-//         const value = e.target.value
-//         setFilter(value)
-//       }} />
-//       <br />
-//       <Button fullWidth onClick={() => setSelected([])}>Clear All</Button>
-//       {filteredOptions.map((option) => (
-//         <MenuItem key={option.id} value={option.label}>
-//           <Checkbox checked={Boolean(selected.find(item => item.id == option.id))} onChange={(e) => {
-//             if (e.target.checked) {
-//               setSelected([...selected, option])
-//             }
-//             else {
-//               setSelected(selected.filter(item => item.id !== option.id))
-//             }
-//           }} />
-//           <ListItemText>{option.label.slice(0, 50)}</ListItemText>
-//         </MenuItem>
-//       ))}
-//     </Box>
-//   );
-// }
 
 export default function ChecklistCategoriesPage() {
   const [category, setChecklistCategory] = useState<DropDownDto>()
@@ -106,11 +68,9 @@ export default function ChecklistCategoriesPage() {
         accessorKey: 'label',
         header: 'Category',
         grow: false,
-        filterVariant: 'text',
+        filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
-        // Filter: (props) => <MultiSelectFilter key="value" table={props.table} options={onlyUniqueByKey(categories && categories.map((i) => {
-        //   return { id: i.id, label: i.label };
-        // }), 'label')} />
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={categories.map((c) => { return c.label }).filter(onlyUnique)} />
       },
     ],
     [categories],
@@ -165,7 +125,7 @@ export default function ChecklistCategoriesPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
     },
     enableGrouping: true,
