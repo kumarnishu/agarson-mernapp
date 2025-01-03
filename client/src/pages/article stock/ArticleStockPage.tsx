@@ -269,18 +269,11 @@ export default function ArticleStockPage() {
           sx={{ borderRadius: 2 }}
         >
           
-          {LoggedInUser?.assigned_permissions.includes("leave_create") && <MenuItem
-            onClick={() => {
-              setBalance(undefined)
-              setAnchorEl(null)
-              setDialog('CreateOrEditLeaveBalanceDialog')
-            }}
-
-          > Add New</MenuItem>}
-          {LoggedInUser?.assigned_permissions.includes('leave_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+        
+          {LoggedInUser?.assigned_permissions.includes('article_stock_scheme_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
           >Export All</MenuItem>}
-          {LoggedInUser?.assigned_permissions.includes('leave_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+          {LoggedInUser?.assigned_permissions.includes('article_stock_scheme_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
           >Export Selected</MenuItem>}
 

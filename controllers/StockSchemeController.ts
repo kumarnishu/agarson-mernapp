@@ -11,8 +11,10 @@ export class StockSchemeController {
     public async GetAllConsumedStockSchemes(req: Request, res: Response, next: NextFunction) {
         let result: GetStockSchemeConsumedDto[] = []
         let items: IStockConsumedForScheme[] = []
-
-        items = await StockConsumedForScheme.find({ employee: req.user._id }).populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
+        if (req.user.is_admin)
+            items = await StockConsumedForScheme.find().populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
+        else
+            items = await StockConsumedForScheme.find({ employee: req.user._id }).populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
 
         result = items.map((item) => {
             return {
