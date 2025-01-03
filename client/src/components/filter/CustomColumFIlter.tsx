@@ -1,9 +1,17 @@
-import { MRT_TableInstance } from "material-react-table"
+import { MRT_RowData, MRT_TableInstance } from "material-react-table"
 import { useEffect, useState } from "react"
 import { Box, Button, Checkbox, ListItemText, MenuItem, TextField, Typography } from "@mui/material"
 import { onlyUnique } from "../../utils/UniqueArray"
 
-export function CustomColumFilter({ id, table, options }: { id: string, table: MRT_TableInstance<any>, options: string[] }) {
+export function CustomColumFilter<T extends MRT_RowData>({
+    id,
+    table,
+    options
+}: {
+    id: string;
+    table: MRT_TableInstance<T>;
+    options: string[];
+}) {
 
     const [filter, setFilter] = useState<string>()
     const [filteredOptions, setFilteredOptions] = useState<string[]>([])
