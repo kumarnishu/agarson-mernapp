@@ -29,6 +29,7 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetStockSchemeDto,
 
     const formik = useFormik({
         initialValues: {
+            party: '',
             article: stock.article,
             six: 0,
             seven: 0,
@@ -37,12 +38,13 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetStockSchemeDto,
             ten: 0
         },
         validationSchema: Yup.object({
+            party: Yup.string().required("required"),
             article: Yup.string().required("required"),
-            six: Yup.number(),
-            seven: Yup.number(),
-            eight: Yup.number(),
-            nine: Yup.number(),
-            ten: Yup.number(),
+            six: Yup.number().max(stock.six),
+            seven: Yup.number().max(stock.seven),
+            eight: Yup.number().max(stock.eight),
+            nine: Yup.number().max(stock.nine),
+            ten: Yup.number().max(stock.ten),
 
         }),
         onSubmit: (values) => {
@@ -50,6 +52,7 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetStockSchemeDto,
             if (values.six > 0) {
                 data = {
                     article: values.article,
+                    party: values.party,
                     size: 6,
                     consumed: values.six
                 }
@@ -58,6 +61,7 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetStockSchemeDto,
             if (values.seven > 0) {
                 data = {
                     article: values.article,
+                    party: values.party,
                     size: 7,
                     consumed: values.six
                 }
@@ -66,6 +70,7 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetStockSchemeDto,
             if (values.eight > 0) {
                 data = {
                     article: values.article,
+                    party: values.party,
                     size: 8,
                     consumed: values.six
                 }
@@ -74,6 +79,7 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetStockSchemeDto,
             if (values.nine > 0) {
                 data = {
                     article: values.article,
+                    party: values.party,
                     size: 9,
                     consumed: values.six
                 }
@@ -82,6 +88,7 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetStockSchemeDto,
             if (values.ten > 0) {
                 data = {
                     article: values.article,
+                    party: values.party,
                     size: 10,
                     consumed: values.six
                 }
@@ -106,7 +113,8 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetStockSchemeDto,
                 pt={2}
             >
 
-                <TextField required fullWidth error={formik.touched.article && formik.errors.article ? true : false} id="article" label="Article" helperText={formik.touched.article && formik.errors.article ? formik.errors.article : ""}    {...formik.getFieldProps('article')} />
+                <TextField required fullWidth error={formik.touched.party && formik.errors.party ? true : false} id="party" label="Party" helperText={formik.touched.party && formik.errors.party ? formik.errors.party : ""}    {...formik.getFieldProps('party')} />
+                <TextField disabled required fullWidth error={formik.touched.article && formik.errors.article ? true : false} id="article" label="Article" helperText={formik.touched.article && formik.errors.article ? formik.errors.article : ""}    {...formik.getFieldProps('article')} />
                 <TextField required fullWidth error={formik.touched.six && formik.errors.six ? true : false} id="six" label="6" helperText={formik.touched.six && formik.errors.six ? formik.errors.six : `Available : ${stock.six}`}    {...formik.getFieldProps('six')} />
                 <TextField required fullWidth error={formik.touched.seven && formik.errors.seven ? true : false} id="seven" label="7" helperText={formik.touched.seven && formik.errors.seven ? formik.errors.seven : `Available : ${stock.seven}`}    {...formik.getFieldProps('seven')} />
                 <TextField required fullWidth error={formik.touched.eight && formik.errors.eight ? true : false} id="eight" label="8" helperText={formik.touched.eight && formik.errors.eight ? formik.errors.eight : `Available : ${stock.eight}`}    {...formik.getFieldProps('eight')} />

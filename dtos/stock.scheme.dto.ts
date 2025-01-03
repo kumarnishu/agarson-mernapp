@@ -14,6 +14,7 @@ export type GetStockSchemeConsumedDto = {
 }
 
 export type ConsumeStockSchemeDto = {
+    party:string,
     article: string,
     size: number,
     consumed: number

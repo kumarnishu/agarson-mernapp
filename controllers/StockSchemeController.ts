@@ -34,10 +34,10 @@ export class StockSchemeController {
     }
     public async ConsumeStockScheme(req: Request, res: Response, next: NextFunction) {
         try {
-            const { article, size, consumed } = req.body as ConsumeStockSchemeDto;
+            const { article, size, consumed, party } = req.body as ConsumeStockSchemeDto;
 
             // Validate required fields
-            if (!article || !size || !consumed) {
+            if (!article || !size || !consumed || !party) {
                 return res.status(400).json({ message: "Please provide required fields." });
             }
 
@@ -67,6 +67,7 @@ export class StockSchemeController {
             // Record stock consumption
             await new StockConsumedForScheme({
                 article,
+                party,
                 size,
                 consumed,
                 employee: req.user,
@@ -76,15 +77,13 @@ export class StockSchemeController {
                 updated_by: req.user
             }).save();
             let balance = await ArticleStockScheme.findOne({ article: article, size: size })
+            console.log(balance)
             if (balance) {
-                switch (size) {
-                    case 6: { balance.six = balance.six - consumed; await balance.save() }
-                    case 7: { balance.seven = balance.seven - consumed; await balance.save() }
-                    case 8: { balance.eight = balance.eight - consumed; await balance.save() }
-                    case 9: { balance.nine = balance.nine - consumed; await balance.save() }
-                    case 10: { balance.ten = balance.ten - consumed; await balance.save() }
-                    default: { }
-                }
+                if (size == 6) { balance.six = balance.six - consumed; await balance.save() }
+                if (size == 7) { balance.seven = balance.seven - consumed; await balance.save() }
+                if (size == 8) { balance.eight = balance.eight - consumed; await balance.save() }
+                if (size == 9) { balance.nine = balance.nine - consumed; await balance.save() }
+                if (size == 10) { balance.ten = balance.ten - consumed; await balance.save() }
             }
             return res.status(201).json({ message: "Success" });
 
@@ -138,7 +137,7 @@ export class StockSchemeController {
             if (workbook_response.length > 3000) {
                 return res.status(400).json({ message: "Maximum 3000 records allowed at one time" })
             }
-
+            await ArticleStockScheme.deleteMany()
             for (let i = 0; i < workbook_response.length; i++) {
                 let item = workbook_response[i]
                 let items: IArticleStockScheme[] = []

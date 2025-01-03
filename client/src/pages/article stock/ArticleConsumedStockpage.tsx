@@ -27,6 +27,11 @@ export default function ArticleConsumedStockpage() {
     //column definitions...
     () => consumes && [
       {
+        accessorKey: 'party',
+        header: 'party',
+        Cell: (cell) => <>{cell.row.original.party ? cell.row.original.party : ""}</>,
+      },
+      {
         accessorKey: 'article',
         header: 'article',
         Cell: (cell) => <>{cell.row.original.article ? cell.row.original.article : ""}</>,
