@@ -73,7 +73,17 @@ export class StockSchemeController {
                 updated_at: new Date(),
                 updated_by: req.user
             }).save();
-
+            let balance = await ArticleStockScheme.findOne({ article: article, size: size })
+            if (balance) {
+                switch (size) {
+                    case 6: { balance.six = balance.six - consumed; await balance.save() }
+                    case 7: { balance.seven = balance.seven - consumed; await balance.save() }
+                    case 8: { balance.eight = balance.eight - consumed; await balance.save() }
+                    case 9: { balance.nine = balance.nine - consumed; await balance.save() }
+                    case 10: { balance.ten = balance.ten - consumed; await balance.save() }
+                    default: { }
+                }
+            }
             return res.status(201).json({ message: "Success" });
 
         } catch (error) {
