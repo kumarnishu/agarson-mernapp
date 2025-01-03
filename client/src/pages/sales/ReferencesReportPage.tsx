@@ -15,6 +15,7 @@ import CreateOrEditReferenceRemarkDialog from '../../components/dialogs/sales/Cr
 import ViewReferenceRemarksDialog from '../../components/dialogs/sales/ViewReferenceRemarksDialog'
 import { SalesService } from '../../services/SalesServices'
 import EditReferenceStateDialog from '../../components/dialogs/sales/EditReferenceStateDialog'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 export default function ReferencesReportPage() {
   const [hidden, setHidden] = useState(false)
@@ -47,41 +48,55 @@ export default function ReferencesReportPage() {
         accessorKey: 'last_remark',
         header: 'Remark',
         aggregationFn: 'count',
+        filterVariant: 'multi-select',
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.last_remark || "" })} />,
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'stage',
         header: 'Stage',
+        filterVariant: 'multi-select',
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.stage || "" })} />,
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'party',
         header: 'Party',
+        filterVariant: 'multi-select',
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.party || "" })} />,
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'address',
         header: 'Address',
+        filterVariant: 'multi-select',
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.address || "" })} />,
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'state',
         header: 'State',
+        filterVariant: 'multi-select',
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.state || "" })} />,
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'pincode',
         header: 'Pincode',
+        filterVariant: 'multi-select',
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return String(item.pincode) || "" })} />,
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'business',
         header: 'Business',
+        filterVariant: 'multi-select',
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.business || "" })} />,
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
@@ -200,7 +215,7 @@ export default function ReferencesReportPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
     },
     enableGrouping: true,

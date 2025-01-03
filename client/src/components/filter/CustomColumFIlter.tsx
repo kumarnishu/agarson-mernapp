@@ -1,11 +1,12 @@
 import { MRT_TableInstance } from "material-react-table"
 import { useEffect, useState } from "react"
 import { Box, Button, Checkbox, ListItemText, MenuItem, TextField, Typography } from "@mui/material"
+import { onlyUnique } from "../../utils/UniqueArray"
 
 export function CustomColumFilter({ id, table, options }: { id: string, table: MRT_TableInstance<any>, options: string[] }) {
 
     const [filter, setFilter] = useState<string>()
-    const [filteredOptions, setFilteredOptions] = useState<string[]>(options)
+    const [filteredOptions, setFilteredOptions] = useState<string[]>([])
     //@ts-ignore
     const [selectedOptions, setSelectedOptions] = useState<string[]>(table.getState().columnFilters.find((item) => item.id === id)?.value || [])
 
@@ -18,14 +19,21 @@ export function CustomColumFilter({ id, table, options }: { id: string, table: M
 
     }
 
+    useEffect(() => {
+        let opt = options.filter(onlyUnique)
+        setFilteredOptions(opt)
+    }, [options])
+
     useEffect(() => { //filter the options
         if (filter) { //if there is a filter
-            setFilteredOptions(options.filter((option) => option.toLowerCase().includes(filter.toLowerCase())))
+            let opt = options.filter(onlyUnique)
+            setFilteredOptions(opt.filter((opt) => opt.toLowerCase().includes(filter.toLowerCase())))
         }
         else {
-            setFilteredOptions(options)
+            let opt = options.filter(onlyUnique)
+            setFilteredOptions(opt)
         } //if there is no filter 
-    }, [filter])
+    }, [filter, table])
 
 
 
@@ -38,8 +46,7 @@ export function CustomColumFilter({ id, table, options }: { id: string, table: M
             table.setColumnFilters(filteredcolumns)
         }
     }
-        , [selectedOptions])
-
+        , [selectedOptions, table])
 
     return (
         <Box sx={{ maxHeight: 500, overflowY: 'auto', pt: 2 }}>
