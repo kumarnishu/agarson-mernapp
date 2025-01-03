@@ -1,4 +1,4 @@
-import {  Grid,  Paper, Stack, Typography } from '@mui/material';
+import { Grid, Paper, Stack, Typography } from '@mui/material';
 import { Link, Outlet } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../contexts/userContext';
@@ -22,6 +22,7 @@ function MainDashBoard() {
     user?.assigned_permissions.includes('driver_app_menu') && tmpfeatures.push({ feature: 'Driver App', is_visible: true, url: "/DriverApp" })
     user?.assigned_permissions.includes('dropdown_menu') && tmpfeatures.push({ feature: 'Dropdowns', is_visible: true, url: "/DropDown" })
     user?.assigned_permissions.includes('excel_db_menu') && tmpfeatures.push({ feature: 'Excel Reports', is_visible: true, url: "/ExcelDB" })
+    user?.assigned_permissions.includes('stock_scheme_menu') && tmpfeatures.push({ feature: 'Article Stock Scheme', is_visible: true, url: "/ArticleStockScheme" })
     // tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
 
     setFeatures(tmpfeatures)
@@ -35,20 +36,20 @@ function MainDashBoard() {
             <Grid key={index} item xs={12} md={4} lg={4} sx={{ p: 1 }}>
               <Link to={feat.url} style={{ textDecoration: 'none' }}>
                 <Paper
-                 sx={{
-                  p: 2,
-                  m: 0,
-                  minHeight: 60,
-                  position: 'relative',
-                  overflow: 'hidden',
-                  backdropFilter: 'blur(10px)', // Blurry effect
-                  backgroundColor: 'rgba(255, 255, 255, 0.6)', // Semi-transparent blue
-                  transition: '0.3s',
-                  '&:hover': {
+                  sx={{
+                    p: 2,
+                    m: 0,
+                    minHeight: 60,
+                    position: 'relative',
+                    overflow: 'hidden',
+                    backdropFilter: 'blur(10px)', // Blurry effect
+                    backgroundColor: 'rgba(255, 255, 255, 0.6)', // Semi-transparent blue
+                    transition: '0.3s',
+                    '&:hover': {
                       transform: 'translateY(-2px)',
                       backgroundColor: 'rgba(70, 130, 180, 0.7)', // Darken on hover
-                  },
-              }}
+                    },
+                  }}
                 >
                   <Stack
                     flexDirection="row"

@@ -1473,6 +1473,67 @@ export function FetchAllPermissions() {
 
         ]
     }
+    let StockSchemeMenu: IMenu = {
+        label: 'Stock Scheme',
+        permissions: [{
+            value: 'stock_scheme_menu',
+            label: 'Stock Scheme Button'
+        }],
+        menues: [
+
+
+            {
+                label: 'Articles Stock',
+                permissions: [
+                    {
+                        value: 'article_stock_scheme_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'article_stock_scheme_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'article_stock_scheme_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'article_stock_scheme_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'article_stock_scheme_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Consumed Stock',
+                permissions: [
+                    {
+                        value: 'consumed_stock_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'consumed_stock_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'consumed_stock_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'consumed_stock_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'consumed_stock_export',
+                        label: 'export'
+                    }
+                ]
+            },
+        ]
+    }
 
     permissions.push(dashboardMenu)
     permissions.push(authorizationMenu)
@@ -1486,6 +1547,7 @@ export function FetchAllPermissions() {
     permissions.push(expenseMenu)
     permissions.push(paymentMenu)
     permissions.push(dropdownMenu)
+    permissions.push(StockSchemeMenu)
 
     return permissions;
 }

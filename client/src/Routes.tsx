@@ -81,6 +81,10 @@ import LeavebalancePage from './pages/attendance/LeavebalancePage.tsx'
 import SalesAttendanceReportPage from './pages/attendance/SalesAttendanceReportPage.tsx'
 import EmailVerifyPage from './pages/EmailVerifyPage.tsx'
 import LeavesPage from './pages/attendance/LeavesPage.tsx'
+import ArticleStockPage from './pages/article stock/ArticleStockPage.tsx'
+import ArticleConsumedStockpage from './pages/article stock/ArticleConsumedStockpage.tsx'
+import ArticleStockSchmeNavbar from './components/navbar/ArticleStockSchmeNavbar.tsx'
+import StockSchemeDashboard from './components/dashboards/StockSchemeDashboard.tsx'
 
 
 function AppRoutes() {
@@ -414,6 +418,31 @@ function AppRoutes() {
 
 
             </Route>}
+
+
+          {user && user?.assigned_permissions.includes('article_stock_scheme_view') &&
+            < Route path="/ArticleStockScheme" element={<ArticleStockSchmeNavbar />}>
+              <Route index
+                element={
+                  <StockSchemeDashboard />
+                }
+              />
+
+              {user?.assigned_permissions.includes('consumed_stock_view') && <Route
+                path="ArticleStockPage" element={
+                  <ArticleStockPage />
+                }
+              />}
+
+              {user?.assigned_permissions.includes('consumed_stock_view') && <Route
+                path="ArticleConsumedStockpage" element={
+                  <ArticleConsumedStockpage />
+                }
+              />}
+
+
+            </Route>}
+
 
           {user && user?.assigned_permissions.includes('sales_menu') &&
             < Route path="/Sales" element={<SalesNavbar />}>
