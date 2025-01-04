@@ -12,8 +12,8 @@ function StockSchemeDashboard() {
   //process feature and access
   useEffect(() => {
     let tmpfeatures: { feature: string, is_visible: boolean, url: string }[] = []
-    user?.assigned_permissions.includes('article_stock_scheme_view') && tmpfeatures.push({ feature: 'article stock', is_visible: true, url: "ArticleStockPage" })
-    user?.assigned_permissions.includes('consumed_stock_view') && tmpfeatures.push({ feature: 'stock consumed', is_visible: true, url: "ArticleConsumedStockpage" })
+    user?.assigned_permissions.includes('article_stock_scheme_view') && tmpfeatures.push({ feature: 'Article Stocks', is_visible: true, url: "ArticleStockPage" })
+    user?.assigned_permissions.includes('consumed_stock_view') && tmpfeatures.push({ feature: 'Stock Consumed', is_visible: true, url: "ArticleConsumedStockpage" })
    
 
 
