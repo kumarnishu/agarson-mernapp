@@ -1,4 +1,4 @@
-import { ConsumeStockSchemeDto } from "../dtos/stock.scheme.dto"
+import { CreateConsumeStockDto } from "../dtos/stock.scheme.dto"
 import { apiClient } from "./utils/AxiosInterceptor"
 
 export class StockSchmeService {
@@ -6,7 +6,7 @@ export class StockSchmeService {
         return await apiClient.get(`consumed/stock`)
     }
     public async ConsumeStock({ body }: {
-        body: ConsumeStockSchemeDto,
+        body: CreateConsumeStockDto,
     }) {
         return await apiClient.post(`consumed/stock`, body)
     }
