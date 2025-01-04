@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
 import { IUser } from "./user.model";
+import { IStockScheme } from "./stock-schme.model";
 
-export type IArticleStockScheme = {
+export type IArticleStock = {
     _id: string,
     six: number,
+    scheme:IStockScheme,
     seven: number,
     eight: number,
     nine: number,
@@ -16,7 +18,7 @@ export type IArticleStockScheme = {
 }
 
 
-const Schema = new mongoose.Schema<IArticleStockScheme, mongoose.Model<IArticleStockScheme, {}, {}>, {}>({
+const Schema = new mongoose.Schema<IArticleStock, mongoose.Model<IArticleStock, {}, {}>, {}>({
     six: {
         type: Number,
         default: 0,
@@ -39,6 +41,11 @@ const Schema = new mongoose.Schema<IArticleStockScheme, mongoose.Model<IArticleS
     },
     ten: {
         type: Number,
+        required: true
+    },
+    scheme:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'StockScheme',
         required: true
     },
     article: String,
@@ -67,4 +74,4 @@ const Schema = new mongoose.Schema<IArticleStockScheme, mongoose.Model<IArticleS
     }
 })
 
-export const ArticleStockScheme = mongoose.model<IArticleStockScheme, mongoose.Model<IArticleStockScheme, {}, {}>>("ArticleStockScheme", Schema)
+export const ArticleStock = mongoose.model<IArticleStock, mongoose.Model<IArticleStock, {}, {}>>("ArticleStock", Schema)

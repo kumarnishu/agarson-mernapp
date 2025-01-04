@@ -8,14 +8,14 @@ import { UserContext } from '../../contexts/userContext'
 import { Fade, IconButton, Menu, MenuItem, Typography } from '@mui/material'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { GetStockSchemeConsumedDto } from '../../dtos/stock.scheme.dto'
+import { GetConsumedStockDto } from '../../dtos/stock.scheme.dto'
 import { StockSchmeService } from '../../services/StockSchmeService'
 
 
 export default function ArticleConsumedStockpage() {
-  const [consumes, setConsumes] = useState<GetStockSchemeConsumedDto[]>([])
+  const [consumes, setConsumes] = useState<GetConsumedStockDto[]>([])
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetStockSchemeConsumedDto[]>, BackendError>(["leaves", status], async () => new StockSchmeService().GetAllConsumedStockSchemes())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetConsumedStockDto[]>, BackendError>(["consumed"], async () => new StockSchmeService().GetAllConsumedStocks())
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
@@ -23,14 +23,20 @@ export default function ArticleConsumedStockpage() {
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-  const columns = useMemo<MRT_ColumnDef<GetStockSchemeConsumedDto>[]>(
+  const columns = useMemo<MRT_ColumnDef<GetConsumedStockDto>[]>(
     //column definitions...
     () => consumes && [
+      {
+        accessorKey: 'scheme.label',
+        header: 'Scheme',
+        Cell: (cell) => <>{cell.row.original.scheme ? cell.row.original.scheme.label : ""}</>,
+      },
       {
         accessorKey: 'party',
         header: 'party',
         Cell: (cell) => <>{cell.row.original.party ? cell.row.original.party : ""}</>,
       },
+
       {
         accessorKey: 'article',
         header: 'article',

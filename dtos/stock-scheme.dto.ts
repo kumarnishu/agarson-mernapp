@@ -1,9 +1,10 @@
 import { DropDownDto } from "./dropdown.dto"
 
-export type GetStockSchemeConsumedDto = {
+export type GetConsumedStockDto = {
     _id: string,
     party: string,
     article: string,
+    scheme:DropDownDto,
     size: number,
     consumed: number,
     employee: DropDownDto,
@@ -13,7 +14,8 @@ export type GetStockSchemeConsumedDto = {
     updated_by: DropDownDto
 }
 
-export type ConsumeStockSchemeDto = {
+export type CreateConsumeStockDto = {
+    scheme:string,
     party:string,
     article: string,
     size: number,
@@ -21,8 +23,9 @@ export type ConsumeStockSchemeDto = {
 }
 
 
-export type GetStockSchemeDto = {
+export type GetArticleStockDto = {
     _id: string,
+    scheme:DropDownDto,
     article: string,
     six: number,
     seven: number,
@@ -35,8 +38,9 @@ export type GetStockSchemeDto = {
     updated_by: DropDownDto
 }
 
-export type getStockSchemeExcelDto = {
+export type GetArticleStockExcelDto = {
     article: string,
+    scheme?: string,
     six: number,
     seven: number,
     eight: number,

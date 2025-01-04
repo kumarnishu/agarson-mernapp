@@ -1,12 +1,12 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
-import { GetStockSchemeDto } from '../../../dtos/stock.scheme.dto'
+import { GetArticleStockDto } from '../../../dtos/stock.scheme.dto'
 import ConsumeStockSchemForm from '../../forms/stock scheme/ConsumeStockSchemForm'
 
 
 type Props = {
     dialog: string | undefined,
-    stock: GetStockSchemeDto,
+    stock: GetArticleStockDto,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
 
 }

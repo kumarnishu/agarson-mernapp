@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
 import { Asset, IUser } from "./user.model";
+import { IStockScheme } from "./stock-schme.model";
 
-export type IStockConsumedForScheme = {
+export type IConsumedStock = {
     _id: string,
     party: string,
+    scheme: IStockScheme,
     size: number,//six,seven,eight,nine,ten
     article: string,
     consumed: number
@@ -15,7 +17,7 @@ export type IStockConsumedForScheme = {
 }
 
 
-const StockConsumedForSchemeSchema = new mongoose.Schema<IStockConsumedForScheme, mongoose.Model<IStockConsumedForScheme, {}, {}>, {}>({
+const ConsumedStockSchema = new mongoose.Schema<IConsumedStock, mongoose.Model<IConsumedStock, {}, {}>, {}>({
     party: {
         type: String, default: 'NA'
     },
@@ -35,6 +37,11 @@ const StockConsumedForSchemeSchema = new mongoose.Schema<IStockConsumedForScheme
     employee: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+        required: true
+    },
+    scheme: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'StockScheme',
         required: true
     },
     created_at: {
@@ -61,4 +68,4 @@ const StockConsumedForSchemeSchema = new mongoose.Schema<IStockConsumedForScheme
     }
 })
 
-export const StockConsumedForScheme = mongoose.model<IStockConsumedForScheme, mongoose.Model<IStockConsumedForScheme, {}, {}>>("StockConsumedForScheme", StockConsumedForSchemeSchema)
+export const ConsumedStock = mongoose.model<IConsumedStock, mongoose.Model<IConsumedStock, {}, {}>>("ConsumedStock", ConsumedStockSchema)

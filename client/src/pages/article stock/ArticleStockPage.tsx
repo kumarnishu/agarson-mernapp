@@ -5,20 +5,21 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
-import { Button, Fade, IconButton, Menu, MenuItem, Typography } from '@mui/material'
+import { Button, Fade, IconButton, Menu, MenuItem, TextField, Typography } from '@mui/material'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { GetStockSchemeDto } from '../../dtos/stock.scheme.dto'
+import { GetArticleStockDto } from '../../dtos/stock.scheme.dto'
 import { StockSchmeService } from '../../services/StockSchmeService'
 import ConsumeStockSchmeDialog from '../../components/dialogs/stockschme/ConsumeStockSchmeDialog'
 import { StockSchemeButton } from '../../components/buttons/StockSchemeButton'
 
 
 export default function ArticleStockPage() {
-  const [balance, setBalance] = useState<GetStockSchemeDto>()
-  const [balances, setBalances] = useState<GetStockSchemeDto[]>([])
+  const [schme, setSchme] = useState<string>()
+  const [balance, setBalance] = useState<GetArticleStockDto>()
+  const [balances, setBalances] = useState<GetArticleStockDto[]>([])
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetStockSchemeDto[]>, BackendError>(["stock-scheme"], async () => new StockSchmeService().GetAllStockSchemes())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetArticleStockDto[]>, BackendError>(["stocks"], async () => new StockSchmeService().GetAllArticlesStock())
   const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
@@ -27,7 +28,7 @@ export default function ArticleStockPage() {
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-  const columns = useMemo<MRT_ColumnDef<GetStockSchemeDto>[]>(
+  const columns = useMemo<MRT_ColumnDef<GetArticleStockDto>[]>(
     //column definitions...
     () => balances && [
       {
@@ -46,7 +47,11 @@ export default function ArticleStockPage() {
           </Button>
         </>
       },
-
+      {
+        accessorKey: 'scheme.label',
+        header: 'Scheme',
+        Cell: (cell) => <>{cell.row.original.scheme ? cell.row.original.scheme.label : ""}</>,
+      },
       {
         accessorKey: 'article',
         header: 'article',
@@ -246,38 +251,39 @@ export default function ArticleStockPage() {
           Stock
         </Typography>
 
+        <Stack direction={'row'} gap={1}>
+          <TextField label="Scheme" variant="outlined" value={schme} onChange={(e) => setSchme(e.currentTarget.value)} />
+          {LoggedInUser?.is_admin && <StockSchemeButton schme={schme} />}
+          <IconButton size="small" color="primary"
+            onClick={(e) => setAnchorEl(e.currentTarget)
+            }
+            sx={{ border: 2, borderRadius: 3, marginLeft: 1 }}
+          >
+            <MenuIcon />
+          </IconButton>
 
-        {LoggedInUser?.is_admin && <StockSchemeButton />}
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={() => setAnchorEl(null)
+            }
+            TransitionComponent={Fade}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button',
+            }}
+            sx={{ borderRadius: 2 }}
+          >
 
-        <IconButton size="small" color="primary"
-          onClick={(e) => setAnchorEl(e.currentTarget)
-          }
-          sx={{ border: 2, borderRadius: 3, marginLeft: 1 }}
-        >
-          <MenuIcon />
-        </IconButton>
 
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={() => setAnchorEl(null)
-          }
-          TransitionComponent={Fade}
-          MenuListProps={{
-            'aria-labelledby': 'basic-button',
-          }}
-          sx={{ borderRadius: 2 }}
-        >
-          
-        
-          {LoggedInUser?.assigned_permissions.includes('article_stock_scheme_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+            {LoggedInUser?.assigned_permissions.includes('article_stock_scheme_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
-          >Export All</MenuItem>}
-          {LoggedInUser?.assigned_permissions.includes('article_stock_scheme_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+            >Export All</MenuItem>}
+            {LoggedInUser?.assigned_permissions.includes('article_stock_scheme_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
-          >Export Selected</MenuItem>}
+            >Export Selected</MenuItem>}
 
-        </Menu >
+          </Menu >
+        </Stack>
       </Stack>
       {/* table */}
       < MaterialReactTable table={table} />

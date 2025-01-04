@@ -2,19 +2,19 @@ import { ConsumeStockSchemeDto } from "../dtos/stock.scheme.dto"
 import { apiClient } from "./utils/AxiosInterceptor"
 
 export class StockSchmeService {
-    public async GetAllConsumedStockSchemes() {
+    public async GetAllConsumedStocks() {
         return await apiClient.get(`consumed/stock`)
     }
-    public async ConsumeStockScheme({ body }: {
+    public async ConsumeStock({ body }: {
         body: ConsumeStockSchemeDto,
     }) {
         return await apiClient.post(`consumed/stock`, body)
     }
-    public async GetAllStockSchemes() {
+    public async GetAllArticlesStock() {
         return await apiClient.get(`stock/schemes`)
     }
 
-    public async CreateStockSchemeFromExcel(body: FormData) {
+    public async CreateArticleStockFromExcel(body: FormData) {
         return await apiClient.post(`stock/schemes`, body)
     }
 }

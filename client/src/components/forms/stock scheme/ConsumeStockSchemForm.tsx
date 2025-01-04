@@ -7,21 +7,21 @@ import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
-import { ConsumeStockSchemeDto, GetStockSchemeDto } from '../../../dtos/stock.scheme.dto';
 import { StockSchmeService } from '../../../services/StockSchmeService';
+import { CreateConsumeStockDto, GetArticleStockDto } from '../../../dtos/stock.scheme.dto';
 
 
 
-function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetStockSchemeDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetArticleStockDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<any>, BackendError, {
-            body: ConsumeStockSchemeDto
+            body: CreateConsumeStockDto
         }>
-        (new StockSchmeService().ConsumeStockScheme, {
+        (new StockSchmeService().ConsumeStock, {
 
             onSuccess: () => {
-                queryClient.refetchQueries('stock-scheme')
+                queryClient.refetchQueries('stocks')
                 setAlert({ message: "success", color: 'success' })
             },
             onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
@@ -30,6 +30,7 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetStockSchemeDto,
     const formik = useFormik({
         initialValues: {
             party: '',
+            scheme: stock.scheme.id,
             article: stock.article,
             six: 0,
             seven: 0,
@@ -38,6 +39,7 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetStockSchemeDto,
             ten: 0
         },
         validationSchema: Yup.object({
+            scheme: Yup.string().required("required"),
             party: Yup.string().required("required"),
             article: Yup.string().required("required"),
             six: Yup.number().max(stock.six),
@@ -48,9 +50,10 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetStockSchemeDto,
 
         }),
         onSubmit: (values) => {
-            let data: ConsumeStockSchemeDto;
+            let data: CreateConsumeStockDto;
             if (values.six > 0) {
                 data = {
+                    scheme: values.scheme,
                     article: values.article,
                     party: values.party,
                     size: 6,
@@ -60,6 +63,7 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetStockSchemeDto,
             }
             if (values.seven > 0) {
                 data = {
+                    scheme: values.scheme,
                     article: values.article,
                     party: values.party,
                     size: 7,
@@ -69,6 +73,7 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetStockSchemeDto,
             }
             if (values.eight > 0) {
                 data = {
+                    scheme: values.scheme,
                     article: values.article,
                     party: values.party,
                     size: 8,
@@ -78,6 +83,7 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetStockSchemeDto,
             }
             if (values.nine > 0) {
                 data = {
+                    scheme: values.scheme,
                     article: values.article,
                     party: values.party,
                     size: 9,
@@ -87,6 +93,7 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetStockSchemeDto,
             }
             if (values.ten > 0) {
                 data = {
+                    scheme: values.scheme,
                     article: values.article,
                     party: values.party,
                     size: 10,

@@ -1,24 +1,25 @@
 import { Response, Request, NextFunction } from "express"
 import moment from "moment"
-import { ConsumeStockSchemeDto, GetStockSchemeConsumedDto, GetStockSchemeDto, getStockSchemeExcelDto } from "../dtos/stock.scheme.dto"
-import { ArticleStockScheme, IArticleStockScheme } from "../models/stock-scheme.model"
+import { ArticleStock, IArticleStock } from "../models/stock.model"
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel"
 import xlsx from "xlsx"
-import { IStockConsumedForScheme, StockConsumedForScheme } from "../models/stock-consumed.model"
+import { ConsumedStock, IConsumedStock } from "../models/stock-consumed.model"
+import { CreateConsumeStockDto, GetArticleStockDto, GetArticleStockExcelDto, GetConsumedStockDto } from "../dtos/stock-scheme.dto"
+import { StockScheme } from "../models/stock-schme.model"
 
 export class StockSchemeController {
-    //leave approved controller
-    public async GetAllConsumedStockSchemes(req: Request, res: Response, next: NextFunction) {
-        let result: GetStockSchemeConsumedDto[] = []
-        let items: IStockConsumedForScheme[] = []
+    public async GetAllConsumedStocks(req: Request, res: Response, next: NextFunction) {
+        let result: GetConsumedStockDto[] = []
+        let items: IConsumedStock[] = []
         if (req.user.is_admin)
-            items = await StockConsumedForScheme.find().populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
+            items = await ConsumedStock.find().populate('scheme').populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
         else
-            items = await StockConsumedForScheme.find({ employee: req.user._id }).populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
+            items = await ConsumedStock.find({ employee: req.user._id }).populate('scheme').populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
 
         result = items.map((item) => {
             return {
                 _id: item._id,
+                scheme: { id: item.scheme._id, label: item.scheme.scheme },
                 party: item.party,
                 article: item.article,
                 size: item.size,
@@ -32,12 +33,12 @@ export class StockSchemeController {
         })
         return res.status(200).json(result)
     }
-    public async ConsumeStockScheme(req: Request, res: Response, next: NextFunction) {
+    public async ConsumeStock(req: Request, res: Response, next: NextFunction) {
         try {
-            const { article, size, consumed, party } = req.body as ConsumeStockSchemeDto;
+            const { article, size, consumed, party, scheme } = req.body as CreateConsumeStockDto;
 
             // Validate required fields
-            if (!article || !size || !consumed || !party) {
+            if (!article || !size || !consumed || !party || !scheme) {
                 return res.status(400).json({ message: "Please provide required fields." });
             }
 
@@ -55,18 +56,20 @@ export class StockSchemeController {
                 return res.status(400).json({ message: "Invalid size provided." });
             }
 
-            const stock = await ArticleStockScheme.findOne({
+            const stock = await ArticleStock.findOne({
                 article,
+                scheme: scheme,
                 [sizeField]: { $gt: 0 }
             });
 
             if (!stock) {
-                return res.status(400).json({ message: `Sorry! Stock of ${article} in size ${size} is not available.` });
+                return res.status(400).json({ message: `Sorry! Stock of ${article} in size ${size} is not available ${scheme}.` });
             }
 
             // Record stock consumption
-            await new StockConsumedForScheme({
+            await new ConsumedStock({
                 article,
+                scheme,
                 party,
                 size,
                 consumed,
@@ -76,14 +79,13 @@ export class StockSchemeController {
                 updated_at: new Date(),
                 updated_by: req.user
             }).save();
-            let balance = await ArticleStockScheme.findOne({ article: article, size: size })
-            console.log(balance)
-            if (balance) {
-                if (size == 6) { balance.six = balance.six - consumed; await balance.save() }
-                if (size == 7) { balance.seven = balance.seven - consumed; await balance.save() }
-                if (size == 8) { balance.eight = balance.eight - consumed; await balance.save() }
-                if (size == 9) { balance.nine = balance.nine - consumed; await balance.save() }
-                if (size == 10) { balance.ten = balance.ten - consumed; await balance.save() }
+
+            if (stock) {
+                if (size == 6) { stock.six = stock.six - consumed; await stock.save() }
+                if (size == 7) { stock.seven = stock.seven - consumed; await stock.save() }
+                if (size == 8) { stock.eight = stock.eight - consumed; await stock.save() }
+                if (size == 9) { stock.nine = stock.nine - consumed; await stock.save() }
+                if (size == 10) { stock.ten = stock.ten - consumed; await stock.save() }
             }
             return res.status(201).json({ message: "Success" });
 
@@ -91,16 +93,15 @@ export class StockSchemeController {
             next(error); // Pass error to global error handler
         }
     }
-
-    //leave balance controller
-    public async GetAllStockSchemes(req: Request, res: Response, next: NextFunction) {
-        let result: GetStockSchemeDto[] = []
-        let items: IArticleStockScheme[] = []
-        items = await ArticleStockScheme.find().populate('created_by').populate('updated_by').sort('article')
+    public async GetAllArticleStocks(req: Request, res: Response, next: NextFunction) {
+        let result: GetArticleStockDto[] = []
+        let items: IArticleStock[] = []
+        items = await ArticleStock.find().populate('scheme').populate('created_by').populate('updated_by').sort('article')
 
         result = items.map((item) => {
             return {
                 _id: item._id,
+                scheme: { id: item.scheme._id, label: item.scheme.scheme },
                 six: item.six,
                 seven: item.seven,
                 eight: item.eight,
@@ -116,9 +117,17 @@ export class StockSchemeController {
         return res.status(200).json(result)
     }
 
-    public async CreateStockSchemeFromExcel(req: Request, res: Response, next: NextFunction) {
-        let result: getStockSchemeExcelDto[] = []
+    public async CreateArticleStocksFromExcel(req: Request, res: Response, next: NextFunction) {
+        let result: GetArticleStockExcelDto[] = []
         let statusText = ""
+        let { scheme } = req.body as { scheme: string }
+        console.log(scheme)
+        if (!scheme)
+            return res.status(400).json({ message: "please provide a scheme" })
+        if (await StockScheme.findOne({ scheme: scheme.trim().toLowerCase() }))
+            return res.status(400).json({ message: "scheme already exists" })
+
+        let newSchme = await new StockScheme({ scheme: scheme, created_by: req.user, updated_by: req.user, created_at: new Date(Date.now()), updated_at: new Date(Date.now()) }).save()
         if (!req.file)
             return res.status(400).json({
                 message: "please provide an Excel file",
@@ -131,16 +140,15 @@ export class StockSchemeController {
                 return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
             const workbook = xlsx.read(req.file.buffer);
             let workbook_sheet = workbook.SheetNames;
-            let workbook_response: getStockSchemeExcelDto[] = xlsx.utils.sheet_to_json(
+            let workbook_response: GetArticleStockExcelDto[] = xlsx.utils.sheet_to_json(
                 workbook.Sheets[workbook_sheet[0]]
             );
             if (workbook_response.length > 3000) {
                 return res.status(400).json({ message: "Maximum 3000 records allowed at one time" })
             }
-            await ArticleStockScheme.deleteMany()
+            await ArticleStock.deleteMany({})
             for (let i = 0; i < workbook_response.length; i++) {
                 let item = workbook_response[i]
-                let items: IArticleStockScheme[] = []
                 let article: string | null = item.article
                 let six: number | null = item.six
                 let seven: number | null = item.seven
@@ -158,8 +166,9 @@ export class StockSchemeController {
 
 
                 if (validated) {
-                    await new ArticleStockScheme({
+                    await new ArticleStock({
                         article,
+                        scheme: newSchme,
                         six,
                         seven,
                         eight,
@@ -184,8 +193,9 @@ export class StockSchemeController {
         return res.status(200).json(result);
     }
     public async DownloadExcelTemplateForCreateStockScheme(req: Request, res: Response, next: NextFunction) {
-        let checklists: getStockSchemeExcelDto[] = [{
+        let checklists: GetArticleStockExcelDto[] = [{
             article: 'power',
+            scheme: 'power-2024-01',
             six: 69,
             seven: 47,
             eight: 48,
@@ -195,7 +205,7 @@ export class StockSchemeController {
         let template: { sheet_name: string, data: any[] }[] = []
         template.push({ sheet_name: 'template', data: checklists })
         ConvertJsonToExcel(template)
-        let fileName = "CreateStockSchemeTemplate.xlsx"
+        let fileName = "CreateArticleStockTemplate.xlsx"
         return res.download("./file", fileName)
     }
 }

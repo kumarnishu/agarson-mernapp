@@ -19,10 +19,10 @@ color:blue;
 `
 
 
-export function StockSchemeButton() {
+export function StockSchemeButton({ schme }: { schme?: string }) {
     const { data, mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<GetKeyFromExcelDto[]>, BackendError, FormData>
-        (new StockSchmeService().CreateStockSchemeFromExcel, { onSuccess: () => queryClient.refetchQueries('stock-scheme') })
+        (new StockSchmeService().CreateArticleStockFromExcel, { onSuccess: () => queryClient.refetchQueries('stocks') })
     const [file, setFile] = useState<File | null>(null)
     const { setAlert } = useContext(AlertContext)
 
@@ -34,7 +34,10 @@ export function StockSchemeButton() {
 
     function handleFile() {
         if (file) {
+            if (!schme)
+                alert('Please select a scheme')
             let formdata = new FormData()
+            schme && formdata.append('scheme', schme)
             formdata.append('excel', file)
             mutate(formdata)
         }
@@ -65,7 +68,7 @@ export function StockSchemeButton() {
                         :
                         <>
                             <Button
-
+                                disabled={isLoading || !schme}
                                 component="label"
                                 color="inherit"
                                 variant="contained"
