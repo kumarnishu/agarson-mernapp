@@ -36,7 +36,8 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetArticleStockDto
             seven: 0,
             eight: 0,
             nine: 0,
-            ten: 0
+            ten: 0,
+            eleven:0
         },
         validationSchema: Yup.object({
             scheme: Yup.string().required("required"),
@@ -47,6 +48,7 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetArticleStockDto
             eight: Yup.number().max(stock.eight),
             nine: Yup.number().max(stock.nine),
             ten: Yup.number().max(stock.ten),
+            eleven: Yup.number().max(stock.eleven),
 
         }),
         onSubmit: (values) => {
@@ -101,6 +103,16 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetArticleStockDto
                 }
                 mutate({ body: data })
             }
+            if (values.eleven > 0) {
+                data = {
+                    scheme: values.scheme,
+                    article: values.article,
+                    party: values.party,
+                    size: 11,
+                    consumed: values.eleven
+                }
+                mutate({ body: data })
+            }
         }
     });
 
@@ -127,6 +139,7 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetArticleStockDto
                 <TextField required fullWidth error={formik.touched.eight && formik.errors.eight ? true : false} id="eight" label="8" helperText={formik.touched.eight && formik.errors.eight ? formik.errors.eight : `Available : ${stock.eight}`}    {...formik.getFieldProps('eight')} />
                 <TextField required fullWidth error={formik.touched.nine && formik.errors.nine ? true : false} id="nine" label="9" helperText={formik.touched.nine && formik.errors.nine ? formik.errors.nine : `Available : ${stock.nine}`}    {...formik.getFieldProps('nine')} />
                 <TextField required fullWidth error={formik.touched.ten && formik.errors.ten ? true : false} id="ten" label="10" helperText={formik.touched.ten && formik.errors.ten ? formik.errors.ten : `Available : ${stock.ten}`}    {...formik.getFieldProps('ten')} />
+                <TextField required fullWidth error={formik.touched.eleven && formik.errors.eleven ? true : false} id="eleven" label="11" helperText={formik.touched.eleven && formik.errors.eleven ? formik.errors.eleven : `Available : ${stock.eleven}`}    {...formik.getFieldProps('eleven')} />
 
                 <Button variant="contained" color="primary" type="submit"
                     disabled={Boolean(isLoading)}

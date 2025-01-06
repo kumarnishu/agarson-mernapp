@@ -10,6 +10,7 @@ export type IArticleStock = {
     eight: number,
     nine: number,
     ten: number,
+    eleven:number,
     article: string,
     created_at: Date,
     updated_at: Date,
@@ -40,6 +41,10 @@ const Schema = new mongoose.Schema<IArticleStock, mongoose.Model<IArticleStock, 
         required: true
     },
     ten: {
+        type: Number,
+        required: true
+    },
+    eleven: {
         type: Number,
         required: true
     },

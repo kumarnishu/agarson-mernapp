@@ -48,7 +48,8 @@ export class StockSchemeController {
                 7: 'seven',
                 8: 'eight',
                 9: 'nine',
-                10: 'ten'
+                10: 'ten',
+                11:'eleven'
             };
 
             const sizeField = sizeMap[size];
@@ -86,6 +87,7 @@ export class StockSchemeController {
                 if (size == 8) { stock.eight = stock.eight - consumed; await stock.save() }
                 if (size == 9) { stock.nine = stock.nine - consumed; await stock.save() }
                 if (size == 10) { stock.ten = stock.ten - consumed; await stock.save() }
+                if (size == 11) { stock.eleven = stock.eleven - consumed; await stock.save() }
             }
             return res.status(201).json({ message: "Success" });
 
@@ -107,6 +109,7 @@ export class StockSchemeController {
                 eight: item.eight,
                 nine: item.nine,
                 ten: item.ten,
+                eleven: item.eleven,
                 article: item.article,
                 created_at: moment(item.created_at).format('YYYY-MM-DD'),
                 updated_at: moment(item.updated_at).format('YYYY-MM-DD'),
@@ -155,6 +158,7 @@ export class StockSchemeController {
                 let eight: number | null = item.eight
                 let nine: number | null = item.nine
                 let ten: number | null = item.ten
+                let eleven: number | null = item.eleven
 
                 let validated = true
 
@@ -174,6 +178,7 @@ export class StockSchemeController {
                         eight,
                         nine,
                         ten,
+                        eleven,
                         created_by: req.user,
                         updated_by: req.user,
                         updated_at: new Date(Date.now()),
@@ -195,12 +200,12 @@ export class StockSchemeController {
     public async DownloadExcelTemplateForCreateStockScheme(req: Request, res: Response, next: NextFunction) {
         let checklists: GetArticleStockExcelDto[] = [{
             article: 'power',
-            scheme: 'power-2024-01',
             six: 69,
             seven: 47,
             eight: 48,
             nine: 95,
-            ten: 23
+            ten: 23,
+            eleven:22
         }]
         let template: { sheet_name: string, data: any[] }[] = []
         template.push({ sheet_name: 'template', data: checklists })

@@ -83,7 +83,11 @@ export default function ArticleStockPage() {
         header: '10',
         Cell: (cell) => <>{cell.row.original.ten ? cell.row.original.ten : ""}</>,
       },
-
+      {
+        accessorKey: 'eleven',
+        header: '11',
+        Cell: (cell) => <>{cell.row.original.eleven ? cell.row.original.eleven : ""}</>,
+      },
       {
         accessorKey: 'created_at',
         header: 'Created At',

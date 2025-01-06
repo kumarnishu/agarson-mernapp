@@ -32,6 +32,7 @@ export type GetArticleStockDto = {
     eight: number,
     nine: number,
     ten: number,
+    eleven: number,
     created_at: string,
     updated_at: string,
     created_by: DropDownDto,
@@ -46,5 +47,6 @@ export type GetArticleStockExcelDto = {
     eight: number,
     nine: number,
     ten: number,
+    eleven: number,
     status?: string
 }
