@@ -13,7 +13,6 @@ import PopUp from '../../components/popup/PopUp'
 import moment from 'moment'
 import { DropDownDto } from '../../dtos/dropdown.dto'
 import { GetDriverSystemDto } from '../../dtos/driver.dto'
-import CreateOrEditDriverSystemDialog from '../../components/dialogs/driverapp/CreateOrEditDriverSystemDialog'
 import ViewDriverSystemPhotoDialog from '../../components/dialogs/driverapp/ViewDriverSystemPhotoDialog'
 import DeleteDriverSystemDialog from '../../components/dialogs/driverapp/DeleteDriverSystemDialog'
 import { UserService } from '../../services/UserServices'
@@ -394,15 +393,7 @@ export default function DriverAppSystemPage() {
           }}
           sx={{ borderRadius: 2 }}
         >
-          {LoggedInUser?.assigned_permissions.includes('driver_system_create') && <MenuItem
-            onClick={() => {
-              setDialog('CreateOrEditDriverSystemDialog')
-              setSystem(undefined);
-              setAnchorEl(null)
-            }}
-
-
-          > Add New</MenuItem>}
+          
 
           {LoggedInUser?.assigned_permissions.includes('driver_system_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
@@ -412,7 +403,6 @@ export default function DriverAppSystemPage() {
           >Export Selected</MenuItem>}
 
         </Menu >
-        <CreateOrEditDriverSystemDialog dialog={dialog} setDialog={setDialog} item={system} />
       </>
       {
         system ?
