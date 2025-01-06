@@ -7,8 +7,7 @@ import { UserContext } from '../../contexts/userContext'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
-import { Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Menu as MenuIcon, Photo } from '@mui/icons-material';
-import DBPagination from '../../components/pagination/DBpagination'
+import { Delete, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Menu as MenuIcon, Photo } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import PopUp from '../../components/popup/PopUp'
 import moment from 'moment'
@@ -17,13 +16,11 @@ import { GetDriverSystemDto } from '../../dtos/driver.dto'
 import CreateOrEditDriverSystemDialog from '../../components/dialogs/driverapp/CreateOrEditDriverSystemDialog'
 import ViewDriverSystemPhotoDialog from '../../components/dialogs/driverapp/ViewDriverSystemPhotoDialog'
 import DeleteDriverSystemDialog from '../../components/dialogs/driverapp/DeleteDriverSystemDialog'
-
 import { UserService } from '../../services/UserServices'
 import { DriverAppService } from '../../services/DriverAppService'
 
 
 export default function DriverAppSystemPage() {
-  const [paginationData, setPaginationData] = useState({ limit: 100, page: 1, total: 1 });
   const { user: LoggedInUser } = useContext(UserContext)
   const [system, setSystem] = useState<GetDriverSystemDto>()
   const [systems, setSystems] = useState<GetDriverSystemDto[]>([])
@@ -42,7 +39,7 @@ export default function DriverAppSystemPage() {
     start_date: moment(new Date()).format("YYYY-MM-DD")
     , end_date: moment(new Date().setDate(new Date().getDate() + 1)).format("YYYY-MM-DD")
   })
-  const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetDriverSystemDto[], page: number, total: number, limit: number }>, BackendError>(["shoe_weights", userId, dates?.start_date, dates?.end_date], async () =>new DriverAppService(). GetDriverSystems({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
+  const { data, isLoading, isSuccess, isRefetching } = useQuery<AxiosResponse<GetDriverSystemDto[]>, BackendError>(["driver_app", userId, dates?.start_date, dates?.end_date], async () => new DriverAppService().GetDriverSystems({ id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'driver_system_view', show_assigned_only: true }))
 
@@ -55,13 +52,7 @@ export default function DriverAppSystemPage() {
 
   useEffect(() => {
     if (data && isSuccess) {
-      setSystems(data.data.result)
-      setPaginationData({
-        ...paginationData,
-        page: data.data.page,
-        limit: data.data.limit,
-        total: data.data.total
-      })
+      setSystems(data.data)
     }
   }, [data, isSuccess])
 
@@ -70,7 +61,7 @@ export default function DriverAppSystemPage() {
     () => systems && [
       {
         accessorKey: 'actions',
-        header: '',
+        header: 'Action',
 
         enableColumnFilter: false,
 
@@ -78,32 +69,19 @@ export default function DriverAppSystemPage() {
           element={
             <Stack direction="row" spacing={1}>
 
-              <>
-                {LoggedInUser?.assigned_permissions.includes('driver_system_edit') && <>
-                  <IconButton color="info"
-                    onClick={() => {
-                      setDialog('CreateOrEditDriverSystemDialog')
-                      setSystem(cell.row.original)
-                    }}
 
-                  >
-                    <Edit />
-                  </IconButton>
 
-                </>}
+              {LoggedInUser?.is_admin && LoggedInUser?.assigned_permissions.includes('driver_system_delete') && <Tooltip title="delete">
+                <IconButton color="error"
 
-                {LoggedInUser?.is_admin && LoggedInUser?.assigned_permissions.includes('driver_system_delete') && <Tooltip title="delete">
-                  <IconButton color="error"
-
-                    onClick={() => {
-                      setDialog('DeleteDriverSystemDialog')
-                      setSystem(cell.row.original)
-                    }}
-                  >
-                    <Delete />
-                  </IconButton>
-                </Tooltip>}
-              </>
+                  onClick={() => {
+                    setDialog('DeleteDriverSystemDialog')
+                    setSystem(cell.row.original)
+                  }}
+                >
+                  <Delete />
+                </IconButton>
+              </Tooltip>}
 
 
             </Stack>}
@@ -126,29 +104,10 @@ export default function DriverAppSystemPage() {
         accessorKey: 'date',
         header: 'Date'
       },
+
       {
-        accessorKey: 'driver.label',
-        header: 'Driver'
-      },
-      {
-        accessorKey: 'billno',
-        header: 'Bill No'
-      },
-      {
-        accessorKey: 'party',
-        header: 'Party'
-      },
-      {
-        accessorKey: 'marka',
-        header: 'Marka'
-      },
-      {
-        accessorKey: 'trasport',
-        header: 'Transport'
-      },
-      {
-        accessorKey: 'remark',
-        header: 'Remark'
+        accessorKey: 'location',
+        header: 'Location'
       },
       {
         accessorKey: 'updated_at',
@@ -172,21 +131,28 @@ export default function DriverAppSystemPage() {
 
 
   const table = useMaterialReactTable({
-    columns,
-    data: systems, columnFilterDisplayMode: 'popover',
+    //@ts-ignore
+    columns, columnFilterDisplayMode: 'popover',
+    data: systems, //10,000 rows       
     enableColumnResizing: true,
-    enableColumnVirtualization: true, enableStickyFooter: true,
+    enableRowVirtualization: true,
+    rowVirtualizerInstanceRef, //optional
+    // , //optionally customize the row virtualizr
+    // columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizr
+    enableStickyFooter: true,
     muiTableFooterRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white',
       }
     }),
+    muiTableContainerProps: (table) => ({
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
+    }),
     muiTableHeadRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',
-        color: 'white',
-        border: '1px solid lightgrey;',
+        color: 'white'
       },
     }),
     muiTableHeadCellProps: ({ column }) => ({
@@ -205,12 +171,106 @@ export default function DriverAppSystemPage() {
         }
       },
     }),
-    muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '72vh' }
-    }),
-    positionToolbarAlertBanner: 'none',
-    renderTopToolbarCustomActions: ({ table }) => (
 
+
+    muiTableBodyCellProps: () => ({
+      sx: {
+        border: '1px solid #c2beba;',
+
+      },
+    }),
+    muiPaginationProps: {
+      rowsPerPageOptions: [10, 100, 200, 500, 1000, 2000, 5000, 7000, 10000],
+      shape: 'rounded',
+      variant: 'outlined',
+    },
+    enableDensityToggle: false, initialState: {
+      density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
+    },
+    enableGrouping: true,
+    enableRowSelection: true,
+    manualPagination: false,
+    enablePagination: true,
+    enableColumnPinning: true,
+    enableTableFooter: true,
+    onColumnVisibilityChange: setColumnVisibility,
+    onSortingChange: setSorting,
+    onColumnSizingChange: setColumnSizing,
+    state: {
+      isLoading: isLoading,
+      columnVisibility,
+      sorting,
+      columnSizing: columnSizing
+    }
+  });
+
+
+  useEffect(() => {
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+
+
+
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+
+
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+
+    isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
+
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
+
+  return (
+    <>
+      {
+        isLoading || isRefetching && <LinearProgress color='secondary' />
+      }
       <Stack
         spacing={2}
         direction="row"
@@ -321,110 +381,7 @@ export default function DriverAppSystemPage() {
           </Tooltip>
         </Stack>
       </Stack >
-    ),
-    rowVirtualizerInstanceRef,
-    mrtTheme: (theme) => ({
-      baseBackgroundColor: theme.palette.background.paper, //change default background color
-    }),
-    renderBottomToolbarCustomActions: () => (
-      <DBPagination paginationData={paginationData} refetch={() => { refetch() }} setPaginationData={setPaginationData} />
 
-    ),
-    muiTableBodyCellProps: () => ({
-      sx: {
-        border: '1px solid lightgrey;',
-      },
-    }),
-   enableDensityToggle: false, initialState: { density: 'compact' },
-    enableRowSelection: true,
-    enableRowNumbers: true,
-    enableColumnPinning: true,
-    onSortingChange: setSorting,
-    enableTopToolbar: true,
-    enableTableFooter: true,
-    enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility, //optional
-
-    onColumnSizingChange: setColumnSizing, state: {
-      isLoading: isLoading,
-      columnVisibility,
-
-      sorting,
-      columnSizing: columnSizing
-    },
-    enableBottomToolbar: true,
-    enableGlobalFilter: false,
-    manualPagination: true,
-    enablePagination: false,
-    enableToolbarInternalActions: false
-  });
-
-  useEffect(() => {
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
-
-  //load state from local storage
-  useEffect(() => {
-    const columnVisibility = localStorage.getItem(
-      'mrt_columnVisibility_table_1',
-    );
-    const columnSizing = localStorage.getItem(
-      'mrt_columnSizing_table_1',
-    );
-
-
-
-
-
-    if (columnVisibility) {
-      setColumnVisibility(JSON.parse(columnVisibility));
-    }
-
-
-    if (columnSizing)
-      setColumnSizing(JSON.parse(columnSizing))
-
-    isFirstRender.current = false;
-  }, []);
-
-  useEffect(() => {
-    if (isFirstRender.current) return;
-    localStorage.setItem(
-      'mrt_columnVisibility_table_1',
-      JSON.stringify(columnVisibility),
-    );
-  }, [columnVisibility]);
-
-
-
-
-  useEffect(() => {
-    if (isFirstRender.current) return;
-    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
-  }, [sorting]);
-
-  useEffect(() => {
-    if (isFirstRender.current) return;
-    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
-  }, [columnSizing]);
-
-  return (
-    <>
-      {
-        isLoading || isRefetching && <LinearProgress color='secondary' />
-      }
       <>
         <Menu
           anchorEl={anchorEl}

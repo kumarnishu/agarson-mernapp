@@ -7,7 +7,6 @@ type Props = {
     item: GetDriverSystemDto
 }
 function ViewDriverSystemPhotoDialog({ item, dialog, setDialog }: Props) {
-    
     return (
         <>
             <Dialog fullScreen={Boolean(window.screen.width < 500)} open={dialog === "ViewDriverSystemPhotoDialog" }

@@ -2,15 +2,13 @@ import { NextFunction, Request, Response } from 'express';
 import isMongoId from "validator/lib/isMongoId";
 import { IDriverSystem, DriverSystem } from "../models/driver-system.model";
 import { IUser } from "../models/user.model";
-import { CreateOrEditDriverSystemDto, GetDriverSystemDto, UploadDriverSystemPhotoDto } from '../dtos/driver.dto';
+import { GetDriverSystemDto, CreateDriverSystemDto } from '../dtos/driver.dto';
 import moment from 'moment';
 import { uploadFileToCloud } from '../services/uploadFileToCloud';
 
 
 export class DriverAppController {
     public async GetAllDriverSystems(req: Request, res: Response, next: NextFunction) {
-        let limit = Number(req.query.limit)
-        let page = Number(req.query.page)
         let id = req.query.id
         let start_date = req.query.start_date
         let end_date = req.query.end_date
@@ -27,57 +25,38 @@ export class DriverAppController {
         let items: IDriverSystem[] = []
 
         let user_ids = req.user?.assigned_users.map((user: IUser) => { return user._id }) || []
-        if (!Number.isNaN(limit) && !Number.isNaN(page)) {
-            if (!id) {
-
-
-                if (user_ids.length > 0) {
-                    items = await DriverSystem.find({ date: { $gte: dt1, $lt: dt2 }, driver: { $in: user_ids } }).populate('driver').populate('created_by').populate('updated_by').sort("-created_at").skip((page - 1) * limit).limit(limit)
-                    count = await DriverSystem.find({ date: { $gt: dt1, $lt: dt2 }, driver: { $in: user_ids } }).countDocuments()
-                }
-
-                else {
-
-                    items = await DriverSystem.find({ date: { $gte: dt1, $lt: dt2 }, driver: req.user?._id }).populate('driver').populate('created_by').populate('updated_by').sort("-created_at").skip((page - 1) * limit).limit(limit)
-                    count = await DriverSystem.find({ date: { $gt: dt1, $lt: dt2 }, driver: req.user?._id }).countDocuments()
-                }
-
-
+        if (!id) {
+            if (user_ids.length > 0) {
+                items = await DriverSystem.find({ date: { $gte: dt1, $lt: dt2 }, driver: { $in: user_ids } }).populate('driver').populate('created_by').populate('updated_by').sort("-created_at")
 
             }
-
 
             else {
-                items = await DriverSystem.find({ date: { $gte: dt1, $lt: dt2 }, driver: id }).populate('driver').populate('created_by').populate('updated_by').sort("-created_at").skip((page - 1) * limit).limit(limit)
-                count = await DriverSystem.find({ date: { $gte: dt1, $lt: dt2 }, driver: id }).countDocuments()
+
+                items = await DriverSystem.find({ date: { $gte: dt1, $lt: dt2 }, driver: req.user?._id }).populate('driver').populate('created_by').populate('updated_by').sort("-created_at")
+
             }
-            result = items.map((item) => {
-                return {
-                    _id: item._id,
-                    date: moment(item.date).format("DD/MM/YYYY"),
-                    driver: { id: item.driver._id, label: item.driver.username, value: item.driver.username },
-                    party: item.party,
-                    billno: item.billno,
-                    marka: item.marka,
-                    transport: item.transport,
-                    location: item.location,
-                    photo: item.photo?.public_url || "",
-                    remarks: item.remarks,
-                    created_at: moment(new Date()).format("DD/MM/YYYY"),
-                    updated_at: moment(new Date()).format("DD/MM/YYYY"),
-                    created_by: { id: item.created_by._id, label: item.created_by.username, value: item.created_by.username },
-                    updated_by: { id: item.updated_by._id, label: item.updated_by.username, value: item.updated_by.username }
-                }
-            })
-            return res.status(200).json({
-                result,
-                total: Math.ceil(count / limit),
-                page: page,
-                limit: limit
-            })
         }
-        else
-            return res.status(200).json({ message: "bad request" })
+
+
+        else {
+            items = await DriverSystem.find({ date: { $gte: dt1, $lt: dt2 }, driver: id }).populate('driver').populate('created_by').populate('updated_by').sort("-created_at")
+            count = await DriverSystem.find({ date: { $gte: dt1, $lt: dt2 }, driver: id }).countDocuments()
+        }
+        result = items.map((item) => {
+            return {
+                _id: item._id,
+                driver: { id: item.driver._id, label: item.driver.username, value: item.driver.username },
+                location: item.location,
+                photo: item.photo?.public_url || "",
+                created_at: moment(new Date()).format("DD/MM/YYYY"),
+                updated_at: moment(new Date()).format("DD/MM/YYYY"),
+                created_by: { id: item.created_by._id, label: item.created_by.username, value: item.created_by.username },
+                updated_by: { id: item.updated_by._id, label: item.updated_by.username, value: item.updated_by.username }
+            }
+        })
+        return res.status(200).json(result)
+
     }
 
     public async GetMyDriverSystems(req: Request, res: Response, next: NextFunction) {
@@ -87,15 +66,9 @@ export class DriverAppController {
         result = items.map((item) => {
             return {
                 _id: item._id,
-                date: moment(item.date).format("DD/MM/YYYY"),
                 driver: { id: item.driver._id, label: item.driver.username, value: item.driver.username },
-                party: item.party,
-                billno: item.billno,
-                marka: item.marka,
-                transport: item.transport,
                 location: item.location,
                 photo: item.photo?.public_url || "",
-                remarks: item.remarks,
                 created_at: moment(new Date()).format("DD/MM/YYYY"),
                 updated_at: moment(new Date()).format("DD/MM/YYYY"),
                 created_by: { id: item.created_by._id, label: item.created_by.username, value: item.created_by.username },
@@ -105,77 +78,6 @@ export class DriverAppController {
         return res.status(200).json(result)
     }
 
-    public async CreateDriverSystem(req: Request, res: Response, next: NextFunction) {
-        const {
-            date,
-            driver,
-            party,
-            billno,
-            marka,
-            transport,
-            remarks } = req.body as CreateOrEditDriverSystemDto
-        if (!driver || !party || !billno || !marka || !transport) {
-            return res.status(400).json({ message: "please provide required fields" })
-        }
-        let dt1 = new Date()
-        let dt2 = new Date()
-        dt2.setDate(new Date(dt2).getDate() + 1)
-        dt1.setHours(0)
-        dt1.setMinutes(0)
-        let system = await DriverSystem.findOne({ party: party.toLowerCase(), transport: transport.trim().toLowerCase(), date: { $gte: dt1, $lt: dt2 } })
-        if (system && system.transport !== transport.trim().toLowerCase())
-            return res.status(400).json({ message: "transport change occurred, already exists one record for that party with different transport" })
-
-        let result = await new DriverSystem({
-            date, driver, party, billno, marka, transport, remarks,
-            created_at: new Date(),
-            created_by: req.user,
-            updated_at: new Date(),
-            updated_by: req.user
-        }).save()
-        return res.status(201).json(result)
-
-    }
-
-    public async UpdateDriverSystem(req: Request, res: Response, next: NextFunction) {
-        const {
-            date,
-            driver,
-            party,
-            billno,
-            marka,
-            transport,
-            remarks } = req.body as CreateOrEditDriverSystemDto
-        if (!driver || !party || !billno || !marka || !transport) {
-            return res.status(400).json({ message: "please provide required fields" })
-        }
-        const id = req.params.id
-        let olditem = await DriverSystem.findById(id)
-        if (!olditem)
-            return res.status(404).json({ message: "item not found" })
-        let dt1 = new Date()
-        let dt2 = new Date()
-        dt2.setDate(new Date(dt2).getDate() + 1)
-        dt1.setHours(0)
-        dt1.setMinutes(0)
-
-        let system = await DriverSystem.findOne({ party: party.toLowerCase(), transport: transport.trim().toLowerCase(), date: { $gte: dt1, $lt: dt2 } })
-        if (system && system.transport !== transport.trim().toLowerCase())
-            return res.status(400).json({ message: "transport change occurred, already exists one record for that party with different transport" })
-
-        await DriverSystem.findByIdAndUpdate(id, {
-            date,
-            driver,
-            party,
-            billno,
-            marka,
-            transport,
-            remarks, updated_at: new Date(),
-            updated_by: req.user
-        })
-        return res.status(200).json(olditem)
-
-    }
     public async DeleteDriverSystem(req: Request, res: Response, next: NextFunction) {
         const id = req.params.id;
         if (!isMongoId(id)) return res.status(403).json({ message: "item id not valid" })
@@ -189,12 +91,11 @@ export class DriverAppController {
         return res.status(200).json({ message: "item deleted successfully" })
     }
 
-
-    public async UploadDriverSystemPhoto(req: Request, res: Response, next: NextFunction) {
+    public async CreateDriverSystem(req: Request, res: Response, next: NextFunction) {
         let body = JSON.parse(req.body.body)
         console.log(body)
         console.log(req.file)
-        let { latitude, longitude, remark } = body as UploadDriverSystemPhotoDto
+        let { latitude, longitude } = body as CreateDriverSystemDto
         if (!latitude || !longitude) {
             return res.status(400).json({ message: "please fill all required fields" })
         }
@@ -224,9 +125,13 @@ export class DriverAppController {
             }
         }
         system.updated_at = new Date()
+        system.created_at = new Date()
 
-        if (req.user)
+        if (req.user) {
+            system.driver = req.user
+            system.created_by = req.user
             system.updated_by = req.user
+        }
 
         let address = await (await fetch(`https://geocode.maps.co/reverse?lat=${latitude}&lon=${longitude}&&api_key=${process.env.GECODE_API_KEY}`)).json()
 
@@ -234,5 +139,4 @@ export class DriverAppController {
         await system.save()
         return res.status(201).json(system)
     }
-
 }
