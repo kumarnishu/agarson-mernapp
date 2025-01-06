@@ -42,10 +42,12 @@ const Schema = new mongoose.Schema<IArticleStock, mongoose.Model<IArticleStock, 
     },
     ten: {
         type: Number,
+        default: 0,
         required: true
     },
     eleven: {
         type: Number,
+        default: 0,
         required: true
     },
     scheme:{
