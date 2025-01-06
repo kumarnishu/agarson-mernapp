@@ -1,6 +1,5 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response, Router } from 'express';
-import express from 'express'
 import { decimalToTimeForXlsx, excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
 import moment from "moment";
 import { IColumnRowData, IRowData } from "../dtos/table.dto";
@@ -15,7 +14,7 @@ import isMongoId from "validator/lib/isMongoId";
 import { CreateOrEditExcelDbRemarkDto, GetExcelDBRemarksDto } from "../dtos/excel-db-remark.dto";
 
 export class ExcelReportController {
-    
+
     public async GetExcelDbReport(req: Request, res: Response, next: NextFunction) {
         const category = req.query.category
         const hidden = req.query.hidden
@@ -133,11 +132,11 @@ export class ExcelReportController {
             result.columns.push({ key: c.key, header: c.key, type: c.type })
         }
 
+        //actual data filling starts from here
 
-
-        for (let k = 0; k < data.length; k++) {
+        let promiseResult = await Promise.all(data.map(async (_dt) => {
             let obj: IRowData = {}
-            let dt = data[k]
+            let dt = _dt
 
             let push_row = true
             if (dt) {
@@ -217,9 +216,13 @@ export class ExcelReportController {
                 }
 
             }
-            if (push_row)
-                result.rows.push(obj)
-        }
+            if (push_row && dt)
+                return obj
+        }))
+        result.rows = promiseResult.filter(row => {
+            if (row)
+                return row
+        }) as IRowData[]
         return res.status(200).json(result)
     }
 
@@ -432,5 +435,5 @@ export class ExcelReportController {
     }
 
 
-   
+
 }
