@@ -63,7 +63,7 @@ export default function SalesAttendanceReportPage() {
     () => balances && [
       {
         accessorKey: 'actions',
-        header: '',
+        header: 'Actions',
 
         enableColumnFilter: false,
 
