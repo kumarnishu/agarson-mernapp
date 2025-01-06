@@ -32,6 +32,11 @@ export default function ArticleConsumedStockpage() {
         Cell: (cell) => <>{cell.row.original.scheme ? cell.row.original.scheme.label : ""}</>,
       },
       {
+        accessorKey: 'status',
+        header: 'Status',
+        Cell: (cell) => <>{cell.row.original.status ? cell.row.original.status : ""}</>,
+      },
+      {
         accessorKey: 'party',
         header: 'party',
         Cell: (cell) => <>{cell.row.original.party ? cell.row.original.party : ""}</>,

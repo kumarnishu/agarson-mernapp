@@ -3,6 +3,7 @@ import { DropDownDto } from "./dropdown.dto"
 export type GetConsumedStockDto = {
     _id: string,
     party: string,
+    status:string,
     article: string,
     scheme:DropDownDto,
     size: number,
@@ -17,6 +18,12 @@ export type GetConsumedStockDto = {
 export type CreateConsumeStockDto = {
     scheme:string,
     party:string,
+    article: string,
+    size: number,
+    consumed: number
+}
+export type DiscardConsumptionDto = {
+    scheme:string,
     article: string,
     size: number,
     consumed: number

@@ -4,21 +4,23 @@ import { ArticleStock, IArticleStock } from "../models/stock.model"
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel"
 import xlsx from "xlsx"
 import { ConsumedStock, IConsumedStock } from "../models/stock-consumed.model"
-import { CreateConsumeStockDto, GetArticleStockDto, GetArticleStockExcelDto, GetConsumedStockDto } from "../dtos/stock-scheme.dto"
+import { CreateConsumeStockDto, DiscardConsumptionDto, GetArticleStockDto, GetArticleStockExcelDto, GetConsumedStockDto } from "../dtos/stock-scheme.dto"
 import { StockScheme } from "../models/stock-schme.model"
 
 export class StockSchemeController {
     public async GetAllConsumedStocks(req: Request, res: Response, next: NextFunction) {
         let result: GetConsumedStockDto[] = []
         let items: IConsumedStock[] = []
+        let visible = req.query.visible
         if (req.user.is_admin)
-            items = await ConsumedStock.find().populate('scheme').populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
+            items = await ConsumedStock.find({ rejected: visible == 'rejected' }).populate('scheme').populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
         else
-            items = await ConsumedStock.find({ employee: req.user._id }).populate('scheme').populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
+            items = await ConsumedStock.find({ rejected: visible == 'rejected', employee: req.user._id }).populate('scheme').populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
 
         result = items.map((item) => {
             return {
                 _id: item._id,
+                status: item.rejected ? "rejected" : "received",
                 scheme: { id: item.scheme._id, label: item.scheme.scheme },
                 party: item.party,
                 article: item.article,
@@ -49,7 +51,7 @@ export class StockSchemeController {
                 8: 'eight',
                 9: 'nine',
                 10: 'ten',
-                11:'eleven'
+                11: 'eleven'
             };
 
             const sizeField = sizeMap[size];
@@ -119,7 +121,61 @@ export class StockSchemeController {
         })
         return res.status(200).json(result)
     }
+    public async DisacardConsumption(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { article, size, consumed, scheme } = req.body as DiscardConsumptionDto;
 
+            // Validate required fields
+            if (!article || !size || !consumed || !scheme) {
+                return res.status(400).json({ message: "Please provide required fields." });
+            }
+
+            // Validate stock dynamically based on size
+            const sizeMap: { [key: number]: string } = {
+                6: 'six',
+                7: 'seven',
+                8: 'eight',
+                9: 'nine',
+                10: 'ten',
+                11: 'eleven'
+            };
+
+            const sizeField = sizeMap[size];
+            if (!sizeField) {
+                return res.status(400).json({ message: "Invalid size provided." });
+            }
+
+            const stock = await ArticleStock.findOne({
+                article,
+                scheme: scheme
+            });
+
+            if (!stock) {
+                return res.status(400).json({ message: `Sorry! Scheme ${scheme} of ${article} in size ${size}  is not available.` });
+            }
+
+            let id = req.params.id
+            let consumption = await ConsumedStock.findById(id)
+            if (!consumption) {
+                return res.status(404).json({ message: "consumption not exists" })
+            }
+            consumption.rejected = true
+            await consumption.save()
+
+            if (stock) {
+                if (size == 6) { stock.six = stock.six + consumed; await stock.save() }
+                if (size == 7) { stock.seven = stock.seven + consumed; await stock.save() }
+                if (size == 8) { stock.eight = stock.eight + consumed; await stock.save() }
+                if (size == 9) { stock.nine = stock.nine + consumed; await stock.save() }
+                if (size == 10) { stock.ten = stock.ten + consumed; await stock.save() }
+                if (size == 11) { stock.eleven = stock.eleven + consumed; await stock.save() }
+            }
+            return res.status(201).json({ message: "Success" });
+
+        } catch (error) {
+            next(error); // Pass error to global error handler
+        }
+    }
     public async CreateArticleStocksFromExcel(req: Request, res: Response, next: NextFunction) {
         let result: GetArticleStockExcelDto[] = []
         let statusText = ""
@@ -205,7 +261,7 @@ export class StockSchemeController {
             eight: 48,
             nine: 95,
             ten: 23,
-            eleven:22
+            eleven: 22
         }]
         let template: { sheet_name: string, data: any[] }[] = []
         template.push({ sheet_name: 'template', data: checklists })

@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
-import { Asset, IUser } from "./user.model";
+import { IUser } from "./user.model";
 import { IStockScheme } from "./stock-schme.model";
 
 export type IConsumedStock = {
     _id: string,
+    rejected: boolean,
     party: string,
     scheme: IStockScheme,
     size: number,//six,seven,eight,nine,ten
@@ -18,6 +19,7 @@ export type IConsumedStock = {
 
 
 const ConsumedStockSchema = new mongoose.Schema<IConsumedStock, mongoose.Model<IConsumedStock, {}, {}>, {}>({
+    rejected: { type: Boolean, default: false },
     party: {
         type: String, default: 'NA'
     },
