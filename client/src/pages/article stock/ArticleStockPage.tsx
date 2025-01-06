@@ -33,7 +33,7 @@ export default function ArticleStockPage() {
     () => balances && [
       {
         accessorKey: 'actions',
-        header: '',
+        header: 'Actions',
         enableColumnFilter: false,
         Cell: ({ cell }) => <>
           <Button color="error"
