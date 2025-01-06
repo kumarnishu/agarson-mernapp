@@ -67,7 +67,7 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetArticleStockDto
                     article: values.article,
                     party: values.party,
                     size: 7,
-                    consumed: values.six
+                    consumed: values.seven
                 }
                 mutate({ body: data })
             }
@@ -77,7 +77,7 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetArticleStockDto
                     article: values.article,
                     party: values.party,
                     size: 8,
-                    consumed: values.six
+                    consumed: values.eight
                 }
                 mutate({ body: data })
             }
@@ -87,7 +87,7 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetArticleStockDto
                     article: values.article,
                     party: values.party,
                     size: 9,
-                    consumed: values.six
+                    consumed: values.nine
                 }
                 mutate({ body: data })
             }
@@ -97,7 +97,7 @@ function ConsumeStockSchemForm({ stock, setDialog }: { stock: GetArticleStockDto
                     article: values.article,
                     party: values.party,
                     size: 10,
-                    consumed: values.six
+                    consumed: values.ten
                 }
                 mutate({ body: data })
             }

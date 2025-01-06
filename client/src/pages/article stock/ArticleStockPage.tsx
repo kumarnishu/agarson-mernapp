@@ -252,8 +252,13 @@ export default function ArticleStockPage() {
         </Typography>
 
         <Stack direction={'row'} gap={1}>
-          <TextField label="Scheme" variant="outlined" value={schme} onChange={(e) => setSchme(e.currentTarget.value)} />
-          {LoggedInUser?.is_admin && <StockSchemeButton schme={schme} />}
+
+          {LoggedInUser?.is_admin &&
+            <>
+              <TextField label="Scheme" variant="outlined" value={schme} onChange={(e) => setSchme(e.currentTarget.value)} />
+              <StockSchemeButton schme={schme} />
+            </>
+          }
           <IconButton size="small" color="primary"
             onClick={(e) => setAnchorEl(e.currentTarget)
             }
