@@ -219,9 +219,11 @@ export class AttendanceController {
             let salesmen: IUser[] = []
             if (req.user.is_admin)
                 salesmen = (await User.find()).filter((user) => user.assigned_permissions.includes('sales_menu'));
-            let slm = await User.findById(req.user._id)
-            if (slm && slm.assigned_permissions.includes('sales_menu'))
-                salesmen.push(slm)
+            else {
+                let slm = await User.findById(req.user._id)
+                if (slm && slm.assigned_permissions.includes('sales_menu'))
+                    salesmen.push(slm)
+            }
             let year = String(yearmonth).slice(0, 4);
             let month = String(yearmonth).slice(4, 6);
             let result = await Promise.all(salesmen.map(async (user) => {
