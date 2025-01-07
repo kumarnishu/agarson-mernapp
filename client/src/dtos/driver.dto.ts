@@ -12,7 +12,6 @@ export type GetDriverSystemDto = {
 }
 
 export type CreateDriverSystemDto = {
-    driver: string
     latitude:string,
     longitude:string
     photo:string

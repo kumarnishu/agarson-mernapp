@@ -13,7 +13,6 @@ export class DriverAppController {
         let start_date = req.query.start_date
         let end_date = req.query.end_date
 
-        let count = 0
         let dt1 = new Date(String(start_date))
         dt1.setHours(0)
         dt1.setMinutes(0)
@@ -41,7 +40,6 @@ export class DriverAppController {
 
         else {
             items = await DriverSystem.find({ date: { $gte: dt1, $lt: dt2 }, driver: id }).populate('driver').populate('created_by').populate('updated_by').sort("-created_at")
-            count = await DriverSystem.find({ date: { $gte: dt1, $lt: dt2 }, driver: id }).countDocuments()
         }
         result = items.map((item) => {
             return {
@@ -49,7 +47,7 @@ export class DriverAppController {
                 driver: { id: item.driver._id, label: item.driver.username, value: item.driver.username },
                 location: item.location,
                 photo: item.photo?.public_url || "",
-                created_at: moment(new Date()).format("DD/MM/YYYY"),
+                created_at: moment(new Date()).calendar(),
                 updated_at: moment(new Date()).format("DD/MM/YYYY"),
                 created_by: { id: item.created_by._id, label: item.created_by.username, value: item.created_by.username },
                 updated_by: { id: item.updated_by._id, label: item.updated_by.username, value: item.updated_by.username }
@@ -58,7 +56,6 @@ export class DriverAppController {
         return res.status(200).json(result)
 
     }
-
     public async GetMyDriverSystems(req: Request, res: Response, next: NextFunction) {
         let result: GetDriverSystemDto[] = []
         let items: IDriverSystem[] = []
@@ -77,7 +74,6 @@ export class DriverAppController {
         })
         return res.status(200).json(result)
     }
-
     public async DeleteDriverSystem(req: Request, res: Response, next: NextFunction) {
         const id = req.params.id;
         if (!isMongoId(id)) return res.status(403).json({ message: "item id not valid" })
@@ -90,7 +86,6 @@ export class DriverAppController {
 
         return res.status(200).json({ message: "item deleted successfully" })
     }
-
     public async CreateDriverSystem(req: Request, res: Response, next: NextFunction) {
         let body = JSON.parse(req.body.body)
         console.log(body)
@@ -104,10 +99,7 @@ export class DriverAppController {
             return res.status(400).json({ message: "please upload document" })
         }
 
-        const id = req.params.id
-        let system = await DriverSystem.findById(id)
-        if (!system)
-            return res.status(404).json({ message: "item not found" })
+        let system = new DriverSystem();
 
         if (req.file) {
             console.log(req.file.mimetype)
@@ -135,7 +127,7 @@ export class DriverAppController {
 
         let address = await (await fetch(`https://geocode.maps.co/reverse?lat=${latitude}&lon=${longitude}&&api_key=${process.env.GECODE_API_KEY}`)).json()
 
-        system.location = address || ""
+        system.location = address.display_name || ""
         await system.save()
         return res.status(201).json(system)
     }

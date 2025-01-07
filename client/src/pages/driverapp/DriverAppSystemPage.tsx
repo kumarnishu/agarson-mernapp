@@ -54,7 +54,7 @@ export default function DriverAppSystemPage() {
       setSystems(data.data)
     }
   }, [data, isSuccess])
-
+  console.log(systems)
 
   const columns = useMemo<MRT_ColumnDef<GetDriverSystemDto>[]>(
     () => systems && [
@@ -100,7 +100,7 @@ export default function DriverAppSystemPage() {
         </>
       },
       {
-        accessorKey: 'date',
+        accessorKey: 'created_at',
         header: 'Date'
       },
 
@@ -393,7 +393,7 @@ export default function DriverAppSystemPage() {
           }}
           sx={{ borderRadius: 2 }}
         >
-          
+
 
           {LoggedInUser?.assigned_permissions.includes('driver_system_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
