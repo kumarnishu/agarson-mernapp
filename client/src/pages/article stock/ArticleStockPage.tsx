@@ -61,51 +61,53 @@ export default function ArticleStockPage() {
       {
         accessorKey: 'six',
         header: '6',
-        aggregationFn: 'count',
+        aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.length}</b>,
         Cell: (cell) => <>{cell.row.original.six ? cell.row.original.six : ""}</>,
+        Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.six) }, 0).toFixed()}</b>
+        
+        ,
       },
       {
         accessorKey: 'seven',
         header: '7',
-        aggregationFn: 'count',
+        aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.length}</b>,
         Cell: (cell) => <>{cell.row.original.seven ? cell.row.original.seven : ""}</>,
+        Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.seven) }, 0).toFixed()}</b>,
       },
 
       {
         accessorKey: 'eight',
         header: '8',
-        aggregationFn: 'count',
+        aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.length}</b>,
         Cell: (cell) => <>{cell.row.original.eight ? cell.row.original.eight : ""}</>,
+        Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.eight) }, 0).toFixed()}</b>
       },
       {
         accessorKey: 'nine',
         header: '9',
-        aggregationFn: 'count',
+        aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.length}</b>,
         Cell: (cell) => <>{cell.row.original.nine ? cell.row.original.nine : ""}</>,
+        Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.nine) }, 0).toFixed()}</b>
       },
       {
         accessorKey: 'ten',
         header: '10',
-        aggregationFn: 'count',
+        aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.length}</b>,
         Cell: (cell) => <>{cell.row.original.ten ? cell.row.original.ten : ""}</>,
+        Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.ten) }, 0).toFixed()}</b>
       },
       {
         accessorKey: 'eleven',
         header: '11',
-        aggregationFn: 'count',
+        aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.length}</b>,
         Cell: (cell) => <>{cell.row.original.eleven ? cell.row.original.eleven : ""}</>,
+        Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.eleven) }, 0).toFixed()}</b>
       },
       {
         accessorKey: 'created_at',

@@ -69,9 +69,6 @@ export default function ArticleConsumedStockpage() {
       {
         accessorKey: 'size',
         header: 'size',
-        aggregationFn: 'count',
-        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-        Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.length}</b>,
         Cell: (cell) => <>{cell.row.original.size ? cell.row.original.size : ""}</>,
       },
       {
