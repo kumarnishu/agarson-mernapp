@@ -66,7 +66,7 @@ export class DriverAppController {
                 driver: { id: item.driver._id, label: item.driver.username, value: item.driver.username },
                 location: item.location,
                 photo: item.photo?.public_url || "",
-                created_at: moment(new Date()).format("DD/MM/YYYY"),
+                created_at: moment(new Date()).calendar(),
                 updated_at: moment(new Date()).format("DD/MM/YYYY"),
                 created_by: { id: item.created_by._id, label: item.created_by.username, value: item.created_by.username },
                 updated_by: { id: item.updated_by._id, label: item.updated_by.username, value: item.updated_by.username }

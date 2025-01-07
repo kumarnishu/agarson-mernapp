@@ -18,7 +18,7 @@ export default function ArticleConsumedStockpage() {
   const [rejected, setRejected] = useState(false)
   const [consume, setConsume] = useState<GetConsumedStockDto>()
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetConsumedStockDto[]>, BackendError>(["consumed",rejected], async () => new StockSchmeService().GetAllConsumedStocks({rejected:rejected}))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetConsumedStockDto[]>, BackendError>(["consumed", rejected], async () => new StockSchmeService().GetAllConsumedStocks({ rejected: rejected }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
@@ -34,14 +34,14 @@ export default function ArticleConsumedStockpage() {
         header: 'Actions',
         enableColumnFilter: false,
         Cell: ({ cell }) => <>
-          <Button color="error"
+          {LoggedInUser?.is_admin && <Button color="error"
             onClick={() => {
               setConsume(cell.row.original)
               setDialog('DiscardConsumptionDialog')
             }}
           >
             Discard
-          </Button>
+          </Button>}
         </>
       },
       {
