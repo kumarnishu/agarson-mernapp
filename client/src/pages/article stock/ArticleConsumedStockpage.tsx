@@ -11,6 +11,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import { GetConsumedStockDto } from '../../dtos/stock.scheme.dto'
 import { StockSchmeService } from '../../services/StockSchmeService'
 import DiscardConsumptionDialog from '../../components/dialogs/stockschme/DiscardConsumptionDialog'
+import { HandleNumbers } from '../../utils/IsDecimal'
 
 
 export default function ArticleConsumedStockpage() {
@@ -68,12 +69,18 @@ export default function ArticleConsumedStockpage() {
       {
         accessorKey: 'size',
         header: 'size',
+        aggregationFn: 'count',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.length}</b>,
         Cell: (cell) => <>{cell.row.original.size ? cell.row.original.size : ""}</>,
       },
       {
         accessorKey: 'consumed',
         header: 'consumed',
+        aggregationFn: 'sum',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
         Cell: (cell) => <>{cell.row.original.consumed ? cell.row.original.consumed : ""}</>,
+        Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.consumed) }, 0).toFixed()}</b>
       },
 
       {
