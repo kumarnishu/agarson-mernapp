@@ -12,6 +12,7 @@ import { GetArticleStockDto } from '../../dtos/stock.scheme.dto'
 import { StockSchmeService } from '../../services/StockSchmeService'
 import ConsumeStockSchmeDialog from '../../components/dialogs/stockschme/ConsumeStockSchmeDialog'
 import { StockSchemeButton } from '../../components/buttons/StockSchemeButton'
+import { HandleNumbers } from '../../utils/IsDecimal'
 
 
 export default function ArticleStockPage() {
@@ -60,32 +61,50 @@ export default function ArticleStockPage() {
       {
         accessorKey: 'six',
         header: '6',
+        aggregationFn: 'count',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.length}</b>,
         Cell: (cell) => <>{cell.row.original.six ? cell.row.original.six : ""}</>,
       },
       {
         accessorKey: 'seven',
         header: '7',
+        aggregationFn: 'count',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.length}</b>,
         Cell: (cell) => <>{cell.row.original.seven ? cell.row.original.seven : ""}</>,
       },
 
       {
         accessorKey: 'eight',
         header: '8',
+        aggregationFn: 'count',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.length}</b>,
         Cell: (cell) => <>{cell.row.original.eight ? cell.row.original.eight : ""}</>,
       },
       {
         accessorKey: 'nine',
         header: '9',
+        aggregationFn: 'count',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.length}</b>,
         Cell: (cell) => <>{cell.row.original.nine ? cell.row.original.nine : ""}</>,
       },
       {
         accessorKey: 'ten',
         header: '10',
+        aggregationFn: 'count',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.length}</b>,
         Cell: (cell) => <>{cell.row.original.ten ? cell.row.original.ten : ""}</>,
       },
       {
         accessorKey: 'eleven',
         header: '11',
+        aggregationFn: 'count',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.length}</b>,
         Cell: (cell) => <>{cell.row.original.eleven ? cell.row.original.eleven : ""}</>,
       },
       {
