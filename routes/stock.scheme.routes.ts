@@ -6,6 +6,7 @@ let controller = new StockSchemeController()
 const router = express.Router()
 
 router.route("/consumed/stock").get(isAuthenticatedUser, controller.GetAllConsumedStocks).post(isAuthenticatedUser, controller.ConsumeStock)
+router.route("/discard/stock/:id").post(isAuthenticatedUser, controller.DisacardConsumption)
 router.route("/stock/schemes").get(isAuthenticatedUser, controller.GetAllArticleStocks).post(upload.single("excel"), isAuthenticatedUser, controller.CreateArticleStocksFromExcel)
 router.get("/download/template/stock-schme", isAuthenticatedUser, controller.DownloadExcelTemplateForCreateStockScheme)
 

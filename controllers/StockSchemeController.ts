@@ -11,11 +11,11 @@ export class StockSchemeController {
     public async GetAllConsumedStocks(req: Request, res: Response, next: NextFunction) {
         let result: GetConsumedStockDto[] = []
         let items: IConsumedStock[] = []
-        let visible = req.query.visible
+        let rejected = req.query.rejected
         if (req.user.is_admin)
-            items = await ConsumedStock.find({ rejected: visible == 'rejected' }).populate('scheme').populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
+            items = await ConsumedStock.find({ rejected: rejected == 'true' }).populate('scheme').populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
         else
-            items = await ConsumedStock.find({ rejected: visible == 'rejected', employee: req.user._id }).populate('scheme').populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
+            items = await ConsumedStock.find({ rejected: rejected == 'true', employee: req.user._id }).populate('scheme').populate('employee').populate('created_by').populate('updated_by').sort('-created_at')
 
         result = items.map((item) => {
             return {

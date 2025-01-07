@@ -5,27 +5,45 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
-import { Fade, IconButton, Menu, MenuItem, Typography } from '@mui/material'
+import { Button, Fade, IconButton, Menu, MenuItem, Typography } from '@mui/material'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { GetConsumedStockDto } from '../../dtos/stock.scheme.dto'
 import { StockSchmeService } from '../../services/StockSchmeService'
+import DiscardConsumptionDialog from '../../components/dialogs/stockschme/DiscardConsumptionDialog'
 
 
 export default function ArticleConsumedStockpage() {
   const [consumes, setConsumes] = useState<GetConsumedStockDto[]>([])
+  const [rejected, setRejected] = useState(false)
+  const [consume, setConsume] = useState<GetConsumedStockDto>()
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetConsumedStockDto[]>, BackendError>(["consumed"], async () => new StockSchmeService().GetAllConsumedStocks())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetConsumedStockDto[]>, BackendError>(["consumed",rejected], async () => new StockSchmeService().GetAllConsumedStocks({rejected:rejected}))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-
+  const [dialog, setDialog] = useState<string | undefined>()
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const columns = useMemo<MRT_ColumnDef<GetConsumedStockDto>[]>(
     //column definitions...
     () => consumes && [
+      {
+        accessorKey: 'actions',
+        header: 'Actions',
+        enableColumnFilter: false,
+        Cell: ({ cell }) => <>
+          <Button color="error"
+            onClick={() => {
+              setConsume(cell.row.original)
+              setDialog('DiscardConsumptionDialog')
+            }}
+          >
+            Discard
+          </Button>
+        </>
+      },
       {
         accessorKey: 'scheme.label',
         header: 'Scheme',
@@ -230,37 +248,44 @@ export default function ArticleConsumedStockpage() {
         </Typography>
 
 
+        < Stack direction="row" spacing={2}>
+          <Stack direction={'row'} alignItems={'center'}>
+            <input type='checkbox' onChange={() => setRejected(!rejected)} /> <span style={{ paddingLeft: '5px' }}>Rejected</span>
+          </Stack >
 
-        <IconButton size="small" color="primary"
-          onClick={(e) => setAnchorEl(e.currentTarget)
-          }
-          sx={{ border: 2, borderRadius: 3, marginLeft: 1 }}
-        >
-          <MenuIcon />
-        </IconButton>
+          <IconButton size="small" color="primary"
+            onClick={(e) => setAnchorEl(e.currentTarget)
+            }
+            sx={{ border: 2, borderRadius: 3, marginLeft: 1 }}
+          >
+            <MenuIcon />
+          </IconButton>
 
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={() => setAnchorEl(null)
-          }
-          TransitionComponent={Fade}
-          MenuListProps={{
-            'aria-labelledby': 'basic-button',
-          }}
-          sx={{ borderRadius: 2 }}
-        >
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={() => setAnchorEl(null)
+            }
+            TransitionComponent={Fade}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button',
+            }}
+            sx={{ borderRadius: 2 }}
+          >
 
-          {LoggedInUser?.assigned_permissions.includes('consumed_stock_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+            {LoggedInUser?.assigned_permissions.includes('consumed_stock_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
-          >Export All</MenuItem>}
-          {LoggedInUser?.assigned_permissions.includes('consumed_stock_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+            >Export All</MenuItem>}
+            {LoggedInUser?.assigned_permissions.includes('consumed_stock_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
 
-          >Export Selected</MenuItem>}
+            >Export Selected</MenuItem>}
 
-        </Menu >
+          </Menu >
+        </Stack >
+
       </Stack>
       {/* table */}
+      {consume && <DiscardConsumptionDialog consumtion={consume} dialog={dialog} setDialog={setDialog} />}
       < MaterialReactTable table={table} />
     </>
 
