@@ -15,7 +15,10 @@ export type ISales = {
 }
 
 const SalesSchema = new mongoose.Schema<ISales, mongoose.Model<ISales, {}, {}>, {}>({
- 
+    date: {
+        type: Date,
+        required: true
+    },
     invoice_no: {
         type: String,
         lowercase: true,
@@ -39,7 +42,6 @@ const SalesSchema = new mongoose.Schema<ISales, mongoose.Model<ISales, {}, {}>, 
         index: true
     },
     amount: {type:Number,default:0},
-    date: Date,
     created_at: {
         type: Date,
         default: new Date(),
