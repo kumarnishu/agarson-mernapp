@@ -92,5 +92,5 @@ export class SalesService {
     }
     public async BulkSalesManLeavesReportFromExcel(body: FormData) {
         return await apiClient.post(`create-salesman-leaves-from-excel`, body)
-    }
+    } 
 }

@@ -2,7 +2,7 @@ import { Grid, Paper, Stack, Typography } from "@mui/material"
 import { Link, Outlet } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../contexts/userContext";
-import { Assignment } from "@mui/icons-material";
+import { AssignmentOutlined } from "@mui/icons-material";
 
 function PaymentsDashboard() {
     const [features, setFeatures] = useState<{ feature: string, is_visible: boolean, url: string }[]>([])
@@ -19,58 +19,49 @@ function PaymentsDashboard() {
 
     return (
         <>
-            <Grid container  >
-                {features.map((feat, index) => {
-                    return (
-                        <Grid key={index} item xs={12} md={3} lg={3} sx={{ p: 1 }}>
-                            <Link to={feat.url} style={{ textDecoration: 'none' }}>
-                                 <Paper
-                                                                   sx={{
-                                                                       p: 2,
-                                                                       m: 0,
-                                                                       height: 80,
-                                                                       position: 'relative',
-                                                                       overflow: 'hidden',
-                                                                       backdropFilter: 'blur(12px)',
-                                                                       borderRadius: 3,
-                                                                       background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(240, 248, 255, 0.8))', // Gradient background
-                                                                       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', // Soft shadow
-                                                                       transition: 'all 0.3s ease-in-out',
-                                                                       '&:hover': {
-                                                                           transform: 'translateY(-4px)',
-                                                                           boxShadow: '0 8px 20px rgba(0, 0, 0, 0.2)', // Deeper shadow on hover
-                                                                           background: 'linear-gradient(135deg, rgba(70, 130, 180, 0.8), rgba(100, 149, 237, 0.8))', // Slightly darker gradient
-                                                                       },
-                                                                   }}
-                                                               >
-                                                                   <Stack
-                                                                       flexDirection="row"
-                                                                       gap={2}
-                                                                       alignItems="center"
-                                                                       sx={{
-                                                                           height: '100%',
-                                                                       }}
-                                                                   >
-                                                                       <Assignment />
-                                                                       <Typography
-                                                                           variant="h6"
-                                                                           component="h1"
-                                                                           sx={{
-                                                                               fontWeight: 'bold',
-                                                                               fontSize: 14,
-                                                                               letterSpacing: 1.2,
-                                                                               color: 'rgba(50, 50, 50, 0.9)', // Slightly darker text
-                                                                           }}
-                                                                       >
-                                                                           {feat.feature.toUpperCase()}
-                                                                       </Typography>
-                                                                   </Stack>
-                                                               </Paper>
-                            </Link>
-                        </Grid>
-                    )
-                })}
-            </Grid>
+          <Grid container  >
+                         {features.map((feat, index) => {
+                             return (
+                                 <Grid key={index} item xs={12} md={4} lg={4} sx={{ p: 1 }}>
+                                     <Link to={feat.url} style={{ textDecoration: 'none' }}>
+                                         <Paper
+                                             sx={{
+                                                 p: 2,
+                                                 m: 0,
+                                                 minHeight: 60,
+                                                 position: 'relative',
+                                                 overflow: 'hidden',
+                                                 backdropFilter: 'blur(10px)', // Blurry effect
+                                                 backgroundColor: 'rgba(255, 255, 255, 0.6)', // Semi-transparent blue
+                                                 transition: '0.3s',
+                                                 '&:hover': {
+                                                     transform: 'translateY(-2px)',
+                                                     backgroundColor: 'rgba(70, 130, 180, 0.7)', // Darken on hover
+                                                 },
+                                             }}
+                                         >
+                                             <Stack
+                                                 flexDirection="row"
+                                                 gap={2}
+                                                 sx={{ alignItems: 'center' }}
+                                             >
+                                                 <AssignmentOutlined />
+                                                 <Typography
+                                                     variant="h6"
+                                                     component="div"
+                                                     sx={{
+                                                         fontWeight: 'medium', fontSize: 14
+                                                     }}
+                                                 >
+                                                     {feat.feature}
+                                                 </Typography>
+                                             </Stack>
+                                         </Paper>
+                                     </Link>
+                                 </Grid>
+                             )
+                         })}
+                     </Grid>
             <Outlet />
         </>
 

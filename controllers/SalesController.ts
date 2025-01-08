@@ -1570,6 +1570,7 @@ export class SalesController {
             return {
                 _id: dt._id,
                 date: moment(dt.date).format("YYYY-MM-DD"),
+                month:moment(dt.date).format('MMMM'),
                 invoice_no: dt.invoice_no,
                 party: dt.party,
                 state: dt.state,
@@ -1734,6 +1735,7 @@ export class SalesController {
                 _id: dt._id,
                 date: moment(dt.date).format("YYYY-MM-DD"),
                 party: dt.party,
+                month:moment(dt.date).format('MMMM'),
                 state: dt.state,
                 amount: dt.amount
             }

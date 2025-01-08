@@ -3,6 +3,7 @@ export type GetSalesDto = {
     date: string,
     invoice_no: string,
     party: string,
+    month:string,
     state: string,
     amount: number
 }
@@ -19,6 +20,7 @@ export type GetSalesExcelDto = {
 export type GetCollectionsDto = {
     _id: string,
     date: string,
+    month:string,
     party: string,
     state: string,
     amount: number
