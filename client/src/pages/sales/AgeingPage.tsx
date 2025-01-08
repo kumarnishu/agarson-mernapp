@@ -54,40 +54,40 @@ export default function AgeingPage() {
 
             },
             {
-                accessorKey: '25',
+                accessorKey: 'two5',
                 header: '25',
-                Cell: (cell) => <>{cell.row.original['25'] || ""}</>,
+                Cell: (cell) => <>{cell.row.original.two5 || ""}</>,
 
             },
             {
-                accessorKey: '30',
+                accessorKey: 'three0',
                 header: '30',
-                Cell: (cell) => <>{cell.row.original['30'] || ""}</>,
+                Cell: (cell) => <>{cell.row.original.three0 || ""}</>,
 
             },
             {
-                accessorKey: '55',
+                accessorKey: 'five5',
                 header: '55',
-                Cell: (cell) => <>{cell.row.original['55'] || ""}</>,
+                Cell: (cell) => <>{cell.row.original.five5 || ""}</>,
 
             },
             {
-                accessorKey: '60',
+                accessorKey: 'six0',
                 header: '60',
-                Cell: (cell) => <>{cell.row.original['60'] || ""}</>,
+                Cell: (cell) => <>{cell.row.original.six0 || ""}</>,
 
             },
             {
-                accessorKey: '70',
+                accessorKey: 'seven0',
                 header: '70',
-                Cell: (cell) => <>{cell.row.original['70'] || ""}</>,
+                Cell: (cell) => <>{cell.row.original.seven0 || ""}</>,
 
             },
            
             {
-                accessorKey: '70+',
+                accessorKey: 'seventyplus',
                 header: '70+',
-                Cell: (cell) => <>{cell.row.original['70+'] || ""}</>,
+                Cell: (cell) => <>{cell.row.original.seventyplus || ""}</>,
 
             },
 

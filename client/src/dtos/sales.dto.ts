@@ -3,7 +3,7 @@ export type GetSalesDto = {
     date: string,
     invoice_no: string,
     party: string,
-    month:string,
+    month: string,
     state: string,
     amount: number
 }
@@ -20,7 +20,7 @@ export type GetSalesExcelDto = {
 export type GetCollectionsDto = {
     _id: string,
     date: string,
-    month:string,
+    month: string,
     party: string,
     state: string,
     amount: number
@@ -40,12 +40,12 @@ export type GetAgeingDto = {
     party: string,
     next_call?: string,
     last_remark?: string,
-    '25': number,
-    '30': number,
-    '55': number,
-    '60': number,
-    '70': number,
-    '70+': number,
+    two5: number,
+    three0: number,
+    five5: number,
+    six0: number,
+    seven0: number,
+    seventyplus: number,
 }
 
 export type GetAgeingExcelDto = {
@@ -54,20 +54,20 @@ export type GetAgeingExcelDto = {
     party: string,
     next_call?: string,
     last_remark?: string,
-    '25': number,
-    '30': number,
-    '55': number,
-    '60': number,
-    '70': number,
-    '70+': number,
+    two5: number,
+    three0: number,
+    five5: number,
+    six0: number,
+    seven0: number,
+    seventyplus: number,
     status?: string
 }
 
-export type UpdateAgeingRemarkDto={
-    _id:string,
-    remark:string
+export type UpdateAgeingRemarkDto = {
+    _id: string,
+    remark: string
 }
-export type UpdateNextCallRemarkDto={
-    _id:string,
-    next_call:string
+export type UpdateNextCallRemarkDto = {
+    _id: string,
+    next_call: string
 }

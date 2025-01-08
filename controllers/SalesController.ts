@@ -1888,12 +1888,12 @@ export class SalesController {
                 state: dt.state,
                 last_remark: dt.last_remark,
                 next_call: moment(dt.next_call).format("YYYY-MM-DD"),
-                '25': dt['25'],
-                '30': dt['30'],
-                '55': dt['55'],
-                '60': dt['60'],
-                '70': dt['70'],
-                '70+': dt['70+']
+                two5: dt.two5,
+                three0: dt.three0,
+                five5: dt.five5,
+                six0: dt.six0,
+                seven0: dt.seven0,
+                seventyplus: dt.seventyplus,
             }
         })
         return res.status(200).json(result);
@@ -1927,15 +1927,15 @@ export class SalesController {
                 let item = workbook_response[i]
                 let _id: string | null = item._id
                 let party: string | null = item.party
-                let state: string | null = item.state
-                let two5: number | null = item['25']
-                let three0: number | null = item['30']
-                let five5: number | null = item['55']
-                let six0: number | null = item['60']
-                let seven0: number | null = item['70']
-                let seventyplus: number | null = item['70+']
+                let state: string | null = item.state || ""
+                let two5: number | null = item.two5
+                let three0: number | null = item.three0
+                let five5: number | null = item.five5
+                let six0: number | null = item.six0
+                let seven0: number | null = item.seven0
+                let seventyplus: number | null = item.seventyplus
 
-
+                console.log(workbook_response)
 
                 if (!party) {
                     validated = false
@@ -1949,18 +1949,18 @@ export class SalesController {
                     if (item._id && isMongoId(String(item._id))) {
 
                         await Ageing.findByIdAndUpdate(item._id, {
-                            state: state,
-                            party: party,
-                            '25': two5,
-                            '30': three0,
-                            '55': five5,
-                            '60': six0,
-                            '70': seven0,
-                            '70+': seventyplus,
+                            state: item.state || "unknown",
+                            party: party || "NA",
+                            two5: two5,
+                            three0: three0,
+                            five5: five5,
+                            six0: six0,
+                            seven0: seven0,
+                            seventyplus: seventyplus,
                             updated_by: req.user,
                             updated_at: new Date()
                         })
-                        statusText = "updated amount only"
+                        statusText = "updated "
                     }
 
                     else {
@@ -1972,14 +1972,14 @@ export class SalesController {
 
                 if (!item._id || !isMongoId(String(item._id))) {
                     await new Ageing({
-                        state: state,
-                        party: party,
-                        '25': two5,
-                        '30': three0,
-                        '55': five5,
-                        '60': six0,
-                        '70': seven0,
-                        '70+': seventyplus,
+                        state: item.state || "unknown",
+                        party: party || "NA",
+                        two5: two5,
+                        three0: three0,
+                        five5: five5,
+                        six0: six0,
+                        seven0: seven0,
+                        seventyplus: seventyplus,
                         created_by: req.user,
                         updated_by: req.user,
                         created_at: new Date(),
@@ -2005,12 +2005,12 @@ export class SalesController {
                 _id: 'sdswdw',
                 state: "maharashtra",
                 party: 'abc footwaer',
-                '25': 20,
-                '30': 20,
-                '55': 20,
-                '60': 20,
-                '70': 20,
-                '70+': 20
+                two5: 0,
+                three0: 0,
+                five5: 0,
+                six0: 0,
+                seven0: 0,
+                seventyplus: 0,
             }
         ]
 
