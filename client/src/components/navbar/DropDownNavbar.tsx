@@ -4,7 +4,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import { useContext, useState } from 'react';
 import { UserContext } from '../../contexts/userContext';
 import { toTitleCase } from '../../utils/TitleCase';
-import { AssignmentOutlined } from "@mui/icons-material";
+import { CheckBox } from "@mui/icons-material";
 import { ProfileMenu } from '../logo/ProfileLogo';
 
 
@@ -41,7 +41,7 @@ function DropDownNavbar() {
             <Link to={"/DropDown"} title="Double-click to access the main dashboard, or single-click to return." onDoubleClick={() => navigate("/")} replace={true} style={{ textDecoration: 'none' }}>
               <Paper sx={{ ml: 2, p: 0.5, bgcolor: 'white', boxShadow: 1, borderRadius: 1, borderColor: 'white' }}>
                 <Stack flexDirection={"row"} gap={2} sx={{ alignItems: 'center' }}>
-                  <AssignmentOutlined />
+                  <CheckBox />
                   <Typography variant="button" sx={{ fontSize: 12 }} component="div">
                     DropDown
                   </Typography>

@@ -2,7 +2,7 @@ import { Grid, Paper, Stack, Typography } from "@mui/material"
 import { Link, Outlet } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../contexts/userContext";
-import { AssignmentOutlined } from "@mui/icons-material";
+import { CheckBox } from "@mui/icons-material";
 
 function SalesDashboard() {
     const [features, setFeatures] = useState<{ feature: string, is_visible: boolean, url: string }[]>([])
@@ -20,6 +20,12 @@ function SalesDashboard() {
         user?.assigned_permissions.includes('salesman_leaves_report_view') && tmpfeatures.push({ feature: 'salesmen leaves report ', is_visible: false, url: "SalesmanLeavesReportPage" })
         user?.assigned_permissions.includes('references_report_view') && tmpfeatures.push({ feature: 'References Report ', is_visible: false, url: "ReferencesReportPage" })
         user?.assigned_permissions.includes('salesman_references_report_view') && tmpfeatures.push({ feature: 'Salesman References Report ', is_visible: false, url: "ReferenceReportPageSalesman" })
+        user?.assigned_permissions.includes('salesman_references_report_view') && tmpfeatures.push({ feature: 'Sales ', is_visible: false, url: "ReferenceReportPageSalesman" })
+
+        user?.assigned_permissions.includes('salesman_references_report_view') && tmpfeatures.push({ feature: 'Collection ', is_visible: false, url: "ReferenceReportPageSalesman" })
+
+        user?.assigned_permissions.includes('salesman_references_report_view') && tmpfeatures.push({ feature: 'Ageing 25,30,55,60,70,90,120+ ', is_visible: false, url: "ReferenceReportPageSalesman" })
+
 
         // tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
     }, [user])
@@ -38,8 +44,8 @@ function SalesDashboard() {
                                         minHeight: 80,
                                         position: 'relative',
                                         overflow: 'hidden',
-                                         backdropFilter: 'blur(10px)',
-                        borderRadius:2, // Blurry effect
+                                        backdropFilter: 'blur(10px)',
+                                        borderRadius: 2, // Blurry effect
                                         backgroundColor: 'rgba(255, 255, 255, 0.6)', // Semi-transparent blue
                                         transition: '0.3s',
                                         '&:hover': {
@@ -53,7 +59,7 @@ function SalesDashboard() {
                                         gap={2}
                                         sx={{ alignItems: 'center' }}
                                     >
-                                        <AssignmentOutlined />
+                                        <CheckBox />
                                         <Typography
                                             variant="h6"
                                             component="h1"

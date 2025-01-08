@@ -2,7 +2,7 @@ import { Grid, Paper, Stack, Typography } from "@mui/material"
 import { Link, Outlet } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../contexts/userContext";
-import { AssignmentOutlined } from "@mui/icons-material";
+import { CheckBox } from "@mui/icons-material";
 
 function ChecklistDashboard() {
     const [features, setFeatures] = useState<{ feature: string, is_visible: boolean, url: string }[]>([])
@@ -48,7 +48,7 @@ function ChecklistDashboard() {
                                         gap={2}
                                         sx={{ alignItems: 'center' }}
                                     >
-                                        <AssignmentOutlined />
+                                        <CheckBox />
                                         <Typography
                                             variant="h6"
                                             component="h1"

@@ -6,7 +6,7 @@ import { useQuery } from "react-query";
 import { BackendError } from "../..";
 import { UserContext } from "../../contexts/userContext";
 import { DropDownDto } from "../../dtos/dropdown.dto";
-import { AssignmentOutlined } from "@mui/icons-material";
+import { CheckBox } from "@mui/icons-material";
 import { toTitleCase } from "../../utils/TitleCase";
 import { ExcelDbButtons } from "../buttons/ExcelDbButtons";
 import { AuthorizationService } from "../../services/AuthorizationService";
@@ -63,7 +63,7 @@ function ExcelDBDashboard() {
                                         gap={2}
                                         sx={{ alignItems: 'center' }}
                                     >
-                                        <AssignmentOutlined />
+                                        <CheckBox />
                                         <Typography
                                             variant="h6"
                                             component="h1"
