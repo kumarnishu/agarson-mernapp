@@ -1,5 +1,6 @@
 import { utils, writeFileXLSX } from "xlsx";
 
+export default function ConvertJsonToExcel(sheets: { sheet_name: string, data: any[] }[]) {
     const wb = utils.book_new();
     sheets.forEach((sheet) => {
         let sh = utils.json_to_sheet(sheet.data)
@@ -7,4 +8,3 @@ import { utils, writeFileXLSX } from "xlsx";
     })
     writeFileXLSX(wb, `file`);
 }
-export default function ConvertJsonToExcel(sheets: { sheet_name: string, data: any[] }[]) {
