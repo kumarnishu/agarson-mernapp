@@ -1789,7 +1789,10 @@ export class SalesController {
                     validated = false
                     statusText = "state required"
                 }
-
+                if (!_id && await Collection.findOne({ date: nedate, party: party.trim().toLowerCase(), amount: amount })) {
+                    validated = false
+                    statusText = "collection exists"
+                }
 
                 if (validated) {
                     if (item._id && isMongoId(String(item._id))) {
