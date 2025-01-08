@@ -243,7 +243,7 @@ export default function AgeingPage() {
                     component={'h1'}
                     sx={{ pl: 1 }}
                 >
-                    Ageing -25,30,55,60,70,90,120+
+                    Ageing - 25,30,55,60,70,70+
                 </Typography>
                 <Stack
                     spacing={2}
