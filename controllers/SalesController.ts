@@ -1923,7 +1923,7 @@ export class SalesController {
             if (workbook_response.length > 3000) {
                 return res.status(400).json({ message: "Maximum 3000 records allowed at one time" })
             }
-
+            await Ageing.deleteMany({})
             for (let i = 0; i < workbook_response.length; i++) {
                 let item = workbook_response[i]
                 let _id: string | null = item._id
@@ -1947,11 +1947,10 @@ export class SalesController {
                     validated = false
                     statusText = "state required"
                 }
-
                 if (validated) {
                     if (item._id && isMongoId(String(item._id))) {
 
-                        await Collection.findByIdAndUpdate(item._id, {
+                        await Ageing.findByIdAndUpdate(item._id, {
                             state: state,
                             party: party,
                             '25': two5,
@@ -1975,7 +1974,7 @@ export class SalesController {
                 }
 
                 if (!item._id || !isMongoId(String(item._id))) {
-                    await new Collection({
+                    await new Ageing({
                         state: state,
                         party: party,
                         '25': two5,

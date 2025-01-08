@@ -87,6 +87,7 @@ import ArticleStockSchmeNavbar from './components/navbar/ArticleStockSchmeNavbar
 import StockSchemeDashboard from './components/dashboards/StockSchemeDashboard.tsx'
 import SalesReportPage from './pages/sales/SalesReportPage.tsx'
 import CollectionReportPage from './pages/sales/CollectionReportPage.tsx'
+import AgeingPage from './pages/sales/AgeingPage.tsx'
 
 
 function AppRoutes() {
@@ -502,7 +503,11 @@ function AppRoutes() {
                   <CollectionReportPage />
                 }
               />}
-             
+              {user?.assigned_permissions.includes('ageing_view') && <Route
+                path="AgeingPage" element={
+                  <AgeingPage />
+                }
+              />}
             </Route>}
 
         </Route>

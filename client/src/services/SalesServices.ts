@@ -105,8 +105,8 @@ export class SalesService {
     public async CreateSalesReportFromExcel(body: FormData) {
         return await apiClient.post(`create-sales-from-excel`, body)
     }
-    public async GetAgeingReports() {
-        return await apiClient.get(`ageing`)
+    public async GetAgeingReports({ hidden }: { hidden?: boolean }) {
+        return await apiClient.get(`ageing/?hidden=${hidden}`)
     }
     public async CreateAgeingReportFromExcel(body: FormData) {
         return await apiClient.post(`create-ageing-from-excel`, body)

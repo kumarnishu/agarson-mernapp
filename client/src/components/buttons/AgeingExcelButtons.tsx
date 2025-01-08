@@ -21,7 +21,7 @@ color:blue;
 export function AgeingExcelButtons() {
     const { data, mutate, isLoading, isSuccess } = useMutation
         <AxiosResponse<any[]>, BackendError, FormData>
-        (new SalesService().GetAgeingReports, { onSuccess: () => queryClient.refetchQueries('ageing') })
+        (new SalesService().CreateAgeingReportFromExcel, { onSuccess: () => queryClient.refetchQueries('ageing') })
     const [file, setFile] = useState<File | null>(null)
     const { setAlert } = useContext(AlertContext)
 
