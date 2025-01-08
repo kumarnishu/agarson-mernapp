@@ -23,6 +23,10 @@ import { CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto } from '../dtos/
 import { IReferenceRemark, ReferenceRemark } from '../models/reference-remarks.model';
 import { Reference } from '../models/references.model';
 import { CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto } from '../dtos/visit_remark.dto';
+import { GetAgeingDto, GetAgeingExcelDto, GetCollectionsDto, GetCollectionsExcelDto, GetSalesDto, GetSalesExcelDto, UpdateAgeingRemarkDto, UpdateNextCallRemarkDto } from '../dtos/sales.dto';
+import { Sales } from '../models/sales.model';
+import { Collection } from '../models/collections.model';
+import { Ageing } from '../models/ageing.model';
 
 export class SalesController {
 
@@ -1188,7 +1192,7 @@ export class SalesController {
         const pivotResult: any = {};
 
         data.forEach((item) => {
-            const { party, stage, address, state, gst,last_remark, total_sale_scope } = item;
+            const { party, stage, address, state, gst, last_remark, total_sale_scope } = item;
 
             // Initialize row for each party
             if (!pivotResult[party] && item.total_sale_scope >= 50) {
@@ -1216,7 +1220,7 @@ export class SalesController {
         await Reference.updateMany({ gst: gst }, { state: state })
         return res.status(200).json({ message: "success" })
     }
-    
+
     public async BulkCreateAndUpdateReferenceFromExcel(req: Request, res: Response, next: NextFunction) {
         let result: GetReferenceExcelDto[] = []
         let validated = true
@@ -1549,5 +1553,493 @@ export class SalesController {
             updated_by: req.user
         }).save()
         return res.status(200).json({ message: "remark added successfully" })
+    }
+    public async GetSalesReport(req: Request, res: Response, next: NextFunction) {
+        let assigned_states: string[] = []
+        let result: GetSalesDto[] = []
+        let user = await User.findById(req.user._id).populate('assigned_crm_states')
+        user && user?.assigned_crm_states.map((state: ICRMState) => {
+            assigned_states.push(state.state)
+            if (state.alias1)
+                assigned_states.push(state.alias1)
+            if (state.alias2)
+                assigned_states.push(state.alias2)
+        });
+        let data = await Sales.find({ state: { $in: assigned_states } }).sort('-date');
+        result = data.map((dt) => {
+            return {
+                _id: dt._id,
+                date: moment(dt.date).format("YYYY-MM-DD"),
+                invoice_no: dt.invoice_no,
+                party: dt.party,
+                state: dt.state,
+                amount: dt.amount
+            }
+        })
+        return res.status(200).json(result);
+
+    }
+    public async BulkCreateAndUpdateSalesFromExcel(req: Request, res: Response, next: NextFunction) {
+        let result: GetSalesExcelDto[] = []
+        let validated = true
+        let statusText: string = ""
+        if (!req.file)
+            return res.status(400).json({
+                message: "please provide an Excel file",
+            });
+        if (req.file) {
+            const allowedFiles = ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv"];
+            if (!allowedFiles.includes(req.file.mimetype))
+                return res.status(400).json({ message: `${req.file.originalname} is not valid, only excel and csv are allowed to upload` })
+            if (req.file.size > 100 * 1024 * 1024)
+                return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
+            const workbook = xlsx.read(req.file.buffer);
+            let workbook_sheet = workbook.SheetNames;
+            let workbook_response: GetSalesExcelDto[] = xlsx.utils.sheet_to_json(
+                workbook.Sheets[workbook_sheet[0]]
+            );
+            if (workbook_response.length > 3000) {
+                return res.status(400).json({ message: "Maximum 3000 records allowed at one time" })
+            }
+
+            for (let i = 0; i < workbook_response.length; i++) {
+                let item = workbook_response[i]
+                let _id: string | null = item._id
+                let date: string | null = item.date
+                let invoice_no: string | null = item.invoice_no
+                let party: string | null = item.party
+                let state: string | null = item.state
+                let amount: number | null = item.amount
+
+                if (!date) {
+                    validated = false
+                    statusText = "required date"
+                }
+                let nedate = new Date(excelSerialToDate(date)) > invalidate ? new Date(excelSerialToDate(date)) : parseExcelDate(date)
+                if (!isDate(nedate)) {
+                    validated = false
+                    statusText = "invalid date"
+                }
+                if (!party) {
+                    validated = false
+                    statusText = "party required"
+                }
+                if (!state) {
+                    validated = false
+                    statusText = "state required"
+                }
+                if (!invoice_no) {
+                    validated = false
+                    statusText = "invoice no required"
+                }
+                if (!_id && invoice_no) {
+                    let sale = await Sales.findOne({ invoice_no: invoice_no.trim().toLowerCase() })
+
+                    if (!_id && sale) {
+                        validated = false
+                        statusText = "invoice no duplicate"
+                    }
+                }
+                if (_id && invoice_no) {
+                    let sale = await Sales.findById(_id)
+                    if (sale && sale.invoice_no !== invoice_no.trim().toLowerCase()) {
+                        let sale = await Sales.findOne({ invoice_no: invoice_no.trim().toLowerCase() })
+                        if (sale) {
+                            validated = false
+                            statusText = "invoice no duplicate"
+                        }
+                    }
+                }
+                if (validated) {
+                    if (item._id && isMongoId(String(item._id))) {
+
+                        await Sales.findByIdAndUpdate(item._id, {
+                            date: nedate,
+                            invoice_no: invoice_no,
+                            state: state,
+                            party: party,
+                            amount: amount,
+                            updated_by: req.user,
+                            updated_at: new Date()
+                        })
+                        statusText = "updated"
+                    }
+
+                    else {
+                        console.log(item._id, "not found")
+                        statusText = "not found"
+                    }
+
+                }
+
+                if (!item._id || !isMongoId(String(item._id))) {
+                    await new Sales({
+                        date: nedate,
+                        invoice_no: invoice_no,
+                        state: state,
+                        party: party,
+                        amount: amount,
+                        created_by: req.user,
+                        updated_by: req.user,
+                        created_at: new Date(),
+                        updated_at: new Date()
+                    }).save()
+                    statusText = "created"
+                }
+
+                result.push({
+                    ...item,
+                    status: statusText
+                })
+            }
+
+
+        }
+        return res.status(200).json(result);
+    }
+
+    public async DownloadExcelTemplateForCreateSalesReport(req: Request, res: Response, next: NextFunction) {
+        let checklist: GetSalesExcelDto[] = [
+            {
+                _id: 'wwwewew',
+                date: '01-12-2024',
+                party: 'sunrise traders',
+                state: 'maharashtra',
+                amount: 120914,
+                invoice_no: '202/45'
+            }
+        ]
+
+        let template: { sheet_name: string, data: any[] }[] = []
+        template.push({ sheet_name: 'template', data: checklist })
+        ConvertJsonToExcel(template)
+        let fileName = "CreateSalesTemplate.xlsx"
+        return res.download("./file", fileName)
+    }
+
+    public async GetCollectionReport(req: Request, res: Response, next: NextFunction) {
+        let assigned_states: string[] = []
+        let result: GetCollectionsDto[] = []
+        let user = await User.findById(req.user._id).populate('assigned_crm_states')
+        user && user?.assigned_crm_states.map((state: ICRMState) => {
+            assigned_states.push(state.state)
+            if (state.alias1)
+                assigned_states.push(state.alias1)
+            if (state.alias2)
+                assigned_states.push(state.alias2)
+        });
+        let data = await Collection.find({ state: { $in: assigned_states } }).sort('-date');
+        result = data.map((dt) => {
+            return {
+                _id: dt._id,
+                date: moment(dt.date).format("YYYY-MM-DD"),
+                party: dt.party,
+                state: dt.state,
+                amount: dt.amount
+            }
+        })
+        return res.status(200).json(result);
+
+    }
+    public async BulkCreateAndUpdateCollectionsFromExcel(req: Request, res: Response, next: NextFunction) {
+        let result: GetCollectionsExcelDto[] = []
+        let validated = true
+        let statusText: string = ""
+        if (!req.file)
+            return res.status(400).json({
+                message: "please provide an Excel file",
+            });
+        if (req.file) {
+            const allowedFiles = ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv"];
+            if (!allowedFiles.includes(req.file.mimetype))
+                return res.status(400).json({ message: `${req.file.originalname} is not valid, only excel and csv are allowed to upload` })
+            if (req.file.size > 100 * 1024 * 1024)
+                return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
+            const workbook = xlsx.read(req.file.buffer);
+            let workbook_sheet = workbook.SheetNames;
+            let workbook_response: GetCollectionsExcelDto[] = xlsx.utils.sheet_to_json(
+                workbook.Sheets[workbook_sheet[0]]
+            );
+            if (workbook_response.length > 3000) {
+                return res.status(400).json({ message: "Maximum 3000 records allowed at one time" })
+            }
+
+            for (let i = 0; i < workbook_response.length; i++) {
+                let item = workbook_response[i]
+                let _id: string | null = item._id
+                let date: string | null = item.date
+                let party: string | null = item.party
+                let state: string | null = item.state
+                let amount: number | null = item.amount
+
+                if (!date) {
+                    validated = false
+                    statusText = "required date"
+                }
+                let nedate = new Date(excelSerialToDate(date)) > invalidate ? new Date(excelSerialToDate(date)) : parseExcelDate(date)
+                if (!isDate(nedate)) {
+                    validated = false
+                    statusText = "invalid date"
+                }
+                if (!party) {
+                    validated = false
+                    statusText = "party required"
+                }
+                if (!state) {
+                    validated = false
+                    statusText = "state required"
+                }
+
+
+                if (validated) {
+                    if (item._id && isMongoId(String(item._id))) {
+
+                        await Collection.findByIdAndUpdate(item._id, {
+                            // date: nedate,
+                            // state: state,
+                            // party: party,
+                            amount: amount,
+                            updated_by: req.user,
+                            updated_at: new Date()
+                        })
+                        statusText = "updated amount only"
+                    }
+
+                    else {
+                        console.log(item._id, "not found")
+                        statusText = "not found"
+                    }
+
+                }
+
+                if (!item._id || !isMongoId(String(item._id))) {
+                    await new Collection({
+                        date: nedate,
+                        state: state,
+                        party: party,
+                        amount: amount,
+                        created_by: req.user,
+                        updated_by: req.user,
+                        created_at: new Date(),
+                        updated_at: new Date()
+                    }).save()
+                    statusText = "created"
+                }
+
+                result.push({
+                    ...item,
+                    status: statusText
+                })
+            }
+
+
+        }
+        return res.status(200).json(result);
+    }
+
+    public async DownloadExcelTemplateForCreateCollectionsReport(req: Request, res: Response, next: NextFunction) {
+        let checklist: GetCollectionsExcelDto[] = [
+            {
+                _id: 'wwwewew',
+                date: '01-12-2024',
+                party: 'sunrise traders',
+                state: 'maharashtra',
+                amount: 120914
+            }
+        ]
+
+        let template: { sheet_name: string, data: any[] }[] = []
+        template.push({ sheet_name: 'template', data: checklist })
+        ConvertJsonToExcel(template)
+        let fileName = "CreateCollectionTemplate.xlsx"
+        return res.download("./file", fileName)
+    }
+
+
+    public async GetAgeingReport(req: Request, res: Response, next: NextFunction) {
+        let assigned_states: string[] = []
+        let result: GetAgeingDto[] = []
+        let user = await User.findById(req.user._id).populate('assigned_crm_states')
+        user && user?.assigned_crm_states.map((state: ICRMState) => {
+            assigned_states.push(state.state)
+            if (state.alias1)
+                assigned_states.push(state.alias1)
+            if (state.alias2)
+                assigned_states.push(state.alias2)
+        });
+        let data = await Ageing.find({ state: { $in: assigned_states } }).sort('-created_at');
+        result = data.map((dt) => {
+            return {
+                _id: dt._id,
+                party: dt.party,
+                state: dt.state,
+                last_remark: dt.last_remark,
+                next_call: moment(dt.next_call).format("YYYY-MM-DD"),
+                '25': dt['25'],
+                '30': dt['30'],
+                '55': dt['55'],
+                '60': dt['60'],
+                '70': dt['70'],
+                '90': dt['90'],
+                '120+': dt['120+']
+            }
+        })
+        return res.status(200).json(result);
+
+    }
+
+    public async BulkCreateAndUpdateAgeingFromExcel(req: Request, res: Response, next: NextFunction) {
+        let result: GetAgeingExcelDto[] = []
+        let validated = true
+        let statusText: string = ""
+        if (!req.file)
+            return res.status(400).json({
+                message: "please provide an Excel file",
+            });
+        if (req.file) {
+            const allowedFiles = ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv"];
+            if (!allowedFiles.includes(req.file.mimetype))
+                return res.status(400).json({ message: `${req.file.originalname} is not valid, only excel and csv are allowed to upload` })
+            if (req.file.size > 100 * 1024 * 1024)
+                return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
+            const workbook = xlsx.read(req.file.buffer);
+            let workbook_sheet = workbook.SheetNames;
+            let workbook_response: GetAgeingExcelDto[] = xlsx.utils.sheet_to_json(
+                workbook.Sheets[workbook_sheet[0]]
+            );
+            if (workbook_response.length > 3000) {
+                return res.status(400).json({ message: "Maximum 3000 records allowed at one time" })
+            }
+
+            for (let i = 0; i < workbook_response.length; i++) {
+                let item = workbook_response[i]
+                let _id: string | null = item._id
+                let party: string | null = item.party
+                let state: string | null = item.state
+                let two5: number | null = item['25']
+                let three0: number | null = item['30']
+                let five5: number | null = item['55']
+                let six0: number | null = item['60']
+                let seven0: number | null = item['70']
+                let nine0: number | null = item['90']
+                let one20: number | null = item['120+']
+
+
+
+                if (!party) {
+                    validated = false
+                    statusText = "party required"
+                }
+                if (!state) {
+                    validated = false
+                    statusText = "state required"
+                }
+
+                if (validated) {
+                    if (item._id && isMongoId(String(item._id))) {
+
+                        await Collection.findByIdAndUpdate(item._id, {
+                            state: state,
+                            party: party,
+                            '25': two5,
+                            '30': three0,
+                            '55': five5,
+                            '60': six0,
+                            '70': seven0,
+                            '90': nine0,
+                            '120+': one20,
+                            updated_by: req.user,
+                            updated_at: new Date()
+                        })
+                        statusText = "updated amount only"
+                    }
+
+                    else {
+                        console.log(item._id, "not found")
+                        statusText = "not found"
+                    }
+
+                }
+
+                if (!item._id || !isMongoId(String(item._id))) {
+                    await new Collection({
+                        state: state,
+                        party: party,
+                        '25': two5,
+                        '30': three0,
+                        '55': five5,
+                        '60': six0,
+                        '70': seven0,
+                        '90': nine0,
+                        '120+': one20,
+                        created_by: req.user,
+                        updated_by: req.user,
+                        created_at: new Date(),
+                        updated_at: new Date()
+                    }).save()
+                    statusText = "created"
+                }
+
+                result.push({
+                    ...item,
+                    status: statusText
+                })
+            }
+
+
+        }
+        return res.status(200).json(result);
+    }
+
+    public async DownloadExcelTemplateForCreateAgeingReport(req: Request, res: Response, next: NextFunction) {
+        let checklist: GetAgeingExcelDto[] = [
+            {
+                _id: 'sdswdw',
+                state: "maharashtra",
+                party: 'abc footwaer',
+                '25': 20,
+                '30': 20,
+                '55': 20,
+                '60': 20,
+                '70': 20,
+                '90': 20,
+                '120+': 20
+            }
+        ]
+
+        let template: { sheet_name: string, data: any[] }[] = []
+        template.push({ sheet_name: 'template', data: checklist })
+        ConvertJsonToExcel(template)
+        let fileName = "CreateAgeingTemplate.xlsx"
+        return res.download("./file", fileName)
+    }
+
+    public async UpdateAgeingRemark(req: Request, res: Response, next: NextFunction) {
+        const { remark } = req.body as UpdateAgeingRemarkDto
+        if (!remark) return res.status(403).json({ message: "please fill required fields" })
+
+        const id = req.params.id;
+        if (!isMongoId(id)) return res.status(403).json({ message: "id not valid" })
+        let rremark = await Ageing.findById(id)
+        if (!rremark) {
+            return res.status(404).json({ message: "item not found" })
+        }
+        rremark.last_remark = remark
+        await rremark.save()
+        return res.status(200).json({ message: "remark updated successfully" })
+    }
+    public async UpdateAgeingNextCall(req: Request, res: Response, next: NextFunction) {
+        const { next_call } = req.body as UpdateNextCallRemarkDto
+        if (!next_call) return res.status(403).json({ message: "please fill required fields" })
+
+        const id = req.params.id;
+        if (!isMongoId(id)) return res.status(403).json({ message: "id not valid" })
+        let rremark = await Ageing.findById(id)
+        if (!rremark) {
+            return res.status(404).json({ message: "item not found" })
+        }
+        rremark.next_call = new Date(next_call)
+        await rremark.save()
+        return res.status(200).json({ message: "next call updated successfully" })
     }
 }
