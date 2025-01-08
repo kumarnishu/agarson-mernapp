@@ -29,16 +29,17 @@ function SalesDashboard() {
             <Grid container  >
                 {features.map((feat, index) => {
                     return (
-                        <Grid key={index} item xs={12} md={4} lg={4} sx={{ p: 1 }}>
+                        <Grid key={index} item xs={12} md={3} lg={3} sx={{ p: 1 }}>
                             <Link to={feat.url} style={{ textDecoration: 'none' }}>
                                 <Paper
                                     sx={{
                                         p: 2,
                                         m: 0,
-                                        minHeight: 60,
+                                        minHeight: 80,
                                         position: 'relative',
                                         overflow: 'hidden',
-                                        backdropFilter: 'blur(10px)', // Blurry effect
+                                         backdropFilter: 'blur(10px)',
+                        borderRadius:2, // Blurry effect
                                         backgroundColor: 'rgba(255, 255, 255, 0.6)', // Semi-transparent blue
                                         transition: '0.3s',
                                         '&:hover': {
@@ -55,12 +56,12 @@ function SalesDashboard() {
                                         <AssignmentOutlined />
                                         <Typography
                                             variant="h6"
-                                            component="div"
+                                            component="h1"
                                             sx={{
-                                                fontWeight: 'medium', fontSize: 14
+                                                fontWeight: 'bold', fontSize: 14, letterSpacing: 1.2
                                             }}
                                         >
-                                            {feat.feature}
+                                            {feat.feature.toUpperCase()}
                                         </Typography>
                                     </Stack>
                                 </Paper>
