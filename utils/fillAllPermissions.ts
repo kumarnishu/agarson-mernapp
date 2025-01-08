@@ -1470,7 +1470,81 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
-
+            {
+                label: 'Sales Report',
+                permissions: [
+                    {
+                        value: 'sales_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'sales_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'sales_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'sales_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'sales_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Collections',
+                permissions: [
+                    {
+                        value: 'collections_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'collections_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'collections_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'collections_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'collections_export',
+                        label: 'export'
+                    }
+                ]
+            },
+            {
+                label: 'Ageing',
+                permissions: [
+                    {
+                        value: 'ageing_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'ageing_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'ageing_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'ageing_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'ageing_export',
+                        label: 'export'
+                    }
+                ]
+            },
         ]
     }
     let StockSchemeMenu: IMenu = {

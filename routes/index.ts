@@ -47,8 +47,10 @@ import ReferenceROutes from "./references.routes"
 import ReferenceRemarkRoutes from "./reference-remark.routes"
 import LeaveRoutes from "./attendance.routes"
 import StockSchmeRoutes from "./stock.scheme.routes"
+import SaleRoutes from "./sales.route"
 
 
+router.use(SaleRoutes   );
 router.use(StockSchmeRoutes);
 router.use(ArticlesRoutes);
 router.use(LeaveRoutes);

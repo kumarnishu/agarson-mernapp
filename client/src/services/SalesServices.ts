@@ -92,5 +92,23 @@ export class SalesService {
     }
     public async BulkSalesManLeavesReportFromExcel(body: FormData) {
         return await apiClient.post(`create-salesman-leaves-from-excel`, body)
-    } 
+    }
+    public async GetCollectionReports({ start_date, end_date }: { start_date?: string, end_date?: string }) {
+        return await apiClient.get(`collections/?start_date=${start_date}&end_date=${end_date}`)
+    }
+    public async CreateCollectionsReportFromExcel(body: FormData) {
+        return await apiClient.post(`create-collections-from-excel`, body)
+    }
+    public async GetSalesReports({ start_date, end_date }: { start_date?: string, end_date?: string }) {
+        return await apiClient.get(`sales/?start_date=${start_date}&end_date=${end_date}`)
+    }
+    public async CreateSalesReportFromExcel(body: FormData) {
+        return await apiClient.post(`create-sales-from-excel`, body)
+    }
+    public async GetAgeingReports() {
+        return await apiClient.get(`ageing`)
+    }
+    public async CreateAgeingReportFromExcel(body: FormData) {
+        return await apiClient.post(`create-ageing-from-excel`, body)
+    }
 }

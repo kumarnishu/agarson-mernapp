@@ -34,11 +34,11 @@ export class SalesController {
         let limit = Number(req.query.limit)
         let page = Number(req.query.page)
         let id = req.query.id
-        let start_date = req.query.start_date
-        let end_date = req.query.end_date
         let attendances: ISalesAttendance[] = []
         let result: GetSalesAttendanceDto[] = []
         let count = 0
+        let start_date = req.query.start_date
+        let end_date = req.query.end_date
         let dt1 = new Date(String(start_date))
         let dt2 = new Date(String(end_date))
         let user_ids = req.user?.assigned_users.map((user: IUser) => { return user._id }) || []
@@ -1557,6 +1557,10 @@ export class SalesController {
     public async GetSalesReport(req: Request, res: Response, next: NextFunction) {
         let assigned_states: string[] = []
         let result: GetSalesDto[] = []
+        let start_date = req.query.start_date
+        let end_date = req.query.end_date
+        let dt1 = new Date(String(start_date))
+        let dt2 = new Date(String(end_date))
         let user = await User.findById(req.user._id).populate('assigned_crm_states')
         user && user?.assigned_crm_states.map((state: ICRMState) => {
             assigned_states.push(state.state)
@@ -1565,12 +1569,13 @@ export class SalesController {
             if (state.alias2)
                 assigned_states.push(state.alias2)
         });
-        let data = await Sales.find({ state: { $in: assigned_states } }).sort('-date');
+        dt2.setHours(23, 59, 59, 999);
+        let data = await Sales.find({ date: { $gte: dt1, $lt: dt2 }, state: { $in: assigned_states } }).sort('-date');
         result = data.map((dt) => {
             return {
                 _id: dt._id,
                 date: moment(dt.date).format("YYYY-MM-DD"),
-                month:moment(dt.date).format('MMMM'),
+                month: moment(dt.date).format('MMMM'),
                 invoice_no: dt.invoice_no,
                 party: dt.party,
                 state: dt.state,
@@ -1721,6 +1726,11 @@ export class SalesController {
     public async GetCollectionReport(req: Request, res: Response, next: NextFunction) {
         let assigned_states: string[] = []
         let result: GetCollectionsDto[] = []
+        let start_date = req.query.start_date
+        let end_date = req.query.end_date
+        let dt1 = new Date(String(start_date))
+        let dt2 = new Date(String(end_date))
+
         let user = await User.findById(req.user._id).populate('assigned_crm_states')
         user && user?.assigned_crm_states.map((state: ICRMState) => {
             assigned_states.push(state.state)
@@ -1729,13 +1739,13 @@ export class SalesController {
             if (state.alias2)
                 assigned_states.push(state.alias2)
         });
-        let data = await Collection.find({ state: { $in: assigned_states } }).sort('-date');
+        let data = await Collection.find({ date: { $gte: dt1, $lt: dt2 }, state: { $in: assigned_states } }).sort('-date');
         result = data.map((dt) => {
             return {
                 _id: dt._id,
                 date: moment(dt.date).format("YYYY-MM-DD"),
                 party: dt.party,
-                month:moment(dt.date).format('MMMM'),
+                month: moment(dt.date).format('MMMM'),
                 state: dt.state,
                 amount: dt.amount
             }

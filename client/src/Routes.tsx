@@ -85,6 +85,8 @@ import ArticleStockPage from './pages/article stock/ArticleStockPage.tsx'
 import ArticleConsumedStockpage from './pages/article stock/ArticleConsumedStockpage.tsx'
 import ArticleStockSchmeNavbar from './components/navbar/ArticleStockSchmeNavbar.tsx'
 import StockSchemeDashboard from './components/dashboards/StockSchemeDashboard.tsx'
+import SalesReportPage from './pages/sales/SalesReportPage.tsx'
+import CollectionReportPage from './pages/sales/CollectionReportPage.tsx'
 
 
 function AppRoutes() {
@@ -490,6 +492,17 @@ function AppRoutes() {
                   <ReferenceReportPageSalesman />
                 }
               />}
+              {user?.assigned_permissions.includes('sales_view') && <Route
+                path="SalesReportPage" element={
+                  <SalesReportPage />
+                }
+              />}
+              {user?.assigned_permissions.includes('collections_view') && <Route
+                path="CollectionReportPage" element={
+                  <CollectionReportPage />
+                }
+              />}
+             
             </Route>}
 
         </Route>
