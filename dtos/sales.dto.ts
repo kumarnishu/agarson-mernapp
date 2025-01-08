@@ -45,8 +45,7 @@ export type GetAgeingDto = {
     '55': number,
     '60': number,
     '70': number,
-    '90': number,
-    '120+': number,
+    '70+': number,
 }
 
 export type GetAgeingExcelDto = {
@@ -60,8 +59,7 @@ export type GetAgeingExcelDto = {
     '55': number,
     '60': number,
     '70': number,
-    '90': number,
-    '120+': number,
+    '70+': number,
     status?: string
 }
 

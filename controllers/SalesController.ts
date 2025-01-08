@@ -1893,8 +1893,7 @@ export class SalesController {
                 '55': dt['55'],
                 '60': dt['60'],
                 '70': dt['70'],
-                '90': dt['90'],
-                '120+': dt['120+']
+                '70+': dt['70+']
             }
         })
         return res.status(200).json(result);
@@ -1934,8 +1933,7 @@ export class SalesController {
                 let five5: number | null = item['55']
                 let six0: number | null = item['60']
                 let seven0: number | null = item['70']
-                let nine0: number | null = item['90']
-                let one20: number | null = item['120+']
+                let seventyplus: number | null = item['70+']
 
 
 
@@ -1958,8 +1956,7 @@ export class SalesController {
                             '55': five5,
                             '60': six0,
                             '70': seven0,
-                            '90': nine0,
-                            '120+': one20,
+                            '70+': seventyplus,
                             updated_by: req.user,
                             updated_at: new Date()
                         })
@@ -1982,8 +1979,7 @@ export class SalesController {
                         '55': five5,
                         '60': six0,
                         '70': seven0,
-                        '90': nine0,
-                        '120+': one20,
+                        '70+': seventyplus,
                         created_by: req.user,
                         updated_by: req.user,
                         created_at: new Date(),
@@ -2014,8 +2010,7 @@ export class SalesController {
                 '55': 20,
                 '60': 20,
                 '70': 20,
-                '90': 20,
-                '120+': 20
+                '70+': 20
             }
         ]
 

@@ -83,16 +83,11 @@ export default function AgeingPage() {
                 Cell: (cell) => <>{cell.row.original['70'] || ""}</>,
 
             },
+           
             {
-                accessorKey: '90',
-                header: '90',
-                Cell: (cell) => <>{cell.row.original['90'] || ""}</>,
-
-            },
-            {
-                accessorKey: '120+',
-                header: '120+',
-                Cell: (cell) => <>{cell.row.original['120+'] || ""}</>,
+                accessorKey: '70+',
+                header: '70+',
+                Cell: (cell) => <>{cell.row.original['70+'] || ""}</>,
 
             },
 
