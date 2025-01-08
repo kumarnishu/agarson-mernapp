@@ -1569,8 +1569,7 @@ export class SalesController {
             if (state.alias2)
                 assigned_states.push(state.alias2)
         });
-        dt2.setHours(23, 59, 59, 999);
-        let data = await Sales.find({ date: { $gte: dt1, $lt: dt2 }, state: { $in: assigned_states } }).sort('-date');
+        let data = await Sales.find({ date: { $gte: dt1, $lte: dt2 }, state: { $in: assigned_states } }).sort('-date');
         result = data.map((dt) => {
             return {
                 _id: dt._id,
@@ -1677,7 +1676,6 @@ export class SalesController {
                     }
 
                 }
-
                 if (!item._id || !isMongoId(String(item._id))) {
                     await new Sales({
                         date: nedate,
@@ -1739,7 +1737,7 @@ export class SalesController {
             if (state.alias2)
                 assigned_states.push(state.alias2)
         });
-        let data = await Collection.find({ date: { $gte: dt1, $lt: dt2 }, state: { $in: assigned_states } }).sort('-date');
+        let data = await Collection.find({ date: { $gte: dt1, $lte: dt2 }, state: { $in: assigned_states } }).sort('-date');
         result = data.map((dt) => {
             return {
                 _id: dt._id,
