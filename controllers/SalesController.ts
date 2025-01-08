@@ -1935,7 +1935,6 @@ export class SalesController {
                 let seven0: number | null = item.seven0
                 let seventyplus: number | null = item.seventyplus
 
-                console.log(workbook_response)
 
                 if (!party) {
                     validated = false
@@ -1963,30 +1962,27 @@ export class SalesController {
                         statusText = "updated "
                     }
 
-                    else {
-                        console.log(item._id, "not found")
-                        statusText = "not found"
+                    if (!item._id || !isMongoId(String(item._id))) {
+                        await new Ageing({
+                            state: item.state || "unknown",
+                            party: party || "NA",
+                            two5: two5,
+                            three0: three0,
+                            five5: five5,
+                            six0: six0,
+                            seven0: seven0,
+                            seventyplus: seventyplus,
+                            created_by: req.user,
+                            updated_by: req.user,
+                            created_at: new Date(),
+                            updated_at: new Date()
+                        }).save()
+                        statusText = "created"
                     }
 
                 }
 
-                if (!item._id || !isMongoId(String(item._id))) {
-                    await new Ageing({
-                        state: item.state || "unknown",
-                        party: party || "NA",
-                        two5: two5,
-                        three0: three0,
-                        five5: five5,
-                        six0: six0,
-                        seven0: seven0,
-                        seventyplus: seventyplus,
-                        created_by: req.user,
-                        updated_by: req.user,
-                        created_at: new Date(),
-                        updated_at: new Date()
-                    }).save()
-                    statusText = "created"
-                }
+
 
                 result.push({
                     ...item,
