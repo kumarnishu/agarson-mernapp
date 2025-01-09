@@ -65,7 +65,7 @@ function ViewAgeingRemarksDialog({ party, dialog, setDialog }: Props) {
                                         {user && item.remark && user?.username === item.created_by && new Date(item.created_at) > new Date(previous_date) && user?.assigned_permissions.includes('activities_edit') && <IconButton size="small" color="success"
                                             onClick={() => {
                                                 setRemark(item)
-                                                setdialog2('CreateOrEditVisitReportRemarkDialog')
+                                                setdialog2('CreateOrEditAgeingRemarkDialog')
 
                                             }}
                                         >Edit</IconButton>}

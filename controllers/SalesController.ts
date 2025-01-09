@@ -26,7 +26,7 @@ import { CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto } fro
 import { CreateOrEditAgeingRemarkDto, GetAgeingDto, GetAgeingExcelDto, GetAgeingRemarkDto, GetCollectionsDto, GetCollectionsExcelDto, GetSalesDto, GetSalesExcelDto } from '../dtos/sales.dto';
 import { Sales } from '../models/sales.model';
 import { Collection } from '../models/collections.model';
-import { Ageing } from '../models/ageing.model';
+import { Ageing, IAgeing } from '../models/ageing.model';
 import { AgeingRemark, IAgeingRemark } from '../models/ageing_remark.model';
 
 export class SalesController {
@@ -1868,6 +1868,7 @@ export class SalesController {
     public async GetAgeingReport(req: Request, res: Response, next: NextFunction) {
         let assigned_states: string[] = []
         let result: GetAgeingDto[] = []
+        let hidden = req.query.hidden
         let user = await User.findById(req.user._id).populate('assigned_crm_states')
         user && user?.assigned_crm_states.map((state: ICRMState) => {
             assigned_states.push(state.state)
@@ -1876,22 +1877,36 @@ export class SalesController {
             if (state.alias2)
                 assigned_states.push(state.alias2)
         });
-        let data = await Ageing.find({ state: { $in: assigned_states } }).sort('-created_at');
-        result = data.map((dt) => {
-            return {
-                _id: dt._id,
-                party: dt.party,
-                state: dt.state,
-                last_remark: dt.last_remark,
-                next_call: moment(dt.next_call).format("YYYY-MM-DD"),
-                two5: dt.two5,
-                three0: dt.three0,
-                five5: dt.five5,
-                six0: dt.six0,
-                seven0: dt.seven0,
-                seventyplus: dt.seventyplus,
+        let dt1 = new Date()
+        dt1.setDate(dt1.getDate() + 1)
+        dt1.setHours(0, 0, 0, 0)
+        let data: IAgeing[] = await Ageing.find({ state: { $in: assigned_states } }).sort('-created_at');
+
+        await Promise.all(data.map(async (dt) => {
+            let remark = await AgeingRemark.findOne({ party: dt.party }).sort('-created_at')
+            let push_row = true
+
+            if (hidden && hidden !== 'true' && remark && remark.next_call > dt1) {
+                if (remark.created_by == req.user._id.valueOf())
+                    push_row = false
             }
-        })
+
+            if (push_row)
+                result.push({
+                    _id: dt._id,
+                    party: dt.party,
+                    state: dt.state,
+                    last_remark: remark ? remark.remark : "",
+                    next_call: remark?.next_call ? moment(remark.next_call).format("YYYY-MM-DD") : "",
+                    two5: dt.two5,
+                    three0: dt.three0,
+                    five5: dt.five5,
+                    six0: dt.six0,
+                    seven0: dt.seven0,
+                    seventyplus: dt.seventyplus,
+                })
+        }))
+
         return res.status(200).json(result);
 
     }
@@ -2015,12 +2030,12 @@ export class SalesController {
 
     public async NewAgeingRemark(req: Request, res: Response, next: NextFunction) {
         const { remark, party, nextcall } = req.body as CreateOrEditAgeingRemarkDto
-        if (!remark || !party || !nextcall) return res.status(403).json({ message: "please fill required fields" })
+        if (!remark || !party) return res.status(403).json({ message: "please fill required fields" })
 
         await new AgeingRemark({
             remark,
             party,
-            next_call: new Date(nextcall),
+            next_call: nextcall ? new Date(nextcall) : undefined,
             created_at: new Date(Date.now()),
             created_by: req.user,
             updated_at: new Date(Date.now()),
@@ -2029,7 +2044,7 @@ export class SalesController {
         return res.status(200).json({ message: "remark added successfully" })
     }
     public async UpdateAgeingRemark(req: Request, res: Response, next: NextFunction) {
-        const { remark } = req.body as CreateOrEditAgeingRemarkDto
+        const { remark, nextcall } = req.body as CreateOrEditAgeingRemarkDto
         if (!remark) return res.status(403).json({ message: "please fill required fields" })
 
         const id = req.params.id;
@@ -2039,6 +2054,8 @@ export class SalesController {
             return res.status(404).json({ message: "remark not found" })
         }
         rremark.remark = remark
+        if (nextcall)
+            rremark.next_call = new Date(nextcall)
         await rremark.save()
         return res.status(200).json({ message: "remark updated successfully" })
     }
@@ -2062,14 +2079,12 @@ export class SalesController {
 
         let result: GetAgeingRemarkDto[] = []
         remarks = await AgeingRemark.find({ party: party }).populate('created_by').sort('-created_at')
-
-
         result = remarks.map((r) => {
             return {
                 _id: r._id,
                 remark: r.remark,
                 party: r.party,
-                nextcall: r.next_call.toString(),
+                nextcall: r.next_call ? r.next_call.toString() : "",
                 created_at: r.created_at.toString(),
                 created_by: r.created_by.username
             }
