@@ -14,9 +14,9 @@ import { SalesService } from '../../../services/SalesServices'
 
 
 function VisitReportPage({ employee }: { employee: string }) {
-    
-     const [reports, setReports] = useState<GetVisitReportDto[]>([])
-    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetVisitReportDto[]>, BackendError>(["reports", employee], async () =>new SalesService(). GetVisitReports({ employee }))
+
+    const [reports, setReports] = useState<GetVisitReportDto[]>([])
+    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetVisitReportDto[]>, BackendError>(["reports", employee], async () => new SalesService().GetVisitReports({ employee }))
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const columns = useMemo<MRT_ColumnDef<GetVisitReportDto>[]>(
         //column definitions...
@@ -59,7 +59,7 @@ function VisitReportPage({ employee }: { employee: string }) {
             {
                 accessorKey: 'remarks',
                 header: 'Remarks',
-
+                Cell: (cell) => <p title={cell.row.original.remarks || ""}>{cell.row.original.remarks || ""}</p>
             },
 
             {
@@ -104,20 +104,20 @@ function VisitReportPage({ employee }: { employee: string }) {
         }),
         muiTableHeadCellProps: ({ column }) => ({
             sx: {
-              '& div:nth-of-type(1) span': {
-                display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
-              },
-              '& div:nth-of-type(2)': {
-                display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
-              },
-              '&:hover div:nth-of-type(1) span': {
-                display: 'inline', // Visible on hover
-              },
-              '&:hover div:nth-of-type(2)': {
-                display: 'block', // Visible on hover
-              }
+                '& div:nth-of-type(1) span': {
+                    display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
+                },
+                '& div:nth-of-type(2)': {
+                    display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
+                },
+                '&:hover div:nth-of-type(1) span': {
+                    display: 'inline', // Visible on hover
+                },
+                '&:hover div:nth-of-type(2)': {
+                    display: 'block', // Visible on hover
+                }
             },
-          }),
+        }),
         muiTableBodyCellProps: () => ({
             sx: {
                 border: '1px solid #c2beba;',
@@ -128,7 +128,7 @@ function VisitReportPage({ employee }: { employee: string }) {
             shape: 'rounded',
             variant: 'outlined',
         },
-       enableDensityToggle: false, initialState: {
+        enableDensityToggle: false, initialState: {
             density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
         },
         enableGrouping: true,
