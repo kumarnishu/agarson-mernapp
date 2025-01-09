@@ -88,6 +88,7 @@ import StockSchemeDashboard from './components/dashboards/StockSchemeDashboard.t
 import SalesReportPage from './pages/sales/SalesReportPage.tsx'
 import CollectionReportPage from './pages/sales/CollectionReportPage.tsx'
 import AgeingPage from './pages/sales/AgeingPage.tsx'
+import SharedAgeingpage from './pages/excel reports/SharedAgeingpage.tsx'
 
 
 function AppRoutes() {
@@ -508,6 +509,12 @@ function AppRoutes() {
                   <AgeingPage />
                 }
               />}
+              {user?.assigned_permissions.includes('ageing_view') && <Route
+                path="SharedAgeingpage" element={
+                  <SharedAgeingpage />
+                }
+              />}
+
             </Route>}
 
         </Route>
