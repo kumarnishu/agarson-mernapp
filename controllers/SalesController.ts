@@ -23,7 +23,7 @@ import { CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto } from '../dtos/
 import { IReferenceRemark, ReferenceRemark } from '../models/reference-remarks.model';
 import { Reference } from '../models/references.model';
 import { CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto } from '../dtos/visit_remark.dto';
-import { CreateOrEditAgeingRemarkDto, GetAgeingDto, GetAgeingExcelDto, GetAgeingRemarkDto, GetCollectionsDto, GetCollectionsExcelDto, GetSalesDto, GetSalesExcelDto} from '../dtos/sales.dto';
+import { CreateOrEditAgeingRemarkDto, GetAgeingDto, GetAgeingExcelDto, GetAgeingRemarkDto, GetCollectionsDto, GetCollectionsExcelDto, GetSalesDto, GetSalesExcelDto } from '../dtos/sales.dto';
 import { Sales } from '../models/sales.model';
 import { Collection } from '../models/collections.model';
 import { Ageing } from '../models/ageing.model';
@@ -1610,89 +1610,90 @@ export class SalesController {
             }
 
             for (let i = 0; i < workbook_response.length; i++) {
-                let item = workbook_response[i]
-                let _id: string | null = item._id
-                let date: string | null = item.date
-                let invoice_no: string | null = item.invoice_no
-                let party: string | null = item.party
-                let state: string | null = item.state
-                let amount: number | null = item.amount
-
+                let item = workbook_response[i];
+                let { _id, date, invoice_no, party, state, amount } = item;
+            
+                let validated = true;
+                let statusText = "";
+            
                 if (!date) {
-                    validated = false
-                    statusText = "required date"
+                    validated = false;
+                    statusText = "required date";
                 }
-                let nedate = new Date(excelSerialToDate(date)) > invalidate ? new Date(excelSerialToDate(date)) : parseExcelDate(date)
+            
+                let nedate = new Date(excelSerialToDate(date)) > invalidate ? new Date(excelSerialToDate(date)) : parseExcelDate(date);
                 if (!isDate(nedate)) {
-                    validated = false
-                    statusText = "invalid date"
+                    validated = false;
+                    statusText = "invalid date";
                 }
+            
                 if (!party) {
-                    validated = false
-                    statusText = "party required"
+                    validated = false;
+                    statusText = "party required";
                 }
+            
                 if (!state) {
-                    validated = false
-                    statusText = "state required"
+                    validated = false;
+                    statusText = "state required";
                 }
-                if (!invoice_no) {
-                    validated = false
-                    statusText = "invoice no required"
+            
+                let normalizedInvoiceNo = String(invoice_no).trim().toLowerCase() || null;
+                if (!normalizedInvoiceNo) {
+                    validated = false;
+                    statusText = "invoice no required";
                 }
-                if (!_id && invoice_no) {
-                    let sale = await Sales.findOne({ invoice_no: String(invoice_no).trim().toLowerCase() })
-
-                    if (!_id && sale) {
-                        validated = false
-                        statusText = "invoice no duplicate"
-                    }
+            
+                if (!_id && await Sales.findOne({ invoice_no: normalizedInvoiceNo })) {
+                    validated = false;
+                    statusText = "invoice no duplicate";
                 }
-                if (_id && invoice_no) {
-                    let sale = await Sales.findById(_id)
-                    if (sale && sale.invoice_no !== invoice_no.trim().toLowerCase()) {
-                        let sale = await Sales.findOne({ invoice_no: invoice_no.trim().toLowerCase() })
-                        if (sale) {
-                            validated = false
-                            statusText = "invoice no duplicate"
+            
+                if (_id) {
+                    let sale = await Sales.findById(_id);
+                    if (sale && sale.invoice_no !== normalizedInvoiceNo) {
+                        let duplicateSale = await Sales.findOne({ invoice_no: normalizedInvoiceNo });
+                        if (duplicateSale) {
+                            validated = false;
+                            statusText = "invoice no duplicate";
                         }
                     }
                 }
+            
                 if (validated) {
-
-
-                    if (item._id && isMongoId(String(item._id))) {
-                        await Sales.findByIdAndUpdate(item._id, {
+                    if (_id && isMongoId(_id)) {
+                        await Sales.findByIdAndUpdate(_id, {
                             date: nedate,
-                            invoice_no: invoice_no,
-                            state: state,
-                            party: party,
-                            amount: amount,
+                            invoice_no: normalizedInvoiceNo,
+                            state,
+                            party,
+                            amount,
                             updated_by: req.user,
-                            updated_at: new Date()
-                        })
-                        statusText = "updated"
-                    }
-                    if (!item._id || !isMongoId(String(item._id))) {
+                            updated_at: new Date(),
+                        });
+                        statusText = "updated";
+                    } 
+                    else {
                         await new Sales({
                             date: nedate,
-                            invoice_no: invoice_no,
-                            state: state,
-                            party: party,
-                            amount: amount,
+                            invoice_no: normalizedInvoiceNo,
+                            state,
+                            party,
+                            amount,
                             created_by: req.user,
                             updated_by: req.user,
                             created_at: new Date(),
-                            updated_at: new Date()
-                        }).save()
-                        statusText = "created"
+                            updated_at: new Date(),
+                        }).save();
+                        statusText = "created";
                     }
-
                 }
+            
                 result.push({
                     ...item,
-                    status: statusText
-                })
+                    status: statusText,
+                });
             }
+            
         }
         return res.status(200).json(result);
     }
