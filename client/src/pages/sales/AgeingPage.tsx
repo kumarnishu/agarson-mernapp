@@ -11,6 +11,7 @@ import { BackendError } from '../..'
 import { GetAgeingDto } from '../../dtos/sales.dto'
 import { SalesService } from '../../services/SalesServices'
 import { AgeingExcelButtons } from '../../components/buttons/AgeingExcelButtons'
+import { HandleNumbers } from '../../utils/IsDecimal'
 
 
 export default function AgeingPage() {
@@ -56,39 +57,58 @@ export default function AgeingPage() {
             {
                 accessorKey: 'two5',
                 header: '25',
-                Cell: (cell) => <>{cell.row.original.two5 || ""}</>,
+                aggregationFn: 'sum',
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                //@ts-ignore
+                Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.two5) }, 0).toFixed()}</b>
+
 
             },
             {
                 accessorKey: 'three0',
                 header: '30',
-                Cell: (cell) => <>{cell.row.original.three0 || ""}</>,
-
+                aggregationFn: 'sum',
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                //@ts-ignore
+                Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.three0) }, 0).toFixed()}</b>
             },
             {
                 accessorKey: 'five5',
                 header: '55',
-                Cell: (cell) => <>{cell.row.original.five5 || ""}</>,
-
+                aggregationFn: 'sum',
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                //@ts-ignore
+                Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.five5) }, 0).toFixed()}</b>
             },
             {
                 accessorKey: 'six0',
                 header: '60',
-                Cell: (cell) => <>{cell.row.original.six0 || ""}</>,
-
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                //@ts-ignore
+                Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.six0) }, 0).toFixed()}</b>
             },
             {
                 accessorKey: 'seven0',
                 header: '70',
-                Cell: (cell) => <>{cell.row.original.seven0 || ""}</>,
-
+                aggregationFn: 'sum',
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                //@ts-ignore
+                Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.seven0) }, 0).toFixed()}</b>
             },
-           
+
             {
                 accessorKey: 'seventyplus',
                 header: '70+',
-                Cell: (cell) => <>{cell.row.original.seventyplus || ""}</>,
-
+                aggregationFn: 'sum',
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                //@ts-ignore
+                Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.seventyplus) }, 0).toFixed()}</b>
             },
 
         ],

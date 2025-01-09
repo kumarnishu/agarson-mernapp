@@ -11,6 +11,7 @@ import { SalesService } from '../../services/SalesServices'
 import { GetCollectionsDto } from '../../dtos/sales.dto'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { CollectionsExcelButtons } from '../../components/buttons/CollectionsExcelButtons'
+import { HandleNumbers } from '../../utils/IsDecimal'
 
 function CollectionReportPage() {
     const { user: LoggedInUser } = useContext(UserContext)
@@ -61,14 +62,17 @@ function CollectionReportPage() {
             {
                 accessorKey: 'state',
                 header: ' State',
-                aggregationFn: 'sum'
+                aggregationFn: 'count'
 
             },
             {
                 accessorKey: 'amount',
                 header: ' Amount',
                 aggregationFn: 'sum',
-                Cell: (cell) => <span >{cell.row.original.amount || ""}</span>
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                //@ts-ignore
+                Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.amount) }, 0).toFixed()}</b>
             }
         ],
         [collections, data],
