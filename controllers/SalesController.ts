@@ -1945,16 +1945,6 @@ export class SalesController {
                 let six0: number | null = item.six0
                 let seven0: number | null = item.seven0
                 let seventyplus: number | null = item.seventyplus
-
-
-                if (!party) {
-                    validated = false
-                    statusText = "party required"
-                }
-                if (!state) {
-                    validated = false
-                    statusText = "state required"
-                }
                 if (validated) {
                     if (item._id && isMongoId(String(item._id))) {
 
