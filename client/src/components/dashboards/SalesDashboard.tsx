@@ -20,61 +20,62 @@ function SalesDashboard() {
         user?.assigned_permissions.includes('salesman_leaves_report_view') && tmpfeatures.push({ feature: 'salesmen leaves report ', is_visible: false, url: "SalesmanLeavesReportPage" })
         user?.assigned_permissions.includes('references_report_view') && tmpfeatures.push({ feature: 'References Report ', is_visible: false, url: "ReferencesReportPage" })
         user?.assigned_permissions.includes('salesman_references_report_view') && tmpfeatures.push({ feature: 'Salesman References Report ', is_visible: false, url: "ReferenceReportPageSalesman" })
-        user?.assigned_permissions.includes('sales_view') && tmpfeatures.push({ feature: 'Sales ', is_visible: false, url: "SalesReportPage" })
+        user?.assigned_permissions.includes('sales_view') && tmpfeatures.push({ feature: 'Daily Sales ', is_visible: false, url: "SalesReportPage" })
 
-        user?.assigned_permissions.includes('collections_view') && tmpfeatures.push({ feature: 'Collection ', is_visible: false, url: "CollectionReportPage" })
+        user?.assigned_permissions.includes('collections_view') && tmpfeatures.push({ feature: 'Daily Collection ', is_visible: false, url: "CollectionReportPage" })
 
         user?.assigned_permissions.includes('ageing_view') && tmpfeatures.push({ feature: 'Ageing - 25,30,55,60,70,70+ ', is_visible: false, url: "AgeingPage" })
 
+        user?.assigned_permissions.includes('ageing_view') && tmpfeatures.push({ feature: 'SALES REPRESENTATIVE/CUSTOMER WISE BILLS AGEING REPORT <70,70-90,90-120,>120 ', is_visible: false, url: "OldAgeingPage" })
 
         // tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
     }, [user])
 
     return (
         <>
-          <Grid container  >
-                         {features.map((feat, index) => {
-                             return (
-                                 <Grid key={index} item xs={12} md={4} lg={4} sx={{ p: 1 }}>
-                                     <Link to={feat.url} style={{ textDecoration: 'none' }}>
-                                         <Paper
-                                             sx={{
-                                                 p: 2,
-                                                 m: 0,
-                                                 minHeight: 60,
-                                                 position: 'relative',
-                                                 overflow: 'hidden',
-                                                 backdropFilter: 'blur(10px)', // Blurry effect
-                                                 backgroundColor: 'rgba(255, 255, 255, 0.6)', // Semi-transparent blue
-                                                 transition: '0.3s',
-                                                 '&:hover': {
-                                                     transform: 'translateY(-2px)',
-                                                     backgroundColor: 'rgba(70, 130, 180, 0.7)', // Darken on hover
-                                                 },
-                                             }}
-                                         >
-                                             <Stack
-                                                 flexDirection="row"
-                                                 gap={2}
-                                                 sx={{ alignItems: 'center' }}
-                                             >
-                                                 <AssignmentOutlined />
-                                                 <Typography
-                                                     variant="h6"
-                                                     component="div"
-                                                     sx={{
-                                                         fontWeight: 'medium', fontSize: 14
-                                                     }}
-                                                 >
-                                                     {feat.feature}
-                                                 </Typography>
-                                             </Stack>
-                                         </Paper>
-                                     </Link>
-                                 </Grid>
-                             )
-                         })}
-                     </Grid>
+            <Grid container  >
+                {features.map((feat, index) => {
+                    return (
+                        <Grid key={index} item xs={12} md={4} lg={4} sx={{ p: 1 }}>
+                            <Link to={feat.url} style={{ textDecoration: 'none' }}>
+                                <Paper
+                                    sx={{
+                                        p: 2,
+                                        m: 0,
+                                        minHeight: 60,
+                                        position: 'relative',
+                                        overflow: 'hidden',
+                                        backdropFilter: 'blur(10px)', // Blurry effect
+                                        backgroundColor: 'rgba(255, 255, 255, 0.6)', // Semi-transparent blue
+                                        transition: '0.3s',
+                                        '&:hover': {
+                                            transform: 'translateY(-2px)',
+                                            backgroundColor: 'rgba(70, 130, 180, 0.7)', // Darken on hover
+                                        },
+                                    }}
+                                >
+                                    <Stack
+                                        flexDirection="row"
+                                        gap={2}
+                                        sx={{ alignItems: 'center' }}
+                                    >
+                                        <AssignmentOutlined />
+                                        <Typography
+                                            variant="h6"
+                                            component="div"
+                                            sx={{
+                                                fontWeight: 'medium', fontSize: 14
+                                            }}
+                                        >
+                                            {feat.feature}
+                                        </Typography>
+                                    </Stack>
+                                </Paper>
+                            </Link>
+                        </Grid>
+                    )
+                })}
+            </Grid>
             <Outlet />
         </>
 

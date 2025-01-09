@@ -17,7 +17,7 @@ function SalesReportPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const [sales, setSales] = useState<GetSalesDto[]>([])
   const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
-    start_date: moment(new Date().setDate(new Date().getDate() - 10)).format("YYYY-MM-DD")
+    start_date: moment(new Date().setDate(new Date().getDate() - 1)).format("YYYY-MM-DD")
     , end_date: moment(new Date().setDate(new Date().getDate())).format("YYYY-MM-DD")
   })
 
@@ -29,10 +29,7 @@ function SalesReportPage() {
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
-  let previous_date = new Date()
-  let day = previous_date.getDate() - 4
-  previous_date.setDate(day)
-  previous_date.setHours(0, 0, 0, 0)
+  
   const { data, isLoading } = useQuery<AxiosResponse<GetSalesDto[]>, BackendError>(["sales", dates?.start_date, dates?.end_date], async () => new SalesService().GetSalesReports({ start_date: dates?.start_date, end_date: dates?.end_date }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -44,31 +41,32 @@ function SalesReportPage() {
       {
         accessorKey: 'date',
         header: ' Date',
-        Cell: (cell) => <span >{cell.row.original.date}</span>
-
+        Cell: (cell) => <span >{cell.row.original.date}</span>,
+        aggregationFn: 'max',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'month',
         header: ' Month',
-        aggregationFn: 'count',
-
+        aggregationFn: 'max',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'invoice_no',
         header: ' Invoice',
-        aggregationFn: 'count',
-
+       
       },
       {
         accessorKey: 'party',
         header: ' Party',
-        aggregationFn: 'count',
+      
 
       },
       {
         accessorKey: 'state',
         header: ' State',
-        aggregationFn: 'count',
+        aggregationFn: 'max',
+        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'amount',
@@ -77,7 +75,7 @@ function SalesReportPage() {
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
         Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
         //@ts-ignore
-        Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.amount) }, 0).toFixed()}</b>
+        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.amount) }, 0).toFixed()}</b>
       }
     ],
     [sales, data],
@@ -213,7 +211,7 @@ function SalesReportPage() {
 
       <Box minWidth={'100vw'} >
         <Stack sx={{ p: 1 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
-          <Typography variant='h6'>Sales</Typography>
+          <Typography variant='h6'>Daily Sales</Typography>
           <Stack
             pt={1}
             direction="row"

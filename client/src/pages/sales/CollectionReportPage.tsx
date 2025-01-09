@@ -17,7 +17,7 @@ function CollectionReportPage() {
     const { user: LoggedInUser } = useContext(UserContext)
     const [collections, setCollections] = useState<GetCollectionsDto[]>([])
     const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
-        start_date: moment(new Date().setDate(new Date().getDate() - 10)).format("YYYY-MM-DD")
+        start_date: moment(new Date().setDate(new Date().getDate() - 1)).format("YYYY-MM-DD")
         , end_date: moment(new Date().setDate(new Date().getDate())).format("YYYY-MM-DD")
     })
 
@@ -29,10 +29,7 @@ function CollectionReportPage() {
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
-    let previous_date = new Date()
-    let day = previous_date.getDate() - 4
-    previous_date.setDate(day)
-    previous_date.setHours(0, 0, 0, 0)
+    
     const { data, isLoading } = useQuery<AxiosResponse<GetCollectionsDto[]>, BackendError>(["collections", dates?.start_date, dates?.end_date], async () => new SalesService().GetCollectionReports({ start_date: dates?.start_date, end_date: dates?.end_date }))
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -208,7 +205,7 @@ function CollectionReportPage() {
 
             <Box minWidth={'100vw'} >
                 <Stack sx={{ p: 1 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
-                    <Typography variant='h6'>Collections</Typography>
+                    <Typography variant='h6'>Daily Collections</Typography>
                     <Stack
                         pt={1}
                         direction="row"

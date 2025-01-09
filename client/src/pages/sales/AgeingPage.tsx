@@ -72,6 +72,8 @@ export default function AgeingPage() {
             {
                 accessorKey: 'last_remark',
                 header: 'Last Remark',
+                aggregationFn: 'max',
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => <>{cell.row.original.last_remark || ""}</>,
 
             },
@@ -84,6 +86,8 @@ export default function AgeingPage() {
             {
                 accessorKey: 'state',
                 header: 'State',
+                aggregationFn: 'max',
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => <>{cell.row.original.state || ""}</>,
 
             },

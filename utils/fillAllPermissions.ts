@@ -1471,7 +1471,7 @@ export function FetchAllPermissions() {
                 ]
             },
             {
-                label: 'Sales Report',
+                label: 'Daily Sales',
                 permissions: [
                     {
                         value: 'sales_view',
@@ -1496,7 +1496,7 @@ export function FetchAllPermissions() {
                 ]
             },
             {
-                label: 'Collections',
+                label: 'Daily Collections',
                 permissions: [
                     {
                         value: 'collections_view',
