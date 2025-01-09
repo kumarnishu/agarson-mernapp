@@ -1545,6 +1545,31 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
+            {
+                label: 'Ageing For Admin',
+                permissions: [
+                    {
+                        value: 'ageing_admin_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'ageing_admin_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'ageing_admin_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'ageing_admin_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'ageing_admin_export',
+                        label: 'export'
+                    }
+                ]
+            },
         ]
     }
     let StockSchemeMenu: IMenu = {

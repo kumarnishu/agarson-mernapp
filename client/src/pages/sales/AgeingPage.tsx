@@ -99,7 +99,7 @@ export default function AgeingPage() {
             },
             {
                 accessorKey: 'two5',
-                header: '25',
+                header: '0-25',
                 aggregationFn: 'sum',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -110,7 +110,7 @@ export default function AgeingPage() {
             },
             {
                 accessorKey: 'three0',
-                header: '30',
+                header: '25-30',
                 aggregationFn: 'sum',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -119,7 +119,7 @@ export default function AgeingPage() {
             },
             {
                 accessorKey: 'five5',
-                header: '55',
+                header: '30-55',
                 aggregationFn: 'sum',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -128,7 +128,7 @@ export default function AgeingPage() {
             },
             {
                 accessorKey: 'six0',
-                header: '60',
+                header: '55-60',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 //@ts-ignore
@@ -136,7 +136,7 @@ export default function AgeingPage() {
             },
             {
                 accessorKey: 'seven0',
-                header: '70',
+                header: '60-70',
                 aggregationFn: 'sum',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',

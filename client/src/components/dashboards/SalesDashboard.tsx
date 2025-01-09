@@ -26,7 +26,7 @@ function SalesDashboard() {
 
         user?.assigned_permissions.includes('ageing_view') && tmpfeatures.push({ feature: 'Ageing - 25,30,55,60,70,70+ ', is_visible: false, url: "AgeingPage" })
 
-        user?.assigned_permissions.includes('ageing_view') && tmpfeatures.push({ feature: 'SALES REPRESENTATIVE/CUSTOMER WISE BILLS AGEING REPORT <70,70-90,90-120,>120 ', is_visible: false, url: "SharedAgeingpage" })
+        user?.assigned_permissions.includes('ageing_admin_view') && tmpfeatures.push({ feature: 'SALES REPRESENTATIVE/CUSTOMER WISE BILLS AGEING REPORT <70,70-90,90-120,>120 ', is_visible: false, url: "SharedAgeingpage" })
 
         // tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
     }, [user])
