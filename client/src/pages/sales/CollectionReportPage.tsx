@@ -41,26 +41,25 @@ function CollectionReportPage() {
             {
                 accessorKey: 'date',
                 header: ' Date',
-                Cell: (cell) => <span >{cell.row.original.date && moment(cell.row.original.date).format("DD/MM/YYYY")}</span>
-
+                Cell: (cell) => <span >{cell.row.original.date && moment(cell.row.original.date).format("DD/MM/YYYY")}</span>,
+                aggregationFn: 'max',
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
             },
             {
                 accessorKey: 'month',
                 header: ' Month',
-                aggregationFn: 'count',
-
+                aggregationFn: 'max',
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
             },
             {
                 accessorKey: 'party',
                 header: ' Party',
-                aggregationFn: 'count',
-
             },
             {
                 accessorKey: 'state',
                 header: ' State',
-                aggregationFn: 'count'
-
+                aggregationFn: 'max',
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
             },
             {
                 accessorKey: 'amount',

@@ -1785,6 +1785,7 @@ export class SalesController {
                     validated = false
                     statusText = "required date"
                 }
+              
                 let nedate = new Date(excelSerialToDate(date)) > invalidate ? new Date(excelSerialToDate(date)) : parseExcelDate(date)
                 if (!isDate(nedate)) {
                     validated = false
