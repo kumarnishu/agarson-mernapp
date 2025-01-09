@@ -18,7 +18,7 @@ import { GetSalesManVisitSummaryReportDto } from '../dtos/visit-report.dto';
 import { IVisitRemark, VisitRemark } from '../models/visit_remark.model';
 import { GetReferenceDto, GetReferenceExcelDto, GetReferenceReportForSalesmanDto } from "../dtos/references.dto";
 import { excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
-import { ICRMState } from "../models/crm-state.model";
+import { CRMState, ICRMState } from "../models/crm-state.model";
 import { CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto } from '../dtos/references-remark.dto';
 import { IReferenceRemark, ReferenceRemark } from '../models/reference-remarks.model';
 import { Reference } from '../models/references.model';
@@ -1563,8 +1563,8 @@ export class SalesController {
         let end_date = req.query.end_date
         let dt1 = new Date(String(start_date))
         let dt2 = new Date(String(end_date))
-        dt1.setHours(0,0,0,0)
-        dt2.setHours(0,0,0,0)
+        dt1.setHours(0, 0, 0, 0)
+        dt2.setHours(0, 0, 0, 0)
         let user = await User.findById(req.user._id).populate('assigned_crm_states')
         user && user?.assigned_crm_states.map((state: ICRMState) => {
             assigned_states.push(state.state)
@@ -1726,8 +1726,8 @@ export class SalesController {
         let end_date = req.query.end_date
         let dt1 = new Date(String(start_date))
         let dt2 = new Date(String(end_date))
-        dt1.setHours(0,0,0,0)
-        dt2.setHours(0,0,0,0)
+        dt1.setHours(0, 0, 0, 0)
+        dt2.setHours(0, 0, 0, 0)
         let user = await User.findById(req.user._id).populate('assigned_crm_states')
         user && user?.assigned_crm_states.map((state: ICRMState) => {
             assigned_states.push(state.state)
@@ -1861,6 +1861,8 @@ export class SalesController {
         ]
 
         let template: { sheet_name: string, data: any[] }[] = []
+        let states = (await CRMState.find()).map((u) => { return { state: u.state } })
+        template.push({ sheet_name: 'states', data: states })
         template.push({ sheet_name: 'template', data: checklist })
         ConvertJsonToExcel(template)
         let fileName = "CreateCollectionTemplate.xlsx"
@@ -1941,7 +1943,7 @@ export class SalesController {
                 let item = workbook_response[i]
                 let _id: string | null = item._id
                 let party: string | null = item.party
-                let state: string | null = item.state 
+                let state: string | null = item.state
                 let two5: number | null = item.two5
                 let three0: number | null = item.three0
                 let five5: number | null = item.five5
