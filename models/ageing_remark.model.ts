@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { IUser } from "./user.model";
 
-export type IAgeing = {
+export type IAgeingRemark = {
     _id: string,
     remark: string,
     next_call: Date,
@@ -12,7 +12,7 @@ export type IAgeing = {
     updated_by: IUser
 }
 
-const AgeingSchema = new mongoose.Schema<IAgeing, mongoose.Model<IAgeing, {}, {}>, {}>({
+const AgeingRemarkSchema = new mongoose.Schema<IAgeingRemark, mongoose.Model<IAgeingRemark, {}, {}>, {}>({
     remark: {
         type: String,
         lowercase: true,
@@ -45,4 +45,4 @@ const AgeingSchema = new mongoose.Schema<IAgeing, mongoose.Model<IAgeing, {}, {}
 })
 
 
-export const Ageing = mongoose.model<IAgeing, mongoose.Model<IAgeing, {}, {}>>("Ageing", AgeingSchema)
+export const AgeingRemark = mongoose.model<IAgeingRemark, mongoose.Model<IAgeingRemark, {}, {}>>("AgeingRemark", AgeingRemarkSchema)

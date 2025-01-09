@@ -23,10 +23,11 @@ import { CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto } from '../dtos/
 import { IReferenceRemark, ReferenceRemark } from '../models/reference-remarks.model';
 import { Reference } from '../models/references.model';
 import { CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto } from '../dtos/visit_remark.dto';
-import { GetAgeingDto, GetAgeingExcelDto, GetCollectionsDto, GetCollectionsExcelDto, GetSalesDto, GetSalesExcelDto, UpdateAgeingRemarkDto, UpdateNextCallRemarkDto } from '../dtos/sales.dto';
+import { CreateOrEditAgeingRemarkDto, GetAgeingDto, GetAgeingExcelDto, GetAgeingRemarkDto, GetCollectionsDto, GetCollectionsExcelDto, GetSalesDto, GetSalesExcelDto} from '../dtos/sales.dto';
 import { Sales } from '../models/sales.model';
 import { Collection } from '../models/collections.model';
 import { Ageing } from '../models/ageing.model';
+import { AgeingRemark, IAgeingRemark } from '../models/ageing_remark.model';
 
 export class SalesController {
 
@@ -1484,6 +1485,21 @@ export class SalesController {
         await new_remark.save()
         return res.status(200).json({ message: "remark added successfully" })
     }
+    public async NewVisitRemark(req: Request, res: Response, next: NextFunction) {
+        const { remark, employee, visit_date } = req.body as CreateOrEditVisitSummaryRemarkDto
+        if (!remark || !employee || !visit_date) return res.status(403).json({ message: "please fill required fields" })
+
+        await new VisitRemark({
+            remark,
+            employee,
+            visit_date: new Date(visit_date),
+            created_at: new Date(Date.now()),
+            created_by: req.user,
+            updated_at: new Date(Date.now()),
+            updated_by: req.user
+        }).save()
+        return res.status(200).json({ message: "remark added successfully" })
+    }
     public async UpdateVisitRemark(req: Request, res: Response, next: NextFunction) {
         const { remark } = req.body as CreateOrEditVisitSummaryRemarkDto
         if (!remark) return res.status(403).json({ message: "please fill required fields" })
@@ -1539,21 +1555,7 @@ export class SalesController {
     }
 
 
-    public async NewVisitRemark(req: Request, res: Response, next: NextFunction) {
-        const { remark, employee, visit_date } = req.body as CreateOrEditVisitSummaryRemarkDto
-        if (!remark || !employee || !visit_date) return res.status(403).json({ message: "please fill required fields" })
 
-        await new VisitRemark({
-            remark,
-            employee,
-            visit_date: new Date(visit_date),
-            created_at: new Date(Date.now()),
-            created_by: req.user,
-            updated_at: new Date(Date.now()),
-            updated_by: req.user
-        }).save()
-        return res.status(200).json({ message: "remark added successfully" })
-    }
     public async GetSalesReport(req: Request, res: Response, next: NextFunction) {
         let assigned_states: string[] = []
         let result: GetSalesDto[] = []
@@ -1638,7 +1640,7 @@ export class SalesController {
                     statusText = "invoice no required"
                 }
                 if (!_id && invoice_no) {
-                    let sale = await Sales.findOne({ invoice_no: invoice_no.trim().toLowerCase() })
+                    let sale = await Sales.findOne({ invoice_no: String(invoice_no).trim().toLowerCase() })
 
                     if (!_id && sale) {
                         validated = false
@@ -1656,8 +1658,9 @@ export class SalesController {
                     }
                 }
                 if (validated) {
-                    if (item._id && isMongoId(String(item._id))) {
 
+
+                    if (item._id && isMongoId(String(item._id))) {
                         await Sales.findByIdAndUpdate(item._id, {
                             date: nedate,
                             invoice_no: invoice_no,
@@ -1669,35 +1672,27 @@ export class SalesController {
                         })
                         statusText = "updated"
                     }
-
-                    else {
-                        console.log(item._id, "not found")
-                        statusText = "not found"
+                    if (!item._id || !isMongoId(String(item._id))) {
+                        await new Sales({
+                            date: nedate,
+                            invoice_no: invoice_no,
+                            state: state,
+                            party: party,
+                            amount: amount,
+                            created_by: req.user,
+                            updated_by: req.user,
+                            created_at: new Date(),
+                            updated_at: new Date()
+                        }).save()
+                        statusText = "created"
                     }
 
                 }
-                if (!item._id || !isMongoId(String(item._id))) {
-                    await new Sales({
-                        date: nedate,
-                        invoice_no: invoice_no,
-                        state: state,
-                        party: party,
-                        amount: amount,
-                        created_by: req.user,
-                        updated_by: req.user,
-                        created_at: new Date(),
-                        updated_at: new Date()
-                    }).save()
-                    statusText = "created"
-                }
-
                 result.push({
                     ...item,
                     status: statusText
                 })
             }
-
-
         }
         return res.status(200).json(result);
     }
@@ -2017,32 +2012,68 @@ export class SalesController {
         return res.download("./file", fileName)
     }
 
+    public async NewAgeingRemark(req: Request, res: Response, next: NextFunction) {
+        const { remark, party, nextcall } = req.body as CreateOrEditAgeingRemarkDto
+        if (!remark || !party || !nextcall) return res.status(403).json({ message: "please fill required fields" })
+
+        await new AgeingRemark({
+            remark,
+            party,
+            next_call: new Date(nextcall),
+            created_at: new Date(Date.now()),
+            created_by: req.user,
+            updated_at: new Date(Date.now()),
+            updated_by: req.user
+        }).save()
+
+        return res.status(200).json({ message: "remark added successfully" })
+    }
     public async UpdateAgeingRemark(req: Request, res: Response, next: NextFunction) {
-        const { remark } = req.body as UpdateAgeingRemarkDto
+        const { remark } = req.body as CreateOrEditAgeingRemarkDto
         if (!remark) return res.status(403).json({ message: "please fill required fields" })
 
         const id = req.params.id;
         if (!isMongoId(id)) return res.status(403).json({ message: "id not valid" })
-        let rremark = await Ageing.findById(id)
+        let rremark = await AgeingRemark.findById(id)
         if (!rremark) {
-            return res.status(404).json({ message: "item not found" })
+            return res.status(404).json({ message: "remark not found" })
         }
-        rremark.last_remark = remark
+        rremark.remark = remark
         await rremark.save()
         return res.status(200).json({ message: "remark updated successfully" })
     }
-    public async UpdateAgeingNextCall(req: Request, res: Response, next: NextFunction) {
-        const { next_call } = req.body as UpdateNextCallRemarkDto
-        if (!next_call) return res.status(403).json({ message: "please fill required fields" })
 
+    public async DeleteAgeingRemark(req: Request, res: Response, next: NextFunction) {
         const id = req.params.id;
         if (!isMongoId(id)) return res.status(403).json({ message: "id not valid" })
-        let rremark = await Ageing.findById(id)
+        let rremark = await AgeingRemark.findById(id)
         if (!rremark) {
-            return res.status(404).json({ message: "item not found" })
+            return res.status(404).json({ message: "remark not found" })
         }
-        rremark.next_call = new Date(next_call)
-        await rremark.save()
-        return res.status(200).json({ message: "next call updated successfully" })
+        await rremark.remove()
+        return res.status(200).json({ message: " remark deleted successfully" })
+    }
+
+    public async GetAgeingRemarkHistory(req: Request, res: Response, next: NextFunction) {
+        const party = req.query.party;
+        if (!party) return res.status(403).json({ message: "please fill required fields" })
+        let remarks: IAgeingRemark[] = []
+
+
+        let result: GetAgeingRemarkDto[] = []
+        remarks = await AgeingRemark.find({ party: party }).populate('created_by').sort('-created_at')
+
+
+        result = remarks.map((r) => {
+            return {
+                _id: r._id,
+                remark: r.remark,
+                party: r.party,
+                nextcall: r.next_call.toString(),
+                created_at: r.created_at.toString(),
+                created_by: r.created_by.username
+            }
+        })
+        return res.json(result)
     }
 }

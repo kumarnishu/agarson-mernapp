@@ -1,5 +1,6 @@
 import { CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto } from "../dtos/references-remark.dto"
 import { CreateOrEditSalesAttendanceDto } from "../dtos/sales-attendance.dto"
+import { CreateOrEditAgeingRemarkDto, GetAgeingRemarkDto } from "../dtos/sales.dto"
 import { CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto } from "../dtos/visit_remark.dto"
 import { apiClient } from "./utils/AxiosInterceptor"
 
@@ -111,4 +112,21 @@ export class SalesService {
     public async CreateAgeingReportFromExcel(body: FormData) {
         return await apiClient.post(`create-ageing-from-excel`, body)
     }
+    public async CreateOrEditAgeingRemark({ body, remark }: {
+        body: CreateOrEditAgeingRemarkDto,
+        remark?: GetAgeingRemarkDto
+
+    }) {
+        if (!remark) {
+            return await apiClient.post(`ageing-remark`, body)
+        }
+        return await apiClient.put(`ageing-remark/${remark._id}`, body)
+    }
+    public async DeleteAgeingRemark(id: string) {
+        return await apiClient.delete(`ageing-remark/${id}`)
+    }
+    public async GetAgeingRemarksHistory(party: string) {
+        return await apiClient.get(`ageing-remark/?party=${encodeURIComponent(party)}`)
+    }
 }
+ 

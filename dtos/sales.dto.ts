@@ -63,11 +63,19 @@ export type GetAgeingExcelDto = {
     status?: string
 }
 
-export type UpdateAgeingRemarkDto = {
+
+
+
+export type GetAgeingRemarkDto = {
     _id: string,
-    remark: string
+    remark: string,
+    party: string,
+    nextcall: string,
+    created_at: string,
+    created_by: string
 }
-export type UpdateNextCallRemarkDto = {
-    _id: string,
-    next_call: string
+export type CreateOrEditAgeingRemarkDto = {
+    remark: string,
+    party: string,
+    nextcall: string
 }

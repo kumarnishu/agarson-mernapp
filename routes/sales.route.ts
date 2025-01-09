@@ -20,8 +20,8 @@ router.route("/create-collections-from-excel").post(isAuthenticatedUser, upload.
 router.get("/download/template/collections", isAuthenticatedUser, controller.DownloadExcelTemplateForCreateCollectionsReport)
 
 router.route("/ageing").get(isAuthenticatedUser, controller.GetAgeingReport)
-router.route("/ageing/:id").get(isAuthenticatedUser, controller.UpdateAgeingRemark)
-router.route("/ageing/reminder/:id").get(isAuthenticatedUser, controller.UpdateAgeingNextCall)
+router.route("/ageing-remark").get(isAuthenticatedUser, controller.GetAgeingRemarkHistory).post(isAuthenticatedUser, controller.NewAgeingRemark)
+router.route("/ageing-remark/:id").put(isAuthenticatedUser, controller.UpdateAgeingRemark).delete(isAuthenticatedUser, controller.DeleteAgeingRemark)
 router.route("/create-ageing-from-excel").post(isAuthenticatedUser, upload.single('excel'), controller.BulkCreateAndUpdateAgeingFromExcel)
 router.get("/download/template/ageing", isAuthenticatedUser, controller.DownloadExcelTemplateForCreateAgeingReport)
 export default router

@@ -71,3 +71,16 @@ export type UpdateNextCallRemarkDto = {
     _id: string,
     next_call: string
 }
+export type GetAgeingRemarkDto = {
+    _id: string,
+    remark: string,
+    party: string,
+    nextcall: string,
+    created_at: string,
+    created_by: string
+}
+export type CreateOrEditAgeingRemarkDto = {
+    remark: string,
+    party: string,
+    nextcall: string
+}
