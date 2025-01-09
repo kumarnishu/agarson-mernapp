@@ -57,12 +57,12 @@ function ViewAgeingRemarksDialog({ party, dialog, setDialog }: Props) {
                                 {item.created_at && <p>{new Date(item.created_at).toLocaleString()}</p>}
                                 {
                                     <Stack justifyContent={'end'} direction="row" gap={0} pt={2}>
-                                        {user?.assigned_permissions.includes('activities_delete') && <IconButton size="small" color="error" onClick={() => {
+                                        {user?.assigned_permissions.includes('ageing_delete') && <IconButton size="small" color="error" onClick={() => {
                                             setRemark(item)
                                             setdialog2('DeleteAgeingremarkDialog')
                                         }}>
                                             Delete</IconButton>}
-                                        {user && item.remark && user?.username === item.created_by && new Date(item.created_at) > new Date(previous_date) && user?.assigned_permissions.includes('activities_edit') && <IconButton size="small" color="success"
+                                        {user && item.remark && user?.username === item.created_by && new Date(item.created_at) > new Date(previous_date) && user?.assigned_permissions.includes('ageing_edit') && <IconButton size="small" color="success"
                                             onClick={() => {
                                                 setRemark(item)
                                                 setdialog2('CreateOrEditAgeingRemarkDialog')

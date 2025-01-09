@@ -41,7 +41,7 @@ export default function AgeingPage() {
                 Cell: (cell) => <PopUp
                     element={
                         <Stack direction="row" spacing={1}>
-                            {LoggedInUser?.assigned_permissions.includes('salesman_visit_view') && <Tooltip title="view remarks">
+                            {LoggedInUser?.assigned_permissions.includes('ageing_edit') && <Tooltip title="view remarks">
                                 <IconButton color="primary"
 
                                     onClick={() => {
@@ -53,7 +53,7 @@ export default function AgeingPage() {
                                 </IconButton>
                             </Tooltip>}
 
-                            {LoggedInUser?.assigned_permissions.includes('salesman_visit_view') &&
+                            {LoggedInUser?.assigned_permissions.includes('ageing_edit') &&
                                 <Tooltip title="Add Remark">
                                     <IconButton
                                         color="success"
