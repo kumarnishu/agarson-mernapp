@@ -29,7 +29,7 @@ function SalesReportPage() {
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
-  
+
   const { data, isLoading } = useQuery<AxiosResponse<GetSalesDto[]>, BackendError>(["sales", dates?.start_date, dates?.end_date], async () => new SalesService().GetSalesReports({ start_date: dates?.start_date, end_date: dates?.end_date }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -54,12 +54,12 @@ function SalesReportPage() {
       {
         accessorKey: 'invoice_no',
         header: ' Invoice',
-       
+
       },
       {
         accessorKey: 'party',
         header: ' Party',
-      
+
 
       },
       {
@@ -129,7 +129,7 @@ function SalesReportPage() {
       variant: 'outlined',
     },
     enableDensityToggle: false, initialState: {
-      density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
+      density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }, grouping: ['state']
     },
     enableGrouping: true,
     enableRowSelection: true,

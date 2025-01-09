@@ -123,7 +123,7 @@ function CollectionReportPage() {
             variant: 'outlined',
         },
         enableDensityToggle: false, initialState: {
-            density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
+            density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 },grouping: ['state']
         },
         enableGrouping: true,
         enableRowSelection: true,
