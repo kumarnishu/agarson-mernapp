@@ -1938,7 +1938,7 @@ export class SalesController {
                 let item = workbook_response[i]
                 let _id: string | null = item._id
                 let party: string | null = item.party
-                let state: string | null = item.state || ""
+                let state: string | null = item.state 
                 let two5: number | null = item.two5
                 let three0: number | null = item.three0
                 let five5: number | null = item.five5
