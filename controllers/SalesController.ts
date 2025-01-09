@@ -1612,42 +1612,42 @@ export class SalesController {
             for (let i = 0; i < workbook_response.length; i++) {
                 let item = workbook_response[i];
                 let { _id, date, invoice_no, party, state, amount } = item;
-            
+
                 let validated = true;
                 let statusText = "";
-            
+
                 if (!date) {
                     validated = false;
                     statusText = "required date";
                 }
-            
+
                 let nedate = new Date(excelSerialToDate(date)) > invalidate ? new Date(excelSerialToDate(date)) : parseExcelDate(date);
                 if (!isDate(nedate)) {
                     validated = false;
                     statusText = "invalid date";
                 }
-            
+
                 if (!party) {
                     validated = false;
                     statusText = "party required";
                 }
-            
+
                 if (!state) {
                     validated = false;
                     statusText = "state required";
                 }
-            
+
                 let normalizedInvoiceNo = String(invoice_no).trim().toLowerCase() || null;
                 if (!normalizedInvoiceNo) {
                     validated = false;
                     statusText = "invoice no required";
                 }
-            
+
                 if (!_id && await Sales.findOne({ invoice_no: normalizedInvoiceNo })) {
                     validated = false;
                     statusText = "invoice no duplicate";
                 }
-            
+
                 if (_id) {
                     let sale = await Sales.findById(_id);
                     if (sale && sale.invoice_no !== normalizedInvoiceNo) {
@@ -1658,7 +1658,7 @@ export class SalesController {
                         }
                     }
                 }
-            
+
                 if (validated) {
                     if (_id && isMongoId(_id)) {
                         await Sales.findByIdAndUpdate(_id, {
@@ -1671,7 +1671,7 @@ export class SalesController {
                             updated_at: new Date(),
                         });
                         statusText = "updated";
-                    } 
+                    }
                     else {
                         await new Sales({
                             date: nedate,
@@ -1687,13 +1687,13 @@ export class SalesController {
                         statusText = "created";
                     }
                 }
-            
+
                 result.push({
                     ...item,
                     status: statusText,
                 });
             }
-            
+
         }
         return res.status(200).json(result);
     }
@@ -2026,7 +2026,6 @@ export class SalesController {
             updated_at: new Date(Date.now()),
             updated_by: req.user
         }).save()
-
         return res.status(200).json({ message: "remark added successfully" })
     }
     public async UpdateAgeingRemark(req: Request, res: Response, next: NextFunction) {

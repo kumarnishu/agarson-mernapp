@@ -82,5 +82,5 @@ export type GetAgeingRemarkDto = {
 export type CreateOrEditAgeingRemarkDto = {
     remark: string,
     party: string,
-    nextcall: string
+    nextcall?: string
 }

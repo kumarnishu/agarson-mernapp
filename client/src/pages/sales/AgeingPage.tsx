@@ -3,26 +3,30 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
-import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Typography } from '@mui/material'
+import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Tooltip, Typography } from '@mui/material'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { Menu as MenuIcon } from '@mui/icons-material';
+import { Comment, Menu as MenuIcon, Visibility } from '@mui/icons-material';
 import { AxiosResponse } from "axios"
 import { BackendError } from '../..'
 import { GetAgeingDto } from '../../dtos/sales.dto'
 import { SalesService } from '../../services/SalesServices'
 import { AgeingExcelButtons } from '../../components/buttons/AgeingExcelButtons'
 import { HandleNumbers } from '../../utils/IsDecimal'
+import PopUp from '../../components/popup/PopUp'
+import CreateOrEditAgeingRemarkDialog from '../../components/dialogs/sales/CreateOrEditAgeingRemarkDialog'
+import ViewAgeingRemarksDialog from '../../components/dialogs/sales/ViewAgeingRemarksDialog'
 
 
 export default function AgeingPage() {
     const [ageings, setAgeings] = useState<GetAgeingDto[]>([])
+    const [dialog, setDialog] = useState<string | undefined>()
     const [hidden, setHidden] = useState(false)
     const { user: LoggedInUser } = useContext(UserContext)
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetAgeingDto[]>, BackendError>(["ageing", hidden], async () => new SalesService().GetAgeingReports({ hidden }))
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const isFirstRender = useRef(true);
-
+    const [party, setParty] = useState<string>()
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
 
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
@@ -30,6 +34,41 @@ export default function AgeingPage() {
     const columns = useMemo<MRT_ColumnDef<GetAgeingDto>[]>(
         //column definitions...
         () => ageings && [
+            {
+                accessorKey: 'action',
+                header: 'Action',
+
+                Cell: (cell) => <PopUp
+                    element={
+                        <Stack direction="row" spacing={1}>
+                            {LoggedInUser?.assigned_permissions.includes('salesman_visit_view') && <Tooltip title="view remarks">
+                                <IconButton color="primary"
+
+                                    onClick={() => {
+                                        setDialog('ViewAgeingRemarksDialog')
+                                        setParty(cell.row.original.party)
+                                    }}
+                                >
+                                    <Visibility />
+                                </IconButton>
+                            </Tooltip>}
+
+                            {LoggedInUser?.assigned_permissions.includes('salesman_visit_view') &&
+                                <Tooltip title="Add Remark">
+                                    <IconButton
+                                        color="success"
+                                        onClick={() => {
+                                            setDialog('CreateOrEditAgeingRemarkDialog')
+                                            setParty(cell.row.original.party)
+                                        }}
+                                    >
+                                        <Comment />
+                                    </IconButton>
+                                </Tooltip>}
+
+                        </Stack>}
+                />
+            },
             {
                 accessorKey: 'last_remark',
                 header: 'Last Remark',
@@ -314,7 +353,8 @@ export default function AgeingPage() {
                     </Menu >
                 </Stack>
             </Stack >
-
+            {party && <CreateOrEditAgeingRemarkDialog party={party} dialog={dialog} setDialog={setDialog} />}
+            {party && <ViewAgeingRemarksDialog party={party} dialog={dialog} setDialog={setDialog} />}
             {/* table */}
             <MaterialReactTable table={table} />
         </>
