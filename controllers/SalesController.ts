@@ -1785,7 +1785,7 @@ export class SalesController {
                     validated = false
                     statusText = "required date"
                 }
-              
+
                 let nedate = new Date(excelSerialToDate(date)) > invalidate ? new Date(excelSerialToDate(date)) : parseExcelDate(date)
                 if (!isDate(nedate)) {
                     validated = false
@@ -1819,25 +1819,22 @@ export class SalesController {
                     }
 
                     else {
-                        console.log(item._id, "not found")
-                        statusText = "not found"
+                        await new Collection({
+                            date: nedate,
+                            state: state,
+                            party: party,
+                            amount: amount,
+                            created_by: req.user,
+                            updated_by: req.user,
+                            created_at: new Date(),
+                            updated_at: new Date()
+                        }).save()
+                        statusText = "created"
                     }
 
                 }
 
-                if (!item._id || !isMongoId(String(item._id))) {
-                    await new Collection({
-                        date: nedate,
-                        state: state,
-                        party: party,
-                        amount: amount,
-                        created_by: req.user,
-                        updated_by: req.user,
-                        created_at: new Date(),
-                        updated_at: new Date()
-                    }).save()
-                    statusText = "created"
-                }
+
 
                 result.push({
                     ...item,
