@@ -5,7 +5,6 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
-import { useParams } from 'react-router-dom'
 import PopUp from '../../components/popup/PopUp'
 import { UserContext } from '../../contexts/userContext'
 import { Comment, Refresh, Visibility } from '@mui/icons-material'
@@ -148,10 +147,8 @@ export default function SharedAgeingpage() {
     );
 
     useEffect(() => {
-        if (id != "") {
-            refetch()
-        }
-    }, [id, hidden])
+        refetch()
+    }, [hidden])
 
     useEffect(() => {
         if (isSuccess && data) {
