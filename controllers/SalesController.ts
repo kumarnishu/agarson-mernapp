@@ -1860,8 +1860,8 @@ export class SalesController {
 
         let template: { sheet_name: string, data: any[] }[] = []
         let states = (await CRMState.find()).map((u) => { return { state: u.state } })
-        template.push({ sheet_name: 'states', data: states })
         template.push({ sheet_name: 'template', data: checklist })
+        template.push({ sheet_name: 'states', data: states })
         ConvertJsonToExcel(template)
         let fileName = "CreateCollectionTemplate.xlsx"
         return res.download("./file", fileName)

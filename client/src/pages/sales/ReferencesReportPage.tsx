@@ -192,7 +192,7 @@ export default function ReferencesReportPage() {
     muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-of-type(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially none
         },
         '& div:nth-of-type(2)': {
           display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'

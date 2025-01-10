@@ -18,6 +18,7 @@ import { AuthorizationService } from '../../services/AuthorizationService'
 import { ExcelReportsService } from '../../services/ExcelReportsServices'
 import CreateOrEditExcelDBRemarkDialog from '../../components/dialogs/excelreports/CreateOrEditExcelDBRemarkDialog'
 import ViewExcelDBRemarksDialog from '../../components/dialogs/excelreports/ViewExcelDBRemarksDialog'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 export default function ExcelDBPage() {
   const [hidden, setHidden] = useState(false)
@@ -118,6 +119,9 @@ export default function ExcelDBPage() {
           return {
             accessorKey: item.key,
             header: item.header,
+            filterVariant: 'multi-select',
+            Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
+            AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
             Footer: "", Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>
           }
         return {
@@ -127,7 +131,7 @@ export default function ExcelDBPage() {
         }
       }
       else if (item.type == "timestamp")
-        return { accessorKey: item.key, header: item.header, Footer: "", }
+        return { accessorKey: item.key, header: item.header, Footer: "" }
       else if (item.type == "date")
         return {
           accessorKey: item.key,
@@ -137,8 +141,6 @@ export default function ExcelDBPage() {
       else
         return {
           accessorKey: item.key, header: item.header,
-          filterVariant: 'range',
-          filterFn: 'between',
           aggregationFn: 'sum',
           AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
           Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -231,6 +233,7 @@ export default function ExcelDBPage() {
     },
     enableGrouping: true,
     enableRowSelection: true,
+    enableColumnFilters: true,
     manualPagination: false,
     enablePagination: true,
     enableColumnPinning: true,
