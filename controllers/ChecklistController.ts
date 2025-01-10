@@ -1276,24 +1276,39 @@ export class ChecklistController {
         return res.status(200).json({ message: "successfull" })
     }
     public async BulkDeleteChecklists(req: Request, res: Response, next: NextFunction) {
-        const { ids } = req.body as { ids: string[] }
-        for (let i = 0; i < ids.length; i++) {
-            let checklist = await Checklist.findById(ids[i])
-            if (!checklist) {
-                return res.status(404).json({ message: "Checklist not found" })
-            }
-            let boxes = await ChecklistBox.find({ checklist: checklist._id })
-            for (let i = 0; i < boxes.length; i++) {
-                await ChecklistRemark.deleteMany({ checklist_box: boxes[i]._id })
-            }
-            await ChecklistBox.deleteMany({ checklist: checklist._id })
-            if (checklist.photo && checklist.photo?._id)
-                await destroyCloudFile(checklist.photo._id)
-
-            await checklist.remove()
+        const { ids } = req.body as { ids: string[] };
+    
+        // Fetch all checklists and associated checklist boxes in parallel
+        const checklists = await Checklist.find({ _id: { $in: ids } }).exec();
+        if (!checklists || checklists.length === 0) {
+            return res.status(404).json({ message: "Checklists not found" });
         }
-        return res.status(200).json({ message: "checklists are deleted" })
+    
+        // Collect all checklist boxes to delete in bulk
+        const checklistBoxIds = await ChecklistBox.find({ checklist: { $in: checklists.map(c => c._id) } }).exec();
+        const checklistBoxIdsToDelete = checklistBoxIds.map(box => box._id);
+    
+        // Collect all checklist remarks to delete in bulk
+        await ChecklistRemark.deleteMany({ checklist_box: { $in: checklistBoxIdsToDelete } });
+    
+        // Delete checklist boxes and photos in parallel
+        const deleteChecklistPromises = checklists.map(async (checklist) => {
+            // Remove photo from cloud storage if it exists
+            if (checklist.photo && checklist.photo._id) {
+                await destroyCloudFile(checklist.photo._id);
+            }
+    
+            // Delete related checklist boxes and the checklist itself
+            await ChecklistBox.deleteMany({ checklist: checklist._id });
+            await checklist.remove();
+        });
+    
+        // Wait for all deletions to complete
+        await Promise.all(deleteChecklistPromises);
+    
+        return res.status(200).json({ message: "Checklists are deleted" });
     }
+    
 
     public async FixLast10boxes(req: Request, res: Response, next: NextFunction) {
         let dt1 = new Date()

@@ -843,7 +843,7 @@ function CheckListAdminPage() {
       {checklist && checklistBox && <ViewChecklistBoxRemarksDialog dialog={dialog} setDialog={setDialog} is_admin={true} checklist={checklist} checklist_box={checklistBox} />}
       {checklist && <ViewChecklistRemarksDialog dialog={dialog} setDialog={setDialog} checklist={checklist} />}
       {<AssignChecklistsDialog dialog={dialog} setDialog={setDialog} flag={flag} checklists={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
-      {table.getSelectedRowModel().rows && table.getSelectedRowModel().rows.length > 0 && <BulkDeleteCheckListDialog dialog={dialog} setDialog={setDialog} ids={table.getSelectedRowModel().rows.map((l) => { return l.original._id })} clearIds={() => { table.resetRowSelection() }} />}
+      <BulkDeleteCheckListDialog dialog={dialog} setDialog={setDialog} ids={table.getSelectedRowModel().rows.map((l) => { return l.original._id })} clearIds={() => { table.resetRowSelection() }} />
     </>
   )
 }

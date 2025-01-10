@@ -16,7 +16,7 @@
   },
   "scripts": {
     "build": "rm -r dist || npm install && tsc && cd client && npm install && npm run build",
-    "start": "tsc && node dist/app.js",
+    "start": "tsc && node --max-old-space-size=4096 dist/app.js",
     "dev": "concurrently \" tsc --watch\" \" nodemon dist/app.js\"  "
   },
   "keywords": [],
