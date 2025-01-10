@@ -106,8 +106,8 @@ export default function ReferencesReportPage() {
     const dynamicColumns: MRT_ColumnDef<GetReferenceDto>[] = dynamicKeys.map((key) => ({
       accessorKey: key,
       header: key, // Use the dynamic key as the column header
-      filterVariant: 'range',
-      filterFn: 'between',
+      filterVariant: 'multi-select',
+      Filter: (props) => <CustomColumFilter id={key} table={props.table} options={reports.map((item) => { return item[key] || "" })} />,
       Cell: ({ cell }) => HandleNumbers(cell.getValue()), // Optional: Format the value if needed
       aggregationFn: 'sum', // Example: Aggregate total sale_scope
       AggregatedCell: (cell) => HandleNumbers(cell.cell.getValue()), // Format aggregated value

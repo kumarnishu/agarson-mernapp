@@ -6,9 +6,9 @@ export type GetReferenceDto = {
     stage:string,
     next_call:string,
     last_remark:string,
-    pincode: number;
+    pincode: string;
     business: string;
-    [key: string]: string | number; // Index signature for dynamic reference columns
+    [key: string]: string ; // Index signature for dynamic reference columns
 };
 
 export type GetReferenceReportForSalesmanDto = {

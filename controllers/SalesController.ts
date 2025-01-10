@@ -1116,7 +1116,7 @@ export class SalesController {
                         address,
                         state,
                         stage: stage ? stage : "open",
-                        pincode,
+                        pincode:String(pincode),
                         business,
                         last_remark,
                         next_call: next_call ? moment(next_call).format("DD/MM/YYYY") : ""
@@ -1124,7 +1124,7 @@ export class SalesController {
                 }
 
                 // Add dynamic reference column
-                pivotResult[party][reference] = Math.round((total_sale_scope / 1000) - 0.1);
+                pivotResult[party][reference] =String( Math.round((total_sale_scope / 1000) - 0.1));
             });
 
             // Step 3: Convert pivotResult object into an array
