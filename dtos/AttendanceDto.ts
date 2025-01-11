@@ -1,43 +1,28 @@
 import { DropDownDto } from "./DropDownDto"
 
+//Response dto
+type LeavesDto = {
+    sl: string,
+    fl: string,
+    sw: string,
+    cl: string
+}
 export type GetLeaveDto = {
     _id: string,
     leave_type: string,
-    leave: number,
+    leave: string,
     status: string,
-    yearmonth: number,
-    photo:string,
+    yearmonth: string,
+    photo: string,
     employee: DropDownDto,
     created_at: string,
     updated_at: string,
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-
-export type ApplyLeaveDtoFromAdmin = {
-    leave_type: string,
-    leave: number,
-    status: string,
-    yearmonth: number,
-    employee: string,
-}
-export type ApplyLeaveDto = {
-    leave_type: string,
-    leave: number,
-    yearmonth: number,
-    employee: string,
-}
-
-
-export type LeavesDto = {
-    sl: number,
-    fl: number,
-    sw: number,
-    cl: number
-}
 export type GetSalesmanAttendanceReportDto = {
-    attendance: number,
-    yearmonth: number,
+    attendance: string,
+    yearmonth: string,
     provided: LeavesDto,
     brought_forward: LeavesDto,
     carryforward: LeavesDto,
@@ -45,8 +30,6 @@ export type GetSalesmanAttendanceReportDto = {
     consumed: LeavesDto,
     employee: DropDownDto
 }
-
-
 export type GetLeaveBalanceDto = {
     _id: string,
     sl: number,
@@ -60,16 +43,6 @@ export type GetLeaveBalanceDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-
-export type CreateOrEditLeaveBalanceDto = {
-    sl: number,
-    fl: number,
-    sw: number,
-    cl: number,
-    yearmonth: number,
-    employee: string,
-}
-
 export type GetSalesmanKpiDto = {
     employee?: DropDownDto,
     date: string,
@@ -98,7 +71,7 @@ export type GetSalesAttendanceDto = {
     new_visit: number,
     old_visit: number,
     remark: string,
-    sunday_working:string,
+    sunday_working: string,
     in_time: string,
     end_time: string,
     station: DropDownDto,
@@ -107,11 +80,34 @@ export type GetSalesAttendanceDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
+
+//Request dto
+export type ApplyLeaveDtoFromAdmin = {
+    leave_type: string,
+    leave: number,
+    status: string,
+    yearmonth: number,
+    employee: string,
+}
+export type ApplyLeaveDto = {
+    leave_type: string,
+    leave: number,
+    yearmonth: number,
+    employee: string,
+}
+export type CreateOrEditLeaveBalanceDto = {
+    sl: number,
+    fl: number,
+    sw: number,
+    cl: number,
+    yearmonth: number,
+    employee: string,
+}
 export type CreateOrEditSalesAttendanceDto = {
     employee: string,
     date: string,
     attendance: string,
-    is_sunday_working:boolean,
+    is_sunday_working: boolean,
     new_visit: number,
     old_visit: number,
     remark: string,

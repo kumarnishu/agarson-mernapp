@@ -1,5 +1,8 @@
 import { DropDownDto } from "./DropDownDto"
 
+
+//Response dto
+
 export type GetDriverSystemDto = {
     _id: string,
     driver: DropDownDto
@@ -10,7 +13,7 @@ export type GetDriverSystemDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-
+//Request dto
 export type CreateDriverSystemDto = {
     latitude:string,
     longitude:string

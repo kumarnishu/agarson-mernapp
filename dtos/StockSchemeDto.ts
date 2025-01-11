@@ -1,5 +1,7 @@
 import { DropDownDto } from "./DropDownDto"
 
+
+//Response dto
 export type GetConsumedStockDto = {
     _id: string,
     party: string,
@@ -14,22 +16,6 @@ export type GetConsumedStockDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-
-export type CreateConsumeStockDto = {
-    scheme:string,
-    party:string,
-    article: string,
-    size: number,
-    consumed: number
-}
-export type DiscardConsumptionDto = {
-    scheme:string,
-    article: string,
-    size: number,
-    consumed: number
-}
-
-
 export type GetArticleStockDto = {
     _id: string,
     scheme:DropDownDto,
@@ -46,7 +32,21 @@ export type GetArticleStockDto = {
     updated_by: DropDownDto
 }
 
-export type GetArticleStockExcelDto = {
+//Request dto
+export type CreateConsumeStockDto = {
+    scheme:string,
+    party:string,
+    article: string,
+    size: number,
+    consumed: number
+}
+export type DiscardConsumptionDto = {
+    scheme:string,
+    article: string,
+    size: number,
+    consumed: number
+}
+export type CreateArticleStockExcelDto = {
     article: string,
     scheme?: string,
     six: number,

@@ -1,9 +1,10 @@
+
+//Response dto
+
 export type DropDownDto = {
     id: string,
     label: string
 }
-
-
 export type GetChecklistCategoryDto = {
     _id: string,
     category: string,
@@ -12,9 +13,6 @@ export type GetChecklistCategoryDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-
-
-
 export type GetArticleDto = {
     _id: string,
     name: string,
@@ -25,12 +23,6 @@ export type GetArticleDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-
-export type CreateOrEditArticleDto = {
-    name: string, display_name: string
-}
-
-
 export type GetLeadTypeDto = {
     _id: string,
     type: string,
@@ -39,7 +31,6 @@ export type GetLeadTypeDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-
 export type GetLeadSourceDto = {
     _id: string,
     source: string,
@@ -48,7 +39,6 @@ export type GetLeadSourceDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-
 export type GetStageDto = {
     _id: string,
     stage: string,
@@ -64,8 +54,6 @@ export type GetCrmStateDto = {
     alias2: string,
     assigned_users: string;
 }
-
-
 export type GetDyeLocationDto = {
     _id: string,
     name: string,
@@ -76,10 +64,6 @@ export type GetDyeLocationDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-export type CreateOrEditDyeLocationDto = {
-    name: string, display_name: string
-}
-
 export type GetDyeDto = {
     _id: string,
     active: boolean,
@@ -91,18 +75,6 @@ export type GetDyeDto = {
     updated_at: string,
     created_by: DropDownDto,
     updated_by: DropDownDto
-}
-export type CreateOrEditDyeDTo = {
-    dye_number: number,
-    size: string,
-    articles: string[],
-    st_weight: number
-}
-export type GetDyeDtoFromExcel = {
-    dye_number: number,
-    size: string,
-    articles: string,
-    st_weight: number
 }
 export type GetDyeStatusReportDto = {
     _id: string,
@@ -117,8 +89,6 @@ export type GetDyeStatusReportDto = {
     created_by: DropDownDto,
 
 }
-
-
 export type GetExpenseCategoryDto = {
     _id: string,
     category: string,
@@ -127,9 +97,6 @@ export type GetExpenseCategoryDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-
-
-
 export type GetExpenseLocationDto = {
     _id: string,
     name: string,
@@ -138,10 +105,6 @@ export type GetExpenseLocationDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-
-
-
-
 export type GetItemUnitDto = {
     _id: string,
     unit: string,
@@ -150,7 +113,6 @@ export type GetItemUnitDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-
 export type GetKeyCategoryDto = {
     _id: string,
     skip_bottom_rows: number,
@@ -158,10 +120,6 @@ export type GetKeyCategoryDto = {
     display_name: string,
     assigned_users: string;
 }
-
-
-
-
 export type GetMachineCategoryDto = {
     _id: string,
     category: string,
@@ -170,8 +128,6 @@ export type GetMachineCategoryDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-
-
 export type GetMachineDto = {
     _id: string,
     name: string,
@@ -183,6 +139,26 @@ export type GetMachineDto = {
     updated_at: string,
     created_by: DropDownDto,
     updated_by: DropDownDto
+}
+
+//Request dto
+export type CreateOrEditArticleDto = {
+    name: string, display_name: string
+}
+export type CreateOrEditDyeLocationDto = {
+    name: string, display_name: string
+}
+export type CreateOrEditDyeDTo = {
+    dye_number: number,
+    size: string,
+    articles: string[],
+    st_weight: number
+}
+export type CreateDyeDtoFromExcel = {
+    dye_number: number,
+    size: string,
+    articles: string,
+    st_weight: number
 }
 export type CreateOrEditMachineDto = {
     name: string,

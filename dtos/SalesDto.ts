@@ -1,5 +1,7 @@
 import { DropDownDto } from "./DropDownDto";
 
+
+//Response dto
 export type GetReferenceRemarksDto = {
     _id: string,
     remark: string,
@@ -8,12 +10,6 @@ export type GetReferenceRemarksDto = {
     created_date: string,
     created_by: string,
 
-}
-export type CreateOrEditReferenceRemarkDto = {
-    remark: string,
-    party: string,
-    stage:string,
-    next_date?: string
 }
 export type GetReferenceDto = {
     party: string;
@@ -27,7 +23,6 @@ export type GetReferenceDto = {
     business: string;
     [key: string]: string ; // Index signature for dynamic reference columns
 };
-
 export type GetReferenceReportForSalesmanDto = {
     _id: string,
     party: string,
@@ -38,24 +33,6 @@ export type GetReferenceReportForSalesmanDto = {
     status: string,
     last_remark: string
 }
-
-
-
-
-export type GetReferenceExcelDto = {
-    _id: string,
-    date: string,
-    gst: string,
-    party: string,
-    address: string,
-    state: string,
-    pincode: number,
-    business: string,
-    sale_scope: number,
-    reference: string,
-    status?: string
-}
-
 export type GetSalesDto = {
     _id: string,
     date: string,
@@ -65,16 +42,6 @@ export type GetSalesDto = {
     state: string,
     amount: number
 }
-
-export type GetSalesExcelDto = {
-    _id: string,
-    date: string,
-    invoice_no: string,
-    party: string,
-    state: string,
-    amount: number,
-    status?: string
-}
 export type GetCollectionsDto = {
     _id: string,
     date: string,
@@ -83,15 +50,6 @@ export type GetCollectionsDto = {
     state: string,
     amount: number
 }
-export type GetCollectionsExcelDto = {
-    _id: string,
-    date: string,
-    party: string,
-    state: string,
-    amount: number,
-    status?: string
-}
-
 export type GetAgeingDto = {
     _id: string,
     state: string,
@@ -105,25 +63,6 @@ export type GetAgeingDto = {
     seven0: number,
     seventyplus: number,
 }
-
-export type GetAgeingExcelDto = {
-    _id: string,
-    state: string,
-    party: string,
-    next_call?: string,
-    last_remark?: string,
-    two5: number,
-    three0: number,
-    five5: number,
-    six0: number,
-    seven0: number,
-    seventyplus: number,
-    status?: string
-}
-
-
-
-
 export type GetAgeingRemarkDto = {
     _id: string,
     remark: string,
@@ -132,26 +71,6 @@ export type GetAgeingRemarkDto = {
     created_at: string,
     created_by: string
 }
-export type CreateOrEditAgeingRemarkDto = {
-    remark: string,
-    party: string,
-    nextcall: string
-}
-export interface IColumn {
-    key: string;
-    header: string,
-    type: string
-}
-export interface IRowData {
-    [key: string]: any; // Type depends on your data
-}
-
-export interface IColumnRowData {
-    columns: IColumn[];
-    rows: IRowData[];
-}
-
-
 export type GetVisitSummaryReportRemarkDto = {
     _id: string,
     remark: string,
@@ -160,13 +79,6 @@ export type GetVisitSummaryReportRemarkDto = {
     created_at: string,
     created_by: string
 }
-export type CreateOrEditVisitSummaryRemarkDto = {
-    remark: string,
-    employee: string,
-    visit_date: string
-}
-
-
 export type GetVisitReportDto = {
     _id: string,
     employee: string
@@ -182,7 +94,6 @@ export type GetVisitReportDto = {
     created_by: string,
     updated_by: string,
 }
-
 export type GetSalesManVisitSummaryReportDto = {
     employee: DropDownDto,
     date1: string,
@@ -199,10 +110,6 @@ export type GetSalesManVisitSummaryReportDto = {
     working_time3: string,
     last_remark: string
 }
-
-
-
-
 export type GetSalesAttendancesAuto = {
     employee: DropDownDto,
     date: string,
@@ -210,3 +117,80 @@ export type GetSalesAttendancesAuto = {
     old_visit: number,
     worktime: string,
 }
+
+
+//Request dto
+export type CreateOrEditReferenceRemarkDto = {
+    remark: string,
+    party: string,
+    stage:string,
+    next_date?: string
+}
+export type CreateReferenceExcelDto = {
+    _id: string,
+    date: string,
+    gst: string,
+    party: string,
+    address: string,
+    state: string,
+    pincode: number,
+    business: string,
+    sale_scope: number,
+    reference: string,
+    status?: string
+}
+export type CreateSalesExcelDto = {
+    _id: string,
+    date: string,
+    invoice_no: string,
+    party: string,
+    state: string,
+    amount: number,
+    status?: string
+}
+export type CreateCollectionsExcelDto = {
+    _id: string,
+    date: string,
+    party: string,
+    state: string,
+    amount: number,
+    status?: string
+}
+export type CreateAgeingExcelDto = {
+    _id: string,
+    state: string,
+    party: string,
+    next_call?: string,
+    last_remark?: string,
+    two5: number,
+    three0: number,
+    five5: number,
+    six0: number,
+    seven0: number,
+    seventyplus: number,
+    status?: string
+}
+export type CreateOrEditAgeingRemarkDto = {
+    remark: string,
+    party: string,
+    nextcall: string
+}
+export interface IColumn {
+    key: string;
+    header: string,
+    type: string
+}
+export interface IRowData {
+    [key: string]: any; // Type depends on your data
+}
+export interface IColumnRowData {
+    columns: IColumn[];
+    rows: IRowData[];
+}
+export type CreateOrEditVisitSummaryRemarkDto = {
+    remark: string,
+    employee: string,
+    visit_date: string
+}
+
+

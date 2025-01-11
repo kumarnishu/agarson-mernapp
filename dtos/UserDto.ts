@@ -1,11 +1,44 @@
 import { DropDownDto } from "./DropDownDto"
 
+//Response dto
+
+export type GetImpersantedUserdto = {
+  _id: string,
+  username: string,
+  is_admin: boolean
+}
+export type GetUserDto = {
+  _id: string,
+  username: string,
+  alias1: string,
+  impersonated_user?: GetImpersantedUserdto,
+  alias2: string,
+  email: string,
+  mobile: string,
+  dp: string,
+  orginal_password?: string,
+  is_admin: Boolean,
+  email_verified: Boolean,
+  mobile_verified: Boolean,
+  is_active: Boolean,
+  last_login: string,
+  is_multi_login: boolean,
+  assigned_users: DropDownDto[]
+  assigned_crm_states: number,
+  assigned_crm_cities: number,
+  assigned_permissions: string[],
+  created_at: string,
+  updated_at: string,
+  created_by: DropDownDto,
+  updated_by: DropDownDto
+}
+//Request dto
 export type LoginDto = {
   username: string,
   password: string,
   multi_login_token: string
 }
-export type GetLoginByThisUserDto={
+export type CreateLoginByThisUserDto={
   user_id:string,
   impersnate_id:string
 }
@@ -46,35 +79,4 @@ export type createOrEditUserDto = {
   email: string,
   password?: string,
   mobile: string,
-}
-
-export type GetImpersantedUserdto = {
-  _id: string,
-  username: string,
-  is_admin: boolean
-}
-export type GetUserDto = {
-  _id: string,
-  username: string,
-  alias1: string,
-  impersonated_user?: GetImpersantedUserdto,
-  alias2: string,
-  email: string,
-  mobile: string,
-  dp: string,
-  orginal_password?: string,
-  is_admin: Boolean,
-  email_verified: Boolean,
-  mobile_verified: Boolean,
-  is_active: Boolean,
-  last_login: string,
-  is_multi_login: boolean,
-  assigned_users: DropDownDto[]
-  assigned_crm_states: number,
-  assigned_crm_cities: number,
-  assigned_permissions: string[],
-  created_at: string,
-  updated_at: string,
-  created_by: DropDownDto,
-  updated_by: DropDownDto
 }

@@ -1,16 +1,7 @@
 import { DropDownDto } from "./DropDownDto"
 
-export type GetPaymentDocumentDto = {
-    _id: string,
-    document: string,
-    remark: string,
-    payment: DropDownDto,
-    date: string,
-}
-export type CreateOrEditPaymentDocumentDto = {
-    remark: string,
-}
 
+//Response dto
 export type GetPaymentDto = {
     _id: string,
     active: boolean
@@ -28,6 +19,20 @@ export type GetPaymentDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
+export type GetPaymentDocumentDto = {
+    _id: string,
+    document: string,
+    remark: string,
+    payment: DropDownDto,
+    date: string,
+}
+
+
+//Request dto
+
+export type CreateOrEditPaymentDocumentDto = {
+    remark: string,
+}
 export type CreateOrEditPaymentDto = {
     payment_title: string,
     payment_description: string,
@@ -37,7 +42,7 @@ export type CreateOrEditPaymentDto = {
     assigned_users: string[]
     frequency: string,
 }
-export type GetPaymentsFromExcelDto = {
+export type CreatePaymentsFromExcelDto = {
     _id?: string,
     payment_title: string,
     payment_description: string,

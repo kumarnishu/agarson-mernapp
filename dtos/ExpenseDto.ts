@@ -1,5 +1,7 @@
 import { DropDownDto } from "./DropDownDto";
 
+
+//Response dto
 export type GetExpenseItemDto = {
     _id: string,
     item: string;
@@ -12,8 +14,22 @@ export type GetExpenseItemDto = {
     stock: number,
     last_remark: string
 }
+export type GetExpenseTransactionsDto = {
+    _id: string,
+    item: DropDownDto,
+    unit:DropDownDto,
+    category:DropDownDto,
+    location: DropDownDto,
+    remark: string,
+    inWardQty: number,
+    outWardQty: number,
+    price:number,
+    created_at: string,
+    created_by: DropDownDto
+}
+//Request dto
 
-export type GetExpenseItemFromExcelDto = {
+export type CreateExpenseItemFromExcelDto = {
     _id: string,
     item: string,
     unit: string,
@@ -44,16 +60,3 @@ export type IssueOrAddExpenseItemDto = {
 }
 
 
-export type GetExpenseTransactionsDto = {
-    _id: string,
-    item: DropDownDto,
-    unit:DropDownDto,
-    category:DropDownDto,
-    location: DropDownDto,
-    remark: string,
-    inWardQty: number,
-    outWardQty: number,
-    price:number,
-    created_at: string,
-    created_by: DropDownDto
-}

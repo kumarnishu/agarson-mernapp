@@ -1,10 +1,10 @@
 import { DropDownDto } from "./DropDownDto"
 
+//Response dto
 export type GroupedChecklistDto = {
     group_title: string, // The grouping key
     checklists: GetChecklistDto[] // Array of checklists within this group
 }
-
 export type GetChecklistTopBarDto = {
     categorydData: { category: string, count: number }[],
     lastmonthscore: number,
@@ -35,19 +35,24 @@ export type GetChecklistDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-export type CreateOrEditChecklistDto = {
-    work_title: string,
-    serial_no: number,
-    group_title: string,
-    category: string,
-    link: string,
-    assigned_users: string[]
-    frequency?: string,
-    condition: string,
-    expected_number: number,
-    photo: string
+export type GetChecklistRemarksDto = {
+    _id: string,
+    remark: string,
+    checklist_box: DropDownDto,
+    created_date: string,
+    created_by: DropDownDto
+
 }
-export type GetChecklistFromExcelDto = {
+export type GetChecklistBoxDto = {
+    _id: string,
+    stage: string,
+    score:number,
+    last_remark: string,
+    checklist: DropDownDto,
+    date: string,
+}
+//Request dto
+export type CreateChecklistFromExcelDto = {
     _id?: string,
     work_title: string,
     serial_no: number,
@@ -60,13 +65,17 @@ export type GetChecklistFromExcelDto = {
     expected_number: number,
     status?: string
 }
-export type GetChecklistRemarksDto = {
-    _id: string,
-    remark: string,
-    checklist_box: DropDownDto,
-    created_date: string,
-    created_by: DropDownDto
-
+export type CreateOrEditChecklistDto = {
+    work_title: string,
+    serial_no: number,
+    group_title: string,
+    category: string,
+    link: string,
+    assigned_users: string[]
+    frequency?: string,
+    condition: string,
+    expected_number: number,
+    photo: string
 }
 export type CreateOrEditChecklistRemarkDto = {
     remark: string,
@@ -74,12 +83,4 @@ export type CreateOrEditChecklistRemarkDto = {
     score:number,
     checklist_box: string,
     checklist: string
-}
-export type GetChecklistBoxDto = {
-    _id: string,
-    stage: string,
-    score:number,
-    last_remark: string,
-    checklist: DropDownDto,
-    date: string,
 }

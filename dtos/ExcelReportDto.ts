@@ -1,6 +1,8 @@
 import { DropDownDto } from "./DropDownDto"
 
-export type GetExcelDBRemarksDto = {
+
+//Response dto
+export type CreateExcelDBRemarksDto = {
     _id: string,
     remark: string,
     next_date: string,
@@ -16,3 +18,6 @@ export type CreateOrEditExcelDbRemarkDto = {
     obj: string,
     next_date?: string
 }
+
+//Request dto
+
