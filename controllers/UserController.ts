@@ -3,16 +3,17 @@ import express from 'express'
 import isEmail from "validator/lib/isEmail";
 import isMongoId from "validator/lib/isMongoId";
 import moment from 'moment';
-import { UpdateProfileDto, AssignUsersDto, LoginDto, UpdatePasswordDto, ResetPasswordDto, AssignPermissionForOneUserDto, AssignPermissionForMultipleUserDto, GetLoginByThisUserDto, VerifyEmailDto } from '../dtos/auth.dto';
-import { GetUserDto, createOrEditUserDto } from '../dtos/user.dto';
 import { deleteToken, deleteTokenOnly, isAuthenticatedUser, isProfileAuthenticated, sendUserToken } from '../middlewares/auth.middleware';
-import { User, Asset, IUser } from '../models/user.model';
-import { destroyCloudFile } from '../services/destroyCloudFile';
-import { uploadFileToCloud } from '../services/uploadFileToCloud';
-import { DropDownDto } from '../dtos/dropdown.dto';
-import { IMenu } from '../dtos/permission.dto';
+
 import { FetchAllPermissions } from '../utils/fillAllPermissions';
 import { sendEmail } from '../utils/sendEmail';
+import { IMenu } from '../dtos/AuthorizationDto';
+import { DropDownDto } from '../dtos/DropDownDto';
+import { GetUserDto, createOrEditUserDto, UpdateProfileDto, AssignUsersDto, LoginDto, UpdatePasswordDto, ResetPasswordDto, AssignPermissionForOneUserDto, AssignPermissionForMultipleUserDto, GetLoginByThisUserDto, VerifyEmailDto } from '../dtos/UserDto';
+import { Asset, IUser } from '../interfaces/UserController';
+import { User } from '../models/UserModel';
+import { destroyCloudFile } from '../services/destroyCloudFile';
+import { uploadFileToCloud } from '../services/uploadFileToCloud';
 
 export class UserController {
     public async SignUp(req: Request, res: Response, next: NextFunction) {

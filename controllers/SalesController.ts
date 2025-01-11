@@ -3,31 +3,19 @@ import moment, { isDate } from 'moment';
 import xlsx from "xlsx"
 import isMongoId from 'validator/lib/isMongoId';
 import { toTitleCase } from '../utils/trimText';
-import { GetSalesAttendanceDto, CreateOrEditSalesAttendanceDto, GetSalesmanKpiDto } from '../dtos/sales-attendance.dto';
-import { ExcelDB } from '../models/excel-db.model';
-import { KeyCategory } from '../models/key-category.model';
-import { ISalesAttendance, SalesAttendance } from '../models/sales-attendance.model';
-import { IUser, User } from '../models/user.model';
-import { GetSalesAttendancesAuto, GetVisitReportDto } from '../dtos/visit-report.dto';
-import { VisitReport } from '../models/visit-report.model';
-import { decimalToTimeForXlsx } from '../utils/datesHelper';
-import { IColumnRowData, IRowData } from "../dtos/table.dto";
-import { SalesmanLeaves, SalesmanLeavesColumns } from "../models/salesman-leaves.model";
-import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
-import { GetSalesManVisitSummaryReportDto } from '../dtos/visit-report.dto';
-import { IVisitRemark, VisitRemark } from '../models/visit_remark.model';
-import { GetReferenceDto, GetReferenceExcelDto, GetReferenceReportForSalesmanDto } from "../dtos/references.dto";
-import { excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
-import { CRMState, ICRMState } from "../models/crm-state.model";
-import { CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto } from '../dtos/references-remark.dto';
-import { IReferenceRemark, ReferenceRemark } from '../models/reference-remarks.model';
-import { Reference } from '../models/references.model';
-import { CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto } from '../dtos/visit_remark.dto';
-import { CreateOrEditAgeingRemarkDto, GetAgeingDto, GetAgeingExcelDto, GetAgeingRemarkDto, GetCollectionsDto, GetCollectionsExcelDto, GetSalesDto, GetSalesExcelDto } from '../dtos/sales.dto';
-import { Sales } from '../models/sales.model';
-import { Collection } from '../models/collections.model';
-import { Ageing, IAgeing } from '../models/ageing.model';
-import { AgeingRemark, IAgeingRemark } from '../models/ageing_remark.model';
+import { GetSalesAttendanceDto, CreateOrEditSalesAttendanceDto, GetSalesmanKpiDto } from '../dtos/AttendanceDto';
+import { GetSalesAttendancesAuto, IColumnRowData, IRowData, GetSalesManVisitSummaryReportDto, GetVisitReportDto, GetReferenceDto, GetReferenceReportForSalesmanDto, GetReferenceExcelDto, CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto, CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto, GetSalesDto, GetSalesExcelDto, GetCollectionsDto, GetCollectionsExcelDto, GetAgeingDto, GetAgeingExcelDto, CreateOrEditAgeingRemarkDto, GetAgeingRemarkDto } from '../dtos/SalesDto';
+import { ISalesAttendance } from '../interfaces/AttendanceInterface';
+import { ICRMState } from '../interfaces/AuthorizationInterface';
+import { IReferenceRemark, IVisitRemark, IAgeing, IAgeingRemark } from '../interfaces/SalesInterface';
+import { IUser } from '../interfaces/UserController';
+import { SalesAttendance, SalesmanLeaves, SalesmanLeavesColumns } from '../models/AttendanceModel';
+import { KeyCategory, CRMState } from '../models/AuthorizationModel';
+import { ExcelDB } from '../models/ExcelReportModel';
+import { VisitReport, VisitRemark, Reference, ReferenceRemark, Sales, Ageing, AgeingRemark, Collection } from '../models/SalesModel';
+import { User } from '../models/UserModel';
+import ConvertJsonToExcel from '../services/ConvertJsonToExcel';
+import { decimalToTimeForXlsx, excelSerialToDate, invalidate, parseExcelDate } from '../utils/datesHelper';
 
 export class SalesController {
 

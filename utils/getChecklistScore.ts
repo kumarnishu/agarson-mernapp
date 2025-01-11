@@ -1,4 +1,4 @@
-import { IChecklistBox } from "../models/checklist-box.model";
+import { IChecklistBox } from "../interfaces/ChecklistInterface"
 
 export function getChecklistScore(boxes: IChecklistBox[]) {
     let expectedScore = 0

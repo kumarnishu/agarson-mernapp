@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import isMongoId from "validator/lib/isMongoId";
-import { IDriverSystem, DriverSystem } from "../models/driver-system.model";
-import { IUser } from "../models/user.model";
-import { GetDriverSystemDto, CreateDriverSystemDto } from '../dtos/driver.dto';
 import moment from 'moment';
 import { uploadFileToCloud } from '../services/uploadFileToCloud';
+import { GetDriverSystemDto, CreateDriverSystemDto } from '../dtos/DriverAppDto';
+import { IDriverSystem } from '../interfaces/DriverAppInterface';
+import { IUser } from '../interfaces/UserController';
+import { DriverSystem } from '../models/DriverAppModel';
 
 
 export class DriverAppController {

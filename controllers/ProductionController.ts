@@ -1,23 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 import moment from "moment";
-import { User, IUser } from "../models/user.model";
-import { destroyCloudFile } from "../services/destroyCloudFile";
-import { uploadFileToCloud } from "../services/uploadFileToCloud";
-import { GetProductionDto, CreateOrEditProductionDto, GetCategoryWiseProductionReportDto } from "../dtos/production.dto";
-import { GetShoeWeightDto, CreateOrEditShoeWeightDto, GetShoeWeightDiffReportDto } from "../dtos/shoe-weight.dto";
-import { GetSoleThicknessDto, CreateOrEditSoleThicknessDto } from "../dtos/sole-thickness.dto";
-import { GetSpareDyeDto, CreateOrEditSpareDyeDto } from "../dtos/spare-dye.dto";
-import { Article } from "../models/article.model";
-import { DyeLocation } from "../models/dye-location.model";
-import { Dye } from "../models/dye.model";
-import { Machine } from "../models/machine.model";
-import { IProduction, Production } from "../models/production.model";
-import { IShoeWeight, ShoeWeight } from "../models/shoe-weight.model";
-import { ISoleThickness, SoleThickness } from "../models/sole-thickness.model";
-import { SpareDye, ISpareDye } from "../models/spare-dye.model";
-import { GetDyeStatusReportDto } from "../dtos/dye.dto";
-import { IColumnRowData, IRowData } from "../dtos/table.dto";
-
+import { GetDyeStatusReportDto } from '../dtos/DropDownDto';
+import { GetProductionDto, CreateOrEditProductionDto, GetShoeWeightDto, CreateOrEditShoeWeightDto, GetSoleThicknessDto, CreateOrEditSoleThicknessDto, GetSpareDyeDto, CreateOrEditSpareDyeDto, GetCategoryWiseProductionReportDto, GetShoeWeightDiffReportDto } from '../dtos/ProductionDto';
+import { IColumnRowData, IRowData } from '../dtos/SalesDto';
+import { IProduction, IShoeWeight, ISoleThickness, ISpareDye } from '../interfaces/ProductionInterface';
+import { IUser } from '../interfaces/UserController';
+import { Machine, Dye, DyeLocation } from '../models/DropDownModel';
+import { Production, ShoeWeight, Article, SpareDye, SoleThickness } from '../models/ProductionModel';
+import { User } from '../models/UserModel';
+import { destroyCloudFile } from '../services/destroyCloudFile';
+import { uploadFileToCloud } from '../services/uploadFileToCloud';
 
 export class ProductionController {
 

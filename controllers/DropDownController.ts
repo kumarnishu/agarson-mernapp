@@ -1,30 +1,18 @@
 import { NextFunction, Request, Response } from 'express';
 import moment from 'moment';
 import xlsx from "xlsx";
-import { GetArticleDto, CreateOrEditArticleDto } from '../dtos/article.dto';
-import { IArticle, Article } from '../models/article.model';
-import { DropDownDto } from '../dtos/dropdown.dto';
 import isMongoId from "validator/lib/isMongoId";
-import { ChecklistCategory } from "../models/checklist-category.model";
-import { GetDyeLocationDto, CreateOrEditDyeLocationDto } from "../dtos/dye-location.dto";
-import { IDyeLocation, DyeLocation } from "../models/dye-location.model";
-import { GetDyeDto, GetDyeDtoFromExcel, CreateOrEditDyeDTo } from "../dtos/dye.dto";
-import { Dye, IDye } from "../models/dye.model";
-import { ExpenseCategory } from '../models/expense-category.model';
+import { GetArticleDto, DropDownDto, CreateOrEditArticleDto, GetDyeLocationDto, CreateOrEditDyeLocationDto, GetDyeDto, GetDyeDtoFromExcel, CreateOrEditDyeDTo, GetMachineDto, CreateOrEditMachineDto } from '../dtos/DropDownDto';
+import { GetExpenseItemDto, CreateOrEditExpenseItemDto, GetExpenseItemFromExcelDto } from '../dtos/ExpenseDto';
+import { IDyeLocation, IDye, IMachine } from '../interfaces/DropDownInterface';
+import { IExpenseItem } from '../interfaces/ExpenseInterface';
+import { IArticle } from '../interfaces/ProductionInterface';
+import Lead, { ReferredParty } from '../models/CrmModel';
+import { ChecklistCategory, DyeLocation, Dye, ItemUnit, PaymentCategory, MachineCategory, Machine, LeadType, LeadSource, Stage } from '../models/DropDownModel';
+import { ExpenseCategory, ExpenseItem, ExpenseLocation } from '../models/ExpenseModel';
+import { Article } from '../models/ProductionModel';
 import ConvertJsonToExcel from '../services/ConvertJsonToExcel';
-import { ItemUnit } from '../models/item-unit.model';
-import { CreateOrEditExpenseItemDto, GetExpenseItemDto, GetExpenseItemFromExcelDto } from '../dtos/expense-item.dto';
-import { IExpenseItem, ExpenseItem } from '../models/expense-item.model';
-import { LeadType } from '../models/crm-leadtype.model';
-import { ExpenseLocation } from '../models/expense-location.model';
-import Lead from '../models/lead.model';
-import { MachineCategory } from '../models/machine-category.model';
-import { IMachine, Machine } from '../models/machine.model';
-import { PaymentCategory } from '../models/payment-category.model';
-import { ReferredParty } from '../models/refer.model';
-import { GetMachineDto, CreateOrEditMachineDto } from '../dtos/machine.dto';
-import { LeadSource } from '../models/crm-source.model';
-import { Stage } from '../models/crm-stage.model';
+
 
 
 export class DropDownController {

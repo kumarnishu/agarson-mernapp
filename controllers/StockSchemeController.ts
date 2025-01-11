@@ -1,11 +1,10 @@
 import { Response, Request, NextFunction } from "express"
 import moment from "moment"
-import { ArticleStock, IArticleStock } from "../models/stock.model"
+import xlsx from 'xlsx';
+import { GetConsumedStockDto, CreateConsumeStockDto, GetArticleStockDto, DiscardConsumptionDto, GetArticleStockExcelDto } from "../dtos/StockSchemeDto"
+import { IConsumedStock, IArticleStock } from "../interfaces/StockSchemeInterface"
+import { ConsumedStock, ArticleStock, StockScheme } from "../models/StockSchemeModel"
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel"
-import xlsx from "xlsx"
-import { ConsumedStock, IConsumedStock } from "../models/stock-consumed.model"
-import { CreateConsumeStockDto, DiscardConsumptionDto, GetArticleStockDto, GetArticleStockExcelDto, GetConsumedStockDto } from "../dtos/stock-scheme.dto"
-import { StockScheme } from "../models/stock-schme.model"
 
 export class StockSchemeController {
     public async GetAllConsumedStocks(req: Request, res: Response, next: NextFunction) {

@@ -2,19 +2,18 @@ import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
 import isMongoId from "validator/lib/isMongoId";
 import moment from "moment";
-import { User, Asset, IUser } from "../models/user.model";
-import { destroyCloudFile } from "../services/destroyCloudFile";
-import { uploadFileToCloud } from "../services/uploadFileToCloud";
-import { CreateOrEditChecklistRemarkDto, GetChecklistRemarksDto } from "../dtos/checklist-remark.dto";
-import { GetChecklistDto, CreateOrEditChecklistDto, GetChecklistFromExcelDto, GroupedChecklistDto, GetChecklistTopBarDto } from "../dtos/checklist.dto";
-import { ChecklistBox, IChecklistBox } from "../models/checklist-box.model";
-import { ChecklistCategory } from "../models/checklist-category.model";
-import { ChecklistRemark, IChecklistRemark } from "../models/checklist-remark.model";
-import { Checklist, IChecklist } from "../models/checklist.model";
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
 import { areDatesEqual, previousYear, nextYear, getFirstMonday, currentMonth, previousMonth, nextMonth } from "../utils/datesHelper";
 
 import { getChecklistScore } from "../utils/getChecklistScore";
+import { GetChecklistFromExcelDto, GetChecklistTopBarDto, GetChecklistDto, GroupedChecklistDto, CreateOrEditChecklistDto, CreateOrEditChecklistRemarkDto, GetChecklistRemarksDto } from "../dtos/ChecklistDto";
+import { IChecklistBox, IChecklist, IChecklistRemark } from "../interfaces/ChecklistInterface";
+import { IUser, Asset } from "../interfaces/UserController";
+import { Checklist, ChecklistBox, ChecklistRemark } from "../models/ChecklistModel";
+import { ChecklistCategory } from "../models/DropDownModel";
+import { User } from "../models/UserModel";
+import { destroyCloudFile } from "../services/destroyCloudFile";
+import { uploadFileToCloud } from "../services/uploadFileToCloud";
 
 export class ChecklistController {
 

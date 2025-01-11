@@ -1,22 +1,15 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
-
 import isMongoId from "validator/lib/isMongoId";
-import { GetCrmCityDto, CreateOrEditCrmCity, GetCityFromExcelDto } from "../dtos/crm-city.dto";
-import { DropDownDto } from "../dtos/dropdown.dto";
-import { ICRMCity, CRMCity } from "../models/crm-city.model";
-import { CRMState, ICRMState } from "../models/crm-state.model";
-import Lead from "../models/lead.model";
-import { ReferredParty } from "../models/refer.model";
-import { User } from "../models/user.model";
+import { GetCrmCityDto, GetCityFromExcelDto, GetKeyDto, GetKeyFromExcelDto, CreateOrEditCrmCity } from "../dtos/AuthorizationDto";
+import { DropDownDto, GetCrmStateDto, GetKeyCategoryDto } from "../dtos/DropDownDto";
+import { ICRMCity, ICRMState, IKey, IKeyCategory } from "../interfaces/AuthorizationInterface";
+import { CRMCity, CRMState, Key, KeyCategory } from "../models/AuthorizationModel";
+import Lead, { ReferredParty } from "../models/CrmModel";
+import { User } from "../models/UserModel";
 import { assignCRMCities } from "../services/assignCRMCities";
-import { GetCrmStateDto } from "../dtos/crm-state.dto";
-import { convertDateToExcelFormat } from '../utils/datesHelper';
-import { GetKeyDto, GetKeyFromExcelDto } from '../dtos/keys.dto';
-import { IKeyCategory, KeyCategory } from '../models/key-category.model';
-import { IKey, Key } from '../models/keys.model';
-import ConvertJsonToExcel from '../services/ConvertJsonToExcel';
-import { GetKeyCategoryDto } from "../dtos/key-category.dto";
+import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
+import { convertDateToExcelFormat } from "../utils/datesHelper";
 
 export class AuthorizationController {
      

@@ -2,15 +2,15 @@ import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
 import isMongoId from "validator/lib/isMongoId";
 import moment, { isDate } from "moment";
-import { User } from "../models/user.model";
-import { destroyCloudFile } from "../services/destroyCloudFile";
-import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
-import { CreateOrEditPaymentDocumentDto } from "../dtos/payment-document.dto";
-import { GetPaymentDto, CreateOrEditPaymentDto, GetPaymentsFromExcelDto } from "../dtos/payment.dto";
-import { PaymentCategory } from "../models/payment-category.model";
-import { PaymentDocument } from "../models/payment-document.model";
-import { Payment, IPayment } from "../models/payment.model";
+
 import { parseExcelDate } from "../utils/datesHelper";
+import { GetPaymentDto, CreateOrEditPaymentDto, CreateOrEditPaymentDocumentDto, GetPaymentsFromExcelDto } from "../dtos/PaymentsDto";
+import { IPayment } from "../interfaces/PaymentsInterface";
+import { PaymentCategory } from "../models/DropDownModel";
+import { Payment, PaymentDocument } from "../models/PaymentsModel";
+import { User } from "../models/UserModel";
+import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
+import { destroyCloudFile } from "../services/destroyCloudFile";
 
 
 export class PaymentController{

@@ -1,4 +1,4 @@
-import { User } from "../models/user.model";
+import { User } from "../models/UserModel";
 
 export async function assignCRMCities(user_ids: string[],
     city_ids: string[],

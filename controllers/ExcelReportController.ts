@@ -2,16 +2,17 @@ import xlsx from "xlsx"
 import { NextFunction, Request, Response, Router } from 'express';
 import { decimalToTimeForXlsx, excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
 import moment from "moment";
-import { IColumnRowData, IRowData } from "../dtos/table.dto";
-import { ICRMState } from "../models/crm-state.model";
-import { ExcelDB } from "../models/excel-db.model";
-import { IKeyCategory, KeyCategory } from "../models/key-category.model";
-import { Key } from "../models/keys.model";
-import { User, IUser } from "../models/user.model";
-import { VisitReport } from "../models/visit-report.model";
-import { ExcelDBRemark, IExcelDBRemark } from "../models/excel-db-remark.model";
 import isMongoId from "validator/lib/isMongoId";
-import { CreateOrEditExcelDbRemarkDto, GetExcelDBRemarksDto } from "../dtos/excel-db-remark.dto";
+import { CreateOrEditExcelDbRemarkDto, GetExcelDBRemarksDto } from "../dtos/ExcelReportDto";
+import { IColumnRowData, IRowData } from "../dtos/SalesDto";
+import { IKeyCategory, ICRMState } from "../interfaces/AuthorizationInterface";
+import { IExcelDBRemark } from "../interfaces/ExcelReportInterface";
+import { IUser } from "../interfaces/UserController";
+import { KeyCategory, Key } from "../models/AuthorizationModel";
+import { ExcelDB, ExcelDBRemark } from "../models/ExcelReportModel";
+import { VisitReport } from "../models/SalesModel";
+import { User } from "../models/UserModel";
+
 
 export class ExcelReportController {
 

@@ -3,21 +3,16 @@ import { NextFunction, Request, Response } from 'express';
 import isMongoId from "validator/lib/isMongoId";
 import moment from "moment";
 import { Types } from "mongoose";
-import { CreateOrEditMergeLeadsDto, GetLeadDto, CreateOrRemoveReferForLeadDto, CreateOrEditLeadDto, GetLeadFromExcelDto } from "../dtos/lead.dto";
-import { Bill, IBill } from "../models/crm-bill.model";
-import { IRemark, Remark } from "../models/crm-remarks.model";
-import { Stage } from "../models/crm-stage.model";
-import Lead, { ILead } from "../models/lead.model";
-import { IReferredParty, ReferredParty } from "../models/refer.model";
-import { User, Asset, IUser } from "../models/user.model";
-import { destroyCloudFile } from "../services/destroyCloudFile";
-import { uploadFileToCloud } from "../services/uploadFileToCloud";
-import { CreateOrEditBillDto, GetBillDto } from "../dtos/crm-bill.dto";
-import { CreateOrEditRemarkDto, GetRemarksDto, GetActivitiesTopBarDetailsDto, GetActivitiesOrRemindersDto } from "../dtos/crm-remarks.dto";
-import { CreateOrEditMergeRefersDto, GetReferDto, CreateOrEditReferDto, GetReferFromExcelDto } from "../dtos/refer.dto";
-import { BillItem } from "../models/bill-item.model";
 import { hundredDaysAgo } from "../utils/datesHelper";
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
+import { CreateOrEditBillDto, GetBillDto, CreateOrEditRemarkDto, GetRemarksDto, GetActivitiesTopBarDetailsDto, GetActivitiesOrRemindersDto, CreateOrEditMergeLeadsDto, GetLeadDto, CreateOrRemoveReferForLeadDto, CreateOrEditLeadDto, GetLeadFromExcelDto, CreateOrEditMergeRefersDto, GetReferDto, CreateOrEditReferDto, GetReferFromExcelDto } from "../dtos/CrmDto";
+import { IBill, IRemark, ILead, IReferredParty } from "../interfaces/CrmInterface";
+import { Asset, IUser } from "../interfaces/UserController";
+import Lead, { Bill, BillItem, ReferredParty, Remark } from "../models/CrmModel";
+import { Stage } from "../models/DropDownModel";
+import { User } from "../models/UserModel";
+import { destroyCloudFile } from "../services/destroyCloudFile";
+import { uploadFileToCloud } from "../services/uploadFileToCloud";
 
 
 export class CrmController {

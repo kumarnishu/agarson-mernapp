@@ -1,10 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import moment from "moment";
-import { GetExpenseItemDto } from "../dtos/expense-item.dto";
-import { IssueOrAddExpenseItemDto, GetExpenseTransactionsDto } from "../dtos/expense.dto";
-import { ExpenseItem, IExpenseItem } from "../models/expense-item.model";
-import { ExpenseLocation } from "../models/expense-location.model";
-import { ExpenseTransaction, IExpenseTransaction } from "../models/expense-transaction.model";
+import { IssueOrAddExpenseItemDto, GetExpenseItemDto, GetExpenseTransactionsDto } from '../dtos/ExpenseDto';
+import { IExpenseItem, IExpenseTransaction } from '../interfaces/ExpenseInterface';
+import { ExpenseItem, ExpenseLocation, ExpenseTransaction } from '../models/ExpenseModel';
 
 export class ExpenseController {
 
