@@ -55,9 +55,7 @@ export function CustomColumFilter<T extends MRT_RowData>({
         if (selectedOptions.length > 0) {
             const obj = { id, value: selectedOptions };
             const filteredColumns = table.getState().columnFilters.filter((item) => item.id !== id);
-            console.log(filteredColumns)
             filteredColumns.push(obj);
-            console.log(filteredColumns)
             table.setColumnFilters(filteredColumns);
         }
     }, [selectedOptions, table]);

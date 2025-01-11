@@ -148,7 +148,7 @@ export class ExcelReportController {
                         if (dt[key]) {
                             if (keys[i].type == "timestamp")
                                 //@ts-ignore
-                                obj[key] = decimalToTimeForXlsx(dt[key])
+                                obj[key] = String(decimalToTimeForXlsx(dt[key]))
                             else if (keys[i].type == "date") {
                                 if (cat && cat.category == 'SalesRep' && key == 'Sales Representative') {
                                     //@ts-ignore
@@ -161,7 +161,7 @@ export class ExcelReportController {
                             }
                             else
                                 //@ts-ignore
-                                obj[key] = dt[key]
+                                obj[key] = String(dt[key])
 
                             //adding bills age actions
                             if (cat && cat.category == 'BillsAge' && key == 'Account Name') {
@@ -203,7 +203,7 @@ export class ExcelReportController {
                         }
                         else {
                             if (keys[i].type == "number")
-                                obj[key] = 0
+                                obj[key] = "0"
                             else
                                 obj[key] = ""
                         }

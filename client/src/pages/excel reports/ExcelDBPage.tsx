@@ -41,7 +41,9 @@ export default function ExcelDBPage() {
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
-  let columns = useMemo<MRT_ColumnDef<IColumnRowData['columns']>[]>(
+
+
+  let columns = useMemo<MRT_ColumnDef<any, any>[]>(
     () => reportcolumns && reportcolumns.map((item, index) => {
       if (item.type == "action")
         return {
@@ -119,31 +121,87 @@ export default function ExcelDBPage() {
           return {
             accessorKey: item.key,
             header: item.header,
-            filterVariant: 'multi-select',
+            /* @ts-ignore */
+            filterFn: (
+              row,
+              columnId: string,
+              filterValue: unknown[]
+            ) => {
+              return filterValue.some(
+                val => row.getValue<unknown[]>(columnId)?.includes(val)
+              )
+            },
+            Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
             Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
-            AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-            Footer: "", Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>
           }
         return {
           accessorKey: item.key,
           header: item.header,
+          /* @ts-ignore */
+          filterFn: (
+            row,
+            columnId: string,
+            filterValue: unknown[]
+          ) => {
+            return filterValue.some(
+              val => row.getValue<unknown[]>(columnId)?.includes(val)
+            )
+          },
+          Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+          Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
           Footer: "",
         }
       }
       else if (item.type == "timestamp")
-        return { accessorKey: item.key, header: item.header, Footer: "" }
+        return {
+          accessorKey: item.key, header: item.header,  /* @ts-ignore */
+          filterFn: (
+            row,
+            columnId: string,
+            filterValue: unknown[]
+          ) => {
+            return filterValue.some(
+              val => row.getValue<unknown[]>(columnId)?.includes(val)
+            )
+          },
+          Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+          Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />, Footer: ""
+        }
       else if (item.type == "date")
         return {
           accessorKey: item.key,
           header: item.header,
+          /* @ts-ignore */
+          filterFn: (
+            row,
+            columnId: string,
+            filterValue: unknown[]
+          ) => {
+            return filterValue.some(
+              val => row.getValue<unknown[]>(columnId)?.includes(val)
+            )
+          },
+          Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+          Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
           Footer: <b>Total</b>,
         }
       else
         return {
           accessorKey: item.key, header: item.header,
           aggregationFn: 'sum',
+          /* @ts-ignore */
+          filterFn: (
+            row,
+            columnId: string,
+            filterValue: unknown[]
+          ) => {
+            return filterValue.some(
+              val => row.getValue<unknown[]>(columnId)?.includes(val)
+            )
+          },
+          Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+          Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
           AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-          Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
           //@ts-ignore
           Footer: ({ table }) => <b>{index < 2 ? table.getFilteredRowModel().rows.length : table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
         }
@@ -233,8 +291,6 @@ export default function ExcelDBPage() {
     },
     enableGrouping: true,
     enableRowSelection: true,
-    enableColumnFilters: true,
-    manualPagination: false,
     enablePagination: true,
     enableColumnPinning: true,
     enableTableFooter: true,
