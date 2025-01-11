@@ -127,8 +127,9 @@ export default function ExcelDBPage() {
               columnId: string,
               filterValue: unknown[]
             ) => {
+             
               return filterValue.some(
-                val => row.getValue<unknown[]>(columnId)?.includes(val)
+                val => row.getValue<unknown[]>(columnId)==val
               )
             },
             Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
@@ -144,7 +145,7 @@ export default function ExcelDBPage() {
             filterValue: unknown[]
           ) => {
             return filterValue.some(
-              val => row.getValue<unknown[]>(columnId)?.includes(val)
+              val => row.getValue<unknown[]>(columnId)==val
             )
           },
           Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
@@ -161,7 +162,7 @@ export default function ExcelDBPage() {
             filterValue: unknown[]
           ) => {
             return filterValue.some(
-              val => row.getValue<unknown[]>(columnId)?.includes(val)
+              val => row.getValue<unknown[]>(columnId)==val
             )
           },
           Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
@@ -178,7 +179,7 @@ export default function ExcelDBPage() {
             filterValue: unknown[]
           ) => {
             return filterValue.some(
-              val => row.getValue<unknown[]>(columnId)?.includes(val)
+              val => row.getValue<unknown[]>(columnId)==val
             )
           },
           Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
@@ -196,7 +197,7 @@ export default function ExcelDBPage() {
             filterValue: unknown[]
           ) => {
             return filterValue.some(
-              val => row.getValue<unknown[]>(columnId)?.includes(val)
+              val => row.getValue<unknown[]>(columnId)==val
             )
           },
           Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
