@@ -1,8 +1,7 @@
-import { GetCrmCityDto } from "../dtos/crm-city.dto";
-import { GetCrmStateDto } from "../dtos/crm-state.dto";
-import { DropDownDto } from "../dtos/dropdown.dto";
-import { CreateOrEditMergeLeadsDto } from "../dtos/lead.dto";
-import { CreateOrEditMergeRefersDto, GetReferDto } from "../dtos/refer.dto";
+import { CreateOrEditMergeLeadsDto, CreateOrEditMergeRefersDto } from "../dtos/request/CrmDto";
+import { GetCrmCityDto, GetCrmStateDto } from "../dtos/response/AuthorizationDto";
+import { GetReferDto } from "../dtos/response/CrmDto";
+import { DropDownDto,  } from "../dtos/response/DropDownDto";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 export class CrmService {

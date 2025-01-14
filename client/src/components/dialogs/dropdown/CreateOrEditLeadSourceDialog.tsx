@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditLeadSourceForm from '../../forms/dropdown/CreateOrEditLeadSourceForm'
-import { DropDownDto } from '../../../dtos/dropdown.dto'
+import { DropDownDto } from '../../../dtos/response/DropDownDto'
 
 type Props = {
     dialog: string | undefined,

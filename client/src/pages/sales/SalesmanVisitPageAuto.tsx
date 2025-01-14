@@ -9,10 +9,10 @@ import moment from 'moment'
 import { UserContext } from '../../contexts/userContext'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { toTitleCase } from '../../utils/TitleCase'
-import { GetSalesAttendancesAuto } from '../../dtos/visit-report.dto'
-import { DropDownDto } from '../../dtos/dropdown.dto'
 import { SalesService } from '../../services/SalesServices'
 import { UserService } from '../../services/UserServices'
+import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { GetSalesAttendancesAuto } from '../../dtos/response/SalesDto'
 
 
 export default function SalesmanVisitPageAuto() {

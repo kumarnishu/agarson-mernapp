@@ -1,7 +1,6 @@
-import { CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto } from "../dtos/references-remark.dto"
-import { CreateOrEditSalesAttendanceDto } from "../dtos/sales-attendance.dto"
-import { CreateOrEditAgeingRemarkDto, GetAgeingRemarkDto } from "../dtos/sales.dto"
-import { CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto } from "../dtos/visit_remark.dto"
+import { CreateOrEditSalesAttendanceDto } from "../dtos/request/AttendanceDto"
+import { CreateOrEditVisitSummaryRemarkDto, CreateOrEditReferenceRemarkDto, CreateOrEditAgeingRemarkDto } from "../dtos/request/SalesDto"
+import { GetVisitSummaryReportRemarkDto, GetReferenceRemarksDto, GetAgeingRemarkDto } from "../dtos/response/SalesDto"
 import { apiClient } from "./utils/AxiosInterceptor"
 
 export class SalesService {

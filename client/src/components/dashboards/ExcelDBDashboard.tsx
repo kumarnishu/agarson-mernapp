@@ -5,10 +5,10 @@ import { AxiosResponse } from "axios";
 import { useQuery } from "react-query";
 import { BackendError } from "../..";
 import { UserContext } from "../../contexts/userContext";
-import { DropDownDto } from "../../dtos/dropdown.dto";
 import { AssignmentOutlined } from "@mui/icons-material";
 import { ExcelDbButtons } from "../buttons/ExcelDbButtons";
 import { AuthorizationService } from "../../services/AuthorizationService";
+import { DropDownDto } from "../../dtos/response/DropDownDto";
 
 function ExcelDBDashboard() {
     const [features, setFeatures] = useState<{ feature: string, display_name: string, is_visible: boolean, url: string }[]>([])

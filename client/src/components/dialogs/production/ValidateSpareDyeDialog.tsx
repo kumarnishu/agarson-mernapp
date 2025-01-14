@@ -5,10 +5,10 @@ import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
 import { BackendError } from '../../..';
 import { useMutation } from 'react-query';
-import { GetUserDto } from '../../../dtos/user.dto';
-import { GetSpareDyeDto } from '../../../dtos/spare-dye.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { ProductionService } from '../../../services/ProductionService';
+import { GetSpareDyeDto } from '../../../dtos/response/ProductionDto';
+import { GetUserDto } from '../../../dtos/response/UserDto';
 
 
 type Props = {

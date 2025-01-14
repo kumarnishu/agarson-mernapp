@@ -8,10 +8,10 @@ import { UserContext } from '../../contexts/userContext'
 import { Button, Fade, IconButton, Menu, MenuItem, Typography } from '@mui/material'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { GetConsumedStockDto } from '../../dtos/stock.scheme.dto'
 import { StockSchmeService } from '../../services/StockSchmeService'
 import DiscardConsumptionDialog from '../../components/dialogs/stockschme/DiscardConsumptionDialog'
 import { HandleNumbers } from '../../utils/IsDecimal'
+import { GetConsumedStockDto } from '../../dtos/response/StockSchemeDto'
 
 
 export default function ArticleConsumedStockpage() {

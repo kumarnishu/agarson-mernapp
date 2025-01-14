@@ -10,10 +10,10 @@ import { AddBoxOutlined, Input } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { GetExpenseItemDto } from '../../dtos/expense-item.dto'
 import IssueExpenseItemDialog from '../../components/dialogs/expense/IssueExpenseItemDialog'
 import AddExpenseItemDialog from '../../components/dialogs/expense/AddExpenseItemDialog'
 import { ExpenseService } from '../../services/ExpenseService'
+import { GetExpenseItemDto } from '../../dtos/response/ExpenseDto'
 
 
 

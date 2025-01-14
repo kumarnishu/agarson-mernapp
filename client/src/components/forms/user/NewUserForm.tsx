@@ -8,8 +8,8 @@ import * as Yup from "yup"
 import { UserService } from '../../../services/UserServices';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
-import { GetUserDto } from '../../../dtos/user.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { GetUserDto } from '../../../dtos/response/UserDto';
 
 
 

@@ -21,15 +21,15 @@ import AssignChecklistsDialog from '../../components/dialogs/checklists/AssignCh
 import BulkDeleteCheckListDialog from '../../components/dialogs/checklists/BulkDeleteCheckListDialog'
 import ViewChecklistBoxRemarksDialog from '../../components/dialogs/checklists/ViewChecklistBoxRemarksDialog'
 import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/ViewChecklistRemarksDialog'
-import { GetChecklistBoxDto } from '../../dtos/checklist-box.dto'
-import { GetChecklistDto, GetChecklistFromExcelDto, GetChecklistTopBarDto } from '../../dtos/checklist.dto'
-import { DropDownDto } from '../../dtos/dropdown.dto'
 import { jsPDF } from 'jspdf'; //or use your library of choice here
 import autoTable from 'jspdf-autotable';
 
 import { UserService } from '../../services/UserServices'
 import { ChecklistService } from '../../services/ChecklistService'
 import FixCheckListBoxesDialog from '../../components/dialogs/checklists/FixCheckListBoxesDialog'
+import { GetChecklistBoxDto, GetChecklistDto, GetChecklistTopBarDto } from '../../dtos/response/ChecklistDto'
+import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { CreateChecklistFromExcelDto } from '../../dtos/request/ChecklistDto'
 
 function CheckListAdminPage() {
   const { user: LoggedInUser } = useContext(UserContext)
@@ -782,7 +782,7 @@ function CheckListAdminPage() {
         > Fixed Date Boxes</MenuItem>}
         {LoggedInUser?.assigned_permissions.includes('checklist_admin_export') && < MenuItem onClick={() => {
 
-          let data: GetChecklistFromExcelDto[] = []
+          let data: CreateChecklistFromExcelDto[] = []
           data = table.getRowModel().rows.map((row) => {
             return {
               _id: row.original._id,
@@ -803,7 +803,7 @@ function CheckListAdminPage() {
         }
         >Export All</MenuItem>}
         {LoggedInUser?.assigned_permissions.includes('checklist_admin_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => {
-          let data: GetChecklistFromExcelDto[] = []
+          let data: CreateChecklistFromExcelDto[] = []
           data = table.getSelectedRowModel().rows.map((row) => {
             return {
               _id: row.original._id,

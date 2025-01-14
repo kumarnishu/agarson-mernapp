@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogTitle, Stack, IconButton } from '@mui/mate
 import { Cancel } from '@mui/icons-material';
 
 import CreateOrEditDyeForm from '../../forms/dropdown/CreateOrEditDyeForm';
-import { GetDyeDto } from '../../../dtos/dye.dto';
+import { GetDyeDto } from '../../../dtos/response/DropDownDto';
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

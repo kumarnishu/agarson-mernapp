@@ -6,13 +6,12 @@ import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
-import { AlertContext } from '../../../contexts/alertContext';
-import { GetExpenseItemDto } from '../../../dtos/expense-item.dto';
-import { IssueOrAddExpenseItemDto } from '../../../dtos/expense.dto';
-
 import { DropdownService } from '../../../services/DropDownServices';
 import { ExpenseService } from '../../../services/ExpenseService';
+import { AlertContext } from '../../../contexts/alertContext';
+import { IssueOrAddExpenseItemDto } from '../../../dtos/request/ExpenseDto';
+import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { GetExpenseItemDto } from '../../../dtos/response/ExpenseDto';
 
 
 function IssueExpenseItemForm({ item, setDialog }: { item: GetExpenseItemDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {

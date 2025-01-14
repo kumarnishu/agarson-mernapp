@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
-import { GetArticleStockDto } from '../../../dtos/stock.scheme.dto'
 import ConsumeStockSchemForm from '../../forms/stock scheme/ConsumeStockSchemForm'
+import { GetArticleStockDto } from '../../../dtos/response/StockSchemeDto'
 
 
 type Props = {

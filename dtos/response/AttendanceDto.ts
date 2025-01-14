@@ -2,10 +2,10 @@ import { DropDownDto } from "./DropDownDto"
 
 //Response dto
 type LeavesDto = {
-    sl: string,
-    fl: string,
-    sw: string,
-    cl: string
+    sl: number,
+    fl: number,
+    sw: number,
+    cl: number
 }
 export type GetLeaveDto = {
     _id: string,
@@ -21,7 +21,7 @@ export type GetLeaveDto = {
     updated_by: DropDownDto
 }
 export type GetSalesmanAttendanceReportDto = {
-    attendance: string,
+    attendance: number,
     yearmonth: number,
     provided: LeavesDto,
     brought_forward: LeavesDto,

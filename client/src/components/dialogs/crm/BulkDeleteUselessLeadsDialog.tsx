@@ -6,10 +6,10 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 
-import { GetLeadDto } from '../../../dtos/lead.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { CrmService } from '../../../services/CrmService';
+import { GetLeadDto } from '../../../dtos/response/CrmDto';
 
 type Props = {
     dialog: string | undefined,

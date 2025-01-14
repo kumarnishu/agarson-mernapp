@@ -9,11 +9,12 @@ import { queryClient } from '../../../main';
 
 import { toTitleCase } from '../../../utils/TitleCase';
 import moment from 'moment';
-import { GetRemarksDto } from '../../../dtos/crm-remarks.dto';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
+
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
 import { CrmService } from '../../../services/CrmService';
+import { GetRemarksDto } from '../../../dtos/response/CrmDto';
+import { DropDownDto } from '../../../dtos/response/DropDownDto';
 
 
 

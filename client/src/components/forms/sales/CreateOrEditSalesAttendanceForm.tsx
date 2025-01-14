@@ -9,12 +9,13 @@ import { queryClient } from '../../../main';
 
 import { UserContext } from '../../../contexts/userContext';
 import moment from 'moment';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
-import { GetSalesAttendanceDto, CreateOrEditSalesAttendanceDto } from '../../../dtos/sales-attendance.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { AuthorizationService } from '../../../services/AuthorizationService';
 import { UserService } from '../../../services/UserServices';
 import { SalesService } from '../../../services/SalesServices';
+import { CreateOrEditSalesAttendanceDto } from '../../../dtos/request/AttendanceDto';
+import { GetSalesAttendanceDto } from '../../../dtos/response/AttendanceDto';
+import { DropDownDto } from '../../../dtos/response/DropDownDto';
 
 function CreateOrEditSalesAttendanceForm({ attendance, setDialog }: { attendance?: GetSalesAttendanceDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)

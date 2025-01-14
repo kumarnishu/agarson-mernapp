@@ -6,12 +6,10 @@ import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-
-import { GetChecklistBoxDto } from '../../../dtos/checklist-box.dto';
-import { GetChecklistRemarksDto, CreateOrEditChecklistRemarkDto } from '../../../dtos/checklist-remark.dto';
-import { GetChecklistDto } from '../../../dtos/checklist.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { ChecklistService } from '../../../services/ChecklistService';
+import { CreateOrEditChecklistRemarkDto } from '../../../dtos/request/ChecklistDto';
+import { GetChecklistDto, GetChecklistBoxDto, GetChecklistRemarksDto } from '../../../dtos/response/ChecklistDto';
 
 
 

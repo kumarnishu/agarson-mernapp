@@ -11,12 +11,12 @@ import { Delete, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Menu as Me
 import ExportToExcel from '../../utils/ExportToExcel'
 import PopUp from '../../components/popup/PopUp'
 import moment from 'moment'
-import { DropDownDto } from '../../dtos/dropdown.dto'
-import { GetDriverSystemDto } from '../../dtos/driver.dto'
 import ViewDriverSystemPhotoDialog from '../../components/dialogs/driverapp/ViewDriverSystemPhotoDialog'
 import DeleteDriverSystemDialog from '../../components/dialogs/driverapp/DeleteDriverSystemDialog'
 import { UserService } from '../../services/UserServices'
 import { DriverAppService } from '../../services/DriverAppService'
+import { GetDriverSystemDto } from '../../dtos/response/DriverAppDto'
+import { DropDownDto } from '../../dtos/response/DropDownDto'
 
 
 export default function DriverAppSystemPage() {

@@ -14,11 +14,10 @@ import PopUp from '../../components/popup/PopUp'
 import DeleteProductionItemDialog from '../../components/dialogs/dropdown/DeleteProductionItemDialog'
 import moment from 'moment'
 import CreateOrEditProductionDialog from '../../components/dialogs/production/CreateOrEditProductionDialog'
-import { GetProductionDto } from '../../dtos/production.dto'
-import { DropDownDto } from '../../dtos/dropdown.dto'
-
 import { UserService } from '../../services/UserServices'
 import { ProductionService } from '../../services/ProductionService'
+import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { GetProductionDto } from '../../dtos/response/ProductionDto'
 
 
 export default function ProductionPage() {

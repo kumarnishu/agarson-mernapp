@@ -8,11 +8,12 @@ import { queryClient } from '../../../main';
 
 import { useFormik } from 'formik';
 import * as Yup from "yup"
-import { GetChecklistDto } from '../../../dtos/checklist.dto';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
+
 import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
 import { ChecklistService } from '../../../services/ChecklistService';
+import { GetChecklistDto } from '../../../dtos/response/ChecklistDto';
+import { DropDownDto } from '../../../dtos/response/DropDownDto';
 
 
 

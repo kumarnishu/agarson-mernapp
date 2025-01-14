@@ -9,14 +9,12 @@ import { queryClient } from '../../../main';
 
 import { months } from '../../../utils/months';
 import UploadFileButton from '../../buttons/UploadFileButton';
-import { GetUserDto } from '../../../dtos/user.dto';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
-import { GetDyeDto } from '../../../dtos/dye.dto';
-import { GetMachineDto } from '../../../dtos/machine.dto';
-import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
 import { ProductionService } from '../../../services/ProductionService';
+import { GetDyeDto, DropDownDto, GetMachineDto } from '../../../dtos/response/DropDownDto';
+import { GetShoeWeightDto } from '../../../dtos/response/ProductionDto';
+import { GetUserDto } from '../../../dtos/response/UserDto';
 
 
 

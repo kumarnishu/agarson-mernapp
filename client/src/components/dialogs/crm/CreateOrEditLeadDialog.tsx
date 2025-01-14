@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
 
 import { Cancel } from '@mui/icons-material';
 import CreateOrEditLeadForm from '../../forms/crm/CreateOrEditLeadForm';
-import { GetLeadDto } from '../../../dtos/lead.dto';
+import { GetLeadDto } from '../../../dtos/response/CrmDto';
 
 type Props = {
   dialog: string | undefined,

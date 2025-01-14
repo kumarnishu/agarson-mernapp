@@ -7,9 +7,9 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
 import * as yup from 'yup';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
+import { DropDownDto } from '../../../dtos/response/DropDownDto';
 
 function CreateOrEditLeadTypeForm({ type ,setDialog}: { type?: DropDownDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)

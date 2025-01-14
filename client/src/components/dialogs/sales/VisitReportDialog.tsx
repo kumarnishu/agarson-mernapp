@@ -7,8 +7,8 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtua
 import { BackendError } from '../../..'
 import { onlyUnique } from '../../../utils/UniqueArray'
 import { Cancel } from '@mui/icons-material'
-import { GetVisitReportDto } from '../../../dtos/visit-report.dto'
 import { SalesService } from '../../../services/SalesServices'
+import { GetVisitReportDto } from '../../../dtos/response/SalesDto'
 
 
 

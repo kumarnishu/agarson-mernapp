@@ -5,10 +5,11 @@ import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
 import { BackendError } from '../../..';
 import { useMutation } from 'react-query';
-import { GetUserDto } from '../../../dtos/user.dto';
-import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
+
 import { AlertContext } from '../../../contexts/alertContext';
 import { ProductionService } from '../../../services/ProductionService';
+import { GetShoeWeightDto } from '../../../dtos/response/ProductionDto';
+import { GetUserDto } from '../../../dtos/response/UserDto';
 
 
 type Props = {

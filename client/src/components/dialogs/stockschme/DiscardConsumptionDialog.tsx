@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, IconButton, DialogTitle, Card, CardContent, Typography, Divider, Grid, Button, Stack } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
-import { DiscardConsumptionDto, GetConsumedStockDto } from '../../../dtos/stock.scheme.dto'
 import { AxiosResponse } from 'axios'
 import { BackendError } from '../../..'
 import { StockSchmeService } from '../../../services/StockSchmeService'
@@ -8,6 +7,8 @@ import { useMutation } from 'react-query'
 import { queryClient } from '../../../main'
 import { useContext } from 'react'
 import { AlertContext } from '../../../contexts/alertContext'
+import { DiscardConsumptionDto } from '../../../dtos/request/StockSchemeDto'
+import { GetConsumedStockDto } from '../../../dtos/response/StockSchemeDto'
 
 
 type Props = {

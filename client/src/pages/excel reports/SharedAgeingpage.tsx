@@ -9,12 +9,12 @@ import PopUp from '../../components/popup/PopUp'
 import { UserContext } from '../../contexts/userContext'
 import { Comment, Refresh, Visibility } from '@mui/icons-material'
 import { HandleNumbers } from '../../utils/IsDecimal'
-import { IColumnRowData } from '../../dtos/table.dto'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import { ExcelReportsService } from '../../services/ExcelReportsServices'
 import CreateOrEditExcelDBRemarkDialog from '../../components/dialogs/excelreports/CreateOrEditExcelDBRemarkDialog'
 import ViewExcelDBRemarksDialog from '../../components/dialogs/excelreports/ViewExcelDBRemarksDialog'
+import { IColumnRowData } from '../../dtos/request/SalesDto'
 
 export default function SharedAgeingpage() {
     const [hidden, setHidden] = useState(false)

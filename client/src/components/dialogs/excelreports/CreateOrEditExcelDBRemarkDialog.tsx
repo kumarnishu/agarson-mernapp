@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditExcelDBRemarkForm from '../../forms/excelreports/CreateOrEditExcelDBRemarkForm'
-import { GetExcelDBRemarksDto } from '../../../dtos/excel-db-remark.dto'
+import { GetExcelDBRemarksDto } from '../../../dtos/response/ExcelReportDto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

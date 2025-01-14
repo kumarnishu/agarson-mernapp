@@ -13,8 +13,8 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import CreateOrEditArticleDialog from '../../components/dialogs/dropdown/CreateOrEditArticleDialog'
 import ToogleArticleDialog from '../../components/dialogs/dropdown/ToogleArticleDialog'
-import { GetArticleDto } from '../../dtos/article.dto'
 import { DropdownService } from '../../services/DropDownServices'
+import { GetArticleDto } from '../../dtos/response/DropDownDto'
 
 
 

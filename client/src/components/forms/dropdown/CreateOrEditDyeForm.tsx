@@ -6,10 +6,10 @@ import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import { GetArticleDto } from '../../../dtos/article.dto';
-import { GetDyeDto, CreateOrEditDyeDTo } from '../../../dtos/dye.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
+import { CreateOrEditDyeDTo } from '../../../dtos/request/DropDownDto';
+import { GetArticleDto, GetDyeDto } from '../../../dtos/response/DropDownDto';
 
 
 function CreateOrEditDyeForm({ dye, setDialog }: { dye?: GetDyeDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {

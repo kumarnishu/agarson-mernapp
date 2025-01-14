@@ -6,12 +6,11 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 
-import { GetCrmCityDto } from '../../../dtos/crm-city.dto';
-import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { CrmService } from '../../../services/CrmService';
+import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { GetCrmCityDto, GetCrmStateDto } from '../../../dtos/response/AuthorizationDto';
 
 
 type Props = {

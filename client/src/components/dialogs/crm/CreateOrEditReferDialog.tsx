@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
 import { Cancel } from '@mui/icons-material';
 import CreateOrEditReferForm from '../../forms/crm/CreateOrEditReferForm';
-import { GetReferDto } from '../../../dtos/refer.dto';
+import { GetReferDto } from '../../../dtos/response/CrmDto';
 
 
 type Props = {

@@ -7,11 +7,11 @@ import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
-import { } from '../../../dtos/visit_remark.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { SalesService } from '../../../services/SalesServices';
-import { CreateOrEditAgeingRemarkDto, GetAgeingRemarkDto } from '../../../dtos/sales.dto';
 import moment from 'moment';
+import { CreateOrEditAgeingRemarkDto } from '../../../dtos/request/SalesDto';
+import { GetAgeingRemarkDto } from '../../../dtos/response/SalesDto';
 
 
 function CreateOrEditAgeingRemarkForm({ party, remark, setDialog }: {

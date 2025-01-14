@@ -8,9 +8,9 @@ import styled from "styled-components"
 import { saveAs } from 'file-saver';
 import ExportToExcel from "../../utils/ExportToExcel"
 import { queryClient } from "../../main"
-import { GetKeyFromExcelDto } from "../../dtos/keys.dto"
 import { AlertContext } from "../../contexts/alertContext"
 import { StockSchmeService } from "../../services/StockSchmeService"
+import { CreateKeyFromExcelDto } from "../../dtos/request/AuthorizationDto"
 
 
 const FileInput = styled.input`
@@ -21,7 +21,7 @@ color:blue;
 
 export function StockSchemeButton({ schme }: { schme?: string }) {
     const { data, mutate, isLoading, isSuccess } = useMutation
-        <AxiosResponse<GetKeyFromExcelDto[]>, BackendError, FormData>
+        <AxiosResponse<CreateKeyFromExcelDto[]>, BackendError, FormData>
         (new StockSchmeService().CreateArticleStockFromExcel, { onSuccess: () => queryClient.refetchQueries('stocks') })
     const [file, setFile] = useState<File | null>(null)
     const { setAlert } = useContext(AlertContext)

@@ -1,9 +1,8 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditBillForm from '../../forms/crm/CreateOrEditBillForm'
-import { GetBillDto } from '../../../dtos/crm-bill.dto'
-import { GetLeadDto } from '../../../dtos/lead.dto'
-import { GetReferDto } from '../../../dtos/refer.dto'
+import { GetLeadDto, GetReferDto, GetBillDto } from '../../../dtos/response/CrmDto'
+
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

@@ -8,9 +8,9 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
 import DeleteChecklistRemarkDialog from './DeleteChecklistRemarkDialog'
 import moment from 'moment'
-import { GetChecklistRemarksDto } from '../../../dtos/checklist-remark.dto'
-import { GetChecklistDto } from '../../../dtos/checklist.dto'
+
 import { ChecklistService } from '../../../services/ChecklistService'
+import { GetChecklistDto, GetChecklistRemarksDto } from '../../../dtos/response/ChecklistDto'
 
 type Props = {
     dialog: string | undefined,

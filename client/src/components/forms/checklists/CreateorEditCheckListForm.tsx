@@ -6,15 +6,14 @@ import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
-
 import Select from '@mui/material/Select';
-import { GetChecklistDto, CreateOrEditChecklistDto } from '../../../dtos/checklist.dto';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
-
 import { DropdownService } from '../../../services/DropDownServices';
 import { ChecklistService } from '../../../services/ChecklistService';
+import { CreateOrEditChecklistDto } from '../../../dtos/request/ChecklistDto';
+import { GetChecklistDto } from '../../../dtos/response/ChecklistDto';
+import { DropDownDto } from '../../../dtos/response/DropDownDto';
 
 
 function CreateorEditCheckListForm({ checklist, setDialog }: { checklist?: GetChecklistDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {

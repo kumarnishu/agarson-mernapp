@@ -14,10 +14,10 @@ import ExportToExcel from '../../utils/ExportToExcel'
 
 import { previousYear } from '../../utils/datesHelper'
 import { HandleNumbers } from '../../utils/IsDecimal'
-import { GetSalesmanKpiDto } from '../../dtos/sales-attendance.dto'
-import { DropDownDto } from '../../dtos/dropdown.dto'
 import { SalesService } from '../../services/SalesServices'
 import { UserService } from '../../services/UserServices'
+import { GetSalesmanKpiDto } from '../../dtos/response/AttendanceDto'
+import { DropDownDto } from '../../dtos/response/DropDownDto'
 
 
 function SalesmanKpiPage() {

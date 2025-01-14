@@ -15,10 +15,10 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import CreateOrEditSalesmanAttendanceDialog from '../../components/dialogs/sales/CreateOrEditSalesmanAttendanceDialog'
 import DeleteVisitSalesManAttendanceDialog from '../../components/dialogs/sales/DeleteSalesManAttendanceDialog'
 import { HandleNumbers } from '../../utils/IsDecimal'
-import { GetSalesAttendanceDto } from '../../dtos/sales-attendance.dto'
-import { DropDownDto } from '../../dtos/dropdown.dto'
 import { UserService } from '../../services/UserServices'
 import { SalesService } from '../../services/SalesServices'
+import { GetSalesAttendanceDto } from '../../dtos/response/AttendanceDto'
+import { DropDownDto } from '../../dtos/response/DropDownDto'
 
 
 function SalesmanAttendancePage() {

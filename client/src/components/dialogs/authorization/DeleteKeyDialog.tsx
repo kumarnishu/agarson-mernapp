@@ -6,10 +6,10 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 
-import { GetKeyDto } from '../../../dtos/keys.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { AuthorizationService } from '../../../services/AuthorizationService';
+import { GetKeyDto } from '../../../dtos/response/AuthorizationDto';
 
 type Props = {
   dialog: string | undefined,

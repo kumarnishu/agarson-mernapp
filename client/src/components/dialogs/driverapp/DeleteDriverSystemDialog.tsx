@@ -7,8 +7,8 @@ import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
-import { GetDriverSystemDto } from '../../../dtos/driver.dto';
 import { DriverAppService } from '../../../services/DriverAppService';
+import { GetDriverSystemDto } from '../../../dtos/response/DriverAppDto';
 
 
 type Props = {

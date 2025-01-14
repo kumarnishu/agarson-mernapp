@@ -6,10 +6,10 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 
-import { GetRemarksDto } from '../../../dtos/crm-remarks.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { CrmService } from '../../../services/CrmService';
+import { GetRemarksDto } from '../../../dtos/response/CrmDto';
 
 
 

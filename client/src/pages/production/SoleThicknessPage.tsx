@@ -14,11 +14,10 @@ import PopUp from '../../components/popup/PopUp'
 import moment from 'moment'
 import CreateOrEditSoleThicknessDialog from '../../components/dialogs/production/CreateOrEditSoleThicknessDialog'
 import DeleteProductionItemDialog from '../../components/dialogs/dropdown/DeleteProductionItemDialog'
-import { GetSoleThicknessDto } from '../../dtos/sole-thickness.dto'
-import { DropDownDto } from '../../dtos/dropdown.dto'
-
 import { UserService } from '../../services/UserServices'
 import { ProductionService } from '../../services/ProductionService'
+import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { GetSoleThicknessDto } from '../../dtos/response/ProductionDto'
 
 
 export default function SoleThicknessPage() {

@@ -11,10 +11,10 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
 import CreateOrEditChecklistCategoryDialog from '../../components/dialogs/dropdown/CreateOrEditChecklistCategoryDialog'
-import { DropDownDto } from '../../dtos/dropdown.dto'
 import { DropdownService } from '../../services/DropDownServices'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { onlyUnique } from '../../utils/UniqueArray'
+import { DropDownDto } from '../../dtos/response/DropDownDto'
 
 
 export default function ChecklistCategoriesPage() {

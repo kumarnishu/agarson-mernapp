@@ -25,12 +25,13 @@ import { AxiosResponse } from "axios"
 import { BackendError } from "../.."
 import { Button, Tooltip } from "@mui/material"
 import ExportToExcel from "../../utils/ExportToExcel"
-import { DropDownDto } from '../../dtos/dropdown.dto'
-import { GetLeadDto } from '../../dtos/lead.dto'
+
 
 import { DropdownService } from '../../services/DropDownServices'
 import { LeadExcelButtons } from '../../components/buttons/LeadExcelButtons'
 import { CrmService } from '../../services/CrmService'
+import { GetLeadDto } from '../../dtos/response/CrmDto'
+import { DropDownDto } from '../../dtos/response/DropDownDto'
 
 
 

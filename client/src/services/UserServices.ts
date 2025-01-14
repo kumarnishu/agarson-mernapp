@@ -1,4 +1,4 @@
-import { GetLoginByThisUserDto } from "../dtos/auth.dto";
+import { CreateLoginByThisUserDto } from "../dtos/request/UserDto";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 export class UserService {
@@ -12,7 +12,7 @@ export class UserService {
     return await apiClient.post("login", body);
   };
   public async LoginByThisUser(
-    { body }: { body: GetLoginByThisUserDto }
+    { body }: { body: CreateLoginByThisUserDto }
   ) {
     return await apiClient.post("loginbythisuser", body);
   };

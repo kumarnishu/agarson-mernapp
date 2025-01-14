@@ -9,17 +9,17 @@ import { DownloadFile } from '../../../utils/DownloadFile'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
-import { GetActivitiesOrRemindersDto } from '../../../dtos/crm-remarks.dto'
-import { GetLeadFromExcelDto } from '../../../dtos/lead.dto'
-import { GetReferDto } from '../../../dtos/refer.dto'
+
 import { CrmService } from '../../../services/CrmService'
+import { CreateLeadFromExcelDto } from '../../../dtos/request/CrmDto'
+import { GetReferDto, GetActivitiesOrRemindersDto } from '../../../dtos/response/CrmDto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
     refer: GetReferDto
 }
 function AllReferralPageDialog({ refer, dialog, setDialog }: Props) {
-    const [selectedData, setSelectedData] = useState<GetLeadFromExcelDto[]>([])
+    const [selectedData, setSelectedData] = useState<CreateLeadFromExcelDto[]>([])
     const { user: LoggedInUser } = useContext(UserContext)
     const [sent, setSent] = useState(false)
     const [leads, setLeads] = useState<GetActivitiesOrRemindersDto[]>([])
@@ -51,7 +51,7 @@ function AllReferralPageDialog({ refer, dialog, setDialog }: Props) {
 
 
     useEffect(() => {
-        let tmpdata: GetLeadFromExcelDto[] = []
+        let tmpdata: CreateLeadFromExcelDto[] = []
         tmpdata = leads.map((lead) => {
             return (
                 {

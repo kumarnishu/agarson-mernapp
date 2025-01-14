@@ -7,10 +7,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import * as Yup from 'yup';
 import { BackendError } from '../../..';
-import { GetUserDto } from '../../../dtos/user.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { queryClient } from '../../../main';
 import { UserService } from '../../../services/UserServices';
+import { GetUserDto } from '../../../dtos/response/UserDto';
 
 function UpdateUserPasswordForm({ user, setDialog }: { user: GetUserDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)

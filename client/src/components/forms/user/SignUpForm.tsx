@@ -10,9 +10,9 @@ import { UserService } from '../../../services/UserServices';
 import { UserContext } from '../../../contexts/userContext';
 import { BackendError, Target } from '../../..';
 
-import { GetUserDto } from '../../../dtos/user.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { queryClient } from '../../../main';
+import { GetUserDto } from '../../../dtos/response/UserDto';
 
 type TFormData = {
   username: string,

@@ -6,10 +6,10 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 
-import { GetChecklistRemarksDto } from '../../../dtos/checklist-remark.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { ChecklistService } from '../../../services/ChecklistService';
+import { GetChecklistRemarksDto } from '../../../dtos/response/ChecklistDto';
 
 
 type Props = {

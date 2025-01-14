@@ -3,7 +3,7 @@ import { Cancel } from '@mui/icons-material';
 import UpdateShoeWeightForm2 from '../../forms/production/UpdateShoeWeightForm2';
 import UpdateShoeWeightForm3 from '../../forms/production/UpdateShoeWeightForm3';
 import CreateOrEditShoeWeightForm from '../../forms/production/CreateOrEditShoeWeightForm';
-import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
+import { GetShoeWeightDto } from '../../../dtos/response/ProductionDto';
 
 type Props = {
     dialog: string | undefined,

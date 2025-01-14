@@ -8,11 +8,12 @@ import { queryClient } from '../../../main';
 
 import { useFormik } from 'formik';
 import * as Yup from "yup"
-import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
+
 import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
 import { AuthorizationService } from '../../../services/AuthorizationService';
+import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { GetCrmStateDto } from '../../../dtos/response/AuthorizationDto';
 
 type Props = {
     dialog: string | undefined,

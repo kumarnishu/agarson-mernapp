@@ -8,8 +8,8 @@ import { toTitleCase } from '../../../utils/TitleCase'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
-import { GetRemarksDto } from '../../../dtos/crm-remarks.dto'
 import { CrmService } from '../../../services/CrmService'
+import { GetRemarksDto } from '../../../dtos/response/CrmDto'
 
 type Props = {
     dialog: string | undefined,

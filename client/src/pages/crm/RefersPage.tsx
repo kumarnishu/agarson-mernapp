@@ -20,10 +20,10 @@ import ViewRefersBillHistoryDialog from '../../components/dialogs/crm/ViewRefers
 import MergeTwoRefersDialog from '../../components/dialogs/crm/MergeTwoRefersDialog.tsx'
 import ExportToExcel from '../../utils/ExportToExcel.tsx'
 import ToogleReferConversionDialog from '../../components/dialogs/crm/ToogleReferConversionDialog.tsx.tsx'
-import { GetReferDto } from '../../dtos/refer.dto.ts'
 
 import { ReferExcelButtons } from '../../components/buttons/ReferExcelButtons.tsx'
 import { CrmService } from '../../services/CrmService.ts'
+import { GetReferDto } from '../../dtos/response/CrmDto.ts'
 
 
 export default function RefersPage() {

@@ -1,4 +1,4 @@
-import { ApplyLeaveDtoFromAdmin, CreateOrEditLeaveBalanceDto } from "../dtos/leave.dto";
+import { ApplyLeaveDtoFromAdmin, CreateOrEditLeaveBalanceDto } from "../dtos/request/AttendanceDto";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 export class AttendanceService {

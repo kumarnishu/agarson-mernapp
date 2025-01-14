@@ -8,13 +8,13 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { Comment, Menu as MenuIcon, Visibility } from '@mui/icons-material';
 import { AxiosResponse } from "axios"
 import { BackendError } from '../..'
-import { GetAgeingDto } from '../../dtos/sales.dto'
 import { SalesService } from '../../services/SalesServices'
 import { AgeingExcelButtons } from '../../components/buttons/AgeingExcelButtons'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import PopUp from '../../components/popup/PopUp'
 import CreateOrEditAgeingRemarkDialog from '../../components/dialogs/sales/CreateOrEditAgeingRemarkDialog'
 import ViewAgeingRemarksDialog from '../../components/dialogs/sales/ViewAgeingRemarksDialog'
+import { GetAgeingDto } from '../../dtos/response/SalesDto'
 
 
 export default function AgeingPage() {

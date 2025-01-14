@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditVisitReportRemarkForm from '../../forms/sales/CreateOrEditVisitReportRemarkForm'
-import { GetVisitSummaryReportRemarkDto } from '../../../dtos/visit_remark.dto'
+import { GetVisitSummaryReportRemarkDto } from '../../../dtos/response/SalesDto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

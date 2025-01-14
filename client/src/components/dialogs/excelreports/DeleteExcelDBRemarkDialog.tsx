@@ -6,10 +6,10 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 
-import { GetExcelDBRemarksDto } from '../../../dtos/excel-db-remark.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { ExcelReportsService } from '../../../services/ExcelReportsServices';
+import { GetExcelDBRemarksDto } from '../../../dtos/response/ExcelReportDto';
 type Props = {
   dialog: string | undefined,
   setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

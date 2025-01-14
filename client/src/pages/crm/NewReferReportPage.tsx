@@ -19,8 +19,8 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import CreateOrEditBillDialog from '../../components/dialogs/crm/CreateOrEditBillDialog.tsx'
 import ViewRefersBillHistoryDialog from '../../components/dialogs/crm/ViewRefersBillHistoryDialog.tsx'
 import ToogleReferConversionDialog from '../../components/dialogs/crm/ToogleReferConversionDialog.tsx.tsx'
-import { GetReferDto } from '../../dtos/refer.dto.ts'
 import { CrmService } from '../../services/CrmService.ts'
+import { GetReferDto } from '../../dtos/response/CrmDto.ts'
 
 
 

@@ -8,11 +8,11 @@ import { queryClient } from '../../../main';
 
 import { useFormik } from 'formik';
 import * as Yup from "yup"
-import { GetKeyCategoryDto } from '../../../dtos/key-category.dto';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
+
 import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
 import { AuthorizationService } from '../../../services/AuthorizationService';
+import { DropDownDto, GetKeyCategoryDto } from '../../../dtos/response/DropDownDto';
 
 
 type Props = {

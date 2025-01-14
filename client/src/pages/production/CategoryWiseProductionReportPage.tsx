@@ -10,8 +10,8 @@ import moment from 'moment'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { UserContext } from '../../contexts/userContext'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import { GetCategoryWiseProductionReportDto } from '../../dtos/production.dto'
 import { ProductionService } from '../../services/ProductionService'
+import { GetCategoryWiseProductionReportDto } from '../../dtos/response/ProductionDto'
 
 
 

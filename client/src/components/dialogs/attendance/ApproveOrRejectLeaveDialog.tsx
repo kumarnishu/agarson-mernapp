@@ -1,6 +1,5 @@
 import { Button, CircularProgress, Dialog, DialogTitle, IconButton, Stack } from '@mui/material'
 import { Cancel } from '@mui/icons-material';
-import { GetLeaveDto } from '../../../dtos/leave.dto';
 import { AttendanceService } from '../../../services/AttendanceService';
 import { useMutation } from 'react-query';
 import { AxiosResponse } from 'axios';
@@ -8,6 +7,7 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { useContext } from 'react';
 import { AlertContext } from '../../../contexts/alertContext';
+import { GetLeaveDto } from '../../../dtos/response/AttendanceDto';
 
 type Props = {
     dialog: string | undefined,

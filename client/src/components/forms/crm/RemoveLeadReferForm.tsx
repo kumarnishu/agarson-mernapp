@@ -6,10 +6,9 @@ import {  useMutation } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import { GetLeadDto } from '../../../dtos/lead.dto';
-import { GetReferDto } from '../../../dtos/refer.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { CrmService } from '../../../services/CrmService';
+import { GetLeadDto, GetReferDto } from '../../../dtos/response/CrmDto';
 
 
 

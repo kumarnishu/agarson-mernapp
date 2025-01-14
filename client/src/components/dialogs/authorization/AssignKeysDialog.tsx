@@ -8,11 +8,12 @@ import { queryClient } from '../../../main';
 
 import { useFormik } from 'formik';
 import * as Yup from "yup"
-import { GetKeyDto } from '../../../dtos/keys.dto';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
+
 import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
 import { AuthorizationService } from '../../../services/AuthorizationService';
+import { GetKeyDto } from '../../../dtos/response/AuthorizationDto';
+import { DropDownDto } from '../../../dtos/response/DropDownDto';
 
 
 

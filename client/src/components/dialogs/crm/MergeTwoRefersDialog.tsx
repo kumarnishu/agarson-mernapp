@@ -6,9 +6,10 @@ import { AxiosResponse } from 'axios'
 import { useMutation } from 'react-query'
 import { BackendError } from '../../..'
 import { queryClient } from '../../../main'
-import { GetReferDto, CreateOrEditMergeRefersDto } from '../../../dtos/refer.dto'
 import { AlertContext } from '../../../contexts/alertContext'
 import { CrmService } from '../../../services/CrmService'
+import { CreateOrEditMergeRefersDto } from '../../../dtos/request/CrmDto'
+import { GetReferDto } from '../../../dtos/response/CrmDto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

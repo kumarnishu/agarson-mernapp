@@ -9,11 +9,10 @@ import { BackendError } from '../../..'
 import DeleteChecklistRemarkDialog from './DeleteChecklistRemarkDialog'
 import CreateOrEditChecklistRemarkDialog from './CreateOrEditChecklistRemarkDialog'
 import moment from 'moment'
-import { GetChecklistBoxDto } from '../../../dtos/checklist-box.dto'
-import { GetChecklistRemarksDto } from '../../../dtos/checklist-remark.dto'
-import { GetChecklistDto } from '../../../dtos/checklist.dto'
+
 import CreateChecklistRemarkDialogFromAdmin from './CreateChecklistRemarkDialogFromAdmin'
 import { ChecklistService } from '../../../services/ChecklistService'
+import { GetChecklistDto, GetChecklistBoxDto, GetChecklistRemarksDto } from '../../../dtos/response/ChecklistDto'
 
 type Props = {
     is_admin: boolean,

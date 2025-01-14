@@ -24,11 +24,11 @@ import UpdateUsePasswordDialog from '../../components/dialogs/users/UpdateUsePas
 import AssignUsersDialog from '../../components/dialogs/users/AssignUsersDialog'
 import AssignPermissionsToOneUserDialog from '../../components/dialogs/users/AssignPermissionsToOneUserDialog'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { GetUserDto } from '../../dtos/user.dto'
-import { GetLoginByThisUserDto } from '../../dtos/auth.dto'
 import { AlertContext } from '../../contexts/alertContext'
 import { UserService } from '../../services/UserServices'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { GetUserDto } from '../../dtos/response/UserDto'
+import { CreateLoginByThisUserDto } from '../../dtos/request/UserDto'
 
 export default function UsersPage() {
     const [hidden, setHidden] = useState(false)
@@ -46,7 +46,7 @@ export default function UsersPage() {
     const { mutate } = useMutation
         <AxiosResponse<{ user: GetUserDto, token: string }>,
             BackendError,
-            { body: GetLoginByThisUserDto }
+            { body: CreateLoginByThisUserDto }
         >(new UserService().LoginByThisUser, {
             onSuccess: () => {
                 window.location.reload()

@@ -6,12 +6,12 @@ import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
-import { GetDyeDto } from '../../../dtos/dye.dto';
-import { GetSoleThicknessDto, CreateOrEditSoleThicknessDto } from '../../../dtos/sole-thickness.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
 import { ProductionService } from '../../../services/ProductionService';
+import { CreateOrEditSoleThicknessDto } from '../../../dtos/request/ProductionDto';
+import { GetDyeDto, DropDownDto } from '../../../dtos/response/DropDownDto';
+import { GetSoleThicknessDto } from '../../../dtos/response/ProductionDto';
 
 
 function CreateOrEditSoleThicknessForm({ thickness, setDialog }: { thickness?: GetSoleThicknessDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {

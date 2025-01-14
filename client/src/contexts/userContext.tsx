@@ -1,5 +1,5 @@
 import React, { createContext, useState } from "react";
-import { GetUserDto } from "../dtos/user.dto";
+import { GetUserDto } from "../dtos/response/UserDto";
 
 // usercontext
 type Context = {

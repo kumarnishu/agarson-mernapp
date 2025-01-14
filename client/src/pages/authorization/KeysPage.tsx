@@ -16,9 +16,10 @@ import AssignKeysDialog from '../../components/dialogs/authorization/AssignKeysD
 import { toTitleCase } from '../../utils/TitleCase'
 import { KeyExcelButton } from '../../components/buttons/KeyExcelButton'
 import DeleteKeyDialog from '../../components/dialogs/authorization/DeleteKeyDialog'
-import { DropDownDto } from '../../dtos/dropdown.dto'
-import { GetKeyDto } from '../../dtos/keys.dto'
+
 import { AuthorizationService } from '../../services/AuthorizationService'
+import { GetKeyDto } from '../../dtos/response/AuthorizationDto'
+import { DropDownDto } from '../../dtos/response/DropDownDto'
 
 
 export default function KeysPage() {

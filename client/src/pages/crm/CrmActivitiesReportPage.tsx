@@ -16,12 +16,13 @@ import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { GetActivitiesOrRemindersDto, GetActivitiesTopBarDetailsDto } from '../../dtos/crm-remarks.dto'
-import { DropDownDto } from '../../dtos/dropdown.dto'
+
 
 import { DropdownService } from '../../services/DropDownServices'
 import { UserService } from '../../services/UserServices'
 import { CrmService } from '../../services/CrmService'
+import { GetActivitiesOrRemindersDto, GetActivitiesTopBarDetailsDto } from '../../dtos/response/CrmDto'
+import { DropDownDto } from '../../dtos/response/DropDownDto'
 
 
 function CrmActivitiesReportPage() {

@@ -17,11 +17,10 @@ import DeleteProductionItemDialog from '../../components/dialogs/dropdown/Delete
 import ValidateShoeWeightDialog from '../../components/dialogs/production/ValidateShoeWeightDialog'
 import { months } from '../../utils/months'
 import ViewShoeWeightPhotoDialog from '../../components/dialogs/production/ViewShoeWeightPhotoDialog'
-import { GetShoeWeightDto } from '../../dtos/shoe-weight.dto'
-import { DropDownDto } from '../../dtos/dropdown.dto'
-
 import { UserService } from '../../services/UserServices'
 import { ProductionService } from '../../services/ProductionService'
+import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { GetShoeWeightDto } from '../../dtos/response/ProductionDto'
 
 
 export default function ShoeWeightPage() {

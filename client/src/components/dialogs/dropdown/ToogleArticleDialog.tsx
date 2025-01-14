@@ -5,11 +5,10 @@ import { AxiosResponse } from 'axios';
 import { BackendError } from '../../..';
 import { useMutation } from 'react-query';
 import { Cancel } from '@mui/icons-material';
-
-import { GetArticleDto } from '../../../dtos/article.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { DropdownService } from '../../../services/DropDownServices';
+import { GetArticleDto } from '../../../dtos/response/DropDownDto';
 
 type Props = {
     dialog: string | undefined,

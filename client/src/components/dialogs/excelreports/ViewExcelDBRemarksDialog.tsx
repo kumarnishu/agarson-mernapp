@@ -8,8 +8,8 @@ import { toTitleCase } from '../../../utils/TitleCase'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
-import { GetExcelDBRemarksDto } from '../../../dtos/excel-db-remark.dto'
 import { ExcelReportsService } from '../../../services/ExcelReportsServices'
+import { GetExcelDBRemarksDto } from '../../../dtos/response/ExcelReportDto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

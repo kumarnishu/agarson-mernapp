@@ -13,8 +13,8 @@ import { onlyUnique } from '../../utils/UniqueArray'
 import { DownloadFile } from '../../utils/DownloadFile'
 import ViewRemarksDialog from '../../components/dialogs/crm/ViewRemarksDialog'
 import CreateOrEditRemarkDialog from '../../components/dialogs/crm/CreateOrEditRemarkDialog'
-import { GetActivitiesOrRemindersDto } from '../../dtos/crm-remarks.dto'
 import { CrmService } from '../../services/CrmService'
+import { GetActivitiesOrRemindersDto } from '../../dtos/response/CrmDto'
 
 
 function CrmReminderPage() {

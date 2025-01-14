@@ -1,8 +1,8 @@
 import { Dialog, DialogTitle, DialogContent, IconButton } from '@mui/material';
 import { Cancel } from '@mui/icons-material';
 
-import { GetExpenseItemDto } from '../../../dtos/expense-item.dto';
 import CreateorEditExpenseItemForm from '../../forms/dropdown/CreateorEditExpenseItemForm';
+import { GetExpenseItemDto } from '../../../dtos/response/ExpenseDto';
 
 type Props = {
     dialog: string | undefined,

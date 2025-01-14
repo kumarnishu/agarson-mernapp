@@ -16,11 +16,13 @@ import { queryClient } from '../../main'
 import { PaymentsExcelButtons } from '../../components/buttons/PaymentsExcelButtons'
 import AssignPaymentsDialog from '../../components/dialogs/payments/AssignPaymentsDialog'
 import BulkDeletePaymentsDialog from '../../components/dialogs/payments/BulkDeletePaymentsDialog'
-import { GetPaymentDto, GetPaymentsFromExcelDto } from '../../dtos/payment.dto'
-import { DropDownDto } from '../../dtos/dropdown.dto'
+
 
 import { UserService } from '../../services/UserServices'
 import { PaymentsService } from '../../services/PaymentsService'
+import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { GetPaymentDto } from '../../dtos/response/PaymentsDto'
+import { CreatePaymentsFromExcelDto } from '../../dtos/request/PaymentsDto'
 
 
 function PaymentsPage() {
@@ -436,7 +438,7 @@ function PaymentsPage() {
         > Remove Users</MenuItem>}
         {LoggedInUser?.assigned_permissions.includes('payments_export') && < MenuItem onClick={() => {
 
-          let data: GetPaymentsFromExcelDto[] = []
+          let data: CreatePaymentsFromExcelDto[] = []
           data = table.getRowModel().rows.map((row) => {
             return {
               _id: row.original._id,
@@ -455,7 +457,7 @@ function PaymentsPage() {
         }
         >Export All</MenuItem>}
         {LoggedInUser?.assigned_permissions.includes('payments_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => {
-          let data: GetPaymentsFromExcelDto[] = []
+          let data: CreatePaymentsFromExcelDto[] = []
           data = table.getSelectedRowModel().rows.map((row) => {
             return {
               _id: row.original._id,

@@ -51,7 +51,7 @@ export type CreateAgeingExcelDto = {
 export type CreateOrEditAgeingRemarkDto = {
     remark: string,
     party: string,
-    nextcall: string
+    nextcall?: string
 }
 export interface IColumn {
     key: string;

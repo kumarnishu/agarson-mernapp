@@ -9,8 +9,8 @@ import { BackendError } from '../../..'
 import DeleteBillDialog from './DeleteBillDialog'
 import CreateOrEditBillDialog from './CreateOrEditBillDialog'
 import ViewBillPhotoDialog from './ViewBillPhotoDialog'
-import { GetBillDto } from '../../../dtos/crm-bill.dto'
 import { CrmService } from '../../../services/CrmService'
+import { GetBillDto } from '../../../dtos/response/CrmDto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

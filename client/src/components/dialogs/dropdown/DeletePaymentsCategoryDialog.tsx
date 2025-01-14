@@ -6,10 +6,10 @@ import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { DropdownService } from '../../../services/DropDownServices';
+import { DropDownDto } from '../../../dtos/response/DropDownDto';
 
 
 type Props = {

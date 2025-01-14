@@ -15,9 +15,8 @@ import AssignCrmCitiesDialog from '../../components/dialogs/authorization/Assign
 import { toTitleCase } from '../../utils/TitleCase'
 import { AxiosResponse } from "axios"
 import { BackendError } from "../.."
-import { GetCrmCityDto } from '../../dtos/crm-city.dto'
-import { GetCrmStateDto } from '../../dtos/crm-state.dto'
 import { AuthorizationService } from '../../services/AuthorizationService'
+import { GetCrmCityDto, GetCrmStateDto } from '../../dtos/response/AuthorizationDto'
 
 
 export default function CrmCitiesPage() {

@@ -10,8 +10,8 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtua
 import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import { GetShoeWeightDiffReportDto } from '../../dtos/shoe-weight.dto'
 import { ProductionService } from '../../services/ProductionService'
+import { GetShoeWeightDiffReportDto } from '../../dtos/response/ProductionDto'
 
 
 

@@ -7,13 +7,12 @@ import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import UploadFileButton from '../../buttons/UploadFileButton';
-import { GetUserDto } from '../../../dtos/user.dto';
-import { GetDyeLocationDto } from '../../../dtos/dye-location.dto';
-import { GetDyeDto } from '../../../dtos/dye.dto';
-import { GetSpareDyeDto } from '../../../dtos/spare-dye.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
 import { ProductionService } from '../../../services/ProductionService';
+import { GetDyeDto, GetDyeLocationDto } from '../../../dtos/response/DropDownDto';
+import { GetSpareDyeDto } from '../../../dtos/response/ProductionDto';
+import { GetUserDto } from '../../../dtos/response/UserDto';
 
 
 function CreateOrEditSpareDyeForm({ sparedye, setDialog }: { sparedye?: GetSpareDyeDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {

@@ -15,8 +15,8 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import FindUknownCrmStatesDialog from '../../components/dialogs/authorization/FindUknownCrmStatesDialog'
 import AssignCrmStatesDialog from '../../components/dialogs/authorization/AssignCrmStatesDialog'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { GetCrmStateDto } from '../../dtos/crm-state.dto'
 import { AuthorizationService } from '../../services/AuthorizationService'
+import { GetCrmStateDto } from '../../dtos/response/AuthorizationDto'
 
 
 export default function CrmStatesPage() {

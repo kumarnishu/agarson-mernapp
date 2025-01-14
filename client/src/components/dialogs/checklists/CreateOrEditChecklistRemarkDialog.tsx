@@ -1,9 +1,8 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditChecklistRemarkForm from '../../forms/checklists/CreateOrEditChecklistRemarkForm'
-import { GetChecklistBoxDto } from '../../../dtos/checklist-box.dto'
-import { GetChecklistRemarksDto } from '../../../dtos/checklist-remark.dto'
-import { GetChecklistDto } from '../../../dtos/checklist.dto'
+import { GetChecklistDto, GetChecklistBoxDto, GetChecklistRemarksDto } from '../../../dtos/response/ChecklistDto'
+
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

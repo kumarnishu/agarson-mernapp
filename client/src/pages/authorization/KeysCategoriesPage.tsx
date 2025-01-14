@@ -13,8 +13,8 @@ import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
 import CreateOrEditKeyCategoryDialog from '../../components/dialogs/authorization/CreateOrEditKeyCategoryDialog'
 import AssignKeyCategoriesDialog from '../../components/dialogs/authorization/AssignKeyCategoriesDialog'
-import { GetKeyCategoryDto } from '../../dtos/key-category.dto'
 import { AuthorizationService } from '../../services/AuthorizationService'
+import { GetKeyCategoryDto } from '../../dtos/response/DropDownDto'
 
 
 export default function KeysCategoriesPage() {

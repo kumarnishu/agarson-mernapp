@@ -5,9 +5,9 @@ import { AxiosResponse } from 'axios';
 import { BackendError } from '../../..';
 import { useMutation } from 'react-query';
 import { Cancel } from '@mui/icons-material';
-import { GetMachineDto } from '../../../dtos/machine.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
+import { GetMachineDto } from '../../../dtos/response/DropDownDto';
 
 type Props = {
     dialog: string | undefined,

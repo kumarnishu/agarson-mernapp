@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, IconButton, Stack } from '@mui/material';
 import { Cancel } from '@mui/icons-material';
-import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
+import { GetShoeWeightDto } from '../../../dtos/response/ProductionDto';
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

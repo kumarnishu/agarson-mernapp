@@ -13,8 +13,8 @@ import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import CreateOrEditLeadSourceDialog from '../../components/dialogs/dropdown/CreateOrEditLeadSourceDialog'
-import { DropDownDto } from '../../dtos/dropdown.dto'
 import { DropdownService } from '../../services/DropDownServices'
+import { DropDownDto } from '../../dtos/response/DropDownDto'
 
 
 

@@ -7,9 +7,10 @@ import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
-import { CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto } from '../../../dtos/references-remark.dto';
 import { toTitleCase } from '../../../utils/TitleCase';
 import { SalesService } from '../../../services/SalesServices';
+import { CreateOrEditReferenceRemarkDto } from '../../../dtos/request/SalesDto';
+import { GetReferenceRemarksDto } from '../../../dtos/response/SalesDto';
 
 
 function CreateOrEditReferenceRemarkForm({ party, stage, remark, setDialog }: {

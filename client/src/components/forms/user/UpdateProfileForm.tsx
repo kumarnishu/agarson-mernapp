@@ -7,8 +7,8 @@ import { AxiosResponse } from 'axios';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
 import { UserService } from '../../../services/UserServices';
-import { GetUserDto } from '../../../dtos/user.dto';
 import { AlertContext } from '../../../contexts/alertContext';
+import { GetUserDto } from '../../../dtos/response/UserDto';
 
 
 

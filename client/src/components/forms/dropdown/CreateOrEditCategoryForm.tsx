@@ -6,9 +6,9 @@ import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import * as yup from 'yup';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
+import { DropDownDto } from '../../../dtos/response/DropDownDto';
 
 
 

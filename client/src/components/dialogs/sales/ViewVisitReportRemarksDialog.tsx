@@ -8,8 +8,8 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
 import DeleteVisitRemarkDialog from './DeleteVisitRemarkDialog'
 import CreateOrEditVisitReportRemarkDialog from './CreateOrEditVisitReportRemarkDialog'
-import { GetVisitSummaryReportRemarkDto } from '../../../dtos/visit_remark.dto'
 import { SalesService } from '../../../services/SalesServices'
+import { GetVisitSummaryReportRemarkDto } from '../../../dtos/response/SalesDto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

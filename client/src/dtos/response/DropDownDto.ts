@@ -45,13 +45,7 @@ export type GetStageDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-export type GetCrmStateDto = {
-    _id: string,
-    state: string,
-    alias1: string,
-    alias2: string,
-    assigned_users: string;
-}
+
 export type GetDyeLocationDto = {
     _id: string,
     name: string,

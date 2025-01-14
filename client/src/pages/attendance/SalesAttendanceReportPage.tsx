@@ -9,11 +9,11 @@ import { Add } from '@mui/icons-material'
 import { Button, Fade, IconButton, Menu, MenuItem, TextField, Typography } from '@mui/material'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { GetSalesmanAttendanceReportDto } from '../../dtos/leave.dto'
 import { AttendanceService } from '../../services/AttendanceService'
 import ApplyLeaveFromAdminDialog from '../../components/dialogs/attendance/ApplyLeaveFromAdminDialog'
 import ApplyLeaveDialog from '../../components/dialogs/attendance/ApplyLeaveDialog'
 import { useNavigate } from 'react-router-dom'
+import { GetSalesmanAttendanceReportDto } from '../../dtos/response/AttendanceDto'
 
 export default function SalesAttendanceReportPage() {
   const [balance, setBalance] = useState<GetSalesmanAttendanceReportDto>()

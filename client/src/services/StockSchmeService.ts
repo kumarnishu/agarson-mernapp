@@ -1,4 +1,4 @@
-import { CreateConsumeStockDto, DiscardConsumptionDto } from "../dtos/stock.scheme.dto"
+import { CreateConsumeStockDto, DiscardConsumptionDto } from "../dtos/request/StockSchemeDto"
 import { apiClient } from "./utils/AxiosInterceptor"
 
 export class StockSchmeService {

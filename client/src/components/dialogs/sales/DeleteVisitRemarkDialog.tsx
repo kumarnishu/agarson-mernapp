@@ -5,10 +5,10 @@ import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
-import { GetVisitSummaryReportRemarkDto } from '../../../dtos/visit_remark.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { SalesService } from '../../../services/SalesServices';
+import { GetVisitSummaryReportRemarkDto } from '../../../dtos/response/SalesDto';
 type Props = {
   dialog: string | undefined,
   setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

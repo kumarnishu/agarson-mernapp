@@ -8,7 +8,7 @@ import { Cancel } from '@mui/icons-material';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { AttendanceService } from '../../../services/AttendanceService';
-import { GetLeaveBalanceDto } from '../../../dtos/leave.dto';
+import { GetLeaveBalanceDto } from '../../../dtos/response/AttendanceDto';
 
 type Props = {
   dialog: string | undefined,

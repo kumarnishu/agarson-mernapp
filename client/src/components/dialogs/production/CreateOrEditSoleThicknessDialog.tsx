@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
 import { Cancel } from '@mui/icons-material';
 import CreateOrEditSoleThicknessForm from '../../forms/production/CreateOrEditSoleThicknessForm.tsx';
-import { GetSoleThicknessDto } from '../../../dtos/sole-thickness.dto.ts';
+import { GetSoleThicknessDto } from '../../../dtos/response/ProductionDto.ts';
 
 type Props = {
     dialog: string | undefined,

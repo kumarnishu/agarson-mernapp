@@ -7,9 +7,10 @@ import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
-import { GetVisitSummaryReportRemarkDto, CreateOrEditVisitSummaryRemarkDto } from '../../../dtos/visit_remark.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { SalesService } from '../../../services/SalesServices';
+import { CreateOrEditVisitSummaryRemarkDto } from '../../../dtos/request/SalesDto';
+import { GetVisitSummaryReportRemarkDto } from '../../../dtos/response/SalesDto';
 
 
 function CreateOrEditVisitReportRemarkForm({ employee, visit_date, remark, setDialog }: {

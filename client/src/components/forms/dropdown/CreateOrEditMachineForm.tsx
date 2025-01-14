@@ -6,10 +6,10 @@ import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
-import { GetMachineDto, CreateOrEditMachineDto } from '../../../dtos/machine.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
+import { CreateOrEditMachineDto } from '../../../dtos/request/DropDownDto';
+import { GetMachineDto, DropDownDto } from '../../../dtos/response/DropDownDto';
 
 function CreateOrEditMachineForm({ machine, setDialog }: { machine?: GetMachineDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)

@@ -15,8 +15,8 @@ import PopUp from '../../components/popup/PopUp'
 import AssignUsersDialog from '../../components/dialogs/users/AssignUsersDialog'
 import AssignPermissionsToOneUserDialog from '../../components/dialogs/users/AssignPermissionsToOneUserDialog'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { GetUserDto } from '../../dtos/user.dto'
 import { UserService } from '../../services/UserServices'
+import { GetUserDto } from '../../dtos/response/UserDto'
 
 export default function UserAssignementPage() {
   const [user, setUser] = useState<GetUserDto>()

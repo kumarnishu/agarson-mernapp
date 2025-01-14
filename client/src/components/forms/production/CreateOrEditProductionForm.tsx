@@ -9,14 +9,13 @@ import { queryClient } from '../../../main';
 
 import { UserContext } from '../../../contexts/userContext';
 import moment from 'moment';
-import { GetArticleDto } from '../../../dtos/article.dto';
-import { GetMachineDto } from '../../../dtos/machine.dto';
-import { GetProductionDto, CreateOrEditProductionDto } from '../../../dtos/production.dto';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
 import { DropdownService } from '../../../services/DropDownServices';
 import { ProductionService } from '../../../services/ProductionService';
+import { CreateOrEditProductionDto } from '../../../dtos/request/ProductionDto';
+import { DropDownDto, GetMachineDto, GetArticleDto } from '../../../dtos/response/DropDownDto';
+import { GetProductionDto } from '../../../dtos/response/ProductionDto';
 
 
 function CreateOrEditProductionForm({ production, setDialog }: { production?: GetProductionDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {

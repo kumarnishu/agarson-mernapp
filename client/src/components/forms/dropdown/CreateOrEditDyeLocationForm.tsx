@@ -7,9 +7,9 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
 import * as yup from 'yup';
-import { GetDyeLocationDto } from '../../../dtos/dye-location.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
+import { GetDyeLocationDto } from '../../../dtos/response/DropDownDto';
 function CreateOrEditDyeLocationForm({ location, setDialog }: { location?: GetDyeLocationDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess } = useMutation

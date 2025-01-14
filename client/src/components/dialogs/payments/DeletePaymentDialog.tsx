@@ -6,10 +6,10 @@ import { useMutation } from 'react-query';
 import { BackendError } from '../../..';
 import { AxiosResponse } from 'axios';
 import { queryClient } from '../../../main';
-import { GetChecklistDto } from '../../../dtos/checklist.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { PaymentsService } from '../../../services/PaymentsService';
+import { GetChecklistDto } from '../../../dtos/response/ChecklistDto';
 
 
 type Props = {

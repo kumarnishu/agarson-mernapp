@@ -8,11 +8,11 @@ import { UserContext } from '../../contexts/userContext'
 import { Button, Fade, IconButton, Menu, MenuItem, TextField, Typography } from '@mui/material'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { GetArticleStockDto } from '../../dtos/stock.scheme.dto'
 import { StockSchmeService } from '../../services/StockSchmeService'
 import ConsumeStockSchmeDialog from '../../components/dialogs/stockschme/ConsumeStockSchmeDialog'
 import { StockSchemeButton } from '../../components/buttons/StockSchemeButton'
 import { HandleNumbers } from '../../utils/IsDecimal'
+import { GetArticleStockDto } from '../../dtos/response/StockSchemeDto'
 
 
 export default function ArticleStockPage() {

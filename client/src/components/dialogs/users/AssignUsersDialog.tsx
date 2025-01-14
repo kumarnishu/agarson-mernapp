@@ -8,10 +8,10 @@ import { queryClient } from '../../../main';
 
 import { useFormik } from 'formik';
 import * as Yup from "yup"
-import { GetUserDto } from '../../../dtos/user.dto';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
+import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { GetUserDto } from '../../../dtos/response/UserDto';
 
 
 

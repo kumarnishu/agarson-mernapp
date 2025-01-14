@@ -16,10 +16,10 @@ import DeleteProductionItemDialog from '../../components/dialogs/dropdown/Delete
 import ValidateSpareDyeDialog from '../../components/dialogs/production/ValidateSpareDyeDialog'
 import CreateOrEditSpareDyeDialog from '../../components/dialogs/production/CreateOrEditSpareDyeDialog'
 import ViewSpareDyePhotoDialog from '../../components/dialogs/production/ViewSpareDyePhotoDialog'
-import { GetSpareDyeDto } from '../../dtos/spare-dye.dto'
-import { DropDownDto } from '../../dtos/dropdown.dto'
 import { UserService } from '../../services/UserServices'
 import { ProductionService } from '../../services/ProductionService'
+import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { GetSpareDyeDto } from '../../dtos/response/ProductionDto'
 
 
 export default function SpareDyesPage() {

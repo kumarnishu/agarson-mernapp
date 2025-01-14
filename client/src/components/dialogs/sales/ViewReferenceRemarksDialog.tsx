@@ -8,8 +8,8 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
 import DeleteReferenceRemarkDialog from './DeleteReferenceRemarkDialog'
 import CreateOrEditReferenceRemarkDialog from './CreateOrEditReferenceRemarkDialog'
-import { GetReferenceRemarksDto } from '../../../dtos/references-remark.dto'
 import { SalesService } from '../../../services/SalesServices'
+import { GetReferenceRemarksDto } from '../../../dtos/response/SalesDto'
 
 type Props = {
     dialog: string | undefined,

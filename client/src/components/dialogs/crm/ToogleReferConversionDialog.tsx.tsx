@@ -5,9 +5,9 @@ import { AxiosResponse } from 'axios';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { useMutation } from 'react-query';
-import { GetReferDto } from '../../../dtos/refer.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { CrmService } from '../../../services/CrmService';
+import { GetReferDto } from '../../../dtos/response/CrmDto';
 
 
 type Props = {

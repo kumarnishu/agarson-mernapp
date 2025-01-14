@@ -11,7 +11,7 @@ import PopUp from '../../components/popup/PopUp'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { DropDownDto } from '../../dtos/dropdown.dto'
+import { DropDownDto } from '../../dtos/response/DropDownDto'
 import CreateOrEditExpenseCategoryDialog from '../../components/dialogs/dropdown/CreateOrEditExpenseCategoryDialog'
 import { DropdownService } from '../../services/DropDownServices'
 

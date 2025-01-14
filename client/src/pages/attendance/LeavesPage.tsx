@@ -8,11 +8,11 @@ import { UserContext } from '../../contexts/userContext'
 import { Button, Fade, IconButton, Menu, MenuItem, TextField, Typography } from '@mui/material'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon, Photo } from '@mui/icons-material';
-import { GetLeaveDto } from '../../dtos/leave.dto'
 import { AttendanceService } from '../../services/AttendanceService'
 import { toTitleCase } from '../../utils/TitleCase'
 import ApproveOrRejectLeaveDialog from '../../components/dialogs/attendance/ApproveOrRejectLeaveDialog'
 import ViewLeaveDocumentDialog from '../../components/dialogs/attendance/ViewLeaveDocumentDialog'
+import { GetLeaveDto } from '../../dtos/response/AttendanceDto'
 
 
 export default function LeavesPage() {

@@ -14,8 +14,8 @@ import ViewVisitReportRemarksDialog from '../../components/dialogs/sales/ViewVis
 import CreateOrEditVisitReportRemarkDialog from '../../components/dialogs/sales/CreateOrEditVisitReportRemarkDialog'
 import CreateOrEditSalesmanAttendanceDialog from '../../components/dialogs/sales/CreateOrEditSalesmanAttendanceDialog'
 import { HandleNumbers } from '../../utils/IsDecimal'
-import { GetSalesManVisitSummaryReportDto } from '../../dtos/visit-report.dto'
 import { SalesService } from '../../services/SalesServices'
+import { GetSalesManVisitSummaryReportDto } from '../../dtos/response/SalesDto'
 
 
 export default function SalesmanVisitPage() {

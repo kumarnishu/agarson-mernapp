@@ -10,8 +10,8 @@ import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import ExportToExcel from '../../utils/ExportToExcel'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import { IColumnRowData } from '../../dtos/table.dto'
 import { ProductionService } from '../../services/ProductionService'
+import { IColumnRowData } from '../../dtos/request/SalesDto'
 
 
 export default function MachineWiseProductionReportPage() {

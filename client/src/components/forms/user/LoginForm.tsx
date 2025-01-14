@@ -10,10 +10,10 @@ import * as Yup from 'yup';
 
 import { UserContext } from '../../../contexts/userContext';
 import { BackendError } from '../../..';
-import { GetUserDto } from '../../../dtos/user.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { queryClient } from '../../../main';
 import { UserService } from '../../../services/UserServices';
+import { GetUserDto } from '../../../dtos/response/UserDto';
 
 function LoginForm({ setDialog }: { setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
   const { setAlert } = useContext(AlertContext)

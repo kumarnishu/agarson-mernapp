@@ -9,15 +9,14 @@ import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
 
 import { toTitleCase } from '../../../utils/TitleCase';
-import { GetCrmCityDto } from '../../../dtos/crm-city.dto';
-import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
-import { GetLeadDto } from '../../../dtos/lead.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 
 import { DropdownService } from '../../../services/DropDownServices';
 import { AuthorizationService } from '../../../services/AuthorizationService';
 import { CrmService } from '../../../services/CrmService';
+import { GetCrmCityDto, GetCrmStateDto } from '../../../dtos/response/AuthorizationDto';
+import { GetLeadDto } from '../../../dtos/response/CrmDto';
+import {  DropDownDto } from '../../../dtos/response/DropDownDto';
 
 
 function CreateOrEditLeadForm({ lead, setDialog }: { lead?: GetLeadDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {

@@ -6,10 +6,11 @@ import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { AlertContext } from '../../../contexts/alertContext';
-import { CreateOrEditExpenseItemDto, GetExpenseItemDto } from '../../../dtos/expense-item.dto';
 import { DropdownService } from '../../../services/DropDownServices';
+import { CreateOrEditExpenseItemDto } from '../../../dtos/request/ExpenseDto';
+import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { GetExpenseItemDto } from '../../../dtos/response/ExpenseDto';
 
 
 

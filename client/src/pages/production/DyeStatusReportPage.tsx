@@ -10,8 +10,8 @@ import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { UserContext } from '../../contexts/userContext'
-import { GetDyeStatusReportDto } from '../../dtos/dye.dto'
 import { ProductionService } from '../../services/ProductionService'
+import { GetDyeStatusReportDto } from '../../dtos/response/DropDownDto'
 
 
 

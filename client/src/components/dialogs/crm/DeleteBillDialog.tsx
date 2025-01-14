@@ -6,10 +6,10 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 
-import { GetBillDto } from '../../../dtos/crm-bill.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { CrmService } from '../../../services/CrmService';
+import { GetBillDto } from '../../../dtos/response/CrmDto';
 
 
 type Props = {

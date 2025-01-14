@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, IconButton, Stack, Typography } from '@mui/material';
 import { Cancel } from '@mui/icons-material';
 import { DownloadFile } from '../../../utils/DownloadFile';
-import { GetBillDto } from '../../../dtos/crm-bill.dto';
+import { GetBillDto } from '../../../dtos/response/CrmDto';
 
 type Props = {
     dialog: string | undefined,

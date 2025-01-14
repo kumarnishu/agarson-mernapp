@@ -6,10 +6,10 @@ import { useMutation, useQuery } from 'react-query';
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 
-import { IMenu, IPermission } from '../../../dtos/permission.dto';
-import { GetUserDto } from '../../../dtos/user.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
+import { IMenu, IPermission } from '../../../dtos/response/AuthorizationDto';
+import { GetUserDto } from '../../../dtos/response/UserDto';
 
 
 type Props = {

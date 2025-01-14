@@ -10,8 +10,8 @@ import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import ExportToExcel from '../../utils/ExportToExcel'
-import { IColumnRowData } from '../../dtos/table.dto'
 import { ProductionService } from '../../services/ProductionService'
+import { IColumnRowData } from '../../dtos/request/SalesDto'
 
 export default function ThekedarWiseProductionReportPage() {
   const [reports, setReports] = useState<IColumnRowData['rows']>([])

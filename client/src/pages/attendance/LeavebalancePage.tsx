@@ -10,10 +10,10 @@ import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/mate
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { GetLeaveBalanceDto } from '../../dtos/leave.dto'
 import DeleteLeavebalanceDialog from '../../components/dialogs/attendance/DeleteLeavebalanceDialog'
 import CreateOrEditLeaveBalanceDialog from '../../components/dialogs/attendance/CreateOrEditLeaveBalanceDialog'
 import { AttendanceService } from '../../services/AttendanceService'
+import { GetLeaveBalanceDto } from '../../dtos/response/AttendanceDto'
 
 
 export default function LeaveBalancePage() {

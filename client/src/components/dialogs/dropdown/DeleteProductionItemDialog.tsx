@@ -6,14 +6,11 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 
-import { DropDownDto } from '../../../dtos/dropdown.dto';
-import { GetProductionDto } from '../../../dtos/production.dto';
-import { GetShoeWeightDto } from '../../../dtos/shoe-weight.dto';
-import { GetSoleThicknessDto } from '../../../dtos/sole-thickness.dto';
-import { GetSpareDyeDto } from '../../../dtos/spare-dye.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { ProductionService } from '../../../services/ProductionService';
+import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { GetShoeWeightDto, GetSoleThicknessDto, GetSpareDyeDto, GetProductionDto } from '../../../dtos/response/ProductionDto';
 
 
 type Props = {

@@ -7,7 +7,6 @@ import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
 import { ReferencesExcelButtons } from '../../components/buttons/ReferencesExcelButtons'
-import { GetReferenceDto } from '../../dtos/references.dto'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import PopUp from '../../components/popup/PopUp'
 import { Comment, Edit, Visibility } from '@mui/icons-material'
@@ -16,6 +15,7 @@ import ViewReferenceRemarksDialog from '../../components/dialogs/sales/ViewRefer
 import { SalesService } from '../../services/SalesServices'
 import EditReferenceStateDialog from '../../components/dialogs/sales/EditReferenceStateDialog'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { GetReferenceDto } from '../../dtos/response/SalesDto'
 
 export default function ReferencesReportPage() {
   const [hidden, setHidden] = useState(false)

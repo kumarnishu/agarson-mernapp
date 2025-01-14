@@ -7,8 +7,8 @@ import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
-import { GetReferenceRemarksDto } from '../../../dtos/references-remark.dto';
 import { SalesService } from '../../../services/SalesServices';
+import { GetReferenceRemarksDto } from '../../../dtos/response/SalesDto';
 
 type Props = {
   dialog: string | undefined,

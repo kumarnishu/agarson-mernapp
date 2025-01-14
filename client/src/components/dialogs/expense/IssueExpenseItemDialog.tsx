@@ -1,8 +1,8 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
-import { GetExpenseItemDto } from '../../../dtos/expense-item.dto'
 import IssueExpenseItemForm from '../../forms/expense/IssueExpenseItemForm'
 import { toTitleCase } from '../../../utils/TitleCase'
+import { GetExpenseItemDto } from '../../../dtos/response/ExpenseDto'
 
 
 

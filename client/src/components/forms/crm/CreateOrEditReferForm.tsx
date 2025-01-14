@@ -9,13 +9,13 @@ import { queryClient } from '../../../main';
 
 import { UserContext } from '../../../contexts/userContext';
 import { toTitleCase } from '../../../utils/TitleCase';
-import { GetCrmCityDto } from '../../../dtos/crm-city.dto';
-import { GetCrmStateDto } from '../../../dtos/crm-state.dto';
-import { GetReferDto } from '../../../dtos/refer.dto';
+
 import { AlertContext } from '../../../contexts/alertContext';
 
 import { AuthorizationService } from '../../../services/AuthorizationService';
 import { CrmService } from '../../../services/CrmService';
+import { GetCrmCityDto, GetCrmStateDto } from '../../../dtos/response/AuthorizationDto';
+import { GetReferDto } from '../../../dtos/response/CrmDto';
 
 
 function CreateOrEditReferForm({ refer,setDialog }: { refer?: GetReferDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {

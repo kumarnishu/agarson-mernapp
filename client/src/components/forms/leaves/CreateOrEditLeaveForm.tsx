@@ -7,13 +7,12 @@ import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
-import {
-    CreateOrEditLeaveBalanceDto,
-    GetLeaveBalanceDto
-} from '../../../dtos/leave.dto';
+
 import { AttendanceService } from '../../../services/AttendanceService';
-import { DropDownDto } from '../../../dtos/dropdown.dto';
 import { UserService } from '../../../services/UserServices';
+import { CreateOrEditLeaveBalanceDto } from '../../../dtos/request/AttendanceDto';
+import { GetLeaveBalanceDto } from '../../../dtos/response/AttendanceDto';
+import { DropDownDto } from '../../../dtos/response/DropDownDto';
 
 
 

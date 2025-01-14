@@ -9,7 +9,7 @@ import { BackendError } from '../../..'
 import { SalesService } from '../../../services/SalesServices'
 import DeleteAgeingremarkDialog from './DeleteAgeingremarkDialog'
 import CreateOrEditAgeingRemarkDialog from './CreateOrEditAgeingRemarkDialog'
-import { GetAgeingRemarkDto } from '../../../dtos/sales.dto'
+import { GetAgeingRemarkDto } from '../../../dtos/response/SalesDto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

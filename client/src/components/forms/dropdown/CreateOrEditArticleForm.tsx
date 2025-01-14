@@ -6,9 +6,10 @@ import { useMutation } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
-import { GetArticleDto, CreateOrEditArticleDto } from '../../../dtos/article.dto';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
+import { CreateOrEditArticleDto } from '../../../dtos/request/DropDownDto';
+import { GetArticleDto } from '../../../dtos/response/DropDownDto';
 
 
 

@@ -8,10 +8,10 @@ import moment from 'moment'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { SalesService } from '../../services/SalesServices'
-import { GetCollectionsDto } from '../../dtos/sales.dto'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { CollectionsExcelButtons } from '../../components/buttons/CollectionsExcelButtons'
 import { HandleNumbers } from '../../utils/IsDecimal'
+import { GetCollectionsDto } from '../../dtos/response/SalesDto'
 
 function CollectionReportPage() {
     const { user: LoggedInUser } = useContext(UserContext)
