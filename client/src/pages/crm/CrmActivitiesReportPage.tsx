@@ -61,7 +61,7 @@ function CrmActivitiesReportPage() {
         //column definitions...
         () => remarks && [
             {
-                accessorKey: 'actions',
+                accessorKey: 'actions',enableColumnFilter: false,
                 header: '',
 
                 enableColumnFilter: false,

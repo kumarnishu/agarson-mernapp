@@ -107,7 +107,7 @@ export default function RefersPage() {
     //column definitions...
     () => refers && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
         enableColumnFilter: false,
 

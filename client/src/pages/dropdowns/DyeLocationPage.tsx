@@ -39,7 +39,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     //column definitions...
     () => dyelocations && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
      
         Cell: ({ cell }) => <PopUp

@@ -36,7 +36,7 @@ export default function ReferencesReportPage() {
     //column definitions...
     () => reports && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: 'Actions',
        
         Cell: (cell) => <PopUp key={'action'}

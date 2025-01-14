@@ -39,7 +39,7 @@ export default function MachineCategoryPage() {
         //column definitions...
         () => categories && [
             {
-                accessorKey: 'actions',
+                accessorKey: 'actions',enableColumnFilter: false,
                 header: '',
 
                 Cell: ({ cell }) => <PopUp

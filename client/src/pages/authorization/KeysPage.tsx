@@ -46,7 +46,7 @@ export default function KeysPage() {
         //column definitions...
         () => keys && [
             {
-                accessorKey: 'actions',
+                accessorKey: 'actions',enableColumnFilter: false,
                 header: '',
                 
                 Cell: ({ cell }) => <PopUp

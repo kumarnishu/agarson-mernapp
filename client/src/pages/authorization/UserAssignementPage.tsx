@@ -37,7 +37,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
     //column definitions...
     () => users && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
     
         Cell: ({ cell }) => <PopUp

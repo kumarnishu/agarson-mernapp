@@ -67,7 +67,7 @@ export default function ProductionPage() {
   const columns = useMemo<MRT_ColumnDef<GetProductionDto>[]>(
     () => productions && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
 
         enableColumnFilter: false,

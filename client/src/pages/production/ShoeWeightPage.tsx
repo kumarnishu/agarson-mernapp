@@ -70,7 +70,7 @@ export default function ShoeWeightPage() {
   const columns = useMemo<MRT_ColumnDef<GetShoeWeightDto>[]>(
     () => weights && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
 
         enableColumnFilter: false,

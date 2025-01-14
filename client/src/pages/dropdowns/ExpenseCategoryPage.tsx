@@ -37,7 +37,7 @@ export default function ExpenseCategoriesPage() {
     //column definitions...
     () => categories && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
 
         grow: false,

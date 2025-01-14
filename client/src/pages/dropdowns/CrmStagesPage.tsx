@@ -40,7 +40,7 @@ export default function CrmStagesPage() {
     //column definitions...
     () => stages && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
 
         Footer: <b></b>,

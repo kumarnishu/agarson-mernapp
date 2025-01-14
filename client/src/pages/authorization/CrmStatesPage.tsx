@@ -40,7 +40,7 @@ export default function CrmStatesPage() {
     //column definitions...
     () => states && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
         
         Footer: <b></b>,

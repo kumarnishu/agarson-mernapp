@@ -67,7 +67,7 @@ export default function CrmCitiesPage() {
     //column definitions...
     () => cities && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
 
         Footer: <b></b>,

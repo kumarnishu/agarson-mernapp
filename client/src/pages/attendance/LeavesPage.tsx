@@ -34,7 +34,7 @@ export default function LeavesPage() {
     //column definitions...
     () => balances && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
         enableColumnFilter: false,
         Cell: ({ cell }) => <>

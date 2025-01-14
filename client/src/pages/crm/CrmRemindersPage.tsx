@@ -35,7 +35,7 @@ function CrmReminderPage() {
     //column definitions...
     () => remarks && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
 
         Footer: <b></b>,

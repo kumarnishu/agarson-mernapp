@@ -29,6 +29,7 @@ import { UserService } from '../../services/UserServices'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { GetUserDto } from '../../dtos/response/UserDto'
 import { CreateLoginByThisUserDto } from '../../dtos/request/UserDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 export default function UsersPage() {
     const [hidden, setHidden] = useState(false)
@@ -61,8 +62,8 @@ export default function UsersPage() {
         //column definitions...
         () => users && [
             {
-                accessorKey: 'actions',
-                header: '',
+                accessorKey: 'actions', enableColumnFilter: false,
+                header: 'Action',
 
                 Cell: ({ cell }) => <PopUp
                     element={
@@ -124,7 +125,7 @@ export default function UsersPage() {
                                 null
                                 :
                                 <>
-                                    {cell.row.original.role=="admin" ?
+                                    {cell.row.original.role == "admin" ?
                                         < Tooltip title="Remove admin"><IconButton size="medium"
                                             disabled={cell.row.original?.created_by.id === cell.row.original._id}
                                             color="error"
@@ -249,7 +250,7 @@ export default function UsersPage() {
                                     <KeyOffOutlined />
                                 </IconButton>
                             </Tooltip>
-                            {LoggedInUser?._id !== cell.row.original._id && LoggedInUser?.role=="admin" && < Tooltip title={`login as this user ${cell.row.original.username || ""}`}>
+                            {LoggedInUser?._id !== cell.row.original._id && LoggedInUser?.role == "admin" && < Tooltip title={`login as this user ${cell.row.original.username || ""}`}>
                                 <IconButton
                                     disabled={LoggedInUser?._id === cell.row.original._id}
                                     color="info"
@@ -266,7 +267,7 @@ export default function UsersPage() {
             {
                 accessorKey: 'dp',
                 header: 'DP',
-
+                enableColumnFilter: false,
                 Cell: (cell) => <Avatar
                     title="double click to download"
                     sx={{ width: 16, height: 16 }}
@@ -281,68 +282,68 @@ export default function UsersPage() {
             {
                 accessorKey: 'username',
                 header: 'Name',
-                filterVariant: 'multi-select',
-                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return item.username || "" })} />,
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return String(item.username) || "" })} />,
                 Cell: (cell) => <>{[cell.row.original.username, String(cell.row.original.alias1 || ""), String(cell.row.original.alias2 || "")].filter(value => value)
                     .join(", ")}</>,
 
             },
             {
-                accessorKey: 'is_admin',
+                accessorKey: 'role',
                 header: 'Role',
-                filterVariant: 'multi-select',
-                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return item.role=="admin" ?"Admin":"user" })} />,
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return String(item.role) || "" })} />,
             },
             {
                 accessorKey: 'email',
                 header: 'Email',
-                filterVariant: 'multi-select',
-                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return item.email || "" })} />,
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return String(item.email) || "" })} />,
                 Cell: (cell) => <>{cell.row.original.email || ""}</>
             },
             {
                 accessorKey: 'mobile',
                 header: 'Mobile',
-                filterVariant: 'multi-select',
-                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return item.mobile || "" })} />,
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return String(item.mobile) || "" })} />,
                 Cell: (cell) => <>{cell.row.original.mobile || ""}</>
             },
             {
                 accessorKey: 'is_active',
                 header: 'Status',
                 Cell: (cell) => <>{cell.row.original.is_active ? "active" : "blocked"}</>,
-                filterVariant: 'multi-select',
-                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return item.is_active ? 'active' : "blocked" })} />,
+                enableColumnFilter: false,
             },
             {
                 accessorKey: 'password',
                 header: 'Password',
-                filterVariant: 'multi-select',
-                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return item.username || "" })} />,
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return String(item.orginal_password) || "" })} />,
                 Cell: (cell) => <>{cell.row.original.orginal_password}</>,
             },
             {
                 accessorKey: 'assigned_permissions',
                 header: 'Permissions',
-
+                enableColumnFilter: false,
                 Cell: (cell) => <>{cell.row.original.assigned_permissions.length || 0}</>
             },
 
             {
                 accessorKey: 'is_multi_login',
                 header: 'Multi Device',
-
+                enableColumnFilter: false,
                 Cell: (cell) => <>{cell.row.original.is_multi_login ? "Allowed" : "Blocked"}</>
             },
             {
                 accessorKey: 'assigned_users',
                 header: 'Assigned Users',
+                enableColumnFilter: false,
                 Cell: (cell) => <>{cell.row.original.assigned_users.length || 0}</>
             },
             {
                 accessorKey: 'last_login',
                 header: 'Last Active',
-
+                enableColumnFilter: false,
                 Cell: (cell) => <>{cell.row.original.last_login || ""}</>
             },
 

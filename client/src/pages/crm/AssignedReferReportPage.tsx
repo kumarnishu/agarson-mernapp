@@ -49,7 +49,7 @@ export default function AssignedReferReportPage() {
     //column definitions...
     () => leads && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
 
         Cell: ({ cell }) => <PopUp

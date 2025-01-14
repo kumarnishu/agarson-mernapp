@@ -37,7 +37,7 @@ export default function ExpenseLocationPage() {
     //column definitions...
     () => locations && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
 
         grow: false,

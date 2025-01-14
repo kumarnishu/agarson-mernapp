@@ -92,7 +92,7 @@ function CheckListAdminPage() {
     //column definitions...
     () => checklists && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
 
         Cell: ({ cell }) => <PopUp

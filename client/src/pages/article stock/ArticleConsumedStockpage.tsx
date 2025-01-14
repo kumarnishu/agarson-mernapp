@@ -31,7 +31,7 @@ export default function ArticleConsumedStockpage() {
     //column definitions...
     () => consumes && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: 'Actions',
         enableColumnFilter: false,
         Cell: ({ cell }) => <>

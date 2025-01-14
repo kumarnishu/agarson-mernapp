@@ -40,7 +40,7 @@ export default function ExpenseStorePage() {
     //column definitions...
     () => items && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
         enableColumnFilter: false,
         Cell: ({ cell }) => <PopUp

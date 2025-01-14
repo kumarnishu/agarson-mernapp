@@ -125,7 +125,7 @@ export default function LeadsPage() {
   const columns = useMemo<MRT_ColumnDef<GetLeadDto>[]>(
     () => leads && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
 
         enableColumnFilter: false,

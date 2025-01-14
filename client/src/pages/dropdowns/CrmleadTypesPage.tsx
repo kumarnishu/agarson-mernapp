@@ -39,7 +39,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     //column definitions...
     () => types && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
         
         Footer: <b></b>,

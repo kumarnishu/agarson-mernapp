@@ -54,7 +54,7 @@ function SalesmanAttendancePage() {
         //column definitions...
         () => attendances && [
             {
-                accessorKey: 'actions',
+                accessorKey: 'actions',enableColumnFilter: false,
                 header: '',
 
                 Cell: ({ cell }) => <PopUp

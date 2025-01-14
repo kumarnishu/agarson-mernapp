@@ -39,7 +39,7 @@ export default function DyePage() {
     //column definitions...
     () => dyes && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
 
         enableColumnFilter: false,

@@ -59,7 +59,7 @@ export default function DriverAppSystemPage() {
   const columns = useMemo<MRT_ColumnDef<GetDriverSystemDto>[]>(
     () => systems && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: 'Action',
 
         enableColumnFilter: false,

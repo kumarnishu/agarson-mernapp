@@ -38,7 +38,7 @@ export default function KeysCategoriesPage() {
     //column definitions...
     () => [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
         size: 50,
         Cell: ({ cell }) => <PopUp

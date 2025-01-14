@@ -125,7 +125,7 @@ export default function ReferencesReportPage() {
     // Step 4: Combine static and dynamic columns
     return [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: 'Actions',
         Cell: (cell) => <PopUp key={'action'}
           element={

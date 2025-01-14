@@ -38,7 +38,7 @@ export default function ExpenseItemsPage() {
     //column definitions...
     () => items && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
         enableColumnFilter: false,
         Cell: ({ cell }) => <PopUp

@@ -41,7 +41,7 @@ export default function ArticlePage() {
     //column definitions...
     () => articles && [
       {
-        accessorKey: 'actions',
+        accessorKey: 'actions',enableColumnFilter: false,
         header: '',
 
         enableColumnFilter: false,
