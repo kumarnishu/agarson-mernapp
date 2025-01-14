@@ -16,8 +16,8 @@ import moment from 'moment'
 import CreateOrEditProductionDialog from '../../components/dialogs/production/CreateOrEditProductionDialog'
 import { UserService } from '../../services/UserServices'
 import { ProductionService } from '../../services/ProductionService'
-import { DropDownDto } from '../../dtos/response/DropDownDto'
-import { GetProductionDto } from '../../dtos/response/ProductionDto'
+import { DropDownDto } from '../../dtos/DropDownDto'
+import { GetProductionDto } from '../../dtos/ProductionDto'
 
 
 export default function ProductionPage() {

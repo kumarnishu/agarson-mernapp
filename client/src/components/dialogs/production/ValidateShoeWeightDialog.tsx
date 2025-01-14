@@ -8,8 +8,8 @@ import { useMutation } from 'react-query';
 
 import { AlertContext } from '../../../contexts/alertContext';
 import { ProductionService } from '../../../services/ProductionService';
-import { GetShoeWeightDto } from '../../../dtos/response/ProductionDto';
-import { GetUserDto } from '../../../dtos/response/UserDto';
+import { GetShoeWeightDto } from '../../../dtos/ProductionDto';
+import { GetUserDto } from '../../../dtos/UserDto';
 
 
 type Props = {

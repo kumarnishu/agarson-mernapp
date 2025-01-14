@@ -7,7 +7,7 @@ import { useMutation } from 'react-query';
 import { Cancel } from '@mui/icons-material';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
-import { GetMachineDto } from '../../../dtos/response/DropDownDto';
+import { GetMachineDto } from '../../../dtos/DropDownDto';
 
 type Props = {
     dialog: string | undefined,

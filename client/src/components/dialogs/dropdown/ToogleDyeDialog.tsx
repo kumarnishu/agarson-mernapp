@@ -8,7 +8,7 @@ import { Cancel } from '@mui/icons-material';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { DropdownService } from '../../../services/DropDownServices';
-import { GetDyeDto } from '../../../dtos/response/DropDownDto';
+import { GetDyeDto } from '../../../dtos/DropDownDto';
 
 type Props = {
     dialog: string | undefined,

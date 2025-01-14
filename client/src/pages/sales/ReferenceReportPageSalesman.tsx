@@ -13,7 +13,7 @@ import CreateOrEditReferenceRemarkDialog from '../../components/dialogs/sales/Cr
 import ViewReferenceRemarksDialog from '../../components/dialogs/sales/ViewReferenceRemarksDialog'
 import { SalesService } from '../../services/SalesServices'
 import EditReferenceStateDialog from '../../components/dialogs/sales/EditReferenceStateDialog'
-import { GetReferenceReportForSalesmanDto } from '../../dtos/response/SalesDto'
+import { GetReferenceReportForSalesmanDto } from '../../dtos/SalesDto'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 

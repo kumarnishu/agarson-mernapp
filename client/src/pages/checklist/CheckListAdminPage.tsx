@@ -27,9 +27,9 @@ import autoTable from 'jspdf-autotable';
 import { UserService } from '../../services/UserServices'
 import { ChecklistService } from '../../services/ChecklistService'
 import FixCheckListBoxesDialog from '../../components/dialogs/checklists/FixCheckListBoxesDialog'
-import { GetChecklistBoxDto, GetChecklistDto, GetChecklistTopBarDto } from '../../dtos/response/ChecklistDto'
-import { DropDownDto } from '../../dtos/response/DropDownDto'
-import { CreateChecklistFromExcelDto } from '../../dtos/request/ChecklistDto'
+import { GetChecklistBoxDto, GetChecklistDto, GetChecklistTopBarDto } from '../../dtos/ChecklistDto'
+import { DropDownDto } from '../../dtos/DropDownDto'
+import { CreateChecklistFromExcelDto } from '../../dtos/ChecklistDto'
 
 function CheckListAdminPage() {
   const { user: LoggedInUser } = useContext(UserContext)

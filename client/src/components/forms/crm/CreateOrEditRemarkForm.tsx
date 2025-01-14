@@ -13,8 +13,8 @@ import moment from 'moment';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
 import { CrmService } from '../../../services/CrmService';
-import { GetRemarksDto } from '../../../dtos/response/CrmDto';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { GetRemarksDto } from '../../../dtos/CrmDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
 
 
 

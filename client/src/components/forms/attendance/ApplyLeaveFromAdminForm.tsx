@@ -8,9 +8,9 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
-import { ApplyLeaveDtoFromAdmin } from '../../../dtos/request/AttendanceDto';
-import { GetSalesmanAttendanceReportDto } from '../../../dtos/response/AttendanceDto';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { ApplyLeaveDtoFromAdmin } from '../../../dtos/AttendanceDto';
+import { GetSalesmanAttendanceReportDto } from '../../../dtos/AttendanceDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
 import { AttendanceService } from '../../../services/AttendanceService';
 
 

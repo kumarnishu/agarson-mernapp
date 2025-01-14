@@ -9,8 +9,8 @@ import { Cancel } from '@mui/icons-material';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { CrmService } from '../../../services/CrmService';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
-import { GetCrmCityDto, GetCrmStateDto } from '../../../dtos/response/AuthorizationDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
+import { GetCrmCityDto, GetCrmStateDto } from '../../../dtos/AuthorizationDto';
 
 
 type Props = {

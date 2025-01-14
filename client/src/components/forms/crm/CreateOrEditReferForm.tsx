@@ -14,8 +14,8 @@ import { AlertContext } from '../../../contexts/alertContext';
 
 import { AuthorizationService } from '../../../services/AuthorizationService';
 import { CrmService } from '../../../services/CrmService';
-import { GetCrmCityDto, GetCrmStateDto } from '../../../dtos/response/AuthorizationDto';
-import { GetReferDto } from '../../../dtos/response/CrmDto';
+import { GetCrmCityDto, GetCrmStateDto } from '../../../dtos/AuthorizationDto';
+import { GetReferDto } from '../../../dtos/CrmDto';
 
 
 function CreateOrEditReferForm({ refer,setDialog }: { refer?: GetReferDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>>  }) {

@@ -9,7 +9,7 @@ import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { PaymentsService } from '../../../services/PaymentsService';
-import { GetChecklistDto } from '../../../dtos/response/ChecklistDto';
+import { GetChecklistDto } from '../../../dtos/ChecklistDto';
 
 
 type Props = {

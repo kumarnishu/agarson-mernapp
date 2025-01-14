@@ -13,9 +13,9 @@ import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
 import { DropdownService } from '../../../services/DropDownServices';
 import { PaymentsService } from '../../../services/PaymentsService';
-import { CreateOrEditPaymentDto } from '../../../dtos/request/PaymentsDto';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
-import { GetPaymentDto } from '../../../dtos/response/PaymentsDto';
+import { CreateOrEditPaymentDto } from '../../../dtos/PaymentsDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
+import { GetPaymentDto } from '../../../dtos/PaymentsDto';
 
 
 function CreateorEditPaymentForm({ payment, setDialog }: { payment?: GetPaymentDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {

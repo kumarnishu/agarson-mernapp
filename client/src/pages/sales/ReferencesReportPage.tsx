@@ -15,7 +15,7 @@ import ViewReferenceRemarksDialog from '../../components/dialogs/sales/ViewRefer
 import { SalesService } from '../../services/SalesServices'
 import EditReferenceStateDialog from '../../components/dialogs/sales/EditReferenceStateDialog'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
-import { GetReferenceDto } from '../../dtos/response/SalesDto'
+import { GetReferenceDto } from '../../dtos/SalesDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 export default function ReferencesReportPage() {

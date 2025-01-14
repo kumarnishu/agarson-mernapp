@@ -14,7 +14,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import DeleteProductionItemDialog from '../../components/dialogs/dropdown/DeleteProductionItemDialog'
 import CreateOrEditMachineCategoryDialog from '../../components/dialogs/dropdown/CreateOrEditCategoryDialog'
 import { DropdownService } from '../../services/DropDownServices'
-import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { DropDownDto } from '../../dtos/DropDownDto'
 
 
 

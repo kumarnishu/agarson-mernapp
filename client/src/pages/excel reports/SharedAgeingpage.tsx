@@ -14,7 +14,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { ExcelReportsService } from '../../services/ExcelReportsServices'
 import CreateOrEditExcelDBRemarkDialog from '../../components/dialogs/excelreports/CreateOrEditExcelDBRemarkDialog'
 import ViewExcelDBRemarksDialog from '../../components/dialogs/excelreports/ViewExcelDBRemarksDialog'
-import { IColumnRowData } from '../../dtos/request/SalesDto'
+import { IColumnRowData } from '../../dtos/SalesDto'
 
 export default function SharedAgeingpage() {
     const [hidden, setHidden] = useState(false)

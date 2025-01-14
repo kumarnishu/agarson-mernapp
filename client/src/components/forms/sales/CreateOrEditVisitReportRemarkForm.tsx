@@ -9,8 +9,8 @@ import { queryClient } from '../../../main';
 
 import { AlertContext } from '../../../contexts/alertContext';
 import { SalesService } from '../../../services/SalesServices';
-import { CreateOrEditVisitSummaryRemarkDto } from '../../../dtos/request/SalesDto';
-import { GetVisitSummaryReportRemarkDto } from '../../../dtos/response/SalesDto';
+import { CreateOrEditVisitSummaryRemarkDto } from '../../../dtos/SalesDto';
+import { GetVisitSummaryReportRemarkDto } from '../../../dtos/SalesDto';
 
 
 function CreateOrEditVisitReportRemarkForm({ employee, visit_date, remark, setDialog }: {

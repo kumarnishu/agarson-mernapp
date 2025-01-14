@@ -14,7 +14,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import CreateOrEditDyeLocationDialog from '../../components/dialogs/dropdown/CreateOrEditDyeLocationDialog'
 import ToogleDyeLocationDialog from '../../components/dialogs/dropdown/ToogleDyeLocationDialog'
 import { DropdownService } from '../../services/DropDownServices'
-import { GetDyeLocationDto } from '../../dtos/response/DropDownDto'
+import { GetDyeLocationDto } from '../../dtos/DropDownDto'
 
 
 

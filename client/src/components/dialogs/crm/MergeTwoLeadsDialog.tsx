@@ -8,8 +8,8 @@ import { BackendError } from '../../..'
 import { queryClient } from '../../../main'
 import { AlertContext } from '../../../contexts/alertContext'
 import { CrmService } from '../../../services/CrmService'
-import { GetLeadDto } from '../../../dtos/response/CrmDto'
-import { CreateOrEditMergeLeadsDto } from '../../../dtos/request/CrmDto'
+import { GetLeadDto } from '../../../dtos/CrmDto'
+import { CreateOrEditMergeLeadsDto } from '../../../dtos/CrmDto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

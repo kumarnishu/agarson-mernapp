@@ -12,8 +12,8 @@ import * as Yup from "yup"
 import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
 import { ChecklistService } from '../../../services/ChecklistService';
-import { GetChecklistDto } from '../../../dtos/response/ChecklistDto';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { GetChecklistDto } from '../../../dtos/ChecklistDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
 
 
 

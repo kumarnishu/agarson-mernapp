@@ -13,8 +13,8 @@ import { AlertContext } from '../../../contexts/alertContext';
 
 import { UserService } from '../../../services/UserServices';
 import { PaymentsService } from '../../../services/PaymentsService';
-import { GetPaymentDto } from '../../../dtos/response/PaymentsDto';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { GetPaymentDto } from '../../../dtos/PaymentsDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
 
 type Props = {
     dialog: string | undefined,

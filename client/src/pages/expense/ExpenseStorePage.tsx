@@ -13,7 +13,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import IssueExpenseItemDialog from '../../components/dialogs/expense/IssueExpenseItemDialog'
 import AddExpenseItemDialog from '../../components/dialogs/expense/AddExpenseItemDialog'
 import { ExpenseService } from '../../services/ExpenseService'
-import { GetExpenseItemDto } from '../../dtos/response/ExpenseDto'
+import { GetExpenseItemDto } from '../../dtos/ExpenseDto'
 
 
 

@@ -9,7 +9,7 @@ import { Cancel } from '@mui/icons-material';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { ExcelReportsService } from '../../../services/ExcelReportsServices';
-import { GetExcelDBRemarksDto } from '../../../dtos/response/ExcelReportDto';
+import { GetExcelDBRemarksDto } from '../../../dtos/ExcelReportDto';
 type Props = {
   dialog: string | undefined,
   setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

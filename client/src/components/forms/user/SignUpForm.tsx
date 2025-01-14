@@ -12,7 +12,7 @@ import { BackendError, Target } from '../../..';
 
 import { AlertContext } from '../../../contexts/alertContext';
 import { queryClient } from '../../../main';
-import { GetUserDto } from '../../../dtos/response/UserDto';
+import { GetUserDto } from '../../../dtos/UserDto';
 
 type TFormData = {
   username: string,

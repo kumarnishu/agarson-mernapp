@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import moment from "moment";
-import { IColumnRowData, IRowData } from '../dtos/request/SalesDto';
+import { IColumnRowData, IRowData } from '../dtos/SalesDto';
 import { IProduction, IShoeWeight, ISoleThickness, ISpareDye } from '../interfaces/ProductionInterface';
 import { IUser } from '../interfaces/UserInterface';
 import { Machine, Dye, DyeLocation } from '../models/DropDownModel';
@@ -8,9 +8,9 @@ import { Production, ShoeWeight, Article, SpareDye, SoleThickness } from '../mod
 import { User } from '../models/UserModel';
 import { destroyCloudFile } from '../services/destroyCloudFile';
 import { uploadFileToCloud } from '../services/uploadFileToCloud';
-import { CreateOrEditProductionDto, CreateOrEditShoeWeightDto, CreateOrEditSoleThicknessDto, CreateOrEditSpareDyeDto } from '../dtos/request/ProductionDto';
-import { GetDyeStatusReportDto } from '../dtos/response/DropDownDto';
-import { GetProductionDto, GetShoeWeightDto, GetSoleThicknessDto, GetSpareDyeDto, GetCategoryWiseProductionReportDto, GetShoeWeightDiffReportDto } from '../dtos/response/ProductionDto';
+import { CreateOrEditProductionDto, CreateOrEditShoeWeightDto, CreateOrEditSoleThicknessDto, CreateOrEditSpareDyeDto } from '../dtos/ProductionDto';
+import { GetDyeStatusReportDto } from '../dtos/DropDownDto';
+import { GetProductionDto, GetShoeWeightDto, GetSoleThicknessDto, GetSpareDyeDto, GetCategoryWiseProductionReportDto, GetShoeWeightDiffReportDto } from '../dtos/ProductionDto';
 
 export class ProductionController {
 

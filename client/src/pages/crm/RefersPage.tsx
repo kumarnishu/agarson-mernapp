@@ -23,7 +23,7 @@ import ToogleReferConversionDialog from '../../components/dialogs/crm/ToogleRefe
 
 import { ReferExcelButtons } from '../../components/buttons/ReferExcelButtons.tsx'
 import { CrmService } from '../../services/CrmService.ts'
-import { GetReferDto } from '../../dtos/response/CrmDto.ts'
+import { GetReferDto } from '../../dtos/CrmDto.ts'
 
 
 export default function RefersPage() {

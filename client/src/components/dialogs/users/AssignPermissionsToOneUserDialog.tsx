@@ -8,8 +8,8 @@ import { queryClient } from '../../../main';
 
 import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
-import { IMenu, IPermission } from '../../../dtos/response/AuthorizationDto';
-import { GetUserDto } from '../../../dtos/response/UserDto';
+import { IMenu, IPermission } from '../../../dtos/AuthorizationDto';
+import { GetUserDto } from '../../../dtos/UserDto';
 
 
 type Props = {

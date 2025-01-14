@@ -8,7 +8,7 @@ import { Cancel } from '@mui/icons-material';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { SalesService } from '../../../services/SalesServices';
-import { GetReferenceRemarksDto } from '../../../dtos/response/SalesDto';
+import { GetReferenceRemarksDto } from '../../../dtos/SalesDto';
 
 type Props = {
   dialog: string | undefined,

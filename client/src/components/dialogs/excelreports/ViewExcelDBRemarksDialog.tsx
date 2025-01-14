@@ -9,7 +9,7 @@ import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
 import { ExcelReportsService } from '../../../services/ExcelReportsServices'
-import { GetExcelDBRemarksDto } from '../../../dtos/response/ExcelReportDto'
+import { GetExcelDBRemarksDto } from '../../../dtos/ExcelReportDto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

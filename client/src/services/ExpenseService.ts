@@ -1,4 +1,4 @@
-import { IssueOrAddExpenseItemDto } from "../dtos/request/ExpenseDto";
+import { IssueOrAddExpenseItemDto } from "../dtos/ExpenseDto";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 export class ExpenseService {

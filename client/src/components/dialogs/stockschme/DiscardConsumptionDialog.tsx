@@ -7,8 +7,8 @@ import { useMutation } from 'react-query'
 import { queryClient } from '../../../main'
 import { useContext } from 'react'
 import { AlertContext } from '../../../contexts/alertContext'
-import { DiscardConsumptionDto } from '../../../dtos/request/StockSchemeDto'
-import { GetConsumedStockDto } from '../../../dtos/response/StockSchemeDto'
+import { DiscardConsumptionDto } from '../../../dtos/StockSchemeDto'
+import { GetConsumedStockDto } from '../../../dtos/StockSchemeDto'
 
 
 type Props = {

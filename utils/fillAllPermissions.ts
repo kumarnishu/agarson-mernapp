@@ -1,4 +1,4 @@
-import { IMenu } from "../dtos/response/AuthorizationDto";
+import { IMenu } from "../dtos/AuthorizationDto";
 
 export function FetchAllPermissions() {
     let permissions: IMenu[] = [];

@@ -1,4 +1,4 @@
-import { CreateLoginByThisUserDto } from "../dtos/request/UserDto";
+import { CreateLoginByThisUserDto } from "../dtos/UserDto";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 export class UserService {

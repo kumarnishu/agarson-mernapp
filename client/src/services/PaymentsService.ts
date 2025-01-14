@@ -1,4 +1,4 @@
-import { CreateOrEditPaymentDto } from "../dtos/request/PaymentsDto";
+import { CreateOrEditPaymentDto } from "../dtos/PaymentsDto";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 export class PaymentsService {

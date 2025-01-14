@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
 import { Cancel } from '@mui/icons-material';
 import ApplyLeaveFromAdminForm from '../../forms/attendance/ApplyLeaveFromAdminForm';
-import { GetSalesmanAttendanceReportDto } from '../../../dtos/response/AttendanceDto';
+import { GetSalesmanAttendanceReportDto } from '../../../dtos/AttendanceDto';
 
 type Props = {
     dialog: string | undefined,

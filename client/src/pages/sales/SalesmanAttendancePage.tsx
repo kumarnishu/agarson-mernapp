@@ -16,9 +16,9 @@ import DeleteVisitSalesManAttendanceDialog from '../../components/dialogs/sales/
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { UserService } from '../../services/UserServices'
 import { SalesService } from '../../services/SalesServices'
-import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { DropDownDto } from '../../dtos/DropDownDto'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
-import { GetSalesAttendanceDto } from '../../dtos/response/SalesDto'
+import { GetSalesAttendanceDto } from '../../dtos/SalesDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 

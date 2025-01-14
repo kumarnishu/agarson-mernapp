@@ -13,7 +13,7 @@ import { AttendanceService } from '../../services/AttendanceService'
 import ApplyLeaveFromAdminDialog from '../../components/dialogs/attendance/ApplyLeaveFromAdminDialog'
 import ApplyLeaveDialog from '../../components/dialogs/attendance/ApplyLeaveDialog'
 import { useNavigate } from 'react-router-dom'
-import { GetSalesmanAttendanceReportDto } from '../../dtos/response/AttendanceDto'
+import { GetSalesmanAttendanceReportDto } from '../../dtos/AttendanceDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 

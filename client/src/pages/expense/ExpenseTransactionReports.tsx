@@ -12,7 +12,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { ExpenseService } from '../../services/ExpenseService'
-import { GetExpenseTransactionsDto } from '../../dtos/response/ExpenseDto'
+import { GetExpenseTransactionsDto } from '../../dtos/ExpenseDto'
 
 
 export default function ExpenseTransactionReports() {

@@ -8,8 +8,8 @@ import { Leave, SalesAttendance } from "../models/AttendanceModel"
 import { LeaveBalance } from "../models/SalesModel"
 import { User } from "../models/UserModel"
 import { uploadFileToCloud } from "../services/uploadFileToCloud"
-import { ApplyLeaveDtoFromAdmin, CreateOrEditLeaveBalanceDto } from "../dtos/request/AttendanceDto"
-import { GetLeaveDto, GetLeaveBalanceDto } from "../dtos/response/AttendanceDto"
+import { ApplyLeaveDtoFromAdmin, CreateOrEditLeaveBalanceDto } from "../dtos/AttendanceDto"
+import { GetLeaveDto, GetLeaveBalanceDto } from "../dtos/AttendanceDto"
 
 export class AttendanceController {
 

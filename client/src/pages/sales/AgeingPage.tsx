@@ -14,7 +14,7 @@ import { HandleNumbers } from '../../utils/IsDecimal'
 import PopUp from '../../components/popup/PopUp'
 import CreateOrEditAgeingRemarkDialog from '../../components/dialogs/sales/CreateOrEditAgeingRemarkDialog'
 import ViewAgeingRemarksDialog from '../../components/dialogs/sales/ViewAgeingRemarksDialog'
-import { GetAgeingDto } from '../../dtos/response/SalesDto'
+import { GetAgeingDto } from '../../dtos/SalesDto'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 

@@ -10,8 +10,8 @@ import { queryClient } from '../../../main';
 import moment from 'moment';
 import { AlertContext } from '../../../contexts/alertContext';
 import { ExcelReportsService } from '../../../services/ExcelReportsServices';
-import { CreateOrEditExcelDbRemarkDto } from '../../../dtos/request/ExcelReportDto';
-import { GetExcelDBRemarksDto } from '../../../dtos/response/ExcelReportDto';
+import { CreateOrEditExcelDbRemarkDto } from '../../../dtos/ExcelReportDto';
+import { GetExcelDBRemarksDto } from '../../../dtos/ExcelReportDto';
 
 
 function CreateOrEditExcelDBRemarkForm({ category, obj, remark, setDialog }: {

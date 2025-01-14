@@ -11,9 +11,9 @@ import UploadFileButton from '../../buttons/UploadFileButton';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
 import { ProductionService } from '../../../services/ProductionService';
-import { GetDyeDto, DropDownDto, GetMachineDto } from '../../../dtos/response/DropDownDto';
-import { GetShoeWeightDto } from '../../../dtos/response/ProductionDto';
-import { GetUserDto } from '../../../dtos/response/UserDto';
+import { GetDyeDto, DropDownDto, GetMachineDto } from '../../../dtos/DropDownDto';
+import { GetShoeWeightDto } from '../../../dtos/ProductionDto';
+import { GetUserDto } from '../../../dtos/UserDto';
 
 
 

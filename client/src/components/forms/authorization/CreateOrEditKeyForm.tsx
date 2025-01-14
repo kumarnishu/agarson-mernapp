@@ -9,8 +9,8 @@ import * as yup from 'yup';
 import { toTitleCase } from '../../../utils/TitleCase';
 import { AlertContext } from '../../../contexts/alertContext';
 import { AuthorizationService } from '../../../services/AuthorizationService';
-import { GetKeyDto } from '../../../dtos/response/AuthorizationDto';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { GetKeyDto } from '../../../dtos/AuthorizationDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
 
 function CreateOrEditKeyForm({ keyitm, setDialog }: { keyitm?: GetKeyDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const [categories, setCategories] = useState<DropDownDto[]>([])

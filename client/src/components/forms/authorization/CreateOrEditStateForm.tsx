@@ -9,7 +9,7 @@ import { queryClient } from '../../../main';
 import * as yup from 'yup';
 import { AlertContext } from '../../../contexts/alertContext';
 import { AuthorizationService } from '../../../services/AuthorizationService';
-import { GetCrmStateDto } from '../../../dtos/response/AuthorizationDto';
+import { GetCrmStateDto } from '../../../dtos/AuthorizationDto';
 
 function CreateOrEditStateForm({ state, setDialog }: { state?: GetCrmStateDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)

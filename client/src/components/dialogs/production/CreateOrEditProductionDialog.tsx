@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, Stack, IconButton } from '@mui/material'
 import { Cancel } from '@mui/icons-material';
 import CreateOrEditProductionForm from '../../forms/production/CreateOrEditProductionForm.tsx';
-import { GetProductionDto } from '../../../dtos/response/ProductionDto.ts';
+import { GetProductionDto } from '../../../dtos/ProductionDto.ts';
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

@@ -12,7 +12,7 @@ import moment from 'moment'
 
 import CreateChecklistRemarkDialogFromAdmin from './CreateChecklistRemarkDialogFromAdmin'
 import { ChecklistService } from '../../../services/ChecklistService'
-import { GetChecklistDto, GetChecklistBoxDto, GetChecklistRemarksDto } from '../../../dtos/response/ChecklistDto'
+import { GetChecklistDto, GetChecklistBoxDto, GetChecklistRemarksDto } from '../../../dtos/ChecklistDto'
 
 type Props = {
     is_admin: boolean,

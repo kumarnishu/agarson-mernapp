@@ -9,9 +9,9 @@ import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
 import { ProductionService } from '../../../services/ProductionService';
-import { CreateOrEditSoleThicknessDto } from '../../../dtos/request/ProductionDto';
-import { GetDyeDto, DropDownDto } from '../../../dtos/response/DropDownDto';
-import { GetSoleThicknessDto } from '../../../dtos/response/ProductionDto';
+import { CreateOrEditSoleThicknessDto } from '../../../dtos/ProductionDto';
+import { GetDyeDto, DropDownDto } from '../../../dtos/DropDownDto';
+import { GetSoleThicknessDto } from '../../../dtos/ProductionDto';
 
 
 function CreateOrEditSoleThicknessForm({ thickness, setDialog }: { thickness?: GetSoleThicknessDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {

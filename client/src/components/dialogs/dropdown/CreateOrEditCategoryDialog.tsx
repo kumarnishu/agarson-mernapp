@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditMachinecategoryForm from '../../forms/dropdown/CreateOrEditMachinecategoryForm'
-import { DropDownDto } from '../../../dtos/response/DropDownDto'
+import { DropDownDto } from '../../../dtos/DropDownDto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

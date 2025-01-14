@@ -10,7 +10,7 @@ import { AlertContext } from '../../../contexts/alertContext';
 import { toTitleCase } from '../../../utils/TitleCase';
 import { SalesService } from '../../../services/SalesServices';
 import { AuthorizationService } from '../../../services/AuthorizationService';
-import { GetCrmStateDto } from '../../../dtos/response/AuthorizationDto';
+import { GetCrmStateDto } from '../../../dtos/AuthorizationDto';
 type Props = {
     state?: string,
     gst: string,

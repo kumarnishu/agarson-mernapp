@@ -17,8 +17,8 @@ import { KeyExcelButton } from '../../components/buttons/KeyExcelButton'
 import DeleteKeyDialog from '../../components/dialogs/authorization/DeleteKeyDialog'
 
 import { AuthorizationService } from '../../services/AuthorizationService'
-import { GetKeyDto } from '../../dtos/response/AuthorizationDto'
-import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { GetKeyDto } from '../../dtos/AuthorizationDto'
+import { DropDownDto } from '../../dtos/DropDownDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 

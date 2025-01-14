@@ -8,7 +8,7 @@ import { queryClient } from '../../../main';
 import * as yup from 'yup';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
 
 
 

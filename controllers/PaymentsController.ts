@@ -10,8 +10,8 @@ import { Payment, PaymentDocument } from "../models/PaymentsModel";
 import { User } from "../models/UserModel";
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
 import { destroyCloudFile } from "../services/destroyCloudFile";
-import { CreateOrEditPaymentDto, CreateOrEditPaymentDocumentDto, CreatePaymentsFromExcelDto } from "../dtos/request/PaymentsDto";
-import { GetPaymentDto } from "../dtos/response/PaymentsDto";
+import { CreateOrEditPaymentDto, CreateOrEditPaymentDocumentDto, CreatePaymentsFromExcelDto } from "../dtos/PaymentsDto";
+import { GetPaymentDto } from "../dtos/PaymentsDto";
 
 
 export class PaymentController{

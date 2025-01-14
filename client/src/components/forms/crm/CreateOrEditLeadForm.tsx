@@ -14,9 +14,9 @@ import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
 import { AuthorizationService } from '../../../services/AuthorizationService';
 import { CrmService } from '../../../services/CrmService';
-import { GetCrmCityDto, GetCrmStateDto } from '../../../dtos/response/AuthorizationDto';
-import { GetLeadDto } from '../../../dtos/response/CrmDto';
-import {  DropDownDto } from '../../../dtos/response/DropDownDto';
+import { GetCrmCityDto, GetCrmStateDto } from '../../../dtos/AuthorizationDto';
+import { GetLeadDto } from '../../../dtos/CrmDto';
+import {  DropDownDto } from '../../../dtos/DropDownDto';
 
 
 function CreateOrEditLeadForm({ lead, setDialog }: { lead?: GetLeadDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {

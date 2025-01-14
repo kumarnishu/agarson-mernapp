@@ -14,9 +14,9 @@ import { VisitReport, VisitRemark, Reference, ReferenceRemark, Sales, Ageing, Ag
 import { User } from '../models/UserModel';
 import ConvertJsonToExcel from '../services/ConvertJsonToExcel';
 import { decimalToTimeForXlsx, excelSerialToDate, invalidate, parseExcelDate } from '../utils/datesHelper';
-import { CreateOrEditSalesAttendanceDto } from '../dtos/request/AttendanceDto';
-import { IColumnRowData, IRowData, CreateReferenceExcelDto, CreateOrEditReferenceRemarkDto, CreateOrEditVisitSummaryRemarkDto, CreateSalesExcelDto, CreateCollectionsExcelDto, CreateAgeingExcelDto, CreateOrEditAgeingRemarkDto } from '../dtos/request/SalesDto';
-import { GetSalesAttendancesAuto, GetSalesManVisitSummaryReportDto, GetVisitReportDto, GetReferenceDto, GetReferenceReportForSalesmanDto, GetReferenceRemarksDto, GetVisitSummaryReportRemarkDto, GetSalesDto, GetCollectionsDto, GetAgeingDto, GetAgeingRemarkDto, GetSalesmanKpiDto, GetSalesAttendanceDto } from '../dtos/response/SalesDto';
+import { CreateOrEditSalesAttendanceDto } from '../dtos/AttendanceDto';
+import { IColumnRowData, IRowData, CreateReferenceExcelDto, CreateOrEditReferenceRemarkDto, CreateOrEditVisitSummaryRemarkDto, CreateSalesExcelDto, CreateCollectionsExcelDto, CreateAgeingExcelDto, CreateOrEditAgeingRemarkDto } from '../dtos/SalesDto';
+import { GetSalesAttendancesAuto, GetSalesManVisitSummaryReportDto, GetVisitReportDto, GetReferenceDto, GetReferenceReportForSalesmanDto, GetReferenceRemarksDto, GetVisitSummaryReportRemarkDto, GetSalesDto, GetCollectionsDto, GetAgeingDto, GetAgeingRemarkDto, GetSalesmanKpiDto, GetSalesAttendanceDto } from '../dtos/SalesDto';
 
 
 export class SalesController {

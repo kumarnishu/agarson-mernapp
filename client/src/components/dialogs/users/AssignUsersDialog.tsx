@@ -10,8 +10,8 @@ import { useFormik } from 'formik';
 import * as Yup from "yup"
 import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
-import { GetUserDto } from '../../../dtos/response/UserDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
+import { GetUserDto } from '../../../dtos/UserDto';
 
 
 

@@ -8,8 +8,8 @@ import { BackendError } from '../../..'
 import { queryClient } from '../../../main'
 import { AlertContext } from '../../../contexts/alertContext'
 import { CrmService } from '../../../services/CrmService'
-import { CreateOrEditMergeRefersDto } from '../../../dtos/request/CrmDto'
-import { GetReferDto } from '../../../dtos/response/CrmDto'
+import { CreateOrEditMergeRefersDto } from '../../../dtos/CrmDto'
+import { GetReferDto } from '../../../dtos/CrmDto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

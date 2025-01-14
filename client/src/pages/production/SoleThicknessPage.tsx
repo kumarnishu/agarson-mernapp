@@ -16,8 +16,8 @@ import CreateOrEditSoleThicknessDialog from '../../components/dialogs/production
 import DeleteProductionItemDialog from '../../components/dialogs/dropdown/DeleteProductionItemDialog'
 import { UserService } from '../../services/UserServices'
 import { ProductionService } from '../../services/ProductionService'
-import { DropDownDto } from '../../dtos/response/DropDownDto'
-import { GetSoleThicknessDto } from '../../dtos/response/ProductionDto'
+import { DropDownDto } from '../../dtos/DropDownDto'
+import { GetSoleThicknessDto } from '../../dtos/ProductionDto'
 
 
 export default function SoleThicknessPage() {

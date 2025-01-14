@@ -15,7 +15,7 @@ import CreateOrEditVisitReportRemarkDialog from '../../components/dialogs/sales/
 import CreateOrEditSalesmanAttendanceDialog from '../../components/dialogs/sales/CreateOrEditSalesmanAttendanceDialog'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { SalesService } from '../../services/SalesServices'
-import { GetSalesManVisitSummaryReportDto } from '../../dtos/response/SalesDto'
+import { GetSalesManVisitSummaryReportDto } from '../../dtos/SalesDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 

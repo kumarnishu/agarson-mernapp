@@ -15,8 +15,8 @@ import ViewDriverSystemPhotoDialog from '../../components/dialogs/driverapp/View
 import DeleteDriverSystemDialog from '../../components/dialogs/driverapp/DeleteDriverSystemDialog'
 import { UserService } from '../../services/UserServices'
 import { DriverAppService } from '../../services/DriverAppService'
-import { GetDriverSystemDto } from '../../dtos/response/DriverAppDto'
-import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { GetDriverSystemDto } from '../../dtos/DriverAppDto'
+import { DropDownDto } from '../../dtos/DropDownDto'
 
 
 export default function DriverAppSystemPage() {

@@ -11,7 +11,7 @@ import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { ProductionService } from '../../services/ProductionService'
-import { GetShoeWeightDiffReportDto } from '../../dtos/response/ProductionDto'
+import { GetShoeWeightDiffReportDto } from '../../dtos/ProductionDto'
 
 
 

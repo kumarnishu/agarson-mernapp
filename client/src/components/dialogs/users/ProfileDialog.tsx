@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, DialogActions, Typography, Avatar, Box, IconButton } from '@mui/material'
 import { Stack } from '@mui/system'
 import { Cancel } from '@mui/icons-material'
-import { GetUserDto } from '../../../dtos/response/UserDto'
+import { GetUserDto } from '../../../dtos/UserDto'
 
 
 type Props = {

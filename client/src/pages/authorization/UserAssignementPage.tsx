@@ -15,7 +15,7 @@ import AssignUsersDialog from '../../components/dialogs/users/AssignUsersDialog'
 import AssignPermissionsToOneUserDialog from '../../components/dialogs/users/AssignPermissionsToOneUserDialog'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { UserService } from '../../services/UserServices'
-import { GetUserDto } from '../../dtos/response/UserDto'
+import { GetUserDto } from '../../dtos/UserDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 

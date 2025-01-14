@@ -9,7 +9,7 @@ import { queryClient } from '../../../main';
 import * as yup from 'yup';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
 
 function CreateOrEditLeadSourceForm({ source, setDialog }: { source?: DropDownDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)

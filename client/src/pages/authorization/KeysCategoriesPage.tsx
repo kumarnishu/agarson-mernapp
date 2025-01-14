@@ -13,7 +13,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import CreateOrEditKeyCategoryDialog from '../../components/dialogs/authorization/CreateOrEditKeyCategoryDialog'
 import AssignKeyCategoriesDialog from '../../components/dialogs/authorization/AssignKeyCategoriesDialog'
 import { AuthorizationService } from '../../services/AuthorizationService'
-import { GetKeyCategoryDto } from '../../dtos/response/AuthorizationDto'
+import { GetKeyCategoryDto } from '../../dtos/AuthorizationDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 

@@ -8,8 +8,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
-import { CreateOrEditArticleDto } from '../../../dtos/request/DropDownDto';
-import { GetArticleDto } from '../../../dtos/response/DropDownDto';
+import { CreateOrEditArticleDto } from '../../../dtos/DropDownDto';
+import { GetArticleDto } from '../../../dtos/DropDownDto';
 
 
 

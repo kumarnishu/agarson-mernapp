@@ -14,7 +14,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import CreateOrEditMachineDialog from '../../components/dialogs/dropdown/CreateOrEditMachineDialog'
 import ToogleMachineDialog from '../../components/dialogs/dropdown/ToogleMachineDialog'
 import { DropdownService } from '../../services/DropDownServices'
-import { GetMachineDto } from '../../dtos/response/DropDownDto'
+import { GetMachineDto } from '../../dtos/DropDownDto'
 
 
 

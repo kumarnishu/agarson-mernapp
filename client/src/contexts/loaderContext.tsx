@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios'
 import { UserContext } from "./userContext";
 import { BackendError } from "..";
 import { UserService } from "../services/UserServices";
-import { GetUserDto } from "../dtos/response/UserDto";
+import { GetUserDto } from "../dtos/UserDto";
 
 function useRemoteLoading() {
     const { data, isLoading, isError } = useQuery<AxiosResponse<{ user: GetUserDto, token: string }>, BackendError>("profile", new UserService().GetProfile, { refetchOnWindowFocus: true, refetchOnMount: true })

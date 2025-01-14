@@ -18,8 +18,8 @@ import CreateOrEditSpareDyeDialog from '../../components/dialogs/production/Crea
 import ViewSpareDyePhotoDialog from '../../components/dialogs/production/ViewSpareDyePhotoDialog'
 import { UserService } from '../../services/UserServices'
 import { ProductionService } from '../../services/ProductionService'
-import { DropDownDto } from '../../dtos/response/DropDownDto'
-import { GetSpareDyeDto } from '../../dtos/response/ProductionDto'
+import { DropDownDto } from '../../dtos/DropDownDto'
+import { GetSpareDyeDto } from '../../dtos/ProductionDto'
 
 
 export default function SpareDyesPage() {

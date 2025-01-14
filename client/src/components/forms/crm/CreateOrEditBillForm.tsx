@@ -14,9 +14,9 @@ import { AlertContext } from '../../../contexts/alertContext';
 
 import { DropdownService } from '../../../services/DropDownServices';
 import { CrmService } from '../../../services/CrmService';
-import { CreateOrEditBillItemDto } from '../../../dtos/request/CrmDto';
-import { GetLeadDto, GetReferDto, GetBillDto } from '../../../dtos/response/CrmDto';
-import { GetArticleDto } from '../../../dtos/response/DropDownDto';
+import { CreateOrEditBillItemDto } from '../../../dtos/CrmDto';
+import { GetLeadDto, GetReferDto, GetBillDto } from '../../../dtos/CrmDto';
+import { GetArticleDto } from '../../../dtos/DropDownDto';
 
 
 function CreateOrEditBillForm({ lead, refer, setDialog, bill }: { lead?: GetLeadDto, refer?: GetReferDto, bill?: GetBillDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {

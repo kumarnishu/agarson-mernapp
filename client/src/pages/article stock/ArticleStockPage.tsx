@@ -12,7 +12,7 @@ import { StockSchmeService } from '../../services/StockSchmeService'
 import ConsumeStockSchmeDialog from '../../components/dialogs/stockschme/ConsumeStockSchmeDialog'
 import { StockSchemeButton } from '../../components/buttons/StockSchemeButton'
 import { HandleNumbers } from '../../utils/IsDecimal'
-import { GetArticleStockDto } from '../../dtos/response/StockSchemeDto'
+import { GetArticleStockDto } from '../../dtos/StockSchemeDto'
 
 
 export default function ArticleStockPage() {

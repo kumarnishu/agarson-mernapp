@@ -11,8 +11,8 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
 
 import { CrmService } from '../../../services/CrmService'
-import { CreateLeadFromExcelDto } from '../../../dtos/request/CrmDto'
-import { GetReferDto, GetActivitiesOrRemindersDto } from '../../../dtos/response/CrmDto'
+import { CreateLeadFromExcelDto } from '../../../dtos/CrmDto'
+import { GetReferDto, GetActivitiesOrRemindersDto } from '../../../dtos/CrmDto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

@@ -13,7 +13,7 @@ import ToogleDyeDialog from '../../components/dialogs/dropdown/ToogleDyeDialog'
 import CreateOrEditDyeDialog from '../../components/dialogs/dropdown/CreateOrEditDyeDialog'
 
 import { AxiosResponse } from "axios"
-import { GetDyeDto } from '../../dtos/response/DropDownDto'
+import { GetDyeDto } from '../../dtos/DropDownDto'
 import { BackendError } from '../..'
 import { DropdownService } from '../../services/DropDownServices'
 

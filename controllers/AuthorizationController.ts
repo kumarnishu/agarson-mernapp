@@ -8,9 +8,9 @@ import { User } from "../models/UserModel";
 import { assignCRMCities } from "../services/assignCRMCities";
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
 import { convertDateToExcelFormat } from "../utils/datesHelper";
-import { CreateOrEditCrmCity, CreateCityFromExcelDto, CreateKeyFromExcelDto } from "../dtos/request/AuthorizationDto";
-import { GetCrmCityDto, GetCrmStateDto, GetKeyCategoryDto, GetKeyDto } from "../dtos/response/AuthorizationDto";
-import { DropDownDto,   } from "../dtos/response/DropDownDto";
+import { CreateOrEditCrmCity, CreateCityFromExcelDto, CreateKeyFromExcelDto } from "../dtos/AuthorizationDto";
+import { GetCrmCityDto, GetCrmStateDto, GetKeyCategoryDto, GetKeyDto } from "../dtos/AuthorizationDto";
+import { DropDownDto,   } from "../dtos/DropDownDto";
 
 export class AuthorizationController {
      

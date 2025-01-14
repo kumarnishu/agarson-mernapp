@@ -9,7 +9,7 @@ import { Cancel } from '@mui/icons-material';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { ChecklistService } from '../../../services/ChecklistService';
-import { GetChecklistRemarksDto } from '../../../dtos/response/ChecklistDto';
+import { GetChecklistRemarksDto } from '../../../dtos/ChecklistDto';
 
 
 type Props = {

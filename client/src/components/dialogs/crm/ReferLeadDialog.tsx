@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, CircularProgress, IconButton, DialogTitle } from '@mui/material'
 import ReferLeadForm from '../../forms/crm/ReferLeadForm'
 import { Cancel } from '@mui/icons-material'
-import { GetLeadDto } from '../../../dtos/response/CrmDto'
+import { GetLeadDto } from '../../../dtos/CrmDto'
 
 type Props = {
     dialog: string | undefined,

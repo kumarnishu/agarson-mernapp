@@ -13,7 +13,7 @@ import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/mate
 import PopUp from '../../components/popup/PopUp'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { DropDownDto } from '../../dtos/DropDownDto'
 import FindUknownCrmStagesDialog from '../../components/dialogs/dropdown/FindUknownCrmStagesDialog'
 import { DropdownService } from '../../services/DropDownServices'
 

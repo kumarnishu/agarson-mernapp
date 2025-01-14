@@ -10,10 +10,10 @@ import { ChecklistCategory, DyeLocation, Dye, ItemUnit, PaymentCategory, Machine
 import { ExpenseCategory, ExpenseItem, ExpenseLocation } from '../models/ExpenseModel';
 import { Article } from '../models/ProductionModel';
 import ConvertJsonToExcel from '../services/ConvertJsonToExcel';
-import { CreateOrEditArticleDto, CreateOrEditDyeLocationDto, CreateDyeDtoFromExcel, CreateOrEditDyeDTo, CreateOrEditMachineDto } from '../dtos/request/DropDownDto';
-import { CreateOrEditExpenseItemDto, CreateExpenseItemFromExcelDto } from '../dtos/request/ExpenseDto';
-import { GetArticleDto, DropDownDto, GetDyeLocationDto, GetDyeDto, GetMachineDto } from '../dtos/response/DropDownDto';
-import { GetExpenseItemDto } from '../dtos/response/ExpenseDto';
+import { CreateOrEditArticleDto, CreateOrEditDyeLocationDto, CreateDyeDtoFromExcel, CreateOrEditDyeDTo, CreateOrEditMachineDto } from '../dtos/DropDownDto';
+import { CreateOrEditExpenseItemDto, CreateExpenseItemFromExcelDto } from '../dtos/ExpenseDto';
+import { GetArticleDto, DropDownDto, GetDyeLocationDto, GetDyeDto, GetMachineDto } from '../dtos/DropDownDto';
+import { GetExpenseItemDto } from '../dtos/ExpenseDto';
 
 
 

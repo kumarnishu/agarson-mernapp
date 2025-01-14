@@ -8,7 +8,7 @@ import { UserContext } from "../../contexts/userContext";
 import { AssignmentOutlined } from "@mui/icons-material";
 import { ExcelDbButtons } from "../buttons/ExcelDbButtons";
 import { AuthorizationService } from "../../services/AuthorizationService";
-import { DropDownDto } from "../../dtos/response/DropDownDto";
+import { DropDownDto } from "../../dtos/DropDownDto";
 
 function ExcelDBDashboard() {
     const [features, setFeatures] = useState<{ feature: string, display_name: string, is_visible: boolean, url: string }[]>([])

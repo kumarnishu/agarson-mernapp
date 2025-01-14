@@ -21,8 +21,8 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtua
 import { DropdownService } from '../../services/DropDownServices'
 import { UserService } from '../../services/UserServices'
 import { CrmService } from '../../services/CrmService'
-import { GetActivitiesOrRemindersDto, GetActivitiesTopBarDetailsDto } from '../../dtos/response/CrmDto'
-import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { GetActivitiesOrRemindersDto, GetActivitiesTopBarDetailsDto } from '../../dtos/CrmDto'
+import { DropDownDto } from '../../dtos/DropDownDto'
 
 
 function CrmActivitiesReportPage() {

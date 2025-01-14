@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditExpenseCategoryForm from '../../forms/dropdown/CreateOrEditExpenseCategoryForm'
-import { DropDownDto } from '../../../dtos/response/DropDownDto'
+import { DropDownDto } from '../../../dtos/DropDownDto'
 
 
 type props = {

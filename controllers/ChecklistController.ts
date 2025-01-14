@@ -13,8 +13,8 @@ import { ChecklistCategory } from "../models/DropDownModel";
 import { User } from "../models/UserModel";
 import { destroyCloudFile } from "../services/destroyCloudFile";
 import { uploadFileToCloud } from "../services/uploadFileToCloud";
-import { CreateChecklistFromExcelDto, CreateOrEditChecklistDto, CreateOrEditChecklistRemarkDto } from "../dtos/request/ChecklistDto";
-import { GetChecklistTopBarDto, GetChecklistDto, GroupedChecklistDto, GetChecklistRemarksDto } from "../dtos/response/ChecklistDto";
+import { CreateChecklistFromExcelDto, CreateOrEditChecklistDto, CreateOrEditChecklistRemarkDto } from "../dtos/ChecklistDto";
+import { GetChecklistTopBarDto, GetChecklistDto, GroupedChecklistDto, GetChecklistRemarksDto } from "../dtos/ChecklistDto";
 
 export class ChecklistController {
 

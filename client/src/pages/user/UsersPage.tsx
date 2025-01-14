@@ -27,8 +27,8 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { AlertContext } from '../../contexts/alertContext'
 import { UserService } from '../../services/UserServices'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
-import { GetUserDto } from '../../dtos/response/UserDto'
-import { CreateLoginByThisUserDto } from '../../dtos/request/UserDto'
+import { GetUserDto } from '../../dtos/UserDto'
+import { CreateLoginByThisUserDto } from '../../dtos/UserDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 export default function UsersPage() {

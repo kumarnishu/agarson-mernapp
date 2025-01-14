@@ -13,7 +13,7 @@ import { BackendError } from '../..'
 import ExportToExcel from '../../utils/ExportToExcel'
 import CreateOrEditPaymentCategoryDialog from '../../components/dialogs/dropdown/CreateOrEditPaymentCategoryDialog'
 import { DropdownService } from '../../services/DropDownServices'
-import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { DropDownDto } from '../../dtos/DropDownDto'
 
 
 

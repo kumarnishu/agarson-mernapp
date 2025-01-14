@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditKeyCategoryForm from '../../forms/authorization/CreateOrEditKeyCategoryForm'
-import { GetKeyCategoryDto } from '../../../dtos/response/AuthorizationDto'
+import { GetKeyCategoryDto } from '../../../dtos/AuthorizationDto'
 
 type Props = {
     dialog: string | undefined,

@@ -11,7 +11,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import { StockSchmeService } from '../../services/StockSchmeService'
 import DiscardConsumptionDialog from '../../components/dialogs/stockschme/DiscardConsumptionDialog'
 import { HandleNumbers } from '../../utils/IsDecimal'
-import { GetConsumedStockDto } from '../../dtos/response/StockSchemeDto'
+import { GetConsumedStockDto } from '../../dtos/StockSchemeDto'
 
 
 export default function ArticleConsumedStockpage() {

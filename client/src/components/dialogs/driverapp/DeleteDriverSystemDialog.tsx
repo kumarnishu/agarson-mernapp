@@ -8,7 +8,7 @@ import { Cancel } from '@mui/icons-material';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { DriverAppService } from '../../../services/DriverAppService';
-import { GetDriverSystemDto } from '../../../dtos/response/DriverAppDto';
+import { GetDriverSystemDto } from '../../../dtos/DriverAppDto';
 
 
 type Props = {

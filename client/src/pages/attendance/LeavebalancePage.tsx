@@ -13,7 +13,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import DeleteLeavebalanceDialog from '../../components/dialogs/attendance/DeleteLeavebalanceDialog'
 import CreateOrEditLeaveBalanceDialog from '../../components/dialogs/attendance/CreateOrEditLeaveBalanceDialog'
 import { AttendanceService } from '../../services/AttendanceService'
-import { GetLeaveBalanceDto } from '../../dtos/response/AttendanceDto'
+import { GetLeaveBalanceDto } from '../../dtos/AttendanceDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 

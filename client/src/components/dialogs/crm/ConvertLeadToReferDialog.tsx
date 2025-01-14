@@ -8,7 +8,7 @@ import { useMutation } from 'react-query';
 
 import { AlertContext } from '../../../contexts/alertContext';
 import { CrmService } from '../../../services/CrmService';
-import { GetLeadDto, GetReferDto } from '../../../dtos/response/CrmDto';
+import { GetLeadDto, GetReferDto } from '../../../dtos/CrmDto';
 
 
 type Props = {

@@ -2,7 +2,7 @@ import { Dialog, DialogTitle, DialogContent, IconButton } from '@mui/material';
 import { Cancel } from '@mui/icons-material';
 
 import CreateorEditExpenseItemForm from '../../forms/dropdown/CreateorEditExpenseItemForm';
-import { GetExpenseItemDto } from '../../../dtos/response/ExpenseDto';
+import { GetExpenseItemDto } from '../../../dtos/ExpenseDto';
 
 type Props = {
     dialog: string | undefined,

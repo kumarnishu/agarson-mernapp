@@ -14,7 +14,7 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import CreateOrEditExpenseItemDialog from '../../components/dialogs/dropdown/CreateOrEditExpenseItemDialog'
 import { ExpenseItemButtons } from '../../components/buttons/ExpenseItemButtons'
 import { DropdownService } from '../../services/DropDownServices'
-import { GetExpenseItemDto } from '../../dtos/response/ExpenseDto'
+import { GetExpenseItemDto } from '../../dtos/ExpenseDto'
 
 
 

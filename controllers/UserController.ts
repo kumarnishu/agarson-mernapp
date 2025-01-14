@@ -9,10 +9,10 @@ import { Asset, IUser } from '../interfaces/UserInterface';
 import { User } from '../models/UserModel';
 import { destroyCloudFile } from '../services/destroyCloudFile';
 import { uploadFileToCloud } from '../services/uploadFileToCloud';
-import { createOrEditUserDto, UpdateProfileDto, AssignUsersDto, LoginDto, UpdatePasswordDto, ResetPasswordDto, AssignPermissionForOneUserDto, AssignPermissionForMultipleUserDto, CreateLoginByThisUserDto, VerifyEmailDto } from '../dtos/request/UserDto';
-import { IMenu } from '../dtos/response/AuthorizationDto';
-import { DropDownDto } from '../dtos/response/DropDownDto';
-import { GetUserDto } from '../dtos/response/UserDto';
+import { createOrEditUserDto, UpdateProfileDto, AssignUsersDto, LoginDto, UpdatePasswordDto, ResetPasswordDto, AssignPermissionForOneUserDto, AssignPermissionForMultipleUserDto, CreateLoginByThisUserDto, VerifyEmailDto } from '../dtos/UserDto';
+import { IMenu } from '../dtos/AuthorizationDto';
+import { DropDownDto } from '../dtos/DropDownDto';
+import { GetUserDto } from '../dtos/UserDto';
 
 export class UserController {
     public async SignUp(req: Request, res: Response, next: NextFunction) {
@@ -509,7 +509,7 @@ export class UserController {
                 return u.username
             }).toString(),
             assigned_usersDropdown: user.assigned_users.map((u) => {
-                return { id: user._id, label: user.username }
+                return { id: u._id, label: u.username }
             }),
             assigned_crm_states: user.assigned_crm_states.map((i) => { return i.state }).toString(),
             assigned_crm_cities: user.assigned_crm_cities.map((i) => { return i.city }).toString(),

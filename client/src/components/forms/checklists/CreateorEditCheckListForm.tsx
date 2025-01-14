@@ -11,9 +11,9 @@ import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
 import { DropdownService } from '../../../services/DropDownServices';
 import { ChecklistService } from '../../../services/ChecklistService';
-import { CreateOrEditChecklistDto } from '../../../dtos/request/ChecklistDto';
-import { GetChecklistDto } from '../../../dtos/response/ChecklistDto';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { CreateOrEditChecklistDto } from '../../../dtos/ChecklistDto';
+import { GetChecklistDto } from '../../../dtos/ChecklistDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
 
 
 function CreateorEditCheckListForm({ checklist, setDialog }: { checklist?: GetChecklistDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {

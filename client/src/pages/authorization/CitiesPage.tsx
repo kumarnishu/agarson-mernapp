@@ -16,7 +16,7 @@ import { toTitleCase } from '../../utils/TitleCase'
 import { AxiosResponse } from "axios"
 import { BackendError } from "../.."
 import { AuthorizationService } from '../../services/AuthorizationService'
-import { GetCrmCityDto, GetCrmStateDto } from '../../dtos/response/AuthorizationDto'
+import { GetCrmCityDto, GetCrmStateDto } from '../../dtos/AuthorizationDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 

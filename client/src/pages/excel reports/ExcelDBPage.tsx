@@ -17,8 +17,8 @@ import { ExcelReportsService } from '../../services/ExcelReportsServices'
 import CreateOrEditExcelDBRemarkDialog from '../../components/dialogs/excelreports/CreateOrEditExcelDBRemarkDialog'
 import ViewExcelDBRemarksDialog from '../../components/dialogs/excelreports/ViewExcelDBRemarksDialog'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
-import { IColumnRowData } from '../../dtos/request/SalesDto'
-import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { IColumnRowData } from '../../dtos/SalesDto'
+import { DropDownDto } from '../../dtos/DropDownDto'
 
 export default function ExcelDBPage() {
   const [hidden, setHidden] = useState(false)

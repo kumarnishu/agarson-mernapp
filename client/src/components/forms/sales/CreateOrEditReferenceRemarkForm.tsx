@@ -9,8 +9,8 @@ import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import { toTitleCase } from '../../../utils/TitleCase';
 import { SalesService } from '../../../services/SalesServices';
-import { CreateOrEditReferenceRemarkDto } from '../../../dtos/request/SalesDto';
-import { GetReferenceRemarksDto } from '../../../dtos/response/SalesDto';
+import { CreateOrEditReferenceRemarkDto } from '../../../dtos/SalesDto';
+import { GetReferenceRemarksDto } from '../../../dtos/SalesDto';
 
 
 function CreateOrEditReferenceRemarkForm({ party, stage, remark, setDialog }: {

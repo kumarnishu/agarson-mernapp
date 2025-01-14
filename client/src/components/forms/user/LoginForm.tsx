@@ -13,7 +13,7 @@ import { BackendError } from '../../..';
 import { AlertContext } from '../../../contexts/alertContext';
 import { queryClient } from '../../../main';
 import { UserService } from '../../../services/UserServices';
-import { GetUserDto } from '../../../dtos/response/UserDto';
+import { GetUserDto } from '../../../dtos/UserDto';
 
 function LoginForm({ setDialog }: { setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
   const { setAlert } = useContext(AlertContext)

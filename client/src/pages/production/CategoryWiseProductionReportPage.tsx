@@ -11,7 +11,7 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import { UserContext } from '../../contexts/userContext'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { ProductionService } from '../../services/ProductionService'
-import { GetCategoryWiseProductionReportDto } from '../../dtos/response/ProductionDto'
+import { GetCategoryWiseProductionReportDto } from '../../dtos/ProductionDto'
 
 
 

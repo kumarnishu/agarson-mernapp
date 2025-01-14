@@ -15,7 +15,7 @@ import FindUknownCrmStatesDialog from '../../components/dialogs/authorization/Fi
 import AssignCrmStatesDialog from '../../components/dialogs/authorization/AssignCrmStatesDialog'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { AuthorizationService } from '../../services/AuthorizationService'
-import { GetCrmStateDto } from '../../dtos/response/AuthorizationDto'
+import { GetCrmStateDto } from '../../dtos/AuthorizationDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 

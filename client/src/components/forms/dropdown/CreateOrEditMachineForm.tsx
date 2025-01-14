@@ -8,8 +8,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
-import { CreateOrEditMachineDto } from '../../../dtos/request/DropDownDto';
-import { GetMachineDto, DropDownDto } from '../../../dtos/response/DropDownDto';
+import { CreateOrEditMachineDto } from '../../../dtos/DropDownDto';
+import { GetMachineDto, DropDownDto } from '../../../dtos/DropDownDto';
 
 function CreateOrEditMachineForm({ machine, setDialog }: { machine?: GetMachineDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)

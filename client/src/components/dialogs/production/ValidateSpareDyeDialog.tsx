@@ -7,8 +7,8 @@ import { BackendError } from '../../..';
 import { useMutation } from 'react-query';
 import { AlertContext } from '../../../contexts/alertContext';
 import { ProductionService } from '../../../services/ProductionService';
-import { GetSpareDyeDto } from '../../../dtos/response/ProductionDto';
-import { GetUserDto } from '../../../dtos/response/UserDto';
+import { GetSpareDyeDto } from '../../../dtos/ProductionDto';
+import { GetUserDto } from '../../../dtos/UserDto';
 
 
 type Props = {

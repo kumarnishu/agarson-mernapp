@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditCityForm from '../../forms/authorization/CreateOrEditCityForm'
-import { CreateOrEditCrmCity } from '../../../dtos/request/AuthorizationDto'
+import { CreateOrEditCrmCity } from '../../../dtos/AuthorizationDto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

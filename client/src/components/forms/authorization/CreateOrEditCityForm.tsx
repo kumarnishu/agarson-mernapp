@@ -10,8 +10,8 @@ import * as yup from 'yup';
 import { toTitleCase } from '../../../utils/TitleCase';
 import { AlertContext } from '../../../contexts/alertContext';
 import { AuthorizationService } from '../../../services/AuthorizationService';
-import { CreateOrEditCrmCity } from '../../../dtos/request/AuthorizationDto';
-import { GetCrmStateDto } from '../../../dtos/response/AuthorizationDto';
+import { CreateOrEditCrmCity } from '../../../dtos/AuthorizationDto';
+import { GetCrmStateDto } from '../../../dtos/AuthorizationDto';
 
 function CreateOrEditCityForm({ city, setDialog }: { city?: CreateOrEditCrmCity, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const [states, setStates] = useState<GetCrmStateDto[]>([])

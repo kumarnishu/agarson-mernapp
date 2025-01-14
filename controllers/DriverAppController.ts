@@ -5,8 +5,8 @@ import { uploadFileToCloud } from '../services/uploadFileToCloud';
 import { IDriverSystem } from '../interfaces/DriverAppInterface';
 import { IUser } from '../interfaces/UserInterface';
 import { DriverSystem } from '../models/DriverAppModel';
-import { CreateDriverSystemDto } from '../dtos/request/DriverAppDto';
-import { GetDriverSystemDto } from '../dtos/response/DriverAppDto';
+import { CreateDriverSystemDto } from '../dtos/DriverAppDto';
+import { GetDriverSystemDto } from '../dtos/DriverAppDto';
 
 
 export class DriverAppController {

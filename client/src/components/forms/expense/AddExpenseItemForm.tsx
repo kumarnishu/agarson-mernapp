@@ -11,9 +11,9 @@ import { queryClient } from '../../../main';
 import { DropdownService } from '../../../services/DropDownServices';
 import { ExpenseService } from '../../../services/ExpenseService';
 import { AlertContext } from '../../../contexts/alertContext';
-import { IssueOrAddExpenseItemDto } from '../../../dtos/request/ExpenseDto';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
-import { GetExpenseItemDto } from '../../../dtos/response/ExpenseDto';
+import { IssueOrAddExpenseItemDto } from '../../../dtos/ExpenseDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
+import { GetExpenseItemDto } from '../../../dtos/ExpenseDto';
 
 
 function AddExpenseItemForm({ item, setDialog }: { item: GetExpenseItemDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {

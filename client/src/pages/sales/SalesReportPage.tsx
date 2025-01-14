@@ -11,7 +11,7 @@ import { SalesService } from '../../services/SalesServices'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { SalesExcelButtons } from '../../components/buttons/SalesExcelButtons'
 import { HandleNumbers } from '../../utils/IsDecimal'
-import { GetSalesDto } from '../../dtos/response/SalesDto'
+import { GetSalesDto } from '../../dtos/SalesDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 

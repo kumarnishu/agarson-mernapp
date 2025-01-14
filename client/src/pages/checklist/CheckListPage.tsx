@@ -15,9 +15,9 @@ import ViewChecklistRemarksDialog from '../../components/dialogs/checklists/View
 import ExportToExcel from '../../utils/ExportToExcel'
 import { UserService } from '../../services/UserServices'
 import { ChecklistService } from '../../services/ChecklistService'
-import { GetChecklistBoxDto, GetChecklistDto, GetChecklistTopBarDto } from '../../dtos/response/ChecklistDto'
-import { DropDownDto } from '../../dtos/response/DropDownDto'
-import { CreateChecklistFromExcelDto } from '../../dtos/request/ChecklistDto'
+import { GetChecklistBoxDto, GetChecklistDto, GetChecklistTopBarDto } from '../../dtos/ChecklistDto'
+import { DropDownDto } from '../../dtos/DropDownDto'
+import { CreateChecklistFromExcelDto } from '../../dtos/ChecklistDto'
 
 
 

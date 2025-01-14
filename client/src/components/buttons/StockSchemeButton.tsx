@@ -10,7 +10,7 @@ import ExportToExcel from "../../utils/ExportToExcel"
 import { queryClient } from "../../main"
 import { AlertContext } from "../../contexts/alertContext"
 import { StockSchmeService } from "../../services/StockSchmeService"
-import { CreateKeyFromExcelDto } from "../../dtos/request/AuthorizationDto"
+import { CreateKeyFromExcelDto } from "../../dtos/AuthorizationDto"
 
 
 const FileInput = styled.input`

@@ -9,7 +9,7 @@ import { queryClient } from '../../../main';
 import * as yup from 'yup';
 import { AlertContext } from '../../../contexts/alertContext';
 import { AuthorizationService } from '../../../services/AuthorizationService';
-import { GetKeyCategoryDto } from '../../../dtos/response/AuthorizationDto';
+import { GetKeyCategoryDto } from '../../../dtos/AuthorizationDto';
 
 function CreateOrEditKeyCategoryForm({ category, setDialog }: { category?: GetKeyCategoryDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)

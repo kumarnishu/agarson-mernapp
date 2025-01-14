@@ -14,7 +14,7 @@ import CreateOrEditChecklistCategoryDialog from '../../components/dialogs/dropdo
 import { DropdownService } from '../../services/DropDownServices'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { onlyUnique } from '../../utils/UniqueArray'
-import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { DropDownDto } from '../../dtos/DropDownDto'
 
 
 export default function ChecklistCategoriesPage() {

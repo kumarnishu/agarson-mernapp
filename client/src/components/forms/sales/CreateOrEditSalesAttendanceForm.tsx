@@ -13,9 +13,9 @@ import { AlertContext } from '../../../contexts/alertContext';
 import { AuthorizationService } from '../../../services/AuthorizationService';
 import { UserService } from '../../../services/UserServices';
 import { SalesService } from '../../../services/SalesServices';
-import { CreateOrEditSalesAttendanceDto } from '../../../dtos/request/AttendanceDto';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
-import { GetSalesAttendanceDto } from '../../../dtos/response/SalesDto';
+import { CreateOrEditSalesAttendanceDto } from '../../../dtos/AttendanceDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
+import { GetSalesAttendanceDto } from '../../../dtos/SalesDto';
 
 function CreateOrEditSalesAttendanceForm({ attendance, setDialog }: { attendance?: GetSalesAttendanceDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)

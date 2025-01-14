@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditReferenceRemarkForm from '../../forms/sales/CreateOrEditReferenceRemarkForm'
-import { GetReferenceRemarksDto } from '../../../dtos/response/SalesDto'
+import { GetReferenceRemarksDto } from '../../../dtos/SalesDto'
 
 
 type Props = {

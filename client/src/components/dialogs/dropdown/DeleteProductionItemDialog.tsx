@@ -9,8 +9,8 @@ import { Cancel } from '@mui/icons-material';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { ProductionService } from '../../../services/ProductionService';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
-import { GetShoeWeightDto, GetSoleThicknessDto, GetSpareDyeDto, GetProductionDto } from '../../../dtos/response/ProductionDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
+import { GetShoeWeightDto, GetSoleThicknessDto, GetSpareDyeDto, GetProductionDto } from '../../../dtos/ProductionDto';
 
 
 type Props = {

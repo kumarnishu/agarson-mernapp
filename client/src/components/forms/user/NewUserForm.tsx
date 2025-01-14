@@ -9,7 +9,7 @@ import { UserService } from '../../../services/UserServices';
 import { BackendError, Target } from '../../..';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
-import { GetUserDto } from '../../../dtos/response/UserDto';
+import { GetUserDto } from '../../../dtos/UserDto';
 
 
 

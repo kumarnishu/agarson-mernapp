@@ -11,7 +11,7 @@ import { UserContext } from '../../contexts/userContext'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import ExportToExcel from '../../utils/ExportToExcel'
 import { ProductionService } from '../../services/ProductionService'
-import { IColumnRowData } from '../../dtos/request/SalesDto'
+import { IColumnRowData } from '../../dtos/SalesDto'
 
 export default function ThekedarWiseProductionReportPage() {
   const [reports, setReports] = useState<IColumnRowData['rows']>([])

@@ -7,7 +7,7 @@ import { queryClient } from '../../../main';
 import { useMutation } from 'react-query';
 import { AlertContext } from '../../../contexts/alertContext';
 import { CrmService } from '../../../services/CrmService';
-import { GetReferDto } from '../../../dtos/response/CrmDto';
+import { GetReferDto } from '../../../dtos/CrmDto';
 
 
 type Props = {

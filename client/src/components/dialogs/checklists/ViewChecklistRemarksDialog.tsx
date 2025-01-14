@@ -10,7 +10,7 @@ import DeleteChecklistRemarkDialog from './DeleteChecklistRemarkDialog'
 import moment from 'moment'
 
 import { ChecklistService } from '../../../services/ChecklistService'
-import { GetChecklistDto, GetChecklistRemarksDto } from '../../../dtos/response/ChecklistDto'
+import { GetChecklistDto, GetChecklistRemarksDto } from '../../../dtos/ChecklistDto'
 
 type Props = {
     dialog: string | undefined,

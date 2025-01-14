@@ -10,9 +10,9 @@ import UploadFileButton from '../../buttons/UploadFileButton';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
 import { ProductionService } from '../../../services/ProductionService';
-import { GetDyeDto, GetDyeLocationDto } from '../../../dtos/response/DropDownDto';
-import { GetSpareDyeDto } from '../../../dtos/response/ProductionDto';
-import { GetUserDto } from '../../../dtos/response/UserDto';
+import { GetDyeDto, GetDyeLocationDto } from '../../../dtos/DropDownDto';
+import { GetSpareDyeDto } from '../../../dtos/ProductionDto';
+import { GetUserDto } from '../../../dtos/UserDto';
 
 
 function CreateOrEditSpareDyeForm({ sparedye, setDialog }: { sparedye?: GetSpareDyeDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {

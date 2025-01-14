@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, IconButton, Stack } from '@mui/material';
 import { Cancel } from '@mui/icons-material';
-import { GetDriverSystemDto } from '../../../dtos/response/DriverAppDto';
+import { GetDriverSystemDto } from '../../../dtos/DriverAppDto';
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

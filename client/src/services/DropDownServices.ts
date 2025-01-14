@@ -1,5 +1,5 @@
-import { CreateOrEditMachineDto, CreateOrEditDyeDTo, CreateOrEditArticleDto } from "../dtos/request/DropDownDto"
-import { CreateOrEditExpenseItemDto } from "../dtos/request/ExpenseDto"
+import { CreateOrEditMachineDto, CreateOrEditDyeDTo, CreateOrEditArticleDto } from "../dtos/DropDownDto"
+import { CreateOrEditExpenseItemDto } from "../dtos/ExpenseDto"
 import { apiClient } from "./utils/AxiosInterceptor"
 
 export class DropdownService {

@@ -3,8 +3,8 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { decimalToTimeForXlsx, excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
 import moment from "moment";
 import isMongoId from "validator/lib/isMongoId";
-import { CreateOrEditExcelDbRemarkDto } from "../dtos/request/ExcelReportDto";
-import { IColumnRowData, IRowData } from "../dtos/request/SalesDto";
+import { CreateOrEditExcelDbRemarkDto } from "../dtos/ExcelReportDto";
+import { IColumnRowData, IRowData } from "../dtos/SalesDto";
 import { IKeyCategory, ICRMState } from "../interfaces/AuthorizationInterface";
 import { IExcelDBRemark } from "../interfaces/ExcelReportInterface";
 import { IUser } from "../interfaces/UserInterface";
@@ -12,7 +12,7 @@ import { KeyCategory, Key } from "../models/AuthorizationModel";
 import { ExcelDB, ExcelDBRemark } from "../models/ExcelReportModel";
 import { VisitReport } from "../models/SalesModel";
 import { User } from "../models/UserModel";
-import { GetExcelDBRemarksDto } from "../dtos/response/ExcelReportDto";
+import { GetExcelDBRemarksDto } from "../dtos/ExcelReportDto";
 
 
 export class ExcelReportController {

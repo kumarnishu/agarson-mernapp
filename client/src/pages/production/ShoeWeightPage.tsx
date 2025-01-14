@@ -19,8 +19,8 @@ import { months } from '../../utils/months'
 import ViewShoeWeightPhotoDialog from '../../components/dialogs/production/ViewShoeWeightPhotoDialog'
 import { UserService } from '../../services/UserServices'
 import { ProductionService } from '../../services/ProductionService'
-import { DropDownDto } from '../../dtos/response/DropDownDto'
-import { GetShoeWeightDto } from '../../dtos/response/ProductionDto'
+import { DropDownDto } from '../../dtos/DropDownDto'
+import { GetShoeWeightDto } from '../../dtos/ProductionDto'
 
 
 export default function ShoeWeightPage() {

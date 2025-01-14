@@ -8,9 +8,9 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
-import { CreateOrEditExpenseItemDto } from '../../../dtos/request/ExpenseDto';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
-import { GetExpenseItemDto } from '../../../dtos/response/ExpenseDto';
+import { CreateOrEditExpenseItemDto } from '../../../dtos/ExpenseDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
+import { GetExpenseItemDto } from '../../../dtos/ExpenseDto';
 
 
 

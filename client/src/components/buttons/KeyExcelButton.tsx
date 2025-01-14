@@ -11,7 +11,7 @@ import { queryClient } from "../../main"
 import { convertDateToExcelFormat } from "../../utils/datesHelper"
 import { AlertContext } from "../../contexts/alertContext"
 import { AuthorizationService } from "../../services/AuthorizationService"
-import { CreateKeyFromExcelDto } from "../../dtos/request/AuthorizationDto"
+import { CreateKeyFromExcelDto } from "../../dtos/AuthorizationDto"
 
 
 const FileInput = styled.input`

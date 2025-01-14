@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, Typography, IconButton } from '@mui/material'
 import { Cancel } from '@mui/icons-material';
 import RemoveLeadReferForm from '../../forms/crm/RemoveLeadReferForm';
-import { GetLeadDto } from '../../../dtos/response/CrmDto';
+import { GetLeadDto } from '../../../dtos/CrmDto';
 
 type Props = {
     dialog: string | undefined,

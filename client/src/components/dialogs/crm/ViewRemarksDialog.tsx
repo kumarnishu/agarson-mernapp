@@ -9,7 +9,7 @@ import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../..'
 import { CrmService } from '../../../services/CrmService'
-import { GetRemarksDto } from '../../../dtos/response/CrmDto'
+import { GetRemarksDto } from '../../../dtos/CrmDto'
 
 type Props = {
     dialog: string | undefined,

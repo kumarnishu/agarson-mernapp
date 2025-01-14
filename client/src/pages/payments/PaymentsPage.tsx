@@ -20,9 +20,9 @@ import BulkDeletePaymentsDialog from '../../components/dialogs/payments/BulkDele
 
 import { UserService } from '../../services/UserServices'
 import { PaymentsService } from '../../services/PaymentsService'
-import { DropDownDto } from '../../dtos/response/DropDownDto'
-import { GetPaymentDto } from '../../dtos/response/PaymentsDto'
-import { CreatePaymentsFromExcelDto } from '../../dtos/request/PaymentsDto'
+import { DropDownDto } from '../../dtos/DropDownDto'
+import { GetPaymentDto } from '../../dtos/PaymentsDto'
+import { CreatePaymentsFromExcelDto } from '../../dtos/PaymentsDto'
 
 
 function PaymentsPage() {

@@ -4,8 +4,8 @@ import xlsx from 'xlsx';
 import { IConsumedStock, IArticleStock } from "../interfaces/StockSchemeInterface"
 import { ConsumedStock, ArticleStock, StockScheme } from "../models/StockSchemeModel"
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel"
-import { CreateConsumeStockDto, DiscardConsumptionDto, CreateArticleStockExcelDto } from "../dtos/request/StockSchemeDto";
-import { GetConsumedStockDto, GetArticleStockDto } from "../dtos/response/StockSchemeDto";
+import { CreateConsumeStockDto, DiscardConsumptionDto, CreateArticleStockExcelDto } from "../dtos/StockSchemeDto";
+import { GetConsumedStockDto, GetArticleStockDto } from "../dtos/StockSchemeDto";
 
 
 export class StockSchemeController {

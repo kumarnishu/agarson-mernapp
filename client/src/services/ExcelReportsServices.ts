@@ -1,5 +1,5 @@
-import { CreateOrEditExcelDbRemarkDto } from "../dtos/request/ExcelReportDto";
-import { GetExcelDBRemarksDto } from "../dtos/response/ExcelReportDto";
+import { CreateOrEditExcelDbRemarkDto } from "../dtos/ExcelReportDto";
+import { GetExcelDBRemarksDto } from "../dtos/ExcelReportDto";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 export class ExcelReportsService {

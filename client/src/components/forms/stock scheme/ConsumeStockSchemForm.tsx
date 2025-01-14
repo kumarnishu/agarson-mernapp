@@ -8,8 +8,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import { StockSchmeService } from '../../../services/StockSchmeService';
-import { CreateConsumeStockDto } from '../../../dtos/request/StockSchemeDto';
-import { GetArticleStockDto } from '../../../dtos/response/StockSchemeDto';
+import { CreateConsumeStockDto } from '../../../dtos/StockSchemeDto';
+import { GetArticleStockDto } from '../../../dtos/StockSchemeDto';
 
 
 

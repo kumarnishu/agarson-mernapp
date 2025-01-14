@@ -24,7 +24,7 @@ import CreateOrEditBillDialog from '../../components/dialogs/crm/CreateOrEditBil
 import ViewLeadsBillHistoryDialog from '../../components/dialogs/crm/ViewLeadsBillHistoryDialog'
 import CreateOrEditLeadDialog from '../../components/dialogs/crm/CreateOrEditLeadDialog'
 import { CrmService } from '../../services/CrmService'
-import { GetLeadDto } from '../../dtos/response/CrmDto'
+import { GetLeadDto } from '../../dtos/CrmDto'
 
 
 export default function AssignedReferReportPage() {

@@ -9,7 +9,7 @@ import { Cancel } from '@mui/icons-material';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { AuthorizationService } from '../../../services/AuthorizationService';
-import { GetKeyDto } from '../../../dtos/response/AuthorizationDto';
+import { GetKeyDto } from '../../../dtos/AuthorizationDto';
 
 type Props = {
   dialog: string | undefined,

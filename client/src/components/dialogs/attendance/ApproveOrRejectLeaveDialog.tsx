@@ -7,7 +7,7 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { useContext } from 'react';
 import { AlertContext } from '../../../contexts/alertContext';
-import { GetLeaveDto } from '../../../dtos/response/AttendanceDto';
+import { GetLeaveDto } from '../../../dtos/AttendanceDto';
 
 type Props = {
     dialog: string | undefined,

@@ -20,7 +20,7 @@ import CreateOrEditBillDialog from '../../components/dialogs/crm/CreateOrEditBil
 import ViewRefersBillHistoryDialog from '../../components/dialogs/crm/ViewRefersBillHistoryDialog.tsx'
 import ToogleReferConversionDialog from '../../components/dialogs/crm/ToogleReferConversionDialog.tsx.tsx'
 import { CrmService } from '../../services/CrmService.ts'
-import { GetReferDto } from '../../dtos/response/CrmDto.ts'
+import { GetReferDto } from '../../dtos/CrmDto.ts'
 
 
 

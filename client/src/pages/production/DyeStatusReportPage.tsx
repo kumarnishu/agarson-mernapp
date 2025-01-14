@@ -11,7 +11,7 @@ import moment from 'moment'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { UserContext } from '../../contexts/userContext'
 import { ProductionService } from '../../services/ProductionService'
-import { GetDyeStatusReportDto } from '../../dtos/response/DropDownDto'
+import { GetDyeStatusReportDto } from '../../dtos/DropDownDto'
 
 
 

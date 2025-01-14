@@ -14,7 +14,7 @@ import { DownloadFile } from '../../utils/DownloadFile'
 import ViewRemarksDialog from '../../components/dialogs/crm/ViewRemarksDialog'
 import CreateOrEditRemarkDialog from '../../components/dialogs/crm/CreateOrEditRemarkDialog'
 import { CrmService } from '../../services/CrmService'
-import { GetActivitiesOrRemindersDto } from '../../dtos/response/CrmDto'
+import { GetActivitiesOrRemindersDto } from '../../dtos/CrmDto'
 
 
 function CrmReminderPage() {

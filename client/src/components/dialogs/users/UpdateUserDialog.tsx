@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
 import UpdateUserForm from '../../forms/user/UpdateUserForm'
 import { Cancel } from '@mui/icons-material'
-import { GetUserDto } from '../../../dtos/response/UserDto'
+import { GetUserDto } from '../../../dtos/UserDto'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>

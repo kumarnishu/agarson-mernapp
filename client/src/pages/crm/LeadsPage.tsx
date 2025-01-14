@@ -30,8 +30,8 @@ import ExportToExcel from "../../utils/ExportToExcel"
 import { DropdownService } from '../../services/DropDownServices'
 import { LeadExcelButtons } from '../../components/buttons/LeadExcelButtons'
 import { CrmService } from '../../services/CrmService'
-import { GetLeadDto } from '../../dtos/response/CrmDto'
-import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { GetLeadDto } from '../../dtos/CrmDto'
+import { DropDownDto } from '../../dtos/DropDownDto'
 
 
 

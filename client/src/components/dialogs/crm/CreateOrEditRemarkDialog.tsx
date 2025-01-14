@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
 import CreateOrEditRemarkForm from '../../forms/crm/CreateOrEditRemarkForm'
-import { GetRemarksDto } from '../../../dtos/response/CrmDto'
+import { GetRemarksDto } from '../../../dtos/CrmDto'
 
 type Props = {
     dialog: string | undefined,

@@ -8,8 +8,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import { ChecklistService } from '../../../services/ChecklistService';
-import { CreateOrEditChecklistRemarkDto } from '../../../dtos/request/ChecklistDto';
-import { GetChecklistDto, GetChecklistBoxDto, GetChecklistRemarksDto } from '../../../dtos/response/ChecklistDto';
+import { CreateOrEditChecklistRemarkDto } from '../../../dtos/ChecklistDto';
+import { GetChecklistDto, GetChecklistBoxDto, GetChecklistRemarksDto } from '../../../dtos/ChecklistDto';
 
 
 

@@ -8,7 +8,7 @@ import { BackendError } from '../../..'
 import { onlyUnique } from '../../../utils/UniqueArray'
 import { Cancel } from '@mui/icons-material'
 import { SalesService } from '../../../services/SalesServices'
-import { GetVisitReportDto } from '../../../dtos/response/SalesDto'
+import { GetVisitReportDto } from '../../../dtos/SalesDto'
 
 
 

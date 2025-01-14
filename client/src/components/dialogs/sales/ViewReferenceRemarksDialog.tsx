@@ -9,7 +9,7 @@ import { BackendError } from '../../..'
 import DeleteReferenceRemarkDialog from './DeleteReferenceRemarkDialog'
 import CreateOrEditReferenceRemarkDialog from './CreateOrEditReferenceRemarkDialog'
 import { SalesService } from '../../../services/SalesServices'
-import { GetReferenceRemarksDto } from '../../../dtos/response/SalesDto'
+import { GetReferenceRemarksDto } from '../../../dtos/SalesDto'
 
 type Props = {
     dialog: string | undefined,

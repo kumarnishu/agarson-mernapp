@@ -10,8 +10,8 @@ import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import { SalesService } from '../../../services/SalesServices';
 import moment from 'moment';
-import { CreateOrEditAgeingRemarkDto } from '../../../dtos/request/SalesDto';
-import { GetAgeingRemarkDto } from '../../../dtos/response/SalesDto';
+import { CreateOrEditAgeingRemarkDto } from '../../../dtos/SalesDto';
+import { GetAgeingRemarkDto } from '../../../dtos/SalesDto';
 
 
 function CreateOrEditAgeingRemarkForm({ party, remark, setDialog }: {

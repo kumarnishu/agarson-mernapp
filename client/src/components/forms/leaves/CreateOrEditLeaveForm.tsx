@@ -10,9 +10,9 @@ import { AlertContext } from '../../../contexts/alertContext';
 
 import { AttendanceService } from '../../../services/AttendanceService';
 import { UserService } from '../../../services/UserServices';
-import { CreateOrEditLeaveBalanceDto } from '../../../dtos/request/AttendanceDto';
-import { GetLeaveBalanceDto } from '../../../dtos/response/AttendanceDto';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { CreateOrEditLeaveBalanceDto } from '../../../dtos/AttendanceDto';
+import { GetLeaveBalanceDto } from '../../../dtos/AttendanceDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
 
 
 

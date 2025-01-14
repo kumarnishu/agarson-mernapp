@@ -2,7 +2,7 @@ import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
 import { toTitleCase } from '../../../utils/TitleCase'
 import AddExpenseItemForm from '../../forms/expense/AddExpenseItemForm'
-import { GetExpenseItemDto } from '../../../dtos/response/ExpenseDto'
+import { GetExpenseItemDto } from '../../../dtos/ExpenseDto'
 
 
 

@@ -1,7 +1,7 @@
 
-import { CreateOrEditProductionDto, CreateOrEditSoleThicknessDto } from "../dtos/request/ProductionDto";
-import { DropDownDto } from "../dtos/response/DropDownDto";
-import { GetShoeWeightDto, GetSoleThicknessDto, GetSpareDyeDto, GetProductionDto } from "../dtos/response/ProductionDto";
+import { CreateOrEditProductionDto, CreateOrEditSoleThicknessDto } from "../dtos/ProductionDto";
+import { DropDownDto } from "../dtos/DropDownDto";
+import { GetShoeWeightDto, GetSoleThicknessDto, GetSpareDyeDto, GetProductionDto } from "../dtos/ProductionDto";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 export class ProductionService {

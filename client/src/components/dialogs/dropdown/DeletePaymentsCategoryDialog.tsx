@@ -9,7 +9,7 @@ import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
 import { DropdownService } from '../../../services/DropDownServices';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
 
 
 type Props = {

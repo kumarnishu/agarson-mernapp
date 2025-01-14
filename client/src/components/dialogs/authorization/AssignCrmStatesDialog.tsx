@@ -12,8 +12,8 @@ import * as Yup from "yup"
 import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
 import { AuthorizationService } from '../../../services/AuthorizationService';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
-import { GetCrmStateDto } from '../../../dtos/response/AuthorizationDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
+import { GetCrmStateDto } from '../../../dtos/AuthorizationDto';
 
 type Props = {
     dialog: string | undefined,

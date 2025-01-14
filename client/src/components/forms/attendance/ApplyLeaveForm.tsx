@@ -9,8 +9,8 @@ import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import { AttendanceService } from '../../../services/AttendanceService';
 import { UserService } from '../../../services/UserServices';
-import { GetSalesmanAttendanceReportDto } from '../../../dtos/response/AttendanceDto';
-import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { GetSalesmanAttendanceReportDto } from '../../../dtos/AttendanceDto';
+import { DropDownDto } from '../../../dtos/DropDownDto';
 
 
 

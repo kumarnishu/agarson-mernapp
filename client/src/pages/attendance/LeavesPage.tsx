@@ -12,7 +12,7 @@ import { AttendanceService } from '../../services/AttendanceService'
 import { toTitleCase } from '../../utils/TitleCase'
 import ApproveOrRejectLeaveDialog from '../../components/dialogs/attendance/ApproveOrRejectLeaveDialog'
 import ViewLeaveDocumentDialog from '../../components/dialogs/attendance/ViewLeaveDocumentDialog'
-import { GetLeaveDto } from '../../dtos/response/AttendanceDto'
+import { GetLeaveDto } from '../../dtos/AttendanceDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 

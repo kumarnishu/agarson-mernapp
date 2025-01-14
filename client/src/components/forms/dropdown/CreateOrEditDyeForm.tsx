@@ -8,8 +8,8 @@ import { BackendError } from '../../..';
 import { queryClient } from '../../../main';
 import { AlertContext } from '../../../contexts/alertContext';
 import { DropdownService } from '../../../services/DropDownServices';
-import { CreateOrEditDyeDTo } from '../../../dtos/request/DropDownDto';
-import { GetArticleDto, GetDyeDto } from '../../../dtos/response/DropDownDto';
+import { CreateOrEditDyeDTo } from '../../../dtos/DropDownDto';
+import { GetArticleDto, GetDyeDto } from '../../../dtos/DropDownDto';
 
 
 function CreateOrEditDyeForm({ dye, setDialog }: { dye?: GetDyeDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {

@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
 import { Cancel } from '@mui/icons-material';
 import CreateOrEditSpareDyeForm from '../../forms/production/CreateOrEditSpareDyeForm';
-import { GetSpareDyeDto } from '../../../dtos/response/ProductionDto';
+import { GetSpareDyeDto } from '../../../dtos/ProductionDto';
 
 type Props = {
     dialog: string | undefined,

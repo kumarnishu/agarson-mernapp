@@ -12,8 +12,8 @@ import { Stage } from "../models/DropDownModel";
 import { User } from "../models/UserModel";
 import { destroyCloudFile } from "../services/destroyCloudFile";
 import { uploadFileToCloud } from "../services/uploadFileToCloud";
-import { CreateOrEditBillDto, CreateOrEditRemarkDto, CreateOrEditMergeLeadsDto, CreateOrRemoveReferForLeadDto, CreateOrEditLeadDto, CreateLeadFromExcelDto, CreateOrEditMergeRefersDto, CreateOrEditReferDto, CreateReferFromExcelDto } from "../dtos/request/CrmDto";
-import { GetBillDto, GetRemarksDto, GetActivitiesTopBarDetailsDto, GetActivitiesOrRemindersDto, GetLeadDto, GetReferDto } from "../dtos/response/CrmDto";
+import { CreateOrEditBillDto, CreateOrEditRemarkDto, CreateOrEditMergeLeadsDto, CreateOrRemoveReferForLeadDto, CreateOrEditLeadDto, CreateLeadFromExcelDto, CreateOrEditMergeRefersDto, CreateOrEditReferDto, CreateReferFromExcelDto } from "../dtos/CrmDto";
+import { GetBillDto, GetRemarksDto, GetActivitiesTopBarDetailsDto, GetActivitiesOrRemindersDto, GetLeadDto, GetReferDto } from "../dtos/CrmDto";
 
 
 export class CrmController {

@@ -10,7 +10,7 @@ import DeleteBillDialog from './DeleteBillDialog'
 import CreateOrEditBillDialog from './CreateOrEditBillDialog'
 import ViewBillPhotoDialog from './ViewBillPhotoDialog'
 import { CrmService } from '../../../services/CrmService'
-import { GetBillDto } from '../../../dtos/response/CrmDto'
+import { GetBillDto } from '../../../dtos/CrmDto'
 
 
 type Props = {

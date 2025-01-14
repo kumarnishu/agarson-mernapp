@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, IconButton, Stack } from '@mui/material';
 import { Cancel } from '@mui/icons-material';
-import { GetSpareDyeDto } from '../../../dtos/response/ProductionDto';
+import { GetSpareDyeDto } from '../../../dtos/ProductionDto';
 
 
 type Props = {

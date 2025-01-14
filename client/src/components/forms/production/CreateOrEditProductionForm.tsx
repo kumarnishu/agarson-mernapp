@@ -13,9 +13,9 @@ import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
 import { DropdownService } from '../../../services/DropDownServices';
 import { ProductionService } from '../../../services/ProductionService';
-import { CreateOrEditProductionDto } from '../../../dtos/request/ProductionDto';
-import { DropDownDto, GetMachineDto, GetArticleDto } from '../../../dtos/response/DropDownDto';
-import { GetProductionDto } from '../../../dtos/response/ProductionDto';
+import { CreateOrEditProductionDto } from '../../../dtos/ProductionDto';
+import { DropDownDto, GetMachineDto, GetArticleDto } from '../../../dtos/DropDownDto';
+import { GetProductionDto } from '../../../dtos/ProductionDto';
 
 
 function CreateOrEditProductionForm({ production, setDialog }: { production?: GetProductionDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
