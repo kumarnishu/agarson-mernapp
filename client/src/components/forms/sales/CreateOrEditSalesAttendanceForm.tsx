@@ -14,8 +14,8 @@ import { AuthorizationService } from '../../../services/AuthorizationService';
 import { UserService } from '../../../services/UserServices';
 import { SalesService } from '../../../services/SalesServices';
 import { CreateOrEditSalesAttendanceDto } from '../../../dtos/request/AttendanceDto';
-import { GetSalesAttendanceDto } from '../../../dtos/response/AttendanceDto';
 import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { GetSalesAttendanceDto } from '../../../dtos/response/SalesDto';
 
 function CreateOrEditSalesAttendanceForm({ attendance, setDialog }: { attendance?: GetSalesAttendanceDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
@@ -44,10 +44,10 @@ function CreateOrEditSalesAttendanceForm({ attendance, setDialog }: { attendance
             employee: attendance ? attendance.employee.id : "",
             is_sunday_working: attendance && attendance.sunday_working == "yes" ? true : false,
             in_time: attendance ? attendance.in_time : '',
-            old_visit: attendance ? attendance.old_visit : 0,
+            old_visit: attendance ? Number(attendance.old_visit) : 0,
             attendance: attendance ? attendance.attendance : 'absent',
             end_time: attendance ? attendance.end_time : '',
-            new_visit: attendance ? attendance.new_visit : 0,
+            new_visit: attendance ? Number(attendance.new_visit) : 0,
             remark: attendance ? attendance.remark : '',
             date: attendance ? moment(attendance.date).format("YYYY-MM-DD") : moment(new Date()).format("YYYY-MM-DD")
         },
@@ -56,14 +56,14 @@ function CreateOrEditSalesAttendanceForm({ attendance, setDialog }: { attendance
                 .required('Required field'),
             employee: Yup.string()
                 .required('Required field'),
-            old_visit: Yup.number().max(25, "should not be more than 10")
+            old_visit: Yup.number().max(25, "should not be more than 25")
                 .required('Required field'),
             in_time: Yup.string(),
             is_sunday_working: Yup.boolean(),
             attendance: Yup.string()
                 .required('Required field'),
             end_time: Yup.string(),
-            new_visit: Yup.number().max(25, "should not be more than 10"),
+            new_visit: Yup.number().max(25, "should not be more than 25"),
             remark: Yup.string()
             ,
             date: Yup.string().required('Required field'),
