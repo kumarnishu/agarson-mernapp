@@ -76,7 +76,7 @@ function SalesmanAttendancePage() {
                             {LoggedInUser?.assigned_permissions.includes('salesman_attendance_edit') &&
                                 <Tooltip title="Edit">
                                     <IconButton
-                                        disabled={!LoggedInUser.role=="admin" && new Date(cell.row.original.date) < previous_date}
+                                        disabled={LoggedInUser.role!=="admin" && new Date(cell.row.original.date) < previous_date}
                                         onClick={() => {
 
                                             setDialog('CreateOrEditSalesmanAttendanceDialog')
