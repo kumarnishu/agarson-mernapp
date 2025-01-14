@@ -1,10 +1,10 @@
 import { Response, Request, NextFunction } from "express"
 import moment from "moment"
 import xlsx from 'xlsx';
-import { GetConsumedStockDto, CreateConsumeStockDto, GetArticleStockDto, DiscardConsumptionDto, GetArticleStockExcelDto } from "../dtos/StockSchemeDto"
 import { IConsumedStock, IArticleStock } from "../interfaces/StockSchemeInterface"
 import { ConsumedStock, ArticleStock, StockScheme } from "../models/StockSchemeModel"
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel"
+import { GetConsumedStockDto, CreateConsumeStockDto, GetArticleStockDto, DiscardConsumptionDto, CreateArticleStockExcelDto } from "../dtos/StockSchemeDto";
 
 export class StockSchemeController {
     public async GetAllConsumedStocks(req: Request, res: Response, next: NextFunction) {
@@ -176,7 +176,7 @@ export class StockSchemeController {
         }
     }
     public async CreateArticleStocksFromExcel(req: Request, res: Response, next: NextFunction) {
-        let result: GetArticleStockExcelDto[] = []
+        let result: CreateArticleStockExcelDto[] = []
         let statusText = ""
         let { scheme } = req.body as { scheme: string }
         console.log(scheme)
@@ -198,7 +198,7 @@ export class StockSchemeController {
                 return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
             const workbook = xlsx.read(req.file.buffer);
             let workbook_sheet = workbook.SheetNames;
-            let workbook_response: GetArticleStockExcelDto[] = xlsx.utils.sheet_to_json(
+            let workbook_response: CreateArticleStockExcelDto[] = xlsx.utils.sheet_to_json(
                 workbook.Sheets[workbook_sheet[0]]
             );
             if (workbook_response.length > 3000) {
@@ -253,7 +253,7 @@ export class StockSchemeController {
         return res.status(200).json(result);
     }
     public async DownloadExcelTemplateForCreateStockScheme(req: Request, res: Response, next: NextFunction) {
-        let checklists: GetArticleStockExcelDto[] = [{
+        let checklists: CreateArticleStockExcelDto[] = [{
             article: 'power',
             six: 69,
             seven: 47,

@@ -4,7 +4,7 @@ import isMongoId from "validator/lib/isMongoId";
 import moment, { isDate } from "moment";
 
 import { parseExcelDate } from "../utils/datesHelper";
-import { GetPaymentDto, CreateOrEditPaymentDto, CreateOrEditPaymentDocumentDto, GetPaymentsFromExcelDto } from "../dtos/PaymentsDto";
+import { GetPaymentDto, CreateOrEditPaymentDto, CreateOrEditPaymentDocumentDto, CreatePaymentsFromExcelDto } from "../dtos/PaymentsDto";
 import { IPayment } from "../interfaces/PaymentsInterface";
 import { PaymentCategory } from "../models/DropDownModel";
 import { Payment, PaymentDocument } from "../models/PaymentsModel";
@@ -277,7 +277,7 @@ export class PaymentController{
         return res.status(200).json({ message: `Payment deleted` });
     }
     public async CreatePaymentFromExcel(req: Request, res: Response, next: NextFunction) {
-        let result: GetPaymentsFromExcelDto[] = []
+        let result: CreatePaymentsFromExcelDto[] = []
         let statusText: string = ""
         if (!req.file)
             return res.status(400).json({
@@ -291,7 +291,7 @@ export class PaymentController{
                 return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
             const workbook = xlsx.read(req.file.buffer);
             let workbook_sheet = workbook.SheetNames;
-            let workbook_response: GetPaymentsFromExcelDto[] = xlsx.utils.sheet_to_json(
+            let workbook_response: CreatePaymentsFromExcelDto[] = xlsx.utils.sheet_to_json(
                 workbook.Sheets[workbook_sheet[0]]
             );
             if (workbook_response.length > 3000) {
@@ -422,7 +422,7 @@ export class PaymentController{
         return res.status(200).json(result);
     }
     public async DownloadExcelTemplateForCreatePayments(req: Request, res: Response, next: NextFunction) {
-        let payments: GetPaymentsFromExcelDto[] = [{
+        let payments: CreatePaymentsFromExcelDto[] = [{
             _id: "umc3m9344343vn934",
             category: 'maintenance',
             payment_title: 'machine work',

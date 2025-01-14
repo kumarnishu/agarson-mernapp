@@ -5,7 +5,7 @@ import moment from "moment";
 import { Types } from "mongoose";
 import { hundredDaysAgo } from "../utils/datesHelper";
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
-import { CreateOrEditBillDto, GetBillDto, CreateOrEditRemarkDto, GetRemarksDto, GetActivitiesTopBarDetailsDto, GetActivitiesOrRemindersDto, CreateOrEditMergeLeadsDto, GetLeadDto, CreateOrRemoveReferForLeadDto, CreateOrEditLeadDto, GetLeadFromExcelDto, CreateOrEditMergeRefersDto, GetReferDto, CreateOrEditReferDto, GetReferFromExcelDto } from "../dtos/CrmDto";
+import { CreateOrEditBillDto, GetBillDto, CreateOrEditRemarkDto, GetRemarksDto, GetActivitiesTopBarDetailsDto, GetActivitiesOrRemindersDto, CreateOrEditMergeLeadsDto, GetLeadDto, CreateOrRemoveReferForLeadDto, CreateOrEditLeadDto, CreateLeadFromExcelDto, CreateOrEditMergeRefersDto, GetReferDto, CreateOrEditReferDto, CreateReferFromExcelDto } from "../dtos/CrmDto";
 import { IBill, IRemark, ILead, IReferredParty } from "../interfaces/CrmInterface";
 import { Asset, IUser } from "../interfaces/UserController";
 import Lead, { Bill, BillItem, ReferredParty, Remark } from "../models/CrmModel";
@@ -1946,7 +1946,7 @@ export class CrmController {
     }
 
     public async DownloadExcelTemplateForCreateLeads(req: Request, res: Response, next: NextFunction) {
-        let data: GetLeadFromExcelDto[] = [{
+        let data: CreateLeadFromExcelDto[] = [{
             _id: "ere3rer",
             name: "ABC footwear",
             customer_name: 'ABC',
@@ -1979,7 +1979,7 @@ export class CrmController {
     }
 
     public async BulkLeadUpdateFromExcel(req: Request, res: Response, next: NextFunction) {
-        let result: GetLeadFromExcelDto[] = []
+        let result: CreateLeadFromExcelDto[] = []
         let statusText: string = ""
         if (!req.file)
             return res.status(400).json({
@@ -1993,7 +1993,7 @@ export class CrmController {
                 return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
             const workbook = xlsx.read(req.file.buffer);
             let workbook_sheet = workbook.SheetNames;
-            let workbook_response: GetLeadFromExcelDto[] = xlsx.utils.sheet_to_json(
+            let workbook_response: CreateLeadFromExcelDto[] = xlsx.utils.sheet_to_json(
                 workbook.Sheets[workbook_sheet[0]]
             );
             if (workbook_response.length > 50000) {
@@ -2657,7 +2657,7 @@ export class CrmController {
     }
 
     public async DownloadExcelTemplateForCreateRefer(req: Request, res: Response, next: NextFunction) {
-        let data: GetReferFromExcelDto[] = [{
+        let data: CreateReferFromExcelDto[] = [{
             _id: "ere3rer",
             name: "ABC footwear",
             customer_name: "ABC",
@@ -2678,7 +2678,7 @@ export class CrmController {
         return res.download("./file", fileName)
     }
     public async BulkReferUpdateFromExcel(req: Request, res: Response, next: NextFunction) {
-        let result: GetReferFromExcelDto[] = []
+        let result: CreateReferFromExcelDto[] = []
         let statusText: string = ""
         if (!req.file)
             return res.status(400).json({
@@ -2692,7 +2692,7 @@ export class CrmController {
                 return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
             const workbook = xlsx.read(req.file.buffer);
             let workbook_sheet = workbook.SheetNames;
-            let workbook_response: GetReferFromExcelDto[] = xlsx.utils.sheet_to_json(
+            let workbook_response: CreateReferFromExcelDto[] = xlsx.utils.sheet_to_json(
                 workbook.Sheets[workbook_sheet[0]]
             );
             if (workbook_response.length > 3000) {

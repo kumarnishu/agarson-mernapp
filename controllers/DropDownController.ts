@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import moment from 'moment';
 import xlsx from "xlsx";
 import isMongoId from "validator/lib/isMongoId";
-import { GetArticleDto, DropDownDto, CreateOrEditArticleDto, GetDyeLocationDto, CreateOrEditDyeLocationDto, GetDyeDto, GetDyeDtoFromExcel, CreateOrEditDyeDTo, GetMachineDto, CreateOrEditMachineDto } from '../dtos/DropDownDto';
-import { GetExpenseItemDto, CreateOrEditExpenseItemDto, GetExpenseItemFromExcelDto } from '../dtos/ExpenseDto';
+import { GetArticleDto, DropDownDto, CreateOrEditArticleDto, GetDyeLocationDto, CreateOrEditDyeLocationDto, GetDyeDto, CreateDyeDtoFromExcel, CreateOrEditDyeDTo, GetMachineDto, CreateOrEditMachineDto } from '../dtos/DropDownDto';
+import { GetExpenseItemDto, CreateOrEditExpenseItemDto, CreateExpenseItemFromExcelDto } from '../dtos/ExpenseDto';
 import { IDyeLocation, IDye, IMachine } from '../interfaces/DropDownInterface';
 import { IExpenseItem } from '../interfaces/ExpenseInterface';
 import { IArticle } from '../interfaces/ProductionInterface';
@@ -378,7 +378,7 @@ export class DropDownController {
                 return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
             const workbook = xlsx.read(req.file.buffer);
             let workbook_sheet = workbook.SheetNames;
-            let workbook_response: GetDyeDtoFromExcel[] = xlsx.utils.sheet_to_json(
+            let workbook_response: CreateDyeDtoFromExcel[] = xlsx.utils.sheet_to_json(
                 workbook.Sheets[workbook_sheet[0]]
             );
             let newDyes: { dye_number: number, size: string, articles: IArticle[], st_weight: number }[] = []
@@ -630,7 +630,7 @@ export class DropDownController {
         return res.status(200).json({ message: "item deleted successfully" })
     }
     public async BulkCreateAndUpdateExpenseItemFromExcel(req: Request, res: Response, next: NextFunction) {
-        let result: GetExpenseItemFromExcelDto[] = []
+        let result: CreateExpenseItemFromExcelDto[] = []
         let statusText: string = ""
         if (!req.file)
             return res.status(400).json({
@@ -644,7 +644,7 @@ export class DropDownController {
                 return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
             const workbook = xlsx.read(req.file.buffer);
             let workbook_sheet = workbook.SheetNames;
-            let workbook_response: GetExpenseItemFromExcelDto[] = xlsx.utils.sheet_to_json(
+            let workbook_response: CreateExpenseItemFromExcelDto[] = xlsx.utils.sheet_to_json(
                 workbook.Sheets[workbook_sheet[0]]
             );
 
@@ -748,7 +748,7 @@ export class DropDownController {
     }
 
     public async DownloadExcelTemplateForCreateExpenseItem(req: Request, res: Response, next: NextFunction) {
-        let checklists: GetExpenseItemFromExcelDto[] = [{
+        let checklists: CreateExpenseItemFromExcelDto[] = [{
             _id: 'hwhii',
             item: 'belt',
             unit: 'kg',

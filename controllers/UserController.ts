@@ -4,16 +4,16 @@ import isEmail from "validator/lib/isEmail";
 import isMongoId from "validator/lib/isMongoId";
 import moment from 'moment';
 import { deleteToken, deleteTokenOnly, isAuthenticatedUser, isProfileAuthenticated, sendUserToken } from '../middlewares/auth.middleware';
-
 import { FetchAllPermissions } from '../utils/fillAllPermissions';
 import { sendEmail } from '../utils/sendEmail';
 import { IMenu } from '../dtos/AuthorizationDto';
 import { DropDownDto } from '../dtos/DropDownDto';
-import { GetUserDto, createOrEditUserDto, UpdateProfileDto, AssignUsersDto, LoginDto, UpdatePasswordDto, ResetPasswordDto, AssignPermissionForOneUserDto, AssignPermissionForMultipleUserDto, GetLoginByThisUserDto, VerifyEmailDto } from '../dtos/UserDto';
+
 import { Asset, IUser } from '../interfaces/UserController';
 import { User } from '../models/UserModel';
 import { destroyCloudFile } from '../services/destroyCloudFile';
 import { uploadFileToCloud } from '../services/uploadFileToCloud';
+import { GetUserDto, createOrEditUserDto, UpdateProfileDto, AssignUsersDto, LoginDto, UpdatePasswordDto, ResetPasswordDto, AssignPermissionForOneUserDto, AssignPermissionForMultipleUserDto, VerifyEmailDto, CreateLoginByThisUserDto } from '../dtos/UserDto';
 
 export class UserController {
     public async SignUp(req: Request, res: Response, next: NextFunction) {
@@ -768,7 +768,7 @@ export class UserController {
     }
 
     public async LoginByThisUser(req: Request, res: Response, next: NextFunction) {
-        const { user_id, impersnate_id } = req.body as GetLoginByThisUserDto
+        const { user_id, impersnate_id } = req.body as CreateLoginByThisUserDto
         if (!user_id)
             return res.status(400).json({ message: "please select user" })
         if (!impersnate_id || !req.user)

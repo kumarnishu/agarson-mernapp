@@ -10,9 +10,9 @@ type LeavesDto = {
 export type GetLeaveDto = {
     _id: string,
     leave_type: string,
-    leave: string,
+    leave: number,
     status: string,
-    yearmonth: string,
+    yearmonth: number,
     photo: string,
     employee: DropDownDto,
     created_at: string,
@@ -22,7 +22,7 @@ export type GetLeaveDto = {
 }
 export type GetSalesmanAttendanceReportDto = {
     attendance: string,
-    yearmonth: string,
+    yearmonth: number,
     provided: LeavesDto,
     brought_forward: LeavesDto,
     carryforward: LeavesDto,

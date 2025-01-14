@@ -6,7 +6,7 @@ import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
 import { areDatesEqual, previousYear, nextYear, getFirstMonday, currentMonth, previousMonth, nextMonth } from "../utils/datesHelper";
 
 import { getChecklistScore } from "../utils/getChecklistScore";
-import { GetChecklistFromExcelDto, GetChecklistTopBarDto, GetChecklistDto, GroupedChecklistDto, CreateOrEditChecklistDto, CreateOrEditChecklistRemarkDto, GetChecklistRemarksDto } from "../dtos/ChecklistDto";
+import { CreateChecklistFromExcelDto, GetChecklistTopBarDto, GetChecklistDto, GroupedChecklistDto, CreateOrEditChecklistDto, CreateOrEditChecklistRemarkDto, GetChecklistRemarksDto } from "../dtos/ChecklistDto";
 import { IChecklistBox, IChecklist, IChecklistRemark } from "../interfaces/ChecklistInterface";
 import { IUser, Asset } from "../interfaces/UserController";
 import { Checklist, ChecklistBox, ChecklistRemark } from "../models/ChecklistModel";
@@ -18,7 +18,7 @@ import { uploadFileToCloud } from "../services/uploadFileToCloud";
 export class ChecklistController {
 
     public async CreateChecklistFromExcel(req: Request, res: Response, next: NextFunction) {
-        let result: GetChecklistFromExcelDto[] = []
+        let result: CreateChecklistFromExcelDto[] = []
         let dt1 = new Date()
         dt1.setHours(0, 0, 0, 0)
         let dt2 = new Date()
@@ -39,7 +39,7 @@ export class ChecklistController {
                 return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
             const workbook = xlsx.read(req.file.buffer);
             let workbook_sheet = workbook.SheetNames;
-            let workbook_response: GetChecklistFromExcelDto[] = xlsx.utils.sheet_to_json(
+            let workbook_response: CreateChecklistFromExcelDto[] = xlsx.utils.sheet_to_json(
                 workbook.Sheets[workbook_sheet[0]]
             );
             if (workbook_response.length > 3000) {
@@ -1188,7 +1188,7 @@ export class ChecklistController {
         return res.status(200).json({ message: "remark added successfully" })
     }
     public async DownloadExcelTemplateForCreatechecklists(req: Request, res: Response, next: NextFunction) {
-        let checklists: GetChecklistFromExcelDto[] = [{
+        let checklists: CreateChecklistFromExcelDto[] = [{
             _id: "umc3m9344343vn934",
             serial_no: 1,
             category: 'maintenance',

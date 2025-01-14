@@ -1,7 +1,7 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
 import isMongoId from "validator/lib/isMongoId";
-import { GetCrmCityDto, GetCityFromExcelDto, GetKeyDto, GetKeyFromExcelDto, CreateOrEditCrmCity } from "../dtos/AuthorizationDto";
+import { GetCrmCityDto, CreateCityFromExcelDto, GetKeyDto, CreateKeyFromExcelDto, CreateOrEditCrmCity } from "../dtos/AuthorizationDto";
 import { DropDownDto, GetCrmStateDto, GetKeyCategoryDto } from "../dtos/DropDownDto";
 import { ICRMCity, ICRMState, IKey, IKeyCategory } from "../interfaces/AuthorizationInterface";
 import { CRMCity, CRMState, Key, KeyCategory } from "../models/AuthorizationModel";
@@ -136,7 +136,7 @@ export class AuthorizationController {
     }
     public async BulkCreateAndUpdateCRMCityFromExcel(req: Request, res: Response, next: NextFunction) {
         let state = req.params.state
-        let result: GetCityFromExcelDto[] = []
+        let result: CreateCityFromExcelDto[] = []
         let statusText: string = ""
         if (!req.file)
             return res.status(400).json({
@@ -150,7 +150,7 @@ export class AuthorizationController {
                 return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
             const workbook = xlsx.read(req.file.buffer);
             let workbook_sheet = workbook.SheetNames;
-            let workbook_response: GetCityFromExcelDto[] = xlsx.utils.sheet_to_json(
+            let workbook_response: CreateCityFromExcelDto[] = xlsx.utils.sheet_to_json(
                 workbook.Sheets[workbook_sheet[0]]
             );
             if (!state || !await CRMState.findOne({ state: state }))
@@ -577,7 +577,7 @@ export class AuthorizationController {
         return res.status(200).json({ message: "successfull" })
     }
     public async CreateKeysFromExcel(req: Request, res: Response, next: NextFunction) {
-        let result: GetKeyFromExcelDto[] = []
+        let result: CreateKeyFromExcelDto[] = []
         let statusText: string = ""
         if (!req.file)
             return res.status(400).json({
@@ -591,7 +591,7 @@ export class AuthorizationController {
                 return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
             const workbook = xlsx.read(req.file.buffer);
             let workbook_sheet = workbook.SheetNames;
-            let workbook_response: GetKeyFromExcelDto[] = xlsx.utils.sheet_to_json(
+            let workbook_response: CreateKeyFromExcelDto[] = xlsx.utils.sheet_to_json(
                 workbook.Sheets[workbook_sheet[0]]
             );
             if (workbook_response.length > 3000) {
@@ -706,7 +706,7 @@ export class AuthorizationController {
         return res.status(200).json(result);
     }
     public async DownloadExcelTemplateForCreateKeys(req: Request, res: Response, next: NextFunction) {
-        let keys: GetKeyFromExcelDto[] = [{
+        let keys: CreateKeyFromExcelDto[] = [{
             _id: "umc3m9344343vn934",
             serial_no: 1,
             key: 'Employee Name',
@@ -717,7 +717,7 @@ export class AuthorizationController {
             map_to_state: false
         }]
         let cat = req.query.category
-        let data: GetKeyFromExcelDto[] = []
+        let data: CreateKeyFromExcelDto[] = []
         if (cat !== 'all') {
             data = (await Key.find({ category: cat }).populate('category')).map((u) => {
                 return {

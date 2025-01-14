@@ -4,7 +4,6 @@ import xlsx from "xlsx"
 import isMongoId from 'validator/lib/isMongoId';
 import { toTitleCase } from '../utils/trimText';
 import { GetSalesAttendanceDto, CreateOrEditSalesAttendanceDto, GetSalesmanKpiDto } from '../dtos/AttendanceDto';
-import { GetSalesAttendancesAuto, IColumnRowData, IRowData, GetSalesManVisitSummaryReportDto, GetVisitReportDto, GetReferenceDto, GetReferenceReportForSalesmanDto, GetReferenceExcelDto, CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto, CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto, GetSalesDto, GetSalesExcelDto, GetCollectionsDto, GetCollectionsExcelDto, GetAgeingDto, GetAgeingExcelDto, CreateOrEditAgeingRemarkDto, GetAgeingRemarkDto } from '../dtos/SalesDto';
 import { ISalesAttendance } from '../interfaces/AttendanceInterface';
 import { ICRMState } from '../interfaces/AuthorizationInterface';
 import { IReferenceRemark, IVisitRemark, IAgeing, IAgeingRemark } from '../interfaces/SalesInterface';
@@ -16,6 +15,7 @@ import { VisitReport, VisitRemark, Reference, ReferenceRemark, Sales, Ageing, Ag
 import { User } from '../models/UserModel';
 import ConvertJsonToExcel from '../services/ConvertJsonToExcel';
 import { decimalToTimeForXlsx, excelSerialToDate, invalidate, parseExcelDate } from '../utils/datesHelper';
+import { GetSalesAttendancesAuto, IColumnRowData, IRowData, GetSalesManVisitSummaryReportDto, GetVisitReportDto, GetReferenceDto, GetReferenceReportForSalesmanDto, CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto, CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto, GetSalesDto, GetCollectionsDto, GetAgeingDto, CreateOrEditAgeingRemarkDto, GetAgeingRemarkDto, CreateReferenceExcelDto, CreateSalesExcelDto, CreateCollectionsExcelDto, CreateAgeingExcelDto } from '../dtos/SalesDto';
 
 export class SalesController {
 
@@ -1211,7 +1211,7 @@ export class SalesController {
     }
 
     public async BulkCreateAndUpdateReferenceFromExcel(req: Request, res: Response, next: NextFunction) {
-        let result: GetReferenceExcelDto[] = []
+        let result: CreateReferenceExcelDto[] = []
         let validated = true
         let statusText: string = ""
         if (!req.file)
@@ -1226,7 +1226,7 @@ export class SalesController {
                 return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
             const workbook = xlsx.read(req.file.buffer);
             let workbook_sheet = workbook.SheetNames;
-            let workbook_response: GetReferenceExcelDto[] = xlsx.utils.sheet_to_json(
+            let workbook_response: CreateReferenceExcelDto[] = xlsx.utils.sheet_to_json(
                 workbook.Sheets[workbook_sheet[0]]
             );
             if (workbook_response.length > 3000) {
@@ -1577,7 +1577,7 @@ export class SalesController {
 
     }
     public async BulkCreateAndUpdateSalesFromExcel(req: Request, res: Response, next: NextFunction) {
-        let result: GetSalesExcelDto[] = []
+        let result: CreateSalesExcelDto[] = []
         let validated = true
         let statusText: string = ""
         if (!req.file)
@@ -1592,7 +1592,7 @@ export class SalesController {
                 return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
             const workbook = xlsx.read(req.file.buffer);
             let workbook_sheet = workbook.SheetNames;
-            let workbook_response: GetSalesExcelDto[] = xlsx.utils.sheet_to_json(
+            let workbook_response: CreateSalesExcelDto[] = xlsx.utils.sheet_to_json(
                 workbook.Sheets[workbook_sheet[0]]
             );
             if (workbook_response.length > 3000) {
@@ -1689,7 +1689,7 @@ export class SalesController {
     }
 
     public async DownloadExcelTemplateForCreateSalesReport(req: Request, res: Response, next: NextFunction) {
-        let checklist: GetSalesExcelDto[] = [
+        let checklist: CreateSalesExcelDto[] = [
             {
                 _id: 'wwwewew',
                 date: '01-12-2024',
@@ -1739,7 +1739,7 @@ export class SalesController {
 
     }
     public async BulkCreateAndUpdateCollectionsFromExcel(req: Request, res: Response, next: NextFunction) {
-        let result: GetCollectionsExcelDto[] = []
+        let result: CreateCollectionsExcelDto[] = []
         let validated = true
         let statusText: string = ""
         if (!req.file)
@@ -1754,7 +1754,7 @@ export class SalesController {
                 return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
             const workbook = xlsx.read(req.file.buffer);
             let workbook_sheet = workbook.SheetNames;
-            let workbook_response: GetCollectionsExcelDto[] = xlsx.utils.sheet_to_json(
+            let workbook_response: CreateCollectionsExcelDto[] = xlsx.utils.sheet_to_json(
                 workbook.Sheets[workbook_sheet[0]]
             );
             if (workbook_response.length > 3000) {
@@ -1836,7 +1836,7 @@ export class SalesController {
     }
 
     public async DownloadExcelTemplateForCreateCollectionsReport(req: Request, res: Response, next: NextFunction) {
-        let checklist: GetCollectionsExcelDto[] = [
+        let checklist: CreateCollectionsExcelDto[] = [
             {
                 _id: 'wwwewew',
                 date: '01-12-2024',
@@ -1903,7 +1903,7 @@ export class SalesController {
     }
 
     public async BulkCreateAndUpdateAgeingFromExcel(req: Request, res: Response, next: NextFunction) {
-        let result: GetAgeingExcelDto[] = []
+        let result: CreateAgeingExcelDto[] = []
         let validated = true
         let statusText: string = ""
         if (!req.file)
@@ -1918,7 +1918,7 @@ export class SalesController {
                 return res.status(400).json({ message: `${req.file.originalname} is too large limit is :100mb` })
             const workbook = xlsx.read(req.file.buffer);
             let workbook_sheet = workbook.SheetNames;
-            let workbook_response: GetAgeingExcelDto[] = xlsx.utils.sheet_to_json(
+            let workbook_response: CreateAgeingExcelDto[] = xlsx.utils.sheet_to_json(
                 workbook.Sheets[workbook_sheet[0]]
             );
             if (workbook_response.length > 3000) {
@@ -1988,7 +1988,7 @@ export class SalesController {
     }
 
     public async DownloadExcelTemplateForCreateAgeingReport(req: Request, res: Response, next: NextFunction) {
-        let checklist: GetAgeingExcelDto[] = [
+        let checklist: CreateAgeingExcelDto[] = [
             {
                 _id: 'sdswdw',
                 state: "maharashtra",

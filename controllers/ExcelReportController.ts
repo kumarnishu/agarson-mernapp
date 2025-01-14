@@ -3,7 +3,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { decimalToTimeForXlsx, excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
 import moment from "moment";
 import isMongoId from "validator/lib/isMongoId";
-import { CreateOrEditExcelDbRemarkDto, GetExcelDBRemarksDto } from "../dtos/ExcelReportDto";
+import { CreateOrEditExcelDbRemarkDto, CreateExcelDBRemarksDto } from "../dtos/ExcelReportDto";
 import { IColumnRowData, IRowData } from "../dtos/SalesDto";
 import { IKeyCategory, ICRMState } from "../interfaces/AuthorizationInterface";
 import { IExcelDBRemark } from "../interfaces/ExcelReportInterface";
@@ -386,7 +386,7 @@ export class ExcelReportController {
         const id = req.params.id;
         const obj = req.query.obj
         let remarks: IExcelDBRemark[] = []
-        let result: GetExcelDBRemarksDto[] = []
+        let result: CreateExcelDBRemarksDto[] = []
 
         if (!isMongoId(id)) return res.status(400).json({ message: "id not valid" })
         if (!obj) return res.status(404).json({ message: "obj not found" })
