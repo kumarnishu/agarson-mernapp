@@ -17,7 +17,7 @@ export type GetUserDto = {
   mobile: string,
   dp: string,
   orginal_password?: string,
-  is_admin: string,
+  role: string,
   email_verified: string,
   mobile_verified: string,
   is_active: string,

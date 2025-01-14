@@ -5,7 +5,6 @@ import crypto from "crypto";
 import { IUser, IUserMethods } from "../interfaces/UserInterface";
 
 
-
 const UserSchema = new mongoose.Schema<IUser, mongoose.Model<IUser, {}, IUserMethods>, IUserMethods>({
   username: {
     type: String,
