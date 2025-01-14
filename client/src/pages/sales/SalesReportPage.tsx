@@ -12,6 +12,8 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import { SalesExcelButtons } from '../../components/buttons/SalesExcelButtons'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { GetSalesDto } from '../../dtos/response/SalesDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 function SalesReportPage() {
   const { user: LoggedInUser } = useContext(UserContext)
@@ -39,37 +41,55 @@ function SalesReportPage() {
 
 
       {
+
         accessorKey: 'date',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={sales.map((it) => { return it.date || "" })} />,
         header: ' Date',
         Cell: (cell) => <span >{cell.row.original.date}</span>,
         aggregationFn: 'max',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
+
         accessorKey: 'month',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={sales.map((it) => { return it.month || "" })} />,
         header: ' Month',
         aggregationFn: 'max',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
+
         accessorKey: 'invoice_no',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={sales.map((it) => { return it.invoice_no || "" })} />,
         header: ' Invoice',
 
       },
       {
+
         accessorKey: 'party',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={sales.map((it) => { return it.party || "" })} />,
         header: ' Party',
 
 
       },
       {
+
         accessorKey: 'state',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={sales.map((it) => { return it.state || "" })} />,
         header: ' State',
         aggregationFn: 'max',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
+
         accessorKey: 'amount',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={sales.map((it) => { return it.amount || "" })} />,
         header: ' Amount',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',

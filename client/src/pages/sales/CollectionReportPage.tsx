@@ -12,6 +12,8 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import { CollectionsExcelButtons } from '../../components/buttons/CollectionsExcelButtons'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { GetCollectionsDto } from '../../dtos/response/SalesDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 function CollectionReportPage() {
     const { user: LoggedInUser } = useContext(UserContext)
@@ -29,7 +31,7 @@ function CollectionReportPage() {
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
-    
+
     const { data, isLoading } = useQuery<AxiosResponse<GetCollectionsDto[]>, BackendError>(["collections", dates?.start_date, dates?.end_date], async () => new SalesService().GetCollectionReports({ start_date: dates?.start_date, end_date: dates?.end_date }))
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -41,6 +43,8 @@ function CollectionReportPage() {
             {
                 accessorKey: 'date',
                 header: ' Date',
+                filterFn:CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={collections.map((item) => { return item.date || "" })} />,
                 Cell: (cell) => <span >{cell.row.original.date && moment(cell.row.original.date).format("DD/MM/YYYY")}</span>,
                 aggregationFn: 'max',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -48,26 +52,34 @@ function CollectionReportPage() {
             {
                 accessorKey: 'month',
                 header: ' Month',
+                filterFn:CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={collections.map((item) => { return item.month || "" })} />,
                 aggregationFn: 'max',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
             },
             {
                 accessorKey: 'party',
                 header: ' Party',
+                filterFn:CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={collections.map((item) => { return item.party || "" })} />,
             },
             {
                 accessorKey: 'state',
                 header: ' State',
+                filterFn:CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={collections.map((item) => { return item.state || "" })} />,
                 aggregationFn: 'max',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
             },
             {
                 accessorKey: 'amount',
                 header: ' Amount',
+                filterFn:CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={collections.map((item) => { return item.amount || "" })} />,
                 aggregationFn: 'sum',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-                //@ts-ignore
+                
                 Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.amount) }, 0).toFixed()}</b>
             }
         ],
@@ -75,7 +87,7 @@ function CollectionReportPage() {
     );
 
     const table = useMaterialReactTable({
-        //@ts-ignore
+        
         columns, columnFilterDisplayMode: 'popover',
         data: collections, //10,000 rows       
         enableColumnResizing: true,
@@ -122,7 +134,7 @@ function CollectionReportPage() {
             variant: 'outlined',
         },
         enableDensityToggle: false, initialState: {
-            density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 },grouping: ['state']
+            density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }, 
         },
         enableGrouping: true,
         enableRowSelection: true,

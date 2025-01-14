@@ -14,6 +14,8 @@ import ViewReferenceRemarksDialog from '../../components/dialogs/sales/ViewRefer
 import { SalesService } from '../../services/SalesServices'
 import EditReferenceStateDialog from '../../components/dialogs/sales/EditReferenceStateDialog'
 import { GetReferenceReportForSalesmanDto } from '../../dtos/response/SalesDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 export default function ReferencesReportPage() {
   const { user: LoggedInUser } = useContext(UserContext)
@@ -36,20 +38,21 @@ export default function ReferencesReportPage() {
       {
         accessorKey: 'actions',
         header: 'Actions',
+       
         Cell: (cell) => <PopUp key={'action'}
           element={
             <Stack direction="row" spacing={1} >
-               {LoggedInUser?.assigned_permissions.includes('salesman_references_report_edit') && <Tooltip title="edit state">
-                              <IconButton color="primary"
-                                onClick={() => {
-                                  setDialog('EditReferenceStateDialog')
-                                  setGst(cell.row.original.gst)
-                                  setState(cell.row.original.state)
-                                }}
-                              >
-                                <Edit />
-                              </IconButton>
-                            </Tooltip>}
+              {LoggedInUser?.assigned_permissions.includes('salesman_references_report_edit') && <Tooltip title="edit state">
+                <IconButton color="primary"
+                  onClick={() => {
+                    setDialog('EditReferenceStateDialog')
+                    setGst(cell.row.original.gst)
+                    setState(cell.row.original.state)
+                  }}
+                >
+                  <Edit />
+                </IconButton>
+              </Tooltip>}
               {LoggedInUser?.assigned_permissions.includes('salesman_references_report_view') && <Tooltip title="view remarks">
                 <IconButton color="primary"
                   onClick={() => {
@@ -83,30 +86,40 @@ export default function ReferencesReportPage() {
       {
         accessorKey: 'stage',
         header: 'Stage',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.stage || "" })} />,
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'last_remark',
         header: 'Last Remark',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.last_remark || "" })} />,
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'party',
         header: 'Party',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.party || "" })} />,
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'address',
         header: 'Address',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.address || "" })} />,
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'state',
         header: 'State',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.state || "" })} />,
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
@@ -164,7 +177,7 @@ export default function ReferencesReportPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
     },
     enableGrouping: true,

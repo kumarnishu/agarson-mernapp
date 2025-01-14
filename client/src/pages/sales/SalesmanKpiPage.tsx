@@ -16,8 +16,10 @@ import { previousYear } from '../../utils/datesHelper'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { SalesService } from '../../services/SalesServices'
 import { UserService } from '../../services/UserServices'
-import { GetSalesmanKpiDto } from '../../dtos/response/AttendanceDto'
 import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { GetSalesmanKpiDto } from '../../dtos/response/SalesDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 
 function SalesmanKpiPage() {
@@ -52,22 +54,32 @@ function SalesmanKpiPage() {
     () => kpis && [
       {
         accessorKey: 'date',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={kpis.map((item) => { return item.date || "" })} />,
         header: ' Date',
       },
       {
         accessorKey: 'month',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={kpis.map((item) => { return item.month || "" })} />,
         header: ' Month',
       },
       {
         accessorKey: 'attendance',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={kpis.map((item) => { return item.attendance || "" })} />,
         header: ' Attendance'
       },
       {
         accessorKey: 'employee.label',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={kpis.map((item) => { return item.employee?.label || "" })} />,
         header: ' Employee',
       },
       {
         accessorKey: 'old_visit',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={kpis.map((item) => { return item.old_visit || "" })} />,
         header: ' Old Visit',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -76,6 +88,8 @@ function SalesmanKpiPage() {
       },
       {
         accessorKey: 'new_visit',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={kpis.map((item) => { return item.new_visit || "" })} />,
         header: ' New Visit',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -84,6 +98,8 @@ function SalesmanKpiPage() {
       },
       {
         accessorKey: 'new_clients',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={kpis.map((item) => { return item.new_clients || "" })} />,
         header: ' New Clients',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -91,23 +107,31 @@ function SalesmanKpiPage() {
       },
       {
         accessorKey: 'station.label',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={kpis.map((item) => { return item.station?.label || "" })} />,
         header: ' Station',
         aggregationFn: 'count',
 
       },
       {
         accessorKey: 'state',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={kpis.map((item) => { return item.state || "" })} />,
         header: ' State',
         aggregationFn: 'count',
 
       },
       {
         accessorKey: 'working_time',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={kpis.map((item) => { return item.working_time || "" })} />,
         header: ' Work Time',
         aggregationFn: 'count',
       },
       {
         accessorKey: 'currentsale_currentyear',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={kpis.map((item) => { return item.currentsale_currentyear || "" })} />,
         header: moment(new Date()).format("MMM-YY") + " Sale",
         aggregationFn: 'max',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -115,6 +139,8 @@ function SalesmanKpiPage() {
       },
       {
         accessorKey: 'lastsale_currentyear',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={kpis.map((item) => { return item.lastsale_currentyear || "" })} />,
         header: moment(new Date().setMonth(new Date().getMonth() - 1)).format("MMM-YY") + "Sale",
         aggregationFn: 'max',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -122,6 +148,8 @@ function SalesmanKpiPage() {
       },
       {
         accessorKey: 'current_collection',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={kpis.map((item) => { return item.current_collection || "" })} />,
         header: moment(new Date()).format("MMM-YY") + " Collection",
         aggregationFn: 'max',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -129,6 +157,8 @@ function SalesmanKpiPage() {
       },
       {
         accessorKey: 'currentsale_last_year',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={kpis.map((item) => { return item.currentsale_last_year || "" })} />,
         header: moment(new Date(new Date(previousYear).setMonth(new Date().getMonth()))).format("MMM-YY") + " Sale",
         aggregationFn: 'max',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -136,6 +166,8 @@ function SalesmanKpiPage() {
       },
       {
         accessorKey: 'lastsale_lastyear',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={kpis.map((item) => { return item.lastsale_lastyear || "" })} />,
         header: moment(new Date(new Date(previousYear).setMonth(new Date().getMonth() - 1))).format("MMM-YY") + "Sale",
         aggregationFn: 'max',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -144,6 +176,8 @@ function SalesmanKpiPage() {
 
       {
         accessorKey: 'ageing_above_90days',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={kpis.map((item) => { return item.ageing_above_90days || "" })} />,
         header: ' Ageing>90',
         aggregationFn: 'max',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -151,6 +185,8 @@ function SalesmanKpiPage() {
       },
       {
         accessorKey: 'sale_growth',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={kpis.map((item) => { return item.sale_growth || "" })} />,
         header: 'Sale Growth',
         aggregationFn: 'max',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -158,6 +194,8 @@ function SalesmanKpiPage() {
       },
       {
         accessorKey: 'last_month_sale_growth',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={kpis.map((item) => { return item.last_month_sale_growth || "" })} />,
         header: ' Last Month Sale Growth',
         aggregationFn: 'max',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -325,7 +363,7 @@ function SalesmanKpiPage() {
     }),
     positionToolbarAlertBanner: 'none',
     enableToolbarInternalActions: false,
-   enableDensityToggle: false, initialState: { density: 'compact' },
+    enableDensityToggle: false, initialState: { density: 'compact' },
     enableRowSelection: true,
     enableRowNumbers: true,
     enableColumnPinning: true,

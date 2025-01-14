@@ -16,6 +16,8 @@ import CreateOrEditSalesmanAttendanceDialog from '../../components/dialogs/sales
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { SalesService } from '../../services/SalesServices'
 import { GetSalesManVisitSummaryReportDto } from '../../dtos/response/SalesDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 
 export default function SalesmanVisitPage() {
@@ -23,7 +25,7 @@ export default function SalesmanVisitPage() {
   const [realdate, setRealDate] = useState<string | undefined>()
   const { user: LoggedInUser } = useContext(UserContext)
   const [reports, setReports] = useState<GetSalesManVisitSummaryReportDto[]>([])
-  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetSalesManVisitSummaryReportDto[]>, BackendError>(["visits", date], async () =>new SalesService().GetSalesmanVisit({ date: date }))
+  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetSalesManVisitSummaryReportDto[]>, BackendError>(["visits", date], async () => new SalesService().GetSalesmanVisit({ date: date }))
   const [employee, setEmployee] = useState<string>()
   const [dialog, setDialog] = useState<string | undefined>()
   const isFirstRender = useRef(true);
@@ -84,6 +86,8 @@ export default function SalesmanVisitPage() {
       },
       {
         accessorKey: 'employee.label',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.employee.label || "" })} />,
         header: 'Employee',
 
         Cell: (cell) => <Typography onClick={() => {
@@ -96,17 +100,23 @@ export default function SalesmanVisitPage() {
       },
       {
         accessorKey: 'last_remark',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.last_remark || "" })} />,
         header: 'Last Remark',
 
 
       },
       {
         accessorKey: 'date1',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.date1 || "" })} />,
         header: 'Date',
 
       },
       {
         accessorKey: 'new_visits1',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.new_visits1 || "" })} />,
         header: 'New Visits',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -115,6 +125,8 @@ export default function SalesmanVisitPage() {
       },
       {
         accessorKey: 'old_visits1',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.old_visits1 || "" })} />,
         header: 'Old Visits',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -123,16 +135,22 @@ export default function SalesmanVisitPage() {
       },
       {
         accessorKey: 'working_time1',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.working_time1 || "" })} />,
         header: 'Time',
 
       },
       {
         accessorKey: 'date2',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.date2 || "" })} />,
         header: 'Date',
 
       },
       {
         accessorKey: 'new_visits2',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.new_visits2 || "" })} />,
         header: 'New Visits',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -140,6 +158,8 @@ export default function SalesmanVisitPage() {
       },
       {
         accessorKey: 'old_visits2',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.old_visits2 || "" })} />,
         header: 'Old Visits',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -147,16 +167,22 @@ export default function SalesmanVisitPage() {
       },
       {
         accessorKey: 'working_time2',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.working_time2 || "" })} />,
         header: 'Time',
 
       },
       {
         accessorKey: 'date3',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.date3 || "" })} />,
         header: 'Date',
 
       },
       {
         accessorKey: 'new_visits3',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.new_visits3 || "" })} />,
         header: 'New Visits',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -165,6 +191,8 @@ export default function SalesmanVisitPage() {
       },
       {
         accessorKey: 'old_visits3',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.old_visits3 || "" })} />,
         header: 'Old Visits',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -173,6 +201,8 @@ export default function SalesmanVisitPage() {
       },
       {
         accessorKey: 'working_time3',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.working_time3 || "" })} />,
         header: 'Time',
 
       },
@@ -206,13 +236,13 @@ export default function SalesmanVisitPage() {
         color: 'white'
       },
     }),
-	muiTableHeadCellProps: ({ column }) => ({
+    muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-of-type(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-of-type(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-of-type(1) span': {
           display: 'inline', // Visible on hover
@@ -233,7 +263,7 @@ export default function SalesmanVisitPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 2000 }
     },
     enableGrouping: true,

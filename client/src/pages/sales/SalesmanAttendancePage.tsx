@@ -9,7 +9,6 @@ import { toTitleCase } from '../../utils/TitleCase'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import PopUp from '../../components/popup/PopUp'
 import { Delete, Edit, FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
-import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import CreateOrEditSalesmanAttendanceDialog from '../../components/dialogs/sales/CreateOrEditSalesmanAttendanceDialog'
@@ -17,8 +16,10 @@ import DeleteVisitSalesManAttendanceDialog from '../../components/dialogs/sales/
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { UserService } from '../../services/UserServices'
 import { SalesService } from '../../services/SalesServices'
-import { GetSalesAttendanceDto } from '../../dtos/response/AttendanceDto'
 import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { GetSalesAttendanceDto } from '../../dtos/response/SalesDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 function SalesmanAttendancePage() {
@@ -26,7 +27,6 @@ function SalesmanAttendancePage() {
     const [users, setUsers] = useState<DropDownDto[]>([])
     const [attendance, setAttendance] = useState<GetSalesAttendanceDto>()
     const [attendances, setAttendances] = useState<GetSalesAttendanceDto[]>([])
-    const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
     const [userId, setUserId] = useState<string>('all')
     const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
         start_date: moment(new Date().setDate(new Date().getDate() - 10)).format("YYYY-MM-DD")
@@ -47,7 +47,7 @@ function SalesmanAttendancePage() {
     previous_date.setDate(day)
     previous_date.setHours(0, 0, 0, 0)
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: false }))
-    const { data, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetSalesAttendanceDto[], page: number, total: number, limit: number }>, BackendError>(["attendances", userId, dates?.start_date, dates?.end_date], async () => new SalesService().GetSalesmanAttendances({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
+    const { data, isLoading } = useQuery<AxiosResponse<GetSalesAttendanceDto[]>, BackendError>(["attendances", userId, dates?.start_date, dates?.end_date], async () => new SalesService().GetSalesmanAttendances({ id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     const columns = useMemo<MRT_ColumnDef<GetSalesAttendanceDto>[]>(
@@ -60,7 +60,7 @@ function SalesmanAttendancePage() {
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row" spacing={1}>
-                            {LoggedInUser?.role=="admin" && LoggedInUser?.assigned_permissions.includes('salesman_attendance_delete') && <Tooltip title="delete">
+                            {LoggedInUser?.role == "admin" && LoggedInUser?.assigned_permissions.includes('salesman_attendance_delete') && <Tooltip title="delete">
                                 <IconButton color="error"
                                     onClick={() => {
 
@@ -76,7 +76,7 @@ function SalesmanAttendancePage() {
                             {LoggedInUser?.assigned_permissions.includes('salesman_attendance_edit') &&
                                 <Tooltip title="Edit">
                                     <IconButton
-                                        disabled={LoggedInUser.role!=="admin" && new Date(cell.row.original.date) < previous_date}
+                                        disabled={LoggedInUser.role !== "admin" && new Date(cell.row.original.date) < previous_date}
                                         onClick={() => {
 
                                             setDialog('CreateOrEditSalesmanAttendanceDialog')
@@ -101,29 +101,44 @@ function SalesmanAttendancePage() {
             {
                 accessorKey: 'employee.label',
                 header: ' Employee',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={attendances.map((item) => { return item.employee.label || "" })} />,
                 Cell: (cell) => <span title={cell.row.original.remark && cell.row.original.remark}>{cell.row.original.employee && cell.row.original.employee.label}</span>
             },
             {
                 accessorKey: 'attendance',
                 header: ' Attendance',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={attendances.map((item) => { return item.attendance || "" })} />,
                 aggregationFn: 'count',
 
             },
             {
                 accessorKey: 'sunday_working',
                 header: ' Sunday Wokring',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={attendances.map((item) => { return item.sunday_working || "" })} />,
                 aggregationFn: 'count',
 
             },
             {
                 accessorKey: 'station.value',
                 header: ' Station',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={attendances.map((item) => { return item.station.label || "" })} />,
                 aggregationFn: 'count'
 
             },
             {
                 accessorKey: 'in_time',
                 header: ' Work Time',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={attendances.map((item) => { return item.in_time || "" })} />,
                 aggregationFn: 'count',
 
                 Cell: (cell) => <span >{cell.row.original.in_time + " - " + cell.row.original.end_time}</span>
@@ -131,6 +146,9 @@ function SalesmanAttendancePage() {
             {
                 accessorKey: 'new_visit',
                 header: ' New Visit',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={attendances.map((item) => { return item.new_visit || "" })} />,
                 aggregationFn: 'sum',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -139,24 +157,36 @@ function SalesmanAttendancePage() {
             {
                 accessorKey: 'old_visit',
                 header: ' Old Visit',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={attendances.map((item) => { return item.old_visit || "" })} />,
                 aggregationFn: 'sum',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
             },
             {
                 accessorKey: 'remark',
-                header: ' Remarks'
+                header: ' Remarks',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={attendances.map((item) => { return item.remark || "" })} />,
             },
 
             {
                 accessorKey: 'updated_at',
                 header: 'Last Updated At',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={attendances.map((item) => { return item.updated_at || "" })} />,
 
                 Cell: (cell) => <>{cell.row.original.updated_at}</>
             },
             {
                 accessorKey: 'updated_by.label',
                 header: 'Last Updated By',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={attendances.map((item) => { return item.updated_by.label || "" })} />,
 
                 Cell: (cell) => <>{cell.row.original.updated_by.label}</>
             },
@@ -322,10 +352,7 @@ function SalesmanAttendancePage() {
                 </Stack>
             </Box >
         ),
-        renderBottomToolbarCustomActions: () => (
-            <DBPagination paginationData={paginationData} refetch={refetch} setPaginationData={setPaginationData} />
 
-        ),
         muiTableBodyCellProps: () => ({
             sx: {
                 border: '1px solid lightgrey;',
@@ -338,7 +365,7 @@ function SalesmanAttendancePage() {
         }),
         positionToolbarAlertBanner: 'none',
         enableToolbarInternalActions: false,
-       enableDensityToggle: false, initialState: { density: 'compact' },
+        enableDensityToggle: false, initialState: { density: 'compact' },
         enableRowSelection: true,
         enableRowNumbers: true,
         enableColumnPinning: true,
@@ -369,13 +396,8 @@ function SalesmanAttendancePage() {
 
     useEffect(() => {
         if (data) {
-            setAttendances(data.data.result)
-            setPaginationData({
-                ...paginationData,
-                page: data.data.page,
-                limit: data.data.limit,
-                total: data.data.total
-            })
+            setAttendances(data.data)
+
         }
     }, [data])
     useEffect(() => {

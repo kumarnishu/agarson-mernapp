@@ -13,6 +13,8 @@ import { SalesService } from '../../services/SalesServices'
 import { UserService } from '../../services/UserServices'
 import { DropDownDto } from '../../dtos/response/DropDownDto'
 import { GetSalesAttendancesAuto } from '../../dtos/response/SalesDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 
 export default function SalesmanVisitPageAuto() {
@@ -53,17 +55,23 @@ export default function SalesmanVisitPageAuto() {
 
             {
                 accessorKey: 'employee.label',
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.employee.label || "" })} />,
                 header: 'Employee',
 
             },
 
             {
                 accessorKey: 'date',
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.date || "" })} />,
                 header: 'Date',
 
             },
             {
                 accessorKey: 'new_visit',
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.new_visit || "" })} />,
                 header: 'New Visits',
                 aggregationFn: 'sum',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -72,6 +80,8 @@ export default function SalesmanVisitPageAuto() {
             },
             {
                 accessorKey: 'old_visit',
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.old_visit || "" })} />,
                 header: 'Old Visits',
                 aggregationFn: 'sum',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -80,6 +90,8 @@ export default function SalesmanVisitPageAuto() {
             },
             {
                 accessorKey: 'worktime',
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.worktime || "" })} />,
                 header: 'Time',
 
             },
@@ -137,7 +149,7 @@ export default function SalesmanVisitPageAuto() {
             shape: 'rounded',
             variant: 'outlined',
         },
-       enableDensityToggle: false, initialState: {
+        enableDensityToggle: false, initialState: {
             density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 2000 }
         },
         enableGrouping: true,

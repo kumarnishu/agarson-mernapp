@@ -15,6 +15,8 @@ import PopUp from '../../components/popup/PopUp'
 import CreateOrEditAgeingRemarkDialog from '../../components/dialogs/sales/CreateOrEditAgeingRemarkDialog'
 import ViewAgeingRemarksDialog from '../../components/dialogs/sales/ViewAgeingRemarksDialog'
 import { GetAgeingDto } from '../../dtos/response/SalesDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 export default function AgeingPage() {
@@ -72,6 +74,9 @@ export default function AgeingPage() {
             {
                 accessorKey: 'last_remark',
                 header: 'Last Remark',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.last_remark || "" })} />,
                 aggregationFn: 'max',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => <>{cell.row.original.last_remark || ""}</>,
@@ -80,6 +85,9 @@ export default function AgeingPage() {
             {
                 accessorKey: 'next_call',
                 header: 'Next Call',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.next_call || "" })} />,
                 Cell: (cell) => <>{cell.row.original.next_call || ""}</>,
 
             },
@@ -87,6 +95,9 @@ export default function AgeingPage() {
                 accessorKey: 'state',
                 header: 'State',
                 aggregationFn: 'max',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.state || "" })} />,
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => <>{cell.row.original.state || ""}</>,
 
@@ -94,6 +105,9 @@ export default function AgeingPage() {
             {
                 accessorKey: 'party',
                 header: 'Party',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.party || "" })} />,
                 Cell: (cell) => <>{cell.row.original.party || ""}</>,
 
             },
@@ -101,6 +115,9 @@ export default function AgeingPage() {
                 accessorKey: 'two5',
                 header: '0-25',
                 aggregationFn: 'sum',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.two5 || "" })} />,
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 //@ts-ignore
@@ -112,6 +129,9 @@ export default function AgeingPage() {
                 accessorKey: 'three0',
                 header: '25-30',
                 aggregationFn: 'sum',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.three0 || "" })} />,
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 //@ts-ignore
@@ -121,6 +141,9 @@ export default function AgeingPage() {
                 accessorKey: 'five5',
                 header: '30-55',
                 aggregationFn: 'sum',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.five5 || "" })} />,
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 //@ts-ignore
@@ -129,6 +152,9 @@ export default function AgeingPage() {
             {
                 accessorKey: 'six0',
                 header: '55-60',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.six0 || "" })} />,
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 //@ts-ignore
@@ -138,6 +164,8 @@ export default function AgeingPage() {
                 accessorKey: 'seven0',
                 header: '60-70',
                 aggregationFn: 'sum',
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.seven0 || "" })} />,
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 //@ts-ignore
@@ -148,6 +176,9 @@ export default function AgeingPage() {
                 accessorKey: 'seventyplus',
                 header: '70+',
                 aggregationFn: 'sum',
+                
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.seventyplus || "" })} />,
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 //@ts-ignore

@@ -16,6 +16,7 @@ import { SalesService } from '../../services/SalesServices'
 import EditReferenceStateDialog from '../../components/dialogs/sales/EditReferenceStateDialog'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { GetReferenceDto } from '../../dtos/response/SalesDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 export default function ReferencesReportPage() {
   const [hidden, setHidden] = useState(false)
@@ -48,14 +49,16 @@ export default function ReferencesReportPage() {
         accessorKey: 'last_remark',
         header: 'Remark',
         aggregationFn: 'count',
-        filterVariant: 'multi-select',
+      
+        filterFn: CustomFilterFunction,
         Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.last_remark || "" })} />,
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
         accessorKey: 'stage',
         header: 'Stage',
-        filterVariant: 'multi-select',
+      
+        filterFn: CustomFilterFunction,
         Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.stage || "" })} />,
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -63,7 +66,8 @@ export default function ReferencesReportPage() {
       {
         accessorKey: 'party',
         header: 'Party',
-        filterVariant: 'multi-select',
+      
+        filterFn: CustomFilterFunction,
         Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.party || "" })} />,
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -71,7 +75,8 @@ export default function ReferencesReportPage() {
       {
         accessorKey: 'address',
         header: 'Address',
-        filterVariant: 'multi-select',
+      
+        filterFn: CustomFilterFunction,
         Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.address || "" })} />,
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -79,7 +84,8 @@ export default function ReferencesReportPage() {
       {
         accessorKey: 'state',
         header: 'State',
-        filterVariant: 'multi-select',
+      
+        filterFn: CustomFilterFunction,
         Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.state || "" })} />,
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -87,7 +93,8 @@ export default function ReferencesReportPage() {
       {
         accessorKey: 'pincode',
         header: 'Pincode',
-        filterVariant: 'multi-select',
+      
+        filterFn: CustomFilterFunction,
         Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return String(item.pincode) || "" })} />,
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -95,7 +102,8 @@ export default function ReferencesReportPage() {
       {
         accessorKey: 'business',
         header: 'Business',
-        filterVariant: 'multi-select',
+      
+        filterFn: CustomFilterFunction,
         Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.business || "" })} />,
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -106,7 +114,8 @@ export default function ReferencesReportPage() {
     const dynamicColumns: MRT_ColumnDef<GetReferenceDto>[] = dynamicKeys.map((key) => ({
       accessorKey: key,
       header: key, // Use the dynamic key as the column header
-      filterVariant: 'multi-select',
+    
+        filterFn: CustomFilterFunction,
       Filter: (props) => <CustomColumFilter id={key} table={props.table} options={reports.map((item) => { return item[key] || "" })} />,
       Cell: ({ cell }) => HandleNumbers(cell.getValue()), // Optional: Format the value if needed
       aggregationFn: 'sum', // Example: Aggregate total sale_scope

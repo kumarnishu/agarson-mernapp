@@ -40,11 +40,11 @@ export class SalesService {
     public async GetVisitReportRemarksHistory(employee: string, date: string) {
         return await apiClient.get(`visit/remarks/?date=${date}&employee=${employee}`)
     }
-    public async GetSalesmanAttendances({ limit, page, start_date, end_date, id }: { limit: number | undefined, page: number | undefined, start_date?: string, end_date?: string, id?: string }) {
+    public async GetSalesmanAttendances({  start_date, end_date, id }: {start_date?: string, end_date?: string, id?: string }) {
         if (id)
-            return await apiClient.get(`attendances/?id=${id}&start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}`)
+            return await apiClient.get(`attendances/?id=${id}&start_date=${start_date}&end_date=${end_date}`)
         else
-            return await apiClient.get(`attendances/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}`)
+            return await apiClient.get(`attendances/?start_date=${start_date}&end_date=${end_date}`)
 
     }
     public async CreateOrEditSalesmanAttendance({ id, body }: {
