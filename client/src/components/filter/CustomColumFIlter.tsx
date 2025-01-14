@@ -79,14 +79,14 @@ export function CustomColumFilter<T extends MRT_RowData>({
                             }
                         }}
                     />
-                    <ListItemText>{option ? option.toString().slice(0, 50) : ""}</ListItemText>
+                    <ListItemText >{option ? option.toString() : ""}</ListItemText>
                 </label>
             </MenuItem>
         );
     };
 
     return (
-        <Box sx={{ maxHeight: 500, overflowY: "auto", pt: 2 }}>
+        <Box sx={{ maxHeight: '100vh', width: '100%', overflowY: "none", pt: 2 }}>
             <Box sx={{ position: "sticky", top: 0, zIndex: 1, backgroundColor: "white", p: 1, pb: 2 }}>
                 <Stack direction="row" alignItems="center" py={1}>
                     <Typography fontSize={12} minWidth={200}>
@@ -119,7 +119,7 @@ export function CustomColumFilter<T extends MRT_RowData>({
             </Box>
             <FixedSizeList
                 height={400} // Adjust height as needed
-                width="100%"
+                width="100wh"
                 itemSize={46} // Height of each row
                 itemCount={filteredOptions.length}
             >
