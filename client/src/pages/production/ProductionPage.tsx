@@ -70,7 +70,6 @@ export default function ProductionPage() {
         accessorKey: 'actions',enableColumnFilter: false,
         header: '',
 
-        enableColumnFilter: false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>

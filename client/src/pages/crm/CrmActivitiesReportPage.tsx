@@ -64,7 +64,6 @@ function CrmActivitiesReportPage() {
                 accessorKey: 'actions',enableColumnFilter: false,
                 header: '',
 
-                enableColumnFilter: false,
                 Footer: <b></b>,
                 Cell: ({ cell }) => <PopUp
                     element={

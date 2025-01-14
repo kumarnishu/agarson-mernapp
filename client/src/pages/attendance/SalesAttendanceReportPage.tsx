@@ -14,6 +14,8 @@ import ApplyLeaveFromAdminDialog from '../../components/dialogs/attendance/Apply
 import ApplyLeaveDialog from '../../components/dialogs/attendance/ApplyLeaveDialog'
 import { useNavigate } from 'react-router-dom'
 import { GetSalesmanAttendanceReportDto } from '../../dtos/response/AttendanceDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 export default function SalesAttendanceReportPage() {
   const [balance, setBalance] = useState<GetSalesmanAttendanceReportDto>()
@@ -62,17 +64,14 @@ export default function SalesAttendanceReportPage() {
     //column definitions...
     () => balances && [
       {
-        accessorKey: 'actions',enableColumnFilter: false,
+        accessorKey: 'actions', enableColumnFilter: false,
         header: 'Actions',
-
-        enableColumnFilter: false,
-
         Cell: ({ cell }) => <>
           <Button color="inherit" size="small"
-            disabled={(cell.row.original.attendance + cell.row.original.consumed.sl + cell.row.original.consumed.fl + cell.row.original.consumed.sw + cell.row.original.consumed.cl) == getDaysInMonth(yearmonth)}
+            disabled={(Number(cell.row.original.attendance) + cell.row.original.consumed.sl + cell.row.original.consumed.fl + cell.row.original.consumed.sw + cell.row.original.consumed.cl) == getDaysInMonth(yearmonth)}
             onClick={() => {
               setBalance(cell.row.original)
-              if (LoggedInUser?.role=="admin")
+              if (LoggedInUser?.role == "admin")
                 setDialog('ApplyLeaveFromAdminDialog')
               else
                 setDialog('ApplyLeaveDialog')
@@ -155,12 +154,15 @@ export default function SalesAttendanceReportPage() {
       {
         accessorKey: 'yearmonth',
         header: 'year Month',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.yearmonth || "" })} />,
         Cell: (cell) => <>{cell.row.original.yearmonth ? cell.row.original.yearmonth : ""}</>,
       },
       {
         accessorKey: 'employee.label',
         header: 'Employee',
-        enableColumnFilter: true,
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.employee.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.employee ? cell.row.original.employee.label : ""}</>,
       }
     ],
@@ -208,7 +210,7 @@ export default function SalesAttendanceReportPage() {
     muiTableBodyRowProps: (props) => ({
 
       sx: {
-        backgroundColor: (props.row.original.attendance + props.row.original.consumed?.sl + props.row.original.consumed?.fl + props.row.original.consumed?.sw + props.row.original.consumed?.cl) === getDaysInMonth(yearmonth) ? 'white' : 'yellow'
+        backgroundColor: (Number(props.row.original.attendance) + props.row.original.consumed?.sl + props.row.original.consumed?.fl + props.row.original.consumed?.sw + props.row.original.consumed?.cl) === getDaysInMonth(yearmonth) ? 'white' : 'yellow'
       }
     }),
     muiTableBodyCellProps: () => ({

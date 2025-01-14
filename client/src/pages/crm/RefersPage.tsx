@@ -109,7 +109,6 @@ export default function RefersPage() {
       {
         accessorKey: 'actions',enableColumnFilter: false,
         header: '',
-        enableColumnFilter: false,
 
         Footer: <b></b>,
         Cell: ({ cell }) => <PopUp

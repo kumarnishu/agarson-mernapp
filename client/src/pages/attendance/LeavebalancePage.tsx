@@ -14,6 +14,8 @@ import DeleteLeavebalanceDialog from '../../components/dialogs/attendance/Delete
 import CreateOrEditLeaveBalanceDialog from '../../components/dialogs/attendance/CreateOrEditLeaveBalanceDialog'
 import { AttendanceService } from '../../services/AttendanceService'
 import { GetLeaveBalanceDto } from '../../dtos/response/AttendanceDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 
 export default function LeaveBalancePage() {
@@ -34,10 +36,8 @@ export default function LeaveBalancePage() {
     //column definitions...
     () => balances && [
       {
-        accessorKey: 'actions',enableColumnFilter: false,
+        accessorKey: 'actions', enableColumnFilter: false,
         header: '',
-
-        enableColumnFilter: false,
 
         Cell: ({ cell }) => <PopUp
           element={
@@ -78,41 +78,57 @@ export default function LeaveBalancePage() {
       {
         accessorKey: 'sl',
         header: 'sl',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.sl || "" })} />,
         Cell: (cell) => <>{cell.row.original.sl ? cell.row.original.sl : ""}</>,
       },
       {
         accessorKey: 'fl',
         header: 'fl',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.fl || "" })} />,
         Cell: (cell) => <>{cell.row.original.fl ? cell.row.original.fl : ""}</>,
       },
       {
         accessorKey: 'cl',
         header: 'cl',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.cl || "" })} />,
         Cell: (cell) => <>{cell.row.original.cl ? cell.row.original.cl : ""}</>,
       },
       {
         accessorKey: 'sw',
         header: 'sw',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.sw || "" })} />,
         Cell: (cell) => <>{cell.row.original.sw ? cell.row.original.sw : ""}</>,
       },
       {
         accessorKey: 'yearmonth',
         header: 'year Month',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.yearmonth || "" })} />,
         Cell: (cell) => <>{cell.row.original.yearmonth ? cell.row.original.yearmonth : ""}</>,
       },
       {
         accessorKey: 'employee.label',
         header: 'Employee',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.employee.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.employee ? cell.row.original.employee.label : ""}</>,
       },
       {
         accessorKey: 'created_at',
         header: 'Created At',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.created_at || "" })} />,
         Cell: (cell) => <>{cell.row.original.created_at || ""}</>,
       },
       {
         accessorKey: 'updated_by',
         header: 'Last updated by',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.updated_by.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.updated_by ? cell.row.original.updated_by.label : ""}</>,
       },
 
@@ -169,7 +185,7 @@ export default function LeaveBalancePage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
     },
     enableGrouping: true,

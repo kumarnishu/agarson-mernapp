@@ -62,7 +62,6 @@ export default function DriverAppSystemPage() {
         accessorKey: 'actions',enableColumnFilter: false,
         header: 'Action',
 
-        enableColumnFilter: false,
 
         Cell: ({ cell }) => <PopUp
           element={

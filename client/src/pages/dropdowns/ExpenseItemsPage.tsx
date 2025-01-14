@@ -40,7 +40,6 @@ export default function ExpenseItemsPage() {
       {
         accessorKey: 'actions',enableColumnFilter: false,
         header: '',
-        enableColumnFilter: false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">

@@ -73,7 +73,6 @@ export default function ShoeWeightPage() {
         accessorKey: 'actions',enableColumnFilter: false,
         header: '',
 
-        enableColumnFilter: false,
 
         Cell: ({ cell }) => <PopUp
           element={

@@ -35,7 +35,6 @@ export default function ArticleStockPage() {
       {
         accessorKey: 'actions',enableColumnFilter: false,
         header: 'Actions',
-        enableColumnFilter: false,
         Cell: ({ cell }) => <>
           <Button color="error"
             disabled={cell.row.original.six + cell.row.original.seven + cell.row.original.eight + cell.row.original.nine - cell.row.original.ten == 0}

@@ -42,7 +42,6 @@ export default function DyePage() {
         accessorKey: 'actions',enableColumnFilter: false,
         header: '',
 
-        enableColumnFilter: false,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">

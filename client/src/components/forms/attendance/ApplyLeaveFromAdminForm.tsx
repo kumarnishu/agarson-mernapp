@@ -78,7 +78,7 @@ function ApplyLeaveFromAdminForm({ leavedata, setDialog }: { leavedata: GetSales
                     leave_type: 'cl',
                     leave: values.cl,
                     status: values.status,
-                    yearmonth: values.yearmonth,
+                    yearmonth: Number(values.yearmonth),
                     employee: values.employee
                 }
                 mutate({ body: data })
@@ -88,7 +88,7 @@ function ApplyLeaveFromAdminForm({ leavedata, setDialog }: { leavedata: GetSales
                     leave_type: 'fl',
                     leave: values.fl,
                     status: values.status,
-                    yearmonth: values.yearmonth,
+                    yearmonth: Number(values.yearmonth),
                     employee: values.employee
                 }
                 mutate({ body: data })
@@ -98,7 +98,7 @@ function ApplyLeaveFromAdminForm({ leavedata, setDialog }: { leavedata: GetSales
                     leave_type: 'sw',
                     leave: values.sw,
                     status: values.status,
-                    yearmonth: values.yearmonth,
+                    yearmonth: Number(values.yearmonth),
                     employee: values.employee
                 }
                 mutate({ body: data })

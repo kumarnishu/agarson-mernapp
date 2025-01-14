@@ -42,11 +42,11 @@ function CreateOrEditLeaveForm({ balance, setDialog }: { balance?: GetLeaveBalan
 
     const formik = useFormik({
         initialValues: {
-            sl: balance?.sl || 0,
-            fl: balance?.sl || 0,
-            sw: balance?.sl || 0,
-            cl: balance?.sl || 0,
-            yearmonth: balance?.yearmonth || getCurrentYearMonth(),
+            sl:Number(balance?.sl) || 0,
+            fl:Number(balance?.fl) || 0,
+            sw:Number(balance?.sw) || 0,
+            cl:Number(balance?.cl) || 0,
+            yearmonth: Number(balance?.yearmonth) || getCurrentYearMonth(),
             employee: balance && balance.employee.id || "",
         },
         validationSchema: Yup.object({

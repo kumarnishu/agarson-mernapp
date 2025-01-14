@@ -13,6 +13,8 @@ import { toTitleCase } from '../../utils/TitleCase'
 import ApproveOrRejectLeaveDialog from '../../components/dialogs/attendance/ApproveOrRejectLeaveDialog'
 import ViewLeaveDocumentDialog from '../../components/dialogs/attendance/ViewLeaveDocumentDialog'
 import { GetLeaveDto } from '../../dtos/response/AttendanceDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 
 export default function LeavesPage() {
@@ -34,11 +36,10 @@ export default function LeavesPage() {
     //column definitions...
     () => balances && [
       {
-        accessorKey: 'actions',enableColumnFilter: false,
+        accessorKey: 'actions', enableColumnFilter: false,
         header: '',
-        enableColumnFilter: false,
         Cell: ({ cell }) => <>
-          {LoggedInUser?.role=="admin" &&
+          {LoggedInUser?.role == "admin" &&
             <Button color="error"
               disabled={cell.row.original.status === 'rejected'}
               onClick={() => {
@@ -54,32 +55,43 @@ export default function LeavesPage() {
       {
         accessorKey: 'status',
         header: 'status',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.status || "" })} />,
         Cell: (cell) => <>{cell.row.original.status ? cell.row.original.status : ""}</>,
       },
       {
         accessorKey: 'leave_type',
         header: 'leave_type',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.leave_type || "" })} />,
         Cell: (cell) => <>{cell.row.original.leave_type ? cell.row.original.leave_type : ""}</>,
       },
       {
         accessorKey: 'leave',
         header: 'leave',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.leave || "" })} />,
         Cell: (cell) => <>{cell.row.original.leave ? cell.row.original.leave : ""}</>,
       },
 
       {
         accessorKey: 'yearmonth',
         header: 'year Month',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.yearmonth || "" })} />,
         Cell: (cell) => <>{cell.row.original.yearmonth ? cell.row.original.yearmonth : ""}</>,
       },
       {
         accessorKey: 'employee.label',
         header: 'Employee',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.employee.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.employee ? cell.row.original.employee.label : ""}</>,
       },
       {
         accessorKey: 'photo',
         header: 'Photo',
+        enableColumnFilter: false,
         Cell: (cell) => <>
           {!cell.row.original.photo || cell.row.original.photo == "" ? <></> : <Photo onClick={() => { setUrl(cell.row.original.photo); setDialog('ViewLeaveDocumentDialog') }} />}
         </>,
@@ -87,11 +99,15 @@ export default function LeavesPage() {
       {
         accessorKey: 'created_at',
         header: 'Created At',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.created_at || "" })} />,
         Cell: (cell) => <>{cell.row.original.created_at || ""}</>,
       },
       {
         accessorKey: 'updated_by',
         header: 'Last updated by',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.updated_by.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.updated_by ? cell.row.original.updated_by.label : ""}</>,
       },
 

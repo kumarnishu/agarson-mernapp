@@ -33,7 +33,6 @@ export default function ArticleConsumedStockpage() {
       {
         accessorKey: 'actions',enableColumnFilter: false,
         header: 'Actions',
-        enableColumnFilter: false,
         Cell: ({ cell }) => <>
           {LoggedInUser?.role=="admin" && <Button color="error"
             onClick={() => {
