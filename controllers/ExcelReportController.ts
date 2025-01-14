@@ -163,7 +163,7 @@ export class ExcelReportController {
                             }
                             else
                                 //@ts-ignore
-                                obj[key] = String(dt[key])
+                                obj[key] = dt[key]
 
                             //adding bills age actions
                             if (cat && cat.category == 'BillsAge' && key == 'Account Name') {
@@ -205,7 +205,7 @@ export class ExcelReportController {
                         }
                         else {
                             if (keys[i].type == "number")
-                                obj[key] = "0"
+                                obj[key] = 0
                             else
                                 obj[key] = ""
                         }

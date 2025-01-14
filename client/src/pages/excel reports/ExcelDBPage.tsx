@@ -19,6 +19,7 @@ import ViewExcelDBRemarksDialog from '../../components/dialogs/excelreports/View
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { IColumnRowData } from '../../dtos/SalesDto'
 import { DropDownDto } from '../../dtos/DropDownDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 export default function ExcelDBPage() {
   const [hidden, setHidden] = useState(false)
@@ -139,15 +140,7 @@ export default function ExcelDBPage() {
           accessorKey: item.key,
           header: item.header,
           /* @ts-ignore */
-          filterFn: (
-            row,
-            columnId: string,
-            filterValue: unknown[]
-          ) => {
-            return filterValue.some(
-              val => row.getValue<unknown[]>(columnId)==val
-            )
-          },
+          filterFn: CustomFilterFunction,
           Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
           Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
           Footer: "",
@@ -156,15 +149,7 @@ export default function ExcelDBPage() {
       else if (item.type == "timestamp")
         return {
           accessorKey: item.key, header: item.header,  /* @ts-ignore */
-          filterFn: (
-            row,
-            columnId: string,
-            filterValue: unknown[]
-          ) => {
-            return filterValue.some(
-              val => row.getValue<unknown[]>(columnId)==val
-            )
-          },
+          filterFn: CustomFilterFunction,
           Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
           Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />, Footer: ""
         }
@@ -173,15 +158,7 @@ export default function ExcelDBPage() {
           accessorKey: item.key,
           header: item.header,
           /* @ts-ignore */
-          filterFn: (
-            row,
-            columnId: string,
-            filterValue: unknown[]
-          ) => {
-            return filterValue.some(
-              val => row.getValue<unknown[]>(columnId)==val
-            )
-          },
+          filterFn: CustomFilterFunction,
           Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
           Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
           Footer: <b>Total</b>,
@@ -190,18 +167,9 @@ export default function ExcelDBPage() {
         return {
           accessorKey: item.key, header: item.header,
           aggregationFn: 'sum',
-          /* @ts-ignore */
-          filterFn: (
-            row,
-            columnId: string,
-            filterValue: unknown[]
-          ) => {
-            return filterValue.some(
-              val => row.getValue<unknown[]>(columnId)==val
-            )
-          },
+          filterVariant: 'range',
+          filterFn: 'between',
           Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
-          Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
           AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
           //@ts-ignore
           Footer: ({ table }) => <b>{index < 2 ? table.getFilteredRowModel().rows.length : table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
