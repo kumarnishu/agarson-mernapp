@@ -1,8 +1,6 @@
 import xlsx from "xlsx"
 import { NextFunction, Request, Response } from 'express';
 import isMongoId from "validator/lib/isMongoId";
-import { GetCrmCityDto, CreateCityFromExcelDto, GetKeyDto, CreateKeyFromExcelDto, CreateOrEditCrmCity } from "../dtos/AuthorizationDto";
-import { DropDownDto, GetCrmStateDto, GetKeyCategoryDto } from "../dtos/DropDownDto";
 import { ICRMCity, ICRMState, IKey, IKeyCategory } from "../interfaces/AuthorizationInterface";
 import { CRMCity, CRMState, Key, KeyCategory } from "../models/AuthorizationModel";
 import Lead, { ReferredParty } from "../models/CrmModel";
@@ -10,6 +8,9 @@ import { User } from "../models/UserModel";
 import { assignCRMCities } from "../services/assignCRMCities";
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
 import { convertDateToExcelFormat } from "../utils/datesHelper";
+import { CreateOrEditCrmCity, CreateCityFromExcelDto, CreateKeyFromExcelDto } from "../dtos/request/AuthorizationDto";
+import { GetCrmCityDto, GetKeyDto } from "../dtos/response/AuthorizationDto";
+import { DropDownDto, GetCrmStateDto, GetKeyCategoryDto } from "../dtos/response/DropDownDto";
 
 export class AuthorizationController {
      

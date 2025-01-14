@@ -1,19 +1,18 @@
-import { NextFunction, Request, Response, Router } from 'express';
-import express from 'express'
+import { NextFunction, Request, Response } from 'express';
 import isEmail from "validator/lib/isEmail";
 import isMongoId from "validator/lib/isMongoId";
 import moment from 'moment';
-import { deleteToken, deleteTokenOnly, isAuthenticatedUser, isProfileAuthenticated, sendUserToken } from '../middlewares/auth.middleware';
+import { deleteToken, deleteTokenOnly,   sendUserToken } from '../middlewares/auth.middleware';
 import { FetchAllPermissions } from '../utils/fillAllPermissions';
 import { sendEmail } from '../utils/sendEmail';
-import { IMenu } from '../dtos/AuthorizationDto';
-import { DropDownDto } from '../dtos/DropDownDto';
-
-import { Asset, IUser } from '../interfaces/UserController';
+import { Asset, IUser } from '../interfaces/UserInterface';
 import { User } from '../models/UserModel';
 import { destroyCloudFile } from '../services/destroyCloudFile';
 import { uploadFileToCloud } from '../services/uploadFileToCloud';
-import { GetUserDto, createOrEditUserDto, UpdateProfileDto, AssignUsersDto, LoginDto, UpdatePasswordDto, ResetPasswordDto, AssignPermissionForOneUserDto, AssignPermissionForMultipleUserDto, VerifyEmailDto, CreateLoginByThisUserDto } from '../dtos/UserDto';
+import { createOrEditUserDto, UpdateProfileDto, AssignUsersDto, LoginDto, UpdatePasswordDto, ResetPasswordDto, AssignPermissionForOneUserDto, AssignPermissionForMultipleUserDto, CreateLoginByThisUserDto, VerifyEmailDto } from '../dtos/request/UserDto';
+import { IMenu } from '../dtos/response/AuthorizationDto';
+import { DropDownDto } from '../dtos/response/DropDownDto';
+import { GetUserDto } from '../dtos/response/UserDto';
 
 export class UserController {
     public async SignUp(req: Request, res: Response, next: NextFunction) {
@@ -83,10 +82,10 @@ export class UserController {
             dp: owner.dp?.public_url || "",
             orginal_password: owner.orginal_password,
             impersonated_user: owner.impersonated_user && { _id: owner.impersonated_user._id, username: owner.impersonated_user.username, is_admin: Boolean(owner.impersonated_user.is_admin) },
-            is_admin: owner.is_admin,
-            email_verified: owner.email_verified,
-            mobile_verified: owner.mobile_verified,
-            is_active: owner.is_active,
+            is_admin: owner.is_admin ? "admin" : "user",
+            email_verified: owner.email_verified ? "verified" : 'not verified',
+            mobile_verified: owner.mobile_verified ? "verified" : 'not verified',
+            is_active: owner.is_active ? "active" : "inactive",
             last_login: moment(owner.last_login).calendar(),
             is_multi_login: owner.is_multi_login,
             assigned_users: owner.assigned_users.map((u) => {
@@ -94,8 +93,8 @@ export class UserController {
                     id: owner._id, label: owner.username, value: owner.username
                 }
             }),
-            assigned_crm_states: owner.assigned_crm_states.length || 0,
-            assigned_crm_cities: owner.assigned_crm_cities.length || 0,
+            assigned_crm_states: owner.assigned_crm_states.map((i) => { return i.state }).toString(),
+            assigned_crm_cities: owner.assigned_crm_cities.map((i) => { return i.city }).toString(),
             assigned_permissions: owner.assigned_permissions,
             created_at: moment(owner.created_at).format("DD/MM/YYYY"),
             updated_at: moment(owner.updated_at).format("DD/MM/YYYY"),
@@ -317,20 +316,19 @@ export class UserController {
                 dp: u.dp?.public_url || "",
                 orginal_password: u.orginal_password,
                 assigned_erpEmployees: 0,
-                is_admin: u.is_admin,
-                email_verified: u.email_verified,
-                mobile_verified: u.mobile_verified,
-                is_active: u.is_active,
-                last_login: moment(u.last_login).format("lll"),
+                is_admin: u.is_admin ? "admin" : "user",
+                email_verified: u.email_verified ? "verified" : 'not verified',
+                mobile_verified: u.mobile_verified ? "verified" : 'not verified',
+                is_active: u.is_active ? "active" : "inactive",
+                last_login: moment(u.last_login).calendar(),
                 is_multi_login: u.is_multi_login,
                 assigned_users: u.assigned_users.map((u) => {
                     return {
                         id: u._id, label: u.username, value: u.username
                     }
                 }),
-
-                assigned_crm_states: u.assigned_crm_states.length || 0,
-                assigned_crm_cities: u.assigned_crm_cities.length || 0,
+                assigned_crm_states: u.assigned_crm_states.map((i) => { return i.state }).toString(),
+                assigned_crm_cities: u.assigned_crm_cities.map((i) => { return i.city }).toString(),
                 assigned_permissions: u.assigned_permissions,
                 created_at: moment(u.created_at).format("DD/MM/YYYY"),
                 updated_at: moment(u.updated_at).format("DD/MM/YYYY"),
@@ -382,20 +380,20 @@ export class UserController {
                 dp: u.dp?.public_url || "",
                 orginal_password: u.orginal_password,
                 assigned_erpEmployees: 0,
-                is_admin: u.is_admin,
-                email_verified: u.email_verified,
-                mobile_verified: u.mobile_verified,
-                is_active: u.is_active,
-                last_login: moment(u.last_login).format("lll"),
+                is_admin: u.is_admin ? "admin" : "user",
+                email_verified: u.email_verified ? "verified" : 'not verified',
+                mobile_verified: u.mobile_verified ? "verified" : 'not verified',
+                is_active: u.is_active ? "active" : "inactive",
+                last_login: moment(u.last_login).calendar(),
                 is_multi_login: u.is_multi_login,
                 assigned_users: u.assigned_users.map((u) => {
                     return {
                         id: u._id, label: u.username, value: u.username
                     }
                 }),
+                assigned_crm_states: u.assigned_crm_states.map((i) => { return i.state }).toString(),
+                assigned_crm_cities: u.assigned_crm_cities.map((i) => { return i.city }).toString(),
                 impersonated_user: u.impersonated_user && { _id: u.impersonated_user._id, username: u.impersonated_user.username, is_admin: Boolean(u.impersonated_user.is_admin) },
-                assigned_crm_states: u.assigned_crm_states.length || 0,
-                assigned_crm_cities: u.assigned_crm_cities.length || 0,
                 assigned_permissions: u.assigned_permissions,
                 created_at: moment(u.created_at).format("DD/MM/YYYY"),
                 updated_at: moment(u.updated_at).format("DD/MM/YYYY"),
@@ -420,19 +418,19 @@ export class UserController {
                 mobile: user.mobile,
                 dp: user.dp?.public_url || "",
                 impersonated_user: user.impersonated_user && { _id: user.impersonated_user._id, username: user.impersonated_user.username, is_admin: Boolean(user.impersonated_user.is_admin) }, orginal_password: user.orginal_password,
-                is_admin: user.is_admin,
-                email_verified: user.email_verified,
-                mobile_verified: user.mobile_verified,
-                is_active: user.is_active,
+                is_admin: user.is_admin ? "admin" : "user",
+                email_verified: user.email_verified ? "verified" : 'not verified',
+                mobile_verified: user.mobile_verified ? "verified" : 'not verified',
+                is_active: user.is_active ? "active" : "inactive",
                 last_login: moment(user.last_login).calendar(),
                 is_multi_login: user.is_multi_login,
                 assigned_users: user.assigned_users.map((u) => {
                     return {
-                        id: user._id, label: user.username, value: user.username
+                        id: u._id, label: u.username, value: u.username
                     }
                 }),
-                assigned_crm_states: user.assigned_crm_states.length || 0,
-                assigned_crm_cities: user.assigned_crm_cities.length || 0,
+                assigned_crm_states: user.assigned_crm_states.map((i) => { return i.state }).toString(),
+                assigned_crm_cities: user.assigned_crm_cities.map((i) => { return i.city }).toString(),
                 assigned_permissions: user.assigned_permissions,
                 created_at: moment(user.created_at).format("DD/MM/YYYY"),
                 updated_at: moment(user.updated_at).format("DD/MM/YYYY"),
@@ -497,11 +495,10 @@ export class UserController {
             mobile: user.mobile,
             dp: user.dp?.public_url || "",
             orginal_password: user.orginal_password,
-            is_admin: user.is_admin,
-            email_verified: user.email_verified,
-            mobile_verified: user.mobile_verified,
-            is_active: user.is_active,
-            impersonated_user: user.impersonated_user && { _id: user.impersonated_user._id, username: user.impersonated_user.username, is_admin: Boolean(user.impersonated_user.is_admin) },
+            is_admin: user.is_admin?"admin":"user",
+            email_verified: user.email_verified?"verified":'not verified',
+            mobile_verified: user.mobile_verified?"verified":'not verified',
+            is_active: user.is_active?"active":"inactive",
             last_login: moment(user.last_login).calendar(),
             is_multi_login: user.is_multi_login,
             assigned_users: user.assigned_users.map((u) => {
@@ -509,8 +506,9 @@ export class UserController {
                     id: u._id, label: u.username, value: u.username
                 }
             }),
-            assigned_crm_states: user.assigned_crm_states.length || 0,
-            assigned_crm_cities: user.assigned_crm_cities.length || 0,
+            assigned_crm_states: user.assigned_crm_states.map((i)=>{return i.state}).toString(),
+            assigned_crm_cities: user.assigned_crm_cities.map((i)=>{return i.city}).toString(),
+            impersonated_user: user.impersonated_user && { _id: user.impersonated_user._id, username: user.impersonated_user.username, is_admin: Boolean(user.impersonated_user.is_admin) },
             assigned_permissions: user.assigned_permissions,
             created_at: moment(user.created_at).format("DD/MM/YYYY"),
             updated_at: moment(user.updated_at).format("DD/MM/YYYY"),

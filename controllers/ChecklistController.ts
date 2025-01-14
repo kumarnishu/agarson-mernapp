@@ -6,14 +6,15 @@ import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
 import { areDatesEqual, previousYear, nextYear, getFirstMonday, currentMonth, previousMonth, nextMonth } from "../utils/datesHelper";
 
 import { getChecklistScore } from "../utils/getChecklistScore";
-import { CreateChecklistFromExcelDto, GetChecklistTopBarDto, GetChecklistDto, GroupedChecklistDto, CreateOrEditChecklistDto, CreateOrEditChecklistRemarkDto, GetChecklistRemarksDto } from "../dtos/ChecklistDto";
 import { IChecklistBox, IChecklist, IChecklistRemark } from "../interfaces/ChecklistInterface";
-import { IUser, Asset } from "../interfaces/UserController";
+import { IUser, Asset } from "../interfaces/UserInterface";
 import { Checklist, ChecklistBox, ChecklistRemark } from "../models/ChecklistModel";
 import { ChecklistCategory } from "../models/DropDownModel";
 import { User } from "../models/UserModel";
 import { destroyCloudFile } from "../services/destroyCloudFile";
 import { uploadFileToCloud } from "../services/uploadFileToCloud";
+import { CreateChecklistFromExcelDto, CreateOrEditChecklistDto, CreateOrEditChecklistRemarkDto } from "../dtos/request/ChecklistDto";
+import { GetChecklistTopBarDto, GetChecklistDto, GroupedChecklistDto, GetChecklistRemarksDto } from "../dtos/response/ChecklistDto";
 
 export class ChecklistController {
 

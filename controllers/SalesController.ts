@@ -3,11 +3,10 @@ import moment, { isDate } from 'moment';
 import xlsx from "xlsx"
 import isMongoId from 'validator/lib/isMongoId';
 import { toTitleCase } from '../utils/trimText';
-import { GetSalesAttendanceDto, CreateOrEditSalesAttendanceDto, GetSalesmanKpiDto } from '../dtos/AttendanceDto';
 import { ISalesAttendance } from '../interfaces/AttendanceInterface';
 import { ICRMState } from '../interfaces/AuthorizationInterface';
 import { IReferenceRemark, IVisitRemark, IAgeing, IAgeingRemark } from '../interfaces/SalesInterface';
-import { IUser } from '../interfaces/UserController';
+import { IUser } from '../interfaces/UserInterface';
 import { SalesAttendance, SalesmanLeaves, SalesmanLeavesColumns } from '../models/AttendanceModel';
 import { KeyCategory, CRMState } from '../models/AuthorizationModel';
 import { ExcelDB } from '../models/ExcelReportModel';
@@ -15,7 +14,11 @@ import { VisitReport, VisitRemark, Reference, ReferenceRemark, Sales, Ageing, Ag
 import { User } from '../models/UserModel';
 import ConvertJsonToExcel from '../services/ConvertJsonToExcel';
 import { decimalToTimeForXlsx, excelSerialToDate, invalidate, parseExcelDate } from '../utils/datesHelper';
-import { GetSalesAttendancesAuto, IColumnRowData, IRowData, GetSalesManVisitSummaryReportDto, GetVisitReportDto, GetReferenceDto, GetReferenceReportForSalesmanDto, CreateOrEditReferenceRemarkDto, GetReferenceRemarksDto, CreateOrEditVisitSummaryRemarkDto, GetVisitSummaryReportRemarkDto, GetSalesDto, GetCollectionsDto, GetAgeingDto, CreateOrEditAgeingRemarkDto, GetAgeingRemarkDto, CreateReferenceExcelDto, CreateSalesExcelDto, CreateCollectionsExcelDto, CreateAgeingExcelDto } from '../dtos/SalesDto';
+import { CreateOrEditSalesAttendanceDto } from '../dtos/request/AttendanceDto';
+import { IColumnRowData, IRowData, CreateReferenceExcelDto, CreateOrEditReferenceRemarkDto, CreateOrEditVisitSummaryRemarkDto, CreateSalesExcelDto, CreateCollectionsExcelDto, CreateAgeingExcelDto, CreateOrEditAgeingRemarkDto } from '../dtos/request/SalesDto';
+import { GetSalesAttendanceDto, GetSalesmanKpiDto } from '../dtos/response/AttendanceDto';
+import { GetSalesAttendancesAuto, GetSalesManVisitSummaryReportDto, GetVisitReportDto, GetReferenceDto, GetReferenceReportForSalesmanDto, GetReferenceRemarksDto, GetVisitSummaryReportRemarkDto, GetSalesDto, GetCollectionsDto, GetAgeingDto, GetAgeingRemarkDto } from '../dtos/response/SalesDto';
+
 
 export class SalesController {
 

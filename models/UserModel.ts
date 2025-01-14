@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import { IUser, IUserMethods } from "../interfaces/UserController";
+import { IUser, IUserMethods } from "../interfaces/UserInterface";
 
 
 

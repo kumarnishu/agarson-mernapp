@@ -1,5 +1,5 @@
 import { IKeyCategory, IKey } from "./AuthorizationInterface";
-import { IUser } from "./UserController";
+import { IUser } from "./UserInterface";
 
 
 export type IExcelDBRemark = {

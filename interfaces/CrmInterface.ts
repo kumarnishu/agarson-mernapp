@@ -1,5 +1,5 @@
 import { IArticle } from "./ProductionInterface"
-import { IUser, Asset } from "./UserController"
+import { IUser, Asset } from "./UserInterface"
 
 
 

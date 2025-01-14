@@ -1,5 +1,5 @@
 import { IArticle } from "./ProductionInterface";
-import { IUser } from "./UserController";
+import { IUser } from "./UserInterface";
 export type IChecklistCategory = {
     _id: string,
     category: string,

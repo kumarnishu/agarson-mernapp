@@ -1,5 +1,5 @@
 import { IChecklistCategory } from "./DropDownInterface";
-import { IUser, Asset } from "./UserController";
+import { IUser, Asset } from "./UserInterface";
 
 
 export type IChecklistBox = {

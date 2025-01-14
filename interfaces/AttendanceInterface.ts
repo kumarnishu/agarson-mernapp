@@ -1,5 +1,5 @@
 import { ICRMCity } from "./AuthorizationInterface"
-import { IUser, Asset } from "./UserController"
+import { IUser, Asset } from "./UserInterface"
 
 export type ILeave = {
     _id: string,

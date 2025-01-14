@@ -1,5 +1,5 @@
 import { IItemUnit } from "./DropDownInterface"
-import { IUser } from "./UserController"
+import { IUser } from "./UserInterface"
 
 
 export type IExpenseCategory = {

@@ -1,4 +1,4 @@
-import { Asset, IUser } from "./UserController"
+import { Asset, IUser } from "./UserInterface"
 
 export type IDriverSystem = {
     _id: string,

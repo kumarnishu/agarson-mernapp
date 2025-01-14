@@ -5,7 +5,6 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
 import { Assignment, Block, DeviceHubOutlined, Edit, GroupAdd, GroupRemove, Key, KeyOffOutlined, RemoveCircle, Restore, RoundaboutLeft } from '@mui/icons-material'
 import { UserContext } from '../../contexts/userContext'
 import { Menu as MenuIcon } from '@mui/icons-material';
@@ -29,6 +28,7 @@ import { GetUserDto } from '../../dtos/user.dto'
 import { GetLoginByThisUserDto } from '../../dtos/auth.dto'
 import { AlertContext } from '../../contexts/alertContext'
 import { UserService } from '../../services/UserServices'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 export default function UsersPage() {
     const [hidden, setHidden] = useState(false)
@@ -281,55 +281,45 @@ export default function UsersPage() {
             {
                 accessorKey: 'username',
                 header: 'Name',
-
+                filterVariant: 'multi-select',
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return item.username || "" })} />,
                 Cell: (cell) => <>{[cell.row.original.username, String(cell.row.original.alias1 || ""), String(cell.row.original.alias2 || "")].filter(value => value)
                     .join(", ")}</>,
-                filterVariant: 'multi-select',
-                filterSelectOptions: data && users.map((i) => { return i.username.toString() }).filter(onlyUnique)
+
             },
             {
                 accessorKey: 'is_admin',
                 header: 'Role',
-
                 filterVariant: 'multi-select',
-                Cell: (cell) => <>{cell.row.original.is_admin ? "admin" : "user"}</>,
-                filterSelectOptions: data && users.map((i) => {
-                    if (i.is_admin) return "admin"
-                    return "user"
-                }).filter(onlyUnique)
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return item.is_admin ?"Admin":"user" })} />,
             },
             {
                 accessorKey: 'email',
                 header: 'Email',
-
+                filterVariant: 'multi-select',
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return item.email || "" })} />,
                 Cell: (cell) => <>{cell.row.original.email || ""}</>
             },
             {
                 accessorKey: 'mobile',
                 header: 'Mobile',
-
+                filterVariant: 'multi-select',
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return item.mobile || "" })} />,
                 Cell: (cell) => <>{cell.row.original.mobile || ""}</>
             },
             {
                 accessorKey: 'is_active',
                 header: 'Status',
-
-                filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.is_active ? "active" : "blocked"}</>,
-                filterSelectOptions: data && users.map((i) => {
-                    if (i.is_active) return "active"
-                    return "blocked"
-                }).filter(onlyUnique)
+                filterVariant: 'multi-select',
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return item.is_active ? 'active' : "blocked" })} />,
             },
             {
                 accessorKey: 'password',
                 header: 'Password',
-
                 filterVariant: 'multi-select',
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return item.username || "" })} />,
                 Cell: (cell) => <>{cell.row.original.orginal_password}</>,
-                filterSelectOptions: data && users.map((i) => {
-                    return i.orginal_password || ""
-                }).filter(onlyUnique)
             },
             {
                 accessorKey: 'assigned_permissions',
@@ -409,7 +399,7 @@ export default function UsersPage() {
             shape: 'rounded',
             variant: 'outlined',
         },
-       enableDensityToggle: false, initialState: {
+        enableDensityToggle: false, initialState: {
             density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 100 }
         },
         enableGrouping: true,

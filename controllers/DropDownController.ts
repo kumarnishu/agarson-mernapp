@@ -2,8 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import moment from 'moment';
 import xlsx from "xlsx";
 import isMongoId from "validator/lib/isMongoId";
-import { GetArticleDto, DropDownDto, CreateOrEditArticleDto, GetDyeLocationDto, CreateOrEditDyeLocationDto, GetDyeDto, CreateDyeDtoFromExcel, CreateOrEditDyeDTo, GetMachineDto, CreateOrEditMachineDto } from '../dtos/DropDownDto';
-import { GetExpenseItemDto, CreateOrEditExpenseItemDto, CreateExpenseItemFromExcelDto } from '../dtos/ExpenseDto';
 import { IDyeLocation, IDye, IMachine } from '../interfaces/DropDownInterface';
 import { IExpenseItem } from '../interfaces/ExpenseInterface';
 import { IArticle } from '../interfaces/ProductionInterface';
@@ -12,6 +10,10 @@ import { ChecklistCategory, DyeLocation, Dye, ItemUnit, PaymentCategory, Machine
 import { ExpenseCategory, ExpenseItem, ExpenseLocation } from '../models/ExpenseModel';
 import { Article } from '../models/ProductionModel';
 import ConvertJsonToExcel from '../services/ConvertJsonToExcel';
+import { CreateOrEditArticleDto, CreateOrEditDyeLocationDto, CreateDyeDtoFromExcel, CreateOrEditDyeDTo, CreateOrEditMachineDto } from '../dtos/request/DropDownDto';
+import { CreateOrEditExpenseItemDto, CreateExpenseItemFromExcelDto } from '../dtos/request/ExpenseDto';
+import { GetArticleDto, DropDownDto, GetDyeLocationDto, GetDyeDto, GetMachineDto } from '../dtos/response/DropDownDto';
+import { GetExpenseItemDto } from '../dtos/response/ExpenseDto';
 
 
 

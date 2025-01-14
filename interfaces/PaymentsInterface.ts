@@ -1,5 +1,5 @@
 import { IPaymentCategory } from "./DropDownInterface";
-import { Asset, IUser } from "./UserController";
+import { Asset, IUser } from "./UserInterface";
 
 
 export type IPaymentDocument = {

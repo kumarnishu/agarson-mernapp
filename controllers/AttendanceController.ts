@@ -1,14 +1,15 @@
 import { Response, Request, NextFunction } from "express"
 import moment from "moment"
 import isMongoId from "validator/lib/isMongoId"
-import { GetLeaveDto, ApplyLeaveDtoFromAdmin, GetLeaveBalanceDto, CreateOrEditLeaveBalanceDto } from "../dtos/AttendanceDto"
 import { ILeave } from "../interfaces/AttendanceInterface"
 import { ILeaveBalance } from "../interfaces/SalesInterface"
-import { Asset, IUser } from "../interfaces/UserController"
+import { Asset, IUser } from "../interfaces/UserInterface"
 import { Leave, SalesAttendance } from "../models/AttendanceModel"
 import { LeaveBalance } from "../models/SalesModel"
 import { User } from "../models/UserModel"
 import { uploadFileToCloud } from "../services/uploadFileToCloud"
+import { ApplyLeaveDtoFromAdmin, CreateOrEditLeaveBalanceDto } from "../dtos/request/AttendanceDto"
+import { GetLeaveDto, GetLeaveBalanceDto } from "../dtos/response/AttendanceDto"
 
 export class AttendanceController {
 

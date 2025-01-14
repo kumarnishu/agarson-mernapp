@@ -5,14 +5,15 @@ import moment from "moment";
 import { Types } from "mongoose";
 import { hundredDaysAgo } from "../utils/datesHelper";
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
-import { CreateOrEditBillDto, GetBillDto, CreateOrEditRemarkDto, GetRemarksDto, GetActivitiesTopBarDetailsDto, GetActivitiesOrRemindersDto, CreateOrEditMergeLeadsDto, GetLeadDto, CreateOrRemoveReferForLeadDto, CreateOrEditLeadDto, CreateLeadFromExcelDto, CreateOrEditMergeRefersDto, GetReferDto, CreateOrEditReferDto, CreateReferFromExcelDto } from "../dtos/CrmDto";
 import { IBill, IRemark, ILead, IReferredParty } from "../interfaces/CrmInterface";
-import { Asset, IUser } from "../interfaces/UserController";
+import { Asset, IUser } from "../interfaces/UserInterface";
 import Lead, { Bill, BillItem, ReferredParty, Remark } from "../models/CrmModel";
 import { Stage } from "../models/DropDownModel";
 import { User } from "../models/UserModel";
 import { destroyCloudFile } from "../services/destroyCloudFile";
 import { uploadFileToCloud } from "../services/uploadFileToCloud";
+import { CreateOrEditBillDto, CreateOrEditRemarkDto, CreateOrEditMergeLeadsDto, CreateOrRemoveReferForLeadDto, CreateOrEditLeadDto, CreateLeadFromExcelDto, CreateOrEditMergeRefersDto, CreateOrEditReferDto, CreateReferFromExcelDto } from "../dtos/request/CrmDto";
+import { GetBillDto, GetRemarksDto, GetActivitiesTopBarDetailsDto, GetActivitiesOrRemindersDto, GetLeadDto, GetReferDto } from "../dtos/response/CrmDto";
 
 
 export class CrmController {

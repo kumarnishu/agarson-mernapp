@@ -1,5 +1,5 @@
 import { bucket, bucketName } from "../app";
-import { Asset } from "../interfaces/UserController";
+import { Asset } from "../interfaces/UserInterface";
 
 export const uploadFileToCloud = async (file: string | Buffer, storageFolder: string, filename: string) => {
     let document: Asset | undefined = undefined

@@ -1,4 +1,4 @@
-import { IUser } from "./UserController";
+import { IUser } from "./UserInterface";
 
 export type IAgeingRemark = {
     _id: string,
