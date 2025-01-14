@@ -146,10 +146,9 @@ function SalesmanAttendancePage() {
             {
                 accessorKey: 'new_visit',
                 header: ' New Visit',
-                
-                filterFn: CustomFilterFunction,
-                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={attendances.map((item) => { return item.new_visit || "" })} />,
                 aggregationFn: 'sum',
+                filterVariant: 'range',
+                filterFn: 'between',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
 
@@ -157,10 +156,9 @@ function SalesmanAttendancePage() {
             {
                 accessorKey: 'old_visit',
                 header: ' Old Visit',
-                
-                filterFn: CustomFilterFunction,
-                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={attendances.map((item) => { return item.old_visit || "" })} />,
                 aggregationFn: 'sum',
+                filterVariant: 'range',
+                filterFn: 'between',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
             },

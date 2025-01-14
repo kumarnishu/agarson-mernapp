@@ -22,7 +22,7 @@ import { GetSalesAttendancesAuto, GetSalesManVisitSummaryReportDto, GetVisitRepo
 export class SalesController {
 
     public async GetSalesAttendances(req: Request, res: Response, next: NextFunction) {
-       
+
         let id = req.query.id
         let attendances: ISalesAttendance[] = []
         let result: GetSalesAttendanceDto[] = []
@@ -33,43 +33,43 @@ export class SalesController {
         let dt2 = new Date(String(end_date))
         let user_ids = req.user?.assigned_users.map((user: IUser) => { return user._id }) || []
 
-            if (id == 'all') {
-                if (user_ids.length > 0) {
-                    attendances = await SalesAttendance.find({ date: { $gte: dt1, $lt: dt2 }, employee: { $in: user_ids } }).populate('station').populate('employee').populate('created_by').populate('updated_by').sort('-date')
-                    count = await SalesAttendance.find({ date: { $gte: dt1, $lt: dt2 }, employee: { $in: user_ids } }).countDocuments()
-                }
-
-                else {
-                    attendances = await SalesAttendance.find({ date: { $gte: dt1, $lt: dt2 }, employee: req.user?._id }).populate('station').populate('employee').populate('created_by').populate('updated_by').sort('-date')
-                    count = await SalesAttendance.find({ date: { $gte: dt1, $lt: dt2 }, employee: req.user?._id }).countDocuments()
-                }
+        if (id == 'all') {
+            if (user_ids.length > 0) {
+                attendances = await SalesAttendance.find({ date: { $gte: dt1, $lt: dt2 }, employee: { $in: user_ids } }).populate('station').populate('employee').populate('created_by').populate('updated_by').sort('-date')
+                count = await SalesAttendance.find({ date: { $gte: dt1, $lt: dt2 }, employee: { $in: user_ids } }).countDocuments()
             }
-
 
             else {
-                attendances = await SalesAttendance.find({ date: { $gte: dt1, $lt: dt2 }, employee: id }).populate('station').populate('employee').populate('created_by').populate('updated_by').sort('-date')
-                count = await SalesAttendance.find({ date: { $gte: dt1, $lt: dt2 }, employee: id }).countDocuments()
+                attendances = await SalesAttendance.find({ date: { $gte: dt1, $lt: dt2 }, employee: req.user?._id }).populate('station').populate('employee').populate('created_by').populate('updated_by').sort('-date')
+                count = await SalesAttendance.find({ date: { $gte: dt1, $lt: dt2 }, employee: req.user?._id }).countDocuments()
             }
-            result = attendances.map((p) => {
-                return {
-                    _id: p._id,
-                    employee: { id: p.employee._id, value: p.employee.username, label: p.employee.username },
-                    attendance: p.attendance,
-                    new_visit: String(p.new_visit),
-                    old_visit: String(p.old_visit),
-                    remark: p.remark,
-                    in_time: p.in_time,
-                    sunday_working: p.is_sunday_working ? 'yes' : '',
-                    end_time: p.end_time,
-                    station: { id: p.station._id, value: p.station.city, label: p.station.city },
-                    date: p.date.toString(),
-                    created_at: p.created_at && moment(p.created_at).format("DD/MM/YYYY"),
-                    updated_at: p.updated_at && moment(p.updated_at).format("DD/MM/YYYY"),
-                    created_by: { id: p.created_by._id, value: p.created_by.username, label: p.created_by.username },
-                    updated_by: { id: p.updated_by._id, value: p.updated_by.username, label: p.updated_by.username }
-                }
-            })
-            return res.status(200).json(result)
+        }
+
+
+        else {
+            attendances = await SalesAttendance.find({ date: { $gte: dt1, $lt: dt2 }, employee: id }).populate('station').populate('employee').populate('created_by').populate('updated_by').sort('-date')
+            count = await SalesAttendance.find({ date: { $gte: dt1, $lt: dt2 }, employee: id }).countDocuments()
+        }
+        result = attendances.map((p) => {
+            return {
+                _id: p._id,
+                employee: { id: p.employee._id, value: p.employee.username, label: p.employee.username },
+                attendance: p.attendance,
+                new_visit: p.new_visit,
+                old_visit: p.old_visit,
+                remark: p.remark,
+                in_time: p.in_time,
+                sunday_working: p.is_sunday_working ? 'yes' : '',
+                end_time: p.end_time,
+                station: { id: p.station._id, value: p.station.city, label: p.station.city },
+                date: p.date.toString(),
+                created_at: p.created_at && moment(p.created_at).format("DD/MM/YYYY"),
+                updated_at: p.updated_at && moment(p.updated_at).format("DD/MM/YYYY"),
+                created_by: { id: p.created_by._id, value: p.created_by.username, label: p.created_by.username },
+                updated_by: { id: p.updated_by._id, value: p.updated_by.username, label: p.updated_by.username }
+            }
+        })
+        return res.status(200).json(result)
     }
     public async CreateSalesAttendance(req: Request, res: Response, next: NextFunction) {
         let {
@@ -301,21 +301,21 @@ export class SalesController {
                             date: moment(currdate1).format("DD/MM/YYYY"),
                             month: moment(currdate1).format("MMMM"),
                             attendance: attendance?.attendance,
-                            new_visit: String(attendance?.new_visit),
-                            old_visit: String(attendance?.old_visit),
+                            new_visit: attendance?.new_visit,
+                            old_visit: attendance?.old_visit,
                             working_time: (attendance?.in_time || "") + "-" + (attendance?.end_time || ""),
-                            new_clients: String(newclients),
+                            new_clients: newclients,
                             station: attendance?.station && { id: attendance?.station._id, label: attendance?.station.city },
                             state: attendance?.station.state,
-                            currentsale_currentyear: String(currentsale_currentyear),
-                            lastsale_currentyear: String(lastsale_currentyear),
-                            currentsale_last_year: String(currentsale_last_year),
-                            lastsale_lastyear: String(lastsale_lastyear),
-                            current_collection: String(currentcollection),
+                            currentsale_currentyear: currentsale_currentyear,
+                            lastsale_currentyear: lastsale_currentyear,
+                            currentsale_last_year: currentsale_last_year,
+                            lastsale_lastyear: lastsale_lastyear,
+                            current_collection: currentcollection,
                             //@ts-ignore
                             ageing_above_90days: ageing_above_90days,
-                            sale_growth: String(currentsale_currentyear / currentsale_last_year),
-                            last_month_sale_growth: String(lastsale_currentyear / lastsale_lastyear)
+                            sale_growth: currentsale_currentyear / currentsale_last_year,
+                            last_month_sale_growth: lastsale_currentyear / lastsale_lastyear
                         }
                         result.push(obj)
                     }
@@ -442,21 +442,21 @@ export class SalesController {
                         date: moment(currdate1).format("DD/MM/YYYY"),
                         month: moment(currdate1).format("MMMM"),
                         attendance: attendance?.attendance,
-                        new_visit: String(attendance?.new_visit),
-                        old_visit: String(attendance?.old_visit),
+                        new_visit: attendance?.new_visit,
+                        old_visit: attendance?.old_visit,
                         working_time: (attendance?.in_time || "") + "-" + (attendance?.end_time || ""),
-                        new_clients: String(newclients),
+                        new_clients: newclients,
                         station: attendance?.station && { id: attendance?.station._id, label: attendance?.station.city },
                         state: attendance?.station.state,
-                        currentsale_currentyear: String(currentsale_currentyear),
-                        lastsale_currentyear: String(lastsale_currentyear),
-                        currentsale_last_year: String(currentsale_last_year),
-                        lastsale_lastyear: String(lastsale_lastyear),
-                        current_collection: String(currentcollection),
+                        currentsale_currentyear: currentsale_currentyear,
+                        lastsale_currentyear: lastsale_currentyear,
+                        currentsale_last_year: currentsale_last_year,
+                        lastsale_lastyear: lastsale_lastyear,
+                        current_collection: currentcollection,
                         //@ts-ignore
                         ageing_above_90days: ageing_above_90days,
-                        sale_growth: String(currentsale_currentyear / currentsale_last_year),
-                        last_month_sale_growth: String(lastsale_currentyear / lastsale_lastyear)
+                        sale_growth: currentsale_currentyear / currentsale_last_year,
+                        last_month_sale_growth: lastsale_currentyear / lastsale_lastyear
 
                     }
                     result.push(obj)
@@ -586,21 +586,21 @@ export class SalesController {
                         date: moment(currdate1).format("DD/MM/YYYY"),
                         month: moment(currdate1).format("MMMM"),
                         attendance: attendance?.attendance,
-                        new_visit: String(attendance?.new_visit),
-                        old_visit: String(attendance?.old_visit),
+                        new_visit: attendance?.new_visit,
+                        old_visit: attendance?.old_visit,
                         working_time: (attendance?.in_time || "") + "-" + (attendance?.end_time || ""),
-                        new_clients: String(newclients),
+                        new_clients: newclients,
                         station: attendance?.station && { id: attendance?.station._id, label: attendance?.station.city },
                         state: attendance?.station.state,
-                        currentsale_currentyear: String(currentsale_currentyear),
-                        lastsale_currentyear: String(lastsale_currentyear),
-                        currentsale_last_year: String(currentsale_last_year),
-                        lastsale_lastyear: String(lastsale_lastyear),
-                        current_collection: String(currentcollection),
+                        currentsale_currentyear: currentsale_currentyear,
+                        lastsale_currentyear: lastsale_currentyear,
+                        currentsale_last_year: currentsale_last_year,
+                        lastsale_lastyear: lastsale_lastyear,
+                        current_collection: currentcollection,
                         //@ts-ignore
                         ageing_above_90days: ageing_above_90days,
-                        sale_growth: String(currentsale_currentyear / currentsale_last_year),
-                        last_month_sale_growth: String(lastsale_currentyear / lastsale_lastyear),
+                        sale_growth: currentsale_currentyear / currentsale_last_year,
+                        last_month_sale_growth: lastsale_currentyear / lastsale_lastyear,
                     }
                     result.push(obj)
                     current_date.setDate(new Date(current_date).getDate() + 1)
@@ -666,8 +666,8 @@ export class SalesController {
                                 id: salesman[i]._id, label: names.toString()
                             },
                             date: moment(current_date).format("DD/MM/YYYY"),
-                            old_visit: String(oldvisit1),
-                            new_visit: String(newvisit1),
+                            old_visit: oldvisit1,
+                            new_visit: newvisit1,
                             worktime: worktime1,
                         })
 
@@ -718,8 +718,8 @@ export class SalesController {
                             id: req.user._id, label: names.toString()
                         },
                         date: moment(current_date).format("DD/MM/YYYY"),
-                        old_visit: String(oldvisit1),
-                        new_visit: String(newvisit1),
+                        old_visit: oldvisit1,
+                        new_visit: newvisit1,
                         worktime: worktime1,
                     })
 
@@ -771,8 +771,8 @@ export class SalesController {
                             id: user._id, label: names.toString()
                         },
                         date: moment(current_date).format("DD/MM/YYYY"),
-                        old_visit: String(oldvisit1),
-                        new_visit: String(newvisit1),
+                        old_visit: oldvisit1,
+                        new_visit: newvisit1,
                         worktime: worktime1,
                     })
                     current_date.setDate(new Date(current_date).getDate() + 1)
@@ -993,16 +993,16 @@ export class SalesController {
                     id: salesman[i]._id, label: names.toString()
                 },
                 date1: moment(dt2).format("DD/MM/YYYY"),
-                old_visits1: String(oldvisit1),
-                new_visits1: String(newvisit1),
+                old_visits1: oldvisit1,
+                new_visits1: newvisit1,
                 working_time1: worktime1,
                 date2: moment(dt3).format("DD/MM/YYYY"),
-                old_visits2: String(oldvisit2),
-                new_visits2: String(newvisit2),
+                old_visits2: oldvisit2,
+                new_visits2: newvisit2,
                 working_time2: worktime2,
                 date3: moment(dt4).format("DD/MM/YYYY"),
-                old_visits3: String(oldvisit3),
-                new_visits3: String(newvisit3),
+                old_visits3: oldvisit3,
+                new_visits3: newvisit3,
                 working_time3: worktime3,
                 last_remark: lastremark
             })
@@ -1560,7 +1560,7 @@ export class SalesController {
                 invoice_no: dt.invoice_no,
                 party: dt.party,
                 state: dt.state,
-                amount: String(dt.amount)
+                amount: dt.amount
             }
         })
         return res.status(200).json(result);
@@ -1722,7 +1722,7 @@ export class SalesController {
                 party: dt.party,
                 month: moment(dt.date).format('MMMM'),
                 state: dt.state,
-                amount: String(dt.amount)
+                amount: dt.amount
             }
         })
         return res.status(200).json(result);
@@ -1879,12 +1879,12 @@ export class SalesController {
                     state: dt.state,
                     last_remark: remark ? remark.remark : "",
                     next_call: remark?.next_call ? moment(remark.next_call).format("YYYY-MM-DD") : "",
-                    two5: String(dt.two5),
-                    three0: String(dt.three0),
-                    five5: String(dt.five5),
-                    six0: String(dt.six0),
-                    seven0: String(dt.seven0),
-                    seventyplus: String(dt.seventyplus),
+                    two5: dt.two5,
+                    three0: dt.three0,
+                    five5: dt.five5,
+                    six0: dt.six0,
+                    seven0: dt.seven0,
+                    seventyplus: dt.seventyplus,
                 })
         }))
 

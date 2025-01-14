@@ -49,7 +49,7 @@ export default function ReferencesReportPage() {
         accessorKey: 'last_remark',
         header: 'Remark',
         aggregationFn: 'count',
-      
+
         filterFn: CustomFilterFunction,
         Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.last_remark || "" })} />,
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -57,7 +57,7 @@ export default function ReferencesReportPage() {
       {
         accessorKey: 'stage',
         header: 'Stage',
-      
+
         filterFn: CustomFilterFunction,
         Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.stage || "" })} />,
         aggregationFn: 'count',
@@ -66,7 +66,7 @@ export default function ReferencesReportPage() {
       {
         accessorKey: 'party',
         header: 'Party',
-      
+
         filterFn: CustomFilterFunction,
         Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.party || "" })} />,
         aggregationFn: 'count',
@@ -75,7 +75,7 @@ export default function ReferencesReportPage() {
       {
         accessorKey: 'address',
         header: 'Address',
-      
+
         filterFn: CustomFilterFunction,
         Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.address || "" })} />,
         aggregationFn: 'count',
@@ -84,7 +84,7 @@ export default function ReferencesReportPage() {
       {
         accessorKey: 'state',
         header: 'State',
-      
+
         filterFn: CustomFilterFunction,
         Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.state || "" })} />,
         aggregationFn: 'count',
@@ -93,7 +93,7 @@ export default function ReferencesReportPage() {
       {
         accessorKey: 'pincode',
         header: 'Pincode',
-      
+
         filterFn: CustomFilterFunction,
         Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return String(item.pincode) || "" })} />,
         aggregationFn: 'count',
@@ -102,7 +102,7 @@ export default function ReferencesReportPage() {
       {
         accessorKey: 'business',
         header: 'Business',
-      
+
         filterFn: CustomFilterFunction,
         Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.business || "" })} />,
         aggregationFn: 'count',
@@ -114,9 +114,8 @@ export default function ReferencesReportPage() {
     const dynamicColumns: MRT_ColumnDef<GetReferenceDto>[] = dynamicKeys.map((key) => ({
       accessorKey: key,
       header: key, // Use the dynamic key as the column header
-    
-        filterFn: CustomFilterFunction,
-      Filter: (props) => <CustomColumFilter id={key} table={props.table} options={reports.map((item) => { return item[key] || "" })} />,
+      filterVariant: 'range',
+      filterFn: 'between',
       Cell: ({ cell }) => HandleNumbers(cell.getValue()), // Optional: Format the value if needed
       aggregationFn: 'sum', // Example: Aggregate total sale_scope
       AggregatedCell: (cell) => HandleNumbers(cell.cell.getValue()), // Format aggregated value
@@ -125,7 +124,7 @@ export default function ReferencesReportPage() {
     // Step 4: Combine static and dynamic columns
     return [
       {
-        accessorKey: 'actions',enableColumnFilter: false,
+        accessorKey: 'actions', enableColumnFilter: false,
         header: 'Actions',
         Cell: (cell) => <PopUp key={'action'}
           element={

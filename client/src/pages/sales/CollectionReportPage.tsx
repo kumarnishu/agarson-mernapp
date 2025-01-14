@@ -74,9 +74,9 @@ function CollectionReportPage() {
             {
                 accessorKey: 'amount',
                 header: ' Amount',
-                filterFn:CustomFilterFunction,
-                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={collections.map((item) => { return item.amount || "" })} />,
                 aggregationFn: 'sum',
+                filterVariant: 'range',
+                filterFn: 'between',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 

@@ -70,8 +70,8 @@ export default function SalesmanVisitPageAuto() {
             },
             {
                 accessorKey: 'new_visit',
-                filterFn: CustomFilterFunction,
-                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.new_visit || "" })} />,
+                filterVariant: 'range',
+                filterFn: 'between',
                 header: 'New Visits',
                 aggregationFn: 'sum',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -80,8 +80,8 @@ export default function SalesmanVisitPageAuto() {
             },
             {
                 accessorKey: 'old_visit',
-                filterFn: CustomFilterFunction,
-                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it.old_visit || "" })} />,
+                filterVariant: 'range',
+                filterFn: 'between',
                 header: 'Old Visits',
                 aggregationFn: 'sum',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',

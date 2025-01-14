@@ -88,8 +88,8 @@ function SalesReportPage() {
       {
 
         accessorKey: 'amount',
-        filterFn: CustomFilterFunction,
-        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={sales.map((it) => { return it.amount || "" })} />,
+        filterVariant: 'range',
+        filterFn: 'between',
         header: ' Amount',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',

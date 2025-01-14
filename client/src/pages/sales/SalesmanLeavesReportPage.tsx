@@ -9,8 +9,7 @@ import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtua
 import { SalesmanLeavesButton } from '../../components/buttons/SalesmanLeavesButton'
 import { SalesService } from '../../services/SalesServices'
 import { IColumnRowData } from '../../dtos/SalesDto'
-import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
-import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+
 
 
 
@@ -34,8 +33,8 @@ export default function SalesmanLeavesReportPage() {
       return {
         accessorKey: item.key, header: item.header, grow: false,
         aggregationFn: 'sum',
-        filterFn: CustomFilterFunction,
-        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] || "" })} />,
+        filterVariant: 'range',
+        filterFn: 'between',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
         // //@ts-ignore
         // Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>

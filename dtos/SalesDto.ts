@@ -21,7 +21,7 @@ export type GetReferenceDto = {
     last_remark:string,
     pincode: string;
     business: string;
-    [key: string]: string ; // Index signature for dynamic reference columns
+    [key: string]: any ; // Index signature for dynamic reference columns
 };
 export type GetReferenceReportForSalesmanDto = {
     _id: string,
@@ -40,7 +40,7 @@ export type GetSalesDto = {
     party: string,
     month: string,
     state: string,
-    amount: string
+    amount: number
 }
 export type GetCollectionsDto = {
     _id: string,
@@ -48,7 +48,7 @@ export type GetCollectionsDto = {
     month: string,
     party: string,
     state: string,
-    amount: string
+    amount: number
 }
 export type GetAgeingDto = {
     _id: string,
@@ -56,12 +56,12 @@ export type GetAgeingDto = {
     party: string,
     next_call?: string,
     last_remark?: string,
-    two5: string,
-    three0: string,
-    five5: string,
-    six0: string,
-    seven0: string,
-    seventyplus: string,
+    two5: number,
+    three0: number,
+    five5: number,
+    six0: number,
+    seven0: number,
+    seventyplus: number,
 }
 export type GetAgeingRemarkDto = {
     _id: string,
@@ -97,24 +97,24 @@ export type GetVisitReportDto = {
 export type GetSalesManVisitSummaryReportDto = {
     employee: DropDownDto,
     date1: string,
-    old_visits1: string,
-    new_visits1: string,
+    old_visits1: number,
+    new_visits1: number,
     working_time1: string,
     date2: string,
-    old_visits2: string,
-    new_visits2: string,
+    old_visits2: number,
+    new_visits2: number,
     working_time2: string,
     date3: string,
-    old_visits3: string,
-    new_visits3: string,
+    old_visits3: number,
+    new_visits3: number,
     working_time3: string,
     last_remark: string
 }
 export type GetSalesAttendancesAuto = {
     employee: DropDownDto,
     date: string,
-    new_visit: string,
-    old_visit: string,
+    new_visit: number,
+    old_visit: number,
     worktime: string,
 }
 
@@ -123,28 +123,28 @@ export type GetSalesmanKpiDto = {
     date: string,
     month: string,
     attendance?: string,
-    new_visit?: string,
-    old_visit?: string,
+    new_visit?: number,
+    old_visit?: number,
     working_time?: string,
-    new_clients: string,
+    new_clients: number,
     station?: DropDownDto,
     state?: string,
-    currentsale_currentyear: string,
-    currentsale_last_year: string,
-    lastsale_currentyear: string,
-    lastsale_lastyear: string,
-    current_collection: string,
-    ageing_above_90days: string,
-    sale_growth: string,
-    last_month_sale_growth: string,
+    currentsale_currentyear: number,
+    currentsale_last_year: number,
+    lastsale_currentyear: number,
+    lastsale_lastyear: number,
+    current_collection: number,
+    ageing_above_90days: number,
+    sale_growth: number,
+    last_month_sale_growth: number,
 }
 export type GetSalesAttendanceDto = {
     _id: string,
     employee: DropDownDto,
     date: string,
     attendance: string,
-    new_visit: string,
-    old_visit: string,
+    new_visit: number,
+    old_visit: number,
     remark: string,
     sunday_working: string,
     in_time: string,
