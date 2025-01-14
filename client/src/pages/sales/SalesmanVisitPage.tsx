@@ -117,7 +117,7 @@ export default function SalesmanVisitPage() {
         accessorKey: 'new_visits1',
         aggregationFn: 'sum',
         filterVariant: 'range',
-        filterFn: 'between',
+        filterFn: 'betweenInclusive',
         header: 'New Visits',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
         Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -126,7 +126,7 @@ export default function SalesmanVisitPage() {
       {
         accessorKey: 'old_visits1',
         filterVariant: 'range',
-        filterFn: 'between',
+        filterFn: 'betweenInclusive',
         header: 'Old Visits',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -150,7 +150,7 @@ export default function SalesmanVisitPage() {
       {
         accessorKey: 'new_visits2',
         filterVariant: 'range',
-        filterFn: 'between',
+        filterFn: 'betweenInclusive',
         header: 'New Visits',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -159,7 +159,7 @@ export default function SalesmanVisitPage() {
       {
         accessorKey: 'old_visits2',
         filterVariant: 'range',
-        filterFn: 'between',
+        filterFn: 'betweenInclusive',
         header: 'Old Visits',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -182,7 +182,7 @@ export default function SalesmanVisitPage() {
       {
         accessorKey: 'new_visits3',
         filterVariant: 'range',
-        filterFn: 'between',
+        filterFn: 'betweenInclusive',
         header: 'New Visits',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -192,7 +192,7 @@ export default function SalesmanVisitPage() {
       {
         accessorKey: 'old_visits3',
         filterVariant: 'range',
-        filterFn: 'between',
+        filterFn: 'betweenInclusive',
         header: 'Old Visits',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',

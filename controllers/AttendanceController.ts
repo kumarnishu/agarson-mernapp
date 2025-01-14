@@ -33,7 +33,7 @@ export class AttendanceController {
                 leave_type: item.leave_type,
                 status: item.status,
                 photo: item.photo ? item.photo.public_url : '',
-                leave: String(item.leave),
+                leave: item.leave,
                 yearmonth: String(item.yearmonth),
                 employee: { id: item.employee._id, label: item.employee.username },
                 created_at: moment(item.created_at).format('YYYY-MM-DD'),
@@ -131,10 +131,10 @@ export class AttendanceController {
         result = items.map((item) => {
             return {
                 _id: item._id,
-                sl: String(item.sl),
-                fl: String(item.fl),
-                sw: String(item.sw),
-                cl: String(item.cl),
+                sl: item.sl,
+                fl: item.fl,
+                sw: item.sw,
+                cl: item.cl,
                 yearmonth: String(item.yearmonth),
                 employee: { id: item.employee._id, label: item.employee.username },
                 created_at: moment(item.created_at).format('YYYY-MM-DD'),

@@ -116,7 +116,7 @@ export default function AgeingPage() {
                 header: '0-25',
                 aggregationFn: 'sum',
                 filterVariant: 'range',
-                filterFn: 'between',
+                filterFn: 'betweenInclusive',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 //@ts-ignore
@@ -129,7 +129,7 @@ export default function AgeingPage() {
                 header: '25-30',
                 aggregationFn: 'sum',
                 filterVariant: 'range',
-                filterFn: 'between',
+                filterFn: 'betweenInclusive',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 //@ts-ignore
@@ -140,7 +140,7 @@ export default function AgeingPage() {
                 header: '30-55',
                 aggregationFn: 'sum',
                 filterVariant: 'range',
-                filterFn: 'between',
+                filterFn: 'betweenInclusive',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 //@ts-ignore
@@ -152,7 +152,7 @@ export default function AgeingPage() {
 
                 aggregationFn: 'sum',
                 filterVariant: 'range',
-                filterFn: 'between',
+                filterFn: 'betweenInclusive',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 //@ts-ignore
@@ -163,7 +163,7 @@ export default function AgeingPage() {
                 header: '60-70',
                 aggregationFn: 'sum',
                 filterVariant: 'range',
-                filterFn: 'between',
+                filterFn: 'betweenInclusive',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 //@ts-ignore
@@ -175,7 +175,7 @@ export default function AgeingPage() {
                 header: '70+',
                 aggregationFn: 'sum',
                 filterVariant: 'range',
-                filterFn: 'between',
+                filterFn: 'betweenInclusive',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 //@ts-ignore

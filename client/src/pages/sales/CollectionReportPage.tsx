@@ -76,7 +76,7 @@ function CollectionReportPage() {
                 header: ' Amount',
                 aggregationFn: 'sum',
                 filterVariant: 'range',
-                filterFn: 'between',
+                filterFn: 'betweenInclusive',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 

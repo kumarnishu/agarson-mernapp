@@ -115,7 +115,7 @@ export default function ReferencesReportPage() {
       accessorKey: key,
       header: key, // Use the dynamic key as the column header
       filterVariant: 'range',
-      filterFn: 'between',
+      filterFn: 'betweenInclusive',
       Cell: ({ cell }) => HandleNumbers(cell.getValue()), // Optional: Format the value if needed
       aggregationFn: 'sum', // Example: Aggregate total sale_scope
       AggregatedCell: (cell) => HandleNumbers(cell.cell.getValue()), // Format aggregated value

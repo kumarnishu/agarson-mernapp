@@ -71,7 +71,7 @@ export default function SalesmanVisitPageAuto() {
             {
                 accessorKey: 'new_visit',
                 filterVariant: 'range',
-                filterFn: 'between',
+                filterFn: 'betweenInclusive',
                 header: 'New Visits',
                 aggregationFn: 'sum',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -81,7 +81,7 @@ export default function SalesmanVisitPageAuto() {
             {
                 accessorKey: 'old_visit',
                 filterVariant: 'range',
-                filterFn: 'between',
+                filterFn: 'betweenInclusive',
                 header: 'Old Visits',
                 aggregationFn: 'sum',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',

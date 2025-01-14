@@ -34,7 +34,7 @@ export default function SalesmanLeavesReportPage() {
         accessorKey: item.key, header: item.header, grow: false,
         aggregationFn: 'sum',
         filterVariant: 'range',
-        filterFn: 'between',
+        filterFn: 'betweenInclusive',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
         // //@ts-ignore
         // Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>

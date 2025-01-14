@@ -69,8 +69,9 @@ export default function LeavesPage() {
       {
         accessorKey: 'leave',
         header: 'leave',
-        filterFn: CustomFilterFunction,
-        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.leave || "" })} />,
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
         Cell: (cell) => <>{cell.row.original.leave ? cell.row.original.leave : ""}</>,
       },
 

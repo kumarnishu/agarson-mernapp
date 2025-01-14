@@ -10,7 +10,7 @@ type LeavesDto = {
 export type GetLeaveDto = {
     _id: string,
     leave_type: string,
-    leave: string,
+    leave: number,
     status: string,
     yearmonth: string,
     photo: string,
@@ -32,10 +32,10 @@ export type GetSalesmanAttendanceReportDto = {
 }
 export type GetLeaveBalanceDto = {
     _id: string,
-    sl: string,
-    fl: string,
-    sw: string,
-    cl: string,
+    sl: number,
+    fl: number,
+    sw: number,
+    cl: number,
     yearmonth: string,
     employee: DropDownDto,
     created_at: string,

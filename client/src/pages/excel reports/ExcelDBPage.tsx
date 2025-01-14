@@ -168,7 +168,7 @@ export default function ExcelDBPage() {
           accessorKey: item.key, header: item.header,
           aggregationFn: 'sum',
           filterVariant: 'range',
-          filterFn: 'between',
+          filterFn: 'betweenInclusive',
           Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
           AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
           //@ts-ignore

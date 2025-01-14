@@ -89,9 +89,9 @@ function SalesReportPage() {
 
         accessorKey: 'amount',
         filterVariant: 'range',
-        filterFn: 'between',
-        header: ' Amount',
+        filterFn: 'betweenInclusive',
         aggregationFn: 'sum',
+        header: ' Amount',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
         Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
         //@ts-ignore

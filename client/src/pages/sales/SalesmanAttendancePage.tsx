@@ -148,7 +148,7 @@ function SalesmanAttendancePage() {
                 header: ' New Visit',
                 aggregationFn: 'sum',
                 filterVariant: 'range',
-                filterFn: 'between',
+                filterFn: 'betweenInclusive',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
 
@@ -158,7 +158,7 @@ function SalesmanAttendancePage() {
                 header: ' Old Visit',
                 aggregationFn: 'sum',
                 filterVariant: 'range',
-                filterFn: 'between',
+                filterFn: 'betweenInclusive',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                 Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
             },

@@ -133,7 +133,7 @@ export default function SharedAgeingpage() {
                 return {
                     accessorKey: item.key, header: item.header,
                     filterVariant: 'range',
-                    filterFn: 'between',
+                    filterFn: 'betweenInclusive',
                     aggregationFn: 'sum',
                     AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
                     Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',

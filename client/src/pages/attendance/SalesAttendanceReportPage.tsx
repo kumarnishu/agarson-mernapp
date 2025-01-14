@@ -162,7 +162,7 @@ export default function SalesAttendanceReportPage() {
         accessorKey: 'employee.label',
         header: 'Employee',
         filterFn: CustomFilterFunction,
-        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => { return item.employee.label || "" })} />,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((b) => { return b.employee.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.employee ? cell.row.original.employee.label : ""}</>,
       }
     ],
