@@ -22,7 +22,7 @@ type Props = {
 }
 
 function AssignUsersDialog({ user, setUser, dialog, setDialog }: Props) {
-    const [users, setUsers] = useState<DropDownDto[]>(user.assigned_users)
+    const [users, setUsers] = useState<DropDownDto[]>(user.assigned_usersDropdown)
     const { data, isSuccess: isUserSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, show_assigned_only: false }))
     const { setAlert } = useContext(AlertContext)
     const { mutate, isLoading, isSuccess} = useMutation
@@ -43,7 +43,7 @@ function AssignUsersDialog({ user, setUser, dialog, setDialog }: Props) {
         ids: string[]
     }>({
         initialValues: {
-            ids: user.assigned_users.map((u) => { return u.id })
+            ids: user.assigned_usersDropdown.map((u) => { return u.id })
         },
         validationSchema: Yup.object({
             ids: Yup.array()

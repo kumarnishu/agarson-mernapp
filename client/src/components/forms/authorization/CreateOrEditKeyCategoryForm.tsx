@@ -9,7 +9,7 @@ import { queryClient } from '../../../main';
 import * as yup from 'yup';
 import { AlertContext } from '../../../contexts/alertContext';
 import { AuthorizationService } from '../../../services/AuthorizationService';
-import { GetKeyCategoryDto } from '../../../dtos/response/DropDownDto';
+import { GetKeyCategoryDto } from '../../../dtos/response/AuthorizationDto';
 
 function CreateOrEditKeyCategoryForm({ category, setDialog }: { category?: GetKeyCategoryDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
@@ -41,7 +41,7 @@ function CreateOrEditKeyCategoryForm({ category, setDialog }: { category?: GetKe
         initialValues: {
             category: category ? category.category : "",
             display_name: category ? category.display_name : "",
-            skip_bottom_rows: category ? category.skip_bottom_rows : 0
+            skip_bottom_rows: category ? Number(category.skip_bottom_rows) : 0
         },
         validationSchema: yup.object({
             category: yup.string().required(),

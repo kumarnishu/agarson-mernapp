@@ -3,8 +3,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-   import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import CreateOrEditStateDialog from '../../components/dialogs/authorization/CreateOrEditStateDialog'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
 import { UserContext } from '../../contexts/userContext'
@@ -17,6 +16,8 @@ import AssignCrmStatesDialog from '../../components/dialogs/authorization/Assign
 import ExportToExcel from '../../utils/ExportToExcel'
 import { AuthorizationService } from '../../services/AuthorizationService'
 import { GetCrmStateDto } from '../../dtos/response/AuthorizationDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 
 export default function CrmStatesPage() {
@@ -27,7 +28,7 @@ export default function CrmStatesPage() {
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetCrmStateDto[]>, BackendError>(["crm_states"], async () => new AuthorizationService().GetAllStates())
 
 
-  const [dialog,setDialog]=useState<string|undefined>()
+  const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
   const isFirstRender = useRef(true);
@@ -40,16 +41,16 @@ export default function CrmStatesPage() {
     //column definitions...
     () => states && [
       {
-        accessorKey: 'actions',enableColumnFilter: false,
+        accessorKey: 'actions', enableColumnFilter: false,
         header: '',
-        
+
         Footer: <b></b>,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
               <>
 
-                {LoggedInUser?.role=="admin" && LoggedInUser.assigned_permissions.includes('states_delete') &&
+                {LoggedInUser?.role == "admin" && LoggedInUser.assigned_permissions.includes('states_delete') &&
                   <Tooltip title="delete">
                     <IconButton color="error"
 
@@ -85,20 +86,21 @@ export default function CrmStatesPage() {
       {
         accessorKey: 'state',
         header: 'State',
-        
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={states.map((item) => {
+          return item.state})} />,
         Cell: (cell) => <> {
           [cell.row.original.state, String(cell.row.original.alias1 || ""), String(cell.row.original.alias2 || "")].filter(value => value)
             .join(", ")
         }</>,
-        filterSelectOptions: states && states.map((i) => {
-          return i.state;
-        }).filter(onlyUnique)
+
       },
       {
         accessorKey: 'assigned_users',
         header: 'Assigned Users',
-      
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={states.map((item) => {
+          return item.assigned_users})} />,
         filterVariant: 'text',
         Cell: (cell) => <>{cell.row.original.assigned_users && cell.row.original.assigned_users.length > 0 ? cell.row.original.assigned_users : ""}</>,
       }
@@ -122,20 +124,20 @@ export default function CrmStatesPage() {
     muiTableContainerProps: (table) => ({
       sx: { height: table.table.getState().isFullScreen ? 'auto' : '65vh' }
     }),
-   
+
     muiTableHeadRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white'
       },
     }),
-	muiTableHeadCellProps: ({ column }) => ({
+    muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-of-type(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-of-type(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-of-type(1) span': {
           display: 'inline', // Visible on hover
@@ -155,7 +157,7 @@ export default function CrmStatesPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
     },
     enableGrouping: true,
@@ -167,7 +169,7 @@ export default function CrmStatesPage() {
     enableTableFooter: true,
     enableRowVirtualization: true,
     onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
-   
+
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
@@ -332,16 +334,16 @@ export default function CrmStatesPage() {
             >Export Selected</MenuItem>}
 
           </Menu >
-          <CreateOrEditStateDialog  dialog={dialog} setDialog={setDialog}/>
-          {LoggedInUser?.role=="admin" && <FindUknownCrmStatesDialog  dialog={dialog} setDialog={setDialog}/>}
-          {<AssignCrmStatesDialog  dialog={dialog} setDialog={setDialog}flag={flag} states={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
+          <CreateOrEditStateDialog dialog={dialog} setDialog={setDialog} />
+          {LoggedInUser?.role == "admin" && <FindUknownCrmStatesDialog dialog={dialog} setDialog={setDialog} />}
+          {<AssignCrmStatesDialog dialog={dialog} setDialog={setDialog} flag={flag} states={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
           <>
             {
               state ?
                 <>
 
-                  <CreateOrEditStateDialog  dialog={dialog} setDialog={setDialog}state={state} />
-                  <DeleteCrmItemDialog  dialog={dialog} setDialog={setDialog}state={state} />
+                  <CreateOrEditStateDialog dialog={dialog} setDialog={setDialog} state={state} />
+                  <DeleteCrmItemDialog dialog={dialog} setDialog={setDialog} state={state} />
                 </>
                 : null
             }

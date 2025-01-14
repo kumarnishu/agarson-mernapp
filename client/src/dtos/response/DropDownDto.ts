@@ -105,13 +105,7 @@ export type GetItemUnitDto = {
     created_by: DropDownDto,
     updated_by: DropDownDto
 }
-export type GetKeyCategoryDto = {
-    _id: string,
-    skip_bottom_rows: number,
-    category: string,
-    display_name: string,
-    assigned_users: string;
-}
+
 export type GetMachineCategoryDto = {
     _id: string,
     category: string,

@@ -17,6 +17,8 @@ import { AxiosResponse } from "axios"
 import { BackendError } from "../.."
 import { AuthorizationService } from '../../services/AuthorizationService'
 import { GetCrmCityDto, GetCrmStateDto } from '../../dtos/response/AuthorizationDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 
 export default function CrmCitiesPage() {
@@ -67,7 +69,7 @@ export default function CrmCitiesPage() {
     //column definitions...
     () => cities && [
       {
-        accessorKey: 'actions',enableColumnFilter: false,
+        accessorKey: 'actions', enableColumnFilter: false,
         header: '',
 
         Footer: <b></b>,
@@ -76,7 +78,7 @@ export default function CrmCitiesPage() {
             <Stack direction="row">
               <>
 
-                {LoggedInUser?.role=="admin" && LoggedInUser.assigned_permissions.includes('city_delete') &&
+                {LoggedInUser?.role == "admin" && LoggedInUser.assigned_permissions.includes('city_delete') &&
                   <Tooltip title="delete">
                     <IconButton color="error"
 
@@ -112,7 +114,8 @@ export default function CrmCitiesPage() {
       {
         accessorKey: 'city',
         header: 'City',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={cities.map((item) => { return item.city || "" })} />,
         Cell: (cell) => <> {
           [cell.row.original.city, String(cell.row.original.alias1 || ""), String(cell.row.original.alias2 || "")].filter(value => value)
             .join(", ")
@@ -121,7 +124,8 @@ export default function CrmCitiesPage() {
       {
         accessorKey: 'state',
         header: 'State',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={cities.map((item) => { return item.state || "" })} />,
 
       },
 
@@ -129,8 +133,8 @@ export default function CrmCitiesPage() {
         // accessorKey: 'assigned_users.value',
         accessorFn: (Cell) => { return Cell.assigned_users },
         header: 'Assigned Users',
-
-        filterVariant: 'text',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={cities.map((item) => { return item.assigned_users || "" })} />,
         Cell: (cell) => <>{cell.row.original.assigned_users && cell.row.original.assigned_users.length > 0 ? cell.row.original.assigned_users : ""}</>,
       }
     ],
@@ -188,7 +192,7 @@ export default function CrmCitiesPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 2000 }
     },
     enableGrouping: true,
@@ -387,7 +391,7 @@ export default function CrmCitiesPage() {
 
           </Menu >
           <CreateOrEditCityDialog dialog={dialog} setDialog={setDialog} />
-          {LoggedInUser?.role=="admin" && <FindUknownCrmCitiesDialog dialog={dialog} setDialog={setDialog} />}
+          {LoggedInUser?.role == "admin" && <FindUknownCrmCitiesDialog dialog={dialog} setDialog={setDialog} />}
           {<AssignCrmCitiesDialog dialog={dialog} setDialog={setDialog} flag={flag} cities={table.getSelectedRowModel().rows.map((item) => { return { id: item.original._id, label: item.original.city, value: item.original.city } })} />}
           <>
             {

@@ -4,8 +4,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-   import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { Assignment, KeyOffOutlined } from '@mui/icons-material'
 import { UserContext } from '../../contexts/userContext'
 import { Menu as MenuIcon } from '@mui/icons-material';
@@ -17,47 +16,49 @@ import AssignPermissionsToOneUserDialog from '../../components/dialogs/users/Ass
 import ExportToExcel from '../../utils/ExportToExcel'
 import { UserService } from '../../services/UserServices'
 import { GetUserDto } from '../../dtos/response/UserDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 export default function UserAssignementPage() {
   const [user, setUser] = useState<GetUserDto>()
   const [users, setUsers] = useState<GetUserDto[]>([])
-  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>(["users"], async () =>new UserService(). GetUsersForAssignment())
+  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetUserDto[]>, BackendError>(["users"], async () => new UserService().GetUsersForAssignment())
   const { user: LoggedInUser } = useContext(UserContext)
-  const [dialog,setDialog]=useState<string|undefined>()
+  const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag, setFlag] = useState(1);
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null); const [flag, setFlag] = useState(1);
 
-   const isFirstRender = useRef(true);
+  const isFirstRender = useRef(true);
 
-    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-  
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const columns = useMemo<MRT_ColumnDef<GetUserDto>[]>(
     //column definitions...
     () => users && [
       {
-        accessorKey: 'actions',enableColumnFilter: false,
+        accessorKey: 'actions', enableColumnFilter: false,
         header: '',
-    
+
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
               {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') &&
-                    <Tooltip title="assign users">
-                      <IconButton
-                        color="success"
-                        size="medium"
-                        onClick={() => {
-                          setDialog('AssignUsersDialog')
-                          setUser(cell.row.original)
-                        }}>
-                        <Assignment />
-                      </IconButton>
-                    </Tooltip> 
+                <Tooltip title="assign users">
+                  <IconButton
+                    color="success"
+                    size="medium"
+                    onClick={() => {
+                      setDialog('AssignUsersDialog')
+                      setUser(cell.row.original)
+                    }}>
+                    <Assignment />
+                  </IconButton>
+                </Tooltip>
               }
 
-              {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') &&<Tooltip title="Change Permissions for this user">
+              {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') && <Tooltip title="Change Permissions for this user">
                 <IconButton
                   color="info"
                   onClick={() => {
@@ -76,7 +77,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
       {
         accessorKey: 'dp',
         header: 'DP',
-       
+        enableColumnFilter: false,
         Cell: (cell) => <Avatar
           title="double click to download"
           sx={{ width: 16, height: 16 }}
@@ -91,52 +92,50 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
       {
         accessorKey: 'username',
         header: 'Name',
-       
-        Cell: (cell) => <>{[cell.row.original.username, String(cell.row.original.alias1 || ""), String(cell.row.original.alias2 || "")].filter(value => value) 
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return String(item.username) || "" })} />,
+        Cell: (cell) => <>{[cell.row.original.username, String(cell.row.original.alias1 || ""), String(cell.row.original.alias2 || "")].filter(value => value)
           .join(", ")}</>,
-        filterVariant: 'multi-select',
-        filterSelectOptions: data && users.map((i) => { return i.username.toString() }).filter(onlyUnique)
+
       },
       {
-        accessorKey: 'is_admin',
+        accessorKey: 'role',
         header: 'Role',
-    
-        filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.role=="admin" ? "admin" : "user"}</>,
-        filterSelectOptions: data && users.map((i) => {
-          if (i.role=="admin") return "admin"
-          return "user"
-        }).filter(onlyUnique)
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return String(item.role) || "" })} />,
       },
       {
         accessorKey: 'email',
         header: 'Email',
-       
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return String(item.email) || "" })} />,
         Cell: (cell) => <>{cell.row.original.email || ""}</>
       },
       {
         accessorKey: 'mobile',
         header: 'Mobile',
-        
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return String(item.mobile) || "" })} />,
         Cell: (cell) => <>{cell.row.original.mobile || ""}</>
       },
       {
         accessorKey: 'assigned_permissions',
         header: 'Permissions',
-        
+        enableColumnFilter: false,
         Cell: (cell) => <>{cell.row.original.assigned_permissions.length || 0}</>
       },
       {
         accessorKey: 'last_login',
         header: 'Last Active',
-        
+        enableColumnFilter: false,
         Cell: (cell) => <>{cell.row.original.last_login || ""}</>
       },
       {
         accessorKey: 'assigned_users',
         header: 'Assigned Users',
-        
-        Cell: (cell) => <Stack title={String(cell.row.original.assigned_users.length || 0)+" users"} className="scrollable-stack" direction={'row'} >{cell.row.original.assigned_users && cell.row.original.assigned_users.map((u) => { return u.label }).toString()}</Stack>
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return String(item.assigned_users) || "" })} />,
+        Cell: (cell) => <Stack title={String(cell.row.original.assigned_users.length || 0) + " users"} className="scrollable-stack" direction={'row'} >{cell.row.original.assigned_users && cell.row.original.assigned_users}</Stack>
       },
     ],
     [users],
@@ -157,13 +156,13 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
     }),
     muiTableContainerProps: (table) => ({
       sx: { height: table.table.getState().isFullScreen ? 'auto' : '65vh' }
-    }),muiTableHeadCellProps: ({ column }) => ({
+    }), muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-of-type(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-of-type(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-of-type(1) span': {
           display: 'inline', // Visible on hover
@@ -190,7 +189,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 100 }
     },
     enableGrouping: true,
@@ -200,14 +199,14 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
     enableRowNumbers: true,
     enableColumnPinning: true,
     enableTableFooter: true,
-      enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility,rowVirtualizerInstanceRef, //
-        columnVirtualizerOptions: { overscan: 2 },
+    enableRowVirtualization: true,
+    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //
+    columnVirtualizerOptions: { overscan: 2 },
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
-      
+
       sorting,
       columnSizing: columnSizing
     }
@@ -229,7 +228,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
     const columnSizing = localStorage.getItem(
       'mrt_columnSizing_table_1',
     );
-    
+
 
 
 
@@ -238,10 +237,10 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
       setColumnVisibility(JSON.parse(columnVisibility));
     }
 
-    
+
     if (columnSizing)
       setColumnSizing(JSON.parse(columnSizing))
-    
+
     isFirstRender.current = false;
   }, []);
 
@@ -253,7 +252,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
     );
   }, [columnVisibility]);
 
- 
+
 
 
   useEffect(() => {
@@ -312,7 +311,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
               }}
               sx={{ borderRadius: 2 }}
             >
-              {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') &&<MenuItem
+              {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') && <MenuItem
 
                 onClick={() => {
                   setDialog('AssignPermissionsToUsersDialog')
@@ -327,7 +326,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
                 }}
               >Assign Permissions</MenuItem>}
 
-              {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') &&<MenuItem
+              {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') && <MenuItem
 
                 onClick={() => {
                   setDialog('AssignPermissionsToUsersDialog')
@@ -338,16 +337,16 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
                     setDialog('AssignPermissionsToUsersDialog')
                     setFlag(0)
                   }
-                  setAnchorEl(null) 
+                  setAnchorEl(null)
                 }}
               >Remove Permissions</MenuItem>}
 
-              {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') &&<MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+              {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') && <MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
               >Export All</MenuItem>}
-              {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') &&<MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+              {LoggedInUser?.assigned_permissions.includes('user_assignment_edit') && <MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
               >Export Selected</MenuItem>}
             </Menu>
-            <AssignPermissionsToUsersDialog  dialog={dialog} setDialog={setDialog}flag={flag} user_ids={table.getSelectedRowModel().rows.map((I) => { return I.original._id })} />
+            <AssignPermissionsToUsersDialog dialog={dialog} setDialog={setDialog} flag={flag} user_ids={table.getSelectedRowModel().rows.map((I) => { return I.original._id })} />
           </>
         </Stack >
       </Stack >

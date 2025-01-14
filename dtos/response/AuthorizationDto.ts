@@ -12,13 +12,20 @@ export type GetCrmCityDto = {
 }
 export type GetKeyDto = {
     _id: string,
-    serial_no: number,
+    serial_no: string,
     key: string;
     category: DropDownDto;
     type: string;
     is_date_key: boolean,
     map_to_username: boolean,
     map_to_state: boolean,
+    assigned_users: string;
+}
+export type GetKeyCategoryDto = {
+    _id: string,
+    skip_bottom_rows: string,
+    category: string,
+    display_name: string,
     assigned_users: string;
 }
 export type GetCrmStateDto = {

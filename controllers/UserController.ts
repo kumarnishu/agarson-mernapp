@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import isEmail from "validator/lib/isEmail";
 import isMongoId from "validator/lib/isMongoId";
 import moment from 'moment';
-import { deleteToken, deleteTokenOnly,   sendUserToken } from '../middlewares/auth.middleware';
+import { deleteToken, deleteTokenOnly, sendUserToken } from '../middlewares/auth.middleware';
 import { FetchAllPermissions } from '../utils/fillAllPermissions';
 import { sendEmail } from '../utils/sendEmail';
 import { Asset, IUser } from '../interfaces/UserInterface';
@@ -89,9 +89,10 @@ export class UserController {
             last_login: moment(owner.last_login).calendar(),
             is_multi_login: owner.is_multi_login,
             assigned_users: owner.assigned_users.map((u) => {
-                return {
-                    id: owner._id, label: owner.username, value: owner.username
-                }
+                return owner.username
+            }).toString(),
+            assigned_usersDropdown: owner.assigned_users.map((u) => {
+                return { id: owner._id, label: owner.username }
             }),
             assigned_crm_states: owner.assigned_crm_states.length.toString(),
             assigned_crm_cities: owner.assigned_crm_cities.length.toString(),
@@ -323,9 +324,10 @@ export class UserController {
                 last_login: moment(u.last_login).calendar(),
                 is_multi_login: u.is_multi_login,
                 assigned_users: u.assigned_users.map((u) => {
-                    return {
-                        id: u._id, label: u.username, value: u.username
-                    }
+                    return u.username
+                }).toString(),
+                assigned_usersDropdown: u.assigned_users.map((u) => {
+                    return { id: u._id, label: u.username }
                 }),
                 assigned_crm_states: u.assigned_crm_states.length.toString(),
                 assigned_crm_cities: u.assigned_crm_cities.length.toString(),
@@ -387,9 +389,10 @@ export class UserController {
                 last_login: moment(u.last_login).calendar(),
                 is_multi_login: u.is_multi_login,
                 assigned_users: u.assigned_users.map((u) => {
-                    return {
-                        id: u._id, label: u.username, value: u.username
-                    }
+                    return u.username
+                }).toString(),
+                assigned_usersDropdown: u.assigned_users.map((u) => {
+                    return { id: u._id, label: u.username }
                 }),
                 assigned_crm_states: u.assigned_crm_states.length.toString(),
                 assigned_crm_cities: u.assigned_crm_cities.length.toString(),
@@ -425,9 +428,10 @@ export class UserController {
                 last_login: moment(user.last_login).calendar(),
                 is_multi_login: user.is_multi_login,
                 assigned_users: user.assigned_users.map((u) => {
-                    return {
-                        id: u._id, label: u.username, value: u.username
-                    }
+                    return u.username
+                }).toString(),
+                assigned_usersDropdown: user.assigned_users.map((u) => {
+                    return { id: user._id, label: user.username }
                 }),
                 assigned_crm_states: user.assigned_crm_states.length.toString(),
                 assigned_crm_cities: user.assigned_crm_cities.length.toString(),
@@ -495,19 +499,20 @@ export class UserController {
             mobile: user.mobile,
             dp: user.dp?.public_url || "",
             orginal_password: user.orginal_password,
-            role: user.is_admin?"admin":"user",
-            email_verified: user.email_verified?"verified":'not verified',
-            mobile_verified: user.mobile_verified?"verified":'not verified',
-            is_active: user.is_active?"active":"inactive",
+            role: user.is_admin ? "admin" : "user",
+            email_verified: user.email_verified ? "verified" : 'not verified',
+            mobile_verified: user.mobile_verified ? "verified" : 'not verified',
+            is_active: user.is_active ? "active" : "inactive",
             last_login: moment(user.last_login).calendar(),
             is_multi_login: user.is_multi_login,
             assigned_users: user.assigned_users.map((u) => {
-                return {
-                    id: u._id, label: u.username, value: u.username
-                }
+                return u.username
+            }).toString(),
+            assigned_usersDropdown: user.assigned_users.map((u) => {
+                return { id: user._id, label: user.username }
             }),
-            assigned_crm_states: user.assigned_crm_states.map((i)=>{return i.state}).toString(),
-            assigned_crm_cities: user.assigned_crm_cities.map((i)=>{return i.city}).toString(),
+            assigned_crm_states: user.assigned_crm_states.map((i) => { return i.state }).toString(),
+            assigned_crm_cities: user.assigned_crm_cities.map((i) => { return i.city }).toString(),
             impersonated_user: user.impersonated_user && { _id: user.impersonated_user._id, username: user.impersonated_user.username, is_admin: Boolean(user.impersonated_user.is_admin) },
             assigned_permissions: user.assigned_permissions,
             created_at: moment(user.created_at).format("DD/MM/YYYY"),

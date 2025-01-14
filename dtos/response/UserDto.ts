@@ -23,7 +23,8 @@ export type GetUserDto = {
   is_active: string,
   last_login: string,
   is_multi_login: boolean,
-  assigned_users: DropDownDto[]
+  assigned_users: string,
+  assigned_usersDropdown: DropDownDto[],
   assigned_crm_states: string,
   assigned_crm_cities: string,
   assigned_permissions: string[],

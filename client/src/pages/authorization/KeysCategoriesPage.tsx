@@ -3,7 +3,6 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import { Edit } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
@@ -14,7 +13,9 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import CreateOrEditKeyCategoryDialog from '../../components/dialogs/authorization/CreateOrEditKeyCategoryDialog'
 import AssignKeyCategoriesDialog from '../../components/dialogs/authorization/AssignKeyCategoriesDialog'
 import { AuthorizationService } from '../../services/AuthorizationService'
-import { GetKeyCategoryDto } from '../../dtos/response/DropDownDto'
+import { GetKeyCategoryDto } from '../../dtos/response/AuthorizationDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 
 export default function KeysCategoriesPage() {
@@ -22,7 +23,7 @@ export default function KeysCategoriesPage() {
   const [category, setKeyCategory] = useState<GetKeyCategoryDto>()
   const { user: LoggedInUser } = useContext(UserContext)
   const [flag, setFlag] = useState(1);
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetKeyCategoryDto[]>, BackendError>(["key_categories"], async () =>  new AuthorizationService().GetAllKeyCategories())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetKeyCategoryDto[]>, BackendError>(["key_categories"], async () => new AuthorizationService().GetAllKeyCategories())
 
 
   const [dialog, setDialog] = useState<string | undefined>()
@@ -38,7 +39,7 @@ export default function KeysCategoriesPage() {
     //column definitions...
     () => [
       {
-        accessorKey: 'actions',enableColumnFilter: false,
+        accessorKey: 'actions', enableColumnFilter: false,
         header: '',
         size: 50,
         Cell: ({ cell }) => <PopUp
@@ -68,33 +69,38 @@ export default function KeysCategoriesPage() {
         accessorKey: 'category',
         header: 'Category',
 
-        filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category : ""}</>,
-        filterSelectOptions: categories && categories.map((i) => {
-          return i.category;
-        }).filter(onlyUnique)
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={categories.map((item) => {
+          return item.category
+        })} />,
       },
       {
         accessorKey: 'display_name',
         header: 'Display Name',
-
-        filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.display_name ? cell.row.original.display_name : ""}</>,
-        filterSelectOptions: categories && categories.map((i) => {
-          return i.display_name;
-        }).filter(onlyUnique)
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={categories.map((item) => {
+          return item.display_name
+        })} />,
       },
       {
         accessorKey: 'skip_bottom_rows',
         header: 'Skip Bottom Rows',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={categories.map((item) => {
+          return item.skip_bottom_rows
+        })} />,
         Cell: (cell) => <>{cell.row.original.skip_bottom_rows ? cell.row.original.skip_bottom_rows.toString() || "" : ""}</>,
       },
 
       {
         accessorKey: 'assigned_users',
         header: 'Assigned Users',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={categories.map((item) => {
+          return item.assigned_users
+        })} />,
         Cell: (cell) => <span title={cell.row.original.assigned_users}>{cell.row.original.assigned_users ? cell.row.original.assigned_users : ""}</span>,
 
       },
@@ -152,7 +158,7 @@ export default function KeysCategoriesPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
     },
     enableGrouping: true,

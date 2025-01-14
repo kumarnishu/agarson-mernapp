@@ -12,7 +12,8 @@ import * as Yup from "yup"
 import { AlertContext } from '../../../contexts/alertContext';
 import { UserService } from '../../../services/UserServices';
 import { AuthorizationService } from '../../../services/AuthorizationService';
-import { DropDownDto, GetKeyCategoryDto } from '../../../dtos/response/DropDownDto';
+import { DropDownDto } from '../../../dtos/response/DropDownDto';
+import { GetKeyCategoryDto } from '../../../dtos/response/AuthorizationDto';
 
 
 type Props = {

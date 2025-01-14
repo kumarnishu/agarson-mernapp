@@ -52,7 +52,7 @@ function CreateOrEditKeyForm({ keyitm, setDialog }: { keyitm?: GetKeyDto, setDia
             key: keyitm ? keyitm.key : "",
             category: keyitm ? keyitm.category.id : "",
             type: keyitm ? keyitm.type : "",
-            serial_no: keyitm ? keyitm.serial_no : 0,
+            serial_no: keyitm ? Number(keyitm.serial_no) : 0,
             is_date_key: keyitm && keyitm.is_date_key ? true : false,
             map_to_username: keyitm && keyitm.map_to_username ? true : false,
             map_to_state: keyitm && keyitm.map_to_state ? true : false,

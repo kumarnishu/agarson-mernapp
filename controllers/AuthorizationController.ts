@@ -9,8 +9,8 @@ import { assignCRMCities } from "../services/assignCRMCities";
 import ConvertJsonToExcel from "../services/ConvertJsonToExcel";
 import { convertDateToExcelFormat } from "../utils/datesHelper";
 import { CreateOrEditCrmCity, CreateCityFromExcelDto, CreateKeyFromExcelDto } from "../dtos/request/AuthorizationDto";
-import { GetCrmCityDto, GetCrmStateDto, GetKeyDto } from "../dtos/response/AuthorizationDto";
-import { DropDownDto,  GetKeyCategoryDto } from "../dtos/response/DropDownDto";
+import { GetCrmCityDto, GetCrmStateDto, GetKeyCategoryDto, GetKeyDto } from "../dtos/response/AuthorizationDto";
+import { DropDownDto,   } from "../dtos/response/DropDownDto";
 
 export class AuthorizationController {
      
@@ -26,28 +26,34 @@ export class AuthorizationController {
     }
 
     public async GetAllCRMCities(req: Request, res: Response, next: NextFunction) {
-        let result: GetCrmCityDto[] = []
-        let state = req.query.state;
-        let cities: ICRMCity[] = []
-        if (state && state !== 'all')
-            cities = await CRMCity.find({ state: state }).sort('city')
-        else
-            cities = await CRMCity.find().sort('city')
-        for (let i = 0; i < cities.length; i++) {
-            let users = await (await User.find({ assigned_crm_cities: cities[i]._id })).
-                map((i) => { return { _id: i._id.valueOf(), username: i.username } })
-            result.push(
-                {
-                    _id: cities[i]._id,
-                    city: cities[i].city,
-                    alias1: cities[i].alias1,
-                    alias2: cities[i].alias2,
-                    state: cities[0].state,
-                    assigned_users: String(users.map((u) => { return u.username }))
-                });
+        try {
+            const state = req.query.state;
+            const cities = state && state !== 'all' 
+                ? await CRMCity.find({ state }).sort('city') 
+                : await CRMCity.find().sort('city');
+    
+            const result = await Promise.all(
+                cities.map(async (city) => {
+                    const users = await User.find({ assigned_crm_cities: city._id });
+                    const assignedUsers = users.map(user => user.username).join(", ");
+    
+                    return {
+                        _id: city._id,
+                        city: city.city,
+                        alias1: city.alias1,
+                        alias2: city.alias2,
+                        state: city.state,
+                        assigned_users: assignedUsers,
+                    };
+                })
+            );
+    
+            return res.status(200).json(result);
+        } catch (error) {
+            next(error);
         }
-        return res.status(200).json(result)
     }
+    
     public async GetAllCRMCitiesForDropDown(req: Request, res: Response, next: NextFunction) {
         let result: DropDownDto[] = []
         let state = req.query.state;
@@ -439,7 +445,7 @@ export class AuthorizationController {
             result.push(
                 {
                     _id: data[i]._id,
-                    serial_no: data[i].serial_no,
+                    serial_no: String(data[i].serial_no),
                     key: data[i].key,
                     type: data[i].type,
                     category: { id: data[i].category._id, label: data[i].category.category },
@@ -768,7 +774,7 @@ export class AuthorizationController {
         let result: GetKeyCategoryDto[] = [];
         for (let i = 0; i < data.length; i++) {
             let users = await (await User.find({ assigned_keycategories: data[i]._id })).map((i) => { return { _id: i._id.valueOf(), username: i.username } })
-            result.push({ _id: data[i]._id, display_name: data[i].display_name, category: data[i].category, skip_bottom_rows: data[i].skip_bottom_rows, assigned_users: String(users.map((u) => { return u.username })) });
+            result.push({ _id: data[i]._id, display_name: data[i].display_name, category: data[i].category, skip_bottom_rows: String(data[i].skip_bottom_rows), assigned_users: String(users.map((u) => { return u.username })) });
         }
         return res.status(200).json(result)
     }

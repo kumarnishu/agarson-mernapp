@@ -337,8 +337,9 @@ export default function UsersPage() {
             {
                 accessorKey: 'assigned_users',
                 header: 'Assigned Users',
-                enableColumnFilter: false,
-                Cell: (cell) => <>{cell.row.original.assigned_users.length || 0}</>
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return String(item.assigned_users) || "" })} />,
+                Cell: (cell) => <Stack title={String(cell.row.original.assigned_users.length || 0) + " users"} className="scrollable-stack" direction={'row'} >{cell.row.original.assigned_users && cell.row.original.assigned_users}</Stack>
             },
             {
                 accessorKey: 'last_login',

@@ -2,8 +2,7 @@ import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
-   import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_RowVirtualizer,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
 import { Delete, Edit } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, TextField, Tooltip, Typography } from '@mui/material'
@@ -20,6 +19,8 @@ import DeleteKeyDialog from '../../components/dialogs/authorization/DeleteKeyDia
 import { AuthorizationService } from '../../services/AuthorizationService'
 import { GetKeyDto } from '../../dtos/response/AuthorizationDto'
 import { DropDownDto } from '../../dtos/response/DropDownDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 
 export default function KeysPage() {
@@ -27,10 +28,10 @@ export default function KeysPage() {
     const [keys, setkeys] = useState<GetKeyDto[]>([])
     const [category, setKeyCategory] = useState<string>('all')
     const { user: LoggedInUser } = useContext(UserContext)
-    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetKeyDto[]>, BackendError>(["keys", category], async () =>  new AuthorizationService().GetAllKeys({ category: category }))
+    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetKeyDto[]>, BackendError>(["keys", category], async () => new AuthorizationService().GetAllKeys({ category: category }))
     const [flag, setFlag] = useState(1);
     const [categories, setKeyCategorys] = useState<DropDownDto[]>([])
-    const [dialog,setDialog]=useState<string|undefined>()
+    const [dialog, setDialog] = useState<string | undefined>()
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
     const isFirstRender = useRef(true);
@@ -39,16 +40,16 @@ export default function KeysPage() {
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-    const { data: categoriesdata } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () =>  new AuthorizationService().GetAllKeyCategoriesForDropdown({ show_assigned_only: false }))
+    const { data: categoriesdata } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["key_categories"], async () => new AuthorizationService().GetAllKeyCategoriesForDropdown({ show_assigned_only: false }))
 
 
     const columns = useMemo<MRT_ColumnDef<GetKeyDto>[]>(
         //column definitions...
         () => keys && [
             {
-                accessorKey: 'actions',enableColumnFilter: false,
+                accessorKey: 'actions', enableColumnFilter: false,
                 header: '',
-                
+
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row">
@@ -85,65 +86,72 @@ export default function KeysPage() {
             {
                 accessorKey: 'serial_no',
                 header: 'NO',
-               
-                filterVariant: 'multi-select',
+
+
                 Cell: (cell) => <>{cell.row.original.serial_no ? cell.row.original.serial_no : ""}</>,
-                filterSelectOptions: keys && keys.map((i) => {
-                    return i.serial_no.toString();
-                }).filter(onlyUnique)
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={keys.map((item) => {
+                    return item.serial_no
+                })} />,
             },
             {
                 accessorKey: 'key',
                 header: 'Key',
-               
-                filterVariant: 'multi-select',
+
+        
                 Cell: (cell) => <>{cell.row.original.key ? cell.row.original.key : ""}</>,
-                filterSelectOptions: keys && keys.map((i) => {
-                    return i.key;
-                }).filter(onlyUnique)
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={keys.map((item) => {
+                    return item.key
+                })} />,
             },
             {
                 accessorKey: 'type',
                 header: 'Type',
-                
-                filterVariant: 'multi-select',
                 Cell: (cell) => <>{cell.row.original.type ? cell.row.original.type : ""}</>,
-                filterSelectOptions: keys && keys.map((i) => {
-                    return i.type;
-                }).filter(onlyUnique)
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={keys.map((item) => {
+                    return item.type
+                })} />,
             },
             {
                 accessorKey: 'category.label',
                 header: 'Category',
-               
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={keys.map((item) => {
+                    return item.category.label
+                })} />,
                 Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
 
             },
             {
                 accessorKey: 'is_date_key',
                 header: 'Is date Key',
-               
+                enableColumnFilter:false,
                 Cell: (cell) => <>{cell.row.original.is_date_key ? "true" : "false"}</>
 
             },
             {
                 accessorKey: 'map_to_username',
                 header: 'Map Username',
-               
+                enableColumnFilter:false,
                 Cell: (cell) => <>{cell.row.original.map_to_username ? "true" : "false"}</>
 
             },
             {
                 accessorKey: 'map_to_state',
                 header: 'Map State',
-               
+                enableColumnFilter:false,
                 Cell: (cell) => <>{cell.row.original.map_to_state ? "true" : "false"}</>
 
             },
             {
                 accessorKey: 'assigned_users',
                 header: 'Assigned Users',
-              
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={keys.map((item) => {
+                  return item.assigned_users
+                })} />,
                 Cell: (cell) => <span title={cell.row.original.assigned_users}>{cell.row.original.assigned_users ? cell.row.original.assigned_users : ""}</span>
 
             },
@@ -170,20 +178,20 @@ export default function KeysPage() {
         }),
         muiTableHeadCellProps: ({ column }) => ({
             sx: {
-              '& div:nth-of-type(1) span': {
-                display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
-              },
-              '& div:nth-of-type(2)': {
-                display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
-              },
-              '&:hover div:nth-of-type(1) span': {
-                display: 'inline', // Visible on hover
-              },
-              '&:hover div:nth-of-type(2)': {
-                display: 'block', // Visible on hover
-              }
+                '& div:nth-of-type(1) span': {
+                    display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
+                },
+                '& div:nth-of-type(2)': {
+                    display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
+                },
+                '&:hover div:nth-of-type(1) span': {
+                    display: 'inline', // Visible on hover
+                },
+                '&:hover div:nth-of-type(2)': {
+                    display: 'block', // Visible on hover
+                }
             },
-          }),
+        }),
         muiTableHeadRowProps: () => ({
             sx: {
                 backgroundColor: 'whitesmoke',
@@ -200,7 +208,7 @@ export default function KeysPage() {
             shape: 'rounded',
             variant: 'outlined',
         },
-       enableDensityToggle: false, initialState: {
+        enableDensityToggle: false, initialState: {
             density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
         },
         enableGrouping: true,
