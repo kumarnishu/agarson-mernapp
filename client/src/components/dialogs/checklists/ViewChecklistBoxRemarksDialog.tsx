@@ -86,7 +86,7 @@ function ViewChecklistBoxRemarksDialog({ checklist_box, checklist, dialog, setDi
 
             </DialogContent>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>
-                {(checklist_box.stage !== 'done' || user?.is_admin) && <Button variant='contained'
+                {(checklist_box.stage !== 'done' || user?.role=="admin") && <Button variant='contained'
                     fullWidth
                     onClick={() => {
                         setDialog1(is_admin ? 'CreateChecklistRemarkDialogFromAdmin' : 'CreateOrEditChecklistRemarkDialog')

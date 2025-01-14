@@ -116,7 +116,7 @@ export default function RefersPage() {
           element={
             <Stack direction="row" spacing={1}>
 
-              {LoggedInUser?.is_admin && LoggedInUser.assigned_permissions.includes('refer_delete') &&
+              {LoggedInUser?.role=="admin" && LoggedInUser.assigned_permissions.includes('refer_delete') &&
                 <Tooltip title="delete">
                   <IconButton color="error"
 
@@ -387,7 +387,7 @@ export default function RefersPage() {
         />
         <Stack justifyContent={'right'} direction={'row'} gap={1}>
 
-          {LoggedInUser?.is_admin && LoggedInUser?.assigned_permissions.includes('refer_export') && <Tooltip title="Export">
+          {LoggedInUser?.role=="admin" && LoggedInUser?.assigned_permissions.includes('refer_export') && <Tooltip title="Export">
             <ReferExcelButtons />
           </Tooltip>}
           <Tooltip title="Toogle Filter">

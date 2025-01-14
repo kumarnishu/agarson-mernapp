@@ -38,7 +38,7 @@ export default function LeavesPage() {
         header: '',
         enableColumnFilter: false,
         Cell: ({ cell }) => <>
-          {LoggedInUser?.is_admin &&
+          {LoggedInUser?.role=="admin" &&
             <Button color="error"
               disabled={cell.row.original.status === 'rejected'}
               onClick={() => {

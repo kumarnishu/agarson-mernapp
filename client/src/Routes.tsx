@@ -110,7 +110,7 @@ function AppRoutes() {
               }
             />
           </Route>
-          {user.is_admin && < Route path="/Users" element={
+          {user.role=="admin" && < Route path="/Users" element={
             <UsersNavbar />
           } >
             <Route index element={<UsersPage />} />

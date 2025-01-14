@@ -70,7 +70,7 @@ export default function DriverAppSystemPage() {
 
 
 
-              {LoggedInUser?.is_admin && LoggedInUser?.assigned_permissions.includes('driver_system_delete') && <Tooltip title="delete">
+              {LoggedInUser?.role=="admin" && LoggedInUser?.assigned_permissions.includes('driver_system_delete') && <Tooltip title="delete">
                 <IconButton color="error"
 
                   onClick={() => {

@@ -30,7 +30,7 @@ function LeadsBackup() {
             />
 
             <Stack direction="row" gap={1} alignItems="center">
-                {user?.is_admin ?
+                {user?.role=="admin" ?
                     <>
                         <Button variant='outlined'  onClick={() => {
                             setValue("leads")

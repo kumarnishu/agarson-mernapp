@@ -102,9 +102,9 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);  const [flag
         header: 'Role',
     
         filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.is_admin ? "admin" : "user"}</>,
+        Cell: (cell) => <>{cell.row.original.role=="admin" ? "admin" : "user"}</>,
         filterSelectOptions: data && users.map((i) => {
-          if (i.is_admin) return "admin"
+          if (i.role=="admin") return "admin"
           return "user"
         }).filter(onlyUnique)
       },

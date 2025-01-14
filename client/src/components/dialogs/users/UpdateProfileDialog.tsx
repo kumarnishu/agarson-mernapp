@@ -42,7 +42,7 @@ function UpdateProfileDialog({ dialog, setDialog }: Props) {
                                 <Typography variant="h6" component="h2">
                                     {user?.username}</Typography>
                                 <Typography variant="caption" component="p">
-                                    {user?.is_admin ? "admin" : "user"}</Typography>
+                                    {user?.role=="admin" ? "admin" : "user"}</Typography>
                             </Stack>
                         </Box>
                         : null

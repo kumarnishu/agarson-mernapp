@@ -72,7 +72,7 @@ export default function SalesAttendanceReportPage() {
             disabled={(cell.row.original.attendance + cell.row.original.consumed.sl + cell.row.original.consumed.fl + cell.row.original.consumed.sw + cell.row.original.consumed.cl) == getDaysInMonth(yearmonth)}
             onClick={() => {
               setBalance(cell.row.original)
-              if (LoggedInUser?.is_admin)
+              if (LoggedInUser?.role=="admin")
                 setDialog('ApplyLeaveFromAdminDialog')
               else
                 setDialog('ApplyLeaveDialog')

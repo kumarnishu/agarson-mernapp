@@ -47,7 +47,7 @@ export default function MachineCategoryPage() {
                         <Stack direction="row">
                             <>
 
-                                {LoggedInUser?.is_admin && LoggedInUser.assigned_permissions.includes('machine_category_delete') &&
+                                {LoggedInUser?.role=="admin" && LoggedInUser.assigned_permissions.includes('machine_category_delete') &&
                                     <Tooltip title="delete">
                                         <IconButton color="error"
 

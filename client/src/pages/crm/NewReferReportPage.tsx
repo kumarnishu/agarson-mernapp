@@ -92,7 +92,7 @@ export default function NewReferReportPage() {
                   <Recycling />
                 </IconButton>
               </Tooltip>}
-              {LoggedInUser?.is_admin && LoggedInUser.assigned_permissions.includes('newrefer_delete') &&
+              {LoggedInUser?.role=="admin" && LoggedInUser.assigned_permissions.includes('newrefer_delete') &&
                 <Tooltip title="delete">
                   <IconButton color="error"
 

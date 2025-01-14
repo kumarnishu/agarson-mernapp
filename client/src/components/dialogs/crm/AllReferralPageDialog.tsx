@@ -93,7 +93,7 @@ function AllReferralPageDialog({ refer, dialog, setDialog }: Props) {
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>Referrals
 
-                {LoggedInUser?.is_admin && <Button variant="text" color="success"
+                {LoggedInUser?.role=="admin" && <Button variant="text" color="success"
                     onClick={() => {
                         handleExcel()
                     }}

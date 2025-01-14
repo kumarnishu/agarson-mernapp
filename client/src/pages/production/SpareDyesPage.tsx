@@ -100,7 +100,7 @@ export default function SpareDyesPage() {
                                         <Check />
                                     </IconButton>
                                 </Tooltip>}
-                                {LoggedInUser?.is_admin && LoggedInUser?.assigned_permissions.includes('spare_dye_delete') && <Tooltip title="delete">
+                                {LoggedInUser?.role=="admin" && LoggedInUser?.assigned_permissions.includes('spare_dye_delete') && <Tooltip title="delete">
                                     <IconButton color="error"
 
                                         onClick={() => {

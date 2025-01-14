@@ -35,7 +35,7 @@ export default function ArticleConsumedStockpage() {
         header: 'Actions',
         enableColumnFilter: false,
         Cell: ({ cell }) => <>
-          {LoggedInUser?.is_admin && <Button color="error"
+          {LoggedInUser?.role=="admin" && <Button color="error"
             onClick={() => {
               setConsume(cell.row.original)
               setDialog('DiscardConsumptionDialog')

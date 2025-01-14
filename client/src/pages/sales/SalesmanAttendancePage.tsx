@@ -60,7 +60,7 @@ function SalesmanAttendancePage() {
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row" spacing={1}>
-                            {LoggedInUser?.is_admin && LoggedInUser?.assigned_permissions.includes('salesman_attendance_delete') && <Tooltip title="delete">
+                            {LoggedInUser?.role=="admin" && LoggedInUser?.assigned_permissions.includes('salesman_attendance_delete') && <Tooltip title="delete">
                                 <IconButton color="error"
                                     onClick={() => {
 
@@ -76,7 +76,7 @@ function SalesmanAttendancePage() {
                             {LoggedInUser?.assigned_permissions.includes('salesman_attendance_edit') &&
                                 <Tooltip title="Edit">
                                     <IconButton
-                                        disabled={!LoggedInUser.is_admin && new Date(cell.row.original.date) < previous_date}
+                                        disabled={!LoggedInUser.role=="admin" && new Date(cell.row.original.date) < previous_date}
                                         onClick={() => {
 
                                             setDialog('CreateOrEditSalesmanAttendanceDialog')

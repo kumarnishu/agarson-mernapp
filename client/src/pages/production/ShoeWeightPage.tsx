@@ -119,7 +119,7 @@ export default function ShoeWeightPage() {
                     <Check />
                   </IconButton>
                 </Tooltip>}
-                {LoggedInUser?.is_admin && LoggedInUser?.assigned_permissions.includes('shoe_weight_delete') && <Tooltip title="delete">
+                {LoggedInUser?.role=="admin" && LoggedInUser?.assigned_permissions.includes('shoe_weight_delete') && <Tooltip title="delete">
                   <IconButton color="error"
 
                     onClick={() => {

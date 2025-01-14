@@ -278,7 +278,7 @@ export default function ArticleStockPage() {
 
         <Stack direction={'row'} gap={1}>
 
-          {LoggedInUser?.is_admin &&
+          {LoggedInUser?.role=="admin" &&
             <>
               <TextField label="Scheme" variant="outlined" value={schme} onChange={(e) => setSchme(e.currentTarget.value)} />
               <StockSchemeButton schme={schme} />

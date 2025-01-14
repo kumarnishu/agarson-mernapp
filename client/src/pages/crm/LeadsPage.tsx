@@ -536,7 +536,7 @@ export default function LeadsPage() {
               <Delete />
             </Button>
           </Tooltip>}
-          {LoggedInUser?.is_admin && LoggedInUser?.assigned_permissions.includes('leads_export') && <Tooltip title="Export">
+          {LoggedInUser?.role=="admin" && LoggedInUser?.assigned_permissions.includes('leads_export') && <Tooltip title="Export">
             <LeadExcelButtons />
           </Tooltip>}
 

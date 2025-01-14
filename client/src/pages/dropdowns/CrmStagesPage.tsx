@@ -49,7 +49,7 @@ export default function CrmStagesPage() {
             <Stack direction="row">
               <>
 
-                {LoggedInUser?.is_admin && LoggedInUser.assigned_permissions.includes('leadstage_delete') &&
+                {LoggedInUser?.role=="admin" && LoggedInUser.assigned_permissions.includes('leadstage_delete') &&
                   <Tooltip title="delete">
                     <IconButton color="error"
 

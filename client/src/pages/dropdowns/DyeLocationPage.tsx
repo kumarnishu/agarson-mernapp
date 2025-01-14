@@ -47,7 +47,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
             <Stack direction="row">
               <>
 
-                {LoggedInUser?.is_admin && LoggedInUser.assigned_permissions.includes('dye_location_edit') &&
+                {LoggedInUser?.role=="admin" && LoggedInUser.assigned_permissions.includes('dye_location_edit') &&
                   <Tooltip title="toogle status">
                     <IconButton color="error"
 

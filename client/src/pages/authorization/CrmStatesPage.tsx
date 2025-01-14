@@ -49,7 +49,7 @@ export default function CrmStatesPage() {
             <Stack direction="row">
               <>
 
-                {LoggedInUser?.is_admin && LoggedInUser.assigned_permissions.includes('states_delete') &&
+                {LoggedInUser?.role=="admin" && LoggedInUser.assigned_permissions.includes('states_delete') &&
                   <Tooltip title="delete">
                     <IconButton color="error"
 
@@ -333,7 +333,7 @@ export default function CrmStatesPage() {
 
           </Menu >
           <CreateOrEditStateDialog  dialog={dialog} setDialog={setDialog}/>
-          {LoggedInUser?.is_admin && <FindUknownCrmStatesDialog  dialog={dialog} setDialog={setDialog}/>}
+          {LoggedInUser?.role=="admin" && <FindUknownCrmStatesDialog  dialog={dialog} setDialog={setDialog}/>}
           {<AssignCrmStatesDialog  dialog={dialog} setDialog={setDialog}flag={flag} states={table.getSelectedRowModel().rows.map((item) => { return item.original })} />}
           <>
             {

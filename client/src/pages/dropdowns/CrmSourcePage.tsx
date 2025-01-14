@@ -48,7 +48,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
             <Stack direction="row">
               <>
 
-                {LoggedInUser?.is_admin && LoggedInUser.assigned_permissions.includes('lead_source_delete') &&
+                {LoggedInUser?.role=="admin" && LoggedInUser.assigned_permissions.includes('lead_source_delete') &&
                   <Tooltip title="delete">
                     <IconButton color="error"
 

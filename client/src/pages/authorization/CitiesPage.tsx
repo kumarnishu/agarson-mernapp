@@ -76,7 +76,7 @@ export default function CrmCitiesPage() {
             <Stack direction="row">
               <>
 
-                {LoggedInUser?.is_admin && LoggedInUser.assigned_permissions.includes('city_delete') &&
+                {LoggedInUser?.role=="admin" && LoggedInUser.assigned_permissions.includes('city_delete') &&
                   <Tooltip title="delete">
                     <IconButton color="error"
 
@@ -387,7 +387,7 @@ export default function CrmCitiesPage() {
 
           </Menu >
           <CreateOrEditCityDialog dialog={dialog} setDialog={setDialog} />
-          {LoggedInUser?.is_admin && <FindUknownCrmCitiesDialog dialog={dialog} setDialog={setDialog} />}
+          {LoggedInUser?.role=="admin" && <FindUknownCrmCitiesDialog dialog={dialog} setDialog={setDialog} />}
           {<AssignCrmCitiesDialog dialog={dialog} setDialog={setDialog} flag={flag} cities={table.getSelectedRowModel().rows.map((item) => { return { id: item.original._id, label: item.original.city, value: item.original.city } })} />}
           <>
             {

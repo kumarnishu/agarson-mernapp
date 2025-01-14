@@ -120,7 +120,7 @@ function CreateOrEditReferForm({ refer,setDialog }: { refer?: GetReferDto, setDi
                     autoFocus
 
                     fullWidth
-                    disabled={!user?.is_admin && refer ? true : false}
+                    disabled={!user?.role=="admin" && refer ? true : false}
 
                     error={
                         formik.touched.name && formik.errors.name ? true : false

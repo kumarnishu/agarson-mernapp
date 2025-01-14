@@ -31,7 +31,7 @@ function ProfileDialog({ profile, dialog, setDialog }: Props) {
                         <Typography variant="h4" component="h2">
                             {profile?.username}</Typography>
                         <Typography variant="body1" component="p">
-                            {profile?.is_admin ? "admin" : "user"}</Typography>
+                            {profile?.role=="admin" ? "admin" : "user"}</Typography>
                         <Typography variant="body2" component="p">
                             {profile?.mobile}</Typography>
                         <Typography variant="caption" component="p">

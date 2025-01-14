@@ -124,7 +124,7 @@ export default function UsersPage() {
                                 null
                                 :
                                 <>
-                                    {cell.row.original.is_admin ?
+                                    {cell.row.original.role=="admin" ?
                                         < Tooltip title="Remove admin"><IconButton size="medium"
                                             disabled={cell.row.original?.created_by.id === cell.row.original._id}
                                             color="error"
@@ -249,7 +249,7 @@ export default function UsersPage() {
                                     <KeyOffOutlined />
                                 </IconButton>
                             </Tooltip>
-                            {LoggedInUser?._id !== cell.row.original._id && LoggedInUser?.is_admin && < Tooltip title={`login as this user ${cell.row.original.username || ""}`}>
+                            {LoggedInUser?._id !== cell.row.original._id && LoggedInUser?.role=="admin" && < Tooltip title={`login as this user ${cell.row.original.username || ""}`}>
                                 <IconButton
                                     disabled={LoggedInUser?._id === cell.row.original._id}
                                     color="info"
@@ -291,7 +291,7 @@ export default function UsersPage() {
                 accessorKey: 'is_admin',
                 header: 'Role',
                 filterVariant: 'multi-select',
-                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return item.is_admin ?"Admin":"user" })} />,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={users.map((item) => { return item.role=="admin" ?"Admin":"user" })} />,
             },
             {
                 accessorKey: 'email',
