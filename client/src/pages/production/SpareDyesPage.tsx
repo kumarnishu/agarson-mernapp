@@ -6,7 +6,6 @@ import { useQuery } from 'react-query'
 import { UserContext } from '../../contexts/userContext'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
 import { Check, Delete, Edit, FilterAlt, FilterAltOff, Menu as MenuIcon, Photo } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import PopUp from '../../components/popup/PopUp'
@@ -200,7 +199,7 @@ export default function SpareDyesPage() {
             }
         }),
         muiTableContainerProps: (table) => ({
-            sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
+            sx: { height: table.table.getState().isFullScreen ? 'auto' : '70vh' }
         }),
         muiTableHeadRowProps: () => ({
             sx: {

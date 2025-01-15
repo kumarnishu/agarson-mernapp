@@ -6,7 +6,6 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import moment from 'moment'
-import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import ExportToExcel from '../../utils/ExportToExcel'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
@@ -74,7 +73,7 @@ export default function MachineWiseProductionReportPage() {
       }
     }),
     muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '70vh' }
     }),
     muiTableHeadRowProps: () => ({
       sx: {

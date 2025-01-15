@@ -10,7 +10,6 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import CreateOrEditReferDialog from '../../components/dialogs/crm/CreateOrEditReferDialog.tsx'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import PopUp from '../../components/popup/PopUp.tsx'
-import { onlyUnique } from '../../utils/UniqueArray.ts'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog.tsx'
 import AllReferralPageDialog from '../../components/dialogs/crm/AllReferralPageDialog.tsx'
 import ViewReferRemarksDialog from '../../components/dialogs/crm/ViewReferRemarksDialog.tsx'
@@ -304,7 +303,7 @@ export default function RefersPage() {
       }
     }),
     muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '70vh' }
     }),
     muiTableHeadRowProps: () => ({
       sx: {

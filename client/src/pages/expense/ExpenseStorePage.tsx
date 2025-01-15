@@ -4,7 +4,6 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import { AddBoxOutlined, Input } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
@@ -171,7 +170,7 @@ export default function ExpenseStorePage() {
       }
     }),
     muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '70vh' }
     }),
     muiTableHeadRowProps: () => ({
       sx: {

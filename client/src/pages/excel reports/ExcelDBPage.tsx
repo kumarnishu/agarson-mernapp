@@ -218,7 +218,7 @@ export default function ExcelDBPage() {
       }
     }),
     muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '70vh' }
     }),
     muiTableHeadRowProps: () => ({
       sx: {

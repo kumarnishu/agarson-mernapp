@@ -7,7 +7,6 @@ import { BackendError } from '../..'
 import { UserContext } from '../../contexts/userContext'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
 import moment from 'moment'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { ProductionService } from '../../services/ProductionService'
@@ -241,7 +240,7 @@ export default function ShowWeightDifferenceReportPage() {
       }
     }),
     muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '70vh' }
     }),
     muiTableHeadRowProps: () => ({
       sx: {

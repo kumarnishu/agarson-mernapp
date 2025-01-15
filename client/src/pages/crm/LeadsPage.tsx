@@ -6,7 +6,6 @@ import { useQuery } from 'react-query'
 import { UserContext } from '../../contexts/userContext'
 import { toTitleCase } from '../../utils/TitleCase'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
 import CreateOrEditLeadDialog from '../../components/dialogs/crm/CreateOrEditLeadDialog'
 import MergeTwoLeadsDialog from '../../components/dialogs/crm/MergeTwoLeadsDialog'
 import BulkDeleteUselessLeadsDialog from '../../components/dialogs/crm/BulkDeleteUselessLeadsDialog'
@@ -423,7 +422,7 @@ export default function LeadsPage() {
     }),
 
     muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '70vh' }
     }),
     muiTableHeadRowProps: () => ({
       sx: {
