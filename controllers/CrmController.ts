@@ -416,8 +416,7 @@ export class CrmController {
 
     }
     public async GetActivities(req: Request, res: Response, next: NextFunction) {
-        let limit = Number(req.query.limit)
-        let page = Number(req.query.page)
+
         let id = req.query.id
         let stage = req.query.stage
         let start_date = req.query.start_date
@@ -433,53 +432,9 @@ export class CrmController {
         let ids = req.user?.assigned_users.map((id: { _id: string }) => { return id._id })
         let result: GetActivitiesOrRemindersDto[] = []
 
-        if (!Number.isNaN(limit) && !Number.isNaN(page)) {
-            if (req.user?.is_admin && !id) {
-                {
-                    remarks = await Remark.find({ created_at: { $gte: dt1, $lt: dt2 } }).populate('created_by').populate('updated_by').populate({
-                        path: 'lead',
-                        populate: [
-                            {
-                                path: 'created_by',
-                                model: 'User'
-                            },
-                            {
-                                path: 'updated_by',
-                                model: 'User'
-                            },
-                            {
-                                path: 'referred_party',
-                                model: 'ReferredParty'
-                            }
-                        ]
-                    }).sort('-updated_at').skip((page - 1) * limit).limit(limit)
-                    count = await Remark.find({ created_at: { $gte: dt1, $lt: dt2 } }).countDocuments()
-                }
-            }
-            else if (ids && ids.length > 0 && !id) {
-                {
-                    remarks = await Remark.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: { $in: ids } }).populate('created_by').populate('updated_by').populate({
-                        path: 'lead',
-                        populate: [
-                            {
-                                path: 'created_by',
-                                model: 'User'
-                            },
-                            {
-                                path: 'updated_by',
-                                model: 'User'
-                            },
-                            {
-                                path: 'referred_party',
-                                model: 'ReferredParty'
-                            }
-                        ]
-                    }).sort('-updated_at').skip((page - 1) * limit).limit(limit)
-                    count = await Remark.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: { $in: ids } }).countDocuments()
-                }
-            }
-            else if (!id) {
-                remarks = await Remark.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: req.user?._id }).populate('created_by').populate('updated_by').populate({
+        if (req.user?.is_admin && !id) {
+            {
+                remarks = await Remark.find({ created_at: { $gte: dt1, $lt: dt2 } }).populate('created_by').populate('updated_by').populate({
                     path: 'lead',
                     populate: [
                         {
@@ -495,80 +450,115 @@ export class CrmController {
                             model: 'ReferredParty'
                         }
                     ]
-                }).sort('-updated_at').skip((page - 1) * limit).limit(limit)
-                count = await Remark.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: req.user?._id }).countDocuments()
+                }).sort('-updated_at')
+                count = await Remark.find({ created_at: { $gte: dt1, $lt: dt2 } }).countDocuments()
             }
-
-            else {
-                remarks = await Remark.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: id }).populate('created_by').populate('updated_by').populate({
-                    path: 'lead',
-                    populate: [
-                        {
-                            path: 'created_by',
-                            model: 'User'
-                        },
-                        {
-                            path: 'updated_by',
-                            model: 'User'
-                        },
-                        {
-                            path: 'referred_party',
-                            model: 'ReferredParty'
-                        }
-                    ]
-                }).sort('-updated_at').skip((page - 1) * limit).limit(limit)
-                count = await Remark.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: id }).countDocuments()
-            }
-            if (stage !== 'all') {
-                remarks = remarks.filter((r) => {
-                    if (r.lead)
-                        return r.lead.stage == stage
-                })
-
-            }
-            result = remarks.map((rem) => {
-                return {
-                    _id: rem._id,
-                    remark: rem.remark,
-                    created_at: rem.created_at && moment(rem.created_at).format("LT"),
-                    remind_date: rem.remind_date && moment(rem.remind_date).format("DD/MM/YYYY"),
-                    created_by: { id: rem.created_by._id, value: rem.created_by.username, label: rem.created_by.username },
-                    lead_id: rem.lead && rem.lead._id,
-                    name: rem.lead && rem.lead.name,
-                    customer_name: rem.lead && rem.lead.customer_name,
-                    customer_designation: rem.lead && rem.lead.customer_designation,
-                    mobile: rem.lead && rem.lead.mobile,
-                    gst: rem.lead && rem.lead.gst,
-                    has_card: rem.lead && rem.lead.has_card,
-                    email: rem.lead && rem.lead.email,
-                    city: rem.lead && rem.lead.city,
-                    state: rem.lead && rem.lead.state,
-                    country: rem.lead && rem.lead.country,
-                    address: rem.lead && rem.lead.address,
-                    work_description: rem.lead && rem.lead.work_description,
-                    turnover: rem.lead && rem.lead.turnover,
-                    alternate_mobile1: rem.lead && rem.lead.alternate_mobile1,
-                    alternate_mobile2: rem.lead && rem.lead.alternate_mobile2,
-                    alternate_email: rem.lead && rem.lead.alternate_email,
-                    lead_type: rem.lead && rem.lead.lead_type,
-                    stage: rem.lead && rem.lead.stage,
-                    lead_source: rem.lead && rem.lead.lead_source,
-                    visiting_card: rem.lead && rem.lead.visiting_card?.public_url || "",
-                    referred_party_name: rem.lead && rem.lead.referred_party?.name || "",
-                    referred_party_mobile: rem.lead && rem.lead.referred_party?.mobile || "",
-                    referred_date: rem.lead && rem.lead.referred_party && moment(rem.lead.referred_date).format("DD/MM/YYYY") || "",
-
-                }
-            })
-            return res.status(200).json({
-                result,
-                total: Math.ceil(count / limit),
-                page: page,
-                limit: limit
-            })
         }
-        else
-            return res.status(400).json({ message: "bad request" })
+        else if (ids && ids.length > 0 && !id) {
+            {
+                remarks = await Remark.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: { $in: ids } }).populate('created_by').populate('updated_by').populate({
+                    path: 'lead',
+                    populate: [
+                        {
+                            path: 'created_by',
+                            model: 'User'
+                        },
+                        {
+                            path: 'updated_by',
+                            model: 'User'
+                        },
+                        {
+                            path: 'referred_party',
+                            model: 'ReferredParty'
+                        }
+                    ]
+                }).sort('-updated_at')
+                count = await Remark.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: { $in: ids } }).countDocuments()
+            }
+        }
+        else if (!id) {
+            remarks = await Remark.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: req.user?._id }).populate('created_by').populate('updated_by').populate({
+                path: 'lead',
+                populate: [
+                    {
+                        path: 'created_by',
+                        model: 'User'
+                    },
+                    {
+                        path: 'updated_by',
+                        model: 'User'
+                    },
+                    {
+                        path: 'referred_party',
+                        model: 'ReferredParty'
+                    }
+                ]
+            }).sort('-updated_at')
+            count = await Remark.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: req.user?._id }).countDocuments()
+        }
+
+        else {
+            remarks = await Remark.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: id }).populate('created_by').populate('updated_by').populate({
+                path: 'lead',
+                populate: [
+                    {
+                        path: 'created_by',
+                        model: 'User'
+                    },
+                    {
+                        path: 'updated_by',
+                        model: 'User'
+                    },
+                    {
+                        path: 'referred_party',
+                        model: 'ReferredParty'
+                    }
+                ]
+            }).sort('-updated_at')
+            count = await Remark.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: id }).countDocuments()
+        }
+        if (stage !== 'all') {
+            remarks = remarks.filter((r) => {
+                if (r.lead)
+                    return r.lead.stage == stage
+            })
+
+        }
+        result = remarks.map((rem) => {
+            return {
+                _id: rem._id,
+                remark: rem.remark,
+                created_at: rem.created_at && moment(rem.created_at).format("LT"),
+                remind_date: rem.remind_date && moment(rem.remind_date).format("DD/MM/YYYY"),
+                created_by: { id: rem.created_by._id, value: rem.created_by.username, label: rem.created_by.username },
+                lead_id: rem.lead && rem.lead._id,
+                name: rem.lead && rem.lead.name,
+                customer_name: rem.lead && rem.lead.customer_name,
+                customer_designation: rem.lead && rem.lead.customer_designation,
+                mobile: rem.lead && rem.lead.mobile,
+                gst: rem.lead && rem.lead.gst,
+                has_card: rem.lead && rem.lead.has_card,
+                email: rem.lead && rem.lead.email,
+                city: rem.lead && rem.lead.city,
+                state: rem.lead && rem.lead.state,
+                country: rem.lead && rem.lead.country,
+                address: rem.lead && rem.lead.address,
+                work_description: rem.lead && rem.lead.work_description,
+                turnover: rem.lead && rem.lead.turnover,
+                alternate_mobile1: rem.lead && rem.lead.alternate_mobile1,
+                alternate_mobile2: rem.lead && rem.lead.alternate_mobile2,
+                alternate_email: rem.lead && rem.lead.alternate_email,
+                lead_type: rem.lead && rem.lead.lead_type,
+                stage: rem.lead && rem.lead.stage,
+                lead_source: rem.lead && rem.lead.lead_source,
+                visiting_card: rem.lead && rem.lead.visiting_card?.public_url || "",
+                referred_party_name: rem.lead && rem.lead.referred_party?.name || "",
+                referred_party_mobile: rem.lead && rem.lead.referred_party?.mobile || "",
+                referred_date: rem.lead && rem.lead.referred_party && moment(rem.lead.referred_date).format("DD/MM/YYYY") || "",
+
+            }
+        })
+        return res.status(200).json(result)
     }
 
     public async NewRemark(req: Request, res: Response, next: NextFunction) {
@@ -703,8 +693,6 @@ export class CrmController {
     }
 
     public async GetLeads(req: Request, res: Response, next: NextFunction) {
-        let limit = Number(req.query.limit)
-        let page = Number(req.query.page)
         let stage = req.query.stage
         let user = await User.findById(req.user).populate('assigned_crm_states').populate('assigned_crm_cities');
         let showonlycardleads = Boolean(user?.assigned_permissions.includes('show_leads_having_cards_only'))
@@ -716,32 +704,24 @@ export class CrmController {
             stages = stages.filter((stage) => { return stage !== "useless" })
         if (!req.user?.assigned_permissions.includes('show_refer_leads'))
             stages = stages.filter((stage) => { return stage !== "refer" })
-        if (!Number.isNaN(limit) && !Number.isNaN(page)) {
             let leads: ILead[] = []
-            let count = 0
             if (stage != "all") {
                 leads = await Lead.find({
                     stage: stage, state: { $in: states }, city: { $in: cities }
-                }).populate('updated_by').populate('referred_party').populate('created_by').sort('-created_at').skip((page - 1) * limit).limit(limit)
-                count = await Lead.find({
-                    stage: stage, state: { $in: states }, city: { $in: cities }
-                }).countDocuments()
+                }).populate('updated_by').populate('referred_party').populate('created_by').sort('-created_at')
+               
             }
             else if (showonlycardleads) {
                 leads = await Lead.find({
                     has_card: showonlycardleads, state: { $in: states }, city: { $in: cities }
-                }).populate('updated_by').populate('referred_party').populate('created_by').sort('-created_at').skip((page - 1) * limit).limit(limit)
-                count = await Lead.find({
-                    has_card: showonlycardleads, state: { $in: states }, city: { $in: cities }
-                }).countDocuments()
+                }).populate('updated_by').populate('referred_party').populate('created_by').sort('-created_at')
+               
             }
             else {
                 leads = await Lead.find({
                     stage: { $in: stages }, state: { $in: states }, city: { $in: cities }
-                }).populate('updated_by').populate('referred_party').populate('created_by').sort('-created_at').skip((page - 1) * limit).limit(limit)
-                count = await Lead.find({
-                    stage: { $in: stages }, state: { $in: states }, city: { $in: cities }
-                }).countDocuments()
+                }).populate('updated_by').populate('referred_party').populate('created_by').sort('-created_at')
+              
             }
 
             result = leads.map((lead) => {
@@ -779,15 +759,7 @@ export class CrmController {
                 }
             })
 
-            return res.status(200).json({
-                result,
-                total: Math.ceil(count / limit),
-                page: page,
-                limit: limit
-            })
-        }
-        else
-            return res.status(400).json({ message: "bad request" })
+            return res.status(200).json(result)
     }
     public async ReferLead(req: Request, res: Response, next: NextFunction) {
         const { party_id, remark, remind_date } = req.body as CreateOrRemoveReferForLeadDto
@@ -903,8 +875,7 @@ export class CrmController {
 
 
     public async FuzzySearchLeads(req: Request, res: Response, next: NextFunction) {
-        let limit = Number(req.query.limit)
-        let page = Number(req.query.page)
+      
         let result: GetLeadDto[] = []
         let user = await User.findById(req.user).populate('assigned_crm_states').populate('assigned_crm_cities');
         let showonlycardleads = Boolean(user?.assigned_permissions.includes('show_leads_having_cards_only'))
@@ -915,7 +886,6 @@ export class CrmController {
         if (!key)
             return res.status(500).json({ message: "bad request" })
         let leads: ILead[] = []
-        if (!Number.isNaN(limit) && !Number.isNaN(page)) {
 
             if (stage != "all") {
                 if (key.length == 1 || key.length > 4) {
@@ -1693,8 +1663,6 @@ export class CrmController {
 
             }
 
-            let count = leads.length
-            leads = leads.slice((page - 1) * limit, limit * page)
 
             result = leads.map((lead) => {
                 return {
@@ -1731,16 +1699,7 @@ export class CrmController {
                 }
             })
 
-            return res.status(200).json({
-                result,
-                total: Math.ceil(count / limit),
-                page: page,
-                limit: limit
-            })
-        }
-        else
-            return res.status(400).json({ message: "bad request" })
-
+            return res.status(200).json(result)
     }
 
 
@@ -2253,17 +2212,12 @@ export class CrmController {
 
 
     public async GetPaginatedRefers(req: Request, res: Response, next: NextFunction) {
-        let limit = Number(req.query.limit)
-        let page = Number(req.query.page)
         let result: GetReferDto[] = []
         let user = await User.findById(req.user).populate('assigned_crm_states').populate('assigned_crm_cities');
         let states = user?.assigned_crm_states.map((item) => { return item.state })
         let cities = user?.assigned_crm_cities.map((item) => { return item.city })
         let parties: IReferredParty[] = []
-        if (!Number.isNaN(limit) && !Number.isNaN(page)) {
             parties = await ReferredParty.find({ state: { $in: states }, city: { $in: cities } }).populate('created_by').populate('updated_by').sort('-updated_at')
-            let count = parties.length
-            parties = parties.slice((page - 1) * limit, limit * page)
             result = parties.map((r) => {
                 return {
                     _id: r._id,
@@ -2286,21 +2240,12 @@ export class CrmController {
                     updated_by: { id: r.updated_by._id, value: r.updated_by.username, label: r.updated_by.username },
                 }
             })
-            return res.status(200).json({
-                result: result,
-                total: Math.ceil(count / limit),
-                page: page,
-                limit: limit
-            })
-        }
-        else return res.status(400).json({ message: 'bad request' })
+            return res.status(200).json(result)
 
     }
 
 
     public async FuzzySearchRefers(req: Request, res: Response, next: NextFunction) {
-        let limit = Number(req.query.limit)
-        let page = Number(req.query.page)
         let key = String(req.query.key).split(",")
         let user = await User.findById(req.user).populate('assigned_crm_states').populate('assigned_crm_cities');
         let states = user?.assigned_crm_states.map((item) => { return item.state })
@@ -2309,7 +2254,6 @@ export class CrmController {
         if (!key)
             return res.status(500).json({ message: "bad request" })
         let parties: IReferredParty[] = []
-        if (!Number.isNaN(limit) && !Number.isNaN(page)) {
             if (key.length == 1 || key.length > 4) {
 
                 parties = await ReferredParty.find({
@@ -2475,8 +2419,6 @@ export class CrmController {
 
             }
 
-            let count = parties.length
-            parties = parties.slice((page - 1) * limit, limit * page)
             result = parties.map((r) => {
                 return {
                     _id: r._id,
@@ -2499,17 +2441,7 @@ export class CrmController {
                     updated_by: { id: r.updated_by._id, value: r.updated_by.username, label: r.updated_by.username },
                 }
             })
-            return res.status(200).json({
-                result: result,
-                total: Math.ceil(count / limit),
-                page: page,
-                limit: limit
-            })
-        }
-
-        else
-            return res.status(400).json({ message: "bad request" })
-
+            return res.status(200).json(result)
     }
 
 

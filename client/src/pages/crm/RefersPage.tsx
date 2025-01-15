@@ -1,4 +1,4 @@
-import { Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Recycling, Search, Upload, Visibility } from '@mui/icons-material'
+import { Delete, Edit, FilterAlt, FilterAltOff, Recycling, Search, Upload, Visibility } from '@mui/icons-material'
 import { Button, Fade, IconButton, InputAdornment, LinearProgress, Menu, MenuItem, TextField, Tooltip, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
@@ -27,7 +27,6 @@ import { GetReferDto } from '../../dtos/CrmDto.ts'
 
 
 export default function RefersPage() {
-  const [paginationData, setPaginationData] = useState({ limit: 20, page: 1, total: 1 });
   const [filter, setFilter] = useState<string | undefined>()
   const { user: LoggedInUser } = useContext(UserContext)
   const [refer, setRefer] = useState<GetReferDto>()
@@ -37,16 +36,12 @@ export default function RefersPage() {
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const [preFilteredData, setPreFilteredData] = useState<GetReferDto[]>([])
-  const [preFilteredPaginationData, setPreFilteredPaginationData] = useState({ limit: 20, page: 1, total: 1 });
   const [filterCount, setFilterCount] = useState(0)
-  const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<{
-    result: GetReferDto[], page: number, total: number, limit: number
-  }>, BackendError>(["refers"], async () => new CrmService().GetPaginatedRefers({ limit: paginationData?.limit, page: paginationData?.page }))
+  const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<
+     GetReferDto[]>, BackendError>(["refers"], async () => new CrmService().GetPaginatedRefers())
 
 
-  const { data: fuzzyrefers, isLoading: isFuzzyLoading, refetch: refetchFuzzy, isFetching: isFuzzyRefetching } = useQuery<AxiosResponse<{
-    result: GetReferDto[], page: number, total: number, limit: number
-  }>, BackendError>(["fuzzyrefers", filter], async () => new CrmService().FuzzySearchRefers({ searchString: filter, limit: paginationData?.limit, page: paginationData?.page }), {
+  const { data: fuzzyrefers, isLoading: isFuzzyLoading, refetch: refetchFuzzy, isFetching: isFuzzyRefetching } = useQuery<AxiosResponse<GetReferDto[]>, BackendError>(["fuzzyrefers", filter], async () => new CrmService().FuzzySearchRefers({ searchString: filter }), {
     enabled: false
   })
 
@@ -58,7 +53,6 @@ export default function RefersPage() {
   useEffect(() => {
     if (!filter) {
       setRefers(preFilteredData)
-      setPaginationData(preFilteredPaginationData)
     }
   }, [filter])
 
@@ -66,38 +60,20 @@ export default function RefersPage() {
     if (filter) {
       refetchFuzzy()
     }
-  }, [paginationData])
+  }, [filter])
 
   useEffect(() => {
     if (data && !filter) {
-      setRefers(data.data.result)
-      setPreFilteredData(data.data.result)
-      setPreFilteredPaginationData({
-        ...paginationData,
-        page: data.data.page,
-        limit: data.data.limit,
-        total: data.data.total
-      })
-      setPaginationData({
-        ...paginationData,
-        page: data.data.page,
-        limit: data.data.limit,
-        total: data.data.total
-      })
+      setRefers(data.data)
+      setPreFilteredData(data.data)
+    
     }
   }, [data])
 
   useEffect(() => {
     if (fuzzyrefers && filter) {
-      setRefers(fuzzyrefers.data.result)
+      setRefers(fuzzyrefers.data)
       let count = filterCount
-      if (count === 0)
-        setPaginationData({
-          ...paginationData,
-          page: fuzzyrefers.data.page,
-          limit: fuzzyrefers.data.limit,
-          total: fuzzyrefers.data.total
-        })
       count = filterCount + 1
       setFilterCount(count)
     }
@@ -107,18 +83,18 @@ export default function RefersPage() {
     //column definitions...
     () => refers && [
       {
-        accessorKey: 'actions',  enableColumnActions: false,
-                enableColumnFilter: false,
-                enableSorting: false,
-                enableGrouping: false,
-        header:'Actions',
+        accessorKey: 'actions', enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
+        header: 'Actions',
 
         Footer: <b></b>,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row" spacing={1}>
 
-              {LoggedInUser?.role=="admin" && LoggedInUser.assigned_permissions.includes('refer_delete') &&
+              {LoggedInUser?.role == "admin" && LoggedInUser.assigned_permissions.includes('refer_delete') &&
                 <Tooltip title="delete">
                   <IconButton color="error"
 
@@ -319,8 +295,8 @@ export default function RefersPage() {
 
 
   const table = useMaterialReactTable({
-    columns,
-    data: refers, columnFilterDisplayMode: 'popover',
+    columns, columnFilterDisplayMode: 'popover',
+    data: refers, //10,000 rows       
     enableColumnResizing: true,
     enableColumnVirtualization: true, enableStickyFooter: true,
     muiTableFooterRowProps: () => ({
@@ -328,6 +304,15 @@ export default function RefersPage() {
         backgroundColor: 'whitesmoke',
         color: 'white',
       }
+    }),
+    muiTableContainerProps: (table) => ({
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
+    }),
+    muiTableHeadRowProps: () => ({
+      sx: {
+        backgroundColor: 'whitesmoke',
+        color: 'white'
+      },
     }),
     muiTableHeadCellProps: ({ column }) => ({
       sx: {
@@ -345,124 +330,39 @@ export default function RefersPage() {
         }
       },
     }),
-    muiTableHeadRowProps: () => ({
-      sx: {
-        backgroundColor: 'whitesmoke',
-        color: 'white',
-        border: '1px solid lightgrey;',
-      },
-    }),
-    renderTopToolbarCustomActions: ({ table }) => (
-
-      <Stack
-        sx={{ width: '100%' }}
-        direction="row"
-        alignItems={'center'}
-        justifyContent="space-between">
-
-        <Typography variant="h6">Customers</Typography>
-        <TextField
-          sx={{ width: '40vw', p: 0 }}
-          size='small'
-          onChange={(e) => {
-            setFilter(e.currentTarget.value)
-          }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <Search sx={{ cursor: 'pointer' }} onClick={() => {
-                  if (filter)
-                    refetchFuzzy()
-                }} />
-              </InputAdornment>
-            ),
-          }}
-          placeholder={`Search  `}
-          style={{
-            border: '0',
-          }}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") {
-              refetchFuzzy()
-            }
-          }}
-        />
-        <Stack justifyContent={'right'} direction={'row'} gap={1}>
-
-          {LoggedInUser?.role=="admin" && LoggedInUser?.assigned_permissions.includes('refer_export') && <Tooltip title="Export">
-            <ReferExcelButtons />
-          </Tooltip>}
-          <Tooltip title="Toogle Filter">
-            <Button color="inherit" variant='contained'
-              onClick={() => {
-                if (table.getState().showColumnFilters)
-                  table.resetColumnFilters(true)
-                table.setShowColumnFilters(!table.getState().showColumnFilters)
-              }
-              }
-            >
-              {table.getState().showColumnFilters ? <FilterAltOff /> : <FilterAlt />}
-            </Button>
-          </Tooltip>
-          <Tooltip title="Toogle FullScreen">
-            <Button color="inherit" variant='contained'
-              onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
-              }
-            >
-              {table.getState().isFullScreen ? <FullscreenExit /> : <Fullscreen />}
-            </Button>
-          </Tooltip>
-          <Tooltip title="Menu">
-            <Button color="inherit" variant='contained'
-              onClick={(e) => setAnchorEl(e.currentTarget)
-              }
-            >
-              <MenuIcon />
-              <Typography pl={1}> Menu</Typography>
-            </Button>
-          </Tooltip>
-        </Stack>
-      </Stack>
-    ),
-    positionToolbarAlertBanner: 'none',
-    rowVirtualizerInstanceRef,
-    mrtTheme: (theme) => ({
-      baseBackgroundColor: theme.palette.background.paper, //change default background color
-    }),
-    renderBottomToolbarCustomActions: () => (
-      <DBPagination paginationData={paginationData} refetch={() => { filter ? refetchFuzzy() : refetch() }} setPaginationData={setPaginationData} />
-
-    ),
-    muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '74vh' }
-    }),
     muiTableBodyCellProps: () => ({
       sx: {
-        border: '1px solid lightgrey;',
+        border: '1px solid #c2beba;',
       },
     }),
-   enableDensityToggle: false, initialState: { density: 'compact' },
+    muiPaginationProps: {
+      rowsPerPageOptions: [100, 200, 500, 1000, 2000],
+      shape: 'rounded',
+      variant: 'outlined',
+    },
+    enableDensityToggle: false, initialState: {
+      density: 'compact', pagination: { pageIndex: 0, pageSize: 500 }
+    },
+    enableGrouping: true,
     enableRowSelection: true,
+    manualPagination: true,
+    enablePagination: false,
     enableRowNumbers: true,
     enableColumnPinning: true,
-    onSortingChange: setSorting,
-    enableTopToolbar: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility, //optional
+    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
 
+    onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
+
       sorting,
       columnSizing: columnSizing
-    },
-    enableBottomToolbar: true,
-    enableGlobalFilter: false,
-    manualPagination: true,
-    enablePagination: false,
-    enableToolbarInternalActions: false
+    }
   });
+
   useEffect(() => {
     try {
       rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
@@ -532,6 +432,64 @@ export default function RefersPage() {
       {
         isLoading || isRefetching && <LinearProgress color='secondary' />
       }
+      <Stack
+        sx={{ width: '100%' }}
+        p={1}
+        direction="row"
+        alignItems={'center'}
+        justifyContent="space-between">
+
+        <Typography variant="h6">Customers</Typography>
+        <TextField
+          sx={{ width: '40vw', p: 0 }}
+          size='small'
+          onChange={(e) => {
+            setFilter(e.currentTarget.value)
+          }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <Search sx={{ cursor: 'pointer' }} onClick={() => {
+                  if (filter)
+                    refetchFuzzy()
+                }} />
+              </InputAdornment>
+            ),
+          }}
+          placeholder={`Search  `}
+          style={{
+            border: '0',
+          }}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              refetchFuzzy()
+            }
+          }}
+        />
+        <Stack justifyContent={'right'} direction={'row'} gap={1}>
+
+          {LoggedInUser?.role == "admin" && LoggedInUser?.assigned_permissions.includes('refer_export') && <Tooltip title="Export">
+            <ReferExcelButtons />
+          </Tooltip>}
+          <Button color="inherit" variant='contained'
+            onClick={() => {
+              if (table.getState().showColumnFilters)
+                table.resetColumnFilters(true)
+              table.setShowColumnFilters(!table.getState().showColumnFilters)
+            }
+            }
+          >
+            {table.getState().showColumnFilters ? <FilterAltOff /> : <FilterAlt />}
+          </Button>
+
+          <Button color="inherit" variant='contained'
+            onClick={(e) => setAnchorEl(e.currentTarget)
+            }
+          >
+            <MenuIcon />
+          </Button>
+        </Stack>
+      </Stack>
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}

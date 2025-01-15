@@ -1,4 +1,4 @@
-import { BuildOutlined, Comment, Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Search, Share, Visibility } from '@mui/icons-material'
+import { BuildOutlined, Comment, Delete, Edit, FilterAlt, FilterAltOff, Search, Share, Visibility } from '@mui/icons-material'
 import { Fade, IconButton, InputAdornment, LinearProgress, Menu, MenuItem, Select, TextField, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
@@ -11,7 +11,6 @@ import CreateOrEditLeadDialog from '../../components/dialogs/crm/CreateOrEditLea
 import MergeTwoLeadsDialog from '../../components/dialogs/crm/MergeTwoLeadsDialog'
 import BulkDeleteUselessLeadsDialog from '../../components/dialogs/crm/BulkDeleteUselessLeadsDialog'
 import { Menu as MenuIcon } from '@mui/icons-material';
-import DBPagination from '../../components/pagination/DBpagination'
 import PopUp from '../../components/popup/PopUp'
 import BackHandIcon from '@mui/icons-material/BackHand';
 import CreateOrEditRemarkDialog from '../../components/dialogs/crm/CreateOrEditRemarkDialog'
@@ -36,22 +35,20 @@ import { DropDownDto } from '../../dtos/DropDownDto'
 
 
 export default function LeadsPage() {
-  const [paginationData, setPaginationData] = useState({ limit: 100, page: 1, total: 1 });
   const [filter, setFilter] = useState<string | undefined>()
   const { user: LoggedInUser } = useContext(UserContext)
   const [lead, setLead] = useState<GetLeadDto>()
   const [leads, setLeads] = useState<GetLeadDto[]>([])
   const [preFilteredData, setPreFilteredData] = useState<GetLeadDto[]>([])
-  const [preFilteredPaginationData, setPreFilteredPaginationData] = useState({ limit: 100, page: 1, total: 1 });
   const [stage, setStage] = useState<string>("open");
   const [stages, setStages] = useState<DropDownDto[]>([])
   const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null); const { data, isLoading, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetLeadDto[], page: number, total: number, limit: number }>, BackendError>(["leads"], async () => new CrmService().GetLeads({ limit: paginationData?.limit, page: paginationData?.page, stage: stage }))
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null); const { data, isLoading, isRefetching, refetch } = useQuery<AxiosResponse< GetLeadDto[]>, BackendError>(["leads",stage], async () => new CrmService().GetLeads({  stage: stage }))
 
   const { data: stagedata, isSuccess: stageSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("crm_stages", new DropdownService().GetAllStages)
 
-  const { data: fuzzyleads, isLoading: isFuzzyLoading, refetch: refetchFuzzy, isRefetching: isFuzzyRefetching } = useQuery<AxiosResponse<{ result: GetLeadDto[], page: number, total: number, limit: number }>, BackendError>(["fuzzyleads"], async () => new CrmService().FuzzySearchLeads({ searchString: filter, limit: paginationData?.limit, page: paginationData?.page, stage: stage }), {
+  const { data: fuzzyleads, isLoading: isFuzzyLoading, refetch: refetchFuzzy, isRefetching: isFuzzyRefetching } = useQuery<AxiosResponse< GetLeadDto[]>, BackendError>(["fuzzyleads"], async () => new CrmService().FuzzySearchLeads({ searchString: filter, stage: stage }), {
     enabled: false
   })
 
@@ -79,27 +76,14 @@ export default function LeadsPage() {
   useEffect(() => {
     if (!filter) {
       setLeads(preFilteredData)
-      setPaginationData(preFilteredPaginationData)
     }
   }, [filter])
 
 
   useEffect(() => {
     if (data && !filter) {
-      setLeads(data.data.result)
-      setPreFilteredData(data.data.result)
-      setPreFilteredPaginationData({
-        ...paginationData,
-        page: data.data.page,
-        limit: data.data.limit,
-        total: data.data.total
-      })
-      setPaginationData({
-        ...paginationData,
-        page: data.data.page,
-        limit: data.data.limit,
-        total: data.data.total
-      })
+      setLeads(data.data)
+      setPreFilteredData(data.data)
     }
   }, [data])
 
@@ -112,24 +96,18 @@ export default function LeadsPage() {
 
   useEffect(() => {
     if (fuzzyleads && filter) {
-      setLeads(fuzzyleads.data.result)
-      setPaginationData({
-        ...paginationData,
-        page: fuzzyleads.data.page,
-        limit: fuzzyleads.data.limit,
-        total: fuzzyleads.data.total
-      })
+      setLeads(fuzzyleads.data)
     }
   }, [fuzzyleads])
 
   const columns = useMemo<MRT_ColumnDef<GetLeadDto>[]>(
     () => leads && [
       {
-        accessorKey: 'actions',  enableColumnActions: false,
-                enableColumnFilter: false,
-                enableSorting: false,
-                enableGrouping: false,
-        header:'Actions',
+        accessorKey: 'actions', enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
+        header: 'Actions',
 
         Cell: ({ cell }) => <PopUp
           element={
@@ -413,10 +391,9 @@ export default function LeadsPage() {
     [leads],
   );
 
-
   const table = useMaterialReactTable({
     columns, columnFilterDisplayMode: 'popover',
-    data: leads,
+    data: leads, //10,000 rows       
     enableColumnResizing: true,
     enableColumnVirtualization: true, enableStickyFooter: true,
     muiTableFooterRowProps: () => ({
@@ -425,8 +402,15 @@ export default function LeadsPage() {
         color: 'white',
       }
     }),
-    muiTableHeadProps: () => ({
-
+   
+    muiTableContainerProps: (table) => ({
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
+    }),
+    muiTableHeadRowProps: () => ({
+      sx: {
+        backgroundColor: 'whitesmoke',
+        color: 'white'
+      },
     }),
     muiTableHeadCellProps: ({ column }) => ({
       sx: {
@@ -444,25 +428,109 @@ export default function LeadsPage() {
         }
       },
     }),
-    muiTableHeadRowProps: () => ({
+    muiTableBodyCellProps: () => ({
       sx: {
-        backgroundColor: 'whitesmoke',
-        color: 'white',
-        border: '1px solid lightgrey;',
-        '& span': {
-          display: 'none',  // This hides any span within header cells
-        },
-        '&:hover span': {
-          display: 'flex',  // Hide span when hovering over the header cell
-        },
+        border: '1px solid #c2beba;',
       },
     }),
-    muiTableContainerProps: (table) => ({
-      sx: { height: table.table.getState().isFullScreen ? 'auto' : '72vh' }
-    }),
-    positionToolbarAlertBanner: 'none',
-    renderTopToolbarCustomActions: ({ table }) => (
+    muiPaginationProps: {
+      rowsPerPageOptions: [100, 200, 500, 1000, 2000],
+      shape: 'rounded',
+      variant: 'outlined',
+    },
+    enableDensityToggle: false, initialState: {
+      density: 'compact', pagination: { pageIndex: 0, pageSize: 500 }
+    },
+    enableGrouping: true,
+    enableRowSelection: true,
+    manualPagination: true,
+    enablePagination: false,
+    enableRowNumbers: true,
+    enableColumnPinning: true,
+    enableTableFooter: true,
+    enableRowVirtualization: true,
+    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
 
+    onSortingChange: setSorting,
+    onColumnSizingChange: setColumnSizing, state: {
+      isLoading: isLoading,
+      columnVisibility,
+
+      sorting,
+      columnSizing: columnSizing
+    }
+  });
+
+  useEffect(() => {
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
+
+
+
+
+
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
+
+
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+
+    isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
+
+
+
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
+
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
+
+  return (
+    <>
+      {
+        isFuzzyLoading || isFuzzyRefetching && <LinearProgress color='secondary' />
+      }
+      {
+        isLoading || isRefetching && <LinearProgress color='secondary' />
+      }
       <Stack
         sx={{ width: '100%' }}
         direction="row"
@@ -538,148 +606,29 @@ export default function LeadsPage() {
               <Delete />
             </Button>
           </Tooltip>}
-          {LoggedInUser?.role=="admin" && LoggedInUser?.assigned_permissions.includes('leads_export') && <Tooltip title="Export">
+          {LoggedInUser?.role == "admin" && LoggedInUser?.assigned_permissions.includes('leads_export') && <Tooltip title="Export">
             <LeadExcelButtons />
           </Tooltip>}
 
-          <Tooltip title="Toogle Filter">
-            <Button color="inherit" variant='contained'
-              onClick={() => {
-                if (table.getState().showColumnFilters)
-                  table.resetColumnFilters(true)
-                table.setShowColumnFilters(!table.getState().showColumnFilters)
-              }
-              }
-            >
-              {table.getState().showColumnFilters ? <FilterAltOff /> : <FilterAlt />}
-            </Button>
-          </Tooltip>
-          <Tooltip title="Toogle FullScreen">
-            <Button color="inherit" variant='contained'
-              onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
-              }
-            >
-              {table.getState().isFullScreen ? <FullscreenExit /> : <Fullscreen />}
-            </Button>
-          </Tooltip>
-          <Tooltip title="Menu">
-            <Button color="inherit" variant='contained'
-              onClick={(e) => setAnchorEl(e.currentTarget)
-              }
-            >
-              <MenuIcon />
-              <Typography pl={1}> Menu</Typography>
-            </Button>
-          </Tooltip>
+          <Button color="inherit" variant='contained'
+            onClick={() => {
+              if (table.getState().showColumnFilters)
+                table.resetColumnFilters(true)
+              table.setShowColumnFilters(!table.getState().showColumnFilters)
+            }
+            }
+          >
+            {table.getState().showColumnFilters ? <FilterAltOff /> : <FilterAlt />}
+          </Button>
+
+          <Button color="inherit" variant='contained'
+            onClick={(e) => setAnchorEl(e.currentTarget)
+            }
+          >
+            <MenuIcon />
+          </Button>
         </Stack>
       </Stack>
-    ),
-    rowVirtualizerInstanceRef,
-    mrtTheme: (theme) => ({
-      baseBackgroundColor: theme.palette.background.paper, //change default background color
-    }),
-    renderBottomToolbarCustomActions: () => (
-      <DBPagination paginationData={paginationData} refetch={() => { filter ? refetchFuzzy() : refetch() }} setPaginationData={setPaginationData} />
-
-    ),
-    muiTableBodyCellProps: () => ({
-      sx: {
-        border: '1px solid lightgrey;',
-      },
-    }),
-   enableDensityToggle: false, initialState: { density: 'compact' },
-    enableRowSelection: true,
-    enableRowNumbers: true,
-    enableColumnPinning: true,
-    onSortingChange: setSorting,
-    enableTopToolbar: true,
-    enableTableFooter: true,
-    enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility,
-    onColumnSizingChange: setColumnSizing, state: {
-      isLoading: isLoading,
-      columnVisibility,
-
-      sorting,
-      columnSizing: columnSizing
-    },
-    enableBottomToolbar: true,
-    enableGlobalFilter: false,
-    manualPagination: true,
-    enablePagination: false,
-    enableToolbarInternalActions: false
-  });
-
-  useEffect(() => {
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
-
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
-
-  //load state from local storage
-  useEffect(() => {
-    const columnVisibility = localStorage.getItem(
-      'mrt_columnVisibility_table_1',
-    );
-    const columnSizing = localStorage.getItem(
-      'mrt_columnSizing_table_1',
-    );
-
-
-
-
-
-    if (columnVisibility) {
-      setColumnVisibility(JSON.parse(columnVisibility));
-    }
-
-
-    if (columnSizing)
-      setColumnSizing(JSON.parse(columnSizing))
-
-    isFirstRender.current = false;
-  }, []);
-
-  useEffect(() => {
-    if (isFirstRender.current) return;
-    localStorage.setItem(
-      'mrt_columnVisibility_table_1',
-      JSON.stringify(columnVisibility),
-    );
-  }, [columnVisibility]);
-
-
-
-
-  useEffect(() => {
-    if (isFirstRender.current) return;
-    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
-  }, [sorting]);
-
-  useEffect(() => {
-    if (isFirstRender.current) return;
-    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
-  }, [columnSizing]);
-
-  return (
-    <>
-      {
-        isFuzzyLoading || isFuzzyRefetching && <LinearProgress color='secondary' />
-      }
-      {
-        isLoading || isRefetching && <LinearProgress color='secondary' />
-      }
       <>
         <Menu
           anchorEl={anchorEl}

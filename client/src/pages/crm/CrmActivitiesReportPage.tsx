@@ -9,10 +9,9 @@ import { toTitleCase } from '../../utils/TitleCase'
 import ViewRemarksDialog from '../../components/dialogs/crm/ViewRemarksDialog'
 import CreateOrEditRemarkDialog from '../../components/dialogs/crm/CreateOrEditRemarkDialog'
 import PopUp from '../../components/popup/PopUp'
-import { Comment, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Visibility } from '@mui/icons-material'
+import { Comment, FilterAlt, FilterAltOff,  Visibility } from '@mui/icons-material'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { DownloadFile } from '../../utils/DownloadFile'
-import DBPagination from '../../components/pagination/DBpagination'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
@@ -28,7 +27,6 @@ import { DropDownDto } from '../../dtos/DropDownDto'
 function CrmActivitiesReportPage() {
     const { user } = useContext(UserContext)
     const [users, setUsers] = useState<DropDownDto[]>([])
-    const [paginationData, setPaginationData] = useState({ limit: 5000, page: 1, total: 1 });
     const [stage, setStage] = useState<string>('all');
     const [stages, setStages] = useState<DropDownDto[]>([])
     const [remark, setRemark] = useState<GetActivitiesOrRemindersDto>()
@@ -47,7 +45,7 @@ function CrmActivitiesReportPage() {
     let day = previous_date.getDate() - 1
     previous_date.setDate(day)
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'leads_view', show_assigned_only: true }))
-    const { data, isLoading, refetch: ReftechRemarks, isRefetching } = useQuery<AxiosResponse<{ result: GetActivitiesOrRemindersDto[], page: number, total: number, limit: number }>, BackendError>(["activities", stage, userId, dates?.start_date, dates?.end_date], async () => new CrmService().GetRemarks({ stage: stage, limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
+    const { data, isLoading, refetch: ReftechRemarks, isRefetching } = useQuery<AxiosResponse< GetActivitiesOrRemindersDto[]>, BackendError>(["activities", stage, userId, dates?.start_date, dates?.end_date], async () => new CrmService().GetRemarks({ stage: stage, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
     const [dialog, setDialog] = useState<string | undefined>()
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
@@ -61,11 +59,11 @@ function CrmActivitiesReportPage() {
         //column definitions...
         () => remarks && [
             {
-                accessorKey: 'actions',  enableColumnActions: false,
+                accessorKey: 'actions', enableColumnActions: false,
                 enableColumnFilter: false,
                 enableSorting: false,
                 enableGrouping: false,
-                header:'Actions',
+                header: 'Actions',
 
                 Footer: <b></b>,
                 Cell: ({ cell }) => <PopUp
@@ -279,210 +277,70 @@ function CrmActivitiesReportPage() {
         enableColumnResizing: true,
         enableColumnVirtualization: true, enableStickyFooter: true,
         muiTableFooterRowProps: () => ({
-            sx: {
-                backgroundColor: 'whitesmoke',
-                color: 'white',
-            }
+          sx: {
+            backgroundColor: 'whitesmoke',
+            color: 'white',
+          }
         }),
+       
         muiTableContainerProps: (table) => ({
-            sx: { height: table.table.getState().isFullScreen ? 'auto' : '65vh' }
+          sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
         }),
         muiTableHeadRowProps: () => ({
-            sx: {
-                backgroundColor: 'whitesmoke',
-                color: 'white',
-                border: '1px solid lightgrey;',
-            },
-        }), muiTableHeadCellProps: ({ column }) => ({
-            sx: {
-                '& div:nth-of-type(1) span': {
-                    display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
-                },
-                '& div:nth-of-type(2)': {
-                    display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
-                },
-                '&:hover div:nth-of-type(1) span': {
-                    display: 'inline', // Visible on hover
-                },
-                '&:hover div:nth-of-type(2)': {
-                    display: 'block', // Visible on hover
-                }
-            },
+          sx: {
+            backgroundColor: 'whitesmoke',
+            color: 'white'
+          },
         }),
-        renderTopToolbarCustomActions: ({ table }) => (
-            <Box sx={{ width: '100%' }}>
-                <Stack direction={'row'} gap={1} sx={{ maxWidth: '100vw', height: 40, background: 'whitesmoke', p: 1, borderRadius: 1 }} className='scrollable-stack'>
-                    {activitiesTopBarData && activitiesTopBarData.data && activitiesTopBarData.data.map((stage, index) => (
-                        <Typography variant='h6' key={index} style={{ paddingLeft: '10px', fontSize: 11 }}>{toTitleCase(stage.stage)} - {stage.value}</Typography>
-                    ))}
-                </Stack>
-                <Stack
-                    sx={{ width: '100%' }}
-                    pt={1}
-                    direction="row"
-                    alignItems={'center'}
-                    justifyContent="space-between">
-                    <Typography variant='h6'>Activities</Typography>
-
-                    <Stack justifyContent={'right'} alignItems={'center'} direction={'row'} gap={1}>
-                        < TextField
-                            size="small"
-                            type="date"
-                            variant="filled"
-                            id="start_date"
-                            label="Start Date"
-                            fullWidth
-
-                            value={dates.start_date}
-                            onChange={(e) => {
-                                if (e.currentTarget.value) {
-                                    setDates({
-                                        ...dates,
-                                        start_date: moment(e.target.value).format("YYYY-MM-DD")
-                                    })
-                                }
-                            }}
-                        />
-                        < TextField
-                            type="date"
-                            id="end_date"
-                            variant="filled"
-                            size="small"
-                            label="End Date"
-                            value={dates.end_date}
-
-                            fullWidth
-                            onChange={(e) => {
-                                if (e.currentTarget.value) {
-                                    setDates({
-                                        ...dates,
-                                        end_date: moment(e.target.value).format("YYYY-MM-DD")
-                                    })
-                                }
-                            }}
-                        />
-                        {user?.assigned_users && user?.assigned_users.length > 0 && <Select
-                            sx={{ m: 1, width: 300 }}
-                            labelId="demo-multiple-name-label"
-                            id="demo-multiple-name"
-                            variant='filled'
-                            value={stage}
-                            onChange={(e) => {
-                                setStage(e.target.value);
-                            }}
-                            size='small'
-                        >
-                            <MenuItem
-                                key={'00'}
-                                value={stage}
-                                onChange={() => setStage('all')}
-                            >
-                                All
-                            </MenuItem>
-                            {stages.map((stage, index) => (
-                                <MenuItem
-                                    key={index}
-                                    value={stage.label}
-                                >
-                                    {toTitleCase(stage.label)}
-                                </MenuItem>
-                            ))}
-                        </Select>}
-
-                        {user?.assigned_users && user?.assigned_users.length > 0 &&
-                            < TextField
-                                select
-
-                                variant="filled"
-                                size="small"
-                                SelectProps={{
-                                    native: true,
-                                }}
-                                onChange={(e) => {
-                                    setUserId(e.target.value)
-                                    ReftechRemarks()
-                                }}
-                                required
-                                id="lead_owners"
-                                label="Filter Remarks Of Indivdual"
-                                fullWidth
-                            >
-                                <option key={'00'} value={undefined}>
-
-                                </option>
-                                {
-                                    users.map((user, index) => {
-
-                                        return (<option key={index} value={user.id}>
-                                            {user.label}
-                                        </option>)
-
-                                    })
-                                }
-                            </TextField>}
-                        <Tooltip title="Toogle Filter">
-                            <Button color="inherit" variant='contained'
-                                onClick={() => {
-                                    if (table.getState().showColumnFilters)
-                                        table.resetColumnFilters(true)
-                                    table.setShowColumnFilters(!table.getState().showColumnFilters)
-                                }
-                                }
-                            >
-                                {table.getState().showColumnFilters ? <FilterAltOff sx={{ width: 30, height: 30 }} /> : <FilterAlt sx={{ width: 30, height: 30 }} />}
-                            </Button>
-                        </Tooltip>
-                        <Tooltip title="Toogle FullScreen">
-                            <Button color="inherit" variant='contained'
-                                onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
-                                }
-                            >
-                                {table.getState().isFullScreen ? <FullscreenExit sx={{ width: 30, height: 30 }} /> : <Fullscreen sx={{ width: 30, height: 30 }} />}
-                            </Button>
-                        </Tooltip>
-                        <Tooltip title="Menu">
-                            <Button color="inherit" variant='contained'
-                                onClick={(e) => setAnchorEl(e.currentTarget)
-                                }
-                            >
-                                <MenuIcon sx={{ width: 30, height: 30 }} />
-                                <Typography pl={1}></Typography>
-                            </Button>
-                        </Tooltip>
-                    </Stack>
-                </Stack>
-            </Box>
-        ),
-        renderBottomToolbarCustomActions: () => (
-            <DBPagination paginationData={paginationData} refetch={ReftechRemarks} setPaginationData={setPaginationData} />
-
-        ),
+        muiTableHeadCellProps: ({ column }) => ({
+          sx: {
+            '& div:nth-of-type(1) span': {
+              display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
+            },
+            '& div:nth-of-type(2)': {
+              display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
+            },
+            '&:hover div:nth-of-type(1) span': {
+              display: 'inline', // Visible on hover
+            },
+            '&:hover div:nth-of-type(2)': {
+              display: 'block', // Visible on hover
+            }
+          },
+        }),
         muiTableBodyCellProps: () => ({
-            sx: {
-                border: '1px solid lightgrey;',
-            },
+          sx: {
+            border: '1px solid #c2beba;',
+          },
         }),
-        enableToolbarInternalActions: false,
-       enableDensityToggle: false, initialState: { density: 'compact' },
+        muiPaginationProps: {
+          rowsPerPageOptions: [100, 200, 500, 1000, 2000],
+          shape: 'rounded',
+          variant: 'outlined',
+        },
+        enableDensityToggle: false, initialState: {
+          density: 'compact', pagination: { pageIndex: 0, pageSize: 500 }
+        },
+        enableGrouping: true,
         enableRowSelection: true,
+        manualPagination: true,
+        enablePagination: false,
         enableRowNumbers: true,
         enableColumnPinning: true,
-        onSortingChange: setSorting,
         enableTableFooter: true,
         enableRowVirtualization: true,
-        onColumnVisibilityChange: setColumnVisibility,
+        onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+    
+        onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing, state: {
-            isLoading: isLoading,
-            columnVisibility,
-
-            sorting,
-            columnSizing: columnSizing
-        },
-        enableBottomToolbar: true,
-        enableGlobalFilter: false,
-        enablePagination: false,
-        manualPagination: true
-    });
+          isLoading: isLoading,
+          columnVisibility,
+    
+          sorting,
+          columnSizing: columnSizing
+        }
+      });
+    
 
     useEffect(() => {
         if (stageSuccess)
@@ -496,13 +354,8 @@ function CrmActivitiesReportPage() {
 
     useEffect(() => {
         if (data) {
-            setRemarks(data.data.result)
-            setPaginationData({
-                ...paginationData,
-                page: data.data.page,
-                limit: data.data.limit,
-                total: data.data.total
-            })
+            setRemarks(data.data)
+           
         }
     }, [data])
     useEffect(() => {
@@ -568,6 +421,134 @@ function CrmActivitiesReportPage() {
             {
                 isLoading || isRefetching && <LinearProgress color='secondary' />
             }
+            <Box sx={{ width: '100%' }}>
+                <Stack direction={'row'} gap={1} sx={{ maxWidth: '100vw', height: 40, background: 'whitesmoke', p: 1, borderRadius: 1 }} className='scrollable-stack'>
+                    {activitiesTopBarData && activitiesTopBarData.data && activitiesTopBarData.data.map((stage, index) => (
+                        <Typography variant='h6' key={index} style={{ paddingLeft: '10px', fontSize: 11 }}>{toTitleCase(stage.stage)} - {stage.value}</Typography>
+                    ))}
+                </Stack>
+                <Stack
+                    sx={{ width: '100%' }}
+                    pt={1}
+                    direction="row"
+                    alignItems={'center'}
+                    justifyContent="space-between">
+                    <Typography variant='h6'>Activities</Typography>
+
+                    <Stack justifyContent={'right'} alignItems={'center'} direction={'row'} gap={1}>
+                        < TextField
+                            size="small"
+                            type="date"
+                            variant="filled"
+                            id="start_date"
+                            label="Start Date"
+                            fullWidth
+
+                            value={dates.start_date}
+                            onChange={(e) => {
+                                if (e.currentTarget.value) {
+                                    setDates({
+                                        ...dates,
+                                        start_date: moment(e.target.value).format("YYYY-MM-DD")
+                                    })
+                                }
+                            }}
+                        />
+                        < TextField
+                            type="date"
+                            id="end_date"
+                            variant="filled"
+                            size="small"
+                            label="End Date"
+                            value={dates.end_date}
+
+                            fullWidth
+                            onChange={(e) => {
+                                if (e.currentTarget.value) {
+                                    setDates({
+                                        ...dates,
+                                        end_date: moment(e.target.value).format("YYYY-MM-DD")
+                                    })
+                                }
+                            }}
+                        />
+                        {user?.assigned_users && user?.assigned_users.length > 0 && <Select
+                            sx={{ m: 1, width: 300 }}
+                            labelId="demo-multiple-name-label"
+                            id="demo-multiple-name"
+                            value={stage}
+                            onChange={(e) => {
+                                setStage(e.target.value);
+                            }}
+                            size='small'
+                        >
+                            <MenuItem
+                                key={'00'}
+                                value={stage}
+                                onChange={() => setStage('all')}
+                            >
+                                All
+                            </MenuItem>
+                            {stages.map((stage, index) => (
+                                <MenuItem
+                                    key={index}
+                                    value={stage.label}
+                                >
+                                    {toTitleCase(stage.label)}
+                                </MenuItem>
+                            ))}
+                        </Select>}
+
+                        {user?.assigned_users && user?.assigned_users.length > 0 &&
+                            < TextField
+                                select
+
+                                size="small"
+                                SelectProps={{
+                                    native: true,
+                                }}
+                                onChange={(e) => {
+                                    setUserId(e.target.value)
+                                    ReftechRemarks()
+                                }}
+                                required
+                                id="lead_owners"
+                                label="Filter Remarks Of Indivdual"
+                                fullWidth
+                            >
+                                <option key={'00'} value={undefined}>
+
+                                </option>
+                                {
+                                    users.map((user, index) => {
+
+                                        return (<option key={index} value={user.id}>
+                                            {user.label}
+                                        </option>)
+
+                                    })
+                                }
+                            </TextField>}
+                        <Button color="inherit" variant='contained'
+                            onClick={() => {
+                                if (table.getState().showColumnFilters)
+                                    table.resetColumnFilters(true)
+                                table.setShowColumnFilters(!table.getState().showColumnFilters)
+                            }
+                            }
+                        >
+                            {table.getState().showColumnFilters ? <FilterAltOff sx={{ width: 30, height: 30 }} /> : <FilterAlt sx={{ width: 30, height: 30 }} />}
+                        </Button>
+
+                        <Button color="inherit" variant='contained'
+                            onClick={(e) => setAnchorEl(e.currentTarget)
+                            }
+                        >
+                            <MenuIcon sx={{ width: 30, height: 30 }} />
+                        </Button>
+                    </Stack>
+                </Stack>
+            </Box>
             <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}

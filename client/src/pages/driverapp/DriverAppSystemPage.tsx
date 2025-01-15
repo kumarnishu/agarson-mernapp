@@ -274,6 +274,7 @@ export default function DriverAppSystemPage() {
       }
       <Stack
         spacing={2}
+        p={1}
         direction="row"
         sx={{ width: '100%' }}
         justifyContent="space-between"
@@ -290,7 +291,6 @@ export default function DriverAppSystemPage() {
         {/* filter dates and person */}
         <Stack direction="row" gap={2} justifyContent={'end'}>
           < TextField
-            variant='filled'
             size="small"
             type="date"
             id="start_date"
@@ -307,7 +307,6 @@ export default function DriverAppSystemPage() {
             }}
           />
           < TextField
-            variant='filled'
             size="small"
             type="date"
             id="end_date"
@@ -326,7 +325,6 @@ export default function DriverAppSystemPage() {
           {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 && < TextField
             size="small"
             select
-            variant='filled'
             SelectProps={{
               native: true,
             }}
@@ -351,7 +349,6 @@ export default function DriverAppSystemPage() {
               })
             }
           </TextField>}
-          <Tooltip title="Toogle Filter">
             <Button size="small" color="inherit" variant='contained'
               onClick={() => {
                 if (table.getState().showColumnFilters)
@@ -362,24 +359,13 @@ export default function DriverAppSystemPage() {
             >
               {table.getState().showColumnFilters ? <FilterAltOff /> : <FilterAlt />}
             </Button>
-          </Tooltip>
-          <Tooltip title="Toogle FullScreen">
-            <Button size="small" color="inherit" variant='contained'
-              onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
-              }
-            >
-              {table.getState().isFullScreen ? <FullscreenExit /> : <Fullscreen />}
-            </Button>
-          </Tooltip>
-          <Tooltip title="Menu">
+        
             <Button size="small" color="inherit" variant='contained'
               onClick={(e) => setAnchorEl(e.currentTarget)
               }
             >
               <MenuIcon />
-              <Typography pl={1}> Menu</Typography>
             </Button>
-          </Tooltip>
         </Stack>
       </Stack >
 

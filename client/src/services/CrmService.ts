@@ -7,8 +7,8 @@ import { apiClient } from "./utils/AxiosInterceptor";
 export class CrmService {
 
   
-    public async GetLeads({ limit, page, stage }: { limit: number | undefined, page: number | undefined, stage?: string }) {
-        return await apiClient.get(`leads/?limit=${limit}&page=${page}&stage=${stage}`)
+    public async GetLeads({ stage }: { stage?: string }) {
+        return await apiClient.get(`leads/?stage=${stage}`)
       }
     
       public async GetReminderRemarks() {
@@ -26,8 +26,8 @@ export class CrmService {
       }
     
     
-      public async FuzzySearchLeads({ searchString, limit, page, stage }: { searchString?: string, limit: number | undefined, page: number | undefined, stage?: string }) {
-        return await apiClient.get(`search/leads?key=${searchString}&limit=${limit}&page=${page}&stage=${stage}`)
+      public async FuzzySearchLeads({ searchString, stage }: { searchString?: string,stage?: string }) {
+        return await apiClient.get(`search/leads?key=${searchString}&stage=${stage}`)
       }
     
     
@@ -36,11 +36,11 @@ export class CrmService {
         return await apiClient.patch(`leads/torefer/${id}`, body)
       }
     
-      public async GetRemarks({ stage, limit, page, start_date, end_date, id }: { stage: string, limit: number | undefined, page: number | undefined, start_date?: string, end_date?: string, id?: string }) {
+      public async GetRemarks({ stage,  start_date, end_date, id }: { stage: string,  start_date?: string, end_date?: string, id?: string }) {
         if (id)
-          return await apiClient.get(`activities/?id=${id}&start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&stage=${stage}`)
+          return await apiClient.get(`activities/?id=${id}&start_date=${start_date}&end_date=${end_date}&stage=${stage}`)
         else
-          return await apiClient.get(`activities/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}&stage=${stage}`)
+          return await apiClient.get(`activities/?start_date=${start_date}&end_date=${end_date}&stage=${stage}`)
       }
     
       public async GetActivitiesTopBarDeatils({ start_date, end_date, id }: { start_date: string, end_date: string, id?: string }) {
@@ -128,8 +128,8 @@ export class CrmService {
     
     
       //refers
-      public async GetPaginatedRefers({ limit, page }: { limit: number | undefined, page: number | undefined }) {
-        return await apiClient.get(`refers/paginated/?limit=${limit}&page=${page}`)
+      public async GetPaginatedRefers() {
+        return await apiClient.get(`refers/paginated`)
       }
       public async GetRefers() {
         return await apiClient.get(`refers`)
@@ -146,8 +146,8 @@ export class CrmService {
       public async GetReferRemarksHistory({ id }: { id: string }) {
         return await apiClient.get(`remarks/refers/${id}`)
       }
-      public async FuzzySearchRefers({ searchString, limit, page }: { searchString?: string, limit: number | undefined, page: number | undefined }) {
-        return await apiClient.get(`search/refers?key=${searchString}&limit=${limit}&page=${page}`)
+      public async FuzzySearchRefers({ searchString }: { searchString?: string}) {
+        return await apiClient.get(`search/refers?key=${searchString}`)
       }
       public async CreateOrUpdateRefer({ id, body }: { body: FormData, id?: string }) {
         if (id) {
