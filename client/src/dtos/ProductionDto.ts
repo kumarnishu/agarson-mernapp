@@ -50,6 +50,7 @@ export type GetProductionDto = {
     machine: DropDownDto,
     thekedar: DropDownDto,
     articles: DropDownDto[],
+    articlenames: string,
     manpower: number,
     production: number,
     big_repair: number,

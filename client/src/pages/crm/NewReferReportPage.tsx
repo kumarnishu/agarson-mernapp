@@ -21,6 +21,8 @@ import ViewRefersBillHistoryDialog from '../../components/dialogs/crm/ViewRefers
 import ToogleReferConversionDialog from '../../components/dialogs/crm/ToogleReferConversionDialog.tsx.tsx'
 import { CrmService } from '../../services/CrmService.ts'
 import { GetReferDto } from '../../dtos/CrmDto.ts'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter.tsx'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction.tsx'
 
 
 
@@ -49,11 +51,11 @@ export default function NewReferReportPage() {
     //column definitions...
     () => refers && [
       {
-        accessorKey: 'actions',  enableColumnActions: false,
-                enableColumnFilter: false,
-                enableSorting: false,
-                enableGrouping: false,
-        header:'Actions',
+        accessorKey: 'actions', enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
+        header: 'Actions',
 
         Cell: ({ cell }) => <PopUp
           element={
@@ -95,7 +97,7 @@ export default function NewReferReportPage() {
                   <Recycling />
                 </IconButton>
               </Tooltip>}
-              {LoggedInUser?.role=="admin" && LoggedInUser.assigned_permissions.includes('newrefer_delete') &&
+              {LoggedInUser?.role == "admin" && LoggedInUser.assigned_permissions.includes('newrefer_delete') &&
                 <Tooltip title="delete">
                   <IconButton color="error"
 
@@ -155,106 +157,110 @@ export default function NewReferReportPage() {
         accessorKey: 'name',
         header: 'Name',
 
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.name || "" })} />,
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
-        filterSelectOptions: refers && refers.map((i) => {
-          return i.name;
-        }).filter(onlyUnique)
+       
       },
       {
         accessorKey: 'city',
         header: 'City',
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.city || "" })} />,
 
         Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
-        filterSelectOptions: refers && refers.map((i) => {
-          return i.city;
-        }).filter(onlyUnique)
+       
       },
       {
         accessorKey: 'state',
         header: 'State',
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.state || "" })} />,
 
         Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
-        filterSelectOptions: refers && refers.map((i) => {
-          return i.state;
-        }).filter(onlyUnique)
+     
       },
       {
         accessorKey: 'last_remark',
         header: 'Remark',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.last_remark || "" })} />,
         Cell: (cell) => <>{cell.row.original.last_remark ? cell.row.original.last_remark : ""}</>,
       },
       {
         accessorKey: 'refers',
         header: 'Refers',
-
-        filterVariant: 'multi-select',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
         Cell: (cell) => <>{cell.row.original.refers ? cell.row.original.refers.toString() : ""}</>,
-        filterSelectOptions: refers && refers.map((i) => {
-          return i.refers.toString();
-        }).filter(onlyUnique)
+       
       },
       {
         accessorKey: 'uploaded_bills',
         header: 'Uploaded Bills',
-
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
         Cell: (cell) => <>{cell.row.original.uploaded_bills ? cell.row.original.uploaded_bills : ""}</>
       },
       {
         accessorKey: 'customer_name',
         header: 'Customer Name',
-
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.customer_name || "" })} />,
         Cell: (cell) => <>{cell.row.original.customer_name ? cell.row.original.customer_name : ""}</>,
-        filterSelectOptions: refers && refers.map((i) => {
-          return i.customer_name;
-        }).filter(onlyUnique)
+      
       },
       {
         accessorKey: 'mobile',
         header: 'Mobile1',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.mobile || "" })} />,
         Cell: (cell) => <>{cell.row.original.mobile ? cell.row.original.mobile : ""}</>
       }, {
         accessorKey: 'mobile2',
         header: 'Mobile2',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.mobile2 || "" })} />,
         Cell: (cell) => <>{cell.row.original.mobile2 ? cell.row.original.mobile2 : ""}</>
       }, {
         accessorKey: 'mobile3',
         header: 'Mobile3',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.mobile3 || "" })} />,
         Cell: (cell) => <>{cell.row.original.mobile3 ? cell.row.original.mobile3 : ""}</>
       },
 
       {
         accessorKey: 'gst',
         header: 'GST',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.gst || "" })} />,
         Cell: (cell) => <>{cell.row.original.gst ? cell.row.original.gst : ""}</>
       },
 
       {
         accessorKey: 'address',
         header: 'Address',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.address || "" })} />,
         Cell: (cell) => <>{cell.row.original.address ? cell.row.original.address : ""}</>
       },
 
       {
         accessorKey: 'created_at',
         header: 'Created on',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.created_at || "" })} />,
         Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
       },
 
       {
         accessorKey: 'created_by.label',
         header: 'Creator',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.created_by.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
       }
     ],
@@ -283,13 +289,13 @@ export default function NewReferReportPage() {
         color: 'white'
       },
     }),
-	muiTableHeadCellProps: ({ column }) => ({
+    muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-of-type(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-of-type(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-of-type(1) span': {
           display: 'inline', // Visible on hover
@@ -309,7 +315,7 @@ export default function NewReferReportPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
     },
     enableGrouping: true,

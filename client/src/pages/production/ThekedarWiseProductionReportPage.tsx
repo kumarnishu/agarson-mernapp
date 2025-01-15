@@ -12,6 +12,8 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import ExportToExcel from '../../utils/ExportToExcel'
 import { ProductionService } from '../../services/ProductionService'
 import { IColumnRowData } from '../../dtos/SalesDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 export default function ThekedarWiseProductionReportPage() {
   const [reports, setReports] = useState<IColumnRowData['rows']>([])
@@ -20,29 +22,34 @@ export default function ThekedarWiseProductionReportPage() {
     start_date: moment(new Date().setDate(1)).format("YYYY-MM-DD")
     , end_date: moment(new Date().setDate(31)).format("YYYY-MM-DD")
   })
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["thekedarwisereports", dates.start_date, dates.end_date], async () =>new ProductionService().GetproductionThekedarWise({ start_date: dates.start_date, end_date: dates.end_date }))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["thekedarwisereports", dates.start_date, dates.end_date], async () => new ProductionService().GetproductionThekedarWise({ start_date: dates.start_date, end_date: dates.end_date }))
   const { user } = useContext(UserContext)
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
-   const isFirstRender = useRef(true);
+  const isFirstRender = useRef(true);
 
-    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-  
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
   const columns = useMemo<MRT_ColumnDef<IColumnRowData['columns']>[]>(
     () => reportcolumns && reportcolumns.map((item) => {
       if (item.type == "string")
-        return { accessorKey: item.key,  header: item.header, Footer: "" }
+        return {
+          accessorKey: item.key, filterFn: CustomFilterFunction,
+          Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] || "" })} />, header: item.header, Footer: ""
+        }
       if (item.type == "date")
         return {
-          accessorKey: item.key, header: item.header,  Footer: <b>Total</b>,
-          filterVariant: 'multi-select', filterSelectOptions: reports && reports.map((i) => { return i['date'].toString() }).filter(onlyUnique)
+          accessorKey: item.key, filterFn: CustomFilterFunction,
+          Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] || "" })} />, header: item.header, Footer: <b>Total</b>
         }
       return {
-        accessorKey: item.key, header: item.header, 
+        accessorKey: item.key, header: item.header,
         aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
         //@ts-ignore
         Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
@@ -82,13 +89,13 @@ export default function ThekedarWiseProductionReportPage() {
         color: 'white'
       },
     }),
-	muiTableHeadCellProps: ({ column }) => ({
+    muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-of-type(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-of-type(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-of-type(1) span': {
           display: 'inline', // Visible on hover
@@ -140,7 +147,7 @@ export default function ThekedarWiseProductionReportPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
     },
     enableGrouping: true,
@@ -158,7 +165,7 @@ export default function ThekedarWiseProductionReportPage() {
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
-      
+
       sorting,
       columnSizing: columnSizing
     }
@@ -181,7 +188,7 @@ export default function ThekedarWiseProductionReportPage() {
     const columnSizing = localStorage.getItem(
       'mrt_columnSizing_table_1',
     );
-    
+
 
 
 
@@ -190,10 +197,10 @@ export default function ThekedarWiseProductionReportPage() {
       setColumnVisibility(JSON.parse(columnVisibility));
     }
 
-    
+
     if (columnSizing)
       setColumnSizing(JSON.parse(columnSizing))
-    
+
     isFirstRender.current = false;
   }, []);
 
@@ -205,7 +212,7 @@ export default function ThekedarWiseProductionReportPage() {
     );
   }, [columnVisibility]);
 
- 
+
 
 
   useEffect(() => {

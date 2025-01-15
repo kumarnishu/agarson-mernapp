@@ -31,6 +31,8 @@ import { LeadExcelButtons } from '../../components/buttons/LeadExcelButtons'
 import { CrmService } from '../../services/CrmService'
 import { GetLeadDto } from '../../dtos/CrmDto'
 import { DropDownDto } from '../../dtos/DropDownDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 
@@ -44,11 +46,11 @@ export default function LeadsPage() {
   const [stages, setStages] = useState<DropDownDto[]>([])
   const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null); const { data, isLoading, isRefetching, refetch } = useQuery<AxiosResponse< GetLeadDto[]>, BackendError>(["leads",stage], async () => new CrmService().GetLeads({  stage: stage }))
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null); const { data, isLoading, isRefetching, refetch } = useQuery<AxiosResponse<GetLeadDto[]>, BackendError>(["leads", stage], async () => new CrmService().GetLeads({ stage: stage }))
 
   const { data: stagedata, isSuccess: stageSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("crm_stages", new DropdownService().GetAllStages)
 
-  const { data: fuzzyleads, isLoading: isFuzzyLoading, refetch: refetchFuzzy, isRefetching: isFuzzyRefetching } = useQuery<AxiosResponse< GetLeadDto[]>, BackendError>(["fuzzyleads"], async () => new CrmService().FuzzySearchLeads({ searchString: filter, stage: stage }), {
+  const { data: fuzzyleads, isLoading: isFuzzyLoading, refetch: refetchFuzzy, isRefetching: isFuzzyRefetching } = useQuery<AxiosResponse<GetLeadDto[]>, BackendError>(["fuzzyleads"], async () => new CrmService().FuzzySearchLeads({ searchString: filter, stage: stage }), {
     enabled: false
   })
 
@@ -227,102 +229,111 @@ export default function LeadsPage() {
         accessorKey: 'name',
         header: 'Name',
 
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.name|| "" })} />,
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
-        filterSelectOptions: leads && leads.map((i) => {
-          return i.name;
-        }).filter(onlyUnique)
+     
       },
       {
         accessorKey: 'city',
         header: 'City',
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.city || "" })} />,
 
         Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
-        filterSelectOptions: leads && leads.map((i) => {
-          return i.city;
-        }).filter(onlyUnique)
+       
       },
       {
         accessorKey: 'state',
         header: 'State',
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.state || "" })} />,
 
         Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
-        filterSelectOptions: leads && leads.map((i) => {
-          return i.state;
-        }).filter(onlyUnique)
+       
       },
       {
         accessorKey: 'stage',
         header: 'Stage',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.stage || "" })} />,
         Cell: (cell) => <>{cell.row.original.stage ? cell.row.original.stage : ""}</>
       },
       {
         accessorKey: 'mobile',
         header: 'Mobile1',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.mobile || "" })} />,
         Cell: (cell) => <>{cell.row.original.mobile ? cell.row.original.mobile : ""}</>
       }, {
         accessorKey: 'alternate_mobile1',
         header: 'Mobile2',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.alternate_mobile1 || "" })} />,
         Cell: (cell) => <>{cell.row.original.alternate_mobile1 ? cell.row.original.alternate_mobile1 : ""}</>
       }, {
         accessorKey: 'alternate_mobile2',
         header: 'Mobile3',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.city || "" })} />,
         Cell: (cell) => <>{cell.row.original.alternate_mobile2 ? cell.row.original.alternate_mobile2 : ""}</>
       },
       {
         accessorKey: 'last_remark',
         header: 'Last Remark',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.last_remark || "" })} />,
         Cell: (cell) => <>{cell.row.original.last_remark ? cell.row.original.last_remark : ""}</>
       },
       {
         accessorKey: 'customer_name',
         header: 'Customer',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.customer_name || "" })} />,
         Cell: (cell) => <>{cell.row.original.customer_name ? cell.row.original.customer_name : ""}</>
       }
       , {
         accessorKey: 'customer_designation',
         header: 'Designitaion',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.customer_designation || "" })} />,
         Cell: (cell) => <>{cell.row.original.customer_designation ? cell.row.original.customer_designation : ""}</>
       },
       {
         accessorKey: 'referred_party_name',
         header: 'Refer Party',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.referred_party_name || "" })} />,
         Cell: (cell) => <>{cell.row.original.referred_party_name ? cell.row.original.referred_party_name : ""}</>
       },
       {
         accessorKey: 'referred_party_mobile',
         header: 'Refer Mobile',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.referred_party_mobile || "" })} />,
         Cell: (cell) => <>{cell.row.original.referred_party_mobile ? cell.row.original.referred_party_mobile : ""}</>
       },
       {
         accessorKey: 'referred_date',
         header: 'Refer Date',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.referred_date || "" })} />,
         Cell: (cell) => <>{cell.row.original.referred_date ? cell.row.original.referred_date : ""}</>
       }
       ,
       {
         accessorKey: 'email',
         header: 'Email',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.email || "" })} />,
         Cell: (cell) => <>{cell.row.original.email ? cell.row.original.email : ""}</>
       }
       ,
       {
         accessorKey: 'alternate_email',
         header: 'Email2',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.alternate_email || "" })} />,
         Cell: (cell) => <>{cell.row.original.alternate_email ? cell.row.original.alternate_email : ""}</>
       }
       ,
@@ -330,56 +341,64 @@ export default function LeadsPage() {
       {
         accessorKey: 'address',
         header: 'Address',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.address || "" })} />,
         Cell: (cell) => <>{cell.row.original.address ? cell.row.original.address : ""}</>
       },
       {
         accessorKey: 'source',
         header: 'Lead Source',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.lead_source || "" })} />,
         Cell: (cell) => <>{cell.row.original.lead_source ? cell.row.original.lead_source : ""}</>
       },
       {
         accessorKey: 'type',
         header: 'Lead Type',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.lead_type || "" })} />,
         Cell: (cell) => <>{cell.row.original.lead_type ? cell.row.original.lead_type : ""}</>
       },
       {
         accessorKey: 'country',
         header: 'Country',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.country || "" })} />,
         Cell: (cell) => <>{cell.row.original.country ? cell.row.original.country : ""}</>
       },
       {
         accessorKey: 'created_at',
         header: 'Created on',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.created_at || "" })} />,
         Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
       },
       {
         accessorKey: 'updated_at',
         header: 'Updated on',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.updated_at || "" })} />,
         Cell: (cell) => <>{cell.row.original.updated_at ? cell.row.original.updated_at : ""}</>
       },
       {
         accessorKey: 'created_by.label',
         accessorFn: (row) => { return row.created_by.label },
         header: 'Creator',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.created_by.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
       },
       {
         accessorKey: 'updated_by.label',
         header: 'Updated By',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={leads.map((item) => { return item.updated_by.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.updated_by.label ? cell.row.original.updated_by.label : ""}</>
       },
       {
         accessorKey: 'visiting_card',
         header: 'Visiting Card',
-
+        enableColumnFilter: false,
         Cell: (cell) => <span onDoubleClick={() => {
           if (cell.row.original.visiting_card && cell.row.original.visiting_card) {
             DownloadFile(cell.row.original.visiting_card, 'visiting card')
@@ -402,7 +421,7 @@ export default function LeadsPage() {
         color: 'white',
       }
     }),
-   
+
     muiTableContainerProps: (table) => ({
       sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
     }),
@@ -591,7 +610,7 @@ export default function LeadsPage() {
           ))}
         </Select>
         <Stack justifyContent={'right'} direction={'row'} gap={1}>
-          {LoggedInUser?._id === LoggedInUser?.created_by.id && LoggedInUser?.assigned_permissions.includes('leads_delete') && 
+          {LoggedInUser?._id === LoggedInUser?.created_by.id && LoggedInUser?.assigned_permissions.includes('leads_delete') &&
             <Button variant='contained' color='error'
 
               onClick={() => {

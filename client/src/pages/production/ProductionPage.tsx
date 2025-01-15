@@ -6,8 +6,7 @@ import { useQuery } from 'react-query'
 import { UserContext } from '../../contexts/userContext'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
-import { Delete, Edit, FilterAlt, FilterAltOff,  Menu as MenuIcon } from '@mui/icons-material';
+import { Delete, Edit, FilterAlt, FilterAltOff, Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import PopUp from '../../components/popup/PopUp'
 import DeleteProductionItemDialog from '../../components/dialogs/dropdown/DeleteProductionItemDialog'
@@ -17,6 +16,8 @@ import { UserService } from '../../services/UserServices'
 import { ProductionService } from '../../services/ProductionService'
 import { DropDownDto } from '../../dtos/DropDownDto'
 import { GetProductionDto } from '../../dtos/ProductionDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 export default function ProductionPage() {
@@ -102,94 +103,92 @@ export default function ProductionPage() {
       {
         accessorKey: 'date',
         header: 'Production Date',
-
-        filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.date.toString() || "" ? cell.row.original.date.toString() || "" : ""}</>,
-        filterSelectOptions: productions && productions.map((i) => {
-          return i.date.toString() || "";
-        }).filter(onlyUnique)
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={productions.map((item) => { return item.date || "" })} />,
       },
       {
-        accessorKey: 'articles',
+        accessorKey: 'articlenames',
         header: 'Articles',
-
-        filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.articles.toString() ? cell.row.original.articles.map((a) => { return a.label }).toString() : ""}</>,
-        filterSelectOptions: production && production.articles.map((i) => {
-          return i.label.toString();
-        }).filter(onlyUnique)
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={productions.map((item) => { return item.articlenames || "" })} />,
       },
       {
-        accessorKey: 'machine',
+        accessorKey: 'machine.label',
         header: 'Machine',
-
-        filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.machine.label.toString() || "" ? cell.row.original.machine.label.toString() || "" : ""}</>,
-        filterSelectOptions: productions && productions.map((i) => {
-          return i.machine.label.toString() || "";
-        }).filter(onlyUnique)
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={productions.map((item) => { return item.machine.label || "" })} />,
       },
       {
-        accessorKey: 'thekedar',
+        accessorKey: 'thekedar.label',
         header: 'Thekedar',
-
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={productions.map((item) => { return item.thekedar.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.thekedar.label.toString() || "" ? cell.row.original.thekedar.label.toString() || "" : ""}</>,
-        filterSelectOptions: productions && productions.map((i) => {
-          return i.thekedar.label.toString() || "";
-        }).filter(onlyUnique)
+
       },
       {
         accessorKey: 'production',
         header: 'Production',
-
+        aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         Cell: (cell) => <>{cell.row.original.production.toString() || "" ? cell.row.original.production.toString() || "" : ""}</>,
       },
       {
         accessorKey: 'production_hours',
         header: 'Production Hours',
-
+        aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         Cell: (cell) => <>{cell.row.original.production_hours.toString() || "" ? cell.row.original.production_hours.toString() || "" : ""}</>,
       },
       {
         accessorKey: 'manpower',
         header: 'Man Power',
-
+        aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         Cell: (cell) => <>{cell.row.original.manpower.toString() || "" ? cell.row.original.manpower.toString() || "" : ""}</>,
       },
       {
         accessorKey: 'small_repair',
         header: 'Small Repair',
-
+        aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         Cell: (cell) => <>{cell.row.original.small_repair.toString() || "" ? cell.row.original.small_repair.toString() || "" : ""}</>,
       },
       {
         accessorKey: 'big_repair',
         header: 'Big Repair',
-
+        aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         Cell: (cell) => <>{cell.row.original.big_repair.toString() || "" ? cell.row.original.big_repair.toString() || "" : ""}</>,
       },
       {
         accessorKey: 'upper_damage',
         header: 'Upper Damage',
-
+        aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         Cell: (cell) => <>{cell.row.original.upper_damage.toString() || "" ? cell.row.original.upper_damage.toString() || "" : ""}</>,
       },
       {
         accessorKey: 'created_at',
         header: 'Created At',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={productions.map((item) => { return item.created_at || "" })} />,
         Cell: (cell) => <>{cell.row.original.created_at || ""}</>
       },
       {
         accessorKey: 'created_by',
         header: 'Creator',
-
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={productions.map((item) => { return item.created_by.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.created_by.label.toString() || "" ? cell.row.original.created_by.label.toString() || "" : ""}</>,
-        filterSelectOptions: productions && productions.map((i) => {
-          return i.created_by.label.toString() || "";
-        }).filter(onlyUnique)
+
       },
     ],
     [productions],
@@ -408,23 +407,23 @@ export default function ProductionPage() {
               })
             }
           </TextField>}
-            <Button size="small" color="inherit" variant='contained'
-              onClick={() => {
-                if (table.getState().showColumnFilters)
-                  table.resetColumnFilters(true)
-                table.setShowColumnFilters(!table.getState().showColumnFilters)
-              }
-              }
-            >
-              {table.getState().showColumnFilters ? <FilterAltOff /> : <FilterAlt />}
-            </Button>
-         
-            <Button size="small" color="inherit" variant='contained'
-              onClick={(e) => setAnchorEl(e.currentTarget)
-              }
-            >
-              <MenuIcon />
-            </Button>
+          <Button size="small" color="inherit" variant='contained'
+            onClick={() => {
+              if (table.getState().showColumnFilters)
+                table.resetColumnFilters(true)
+              table.setShowColumnFilters(!table.getState().showColumnFilters)
+            }
+            }
+          >
+            {table.getState().showColumnFilters ? <FilterAltOff /> : <FilterAlt />}
+          </Button>
+
+          <Button size="small" color="inherit" variant='contained'
+            onClick={(e) => setAnchorEl(e.currentTarget)
+            }
+          >
+            <MenuIcon />
+          </Button>
         </Stack>
       </Stack >
       <>

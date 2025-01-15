@@ -19,6 +19,8 @@ import { UserService } from '../../services/UserServices'
 import { ProductionService } from '../../services/ProductionService'
 import { DropDownDto } from '../../dtos/DropDownDto'
 import { GetSpareDyeDto } from '../../dtos/ProductionDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 export default function SpareDyesPage() {
@@ -115,7 +117,9 @@ export default function SpareDyesPage() {
             {
                 accessorKey: 'dye_photo',
                 header: 'Photo',
-
+                enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
                 Cell: (cell) => <>
                     {cell.row.original.dye_photo && <IconButton
                         disabled={!LoggedInUser?.assigned_permissions.includes('spare_dye_view')}
@@ -131,56 +135,53 @@ export default function SpareDyesPage() {
             {
                 accessorKey: 'photo_time',
                 header: 'Photo Time',
-
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={spareDyes.map((item) => { return item.photo_time || "" })} />,
                 Cell: (cell) => <>{cell.row.original.photo_time || ""}</>
             },
             {
-                accessorKey: 'dye',
+                accessorKey: 'dye.label',
                 header: 'Dye',
-
-                filterVariant: 'multi-select',
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={spareDyes.map((item) => { return item.created_at || "" })} />, 
                 Cell: (cell) => <>{cell.row.original.dye.label.toString() || "" ? cell.row.original.dye.label.toString() || "" : ""}</>,
-                filterSelectOptions: spareDyes && spareDyes.map((i) => {
-                    return i.dye.label.toString() || "";
-                }).filter(onlyUnique)
+               
             },
             {
-                accessorKey: 'location',
+                accessorKey: 'location.label',
                 header: 'Dye Location',
-
-                filterVariant: 'multi-select',
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={spareDyes.map((item) => { return item.location.label    || "" })} />, 
                 Cell: (cell) => <>{cell.row.original.location.label.toString() || "" ? cell.row.original.location.label.toString() || "" : ""}</>,
-                filterSelectOptions: spareDyes && spareDyes.map((i) => {
-                    return i.location.label.toString() || "";
-                }).filter(onlyUnique)
+                
             },
             {
                 accessorKey: 'repair_required',
                 header: 'Repair Required',
-
+                enableColumnFilter:false,
                 Cell: (cell) => <>{cell.row.original.repair_required ? "Yes" : "No"}</>
             },
             {
                 accessorKey: 'remarks',
                 header: 'remarks',
-
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={spareDyes.map((item) => { return item.remarks || "" })} />, 
                 Cell: (cell) => <>{cell.row.original.remarks || ""}</>
             },
             {
                 accessorKey: 'created_at',
                 header: 'Created At',
-
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={spareDyes.map((item) => { return item.created_at || "" })} />, 
                 Cell: (cell) => <>{cell.row.original.created_at || ""}</>
             },
             {
                 accessorKey: 'created_by',
                 header: 'Creator',
-
-                filterVariant: 'multi-select',
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={spareDyes.map((item) => { return item.created_by.label || "" })} />, 
                 Cell: (cell) => <>{cell.row.original.created_by.label.toString() || "" ? cell.row.original.created_by.label.toString() || "" : ""}</>,
-                filterSelectOptions: spareDyes && spareDyes.map((i) => {
-                    return i.created_by.label.toString() || "";
-                }).filter(onlyUnique)
+                
             },
         ],
         [spareDyes],

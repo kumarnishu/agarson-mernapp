@@ -17,6 +17,8 @@ import { UserService } from '../../services/UserServices'
 import { ProductionService } from '../../services/ProductionService'
 import { DropDownDto } from '../../dtos/DropDownDto'
 import { GetSoleThicknessDto } from '../../dtos/ProductionDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 export default function SoleThicknessPage() {
@@ -39,7 +41,7 @@ export default function SoleThicknessPage() {
         start_date: moment(new Date()).format("YYYY-MM-DD")
         , end_date: moment(new Date().setDate(new Date().getDate() + 1)).format("YYYY-MM-DD")
     })
-    const { data, isLoading, isSuccess, isRefetching } = useQuery<AxiosResponse< GetSoleThicknessDto[]>, BackendError>(["thickness", userId, dates?.start_date, dates?.end_date], async () => new ProductionService().GetSoleThickness({  id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
+    const { data, isLoading, isSuccess, isRefetching } = useQuery<AxiosResponse<GetSoleThicknessDto[]>, BackendError>(["thickness", userId, dates?.start_date, dates?.end_date], async () => new ProductionService().GetSoleThickness({ id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'sole_thickness_view', show_assigned_only: true }))
 
@@ -60,11 +62,11 @@ export default function SoleThicknessPage() {
     const columns = useMemo<MRT_ColumnDef<GetSoleThicknessDto>[]>(
         () => thicknesses && [
             {
-                accessorKey: 'actions',  enableColumnActions: false,
+                accessorKey: 'actions', enableColumnActions: false,
                 enableColumnFilter: false,
                 enableSorting: false,
                 enableGrouping: false,
-                header:'Actions',
+                header: 'Actions',
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row" spacing={1}>
@@ -81,7 +83,7 @@ export default function SoleThicknessPage() {
                                         <Edit />
                                     </IconButton>
                                 </Tooltip>}
-                                {LoggedInUser?.role=="admin" && LoggedInUser?.assigned_permissions.includes('sole_thickness_delete') && <Tooltip title="delete">
+                                {LoggedInUser?.role == "admin" && LoggedInUser?.assigned_permissions.includes('sole_thickness_delete') && <Tooltip title="delete">
                                     <IconButton color="error"
 
                                         onClick={() => {
@@ -102,27 +104,24 @@ export default function SoleThicknessPage() {
             {
                 accessorKey: 'dye.label',
                 header: 'Dye',
-
-                filterVariant: 'multi-select',
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={thicknesses.map((item) => { return item.dye.label || "" })} />,
                 Cell: (cell) => <>{cell.row.original.dye && cell.row.original.dye.label.toString() || "" ? cell.row.original.dye.label.toString() || "" : ""}</>,
-                filterSelectOptions: thicknesses && thicknesses.map((i) => {
-                    return i.dye && i.dye.label.toString() || "";
-                }).filter(onlyUnique)
+               
             },
             {
                 accessorKey: 'article',
                 header: 'Article',
-
-                filterVariant: 'multi-select',
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={thicknesses.map((item) => { return item.article.label || "" })} />,
                 Cell: (cell) => <>{cell.row.original.article && cell.row.original.article.label || "" ? cell.row.original.article.label || "" : ""}</>,
-                filterSelectOptions: thicknesses && thicknesses.map((i) => {
-                    return i.article && i.article.label || "";
-                }).filter(onlyUnique)
+             
             },
             {
                 accessorKey: 'size',
                 header: 'Size',
-
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={thicknesses.map((item) => { return item.size || "" })} />,
                 Cell: (cell) => <>{cell.row.original.size && cell.row.original.size.toString() || "" ? cell.row.original.size.toString() || "" : ""}</>,
 
             },
@@ -130,27 +129,32 @@ export default function SoleThicknessPage() {
             {
                 accessorKey: 'left_thickness',
                 header: 'Left Thickness',
-
+                aggregationFn: 'sum',
+                filterVariant: 'range',
+                filterFn: 'betweenInclusive',
                 Cell: (cell) => <>{cell.row.original.right_thickness && cell.row.original.right_thickness.toString() || "" ? cell.row.original.right_thickness.toString() || "" : ""}</>,
 
             },
             {
                 accessorKey: 'right_thickness',
                 header: 'Right Thickness',
-
+                aggregationFn: 'sum',
+                filterVariant: 'range',
+                filterFn: 'betweenInclusive',
                 Cell: (cell) => <>{cell.row.original.right_thickness && cell.row.original.right_thickness.toString() || "" ? cell.row.original.right_thickness.toString() || "" : ""}</>
             },
             {
                 accessorKey: 'created_at',
                 header: 'Created At',
-
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={thicknesses.map((item) => { return item.created_at || "" })} />,
                 Cell: (cell) => <>{cell.row.original.created_at || ""}</>
             },
             {
-                accessorKey: 'created_by',
+                accessorKey: 'created_by.label',
                 header: 'Creator',
-
-                filterVariant: 'multi-select',
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={thicknesses.map((item) => { return item.created_by.label || "" })} />,
                 Cell: (cell) => <>{cell.row.original.created_by.label.toString() || "" ? cell.row.original.created_by.label.toString() || "" : ""}</>,
                 filterSelectOptions: thicknesses && thicknesses.map((i) => {
                     return i.created_by.label.toString() || "";
@@ -167,48 +171,48 @@ export default function SoleThicknessPage() {
         enableColumnResizing: true,
         enableColumnVirtualization: true, enableStickyFooter: true,
         muiTableFooterRowProps: () => ({
-          sx: {
-            backgroundColor: 'whitesmoke',
-            color: 'white',
-          }
+            sx: {
+                backgroundColor: 'whitesmoke',
+                color: 'white',
+            }
         }),
         muiTableContainerProps: (table) => ({
-          sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
+            sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
         }),
         muiTableHeadRowProps: () => ({
-          sx: {
-            backgroundColor: 'whitesmoke',
-            color: 'white'
-          },
+            sx: {
+                backgroundColor: 'whitesmoke',
+                color: 'white'
+            },
         }),
         muiTableHeadCellProps: ({ column }) => ({
-          sx: {
-            '& div:nth-of-type(1) span': {
-              display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
+            sx: {
+                '& div:nth-of-type(1) span': {
+                    display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
+                },
+                '& div:nth-of-type(2)': {
+                    display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
+                },
+                '&:hover div:nth-of-type(1) span': {
+                    display: 'inline', // Visible on hover
+                },
+                '&:hover div:nth-of-type(2)': {
+                    display: 'block', // Visible on hover
+                }
             },
-            '& div:nth-of-type(2)': {
-              display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
-            },
-            '&:hover div:nth-of-type(1) span': {
-              display: 'inline', // Visible on hover
-            },
-            '&:hover div:nth-of-type(2)': {
-              display: 'block', // Visible on hover
-            }
-          },
         }),
         muiTableBodyCellProps: () => ({
-          sx: {
-            border: '1px solid #c2beba;',
-          },
+            sx: {
+                border: '1px solid #c2beba;',
+            },
         }),
         muiPaginationProps: {
-          rowsPerPageOptions: [100, 200, 500, 1000, 2000],
-          shape: 'rounded',
-          variant: 'outlined',
+            rowsPerPageOptions: [100, 200, 500, 1000, 2000],
+            shape: 'rounded',
+            variant: 'outlined',
         },
         enableDensityToggle: false, initialState: {
-          density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
+            density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
         },
         enableGrouping: true,
         enableRowSelection: true,
@@ -219,17 +223,17 @@ export default function SoleThicknessPage() {
         enableTableFooter: true,
         enableRowVirtualization: true,
         onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
-    
+
         onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing, state: {
-          isLoading: isLoading,
-          columnVisibility,
-    
-          sorting,
-          columnSizing: columnSizing
+            isLoading: isLoading,
+            columnVisibility,
+
+            sorting,
+            columnSizing: columnSizing
         }
-      });
-    
+    });
+
 
     useEffect(() => {
         try {
@@ -300,7 +304,7 @@ export default function SoleThicknessPage() {
             {
                 isLoading || isRefetching && <LinearProgress color='secondary' />
             }
-               <Stack
+            <Stack
                 spacing={2}
                 p={1}
                 direction="row"
@@ -382,23 +386,23 @@ export default function SoleThicknessPage() {
                             })
                         }
                     </TextField>}
-                        <Button size="small" color="inherit" variant='contained'
-                            onClick={() => {
-                                if (table.getState().showColumnFilters)
-                                    table.resetColumnFilters(true)
-                                table.setShowColumnFilters(!table.getState().showColumnFilters)
-                            }
-                            }
-                        >
-                            {table.getState().showColumnFilters ? <FilterAltOff /> : <FilterAlt />}
-                        </Button>
-                   
-                        <Button size="small" color="inherit" variant='contained'
-                            onClick={(e) => setAnchorEl(e.currentTarget)
-                            }
-                        >
-                            <MenuIcon />
-                        </Button>
+                    <Button size="small" color="inherit" variant='contained'
+                        onClick={() => {
+                            if (table.getState().showColumnFilters)
+                                table.resetColumnFilters(true)
+                            table.setShowColumnFilters(!table.getState().showColumnFilters)
+                        }
+                        }
+                    >
+                        {table.getState().showColumnFilters ? <FilterAltOff /> : <FilterAlt />}
+                    </Button>
+
+                    <Button size="small" color="inherit" variant='contained'
+                        onClick={(e) => setAnchorEl(e.currentTarget)
+                        }
+                    >
+                        <MenuIcon />
+                    </Button>
                 </Stack>
             </Stack >
             <>

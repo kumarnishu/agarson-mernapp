@@ -12,6 +12,8 @@ import { UserContext } from '../../contexts/userContext'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { ProductionService } from '../../services/ProductionService'
 import { GetCategoryWiseProductionReportDto } from '../../dtos/ProductionDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 
 
@@ -40,17 +42,23 @@ export default function CategoryWiseProductionReportPage() {
         header: 'Date',
         
         Footer: <b>Total</b>,
-        filterVariant: 'multi-select',
-        filterSelectOptions: reports && reports.map((i) => { return i.date.toString() }).filter(onlyUnique)
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.date || "" })} />,
+        
       },
       {
         accessorKey: 'total',
         header: 'Total',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
         Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.total) }, 0).toFixed()}</b>
       },
       {
         accessorKey: 'verticalpluslympha',
         header: 'Vertical+Lympha',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.verticalpluslympha) }, 0).toFixed()}</b>
@@ -58,6 +66,8 @@ export default function CategoryWiseProductionReportPage() {
       {
         accessorKey: 'pu',
         header: 'PU',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.pu) }, 0).toFixed()}</b>
@@ -65,6 +75,8 @@ export default function CategoryWiseProductionReportPage() {
       {
         accessorKey: 'gumboot',
         header: 'GBoot',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         aggregationFn: 'sum',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
         Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.gumboot) }, 0).toFixed()}</b>

@@ -12,6 +12,8 @@ import moment from 'moment'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { ProductionService } from '../../services/ProductionService'
 import { GetShoeWeightDiffReportDto } from '../../dtos/ProductionDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 
@@ -37,149 +39,131 @@ export default function ShowWeightDifferenceReportPage() {
       {
         accessorKey: 'date',
         header: 'Date',
-        filterVariant: 'multi-select',
-        filterSelectOptions: reports && reports.map((i) => { return i.date.toString() }).filter(onlyUnique)
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.date || "" })} />,
+
       },
       {
         accessorKey: 'dye_no',
-
         header: 'Dye',
-        aggregationFn: 'count',
+        aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
-        filterVariant: 'multi-select',
-        filterSelectOptions: reports && reports.map((i) => {
-          if (i.dye_no)
-            return i.dye_no.toString()
-          else return ""
-        }).filter(onlyUnique)
+
       },
       {
         accessorKey: 'article',
-
         header: 'Article',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
-        filterVariant: 'multi-select',
-        filterSelectOptions: reports && reports.map((i) => {
-          if (i.article)
-            return i.article.toString()
-          else return ""
-        }).filter(onlyUnique)
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.article || "" })} />,
       },
       {
         accessorKey: 'size',
-
         header: 'Size',
-        aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
-        filterVariant: 'multi-select',
-        filterSelectOptions: reports && reports.map((i) => {
-          if (i.size)
-            return i.size.toString()
-          else return ""
-        }).filter(onlyUnique)
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.size || "" })} />,
       },
       {
         accessorKey: 'st_weight',
-
         header: 'St Weight',
-        aggregationFn: 'count',
+        aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
-        filterVariant: 'multi-select',
-        filterSelectOptions: reports && reports.map((i) => {
-          if (i.st_weight)
-            return i.st_weight.toString()
-          else return ""
-        }).filter(onlyUnique)
+
       },
       {
         accessorKey: 'machine',
-
         header: 'Machine',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
-        filterVariant: 'multi-select',
-        filterSelectOptions: reports && reports.map((i) => {
-          if (i.machine)
-            return i.machine.toString()
-          else return ""
-        }).filter(onlyUnique)
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.machine || "" })} />,
+
       },
       {
         accessorKey: 'w1',
-
         header: 'Weight1',
         aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'u1',
-
         header: 'Upper1',
         aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'd1',
-
         header: 'Diff-1',
         aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'w2',
-
         header: 'Weight2',
         aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'u2',
-
         header: 'Upper2',
         aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'd2',
-
         header: 'Diff-2',
         aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'w3',
-
         header: 'Weight3',
         aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'u3',
-
         header: 'Upper3',
         aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'd3',
-
         header: 'Diff-3',
         aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
       },
       {
         accessorKey: 'person',
-
         header: 'Person',
         aggregationFn: 'count',
         AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
-        filterVariant: 'multi-select',
-        filterSelectOptions: reports && reports.map((i) => {
-          if (i.person)
-            return i.person.toString()
-          else return ""
-        }).filter(onlyUnique)
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.person || "" })} />,
       }
     ],
     [reports],
@@ -323,7 +307,7 @@ export default function ShowWeightDifferenceReportPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
     },
     enableGrouping: true,

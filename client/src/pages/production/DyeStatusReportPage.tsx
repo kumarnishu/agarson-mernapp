@@ -12,6 +12,8 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { UserContext } from '../../contexts/userContext'
 import { ProductionService } from '../../services/ProductionService'
 import { GetDyeStatusReportDto } from '../../dtos/DropDownDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 
@@ -24,10 +26,10 @@ export default function DyeStatusReportPage() {
   const { user } = useContext(UserContext)
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetDyeStatusReportDto[]>, BackendError>(["reports", dates.start_date, dates.end_date], async () => new ProductionService().GetDyeStatusReport({ start_date: dates.start_date, end_date: dates.end_date }))
 
-   const isFirstRender = useRef(true);
+  const isFirstRender = useRef(true);
 
-    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-  
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
@@ -36,113 +38,77 @@ export default function DyeStatusReportPage() {
     () => reports && [
       {
         accessorKey: 'created_at',
-       
         header: 'Date',
-        filterVariant: 'multi-select',
-        filterSelectOptions: reports && reports.map((i) => { return i.created_at.toString() }).filter(onlyUnique)
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.created_at || "" })} />,
+
       },
       {
         accessorKey: 'dye',
-      
         header: 'Dye',
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
-        filterVariant: 'multi-select',
-        filterSelectOptions: reports && reports.map((i) => {
-          if (i.dye)
-            return i.dye.toString()
-          else return ""
-        }).filter(onlyUnique)
       },
       {
         accessorKey: 'article',
-      
+
         header: 'Article',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
-        filterVariant: 'multi-select',
-        filterSelectOptions: reports && reports.map((i) => {
-          if (i.article)
-            return i.article.toString()
-          else return ""
-        }).filter(onlyUnique)
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.article || "" })} />,
       },
       {
         accessorKey: 'size',
-      
+
         header: 'Size',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
-        filterVariant: 'multi-select',
-        filterSelectOptions: reports && reports.map((i) => {
-          if (i.size)
-            return i.size.toString()
-          else return ""
-        }).filter(onlyUnique)
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.size || "" })} />,
       },
       {
         accessorKey: 'std_weight',
-      
         header: 'St Weight',
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
-        filterVariant: 'multi-select',
-        filterSelectOptions: reports && reports.map((i) => {
-          if (i.std_weight)
-            return i.std_weight.toString()
-          else return ""
-        }).filter(onlyUnique)
       },
       {
         accessorKey: 'location',
-       
+
         header: 'Location',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
-        filterVariant: 'multi-select',
-        filterSelectOptions: reports && reports.map((i) => {
-          if (i.location)
-            return i.location.toString()
-          else return ""
-        }).filter(onlyUnique)
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.location || "" })} />,
       },
       {
         accessorKey: 'repair_required',
-     
         header: 'Repair Required',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
-        filterVariant: 'multi-select',
-        filterSelectOptions: reports && reports.map((i) => {
-          if (i.repair_required)
-            return i.repair_required.toString()
-          else return ""
-        }).filter(onlyUnique)
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
+        enableColumnFilter: false,
       },
       {
         accessorKey: 'remarks',
-    
+
         header: 'Remarks',
         aggregationFn: 'count',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
-        filterVariant: 'multi-select',
-        filterSelectOptions: reports && reports.map((i) => {
-          if (i.remarks)
-            return i.remarks.toString()
-          else return ""
-        }).filter(onlyUnique)
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.remarks || "" })} />,
       },
       {
         accessorKey: 'created_by',
         header: 'Creator',
-       
-        aggregationFn: 'count',
-        filterVariant: 'multi-select',
-        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue())==0?"":Number(cell.getValue())}</div>,
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.created_by.label || "" })} />,
+        AggregatedCell: ({ cell }) => <div> {Number(cell.getValue()) == 0 ? "" : Number(cell.getValue())}</div>,
         Cell: (cell) => <>{cell.row.original.created_by.label.toString() || ""}</>,
-        filterSelectOptions: reports && reports.map((i) => {
-          return i.created_by.label.toString() || "";
-        }).filter(onlyUnique)
       },
 
 
@@ -158,7 +124,7 @@ export default function DyeStatusReportPage() {
   }, [isSuccess]);
 
   const table = useMaterialReactTable({
-    columns, columnFilterDisplayMode: 'popover', 
+    columns, columnFilterDisplayMode: 'popover',
     data: reports, //10,000 rows       
     enableColumnResizing: true,
     enableColumnVirtualization: true, enableStickyFooter: true,
@@ -177,13 +143,13 @@ export default function DyeStatusReportPage() {
         color: 'white'
       },
     }),
-	muiTableHeadCellProps: ({ column }) => ({
+    muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-of-type(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-of-type(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-of-type(1) span': {
           display: 'inline', // Visible on hover
@@ -235,7 +201,7 @@ export default function DyeStatusReportPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
     },
     enableGrouping: true,
@@ -253,7 +219,7 @@ export default function DyeStatusReportPage() {
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
-      
+
       sorting,
       columnSizing: columnSizing
     }
@@ -276,7 +242,7 @@ export default function DyeStatusReportPage() {
     const columnSizing = localStorage.getItem(
       'mrt_columnSizing_table_1',
     );
-    
+
 
 
 
@@ -285,10 +251,10 @@ export default function DyeStatusReportPage() {
       setColumnVisibility(JSON.parse(columnVisibility));
     }
 
-    
+
     if (columnSizing)
       setColumnSizing(JSON.parse(columnSizing))
-    
+
     isFirstRender.current = false;
   }, []);
 
@@ -300,7 +266,7 @@ export default function DyeStatusReportPage() {
     );
   }, [columnVisibility]);
 
- 
+
 
 
   useEffect(() => {

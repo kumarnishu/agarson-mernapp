@@ -7,7 +7,7 @@ import { UserContext } from '../../contexts/userContext'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
-import { Check, Delete, FilterAlt, FilterAltOff,  Menu as MenuIcon, Photo } from '@mui/icons-material';
+import { Check, Delete, FilterAlt, FilterAltOff, Menu as MenuIcon, Photo } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import PopUp from '../../components/popup/PopUp'
 import moment from 'moment'
@@ -20,6 +20,8 @@ import { UserService } from '../../services/UserServices'
 import { ProductionService } from '../../services/ProductionService'
 import { DropDownDto } from '../../dtos/DropDownDto'
 import { GetShoeWeightDto } from '../../dtos/ProductionDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 export default function ShoeWeightPage() {
@@ -41,7 +43,7 @@ export default function ShoeWeightPage() {
     start_date: moment(new Date()).format("YYYY-MM-DD")
     , end_date: moment(new Date().setDate(new Date().getDate() + 1)).format("YYYY-MM-DD")
   })
-  const { data, isLoading, isSuccess, isRefetching } = useQuery<AxiosResponse<GetShoeWeightDto[]>, BackendError>(["shoe_weights", userId, dates?.start_date, dates?.end_date], async () =>new ProductionService(). GetShoeWeights({  id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
+  const { data, isLoading, isSuccess, isRefetching } = useQuery<AxiosResponse<GetShoeWeightDto[]>, BackendError>(["shoe_weights", userId, dates?.start_date, dates?.end_date], async () => new ProductionService().GetShoeWeights({ id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'shoe_weight_view', show_assigned_only: true }))
 
@@ -55,7 +57,7 @@ export default function ShoeWeightPage() {
   useEffect(() => {
     if (data && isSuccess) {
       setWeights(data.data)
-   
+
     }
   }, [data, isSuccess])
 
@@ -63,11 +65,11 @@ export default function ShoeWeightPage() {
   const columns = useMemo<MRT_ColumnDef<GetShoeWeightDto>[]>(
     () => weights && [
       {
-        accessorKey: 'actions',  enableColumnActions: false,
-                enableColumnFilter: false,
-                enableSorting: false,
-                enableGrouping: false,
-        header:'Actions',
+        accessorKey: 'actions', enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
+        header: 'Actions',
 
 
         Cell: ({ cell }) => <PopUp
@@ -96,7 +98,7 @@ export default function ShoeWeightPage() {
                   </IconButton>
                   <IconButton color="info"
                     onClick={() => {
-                    setDialog('CreateOrEditShoeWeightDialog3')
+                      setDialog('CreateOrEditShoeWeightDialog3')
                       setWeight(cell.row.original)
                     }}
 
@@ -114,7 +116,7 @@ export default function ShoeWeightPage() {
                     <Check />
                   </IconButton>
                 </Tooltip>}
-                {LoggedInUser?.role=="admin" && LoggedInUser?.assigned_permissions.includes('shoe_weight_delete') && <Tooltip title="delete">
+                {LoggedInUser?.role == "admin" && LoggedInUser?.assigned_permissions.includes('shoe_weight_delete') && <Tooltip title="delete">
                   <IconButton color="error"
 
                     onClick={() => {
@@ -135,7 +137,9 @@ export default function ShoeWeightPage() {
       {
         accessorKey: 'shoe_photo1',
         header: 'Photos',
-
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
 
         Cell: (cell) => <>
           {cell.row.original.shoe_photo1 && <Photo onClick={() => {
@@ -156,120 +160,137 @@ export default function ShoeWeightPage() {
         </>
       },
       {
-        accessorKey: 'machine',
+        accessorKey: 'machine.label',
         header: 'Machine',
-
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={weights.map((item) => { return item.machine.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.machine.label.toString() || ""}</>,
-        filterSelectOptions: weights && weights.map((i) => {
-          return i.machine.label.toString() || "";
-        }).filter(onlyUnique)
       },
       {
         accessorKey: 'month',
         header: 'Clock In',
+        aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         Cell: (cell) => <>{months.find(x => x.month == cell.row.original.month) && months.find(x => x.month == cell.row.original.month)?.label}</>
       },
 
       {
-        accessorKey: 'dye',
+        accessorKey: 'dye.label',
         header: 'Dye',
 
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={weights.map((item) => { return item.dye.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.dye.label.toString() || ""}</>,
         filterSelectOptions: weights && weights.map((i) => {
           return i.dye.label.toString() || "";
         }).filter(onlyUnique)
       },
       {
-        accessorKey: 'article',
+        accessorKey: 'article.label',
         header: 'Article',
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={weights.map((item) => { return item.article.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.article.label.toString() || ""}</>,
-        filterSelectOptions: weights && weights.map((i) => {
-          return i.article.label.toString() || "";
-        }).filter(onlyUnique)
+
       },
       {
         accessorKey: 'size',
         header: 'Size',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={weights.map((item) => { return item.size || "" })} />,
         Cell: (cell) => <>{cell.row.original.size.toString() || ""}</>
       },
       {
         accessorKey: 'std_weigtht',
         header: 'Std Sole Weight',
-
+        aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         Cell: (cell) => <>{cell.row.original.std_weigtht.toString() || ""}</>
       },
       {
         accessorKey: 'upper_weight1',
         header: 'Upper Weight1',
-
+        aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         Cell: (cell) => <>{cell.row.original.upper_weight1.toString() || ""}</>
       },
       {
         accessorKey: 'shoe_weight1',
         header: 'Shoe Weight1',
-
+        aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         Cell: (cell) => <>{cell.row.original.shoe_weight1.toString() || ""}</>
       },
       {
         accessorKey: 'weighttime1',
         header: 'Weight Time1',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={weights.map((item) => { return item.weighttime1 || "" })} />,
         Cell: (cell) => <>{cell.row.original.weighttime1.toString() || ""}</>
       },
       {
         accessorKey: 'upper_weight2',
         header: 'Upper Weight2',
-
+        aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         Cell: (cell) => <>{cell.row.original.upper_weight2 && cell.row.original.upper_weight2.toString() || ""}</>
       },
       {
         accessorKey: 'shoe_weight2',
         header: 'Shoe Weight2',
-
+        aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         Cell: (cell) => <>{cell.row.original.shoe_weight2 && cell.row.original.shoe_weight2.toString() || ""}</>
       },
       {
         accessorKey: 'weighttime2',
         header: 'Weight Time2',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={weights.map((item) => { return item.weighttime2 || "" })} />,
         Cell: (cell) => <>{cell.row.original.weighttime2 && cell.row.original.weighttime2.toString() || ""}</>
       },
       {
         accessorKey: 'upper_weight3',
         header: 'Upper Weight3',
-
+        aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         Cell: (cell) => <>{cell.row.original.upper_weight3 && cell.row.original.upper_weight3.toString() || ""}</>
       },
       {
         accessorKey: 'shoe_weight3',
         header: 'Shoe Weight3',
-
+        aggregationFn: 'sum',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         Cell: (cell) => <>{cell.row.original.shoe_weight3 && cell.row.original.shoe_weight3.toString() || ""}</>
       },
       {
         accessorKey: 'weighttime3',
         header: 'Weight Time3',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={weights.map((item) => { return item.weighttime3 || "" })} />,
         Cell: (cell) => <>{cell.row.original.weighttime3 && cell.row.original.weighttime3.toString() || ""}</>
       }, {
         accessorKey: 'created_at',
         header: 'Created At',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={weights.map((item) => { return item.created_at || "" })} />,
         Cell: (cell) => <>{cell.row.original.created_at || ""}</>
       },
       {
         accessorKey: 'created_by',
         header: 'Creator',
-
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={weights.map((item) => { return item.created_by.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.created_by.label.toString() || "" ? cell.row.original.created_by.label.toString() || "" : ""}</>,
-        filterSelectOptions: weights && weights.map((i) => {
-          return i.created_by.label.toString() || "";
-        }).filter(onlyUnique)
+
       },
     ],
     [weights],
@@ -412,7 +433,7 @@ export default function ShoeWeightPage() {
       {
         isLoading || isRefetching && <LinearProgress color='secondary' />
       }
-         <Stack
+      <Stack
         spacing={2}
         p={1}
         direction="row"
@@ -489,23 +510,23 @@ export default function ShoeWeightPage() {
               })
             }
           </TextField>}
-            <Button size="small" color="inherit" variant='contained'
-              onClick={() => {
-                if (table.getState().showColumnFilters)
-                  table.resetColumnFilters(true)
-                table.setShowColumnFilters(!table.getState().showColumnFilters)
-              }
-              }
-            >
-              {table.getState().showColumnFilters ? <FilterAltOff /> : <FilterAlt />}
-            </Button>
-         
-            <Button size="small" color="inherit" variant='contained'
-              onClick={(e) => setAnchorEl(e.currentTarget)
-              }
-            >
-              <MenuIcon />
-            </Button>
+          <Button size="small" color="inherit" variant='contained'
+            onClick={() => {
+              if (table.getState().showColumnFilters)
+                table.resetColumnFilters(true)
+              table.setShowColumnFilters(!table.getState().showColumnFilters)
+            }
+            }
+          >
+            {table.getState().showColumnFilters ? <FilterAltOff /> : <FilterAlt />}
+          </Button>
+
+          <Button size="small" color="inherit" variant='contained'
+            onClick={(e) => setAnchorEl(e.currentTarget)
+            }
+          >
+            <MenuIcon />
+          </Button>
         </Stack>
       </Stack >
       <>

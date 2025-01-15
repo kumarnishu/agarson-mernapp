@@ -15,12 +15,14 @@ import ViewRemarksDialog from '../../components/dialogs/crm/ViewRemarksDialog'
 import CreateOrEditRemarkDialog from '../../components/dialogs/crm/CreateOrEditRemarkDialog'
 import { CrmService } from '../../services/CrmService'
 import { GetActivitiesOrRemindersDto } from '../../dtos/CrmDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 function CrmReminderPage() {
   const [remarks, setRemarks] = useState<GetActivitiesOrRemindersDto[]>([])
   const [remark, setRemark] = useState<GetActivitiesOrRemindersDto>()
-  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetActivitiesOrRemindersDto[]>, BackendError>(["reminders"], async () => new CrmService(). GetReminderRemarks())
+  const { data, isSuccess, isLoading } = useQuery<AxiosResponse<GetActivitiesOrRemindersDto[]>, BackendError>(["reminders"], async () => new CrmService().GetReminderRemarks())
   const { user: LoggedInUser } = useContext(UserContext)
 
   const [dialog, setDialog] = useState<string | undefined>()
@@ -35,11 +37,11 @@ function CrmReminderPage() {
     //column definitions...
     () => remarks && [
       {
-        accessorKey: 'actions',  enableColumnActions: false,
-                enableColumnFilter: false,
-                enableSorting: false,
-                enableGrouping: false,
-        header:'Actions',
+        accessorKey: 'actions', enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
+        header: 'Actions',
 
         Footer: <b></b>,
         Cell: ({ cell }) => <PopUp
@@ -80,27 +82,31 @@ function CrmReminderPage() {
       {
         accessorKey: 'remark',
         header: ' Last Remark',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.remark || "" })} />,
         Cell: (cell) => <>{cell.row.original.remark ? cell.row.original.remark : ""}</>
       },
       {
         accessorKey: 'created_by.label',
         header: 'Creator',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.created_by.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
       },
 
       {
         accessorKey: 'stage',
         header: 'Stage',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.stage || "" })} />,
         Cell: (cell) => <>{cell.row.original.stage ? cell.row.original.stage : ""}</>
       },
 
       {
         accessorKey: 'remind_date',
         header: 'Next Call',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.remind_date || "" })} />,
         Cell: (cell) => <>{cell.row.original.remind_date ? cell.row.original.remind_date : ""}</>
       },
 
@@ -108,7 +114,8 @@ function CrmReminderPage() {
         accessorKey: 'name',
         header: 'Name',
 
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.name || "" })} />,
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
         filterSelectOptions: remarks && remarks.map((i) => {
           return i.name;
@@ -117,7 +124,8 @@ function CrmReminderPage() {
       {
         accessorKey: 'city',
         header: 'City',
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.city || "" })} />,
 
         Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
         filterSelectOptions: remarks && remarks.map((i) => {
@@ -127,53 +135,58 @@ function CrmReminderPage() {
       {
         accessorKey: 'state',
         header: 'State',
-        filterVariant: 'multi-select',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.state || "" })} />,
         Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
-        filterSelectOptions: remarks && remarks.map((i) => {
-          return i.state;
-        }).filter(onlyUnique)
+        
       },
 
 
       {
         accessorKey: 'mobile',
         header: 'Mobile1',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.mobile || "" })} />,
         Cell: (cell) => <>{cell.row.original.mobile ? cell.row.original.mobile : ""}</>
       }, {
         accessorKey: 'alternate_mobile1',
         header: 'Mobile2',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.alternate_mobile1 || "" })} />,
         Cell: (cell) => <>{cell.row.original.alternate_mobile1 ? cell.row.original.alternate_mobile1 : ""}</>
       }, {
         accessorKey: 'alternate_mobile2',
         header: 'Mobile3',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.alternate_mobile2 || "" })} />,
         Cell: (cell) => <>{cell.row.original.alternate_mobile2 ? cell.row.original.alternate_mobile2 : ""}</>
       },
       {
         accessorKey: 'created_at',
         header: 'TimeStamp',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.created_at || "" })} />,
         Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
       },
       {
         accessorKey: 'referred_party_name',
         header: 'Refer Party',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.referred_party_name || "" })} />,
         Cell: (cell) => <>{cell.row.original.referred_party_name ? cell.row.original.referred_party_name : ""}</>
       },
       {
         accessorKey: 'referred_party_mobile',
         header: 'Refer Mobile',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.referred_party_mobile || "" })} />,
         Cell: (cell) => <>{cell.row.original.referred_party_mobile ? cell.row.original.referred_party_mobile : ""}</>
       },
       {
         accessorKey: 'referred_date',
         header: 'Refer Date',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.referred_date || "" })} />,
         Cell: (cell) => <>{cell.row.original.referred_date ? cell.row.original.referred_date : ""}</>
       },
 
@@ -181,13 +194,15 @@ function CrmReminderPage() {
       {
         accessorKey: 'customer_name',
         header: 'Customer',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.customer_name || "" })} />,
         Cell: (cell) => <>{cell.row.original.customer_name ? cell.row.original.customer_name : ""}</>
       }
       , {
         accessorKey: 'customer_designation',
         header: 'Designitaion',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.customer_designation || "" })} />,
         Cell: (cell) => <>{cell.row.original.customer_designation ? cell.row.original.customer_designation : ""}</>
       }
 
@@ -195,14 +210,16 @@ function CrmReminderPage() {
       {
         accessorKey: 'email',
         header: 'Email',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.email || "" })} />,
         Cell: (cell) => <>{cell.row.original.email ? cell.row.original.email : ""}</>
       }
       ,
       {
         accessorKey: 'alternate_email',
         header: 'Email2',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.alternate_email || "" })} />,
         Cell: (cell) => <>{cell.row.original.alternate_email ? cell.row.original.alternate_email : ""}</>
       }
       ,
@@ -210,31 +227,35 @@ function CrmReminderPage() {
       {
         accessorKey: 'address',
         header: 'Address',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.address || "" })} />,
         Cell: (cell) => <>{cell.row.original.address ? cell.row.original.address : ""}</>
       },
       {
-        accessorKey: 'source',
+        accessorKey: 'lead_source',
         header: 'Lead Source',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.lead_source || "" })} />,
         Cell: (cell) => <>{cell.row.original.lead_source ? cell.row.original.lead_source : ""}</>
       },
       {
-        accessorKey: 'type',
+        accessorKey: 'lead_type',
         header: 'Lead Type',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.lead_type || "" })} />,
         Cell: (cell) => <>{cell.row.original.lead_type ? cell.row.original.lead_type : ""}</>
       },
       {
         accessorKey: 'country',
         header: 'Country',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.country || "" })} />,
         Cell: (cell) => <>{cell.row.original.country ? cell.row.original.country : ""}</>
       },
       {
         accessorKey: 'visiting_card',
         header: 'Visiting Card',
-
+        enableColumnFilter: false,
         Cell: (cell) => <span onDoubleClick={() => {
           if (cell.row.original.visiting_card && cell.row.original.visiting_card) {
             DownloadFile(cell.row.original.visiting_card, 'visiting card')
@@ -268,13 +289,13 @@ function CrmReminderPage() {
         color: 'white'
       },
     }),
-	muiTableHeadCellProps: ({ column }) => ({
+    muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-of-type(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-of-type(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-of-type(1) span': {
           display: 'inline', // Visible on hover
@@ -294,7 +315,7 @@ function CrmReminderPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
     },
     enableGrouping: true,

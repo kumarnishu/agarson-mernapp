@@ -23,6 +23,8 @@ import ToogleReferConversionDialog from '../../components/dialogs/crm/ToogleRefe
 import { ReferExcelButtons } from '../../components/buttons/ReferExcelButtons.tsx'
 import { CrmService } from '../../services/CrmService.ts'
 import { GetReferDto } from '../../dtos/CrmDto.ts'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter.tsx'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction.tsx'
 
 
 export default function RefersPage() {
@@ -36,8 +38,8 @@ export default function RefersPage() {
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const [preFilteredData, setPreFilteredData] = useState<GetReferDto[]>([])
   const [filterCount, setFilterCount] = useState(0)
-  const { data, isLoading,  isRefetching } = useQuery<AxiosResponse<
-     GetReferDto[]>, BackendError>(["refers"], async () => new CrmService().GetPaginatedRefers())
+  const { data, isLoading, isRefetching } = useQuery<AxiosResponse<
+    GetReferDto[]>, BackendError>(["refers"], async () => new CrmService().GetPaginatedRefers())
 
 
   const { data: fuzzyrefers, isLoading: isFuzzyLoading, refetch: refetchFuzzy, isFetching: isFuzzyRefetching } = useQuery<AxiosResponse<GetReferDto[]>, BackendError>(["fuzzyrefers", filter], async () => new CrmService().FuzzySearchRefers({ searchString: filter }), {
@@ -65,7 +67,7 @@ export default function RefersPage() {
     if (data && !filter) {
       setRefers(data.data)
       setPreFilteredData(data.data)
-    
+
     }
   }, [data])
 
@@ -189,102 +191,99 @@ export default function RefersPage() {
       {
         accessorKey: 'name',
         header: 'Name',
-
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.name || "" })} />,
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
-        filterSelectOptions: refers && refers.map((i) => {
-          return i.name;
-        }).filter(onlyUnique)
+       
       },
       {
         accessorKey: 'city',
         header: 'City',
-        filterVariant: 'multi-select',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.city || "" })} />,
         Cell: (cell) => <>{cell.row.original.city ? cell.row.original.city : ""}</>,
-        filterSelectOptions: refers && refers.map((i) => {
-          return i.city;
-        }).filter(onlyUnique)
+       
       },
       {
         accessorKey: 'state',
         header: 'State',
-        filterVariant: 'multi-select',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.state || "" })} />,
         Cell: (cell) => <>{cell.row.original.state ? cell.row.original.state : ""}</>,
-        filterSelectOptions: refers && refers.map((i) => {
-          return i.state;
-        }).filter(onlyUnique)
       },
       {
         accessorKey: 'mobile',
         header: 'Mobile1',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.mobile || "" })} />,
         Cell: (cell) => <>{cell.row.original.mobile ? cell.row.original.mobile : ""}</>
       }, {
         accessorKey: 'mobile2',
         header: 'Mobile2',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.mobile2 || "" })} />,
         Cell: (cell) => <>{cell.row.original.mobile2 ? cell.row.original.mobile2 : ""}</>
       }, {
         accessorKey: 'mobile3',
         header: 'Mobile3',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.mobile3 || "" })} />,
         Cell: (cell) => <>{cell.row.original.mobile3 ? cell.row.original.mobile3 : ""}</>
       },
 
       {
         accessorKey: 'last_remark',
         header: 'Remark',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.last_remark || "" })} />,
         Cell: (cell) => <>{cell.row.original.last_remark ? cell.row.original.last_remark : ""}</>,
       },
 
       {
         accessorKey: 'refers',
         header: 'Refers',
-
-        filterVariant: 'multi-select',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
         Cell: (cell) => <>{cell.row.original.refers ? cell.row.original.refers.toString() : ""}</>,
-        filterSelectOptions: refers && refers.map((i) => {
-          return i.refers.toString();
-        }).filter(onlyUnique)
       },
       {
         accessorKey: 'customer_name',
         header: 'Customer Name',
-
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.customer_name || "" })} />,
         Cell: (cell) => <>{cell.row.original.customer_name ? cell.row.original.customer_name : ""}</>,
-        filterSelectOptions: refers && refers.map((i) => {
-          return i.customer_name;
-        }).filter(onlyUnique)
+       
       },
       {
         accessorKey: 'gst',
         header: 'GST',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.gst || "" })} />,
         Cell: (cell) => <>{cell.row.original.gst ? cell.row.original.gst : ""}</>
       },
 
       {
         accessorKey: 'address',
         header: 'Address',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.address || "" })} />,
         Cell: (cell) => <>{cell.row.original.address ? cell.row.original.address : ""}</>
       },
 
       {
         accessorKey: 'created_at',
         header: 'Created on',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.created_at || "" })} />,
         Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
       },
 
       {
         accessorKey: 'created_by.label',
         header: 'Creator',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={refers.map((item) => { return item.created_by.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
       }
     ],
