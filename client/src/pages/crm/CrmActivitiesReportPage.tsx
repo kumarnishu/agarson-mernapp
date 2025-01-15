@@ -107,32 +107,37 @@ function CrmActivitiesReportPage() {
             {
                 accessorKey: 'remark',
                 header: ' Last Remark',
-
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.remark || "" })} />,
                 Cell: (cell) => <>{cell.row.original.remark ? cell.row.original.remark : ""}</>
             },
             {
                 accessorKey: 'created_by.label',
                 header: 'Creator',
-
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.created_by.label || "" })} />,
                 Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
             },
             {
                 accessorKey: 'created_at',
                 header: 'TimeStamp',
-
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.created_at || "" })} />,
                 Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
             },
             {
                 accessorKey: 'stage',
                 header: 'Stage',
-
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.stage || "" })} />,
                 Cell: (cell) => <>{cell.row.original.stage ? cell.row.original.stage : ""}</>
             },
 
             {
                 accessorKey: 'remind_date',
                 header: 'Next Call',
-
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={remarks.map((item) => { return item.remind_date || "" })} />,
                 Cell: (cell) => <>{cell.row.original.remind_date ? cell.row.original.remind_date : ""}</>
             },
 
