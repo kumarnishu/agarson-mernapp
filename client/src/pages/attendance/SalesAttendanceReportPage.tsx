@@ -85,6 +85,7 @@ export default function SalesAttendanceReportPage() {
       {
         accessorKey: 'attendance',
         header: '',
+        enableColumnFilter:false,
         Cell: (cell) => <Stack direction={'column'}>
           <Typography sx={{ fontWeight: '500' }} fontSize='0.8rem'>{`Present : ${cell.row.original.attendance}`}</Typography>
           <Typography sx={{ fontWeight: '500' }} fontSize='0.8rem'>{`SL : ${cell.row.original.consumed.sl}`}</Typography>
@@ -98,6 +99,7 @@ export default function SalesAttendanceReportPage() {
       {
         accessorKey: 'created_at',
         header: '',
+        enableColumnFilter:false,
         Cell: () => <Stack direction={'column'}>
           <Typography fontSize='0.9rem'>{"This Month Provided"}</Typography>
           <Typography fontSize='0.9rem'>{"Old Balance"}</Typography>
@@ -109,6 +111,7 @@ export default function SalesAttendanceReportPage() {
       {
         accessorKey: 'provided.sl',
         header: 'Sick Leave',
+        enableColumnFilter:false,
         Cell: (cell) => <Stack direction={'column'}>
           <Typography >{cell.row.original.provided.sl ? cell.row.original.provided.sl : "."}</Typography>
           <Typography >{cell.row.original.brought_forward.sl ? cell.row.original.brought_forward.sl : "."}</Typography>
@@ -120,6 +123,7 @@ export default function SalesAttendanceReportPage() {
       {
         accessorKey: 'brought_forward.fl',
         header: 'Festive Leave',
+        enableColumnFilter:false,
         Cell: (cell) => <Stack direction={'column'}>
           <Typography >{cell.row.original.provided.fl ? cell.row.original.provided.fl : "."}</Typography>
           <Typography >{cell.row.original.brought_forward.fl ? cell.row.original.brought_forward.fl : "."}</Typography>
@@ -132,6 +136,7 @@ export default function SalesAttendanceReportPage() {
       {
         accessorKey: 'total.sw',
         header: 'Sunday Working',
+        enableColumnFilter:false,
         Cell: (cell) => <Stack direction={'column'}>
           <Typography >{cell.row.original.provided.sw ? cell.row.original.provided.sw : "."}</Typography>
           <Typography >{cell.row.original.brought_forward.sw ? cell.row.original.brought_forward.sw : "."}</Typography>

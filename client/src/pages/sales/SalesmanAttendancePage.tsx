@@ -95,6 +95,8 @@ function SalesmanAttendancePage() {
             {
                 accessorKey: 'date',
                 header: ' Date',
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={attendances.map((item) => { return moment(item.date).format("DD/MM/YYYY") || "" })} />,
                 Cell: (cell) => <span >{cell.row.original.date && moment(cell.row.original.date).format("DD/MM/YYYY")}</span>
 
             },

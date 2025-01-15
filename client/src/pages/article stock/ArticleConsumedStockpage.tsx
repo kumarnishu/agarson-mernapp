@@ -12,6 +12,8 @@ import { StockSchmeService } from '../../services/StockSchmeService'
 import DiscardConsumptionDialog from '../../components/dialogs/stockschme/DiscardConsumptionDialog'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { GetConsumedStockDto } from '../../dtos/StockSchemeDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 
 export default function ArticleConsumedStockpage() {
@@ -31,10 +33,10 @@ export default function ArticleConsumedStockpage() {
     //column definitions...
     () => consumes && [
       {
-        accessorKey: 'actions',enableColumnFilter: false,
+        accessorKey: 'actions', enableColumnFilter: false,
         header: 'Actions',
         Cell: ({ cell }) => <>
-          {LoggedInUser?.role=="admin" && <Button color="error"
+          {LoggedInUser?.role == "admin" && <Button color="error"
             onClick={() => {
               setConsume(cell.row.original)
               setDialog('DiscardConsumptionDialog')
@@ -47,51 +49,84 @@ export default function ArticleConsumedStockpage() {
       {
         accessorKey: 'scheme.label',
         header: 'Scheme',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={consumes.map((item) => {
+          return item.scheme.label
+        })} />,
         Cell: (cell) => <>{cell.row.original.scheme ? cell.row.original.scheme.label : ""}</>,
       },
       {
         accessorKey: 'status',
         header: 'Status',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={consumes.map((item) => {
+          return item.status
+        })} />,
         Cell: (cell) => <>{cell.row.original.status ? cell.row.original.status : ""}</>,
       },
       {
         accessorKey: 'party',
         header: 'party',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={consumes.map((item) => {
+          return item.party
+        })} />,
         Cell: (cell) => <>{cell.row.original.party ? cell.row.original.party : ""}</>,
       },
 
       {
         accessorKey: 'article',
         header: 'article',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={consumes.map((item) => {
+          return item.article
+        })} />,
         Cell: (cell) => <>{cell.row.original.article ? cell.row.original.article : ""}</>,
       },
       {
         accessorKey: 'size',
         header: 'size',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'count',
         Cell: (cell) => <>{cell.row.original.size ? cell.row.original.size : ""}</>,
       },
       {
         accessorKey: 'consumed',
         header: 'consumed',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
         Cell: (cell) => <>{cell.row.original.consumed ? cell.row.original.consumed : ""}</>,
-        Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.consumed) }, 0).toFixed()}</b>
+        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.consumed) }, 0).toFixed()}</b>
       },
 
       {
         accessorKey: 'employee.label',
         header: 'Employee',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={consumes.map((item) => {
+          return item.employee.label
+        })} />,
         Cell: (cell) => <>{cell.row.original.employee.label ? cell.row.original.employee.label : ""}</>,
       },
       {
         accessorKey: 'created_at',
         header: 'Created At',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={consumes.map((item) => {
+          return item.created_at
+        })} />,
         Cell: (cell) => <>{cell.row.original.created_at || ""}</>,
       },
       {
         accessorKey: 'updated_by',
         header: 'Last updated by',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={consumes.map((item) => {
+          return item.updated_by.label
+        })} />,
         Cell: (cell) => <>{cell.row.original.updated_by ? cell.row.original.updated_by.label : ""}</>,
       },
 

@@ -85,9 +85,7 @@ export default function KeysPage() {
             },
             {
                 accessorKey: 'serial_no',
-                header: 'NO',
-
-
+                header: 'Serial NO',
                 Cell: (cell) => <>{cell.row.original.serial_no ? cell.row.original.serial_no : ""}</>,
                 filterFn: CustomFilterFunction,
                 Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={keys.map((item) => {

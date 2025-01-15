@@ -13,6 +13,8 @@ import ConsumeStockSchmeDialog from '../../components/dialogs/stockschme/Consume
 import { StockSchemeButton } from '../../components/buttons/StockSchemeButton'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { GetArticleStockDto } from '../../dtos/StockSchemeDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 
 export default function ArticleStockPage() {
@@ -33,7 +35,7 @@ export default function ArticleStockPage() {
     //column definitions...
     () => balances && [
       {
-        accessorKey: 'actions',enableColumnFilter: false,
+        accessorKey: 'actions', enableColumnFilter: false,
         header: 'Actions',
         Cell: ({ cell }) => <>
           <Button color="error"
@@ -50,72 +52,100 @@ export default function ArticleStockPage() {
       {
         accessorKey: 'scheme.label',
         header: 'Scheme',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => {
+          return item.scheme.label
+        })} />,
         Cell: (cell) => <>{cell.row.original.scheme ? cell.row.original.scheme.label : ""}</>,
       },
       {
         accessorKey: 'article',
         header: 'article',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => {
+            return item.article
+        })} />,
         Cell: (cell) => <>{cell.row.original.article ? cell.row.original.article : ""}</>,
       },
       {
         accessorKey: 'six',
         header: '6',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
         Cell: (cell) => <>{cell.row.original.six ? cell.row.original.six : ""}</>,
-        Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.six) }, 0).toFixed()}</b>
-        
+        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.six) }, 0).toFixed()}</b>
+
         ,
       },
       {
         accessorKey: 'seven',
         header: '7',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
         Cell: (cell) => <>{cell.row.original.seven ? cell.row.original.seven : ""}</>,
-        Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.seven) }, 0).toFixed()}</b>,
+        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.seven) }, 0).toFixed()}</b>,
       },
 
       {
         accessorKey: 'eight',
         header: '8',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
         Cell: (cell) => <>{cell.row.original.eight ? cell.row.original.eight : ""}</>,
-        Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.eight) }, 0).toFixed()}</b>
+        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.eight) }, 0).toFixed()}</b>
       },
       {
         accessorKey: 'nine',
         header: '9',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
         Cell: (cell) => <>{cell.row.original.nine ? cell.row.original.nine : ""}</>,
-        Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.nine) }, 0).toFixed()}</b>
+        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.nine) }, 0).toFixed()}</b>
       },
       {
         accessorKey: 'ten',
         header: '10',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
         Cell: (cell) => <>{cell.row.original.ten ? cell.row.original.ten : ""}</>,
-        Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.ten) }, 0).toFixed()}</b>
+        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.ten) }, 0).toFixed()}</b>
       },
       {
         accessorKey: 'eleven',
         header: '11',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
         aggregationFn: 'sum',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
         Cell: (cell) => <>{cell.row.original.eleven ? cell.row.original.eleven : ""}</>,
-        Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.eleven) }, 0).toFixed()}</b>
+        Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.eleven) }, 0).toFixed()}</b>
       },
       {
         accessorKey: 'created_at',
         header: 'Created At',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => {
+            return item.created_at
+        })} />,
         Cell: (cell) => <>{cell.row.original.created_at || ""}</>,
       },
       {
         accessorKey: 'updated_by',
         header: 'Last updated by',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={balances.map((item) => {
+            return item.updated_by.label
+        })} />,
         Cell: (cell) => <>{cell.row.original.updated_by ? cell.row.original.updated_by.label : ""}</>,
       },
 
@@ -277,7 +307,7 @@ export default function ArticleStockPage() {
 
         <Stack direction={'row'} gap={1}>
 
-          {LoggedInUser?.role=="admin" &&
+          {LoggedInUser?.role == "admin" &&
             <>
               <TextField label="Scheme" variant="outlined" value={schme} onChange={(e) => setSchme(e.currentTarget.value)} />
               <StockSchemeButton schme={schme} />
