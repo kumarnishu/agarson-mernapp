@@ -14,6 +14,8 @@ import IssueExpenseItemDialog from '../../components/dialogs/expense/IssueExpens
 import AddExpenseItemDialog from '../../components/dialogs/expense/AddExpenseItemDialog'
 import { ExpenseService } from '../../services/ExpenseService'
 import { GetExpenseItemDto } from '../../dtos/ExpenseDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 
@@ -83,59 +85,73 @@ export default function ExpenseStorePage() {
       {
         accessorKey: 'item',
         header: 'Name',
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={items.map((item) => { return item.item || "" })} />,
         Cell: (cell) => <>{cell.row.original.item ? cell.row.original.item : ""}</>,
-        filterSelectOptions: items && items.map((i) => {
-          return i.item;
-        }).filter(onlyUnique)
+       
       },
       {
         accessorKey: 'last_remark',
         header: 'Last Remark',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={items.map((item) => { return item.last_remark || "" })} />,
       },
      
       {
         accessorKey: 'category.label',
         header: 'Category',
-
-        filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>,
-        filterSelectOptions: items && items.map((i) => {
-          return i.category.label;
-        }).filter(onlyUnique)
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={items.map((item) => { return item.category.label || "" })} />,
       },
       {
         accessorKey: 'stock',
         header: 'Stock',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
         Cell: (cell) => <>{cell.row.original.stock == 0 ? "" : cell.row.original.stock}</>,
       }
       ,
       {
         accessorKey: 'price',
         header: 'Price',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
       }
       ,
       {
         accessorKey: 'pricetolerance',
         header: 'Price Tolerance',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
         Cell: (cell) => <>{cell.row.original.pricetolerance == 0 ? "" : cell.row.original.pricetolerance}</>,
       }
       ,
       {
         accessorKey: 'stock_limit',
         header: 'Stock Limit',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
         Cell: (cell) => <>{cell.row.original.stock_limit == 0 ? "" : cell.row.original.stock_limit}</>,
       }
       ,
       {
         accessorKey: 'to_maintain_stock',
         header: 'Maintain Stock',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
         Cell: (cell) => <>{cell.row.original.to_maintain_stock ? "yes" : ""}</>,
       }
       ,
       {
         accessorKey: 'unit.label',
         header: 'Unit',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={items.map((item) => { return item.unit.label || "" })} />,
       }
     ],
     [items],

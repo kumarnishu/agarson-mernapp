@@ -9,6 +9,7 @@ export type GetPaymentDto = {
     payment_description: string,
     last_document?: GetPaymentDocumentDto,
     assigned_users: DropDownDto[],
+    assigned_usernames: string,
     link: string,
     category: DropDownDto,
     frequency?: string,

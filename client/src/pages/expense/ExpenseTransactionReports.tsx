@@ -13,6 +13,8 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { ExpenseService } from '../../services/ExpenseService'
 import { GetExpenseTransactionsDto } from '../../dtos/ExpenseDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 export default function ExpenseTransactionReports() {
@@ -21,7 +23,7 @@ export default function ExpenseTransactionReports() {
     start_date: moment(new Date(new Date().setDate(1)).setFullYear(2023)).format("YYYY-MM-DD")
     , end_date: moment(new Date().setDate(30)).format("YYYY-MM-DD")
   })
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetExpenseTransactionsDto[]>, BackendError>(["expense_transaction_reports", dates.start_date, dates.end_date], async () =>new ExpenseService(). GetAllExpenseTransactions({ start_date: dates.start_date, end_date: dates.end_date }))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetExpenseTransactionsDto[]>, BackendError>(["expense_transaction_reports", dates.start_date, dates.end_date], async () => new ExpenseService().GetAllExpenseTransactions({ start_date: dates.start_date, end_date: dates.end_date }))
   const { user: LoggedInUser } = useContext(UserContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
@@ -37,35 +39,37 @@ export default function ExpenseTransactionReports() {
       {
         accessorKey: 'item.label',
         header: 'Item',
-
-        filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.item ? cell.row.original.item.label : ""}</>,
-        filterSelectOptions: transactions && transactions.map((i) => {
-          return i.item.label;
-        }).filter(onlyUnique)
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={transactions.map((item) => { return item.item.label || "" })} />,
       },
       {
         accessorKey: 'remark',
         header: 'Remark',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={transactions.map((item) => { return item.remark || "" })} />,
       },
       {
         accessorKey: 'category.label',
         header: 'Category',
-
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={transactions.map((item) => { return item.category.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>,
-        filterSelectOptions: transactions && transactions.map((i) => {
-          return i.category.label;
-        }).filter(onlyUnique)
       },
       {
         accessorKey: 'location.label',
         header: 'Location',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={transactions.map((item) => { return item.location.label || "" })} />,
       }
       ,
       {
         accessorKey: 'price',
         header: 'Price',
+           
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
       },
       {
         accessorKey: 'inWardQty',
@@ -90,10 +94,14 @@ export default function ExpenseTransactionReports() {
       {
         accessorKey: 'unit.label',
         header: 'Unit',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={transactions.map((item) => { return item.unit.label || "" })} />,
       },
       {
         accessorKey: 'created_at',
         header: 'Created on',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={transactions.map((item) => { return item.created_at || "" })} />,
 
         Cell: (cell) => <>{cell.row.original.created_at ? cell.row.original.created_at : ""}</>
       },
@@ -101,7 +109,8 @@ export default function ExpenseTransactionReports() {
       {
         accessorKey: 'created_by.label',
         header: 'Creator',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={transactions.map((item) => { return item.created_by.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.created_by.label ? cell.row.original.created_by.label : ""}</>
       }
     ],
@@ -217,7 +226,7 @@ export default function ExpenseTransactionReports() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
     },
     enableGrouping: true,

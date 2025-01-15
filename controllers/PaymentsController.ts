@@ -14,8 +14,8 @@ import { CreateOrEditPaymentDto, CreateOrEditPaymentDocumentDto, CreatePaymentsF
 import { GetPaymentDto } from "../dtos/PaymentsDto";
 
 
-export class PaymentController{
-    
+export class PaymentController {
+
     public async GetPaymentsTopBarDetails(req: Request, res: Response, next: NextFunction) {
         let result: { category: string, count: number }[] = []
         let categories = await PaymentCategory.find().sort('category')
@@ -81,6 +81,7 @@ export class PaymentController{
                     category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
                     frequency: ch.frequency,
                     assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
+                    assigned_usernames: ch.assigned_users.map((u) => { return u.username }).toString(),
                     created_at: ch.created_at.toString(),
                     due_date: ch.due_date.toString(),
                     updated_at: ch.updated_at.toString(),
@@ -121,6 +122,7 @@ export class PaymentController{
                     payment: { id: ch._id, label: ch.payment_title, value: ch.payment_title },
                     date: ch.lastcheckedpayment.created_at.toString()
                 },
+                assigned_usernames: ch.assigned_users.map((u) => { return u.username }).toString(),
                 category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
                 frequency: ch.frequency,
                 assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),

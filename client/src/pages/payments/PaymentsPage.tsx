@@ -23,6 +23,8 @@ import { PaymentsService } from '../../services/PaymentsService'
 import { DropDownDto } from '../../dtos/DropDownDto'
 import { GetPaymentDto } from '../../dtos/PaymentsDto'
 import { CreatePaymentsFromExcelDto } from '../../dtos/PaymentsDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 function PaymentsPage() {
@@ -68,11 +70,11 @@ function PaymentsPage() {
     //column definitions...
     () => payments && [
       {
-        accessorKey: 'actions',  enableColumnActions: false,
-                enableColumnFilter: false,
-                enableSorting: false,
-                enableGrouping: false,
-        header:'Actions',
+        accessorKey: 'actions', enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
+        header: 'Actions',
 
         Cell: ({ cell }) => <PopUp
           element={
@@ -110,7 +112,8 @@ function PaymentsPage() {
       {
         accessorKey: 'payment_title',
         header: ' Payment Title',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={payments.map((item) => { return item.payment_title || "" })} />,
         Cell: (cell) => <>{!cell.row.original.link ? <Tooltip title={cell.row.original.payment_description}><span>{cell.row.original.payment_title ? cell.row.original.payment_title : ""}</span></Tooltip> :
           <Tooltip title={cell.row.original.payment_description}>
             <a style={{ fontSize: 11, fontWeight: 'bold', textDecoration: 'none' }} target='blank' href={cell.row.original.link}>{cell.row.original.payment_title}</a>
@@ -119,36 +122,30 @@ function PaymentsPage() {
       },
 
       {
-        accessorKey: 'assigned_users.value',
+        accessorKey: 'assigned_usernames',
         header: 'Responsible',
-
-        filter: 'custom',
-        enableColumnFilter: true,
-        Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.label }).toString() || ""}</>,
-        filterFn: (row, columnId, filterValue) => {
-          console.log(columnId)
-          if (!Array.isArray(row.original.assigned_users)) return false;
-          return row.original.assigned_users.some((user) =>
-            user.label.toLowerCase().includes(filterValue.toLowerCase())
-          );
-        },
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={payments.map((item) => { return item.assigned_usernames || "" })} />,
       },
       {
         accessorKey: 'category.label',
         header: ' Category',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={payments.map((item) => { return item.category.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
       },
       {
         accessorKey: 'frequency',
         header: ' Frequency',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={payments.map((item) => { return item.frequency || "" })} />,
         Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
       },
       {
         accessorKey: 'due_date',
         header: 'Due Date',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={payments.map((item) => { return moment(new Date(item.due_date)).format("YYYY-MM-DD") || "" })} />,
         Cell: (cell) => <>
           < input
             type="date"
@@ -167,7 +164,8 @@ function PaymentsPage() {
       {
         accessorKey: 'next_date',
         header: 'Next Check Date',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={payments.map((item) => { return moment(new Date(item.next_date)).format("YYYY-MM-DD") || "" })} />,
         Cell: (cell) => <>
           < input
             type="date"
@@ -186,7 +184,8 @@ function PaymentsPage() {
       {
         accessorKey: 'updated_by',
         header: 'Last Updated By',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={payments.map((item) => { return item.updated_by.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.updated_by ? cell.row.original.updated_by.label : ""}</>
       },
     ],
@@ -289,7 +288,7 @@ function PaymentsPage() {
     }),
     positionToolbarAlertBanner: 'none',
     enableToolbarInternalActions: false,
-   enableDensityToggle: false, initialState: { density: 'compact' },
+    enableDensityToggle: false, initialState: { density: 'compact' },
     enableRowSelection: true,
     enableRowNumbers: true,
     enableColumnPinning: true,
