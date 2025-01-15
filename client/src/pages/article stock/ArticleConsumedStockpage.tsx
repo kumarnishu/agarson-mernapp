@@ -33,7 +33,10 @@ export default function ArticleConsumedStockpage() {
     //column definitions...
     () => consumes && [
       {
-        accessorKey: 'actions', enableColumnFilter: false,
+        accessorKey: 'actions',   enableColumnActions: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
         header: 'Actions',
         Cell: ({ cell }) => <>
           {LoggedInUser?.role == "admin" && <Button color="error"

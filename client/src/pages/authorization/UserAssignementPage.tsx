@@ -38,7 +38,10 @@ export default function UserAssignementPage() {
     //column definitions...
     () => users && [
       {
-        accessorKey: 'actions', enableColumnFilter: false,
+        accessorKey: 'actions',   enableColumnActions: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
         header: '',
 
         Cell: ({ cell }) => <PopUp
@@ -77,7 +80,10 @@ export default function UserAssignementPage() {
       {
         accessorKey: 'dp',
         header: 'DP',
-        enableColumnFilter: false,
+          enableColumnActions: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
         Cell: (cell) => <Avatar
           title="double click to download"
           sx={{ width: 16, height: 16 }}
@@ -121,13 +127,19 @@ export default function UserAssignementPage() {
       {
         accessorKey: 'assigned_permissions',
         header: 'Permissions',
-        enableColumnFilter: false,
+          enableColumnActions: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
         Cell: (cell) => <>{cell.row.original.assigned_permissions.length || 0}</>
       },
       {
         accessorKey: 'last_login',
         header: 'Last Active',
-        enableColumnFilter: false,
+          enableColumnActions: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
         Cell: (cell) => <>{cell.row.original.last_login || ""}</>
       },
       {

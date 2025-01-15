@@ -39,7 +39,10 @@ export default function MachinePage() {
     //column definitions...
     () => machines && [
       {
-        accessorKey: 'actions',enableColumnFilter: false,
+        accessorKey: 'actions',  enableColumnActions: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
         header: '',
 
         Cell: ({ cell }) => <PopUp

@@ -49,7 +49,10 @@ export default function NewReferReportPage() {
     //column definitions...
     () => refers && [
       {
-        accessorKey: 'actions',enableColumnFilter: false,
+        accessorKey: 'actions',  enableColumnActions: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
         header: '',
 
         Cell: ({ cell }) => <PopUp

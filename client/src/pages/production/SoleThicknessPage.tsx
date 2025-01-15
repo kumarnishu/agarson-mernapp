@@ -68,7 +68,10 @@ export default function SoleThicknessPage() {
     const columns = useMemo<MRT_ColumnDef<GetSoleThicknessDto>[]>(
         () => thicknesses && [
             {
-                accessorKey: 'actions',enableColumnFilter: false,
+                accessorKey: 'actions',  enableColumnActions: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
                 header: '',
                 Cell: ({ cell }) => <PopUp
                     element={

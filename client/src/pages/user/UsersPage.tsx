@@ -62,7 +62,10 @@ export default function UsersPage() {
         //column definitions...
         () => users && [
             {
-                accessorKey: 'actions', enableColumnFilter: false,
+                accessorKey: 'actions',
+                enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
                 header: 'Action',
 
                 Cell: ({ cell }) => <PopUp
@@ -267,7 +270,10 @@ export default function UsersPage() {
             {
                 accessorKey: 'dp',
                 header: 'DP',
+                enableColumnActions: false,
                 enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
                 Cell: (cell) => <Avatar
                     title="double click to download"
                     sx={{ width: 16, height: 16 }}
@@ -312,7 +318,10 @@ export default function UsersPage() {
                 accessorKey: 'is_active',
                 header: 'Status',
                 Cell: (cell) => <>{cell.row.original.is_active ? "active" : "blocked"}</>,
+                enableColumnActions: false,
                 enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
             },
             {
                 accessorKey: 'password',
@@ -324,14 +333,20 @@ export default function UsersPage() {
             {
                 accessorKey: 'assigned_permissions',
                 header: 'Permissions',
+                enableColumnActions: false,
                 enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
                 Cell: (cell) => <>{cell.row.original.assigned_permissions.length || 0}</>
             },
 
             {
                 accessorKey: 'is_multi_login',
                 header: 'Multi Device',
+                enableColumnActions: false,
                 enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
                 Cell: (cell) => <>{cell.row.original.is_multi_login ? "Allowed" : "Blocked"}</>
             },
             {
@@ -344,7 +359,10 @@ export default function UsersPage() {
             {
                 accessorKey: 'last_login',
                 header: 'Last Active',
+                enableColumnActions: false,
                 enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
                 Cell: (cell) => <>{cell.row.original.last_login || ""}</>
             },
 

@@ -36,7 +36,10 @@ export default function LeavesPage() {
     //column definitions...
     () => balances && [
       {
-        accessorKey: 'actions', enableColumnFilter: false,
+        accessorKey: 'actions',   enableColumnActions: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
         header: '',
         Cell: ({ cell }) => <>
           {LoggedInUser?.role == "admin" &&
@@ -92,7 +95,10 @@ export default function LeavesPage() {
       {
         accessorKey: 'photo',
         header: 'Photo',
-        enableColumnFilter: false,
+          enableColumnActions: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
         Cell: (cell) => <>
           {!cell.row.original.photo || cell.row.original.photo == "" ? <></> : <Photo onClick={() => { setUrl(cell.row.original.photo); setDialog('ViewLeaveDocumentDialog') }} />}
         </>,

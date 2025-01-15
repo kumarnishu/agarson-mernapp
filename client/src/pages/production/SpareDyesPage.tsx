@@ -70,7 +70,10 @@ export default function SpareDyesPage() {
     const columns = useMemo<MRT_ColumnDef<GetSpareDyeDto>[]>(
         () => spareDyes && [
             {
-                accessorKey: 'actions',enableColumnFilter: false,
+                accessorKey: 'actions',  enableColumnActions: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
                 header: '',
                 Cell: ({ cell }) => <PopUp
                     element={

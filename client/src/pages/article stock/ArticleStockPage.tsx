@@ -35,7 +35,10 @@ export default function ArticleStockPage() {
     //column definitions...
     () => balances && [
       {
-        accessorKey: 'actions', enableColumnFilter: false,
+        accessorKey: 'actions',   enableColumnActions: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
         header: 'Actions',
         Cell: ({ cell }) => <>
           <Button color="error"

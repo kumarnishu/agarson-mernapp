@@ -39,7 +39,10 @@ export default function DyePage() {
     //column definitions...
     () => dyes && [
       {
-        accessorKey: 'actions',enableColumnFilter: false,
+        accessorKey: 'actions',  enableColumnActions: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
         header: '',
 
         Cell: ({ cell }) => <PopUp

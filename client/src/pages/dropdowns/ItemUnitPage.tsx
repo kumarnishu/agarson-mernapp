@@ -34,7 +34,10 @@ export default function ItemUnitPage() {
     //column definitions...
     () => units && [
       {
-        accessorKey: 'actions',enableColumnFilter: false,
+        accessorKey: 'actions',  enableColumnActions: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
         header: '',
 
         Cell: ({ cell }) => <PopUp

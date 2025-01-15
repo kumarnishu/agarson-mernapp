@@ -37,7 +37,10 @@ export default function ChecklistCategoriesPage() {
     //column definitions...
     () => categories && [
       {
-        accessorKey: 'actions',enableColumnFilter: false,
+        accessorKey: 'actions',  enableColumnActions: false,
+                enableColumnFilter: false,
+                enableSorting: false,
+                enableGrouping: false,
         header: '',
 
         grow: false,
