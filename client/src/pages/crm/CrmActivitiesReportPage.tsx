@@ -429,7 +429,7 @@ function CrmActivitiesReportPage() {
                 </Stack>
                 <Stack
                     sx={{ width: '100%' }}
-                    pt={1}
+                    p={1}
                     direction="row"
                     alignItems={'center'}
                     justifyContent="space-between">
@@ -439,7 +439,6 @@ function CrmActivitiesReportPage() {
                         < TextField
                             size="small"
                             type="date"
-                            variant="filled"
                             id="start_date"
                             label="Start Date"
                             fullWidth
@@ -457,7 +456,6 @@ function CrmActivitiesReportPage() {
                         < TextField
                             type="date"
                             id="end_date"
-                            variant="filled"
                             size="small"
                             label="End Date"
                             value={dates.end_date}
@@ -529,7 +527,7 @@ function CrmActivitiesReportPage() {
                                     })
                                 }
                             </TextField>}
-                        <Button color="inherit" variant='contained'
+                        <Button size="small" color="inherit" variant='contained'
                             onClick={() => {
                                 if (table.getState().showColumnFilters)
                                     table.resetColumnFilters(true)
@@ -537,14 +535,14 @@ function CrmActivitiesReportPage() {
                             }
                             }
                         >
-                            {table.getState().showColumnFilters ? <FilterAltOff sx={{ width: 30, height: 30 }} /> : <FilterAlt sx={{ width: 30, height: 30 }} />}
+                            {table.getState().showColumnFilters ? <FilterAltOff sx={{ width: 27, height: 27 }} /> : <FilterAlt sx={{ width: 27, height: 27 }} />}
                         </Button>
 
-                        <Button color="inherit" variant='contained'
+                        <Button size="small" color="inherit" variant='contained'
                             onClick={(e) => setAnchorEl(e.currentTarget)
                             }
                         >
-                            <MenuIcon sx={{ width: 30, height: 30 }} />
+                            <MenuIcon sx={{ width: 27, height: 27 }} />
                         </Button>
                     </Stack>
                 </Stack>

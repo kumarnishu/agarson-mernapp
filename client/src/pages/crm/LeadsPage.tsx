@@ -591,7 +591,7 @@ export default function LeadsPage() {
           ))}
         </Select>
         <Stack justifyContent={'right'} direction={'row'} gap={1}>
-          {LoggedInUser?._id === LoggedInUser?.created_by.id && LoggedInUser?.assigned_permissions.includes('leads_delete') && <Tooltip title="Delete Selected Leads">
+          {LoggedInUser?._id === LoggedInUser?.created_by.id && LoggedInUser?.assigned_permissions.includes('leads_delete') && 
             <Button variant='contained' color='error'
 
               onClick={() => {
@@ -604,8 +604,7 @@ export default function LeadsPage() {
               }}
             >
               <Delete />
-            </Button>
-          </Tooltip>}
+            </Button>}
           {LoggedInUser?.role == "admin" && LoggedInUser?.assigned_permissions.includes('leads_export') && <Tooltip title="Export">
             <LeadExcelButtons />
           </Tooltip>}
