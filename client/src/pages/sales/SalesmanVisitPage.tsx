@@ -356,7 +356,6 @@ export default function SalesmanVisitPage() {
         </Typography>
         < Stack direction="row" spacing={2}>
           < TextField
-            variant='filled'
             type="date"
             id="end_date"
             size="small"

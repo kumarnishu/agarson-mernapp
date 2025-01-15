@@ -240,7 +240,6 @@ function SalesReportPage() {
 
             <Stack justifyContent={'right'} direction={'row'} gap={1}>
               < TextField
-                variant='filled'
                 size="small"
                 type="date"
                 id="start_date"
@@ -258,7 +257,6 @@ function SalesReportPage() {
                 }}
               />
               < TextField
-                variant='filled'
                 type="date"
                 id="end_date"
                 size="small"

@@ -242,7 +242,6 @@ export default function SalesmanVisitPageAuto() {
                 </Typography>
                 < Stack direction="row" spacing={2}>
                     < TextField
-                        variant='filled'
                         size="small"
                         type="date"
                         id="start_date"
@@ -260,7 +259,6 @@ export default function SalesmanVisitPageAuto() {
                         }}
                     />
                     < TextField
-                        variant='filled'
                         type="date"
                         id="end_date"
                         size="small"
@@ -277,7 +275,6 @@ export default function SalesmanVisitPageAuto() {
                     />
                     {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
                         < TextField
-                            variant='filled'
                             select
                             size="small"
                             SelectProps={{

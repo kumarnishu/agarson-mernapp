@@ -42,7 +42,7 @@ export default function UserAssignementPage() {
                 enableColumnFilter: false,
                 enableSorting: false,
                 enableGrouping: false,
-        header: '',
+        header:'Actions',
 
         Cell: ({ cell }) => <PopUp
           element={

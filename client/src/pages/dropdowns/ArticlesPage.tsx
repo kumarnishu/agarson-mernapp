@@ -45,7 +45,7 @@ export default function ArticlePage() {
                 enableColumnFilter: false,
                 enableSorting: false,
                 enableGrouping: false,
-        header: '',
+        header:'Actions',
 
 
         Cell: ({ cell }) => <PopUp

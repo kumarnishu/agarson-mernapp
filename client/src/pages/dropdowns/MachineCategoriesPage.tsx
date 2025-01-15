@@ -43,7 +43,7 @@ export default function MachineCategoryPage() {
                 enableColumnFilter: false,
                 enableSorting: false,
                 enableGrouping: false,
-                header: '',
+                header:'Actions',
 
                 Cell: ({ cell }) => <PopUp
                     element={

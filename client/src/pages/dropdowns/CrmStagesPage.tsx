@@ -44,7 +44,7 @@ export default function CrmStagesPage() {
                 enableColumnFilter: false,
                 enableSorting: false,
                 enableGrouping: false,
-        header: '',
+        header:'Actions',
 
         Footer: <b></b>,
         Cell: ({ cell }) => <PopUp

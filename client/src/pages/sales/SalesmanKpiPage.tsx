@@ -2,13 +2,12 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { Box, Button, Fade, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Fade, Menu, MenuItem, Stack, TextField,  Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
-import DBPagination from '../../components/pagination/DBpagination'
+import { FilterAltOff } from '@mui/icons-material'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 
@@ -26,7 +25,6 @@ function SalesmanKpiPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const [users, setUsers] = useState<DropDownDto[]>([])
   const [kpis, setKpis] = useState<GetSalesmanKpiDto[]>([])
-  const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
   const [userId, setUserId] = useState<string>('all')
   const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
     start_date: moment(new Date(new Date().setDate(1)).setMonth(new Date().getMonth())).format("YYYY-MM-DD"),
@@ -46,7 +44,7 @@ function SalesmanKpiPage() {
   previous_date.setDate(day)
   previous_date.setHours(0, 0, 0, 0)
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'sales_menu', show_assigned_only: false }))
-  const { data, isLoading, refetch } = useQuery<AxiosResponse<GetSalesmanKpiDto[]>, BackendError>(["salesmankpis", userId, dates?.start_date, dates?.end_date], async () => new SalesService().GetSalesmanKpis({ id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
+  const { data, isLoading } = useQuery<AxiosResponse<GetSalesmanKpiDto[]>, BackendError>(["salesmankpis", userId, dates?.start_date, dates?.end_date], async () => new SalesService().GetSalesmanKpis({ id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const columns = useMemo<MRT_ColumnDef<GetSalesmanKpiDto>[]>(
@@ -210,7 +208,6 @@ function SalesmanKpiPage() {
     columns, columnFilterDisplayMode: 'popover',
     data: kpis, //10,000 rows       
     enableColumnResizing: true,
-    enableGrouping: true,
     enableColumnVirtualization: true, enableStickyFooter: true,
     muiTableFooterRowProps: () => ({
       sx: {
@@ -219,8 +216,15 @@ function SalesmanKpiPage() {
       }
     }),
     muiTableContainerProps: (table) => ({
-      sx: { maxHeight: table.table.getState().isFullScreen ? 'auto' : '64vh' }
-    }), muiTableHeadCellProps: ({ column }) => ({
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
+    }),
+    muiTableHeadRowProps: () => ({
+      sx: {
+        backgroundColor: 'whitesmoke',
+        color: 'white'
+      },
+    }),
+    muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-of-type(1) span': {
           display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
@@ -236,156 +240,39 @@ function SalesmanKpiPage() {
         }
       },
     }),
-
-    muiTableHeadRowProps: () => ({
-      sx: {
-        backgroundColor: 'whitesmoke',
-        color: 'white',
-
-      },
-    }),
-    renderTopToolbarCustomActions: ({ table }) => (
-      <Box minWidth={'100vw'} >
-        <Stack sx={{ p: 1 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
-          <Typography variant='h6'>Salesman Kpi Report</Typography>
-          <Stack
-            pt={1}
-            direction="row"
-            alignItems={'center'}
-            justifyContent="right">
-
-            <Stack justifyContent={'right'} direction={'row'} gap={1}>
-              < TextField
-                variant='filled'
-                size="small"
-                type="date"
-                id="start_date"
-                label="Start Date"
-                fullWidth
-
-                value={dates.start_date}
-                onChange={(e) => {
-                  if (e.currentTarget.value) {
-                    setDates({
-                      ...dates,
-                      start_date: moment(e.target.value).format("YYYY-MM-DD")
-                    })
-                  }
-                }}
-              />
-              < TextField
-                variant='filled'
-                type="date"
-                id="end_date"
-                size="small"
-                label="End Date"
-                value={dates.end_date}
-
-                fullWidth
-                onChange={(e) => {
-                  setDates({
-                    ...dates,
-                    end_date: moment(e.target.value).format("YYYY-MM-DD")
-                  })
-                }}
-              />
-              {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
-                < TextField
-                  variant='filled'
-                  select
-                  size="small"
-                  SelectProps={{
-                    native: true,
-                  }}
-                  onChange={(e) => {
-                    setUserId(e.target.value)
-                  }}
-                  required
-                  id="kpi_owners"
-                  label="Person"
-                  fullWidth
-                >
-                  <option key={'00'} value={'all'}>All
-                  </option>
-                  {
-                    users.map((user, index) => {
-
-                      return (<option key={index} value={user.id}>
-                        {toTitleCase(user.label)}
-                      </option>)
-
-                    })
-                  }
-                </TextField>}
-
-
-              <Tooltip title="Toogle Filter">
-                <Button size="small" color="inherit" variant='contained'
-                  onClick={() => {
-                    table.resetColumnFilters(true)
-                  }
-                  }
-                >
-                  <FilterAltOff />
-                </Button>
-              </Tooltip>
-
-              <Tooltip title="Toogle FullScreen" >
-                <Button size="small" color="inherit" variant='contained'
-                  onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
-                  }
-                >
-                  {table.getState().isFullScreen ? <FullscreenExit /> : <Fullscreen />}
-                </Button>
-              </Tooltip>
-              <Tooltip title="Menu" sx={{ pl: 1 }}>
-                <Button size="small" color="inherit" variant='contained'
-                  onClick={(e) => setAnchorEl(e.currentTarget)
-                  }
-                >
-                  <MenuIcon />
-                  <Typography pl={1}> {`Menu `}</Typography>
-                </Button>
-              </Tooltip>
-            </Stack>
-          </Stack>
-        </Stack>
-      </Box >
-    ),
-    renderBottomToolbarCustomActions: () => (
-      <DBPagination paginationData={paginationData} refetch={refetch} setPaginationData={setPaginationData} />
-
-    ),
     muiTableBodyCellProps: () => ({
       sx: {
-        border: '1px solid lightgrey;',
+        border: '1px solid #c2beba;',
       },
     }),
-    positionToolbarAlertBanner: 'none',
-    enableToolbarInternalActions: false,
-    enableDensityToggle: false, initialState: { density: 'compact' },
+
+    muiPaginationProps: {
+      rowsPerPageOptions: [100, 200, 500, 1000, 2000],
+      shape: 'rounded',
+      variant: 'outlined',
+    },
+    enableDensityToggle: false, initialState: {
+      density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
+    },
+    enableGrouping: true,
     enableRowSelection: true,
+    manualPagination: false,
+    enablePagination: true,
     enableRowNumbers: true,
     enableColumnPinning: true,
-    onSortingChange: setSorting,
     enableTableFooter: true,
     enableRowVirtualization: true,
     onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
 
+    onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
 
       sorting,
       columnSizing: columnSizing
-    },
-    enableBottomToolbar: true,
-    enableGlobalFilter: false,
-    enablePagination: false,
-    manualPagination: true
+    }
   });
-
-
 
   useEffect(() => {
     if (isUsersSuccess)
@@ -449,6 +336,95 @@ function SalesmanKpiPage() {
 
   return (
     <>
+      <Box minWidth={'100vw'} >
+        <Stack sx={{ p: 1 }} direction='row' gap={1} pb={1} alignItems={'center'} justifyContent={'space-between'}>
+          <Typography variant='h6'>Salesman Kpi Report</Typography>
+          <Stack
+            pt={1}
+            direction="row"
+            alignItems={'center'}
+            justifyContent="right">
+
+            <Stack justifyContent={'right'} direction={'row'} gap={1}>
+              < TextField
+                size="small"
+                type="date"
+                id="start_date"
+                label="Start Date"
+                fullWidth
+
+                value={dates.start_date}
+                onChange={(e) => {
+                  if (e.currentTarget.value) {
+                    setDates({
+                      ...dates,
+                      start_date: moment(e.target.value).format("YYYY-MM-DD")
+                    })
+                  }
+                }}
+              />
+              < TextField
+                type="date"
+                id="end_date"
+                size="small"
+                label="End Date"
+                value={dates.end_date}
+
+                fullWidth
+                onChange={(e) => {
+                  setDates({
+                    ...dates,
+                    end_date: moment(e.target.value).format("YYYY-MM-DD")
+                  })
+                }}
+              />
+              {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 &&
+                < TextField
+                  select
+                  size="small"
+                  SelectProps={{
+                    native: true,
+                  }}
+                  onChange={(e) => {
+                    setUserId(e.target.value)
+                  }}
+                  required
+                  id="kpi_owners"
+                  label="Person"
+                  fullWidth
+                >
+                  <option key={'00'} value={'all'}>All
+                  </option>
+                  {
+                    users.map((user, index) => {
+
+                      return (<option key={index} value={user.id}>
+                        {toTitleCase(user.label)}
+                      </option>)
+
+                    })
+                  }
+                </TextField>}
+
+
+              <Button size="small" color="inherit" variant='contained'
+                onClick={() => {
+                  table.resetColumnFilters(true)
+                }
+                }
+              >
+                <FilterAltOff />
+              </Button>
+              <Button size="small" color="inherit" variant='contained'
+                onClick={(e) => setAnchorEl(e.currentTarget)
+                }
+              >
+                <MenuIcon />
+              </Button>
+            </Stack>
+          </Stack>
+        </Stack>
+      </Box >
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}

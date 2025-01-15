@@ -68,9 +68,8 @@ export function StockSchemeButton({ schme }: { schme?: string }) {
                         :
                         <>
                             <Button
-                                disabled={isLoading || !schme}
+                                disabled={!schme}
                                 component="label"
-                                color="inherit"
                                 variant="contained"
                             >
                                 <Upload />
@@ -88,7 +87,7 @@ export function StockSchemeButton({ schme }: { schme?: string }) {
                         </>
                 }
             </>
-            <Button variant="contained" color="inherit" startIcon={<Download />} onClick={() => HandleExport()}> Template</Button>
+            <Button variant="outlined" startIcon={<Download />} onClick={() => HandleExport()}> Template</Button>
         </Stack>
 
     )

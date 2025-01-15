@@ -129,7 +129,7 @@ export default function LeadsPage() {
                 enableColumnFilter: false,
                 enableSorting: false,
                 enableGrouping: false,
-        header: '',
+        header:'Actions',
 
         Cell: ({ cell }) => <PopUp
           element={

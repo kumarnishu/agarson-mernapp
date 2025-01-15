@@ -53,37 +53,36 @@ export function ReferencesExcelButtons() {
     }, [isSuccess, data])
 
     return (
-        <Stack direction={'row'} gap={1}>
-            <>
-
-                {
-                    isLoading ?
-                        <CircularProgress />
-                        :
-                        <>
-                            <Button
-                                
-                                component="label"
-                                color="inherit"
-                                variant="contained"
-                            >
-                                <Upload />
-                                <FileInput
-                                    id="upload_input"
-                                    hidden
-                                    type="file" required name="file" onChange={
-                                        (e: any) => {
-                                            if (e.currentTarget.files) {
-                                                setFile(e.currentTarget.files[0])
-                                            }
-                                        }}>
-                                </FileInput >
-                            </Button>
-                        </>
-                }
-            </>
-            <Button variant="contained"  color="inherit" startIcon={<Download />} onClick={() => HandleExport()}> Template</Button>
-        </Stack>
+      <Stack direction={'row'} gap={1}>
+                       <>
+           
+                           {
+                               isLoading ?
+                                   <CircularProgress />
+                                   :
+                                   <>
+                                       <Button
+           
+                                           component="label"
+                                           variant="contained"
+                                       >
+                                           <Upload />
+                                           <FileInput
+                                               id="upload_input"
+                                               hidden
+                                               type="file" required name="file" onChange={
+                                                   (e: any) => {
+                                                       if (e.currentTarget.files) {
+                                                           setFile(e.currentTarget.files[0])
+                                                       }
+                                                   }}>
+                                           </FileInput >
+                                       </Button>
+                                   </>
+                           }
+                       </>
+                       <Button variant="outlined"  startIcon={<Download />} onClick={() => HandleExport()}> Template</Button>
+                   </Stack>
 
     )
 }

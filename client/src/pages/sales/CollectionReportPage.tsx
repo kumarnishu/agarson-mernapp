@@ -134,7 +134,7 @@ function CollectionReportPage() {
             variant: 'outlined',
         },
         enableDensityToggle: false, initialState: {
-            density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }, 
+            density: 'compact', grouping: ['state'],pagination: { pageIndex: 0, pageSize: 7000 }, 
         },
         enableGrouping: true,
         enableRowSelection: true,

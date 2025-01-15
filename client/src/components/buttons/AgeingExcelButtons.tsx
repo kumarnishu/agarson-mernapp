@@ -65,8 +65,7 @@ export function AgeingExcelButtons() {
                             <Button
 
                                 component="label"
-                                color="inherit"
-                                variant="text"
+                                variant="contained"
                             >
                                 <Upload />
                                 <FileInput
@@ -83,7 +82,7 @@ export function AgeingExcelButtons() {
                         </>
                 }
             </>
-            <Button variant="text" color="inherit" startIcon={<Download />} onClick={() => HandleExport()}> Template</Button>
+            <Button variant="outlined"  startIcon={<Download />} onClick={() => HandleExport()}> Template</Button>
         </Stack>
 
     )

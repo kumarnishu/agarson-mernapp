@@ -343,11 +343,11 @@ export default function AgeingPage() {
                     justifyContent="space-between"
                     alignItems={'end'}
                 >
-                    <AgeingExcelButtons />
                     <FormControlLabel control={<Switch
                         defaultChecked={Boolean(hidden)}
                         onChange={() => setHidden(!hidden)}
                     />} label="Hidden" />
+                    <AgeingExcelButtons />
                     <IconButton size="small" color="primary"
                         onClick={(e) => setAnchorEl(e.currentTarget)
                         }

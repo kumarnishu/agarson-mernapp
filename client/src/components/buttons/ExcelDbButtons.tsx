@@ -54,39 +54,36 @@ export function ExcelDbButtons() {
 
     return (
         <Stack direction={'row'} gap={1}>
-            <>
-
-                {
-                    isLoading ?
-                        <Stack direction={'row'} gap={2} >
-                            <CircularProgress sx={{ height: 15 }} />
-                            <Typography variant="h6">Uploading Excel file ...</Typography>
-                        </Stack>
-                        :
-                        <>
-                            <Button
-                                component="label"
-                                variant="outlined"
-                                fullWidth
-                                sx={{ py: 1 }}
-                                color="error"
-                            >
-                                <Upload sx={{ mr: 2 }} /> {`  Upload Grp Excel !!`}
-                                <FileInput
-                                    id="upload_input"
-                                    hidden
-                                    type="file" required name="file" onChange={
-                                        (e: any) => {
-                                            if (e.currentTarget.files) {
-                                                setFile(e.currentTarget.files[0])
-                                            }
-                                        }}>
-                                </FileInput >
-                            </Button>
-                        </>
-                }
-            </>
-        </Stack>
+                   <>
+       
+                       {
+                           isLoading ?
+                               <CircularProgress />
+                               :
+                               <>
+                                   <Button
+       
+                                       component="label"
+                                       variant="contained"
+                                   >
+                                       <Upload />
+                                       <FileInput
+                                           id="upload_input"
+                                           hidden
+                                           type="file" required name="file" onChange={
+                                               (e: any) => {
+                                                   if (e.currentTarget.files) {
+                                                       setFile(e.currentTarget.files[0])
+                                                   }
+                                               }}>
+                                       </FileInput >
+                                       <Typography sx={{marginLeft:2}}>Upload Grp Excel</Typography>
+                                   </Button>
+                               </>
+                       }
+                   </>
+                 
+               </Stack>
 
     )
 }

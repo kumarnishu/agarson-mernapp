@@ -111,7 +111,7 @@ export default function RefersPage() {
                 enableColumnFilter: false,
                 enableSorting: false,
                 enableGrouping: false,
-        header: '',
+        header:'Actions',
 
         Footer: <b></b>,
         Cell: ({ cell }) => <PopUp

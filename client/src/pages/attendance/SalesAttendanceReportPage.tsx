@@ -87,7 +87,7 @@ export default function SalesAttendanceReportPage() {
 
       {
         accessorKey: 'attendance',
-        header: '',
+        header:'Actions',
         enableColumnFilter:false,
         Cell: (cell) => <Stack direction={'column'}>
           <Typography sx={{ fontWeight: '500' }} fontSize='0.8rem'>{`Present : ${cell.row.original.attendance}`}</Typography>
@@ -101,7 +101,7 @@ export default function SalesAttendanceReportPage() {
       },
       {
         accessorKey: 'created_at',
-        header: '',
+        header:'Actions',
         enableColumnFilter:false,
         Cell: () => <Stack direction={'column'}>
           <Typography fontSize='0.9rem'>{"This Month Provided"}</Typography>

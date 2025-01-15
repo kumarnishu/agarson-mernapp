@@ -43,7 +43,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
                 enableColumnFilter: false,
                 enableSorting: false,
                 enableGrouping: false,
-        header: '',
+        header:'Actions',
      
         Cell: ({ cell }) => <PopUp
           element={

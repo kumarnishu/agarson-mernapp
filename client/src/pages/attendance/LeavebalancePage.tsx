@@ -40,7 +40,7 @@ export default function LeaveBalancePage() {
                 enableColumnFilter: false,
                 enableSorting: false,
                 enableGrouping: false,
-        header: '',
+        header:'Actions',
 
         Cell: ({ cell }) => <PopUp
           element={

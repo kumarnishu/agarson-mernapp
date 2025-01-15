@@ -43,7 +43,7 @@ export default function KeysCategoriesPage() {
                 enableColumnFilter: false,
                 enableSorting: false,
                 enableGrouping: false,
-        header: '',
+        header:'Actions',
         size: 50,
         Cell: ({ cell }) => <PopUp
           element={

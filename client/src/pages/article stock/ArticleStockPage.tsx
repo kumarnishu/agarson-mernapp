@@ -312,7 +312,7 @@ export default function ArticleStockPage() {
 
           {LoggedInUser?.role == "admin" &&
             <>
-              <TextField label="Scheme" variant="outlined" value={schme} onChange={(e) => setSchme(e.currentTarget.value)} />
+              <TextField  size="small" label="Scheme" variant="outlined" value={schme} onChange={(e) => setSchme(e.currentTarget.value)} />
               <StockSchemeButton schme={schme} />
             </>
           }

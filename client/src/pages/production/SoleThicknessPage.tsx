@@ -72,7 +72,7 @@ export default function SoleThicknessPage() {
                 enableColumnFilter: false,
                 enableSorting: false,
                 enableGrouping: false,
-                header: '',
+                header:'Actions',
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row" spacing={1}>

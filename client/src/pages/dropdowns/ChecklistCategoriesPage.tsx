@@ -41,7 +41,7 @@ export default function ChecklistCategoriesPage() {
                 enableColumnFilter: false,
                 enableSorting: false,
                 enableGrouping: false,
-        header: '',
+        header:'Actions',
 
         grow: false,
         Cell: ({ cell }) => <PopUp

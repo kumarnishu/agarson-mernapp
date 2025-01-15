@@ -40,7 +40,7 @@ export default function LeavesPage() {
                 enableColumnFilter: false,
                 enableSorting: false,
                 enableGrouping: false,
-        header: '',
+        header:'Actions',
         Cell: ({ cell }) => <>
           {LoggedInUser?.role == "admin" &&
             <Button color="error"
