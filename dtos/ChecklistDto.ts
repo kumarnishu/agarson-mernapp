@@ -20,6 +20,7 @@ export type GetChecklistDto = {
     photo: string,
     last_checked_box?: GetChecklistBoxDto,
     assigned_users: DropDownDto[],
+    assigned_usersnames: string
     link: string,
     category: DropDownDto,
     frequency: string,

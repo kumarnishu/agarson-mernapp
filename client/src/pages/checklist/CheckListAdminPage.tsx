@@ -30,6 +30,8 @@ import FixCheckListBoxesDialog from '../../components/dialogs/checklists/FixChec
 import { GetChecklistBoxDto, GetChecklistDto, GetChecklistTopBarDto } from '../../dtos/ChecklistDto'
 import { DropDownDto } from '../../dtos/DropDownDto'
 import { CreateChecklistFromExcelDto } from '../../dtos/ChecklistDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 function CheckListAdminPage() {
   const { user: LoggedInUser } = useContext(UserContext)
@@ -92,10 +94,10 @@ function CheckListAdminPage() {
     //column definitions...
     () => checklists && [
       {
-        accessorKey: 'actions',  enableColumnActions: false,
-                enableColumnFilter: false,
-                enableSorting: false,
-                enableGrouping: false,
+        accessorKey: 'actions', enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
         header: '',
 
         Cell: ({ cell }) => <PopUp
@@ -133,12 +135,19 @@ function CheckListAdminPage() {
       {
         accessorKey: 'serial_no',
         header: ' No',
-
+        enableColumnActions: false,
+        enableSorting: false,
+        enableGrouping: false,
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
       },
       {
         accessorKey: 'last_checked_box',
         header: 'Stage',
-
+        enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
         Cell: (cell) => <Tooltip title={cell.row.original.last_checked_box ? cell.row.original.last_checked_box.last_remark : ""}>
           <Button onClick={() => {
             setChecklist(cell.row.original)
@@ -147,8 +156,17 @@ function CheckListAdminPage() {
         </Tooltip>
       },
       {
+        accessorKey: 'group_title',
+        header: ' Group Title',
+        Cell: (cell) => <>{cell.row.original.group_title || ""}</>,
+        enableColumnActions: false,
+        enableColumnFilter: false,
+      },
+      {
         accessorKey: 'work_title',
         header: ' Work Title',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={checklists.map((item) => { return item.work_title || "" })} />,
         Footer: "Score",
         AggregatedCell: (cell) => <h4 style={{
           textAlign: 'left', fontSize: '1.1em', width: '100%', wordWrap: 'break-word',
@@ -170,7 +188,10 @@ function CheckListAdminPage() {
       {
         accessorKey: 'last_10_boxes',
         header: 'Filtered Dates',
-
+        enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
         Cell: (cell) => <>
           {userId == "all" ?
             <Stack direction="row" className="scrollable-stack" sx={{ height: '20px' }}>
@@ -342,6 +363,8 @@ function CheckListAdminPage() {
       {
         accessorKey: 'last_remark',
         header: ' Last Remark',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={checklists.map((item) => { return item.last_remark || "" })} />,
         Cell: (cell) => cell.row.original.last_remark && cell.row.original.last_remark.includes("\n") ? <pre title={cell.row.original.last_remark || ""}>{cell.row.original.last_remark || ""}</pre> : <p style={{
           wordWrap: 'break-word',
           overflowWrap: 'break-word',
@@ -357,35 +380,29 @@ function CheckListAdminPage() {
       {
         accessorKey: 'category.label',
         header: ' Category',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={checklists.map((item) => { return item.category.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>
       },
       {
         accessorKey: 'frequency',
         header: ' Frequency',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={checklists.map((item) => { return item.frequency || "" })} />,
         Cell: (cell) => <>{cell.row.original.frequency ? cell.row.original.frequency : ""}</>
       },
       {
-        accessorKey: 'assigned_users.value',
+        accessorKey: 'assigned_usersnames',
         header: 'Responsible',
-
-        filter: 'custom',
-        enableColumnFilter: true,
-        Cell: (cell) => <>{cell.row.original.assigned_users.map((user) => { return user.label }).toString() || ""}</>,
-        filterFn: (row, columnId, filterValue) => {
-          console.log(columnId)
-          if (!Array.isArray(row.original.assigned_users)) return false;
-          return row.original.assigned_users.some((user) =>
-            user.label.toLowerCase().includes(filterValue.toLowerCase())
-          );
-        },
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={checklists.map((item) => { return item.assigned_usersnames || "" })} />,
       },
 
       {
         accessorKey: 'next_date',
         header: 'Next Check Date',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={checklists.map((item) => { return moment(new Date(item.next_date)).format("YYYY-MM-DD") || "" })} />,
         Cell: (cell) => <>
           < input
             type="date"
@@ -404,23 +421,36 @@ function CheckListAdminPage() {
       {
         accessorKey: 'filtered_score',
         header: 'Filtered Score',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
         Cell: (cell) => <>{cell.row.original.filtered_score || 0}</>,
         Footer: ({ table }) => <b>{parseFloat(Number(table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.filtered_score) }, 0) / table.getFilteredRowModel().rows.length).toFixed(2))}</b>
       },
       {
         accessorKey: 'today_score',
         header: 'Today Score',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
         Cell: (cell) => <>{cell.row.original.today_score || 0}</>,
         Footer: ({ table }) => <b>{parseFloat(Number(table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.today_score) }, 0) / table.getFilteredRowModel().rows.length).toFixed(2))}</b>
       },
       {
         accessorKey: 'expected_number',
-        header: 'Expected No'
+        header: 'Expected No',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
+
       },
       {
         accessorKey: 'photo',
         header: 'Photo',
-
+        enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
         Cell: (cell) => <span onDoubleClick={() => {
           if (cell.row.original.photo && cell.row.original.photo) {
             DownloadFile(cell.row.original.photo, 'photo')

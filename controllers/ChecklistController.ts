@@ -395,6 +395,7 @@ export class ChecklistController {
                 category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
                 frequency: ch.frequency,
                 assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
+                assigned_usersnames: ch.assigned_users.map((u) => { return u.username }).toString(),
                 created_at: ch.created_at.toString(),
                 updated_at: ch.updated_at.toString(),
                 boxes: [],
@@ -516,6 +517,7 @@ export class ChecklistController {
                         category: { id: ch.category._id, value: ch.category.category, label: ch.category.category },
                         frequency: ch.frequency,
                         assigned_users: ch.assigned_users.map((u) => { return { id: u._id, value: u.username, label: u.username } }),
+                        assigned_usersnames: ch.assigned_users.map((u) => { return u.username }).toString(),
                         created_at: ch.created_at.toString(),
                         updated_at: ch.updated_at.toString(),//@ts-ignore
                         last_10_boxes: ch.last_10_boxes && ch.last_10_boxes.sort((a, b) => new Date(a.date) - new Date(b.date)).map((bo) => {
@@ -601,6 +603,7 @@ export class ChecklistController {
                 filtered_score: id == 'all' ? getChecklistScore(ch.last_10_boxes) : getChecklistScore(ch.checklist_boxes.filter((b) => {
                     return b.date >= dt1 && b.date < dt2
                 })),
+                 assigned_usersnames: ch.assigned_users.map((u) => { return u.username }).toString(),
                 condition: ch.condition,
                 expected_number: ch.expected_number,
                 group_title: ch.group_title,
@@ -1277,38 +1280,38 @@ export class ChecklistController {
     }
     public async BulkDeleteChecklists(req: Request, res: Response, next: NextFunction) {
         const { ids } = req.body as { ids: string[] };
-    
+
         // Fetch all checklists and associated checklist boxes in parallel
         const checklists = await Checklist.find({ _id: { $in: ids } }).exec();
         if (!checklists || checklists.length === 0) {
             return res.status(404).json({ message: "Checklists not found" });
         }
-    
+
         // Collect all checklist boxes to delete in bulk
         const checklistBoxIds = await ChecklistBox.find({ checklist: { $in: checklists.map(c => c._id) } }).exec();
         const checklistBoxIdsToDelete = checklistBoxIds.map(box => box._id);
-    
+
         // Collect all checklist remarks to delete in bulk
         await ChecklistRemark.deleteMany({ checklist_box: { $in: checklistBoxIdsToDelete } });
-    
+
         // Delete checklist boxes and photos in parallel
         const deleteChecklistPromises = checklists.map(async (checklist) => {
             // Remove photo from cloud storage if it exists
             if (checklist.photo && checklist.photo._id) {
                 await destroyCloudFile(checklist.photo._id);
             }
-    
+
             // Delete related checklist boxes and the checklist itself
             await ChecklistBox.deleteMany({ checklist: checklist._id });
             await checklist.remove();
         });
-    
+
         // Wait for all deletions to complete
         await Promise.all(deleteChecklistPromises);
-    
+
         return res.status(200).json({ message: "Checklists are deleted" });
     }
-    
+
 
     public async FixLast10boxes(req: Request, res: Response, next: NextFunction) {
         let dt1 = new Date()
