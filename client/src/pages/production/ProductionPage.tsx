@@ -8,7 +8,6 @@ import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Menu as MenuIcon } from '@mui/icons-material';
-import DBPagination from '../../components/pagination/DBpagination'
 import ExportToExcel from '../../utils/ExportToExcel'
 import PopUp from '../../components/popup/PopUp'
 import DeleteProductionItemDialog from '../../components/dialogs/dropdown/DeleteProductionItemDialog'
@@ -21,7 +20,6 @@ import { GetProductionDto } from '../../dtos/ProductionDto'
 
 
 export default function ProductionPage() {
-  const [paginationData, setPaginationData] = useState({ limit: 100, page: 1, total: 1 });
   const { user: LoggedInUser } = useContext(UserContext)
   const [production, setProduction] = useState<GetProductionDto>()
   const [productions, setProductions] = useState<GetProductionDto[]>([])
@@ -40,7 +38,7 @@ export default function ProductionPage() {
     start_date: moment(new Date().setDate(new Date().getDate() - 3)).format("YYYY-MM-DD")
     , end_date: moment(new Date()).format("YYYY-MM-DD")
   })
-  const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetProductionDto[], page: number, total: number, limit: number }>, BackendError>(["productions", userId, dates?.start_date, dates?.end_date], async () =>new ProductionService(). GetProductions({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
+  const { data, isLoading, isSuccess, isRefetching } = useQuery<AxiosResponse< GetProductionDto[]>, BackendError>(["productions", userId, dates?.start_date, dates?.end_date], async () =>new ProductionService(). GetProductions({  id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
   const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'production_view', show_assigned_only: true }))
 
@@ -53,13 +51,8 @@ export default function ProductionPage() {
 
   useEffect(() => {
     if (data && isSuccess) {
-      setProductions(data.data.result)
-      setPaginationData({
-        ...paginationData,
-        page: data.data.page,
-        limit: data.data.limit,
-        total: data.data.total
-      })
+      setProductions(data.data)
+     
     }
   }, [data, isSuccess])
 
@@ -357,11 +350,7 @@ export default function ProductionPage() {
     rowVirtualizerInstanceRef,
     mrtTheme: (theme) => ({
       baseBackgroundColor: theme.palette.background.paper, //change default background color
-    }),
-    renderBottomToolbarCustomActions: () => (
-      <DBPagination paginationData={paginationData} refetch={() => { refetch() }} setPaginationData={setPaginationData} />
-
-    ),
+    }),    
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid lightgrey;',

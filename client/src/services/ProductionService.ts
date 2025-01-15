@@ -23,11 +23,11 @@ export class ProductionService {
           return await apiClient.get(`productions/me/?date=${date}`);
       }
     
-      public async GetProductions({ limit, page, start_date, end_date, id }: { limit: number | undefined, page: number | undefined, start_date?: string, end_date?: string, id?: string }) {
+      public async GetProductions({  start_date, end_date, id }: {  start_date?: string, end_date?: string, id?: string }) {
         if (id)
-          return await apiClient.get(`productions/?id=${id}&start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}`)
+          return await apiClient.get(`productions/?id=${id}&start_date=${start_date}&end_date=${end_date}`)
         else
-          return await apiClient.get(`productions/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}`)
+          return await apiClient.get(`productions/?start_date=${start_date}&end_date=${end_date}`)
     
       }
     

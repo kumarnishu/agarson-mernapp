@@ -16,8 +16,7 @@ export class ProductionController {
 
 
     public async GetProductions(req: Request, res: Response, next: NextFunction) {
-        let limit = Number(req.query.limit)
-        let page = Number(req.query.page)
+
         let id = req.query.id
         let start_date = req.query.start_date
         let end_date = req.query.end_date
@@ -28,52 +27,43 @@ export class ProductionController {
         let dt2 = new Date(String(end_date))
         let user_ids = req.user?.assigned_users.map((user: IUser) => { return user._id }) || []
 
-        if (!Number.isNaN(limit) && !Number.isNaN(page)) {
-            if (!id) {
-                if (user_ids.length > 0) {
-                    productions = await Production.find({ date: { $gte: dt1, $lt: dt2 }, thekedar: { $in: user_ids } }).populate('machine').populate('thekedar').populate('articles').populate('created_by').populate('updated_by').sort('date').skip((page - 1) * limit).limit(limit)
-                    count = await Production.find({ date: { $gte: dt1, $lt: dt2 }, thekedar: { $in: user_ids } }).countDocuments()
-                }
-
-                else {
-                    productions = await Production.find({ date: { $gte: dt1, $lt: dt2 }, thekedar: req.user?._id }).populate('machine').populate('thekedar').populate('articles').populate('created_by').populate('updated_by').sort('date').skip((page - 1) * limit).limit(limit)
-                    count = await Production.find({ date: { $gte: dt1, $lt: dt2 }, thekedar: req.user?._id }).countDocuments()
-                }
+        if (!id) {
+            if (user_ids.length > 0) {
+                productions = await Production.find({ date: { $gte: dt1, $lt: dt2 }, thekedar: { $in: user_ids } }).populate('machine').populate('thekedar').populate('articles').populate('created_by').populate('updated_by').sort('date')
+                count = await Production.find({ date: { $gte: dt1, $lt: dt2 }, thekedar: { $in: user_ids } }).countDocuments()
             }
 
-
-            if (id) {
-                productions = await Production.find({ date: { $gte: dt1, $lt: dt2 }, thekedar: id }).populate('machine').populate('thekedar').populate('articles').populate('created_by').populate('updated_by').sort('date').skip((page - 1) * limit).limit(limit)
-                count = await Production.find({ date: { $gte: dt1, $lt: dt2 }, thekedar: id }).countDocuments()
+            else {
+                productions = await Production.find({ date: { $gte: dt1, $lt: dt2 }, thekedar: req.user?._id }).populate('machine').populate('thekedar').populate('articles').populate('created_by').populate('updated_by').sort('date')
+                count = await Production.find({ date: { $gte: dt1, $lt: dt2 }, thekedar: req.user?._id }).countDocuments()
             }
-            result = productions.map((p) => {
-                return {
-                    _id: p._id,
-                    machine: { id: p.machine._id, value: p.machine.name, label: p.machine.name },
-                    thekedar: { id: p.thekedar._id, value: p.thekedar.username, label: p.thekedar.username },
-                    articles: p.articles.map((a) => { return { id: a._id, value: a.name, label: a.name } }),
-                    manpower: p.manpower,
-                    production: p.production,
-                    big_repair: p.big_repair,
-                    upper_damage: p.upper_damage,
-                    small_repair: p.small_repair,
-                    date: p.date && moment(p.date).format("DD/MM/YYYY"),
-                    production_hours: p.production_hours,
-                    created_at: p.created_at && moment(p.created_at).format("DD/MM/YYYY"),
-                    updated_at: p.updated_at && moment(p.updated_at).format("DD/MM/YYYY"),
-                    created_by: { id: p.created_by._id, value: p.created_by.username, label: p.created_by.username },
-                    updated_by: { id: p.updated_by._id, value: p.updated_by.username, label: p.updated_by.username }
-                }
-            })
-            return res.status(200).json({
-                result,
-                total: Math.ceil(count / limit),
-                page: page,
-                limit: limit
-            })
         }
-        else
-            return res.status(400).json({ message: "bad request" })
+
+
+        if (id) {
+            productions = await Production.find({ date: { $gte: dt1, $lt: dt2 }, thekedar: id }).populate('machine').populate('thekedar').populate('articles').populate('created_by').populate('updated_by').sort('date')
+            count = await Production.find({ date: { $gte: dt1, $lt: dt2 }, thekedar: id }).countDocuments()
+        }
+        result = productions.map((p) => {
+            return {
+                _id: p._id,
+                machine: { id: p.machine._id, value: p.machine.name, label: p.machine.name },
+                thekedar: { id: p.thekedar._id, value: p.thekedar.username, label: p.thekedar.username },
+                articles: p.articles.map((a) => { return { id: a._id, value: a.name, label: a.name } }),
+                manpower: p.manpower,
+                production: p.production,
+                big_repair: p.big_repair,
+                upper_damage: p.upper_damage,
+                small_repair: p.small_repair,
+                date: p.date && moment(p.date).format("DD/MM/YYYY"),
+                production_hours: p.production_hours,
+                created_at: p.created_at && moment(p.created_at).format("DD/MM/YYYY"),
+                updated_at: p.updated_at && moment(p.updated_at).format("DD/MM/YYYY"),
+                created_by: { id: p.created_by._id, value: p.created_by.username, label: p.created_by.username },
+                updated_by: { id: p.updated_by._id, value: p.updated_by.username, label: p.updated_by.username }
+            }
+        })
+        return res.status(200).json(result)
     }
 
 
