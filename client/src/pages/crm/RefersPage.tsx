@@ -5,7 +5,6 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { UserContext } from '../../contexts/userContext.tsx'
-import DBPagination from '../../components/pagination/DBpagination.tsx';
 import { BackendError } from '../../index'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import CreateOrEditReferDialog from '../../components/dialogs/crm/CreateOrEditReferDialog.tsx'
@@ -37,7 +36,7 @@ export default function RefersPage() {
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const [preFilteredData, setPreFilteredData] = useState<GetReferDto[]>([])
   const [filterCount, setFilterCount] = useState(0)
-  const { data, isLoading, refetch, isRefetching } = useQuery<AxiosResponse<
+  const { data, isLoading,  isRefetching } = useQuery<AxiosResponse<
      GetReferDto[]>, BackendError>(["refers"], async () => new CrmService().GetPaginatedRefers())
 
 
