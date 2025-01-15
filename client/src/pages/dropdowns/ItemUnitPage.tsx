@@ -3,7 +3,6 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import { Edit } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
@@ -14,6 +13,8 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import CreateOrEditItemUnitDialog from '../../components/dialogs/dropdown/CreateOrEditItemUnitDialog'
 import { DropdownService } from '../../services/DropDownServices'
 import { DropDownDto } from '../../dtos/DropDownDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 
@@ -34,18 +35,18 @@ export default function ItemUnitPage() {
     //column definitions...
     () => units && [
       {
-        accessorKey: 'actions',  enableColumnActions: false,
-                enableColumnFilter: false,
-                enableSorting: false,
-                enableGrouping: false,
-        header:'Actions',
+        accessorKey: 'actions', enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
+        header: 'Actions',
 
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
               <>
 
-               
+
                 {LoggedInUser?.assigned_permissions.includes('item_unit_edit') && <Tooltip title="edit">
                   <IconButton
 
@@ -66,14 +67,11 @@ export default function ItemUnitPage() {
       },
 
       {
-        accessorKey: 'name',
+        accessorKey: 'label',
         header: 'Name',
-
-        filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
-        filterSelectOptions: units && units.map((i) => {
-          return i.label;
-        }).filter(onlyUnique)
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={units.map((item) => { return item.label || "" })} />,
       },
     ],
     [units],
@@ -97,10 +95,10 @@ export default function ItemUnitPage() {
     }), muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-of-type(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-of-type(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-of-type(1) span': {
           display: 'inline', // Visible on hover
@@ -116,7 +114,7 @@ export default function ItemUnitPage() {
         color: 'white'
       },
     }),
-	
+
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid #c2beba;',
@@ -127,7 +125,7 @@ export default function ItemUnitPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
     },
     enableGrouping: true,
@@ -227,7 +225,7 @@ export default function ItemUnitPage() {
           component={'h1'}
           sx={{ pl: 1 }}
         >
-         Item Unit
+          Item Unit
         </Typography>
 
 

@@ -13,8 +13,8 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import CreateOrEditChecklistCategoryDialog from '../../components/dialogs/dropdown/CreateOrEditChecklistCategoryDialog'
 import { DropdownService } from '../../services/DropDownServices'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
-import { onlyUnique } from '../../utils/UniqueArray'
 import { DropDownDto } from '../../dtos/DropDownDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 export default function ChecklistCategoriesPage() {
@@ -37,11 +37,11 @@ export default function ChecklistCategoriesPage() {
     //column definitions...
     () => categories && [
       {
-        accessorKey: 'actions',  enableColumnActions: false,
-                enableColumnFilter: false,
-                enableSorting: false,
-                enableGrouping: false,
-        header:'Actions',
+        accessorKey: 'actions', enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
+        header: 'Actions',
 
         grow: false,
         Cell: ({ cell }) => <PopUp
@@ -71,9 +71,9 @@ export default function ChecklistCategoriesPage() {
         accessorKey: 'label',
         header: 'Category',
         grow: false,
-        filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
-        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={categories.map((c) => { return c.label }).filter(onlyUnique)} />
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={categories.map((item) => { return item.label || "" })} />,
       },
     ],
     [categories],

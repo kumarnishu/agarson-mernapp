@@ -3,7 +3,6 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import { Edit } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
@@ -14,6 +13,8 @@ import ExportToExcel from '../../utils/ExportToExcel'
 import CreateOrEditExpenseLocationDialog from '../../components/dialogs/dropdown/CreateOrEditExpenseLocationDialog'
 import { DropdownService } from '../../services/DropDownServices'
 import { DropDownDto } from '../../dtos/DropDownDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 
@@ -21,7 +22,7 @@ export default function ExpenseLocationPage() {
   const [location, setExpenseLocation] = useState<DropDownDto>()
   const [locations, setExpenseLocations] = useState<DropDownDto[]>([])
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["expense_locations"], async () =>new DropdownService(). GetAllExpenseLocations())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["expense_locations"], async () => new DropdownService().GetAllExpenseLocations())
 
 
   const isFirstRender = useRef(true);
@@ -37,11 +38,11 @@ export default function ExpenseLocationPage() {
     //column definitions...
     () => locations && [
       {
-        accessorKey: 'actions',  enableColumnActions: false,
-                enableColumnFilter: false,
-                enableSorting: false,
-                enableGrouping: false,
-        header:'Actions',
+        accessorKey: 'actions', enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
+        header: 'Actions',
 
         grow: false,
         Cell: ({ cell }) => <PopUp
@@ -70,11 +71,10 @@ export default function ExpenseLocationPage() {
       {
         accessorKey: 'label',
         header: 'Name',
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={locations.map((item) => { return item.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
-        filterSelectOptions: locations && locations.map((i) => {
-          return i.label;
-        }).filter(onlyUnique)
+
       },
 
     ],
@@ -103,13 +103,13 @@ export default function ExpenseLocationPage() {
         color: 'white'
       },
     }),
-	muiTableHeadCellProps: ({ column }) => ({
+    muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-of-type(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-of-type(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-of-type(1) span': {
           display: 'inline', // Visible on hover
@@ -129,7 +129,7 @@ export default function ExpenseLocationPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
     },
     enableGrouping: true,

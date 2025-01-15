@@ -316,6 +316,7 @@ export class DropDownController {
             dye_number: dye.dye_number,
             size: dye.size,
             articles: dye.articles.map((a) => { return { id: a._id, value: a.name, label: a.name } }),
+            articlenames: dye.articles.map((a) => { return a.name }).toString(),
             stdshoe_weight: dye.stdshoe_weight,
             created_at: dye.created_at && moment(dye.created_at).format("DD/MM/YYYY"),
             updated_at: dye.updated_at && moment(dye.updated_at).format("DD/MM/YYYY"),
@@ -338,6 +339,7 @@ export class DropDownController {
                 _id: dye._id,
                 active: dye.active,
                 dye_number: dye.dye_number,
+                articlenames: dye.articles.map((a) => { return a.name }).toString(),
                 size: dye.size,
                 articles: dye.articles.map((a) => { return { id: a._id, value: a.name, label: a.name } }),
                 stdshoe_weight: dye.stdshoe_weight,
@@ -1324,5 +1326,5 @@ export class DropDownController {
         return res.status(200).json(machine)
 
     }
-   
+
 }

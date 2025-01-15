@@ -17,6 +17,8 @@ import { UserService } from '../../services/UserServices'
 import { DriverAppService } from '../../services/DriverAppService'
 import { GetDriverSystemDto } from '../../dtos/DriverAppDto'
 import { DropDownDto } from '../../dtos/DropDownDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 
 export default function DriverAppSystemPage() {
@@ -59,10 +61,10 @@ export default function DriverAppSystemPage() {
   const columns = useMemo<MRT_ColumnDef<GetDriverSystemDto>[]>(
     () => systems && [
       {
-        accessorKey: 'actions',  enableColumnActions: false,
-                enableColumnFilter: false,
-                enableSorting: false,
-                enableGrouping: false,
+        accessorKey: 'actions', enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
         header: 'Action',
 
 
@@ -72,7 +74,7 @@ export default function DriverAppSystemPage() {
 
 
 
-              {LoggedInUser?.role=="admin" && LoggedInUser?.assigned_permissions.includes('driver_system_delete') && <Tooltip title="delete">
+              {LoggedInUser?.role == "admin" && LoggedInUser?.assigned_permissions.includes('driver_system_delete') && <Tooltip title="delete">
                 <IconButton color="error"
 
                   onClick={() => {
@@ -92,6 +94,7 @@ export default function DriverAppSystemPage() {
       {
         accessorKey: 'photo',
         header: 'Photos',
+        enableColumnFilter: false,
         Cell: (cell) => <>
           {cell.row.original.photo && <Photo onClick={() => {
             setSystem(cell.row.original)
@@ -103,28 +106,30 @@ export default function DriverAppSystemPage() {
       },
       {
         accessorKey: 'created_at',
-        header: 'Date'
+        header: 'Date',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={systems.map((item) => { return item.created_at || "" })} />,
       },
 
       {
         accessorKey: 'location',
-        header: 'Location'
+        header: 'Location',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={systems.map((item) => { return item.location || "" })} />,
       },
       {
         accessorKey: 'updated_at',
         header: 'Updated At',
-
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={systems.map((item) => { return item.updated_at || "" })} />,
         Cell: (cell) => <>{cell.row.original.created_at || ""}</>
       },
       {
         accessorKey: 'updated_by.label',
         header: 'Creator',
-
-        filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.updated_by.label.toString() || "" ? cell.row.original.updated_by.label.toString() || "" : ""}</>,
-        filterSelectOptions: systems && systems.map((i) => {
-          return i.updated_by.label.toString() || "";
-        }).filter(onlyUnique)
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={systems.map((item) => { return item.updated_by.label || "" })} />,
       },
     ],
     [systems],
@@ -349,23 +354,23 @@ export default function DriverAppSystemPage() {
               })
             }
           </TextField>}
-            <Button size="small" color="inherit" variant='contained'
-              onClick={() => {
-                if (table.getState().showColumnFilters)
-                  table.resetColumnFilters(true)
-                table.setShowColumnFilters(!table.getState().showColumnFilters)
-              }
-              }
-            >
-              {table.getState().showColumnFilters ? <FilterAltOff /> : <FilterAlt />}
-            </Button>
-        
-            <Button size="small" color="inherit" variant='contained'
-              onClick={(e) => setAnchorEl(e.currentTarget)
-              }
-            >
-              <MenuIcon />
-            </Button>
+          <Button size="small" color="inherit" variant='contained'
+            onClick={() => {
+              if (table.getState().showColumnFilters)
+                table.resetColumnFilters(true)
+              table.setShowColumnFilters(!table.getState().showColumnFilters)
+            }
+            }
+          >
+            {table.getState().showColumnFilters ? <FilterAltOff /> : <FilterAlt />}
+          </Button>
+
+          <Button size="small" color="inherit" variant='contained'
+            onClick={(e) => setAnchorEl(e.currentTarget)
+            }
+          >
+            <MenuIcon />
+          </Button>
         </Stack>
       </Stack >
 

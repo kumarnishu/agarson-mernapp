@@ -3,8 +3,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-   import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
 import { UserContext } from '../../contexts/userContext'
 import { Delete, Edit } from '@mui/icons-material'
@@ -15,6 +14,8 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import CreateOrEditLeadSourceDialog from '../../components/dialogs/dropdown/CreateOrEditLeadSourceDialog'
 import { DropdownService } from '../../services/DropDownServices'
 import { DropDownDto } from '../../dtos/DropDownDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 
@@ -23,35 +24,35 @@ export default function CrmLeadSourcesPage() {
   const [sources, setSources] = useState<DropDownDto[]>([])
 
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["sources"], async () =>new DropdownService(). GetAllSources())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>(["sources"], async () => new DropdownService().GetAllSources())
 
 
-  const [dialog,setDialog]=useState<string|undefined>()
+  const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
-   const isFirstRender = useRef(true);
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  const isFirstRender = useRef(true);
 
-    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-  
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const columns = useMemo<MRT_ColumnDef<DropDownDto>[]>(
     //column definitions...
     () => sources && [
       {
-        accessorKey: 'actions',  enableColumnActions: false,
-                enableColumnFilter: false,
-                enableSorting: false,
-                enableGrouping: false,
-        header:'Actions',
-        
+        accessorKey: 'actions', enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
+        header: 'Actions',
+
         Footer: <b></b>,
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
               <>
 
-                {LoggedInUser?.role=="admin" && LoggedInUser.assigned_permissions.includes('lead_source_delete') &&
+                {LoggedInUser?.role == "admin" && LoggedInUser.assigned_permissions.includes('lead_source_delete') &&
                   <Tooltip title="delete">
                     <IconButton color="error"
 
@@ -87,11 +88,10 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
       {
         accessorKey: 'label',
         header: 'Source',
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={sources.map((item) => { return item.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
-        filterSelectOptions: sources && sources.map((i) => {
-          return i.label;
-        }).filter(onlyUnique)
+
       }
     ],
     [sources],
@@ -112,20 +112,20 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     }),
     muiTableContainerProps: (table) => ({
       sx: { height: table.table.getState().isFullScreen ? 'auto' : '65vh' }
-    }), 
+    }),
     muiTableHeadRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white'
       },
     }),
-	muiTableHeadCellProps: ({ column }) => ({
+    muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-of-type(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-of-type(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-of-type(1) span': {
           display: 'inline', // Visible on hover
@@ -145,7 +145,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
     },
     enableGrouping: true,
@@ -155,14 +155,14 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     enableRowNumbers: true,
     enableColumnPinning: true,
     enableTableFooter: true,
-      enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility,rowVirtualizerInstanceRef, //
-        columnVirtualizerOptions: { overscan: 2 },
+    enableRowVirtualization: true,
+    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //
+    columnVirtualizerOptions: { overscan: 2 },
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
-      
+
       sorting,
       columnSizing: columnSizing
     }
@@ -191,7 +191,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const columnSizing = localStorage.getItem(
       'mrt_columnSizing_table_1',
     );
-    
+
 
 
 
@@ -200,10 +200,10 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
       setColumnVisibility(JSON.parse(columnVisibility));
     }
 
-    
+
     if (columnSizing)
       setColumnSizing(JSON.parse(columnSizing))
-    
+
     isFirstRender.current = false;
   }, []);
 
@@ -215,7 +215,7 @@ const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     );
   }, [columnVisibility]);
 
- 
+
 
 
   useEffect(() => {

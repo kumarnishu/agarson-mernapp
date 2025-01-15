@@ -4,7 +4,6 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
 import CreateOrEditStageDialog from '../../components/dialogs/dropdown/CreateOrEditStageDialog'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog'
 import { UserContext } from '../../contexts/userContext'
@@ -16,6 +15,8 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import { DropDownDto } from '../../dtos/DropDownDto'
 import FindUknownCrmStagesDialog from '../../components/dialogs/dropdown/FindUknownCrmStagesDialog'
 import { DropdownService } from '../../services/DropDownServices'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 
@@ -88,12 +89,9 @@ export default function CrmStagesPage() {
       {
         accessorKey: 'label',
         header: 'Stage',
-
-        filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
-        filterSelectOptions: stages && stages.map((i) => {
-          return i.label;
-        }).filter(onlyUnique)
+       filterFn: CustomFilterFunction,
+              Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={stages.map((item) => { return item.label || "" })} />,
       }
     ],
     [stages],

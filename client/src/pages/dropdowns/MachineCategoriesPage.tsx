@@ -4,7 +4,6 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import { Delete, Edit } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
@@ -15,6 +14,8 @@ import DeleteProductionItemDialog from '../../components/dialogs/dropdown/Delete
 import CreateOrEditMachineCategoryDialog from '../../components/dialogs/dropdown/CreateOrEditCategoryDialog'
 import { DropdownService } from '../../services/DropDownServices'
 import { DropDownDto } from '../../dtos/DropDownDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 
@@ -39,18 +40,18 @@ export default function MachineCategoryPage() {
         //column definitions...
         () => categories && [
             {
-                accessorKey: 'actions',  enableColumnActions: false,
+                accessorKey: 'actions', enableColumnActions: false,
                 enableColumnFilter: false,
                 enableSorting: false,
                 enableGrouping: false,
-                header:'Actions',
+                header: 'Actions',
 
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row">
                             <>
 
-                                {LoggedInUser?.role=="admin" && LoggedInUser.assigned_permissions.includes('machine_category_delete') &&
+                                {LoggedInUser?.role == "admin" && LoggedInUser.assigned_permissions.includes('machine_category_delete') &&
                                     <Tooltip title="delete">
                                         <IconButton color="error"
 
@@ -86,12 +87,10 @@ export default function MachineCategoryPage() {
             {
                 accessorKey: 'label',
                 header: 'Category',
-
-                filterVariant: 'multi-select',
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={categories.map((item) => { return item.label || "" })} />,
                 Cell: (cell) => <>{cell.row.original.label ? cell.row.original.label : ""}</>,
-                filterSelectOptions: categories && categories.map((i) => {
-                    return i.label;
-                }).filter(onlyUnique)
+
             }
         ],
         [categories],

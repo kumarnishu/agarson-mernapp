@@ -4,7 +4,6 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import { Edit, RestartAlt } from '@mui/icons-material'
 import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Tooltip, Typography } from '@mui/material'
@@ -15,6 +14,8 @@ import CreateOrEditArticleDialog from '../../components/dialogs/dropdown/CreateO
 import ToogleArticleDialog from '../../components/dialogs/dropdown/ToogleArticleDialog'
 import { DropdownService } from '../../services/DropDownServices'
 import { GetArticleDto } from '../../dtos/DropDownDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 
 
@@ -25,7 +26,7 @@ export default function ArticlePage() {
   const [articles, setArticles] = useState<GetArticleDto[]>([])
   const [hidden, setHidden] = useState(false)
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>(["articles", hidden], async () =>new DropdownService(). GetArticles(String(hidden)))
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetArticleDto[]>, BackendError>(["articles", hidden], async () => new DropdownService().GetArticles(String(hidden)))
 
 
   const [dialog, setDialog] = useState<string | undefined>()
@@ -41,11 +42,11 @@ export default function ArticlePage() {
     //column definitions...
     () => articles && [
       {
-        accessorKey: 'actions',  enableColumnActions: false,
-                enableColumnFilter: false,
-                enableSorting: false,
-                enableGrouping: false,
-        header:'Actions',
+        accessorKey: 'actions', enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
+        header: 'Actions',
 
 
         Cell: ({ cell }) => <PopUp
@@ -87,33 +88,16 @@ export default function ArticlePage() {
       {
         accessorKey: 'active',
         header: 'Status',
-
-        filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.active ? "active" : "inactive"}</>,
-        filterSelectOptions: articles && articles.map((i) => {
-          return i.active ? "active" : "inactive";
-        }).filter(onlyUnique)
+        enableColumnFilter: false,
       },
       {
         accessorKey: 'name',
         header: 'Name',
-
-        filterVariant: 'multi-select',
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
-        filterSelectOptions: articles && articles.map((i) => {
-          return i.name;
-        }).filter(onlyUnique)
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={articles.map((item) => { return item.name || "" })} />,
       },
-      {
-        accessorKey: 'display_name',
-        header: 'Display Name',
-
-        filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.display_name ? cell.row.original.display_name : ""}</>,
-        filterSelectOptions: articles && articles.map((i) => {
-          return i.display_name;
-        }).filter(onlyUnique)
-      }
     ],
     [articles],
     //end
@@ -137,10 +121,10 @@ export default function ArticlePage() {
     muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-of-type(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-of-type(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-of-type(1) span': {
           display: 'inline', // Visible on hover
@@ -156,7 +140,7 @@ export default function ArticlePage() {
         color: 'white'
       },
     }),
-	
+
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid #c2beba;',
@@ -167,7 +151,7 @@ export default function ArticlePage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
     },
     enableGrouping: true,
@@ -276,7 +260,7 @@ export default function ArticlePage() {
           justifyContent="space-between"
           alignItems={'end'}
         >
-       
+
           <FormControlLabel control={<Switch
             defaultChecked={Boolean(hidden)}
             onChange={() => setHidden(!hidden)}

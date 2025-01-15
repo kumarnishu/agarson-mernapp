@@ -62,6 +62,7 @@ export type GetDyeDto = {
     dye_number: number,
     size: string,
     articles: DropDownDto[],
+    articlenames: string,
     stdshoe_weight: number,
     created_at: string,
     updated_at: string,

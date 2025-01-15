@@ -4,7 +4,6 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import { Edit } from '@mui/icons-material'
 import { Fade, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material'
@@ -15,6 +14,8 @@ import CreateOrEditExpenseItemDialog from '../../components/dialogs/dropdown/Cre
 import { ExpenseItemButtons } from '../../components/buttons/ExpenseItemButtons'
 import { DropdownService } from '../../services/DropDownServices'
 import { GetExpenseItemDto } from '../../dtos/ExpenseDto'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 
 
@@ -22,7 +23,7 @@ export default function ExpenseItemsPage() {
   const [item, setItem] = useState<GetExpenseItemDto>()
   const [items, setItems] = useState<GetExpenseItemDto[]>([])
   const { user: LoggedInUser } = useContext(UserContext)
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetExpenseItemDto[]>, BackendError>(["items"], async () =>new DropdownService(). GetExpenseItems())
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetExpenseItemDto[]>, BackendError>(["items"], async () => new DropdownService().GetExpenseItems())
 
   const isFirstRender = useRef(true);
 
@@ -38,11 +39,11 @@ export default function ExpenseItemsPage() {
     //column definitions...
     () => items && [
       {
-        accessorKey: 'actions',  enableColumnActions: false,
-                enableColumnFilter: false,
-                enableSorting: false,
-                enableGrouping: false,
-        header:'Actions',
+        accessorKey: 'actions', enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
+        header: 'Actions',
         Cell: ({ cell }) => <PopUp
           element={
             <Stack direction="row">
@@ -70,54 +71,70 @@ export default function ExpenseItemsPage() {
       {
         accessorKey: 'item',
         header: 'Name',
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={items.map((item) => { return item.item || "" })} />,
         Cell: (cell) => <>{cell.row.original.item ? cell.row.original.item : ""}</>,
-        filterSelectOptions: items && items.map((i) => {
-          return i.item;
-        }).filter(onlyUnique)
+
       },
 
       {
         accessorKey: 'category.label',
         header: 'Category',
-
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={items.map((item) => { return item.category.label || "" })} />,
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category.label : ""}</>,
-        filterSelectOptions: items && items.map((i) => {
-          return i.category.label;
-        }).filter(onlyUnique)
+
       },
       {
         accessorKey: 'stock',
         header: 'Stock',
+
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
         Cell: (cell) => <>{cell.row.original.stock == 0 ? "" : cell.row.original.stock}</>,
       }
       ,
       {
         accessorKey: 'price',
         header: 'Price',
+
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
       }
       ,
       {
         accessorKey: 'pricetolerance',
         header: 'Price Tolerance',
+
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
         Cell: (cell) => <>{cell.row.original.pricetolerance == 0 ? "" : cell.row.original.pricetolerance}</>,
       }
       ,
       {
         accessorKey: 'stock_limit',
         header: 'Stock Limit',
+
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
         Cell: (cell) => <>{cell.row.original.stock_limit == 0 ? "" : cell.row.original.stock_limit}</>,
       }
       ,
       {
         accessorKey: 'to_maintain_stock',
         header: 'Maintain Stock',
+        enableColumnFilter: false,
         Cell: (cell) => <>{cell.row.original.to_maintain_stock ? "yes" : ""}</>,
       }
       ,
       {
         accessorKey: 'unit.label',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={items.map((item) => { return item.unit.label || "" })} />,
         header: 'Unit',
       }
     ],
@@ -172,7 +189,7 @@ export default function ExpenseItemsPage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
     },
     enableGrouping: true,

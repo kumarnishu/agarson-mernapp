@@ -2,7 +2,6 @@ import { Stack } from '@mui/system'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import { Edit, RestartAlt } from '@mui/icons-material'
 import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Tooltip, Typography } from '@mui/material'
@@ -16,6 +15,8 @@ import { AxiosResponse } from "axios"
 import { GetDyeDto } from '../../dtos/DropDownDto'
 import { BackendError } from '../..'
 import { DropdownService } from '../../services/DropDownServices'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 export default function DyePage() {
@@ -39,11 +40,11 @@ export default function DyePage() {
     //column definitions...
     () => dyes && [
       {
-        accessorKey: 'actions',  enableColumnActions: false,
-                enableColumnFilter: false,
-                enableSorting: false,
-                enableGrouping: false,
-        header:'Actions',
+        accessorKey: 'actions', enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
+        header: 'Actions',
 
         Cell: ({ cell }) => <PopUp
           element={
@@ -84,52 +85,41 @@ export default function DyePage() {
       {
         accessorKey: 'active',
         header: 'Status',
-
-        filterVariant: 'multi-select',
+        enableColumnFilter: false,
         Cell: (cell) => <>{cell.row.original.active ? "active" : "inactive"}</>,
-        filterSelectOptions: dyes && dyes.map((i) => {
-          return i.active ? "active" : "inactive";
-        }).filter(onlyUnique)
+
       },
       {
         accessorKey: 'dye_number',
         header: 'Dye',
-
-        filterVariant: 'multi-select',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
         Cell: (cell) => <>{cell.row.original.dye_number.toString() || "" ? cell.row.original.dye_number.toString() || "" : ""}</>,
-        filterSelectOptions: dyes && dyes.map((i) => {
-          return i.dye_number.toString() || "";
-        }).filter(onlyUnique)
+
       },
       {
         accessorKey: 'size',
         header: 'Size',
-
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={dyes.map((item) => { return item.size || "" })} />, 
         Cell: (cell) => <>{cell.row.original.size ? cell.row.original.size : ""}</>,
-        filterSelectOptions: dyes && dyes.map((i) => {
-          return i.size;
-        }).filter(onlyUnique)
       },
       {
         accessorKey: 'stdshoe_weight',
         header: 'St. Weight',
-
-        filterVariant: 'multi-select',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
         Cell: (cell) => <>{cell.row.original.stdshoe_weight ? cell.row.original.stdshoe_weight : ""}</>,
-        filterSelectOptions: dyes && dyes.map((i) => {
-          return String(i.stdshoe_weight);
-        }).filter(onlyUnique)
+
       },
       {
-        accessorKey: 'articles',
+        accessorKey: 'articlenames',
         header: 'Articles',
-
-        filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.articles.toString() ? cell.row.original.articles.map((a) => { return a.label }).toString() : ""}</>,
-        filterSelectOptions: dyes && dyes.map((i) => {
-          return i.articles.toString();
-        }).filter(onlyUnique)
+        Cell: (cell) => <>{cell.row.original.articlenames.toString() ? cell.row.original.articles.map((a) => { return a.label }).toString() : ""}</>,
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={dyes.map((item) => { return item.articlenames || "" })} />, 
       }
     ],
     [dyes],
@@ -150,20 +140,20 @@ export default function DyePage() {
     }),
     muiTableContainerProps: (table) => ({
       sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
-    }), 
+    }),
     muiTableHeadRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white'
       },
     }),
-	muiTableHeadCellProps: ({ column }) => ({
+    muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-of-type(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-of-type(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-of-type(1) span': {
           display: 'inline', // Visible on hover
@@ -183,7 +173,7 @@ export default function DyePage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
     },
     enableGrouping: true,
@@ -292,7 +282,7 @@ export default function DyePage() {
           justifyContent="space-between"
           alignItems={'end'}
         >
-       
+
           <FormControlLabel control={<Switch
             defaultChecked={Boolean(hidden)}
             onChange={() => setHidden(!hidden)}

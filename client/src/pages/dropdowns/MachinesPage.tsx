@@ -4,7 +4,6 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
-import { onlyUnique } from '../../utils/UniqueArray'
 import { UserContext } from '../../contexts/userContext'
 import { Edit, RestartAlt } from '@mui/icons-material'
 import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Tooltip, Typography } from '@mui/material'
@@ -15,6 +14,8 @@ import CreateOrEditMachineDialog from '../../components/dialogs/dropdown/CreateO
 import ToogleMachineDialog from '../../components/dialogs/dropdown/ToogleMachineDialog'
 import { DropdownService } from '../../services/DropDownServices'
 import { GetMachineDto } from '../../dtos/DropDownDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
 
@@ -39,11 +40,11 @@ export default function MachinePage() {
     //column definitions...
     () => machines && [
       {
-        accessorKey: 'actions',  enableColumnActions: false,
-                enableColumnFilter: false,
-                enableSorting: false,
-                enableGrouping: false,
-        header:'Actions',
+        accessorKey: 'actions', enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
+        header: 'Actions',
 
         Cell: ({ cell }) => <PopUp
           element={
@@ -84,54 +85,36 @@ export default function MachinePage() {
       {
         accessorKey: 'serialno',
         header: 'Serial No',
-
-        filterVariant: 'multi-select',
+        filterVariant: 'range',
+        filterFn: 'betweenInclusive',
+        aggregationFn: 'sum',
         Cell: (cell) => <>{cell.row.original.serial_no.toString() || "" ? cell.row.original.serial_no.toString() || "" : ""}</>,
-        filterSelectOptions: machines && machines.map((i) => {
-          return i.serial_no.toString() || "";
-        }).filter(onlyUnique)
       },
       {
         accessorKey: 'active',
         header: 'Status',
-
-        filterVariant: 'multi-select',
+        enableColumnFilter: false,
         Cell: (cell) => <>{cell.row.original.active ? "active" : "inactive"}</>,
-        filterSelectOptions: machines && machines.map((i) => {
-          return i.active ? "active" : "inactive";
-        }).filter(onlyUnique)
+
       },
       {
         accessorKey: 'name',
         header: 'Name',
-
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={machines.map((item) => { return item.name || "" })} />,
         Cell: (cell) => <>{cell.row.original.name ? cell.row.original.name : ""}</>,
-        filterSelectOptions: machines && machines.map((i) => {
-          return i.name;
-        }).filter(onlyUnique)
-      },
-      {
-        accessorKey: 'display_name',
-        header: 'Display Name',
 
-        filterVariant: 'multi-select',
-        Cell: (cell) => <>{cell.row.original.display_name ? cell.row.original.display_name : ""}</>,
-        filterSelectOptions: machines && machines.map((i) => {
-          return i.display_name;
-        }).filter(onlyUnique)
       },
+    
 
 
       {
         accessorKey: 'category',
         header: 'Category',
-
-        filterVariant: 'multi-select',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={machines.map((item) => { return item.category || "" })} />,
         Cell: (cell) => <>{cell.row.original.category ? cell.row.original.category : ""}</>,
-        filterSelectOptions: machines && machines.map((i) => {
-          return i.category;
-        }).filter(onlyUnique)
+
       }
     ],
     [machines],
@@ -152,20 +135,20 @@ export default function MachinePage() {
     }),
     muiTableContainerProps: (table) => ({
       sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
-    }), 
+    }),
     muiTableHeadRowProps: () => ({
       sx: {
         backgroundColor: 'whitesmoke',
         color: 'white'
       },
     }),
-	muiTableHeadCellProps: ({ column }) => ({
+    muiTableHeadCellProps: ({ column }) => ({
       sx: {
         '& div:nth-of-type(1) span': {
-          display: (column.getIsFiltered() || column.getIsSorted()|| column.getIsGrouped())?'inline':'none', // Initially hidden
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
         '& div:nth-of-type(2)': {
-          display: (column.getIsFiltered() || column.getIsGrouped())?'inline-block':'none'
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
         '&:hover div:nth-of-type(1) span': {
           display: 'inline', // Visible on hover
@@ -185,7 +168,7 @@ export default function MachinePage() {
       shape: 'rounded',
       variant: 'outlined',
     },
-   enableDensityToggle: false, initialState: {
+    enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
     },
     enableGrouping: true,
@@ -294,7 +277,7 @@ export default function MachinePage() {
           justifyContent="space-between"
           alignItems={'end'}
         >
-          
+
           <FormControlLabel control={<Switch
             defaultChecked={Boolean(hidden)}
             onChange={() => setHidden(!hidden)}
