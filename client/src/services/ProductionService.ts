@@ -66,11 +66,11 @@ export class ProductionService {
         return await apiClient.delete(`weights/${id}`);
       }
     
-      public async GetShoeWeights({ limit, page, start_date, end_date, id }: { limit: number | undefined, page: number | undefined, start_date?: string, end_date?: string, id?: string }) {
+      public async GetShoeWeights({  start_date, end_date, id }: { start_date?: string, end_date?: string, id?: string }) {
         if (id)
-          return await apiClient.get(`weights/?id=${id}&start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}`)
+          return await apiClient.get(`weights/?id=${id}&start_date=${start_date}&end_date=${end_date}`)
         else
-          return await apiClient.get(`weights/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}`)
+          return await apiClient.get(`weights/?start_date=${start_date}&end_date=${end_date}`)
     
       }
     
@@ -100,11 +100,11 @@ export class ProductionService {
         return await apiClient.delete(`sparedyes/${id}`);
       }
     
-      public async GetSpareDyes({ limit, page, start_date, end_date, id }: { limit: number | undefined, page: number | undefined, start_date?: string, end_date?: string, id?: string }) {
+      public async GetSpareDyes({  start_date, end_date, id }: {  start_date?: string, end_date?: string, id?: string }) {
         if (id)
-          return await apiClient.get(`sparedyes/?id=${id}&start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}`)
+          return await apiClient.get(`sparedyes/?id=${id}&start_date=${start_date}&end_date=${end_date}`)
         else
-          return await apiClient.get(`sparedyes/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}`)
+          return await apiClient.get(`sparedyes/?start_date=${start_date}&end_date=${end_date}`)
     
       }
     
@@ -131,11 +131,11 @@ export class ProductionService {
         return await apiClient.delete(`solethickness/${id}`);
       }
     
-      public async GetSoleThickness({ limit, page, start_date, end_date, id }: { limit: number | undefined, page: number | undefined, start_date?: string, end_date?: string, id?: string }) {
+      public async GetSoleThickness({  start_date, end_date, id }: { start_date?: string, end_date?: string, id?: string }) {
         if (id)
-          return await apiClient.get(`solethickness/?id=${id}&start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}`)
+          return await apiClient.get(`solethickness/?id=${id}&start_date=${start_date}&end_date=${end_date}`)
         else
-          return await apiClient.get(`solethickness/?start_date=${start_date}&end_date=${end_date}&limit=${limit}&page=${page}`)
+          return await apiClient.get(`solethickness/?start_date=${start_date}&end_date=${end_date}`)
     
       }
     

@@ -7,8 +7,7 @@ import { UserContext } from '../../contexts/userContext'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
-import { Check, Delete, Edit, FilterAlt, FilterAltOff, Fullscreen, FullscreenExit, Menu as MenuIcon, Photo } from '@mui/icons-material';
-import DBPagination from '../../components/pagination/DBpagination'
+import { Check, Delete, Edit, FilterAlt, FilterAltOff, Menu as MenuIcon, Photo } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import PopUp from '../../components/popup/PopUp'
 import moment from 'moment'
@@ -23,7 +22,6 @@ import { GetSpareDyeDto } from '../../dtos/ProductionDto'
 
 
 export default function SpareDyesPage() {
-    const [paginationData, setPaginationData] = useState({ limit: 1000, page: 1, total: 1 });
     const { user: LoggedInUser } = useContext(UserContext)
     const [spareDye, setSpareDye] = useState<GetSpareDyeDto>()
     const [spareDyes, setSpareDyes] = useState<GetSpareDyeDto[]>([])
@@ -43,7 +41,7 @@ export default function SpareDyesPage() {
         start_date: moment(new Date()).format("YYYY-MM-DD")
         , end_date: moment(new Date().setDate(new Date().getDate() + 1)).format("YYYY-MM-DD")
     })
-    const { data, isLoading, isSuccess, isRefetching, refetch } = useQuery<AxiosResponse<{ result: GetSpareDyeDto[], page: number, total: number, limit: number }>, BackendError>(["spare_dyes", userId, dates?.start_date, dates?.end_date], async () => new ProductionService().GetSpareDyes({ limit: paginationData?.limit, page: paginationData?.page, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
+    const { data, isLoading, isSuccess, isRefetching } = useQuery<AxiosResponse<GetSpareDyeDto[]>, BackendError>(["spare_dyes", userId, dates?.start_date, dates?.end_date], async () => new ProductionService().GetSpareDyes({ id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
 
     const { data: usersData, isSuccess: isUsersSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("user_dropdowns", async () => new UserService().GetUsersForDropdown({ hidden: false, permission: 'spare_dye_view', show_assigned_only: true }))
 
@@ -56,13 +54,8 @@ export default function SpareDyesPage() {
 
     useEffect(() => {
         if (data && isSuccess) {
-            setSpareDyes(data.data.result)
-            setPaginationData({
-                ...paginationData,
-                page: data.data.page,
-                limit: data.data.limit,
-                total: data.data.total
-            })
+            setSpareDyes(data.data)
+
         }
     }, [data, isSuccess])
 
@@ -70,11 +63,11 @@ export default function SpareDyesPage() {
     const columns = useMemo<MRT_ColumnDef<GetSpareDyeDto>[]>(
         () => spareDyes && [
             {
-                accessorKey: 'actions',  enableColumnActions: false,
+                accessorKey: 'actions', enableColumnActions: false,
                 enableColumnFilter: false,
                 enableSorting: false,
                 enableGrouping: false,
-                header:'Actions',
+                header: 'Actions',
                 Cell: ({ cell }) => <PopUp
                     element={
                         <Stack direction="row" spacing={1}>
@@ -102,7 +95,7 @@ export default function SpareDyesPage() {
                                         <Check />
                                     </IconButton>
                                 </Tooltip>}
-                                {LoggedInUser?.role=="admin" && LoggedInUser?.assigned_permissions.includes('spare_dye_delete') && <Tooltip title="delete">
+                                {LoggedInUser?.role == "admin" && LoggedInUser?.assigned_permissions.includes('spare_dye_delete') && <Tooltip title="delete">
                                     <IconButton color="error"
 
                                         onClick={() => {
@@ -196,7 +189,7 @@ export default function SpareDyesPage() {
 
     const table = useMaterialReactTable({
         columns, columnFilterDisplayMode: 'popover',
-        data: spareDyes,
+        data: spareDyes, //10,000 rows       
         enableColumnResizing: true,
         enableColumnVirtualization: true, enableStickyFooter: true,
         muiTableFooterRowProps: () => ({
@@ -204,6 +197,15 @@ export default function SpareDyesPage() {
                 backgroundColor: 'whitesmoke',
                 color: 'white',
             }
+        }),
+        muiTableContainerProps: (table) => ({
+            sx: { height: table.table.getState().isFullScreen ? 'auto' : '62vh' }
+        }),
+        muiTableHeadRowProps: () => ({
+            sx: {
+                backgroundColor: 'whitesmoke',
+                color: 'white'
+            },
         }),
         muiTableHeadCellProps: ({ column }) => ({
             sx: {
@@ -221,164 +223,39 @@ export default function SpareDyesPage() {
                 }
             },
         }),
-        muiTableHeadRowProps: () => ({
-            sx: {
-                backgroundColor: 'whitesmoke',
-                color: 'white',
-                border: '1px solid lightgrey;',
-            },
-        }),
-        muiTableContainerProps: (table) => ({
-            sx: { height: table.table.getState().isFullScreen ? 'auto' : '72vh' }
-        }),
-        positionToolbarAlertBanner: 'none',
-        renderTopToolbarCustomActions: ({ table }) => (
-
-            <Stack
-                spacing={2}
-                direction="row"
-                sx={{ width: '100%' }}
-                justifyContent="space-between"
-
-            >
-                <Typography
-                    variant={'h6'}
-                    component={'h1'}
-                    sx={{ pl: 1 }}
-
-                >
-                    SpareDye
-                </Typography>
-                {/* filter dates and person */}
-                <Stack direction="row" gap={2} justifyContent={'end'}>
-                    < TextField
-                        variant="filled"
-                        size="small"
-                        type="date"
-                        id="start_date"
-                        label="Start Date"
-                        fullWidth
-                        value={dates.start_date}
-                        onChange={(e) => {
-                            if (e.currentTarget.value) {
-                                setDates({
-                                    ...dates,
-                                    start_date: moment(e.target.value).format("YYYY-MM-DD")
-                                })
-                            }
-                        }}
-                    />
-                    < TextField
-                        variant="filled"
-                        size="small"
-                        type="date"
-                        id="end_date"
-                        label="End Date"
-                        value={dates.end_date}
-                        fullWidth
-                        onChange={(e) => {
-                            if (e.currentTarget.value) {
-                                setDates({
-                                    ...dates,
-                                    end_date: moment(e.target.value).format("YYYY-MM-DD")
-                                })
-                            }
-                        }}
-                    />
-                    {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 && < TextField
-                        size="small"
-                        variant='filled'
-                        SelectProps={{
-                            native: true,
-                        }}
-                        onChange={(e) => {
-                            setUserId(e.target.id)
-                        }}
-                        required
-                        id="spareDye_owner"
-                        label="Person"
-                        fullWidth
-                    >
-                        <option key={'00'} value={undefined}>
-
-                        </option>
-                        {
-                            users.map((user, index) => {
-
-                                return (<option key={index} value={user.id}>
-                                    {user.label}
-                                </option>)
-
-                            })
-                        }
-                    </TextField>}
-                    <Tooltip title="Toogle Filter">
-                        <Button size="small" color="inherit" variant='contained'
-                            onClick={() => {
-                                if (table.getState().showColumnFilters)
-                                    table.resetColumnFilters(true)
-                                table.setShowColumnFilters(!table.getState().showColumnFilters)
-                            }
-                            }
-                        >
-                            {table.getState().showColumnFilters ? <FilterAltOff /> : <FilterAlt />}
-                        </Button>
-                    </Tooltip>
-                    <Tooltip title="Toogle FullScreen">
-                        <Button size="small" color="inherit" variant='contained'
-                            onClick={() => table.setIsFullScreen(!table.getState().isFullScreen)
-                            }
-                        >
-                            {table.getState().isFullScreen ? <FullscreenExit /> : <Fullscreen />}
-                        </Button>
-                    </Tooltip>
-                    <Tooltip title="Menu">
-                        <Button size="small" color="inherit" variant='contained'
-                            onClick={(e) => setAnchorEl(e.currentTarget)
-                            }
-                        >
-                            <MenuIcon />
-                            <Typography pl={1}> Menu</Typography>
-                        </Button>
-                    </Tooltip>
-                </Stack>
-            </Stack >
-        ),
-        rowVirtualizerInstanceRef,
-        mrtTheme: (theme) => ({
-            baseBackgroundColor: theme.palette.background.paper, //change default background color
-        }),
-        renderBottomToolbarCustomActions: () => (
-            <DBPagination paginationData={paginationData} refetch={() => { refetch() }} setPaginationData={setPaginationData} />
-
-        ),
         muiTableBodyCellProps: () => ({
             sx: {
-                border: '1px solid lightgrey;',
+                border: '1px solid #c2beba;',
             },
         }),
-       enableDensityToggle: false, initialState: { density: 'compact' },
+        muiPaginationProps: {
+            rowsPerPageOptions: [100, 200, 500, 1000, 2000],
+            shape: 'rounded',
+            variant: 'outlined',
+        },
+        enableDensityToggle: false, initialState: {
+            density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
+        },
+        enableGrouping: true,
         enableRowSelection: true,
+        manualPagination: false,
+        enablePagination: true,
         enableRowNumbers: true,
         enableColumnPinning: true,
-        onSortingChange: setSorting,
-        enableTopToolbar: true,
         enableTableFooter: true,
         enableRowVirtualization: true,
-        onColumnVisibilityChange: setColumnVisibility,
+        onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+
+        onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing, state: {
             isLoading: isLoading,
             columnVisibility,
 
             sorting,
             columnSizing: columnSizing
-        },
-        enableBottomToolbar: true,
-        enableGlobalFilter: false,
-        manualPagination: true,
-        enablePagination: false,
-        enableToolbarInternalActions: false
+        }
     });
+
 
     useEffect(() => {
         try {
@@ -449,6 +326,101 @@ export default function SpareDyesPage() {
             {
                 isLoading || isRefetching && <LinearProgress color='secondary' />
             }
+            <Stack
+                spacing={2}
+                p={1}
+                direction="row"
+                sx={{ width: '100%' }}
+                justifyContent="space-between"
+
+            >
+                <Typography
+                    variant={'h6'}
+                    component={'h1'}
+                    sx={{ pl: 1 }}
+
+                >
+                    SpareDye
+                </Typography>
+                {/* filter dates and person */}
+                <Stack direction="row" gap={2} justifyContent={'end'}>
+                    < TextField
+                        size="small"
+                        type="date"
+                        id="start_date"
+                        label="Start Date"
+                        fullWidth
+                        value={dates.start_date}
+                        onChange={(e) => {
+                            if (e.currentTarget.value) {
+                                setDates({
+                                    ...dates,
+                                    start_date: moment(e.target.value).format("YYYY-MM-DD")
+                                })
+                            }
+                        }}
+                    />
+                    < TextField
+                        size="small"
+                        type="date"
+                        id="end_date"
+                        label="End Date"
+                        value={dates.end_date}
+                        fullWidth
+                        onChange={(e) => {
+                            if (e.currentTarget.value) {
+                                setDates({
+                                    ...dates,
+                                    end_date: moment(e.target.value).format("YYYY-MM-DD")
+                                })
+                            }
+                        }}
+                    />
+                    {LoggedInUser?.assigned_users && LoggedInUser?.assigned_users.length > 0 && < TextField
+                        size="small"
+                        SelectProps={{
+                            native: true,
+                        }}
+                        onChange={(e) => {
+                            setUserId(e.target.id)
+                        }}
+                        required
+                        id="spareDye_owner"
+                        label="Person"
+                        fullWidth
+                    >
+                        <option key={'00'} value={undefined}>
+
+                        </option>
+                        {
+                            users.map((user, index) => {
+
+                                return (<option key={index} value={user.id}>
+                                    {user.label}
+                                </option>)
+
+                            })
+                        }
+                    </TextField>}
+                    <Button size="small" color="inherit" variant='contained'
+                        onClick={() => {
+                            if (table.getState().showColumnFilters)
+                                table.resetColumnFilters(true)
+                            table.setShowColumnFilters(!table.getState().showColumnFilters)
+                        }
+                        }
+                    >
+                        {table.getState().showColumnFilters ? <FilterAltOff /> : <FilterAlt />}
+                    </Button>
+
+                    <Button size="small" color="inherit" variant='contained'
+                        onClick={(e) => setAnchorEl(e.currentTarget)
+                        }
+                    >
+                        <MenuIcon />
+                    </Button>
+                </Stack>
+            </Stack >
             <>
                 <Menu
                     anchorEl={anchorEl}

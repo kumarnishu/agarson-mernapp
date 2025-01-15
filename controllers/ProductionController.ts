@@ -288,8 +288,7 @@ export class ProductionController {
 
 
     public async GetShoeWeights(req: Request, res: Response, next: NextFunction) {
-        let limit = Number(req.query.limit)
-        let page = Number(req.query.page)
+       
         let id = req.query.id
         let start_date = req.query.start_date
         let end_date = req.query.end_date
@@ -304,15 +303,14 @@ export class ProductionController {
         dt2.setMinutes(0)
         let user_ids = req.user?.assigned_users.map((user: IUser) => { return user._id }) || []
         console.log(user_ids)
-        if (!Number.isNaN(limit) && !Number.isNaN(page)) {
             if (!id) {
                 if (user_ids.length > 0) {
-                    weights = await ShoeWeight.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: { $in: user_ids } }).populate('dye').populate('machine').populate('article').populate('created_by').populate('updated_by').sort("-created_at").skip((page - 1) * limit).limit(limit)
+                    weights = await ShoeWeight.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: { $in: user_ids } }).populate('dye').populate('machine').populate('article').populate('created_by').populate('updated_by').sort("-created_at")
                     count = await ShoeWeight.find({ created_at: { $gt: dt1, $lt: dt2 }, created_by: { $in: user_ids } }).countDocuments()
                 }
 
                 else {
-                    weights = await ShoeWeight.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: req.user?._id }).populate('dye').populate('machine').populate('article').populate('created_by').populate('updated_by').sort("-created_at").skip((page - 1) * limit).limit(limit)
+                    weights = await ShoeWeight.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: req.user?._id }).populate('dye').populate('machine').populate('article').populate('created_by').populate('updated_by').sort("-created_at")
                     count = await ShoeWeight.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: req.user?._id }).countDocuments()
                 }
                 console.log(weights.length)
@@ -320,7 +318,7 @@ export class ProductionController {
 
 
             if (id) {
-                weights = await ShoeWeight.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: id }).populate('dye').populate('machine').populate('article').populate('created_by').populate('updated_by').sort("-created_at").skip((page - 1) * limit).limit(limit)
+                weights = await ShoeWeight.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: id }).populate('dye').populate('machine').populate('article').populate('created_by').populate('updated_by').sort("-created_at")
                 count = await ShoeWeight.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: id }).countDocuments()
             }
             result = weights.map((w) => {
@@ -351,15 +349,8 @@ export class ProductionController {
                     updated_by: { id: w.updated_by._id, value: w.updated_by.username, label: w.updated_by.username },
                 }
             })
-            return res.status(200).json({
-                result,
-                total: Math.ceil(count / limit),
-                page: page,
-                limit: limit
-            })
-        }
-        else
-            return res.status(200).json({ message: "bad request" })
+            return res.status(200).json(result)
+            
     }
 
     public async CreateShoeWeight(req: Request, res: Response, next: NextFunction) {
@@ -697,8 +688,7 @@ export class ProductionController {
     }
 
     public async GetSoleThickness(req: Request, res: Response, next: NextFunction) {
-        let limit = Number(req.query.limit)
-        let page = Number(req.query.page)
+       
         let id = req.query.id
         let start_date = req.query.start_date
         let end_date = req.query.end_date
@@ -713,22 +703,21 @@ export class ProductionController {
         dt2.setMinutes(0)
         let user_ids = req.user?.assigned_users.map((user: IUser) => { return user._id }) || []
 
-        if (!Number.isNaN(limit) && !Number.isNaN(page)) {
             if (!id) {
                 if (user_ids.length > 0) {
-                    items = await SoleThickness.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: { $in: user_ids } }).populate('dye').populate('article').populate('created_by').populate('updated_by').sort("-created_at").skip((page - 1) * limit).limit(limit)
+                    items = await SoleThickness.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: { $in: user_ids } }).populate('dye').populate('article').populate('created_by').populate('updated_by').sort("-created_at")
                     count = await SoleThickness.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: { $in: user_ids } }).countDocuments()
                 }
 
                 else {
-                    items = await SoleThickness.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: req.user?._id }).populate('dye').populate('article').populate('created_by').populate('updated_by').sort("-created_at").skip((page - 1) * limit).limit(limit)
+                    items = await SoleThickness.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: req.user?._id }).populate('dye').populate('article').populate('created_by').populate('updated_by').sort("-created_at")
                     count = await SoleThickness.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: req.user?._id }).countDocuments()
                 }
             }
 
 
             if (id) {
-                items = await SoleThickness.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: id }).populate('dye').populate('article').populate('created_by').populate('updated_by').sort("-created_at").skip((page - 1) * limit).limit(limit)
+                items = await SoleThickness.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: id }).populate('dye').populate('article').populate('created_by').populate('updated_by').sort("-created_at")
                 count = await SoleThickness.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: id }).countDocuments()
             }
 
@@ -747,15 +736,7 @@ export class ProductionController {
                 }
             })
 
-            return res.status(200).json({
-                result,
-                total: Math.ceil(count / limit),
-                page: page,
-                limit: limit
-            })
-        }
-        else
-            return res.status(200).json({ message: "bad request" })
+            return res.status(200).json(result)
     }
     public async CreateSoleThickness(req: Request, res: Response, next: NextFunction) {
 
@@ -865,8 +846,6 @@ export class ProductionController {
     }
 
     public async GetSpareDyes(req: Request, res: Response, next: NextFunction) {
-        let limit = Number(req.query.limit)
-        let page = Number(req.query.page)
         let id = req.query.id
         let start_date = req.query.start_date
         let end_date = req.query.end_date
@@ -881,22 +860,21 @@ export class ProductionController {
         dt2.setMinutes(0)
         let user_ids = req.user?.assigned_users.map((user: IUser) => { return user._id }) || []
 
-        if (!Number.isNaN(limit) && !Number.isNaN(page)) {
             if (!id) {
                 if (user_ids.length > 0) {
-                    dyes = await SpareDye.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: { $in: user_ids } }).populate('dye').populate('created_by').populate('location').populate('updated_by').sort('-created_at').skip((page - 1) * limit).limit(limit)
+                    dyes = await SpareDye.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: { $in: user_ids } }).populate('dye').populate('created_by').populate('location').populate('updated_by').sort('-created_at')
                     count = await SpareDye.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: { $in: user_ids } }).countDocuments()
                 }
 
                 else {
-                    dyes = await SpareDye.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: req.user?._id }).populate('dye').populate('created_by').populate('location').populate('updated_by').sort('-created_at').skip((page - 1) * limit).limit(limit)
+                    dyes = await SpareDye.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: req.user?._id }).populate('dye').populate('created_by').populate('location').populate('updated_by').sort('-created_at')
                     count = await SpareDye.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: req.user?._id }).countDocuments()
                 }
             }
 
 
             if (id) {
-                dyes = await SpareDye.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: id }).populate('dye').populate('created_by').populate('location').populate('updated_by').sort('-created_at').skip((page - 1) * limit).limit(limit)
+                dyes = await SpareDye.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: id }).populate('dye').populate('created_by').populate('location').populate('updated_by').sort('-created_at')
                 count = await SpareDye.find({ created_at: { $gte: dt1, $lt: dt2 }, created_by: id }).countDocuments()
             }
             result = dyes.map((dye) => {
@@ -915,15 +893,7 @@ export class ProductionController {
                     updated_by: { id: dye.updated_by._id, value: dye.updated_by.username, label: dye.updated_by.username }
                 }
             })
-            return res.status(200).json({
-                result,
-                total: Math.ceil(count / limit),
-                page: page,
-                limit: limit
-            })
-        }
-        else
-            return res.status(200).json({ message: "bad request" })
+            return res.status(200).json(                result)
     }
 
 
