@@ -15,6 +15,7 @@ import { ExcelReportsService } from '../../services/ExcelReportsServices'
 import CreateOrEditExcelDBRemarkDialog from '../../components/dialogs/excelreports/CreateOrEditExcelDBRemarkDialog'
 import ViewExcelDBRemarksDialog from '../../components/dialogs/excelreports/ViewExcelDBRemarksDialog'
 import { IColumnRowData } from '../../dtos/SalesDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 export default function SharedAgeingpage() {
     const [hidden, setHidden] = useState(false)
@@ -35,116 +36,142 @@ export default function SharedAgeingpage() {
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
-    let columns = useMemo<MRT_ColumnDef<IColumnRowData['columns']>[]>(
+    let columns = useMemo<MRT_ColumnDef<any, any>[]>(
         () => reportcolumns && reportcolumns.map((item, index) => {
-            if (item.type == "action")
-                return {
-                    accessorKey: item.key,
-                    header: item.header,
-
-                    Cell: (cell) => <PopUp key={item.key}
-                        element={
-                            <Stack direction="row" spacing={1} >
-                                {LoggedInUser?.assigned_permissions.includes('grp_excel_view') && <Tooltip title="view remarks">
-                                    <IconButton color="primary"
-
-                                        onClick={() => {
-
-                                            setDialog('ViewExcelDBRemarksDialog')
-                                            //@ts-ignore
-                                            if (cell.row.original['Account Name'])
-                                                //@ts-ignore
-                                                setObj(cell.row.original['Account Name'])
-                                            //@ts-ignore
-                                            else if (cell.row.original['PARTY'])
-                                                //@ts-ignore
-                                                setObj(cell.row.original['PARTY'])
-
-                                            //@ts-ignore
-                                            else if (cell.row.original['Customer Name'])
-                                                //@ts-ignore
-                                                setObj(cell.row.original['Customer Name'])
-                                            //@ts-ignore
-                                            else if (cell.row.original['CUSTOMER'])
-                                                //@ts-ignore
-                                                setObj(cell.row.original['CUSTOMER'])
-                                        }}
-                                    >
-                                        <Visibility />
-                                    </IconButton>
-                                </Tooltip>}
-
-                                {LoggedInUser?.assigned_permissions.includes('grp_excel_edit') &&
-                                    <Tooltip title="Add Remark">
-                                        <IconButton
-
-                                            color="success"
-                                            onClick={() => {
-
-                                                setDialog('CreateOrEditExcelDBRemarkDialog')
-                                                //@ts-ignore
-                                                if (cell.row.original['Account Name'])
-                                                    //@ts-ignore
-                                                    setObj(cell.row.original['Account Name'])
-                                                //@ts-ignore
-                                                else if (cell.row.original['PARTY'])
-                                                    //@ts-ignore
-                                                    setObj(cell.row.original['PARTY'])
-                                                //@ts-ignore
-                                                else if (cell.row.original['Customer Name'])
-                                                    //@ts-ignore
-                                                    setObj(cell.row.original['Customer Name'])
-                                                //@ts-ignore
-                                                else if (cell.row.original['CUSTOMER'])
-                                                    //@ts-ignore
-                                                    setObj(cell.row.original['CUSTOMER'])
-                                            }}
-                                        >
-                                            <Comment />
-                                        </IconButton>
-                                    </Tooltip>}
-
-                            </Stack>}
-                    />,
-                    Footer: ""
-                }
-            else if (item.type == "string") {
-                if (item.key == 'last remark' || item.key == 'next call')
-                    return {
-                        accessorKey: item.key,
-                        header: item.header,
-                        Footer: "", Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>
-                    }
-                return {
-                    accessorKey: item.key,
-                    header: item.header,
-                    Footer: "",
-                }
+          if (item.type == "action")
+            return {
+              accessorKey: item.key,
+              header: item.header,
+    
+              Cell: (cell) => <PopUp key={item.key}
+                element={
+                  <Stack direction="row" spacing={1} >
+                    {LoggedInUser?.assigned_permissions.includes('grp_excel_view') && <Tooltip title="view remarks">
+                      <IconButton color="primary"
+    
+                        onClick={() => {
+    
+                          setDialog('ViewExcelDBRemarksDialog')
+                          //@ts-ignore
+                          if (cell.row.original['Account Name'])
+                            //@ts-ignore
+                            setObj(cell.row.original['Account Name'])
+                          //@ts-ignore
+                          else if (cell.row.original['PARTY'])
+                            //@ts-ignore
+                            setObj(cell.row.original['PARTY'])
+    
+                          //@ts-ignore
+                          else if (cell.row.original['Customer Name'])
+                            //@ts-ignore
+                            setObj(cell.row.original['Customer Name'])
+                          //@ts-ignore
+                          else if (cell.row.original['CUSTOMER'])
+                            //@ts-ignore
+                            setObj(cell.row.original['CUSTOMER'])
+                        }}
+                      >
+                        <Visibility />
+                      </IconButton>
+                    </Tooltip>}
+    
+                    {LoggedInUser?.assigned_permissions.includes('grp_excel_edit') &&
+                      <Tooltip title="Add Remark">
+                        <IconButton
+    
+                          color="success"
+                          onClick={() => {
+    
+                            setDialog('CreateOrEditExcelDBRemarkDialog')
+                            //@ts-ignore
+                            if (cell.row.original['Account Name'])
+                              //@ts-ignore
+                              setObj(cell.row.original['Account Name'])
+                            //@ts-ignore
+                            else if (cell.row.original['PARTY'])
+                              //@ts-ignore
+                              setObj(cell.row.original['PARTY'])
+                            //@ts-ignore
+                            else if (cell.row.original['Customer Name'])
+                              //@ts-ignore
+                              setObj(cell.row.original['Customer Name'])
+                            //@ts-ignore
+                            else if (cell.row.original['CUSTOMER'])
+                              //@ts-ignore
+                              setObj(cell.row.original['CUSTOMER'])
+                          }}
+                        >
+                          <Comment />
+                        </IconButton>
+                      </Tooltip>}
+    
+                  </Stack>}
+              />,
+              Footer: ""
             }
-            else if (item.type == "timestamp")
-                return { accessorKey: item.key, header: item.header, Footer: "", }
-            else if (item.type == "date")
-                return {
-                    accessorKey: item.key,
-                    header: item.header,
-                    Footer: <b>Total</b>,
-                }
-            else
-                return {
-                    accessorKey: item.key, header: item.header,
-                    filterVariant: 'range',
-                    filterFn: 'betweenInclusive',
-                    aggregationFn: 'sum',
-                    AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-                    Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-                    //@ts-ignore
-                    Footer: ({ table }) => <b>{index < 2 ? table.getFilteredRowModel().rows.length : table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
-                }
+          else if (item.type == "string") {
+            if (item.key == 'last remark' || item.key == 'next call')
+              return {
+                accessorKey: item.key,
+                header: item.header,
+                /* @ts-ignore */
+                filterFn: (
+                  row,
+                  columnId: string,
+                  filterValue: unknown[]
+                ) => {
+                 
+                  return filterValue.some(
+                    val => row.getValue<unknown[]>(columnId)==val
+                  )
+                },
+                Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
+              }
+            return {
+              accessorKey: item.key,
+              header: item.header,
+              /* @ts-ignore */
+              filterFn: CustomFilterFunction,
+              Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+              Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
+              Footer: "",
+            }
+          }
+          else if (item.type == "timestamp")
+            return {
+              accessorKey: item.key, header: item.header,  /* @ts-ignore */
+              filterFn: CustomFilterFunction,
+              Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+              Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />, Footer: ""
+            }
+          else if (item.type == "date")
+            return {
+              accessorKey: item.key,
+              header: item.header,
+              /* @ts-ignore */
+              filterFn: CustomFilterFunction,
+              Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+              Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
+              Footer: <b>Total</b>,
+            }
+          else
+            return {
+              accessorKey: item.key, header: item.header,
+              aggregationFn: 'sum',
+              filterVariant: 'range',
+              filterFn: 'betweenInclusive',
+              Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+              AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+              //@ts-ignore
+              Footer: ({ table }) => <b>{index < 2 ? table.getFilteredRowModel().rows.length : table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
+            }
         })
         ,
         [reports, reportcolumns],
         //end
-    );
+      );
+    
 
     useEffect(() => {
         refetch()
