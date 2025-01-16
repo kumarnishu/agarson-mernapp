@@ -105,7 +105,7 @@ export class PartyPageController {
             columns: [],
             rows: []
         };
-
+        let party = req.query.party
         let cat: IKeyCategory | null = await KeyCategory.findOne({ category: 'PartyTarget' })
         if (!cat)
             return res.status(404).json({ message: `${cat} not exists` })
