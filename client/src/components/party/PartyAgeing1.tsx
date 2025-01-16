@@ -1,114 +1,130 @@
-import { AxiosResponse } from 'axios'
-import {  useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { Typography } from '@mui/material'
+import { AxiosResponse } from "axios"
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
-import { IColumnRowData } from '../../dtos/SalesDto'
-import { PartyPageService } from '../../services/PartyPageService'
 import { HandleNumbers } from '../../utils/IsDecimal'
-import { CustomColumFilter } from '../filter/CustomColumFIlter'
-import { Tooltip } from '@mui/material'
-import { CustomFilterFunction } from '../filter/CustomFilterFunction'
+import { GetAgeingDto } from '../../dtos/SalesDto'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { useNavigate } from 'react-router-dom'
+import { PartyPageService } from '../../services/PartyPageService'
 
 
 export default function PartyAgeing1({ party }: { party: string }) {
-    const [reports, setReports] = useState<IColumnRowData['rows']>([])
-    const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
-    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["ageing1", party], async () => new PartyPageService().GetPartyAgeingReport2(party))
+    const [ageings, setAgeings] = useState<GetAgeingDto[]>([])
+    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetAgeingDto[]>, BackendError>(["ageing1", party], async () => new PartyPageService().GetPartyAgeing1(party))
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const isFirstRender = useRef(true);
-
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+    const goto = useNavigate()
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
+    const columns = useMemo<MRT_ColumnDef<GetAgeingDto>[]>(
+        //column definitions...
+        () => ageings && [
+            {
+                accessorKey: 'state',
+                header: 'State',
+                aggregationFn: 'max',
+
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.state || "" })} />,
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                Cell: (cell) => <>{cell.row.original.state || ""}</>,
+
+            },
+            {
+                accessorKey: 'party',
+                header: 'Party',
+                filterFn: CustomFilterFunction,
+                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.party || "" })} />,
+                Cell: (cell) => <Typography sx={{ cursor: 'pointer' }} onClick={() => { goto(`/Sales/PartyPage/${cell.row.original.party}`) }}>{cell.row.original.party || ""}</Typography>,
+
+            },
+            {
+                accessorKey: 'two5',
+                header: '0-25',
+                aggregationFn: 'sum',
+                filterVariant: 'range',
+                filterFn: 'betweenInclusive',
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                //@ts-ignore
+                Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.two5) }, 0).toFixed()}</b>
 
 
+            },
+            {
+                accessorKey: 'three0',
+                header: '25-30',
+                aggregationFn: 'sum',
+                filterVariant: 'range',
+                filterFn: 'betweenInclusive',
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                //@ts-ignore
+                Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.three0) }, 0).toFixed()}</b>
+            },
+            {
+                accessorKey: 'five5',
+                header: '30-55',
+                aggregationFn: 'sum',
+                filterVariant: 'range',
+                filterFn: 'betweenInclusive',
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                //@ts-ignore
+                Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.five5) }, 0).toFixed()}</b>
+            },
+            {
+                accessorKey: 'six0',
+                header: '55-60',
 
-    let columns = useMemo<MRT_ColumnDef<any, any>[]>(
-        () => reportcolumns && reportcolumns.map((item, index) => {
-            if (item.type == "string") {
-                if (item.key == 'last remark' || item.key == 'next call')
-                    return {
-                        accessorKey: item.key,
-                        header: item.header,
-                        /* @ts-ignore */
-                        filterFn: (
-                            row,
-                            columnId: string,
-                            filterValue: unknown[]
-                        ) => {
+                aggregationFn: 'sum',
+                filterVariant: 'range',
+                filterFn: 'betweenInclusive',
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                //@ts-ignore
+                Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.six0) }, 0).toFixed()}</b>
+            },
+            {
+                accessorKey: 'seven0',
+                header: '60-70',
+                aggregationFn: 'sum',
+                filterVariant: 'range',
+                filterFn: 'betweenInclusive',
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                //@ts-ignore
+                Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.seven0) }, 0).toFixed()}</b>
+            },
 
-                            return filterValue.some(
-                                val => row.getValue<unknown[]>(columnId) == val
-                            )
-                        },
-                        Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
-                        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
-                    }
-                return {
-                    accessorKey: item.key,
-                    header: item.header,
-                    /* @ts-ignore */
-                    filterFn: CustomFilterFunction,
-                    Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
-                    Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
-                    Footer: "",
-                }
-            }
-            else if (item.type == "timestamp")
-                return {
-                    accessorKey: item.key, header: item.header,  /* @ts-ignore */
-                    filterFn: CustomFilterFunction,
-                    Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
-                    Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />, Footer: ""
-                }
-            else if (item.type == "date")
-                return {
-                    accessorKey: item.key,
-                    header: item.header,
-                    /* @ts-ignore */
-                    filterFn: CustomFilterFunction,
-                    Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
-                    Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
-                    Footer: <b>Total</b>,
-                }
-            else
-                return {
-                    accessorKey: item.key, header: item.header,
-                    aggregationFn: 'sum',
-                    filterVariant: 'range',
-                    filterFn: 'betweenInclusive',
-                    Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
-                    AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-                    //@ts-ignore
-                    Footer: ({ table }) => <b>{index < 2 ? table.getFilteredRowModel().rows.length : table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
-                }
-        })
-        ,
-        [reports, reportcolumns],
+            {
+                accessorKey: 'seventyplus',
+                header: '70+',
+                aggregationFn: 'sum',
+                filterVariant: 'range',
+                filterFn: 'betweenInclusive',
+                AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                Cell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+                //@ts-ignore
+                Footer: ({ table }) => <b>{table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original.seventyplus) }, 0).toFixed()}</b>
+            },
+
+        ],
+        [ageings],
         //end
     );
 
 
-    useEffect(() => {
-        if (isSuccess && data) {
-            setReports(data.data.rows);
-            setReportColumns(data.data.columns)
-        }
-    }, [isSuccess, data]);
-
-
-
     const table = useMaterialReactTable({
-        //@ts-ignore
         columns, columnFilterDisplayMode: 'popover',
-        data: reports ? reports : [], //10,000 rows       
+        data: ageings, //10,000 rows       
         enableColumnResizing: true,
-        enableRowVirtualization: true,
-        rowVirtualizerInstanceRef, //optional
-        // , //optionally customize the row virtualizr
-        // columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizr
-        enableStickyFooter: true,
+        enableColumnVirtualization: true, enableStickyFooter: true,
         muiTableFooterRowProps: () => ({
             sx: {
                 backgroundColor: 'whitesmoke',
@@ -140,38 +156,53 @@ export default function PartyAgeing1({ party }: { party: string }) {
                 }
             },
         }),
-
-
         muiTableBodyCellProps: () => ({
             sx: {
                 border: '1px solid #c2beba;',
-
             },
         }),
         muiPaginationProps: {
-            rowsPerPageOptions: [10, 100, 200, 500, 1000, 2000, 5000, 7000, 10000],
+            rowsPerPageOptions: [100, 200, 500, 1000, 2000],
             shape: 'rounded',
             variant: 'outlined',
         },
         enableDensityToggle: false, initialState: {
-            density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
+            density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
         },
         enableGrouping: true,
         enableRowSelection: true,
+        manualPagination: false,
         enablePagination: true,
+        enableRowNumbers: true,
         enableColumnPinning: true,
         enableTableFooter: true,
-        onColumnVisibilityChange: setColumnVisibility,
+        enableRowVirtualization: true,
+        onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+
         onSortingChange: setSorting,
-        onColumnSizingChange: setColumnSizing,
-        state: {
+        onColumnSizingChange: setColumnSizing, state: {
             isLoading: isLoading,
             columnVisibility,
+
             sorting,
             columnSizing: columnSizing
         }
     });
 
+
+    useEffect(() => {
+        if (isSuccess) {
+            setAgeings(data.data);
+        }
+    }, [data, isSuccess]);
+    useEffect(() => {
+        //scroll to the top of the table when the sorting changes
+        try {
+            rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+        } catch (error) {
+            console.error(error);
+        }
+    }, [sorting]);
 
     //load state from local storage
     useEffect(() => {
@@ -183,23 +214,19 @@ export default function PartyAgeing1({ party }: { party: string }) {
         );
 
 
-        const sorting = localStorage.getItem('mrt_sorting_table_1');
+
 
 
         if (columnVisibility) {
             setColumnVisibility(JSON.parse(columnVisibility));
         }
 
+
         if (columnSizing)
             setColumnSizing(JSON.parse(columnSizing))
-        if (sorting) {
-            setSorting(JSON.parse(sorting));
-        }
+
         isFirstRender.current = false;
     }, []);
-
-
-
 
     useEffect(() => {
         if (isFirstRender.current) return;
