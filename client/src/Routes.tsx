@@ -89,6 +89,7 @@ import SalesReportPage from './pages/sales/SalesReportPage.tsx'
 import CollectionReportPage from './pages/sales/CollectionReportPage.tsx'
 import AgeingPage from './pages/sales/AgeingPage.tsx'
 import SharedAgeingpage from './pages/excel reports/SharedAgeingpage.tsx'
+import PartyPage from './pages/PartyPage.tsx'
 
 
 function AppRoutes() {
@@ -110,11 +111,13 @@ function AppRoutes() {
               }
             />
           </Route>
-          {user.role=="admin" && < Route path="/Users" element={
+          {user.role == "admin" && < Route path="/Users" element={
             <UsersNavbar />
           } >
             <Route index element={<UsersPage />} />
           </Route>}
+
+
           {user && user?.assigned_permissions.includes('attendnace_menu') &&
             < Route path="/Attendance" element={<AttendanceNavbar />} >
               <Route index element={
@@ -455,6 +458,7 @@ function AppRoutes() {
                   <SalesDashboard />
                 }
               />
+              <Route path='PartyPage/:party' element={<PartyPage />} />
 
               {user?.assigned_permissions.includes('salesman_visit_view') && <Route
                 path="SalesmanVisit" element={

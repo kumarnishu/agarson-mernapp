@@ -17,6 +17,7 @@ import ViewAgeingRemarksDialog from '../../components/dialogs/sales/ViewAgeingRe
 import { GetAgeingDto } from '../../dtos/SalesDto'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { useNavigate } from 'react-router-dom'
 
 
 export default function AgeingPage() {
@@ -30,7 +31,7 @@ export default function AgeingPage() {
     const isFirstRender = useRef(true);
     const [party, setParty] = useState<string>()
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-
+    const goto = useNavigate()
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
     const columns = useMemo<MRT_ColumnDef<GetAgeingDto>[]>(
@@ -105,10 +106,9 @@ export default function AgeingPage() {
             {
                 accessorKey: 'party',
                 header: 'Party',
-
                 filterFn: CustomFilterFunction,
                 Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.party || "" })} />,
-                Cell: (cell) => <>{cell.row.original.party || ""}</>,
+                Cell: (cell) => <Typography sx={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => { goto(`/Sales/PartyPage/${cell.row.original.party}`) }}>{cell.row.original.party || ""}</Typography>,
 
             },
             {

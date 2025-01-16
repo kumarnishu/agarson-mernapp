@@ -24,4 +24,6 @@ router.route("/ageing-remark").get(isAuthenticatedUser, controller.GetAgeingRema
 router.route("/ageing-remark/:id").put(isAuthenticatedUser, controller.UpdateAgeingRemark).delete(isAuthenticatedUser, controller.DeleteAgeingRemark)
 router.route("/create-ageing-from-excel").post(isAuthenticatedUser, upload.single('excel'), controller.BulkCreateAndUpdateAgeingFromExcel)
 router.get("/download/template/ageing", isAuthenticatedUser, controller.DownloadExcelTemplateForCreateAgeingReport)
+
+
 export default router

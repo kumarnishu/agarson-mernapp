@@ -41,8 +41,6 @@ const AgeingSchema = new mongoose.Schema<IAgeing, mongoose.Model<IAgeing, {}, {}
     party: {
         type: String,
         required: true,
-        lowercase: true,
-        trim: true,
         index: true
     }
     ,
@@ -97,8 +95,6 @@ const CollectionSchema = new mongoose.Schema<ICollection, mongoose.Model<ICollec
     party: {
         type: String,
         required: true,
-        lowercase: true,
-        trim: true,
         index: true
     }
     ,
@@ -321,8 +317,6 @@ const SalesSchema = new mongoose.Schema<ISales, mongoose.Model<ISales, {}, {}>, 
     party: {
         type: String,
         required: true,
-        lowercase: true,
-        trim: true,
         index: true
     }
     ,

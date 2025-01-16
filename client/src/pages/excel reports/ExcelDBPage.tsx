@@ -5,7 +5,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import PopUp from '../../components/popup/PopUp'
 import { UserContext } from '../../contexts/userContext'
 import { Comment, Refresh, Visibility } from '@mui/icons-material'
@@ -31,7 +31,7 @@ export default function ExcelDBPage() {
   const [dialog, setDialog] = useState<string | undefined>()
   const { id } = useParams()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
+  const goto = useNavigate()
   const { data: categorydata, refetch: RefetchCategory, isSuccess: isSuccessCategorydata } = useQuery<AxiosResponse<DropDownDto>, BackendError>(["key_categories"], async () => new AuthorizationService().GetKeyCategoryById(id || ""), { enabled: false })
 
   const { data, isLoading, isSuccess, refetch, isRefetching } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb", hidden], async () => new ExcelReportsService().GetExcelDbReport(id || "", hidden), { enabled: false })
@@ -89,8 +89,6 @@ export default function ExcelDBPage() {
 
                       color="success"
                       onClick={() => {
-
-                        setDialog('CreateOrEditExcelDBRemarkDialog')
                         //@ts-ignore
                         if (cell.row.original['Account Name'])
                           //@ts-ignore
@@ -99,6 +97,7 @@ export default function ExcelDBPage() {
                         else if (cell.row.original['PARTY'])
                           //@ts-ignore
                           setObj(cell.row.original['PARTY'])
+
                         //@ts-ignore
                         else if (cell.row.original['Customer Name'])
                           //@ts-ignore
@@ -108,6 +107,7 @@ export default function ExcelDBPage() {
                           //@ts-ignore
                           setObj(cell.row.original['CUSTOMER'])
                       }}
+
                     >
                       <Comment />
                     </IconButton>
@@ -128,9 +128,9 @@ export default function ExcelDBPage() {
               columnId: string,
               filterValue: unknown[]
             ) => {
-             
+
               return filterValue.some(
-                val => row.getValue<unknown[]>(columnId)==val
+                val => row.getValue<unknown[]>(columnId) == val
               )
             },
             Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
@@ -141,7 +141,27 @@ export default function ExcelDBPage() {
           header: item.header,
           /* @ts-ignore */
           filterFn: CustomFilterFunction,
-          Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+          Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span
+            style={{ cursor: 'pointer' }} onClick={() => {
+              setDialog('CreateOrEditExcelDBRemarkDialog')
+              //@ts-ignore
+              if (cell.row.original['Account Name'])
+                //@ts-ignore
+                goto(`/Sales/PartyPage/${cell.row.original['Account Name']}`)
+              //@ts-ignore
+              else if (cell.row.original['PARTY'])
+                //@ts-ignore
+                goto(`/Sales/PartyPage/${cell.row.original['PARTY Name']}`)
+              //@ts-ignore
+              else if (cell.row.original['Customer Name'])
+                //@ts-ignore
+                goto(`/Sales/PartyPage/${cell.row.original['Customer Name']}`)
+              //@ts-ignore
+              else if (cell.row.original['CUSTOMER'])
+                //@ts-ignore
+                goto(`/Sales/PartyPage/${cell.row.original['CUSTOMER']}`)
+
+            }}>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
           Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
           Footer: "",
         }
