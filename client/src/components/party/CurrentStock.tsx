@@ -122,8 +122,8 @@ export default function CurrentStock({ party }: { party: string }) {
                 }
             },
         }),
-        muiTablePaperProps: () => ({
-            sx: { height: '30vh', overflow: 'scroll' }
+        muiTableContainerProps: () => ({
+            sx: { height: '80vh',width:'50vw', overflow: 'hidden' }
         }),
 
         muiTableBodyCellProps: () => ({
@@ -142,9 +142,10 @@ export default function CurrentStock({ party }: { party: string }) {
         },
         enableGrouping: true,
         enableRowSelection: true,
-        enablePagination: true,
+        enablePagination: false,
         enableColumnPinning: true,
         enableTableFooter: true,
+        enableBottomToolbar:false,
         onColumnVisibilityChange: setColumnVisibility,
         onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing,

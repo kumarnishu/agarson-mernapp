@@ -98,7 +98,7 @@ export default function PartyPendingOrders({ party }: { party: string }) {
             }
         }),
         muiTablePaperProps: () => ({
-            sx: { height: '30vh', width: '18vw', overflow: 'scroll' }
+            sx: {  width:'50vw' }
         }),
         renderTopToolbarCustomActions: () => (
             <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Pending Orders</Typography>
@@ -141,11 +141,13 @@ export default function PartyPendingOrders({ party }: { party: string }) {
         enableDensityToggle: false, initialState: {
             density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
         },
-        enableGrouping: true,
+        enableBottomToolbar:false,
+        enableGlobalFilter:false,
+        enableGrouping: false,
         enableRowSelection: true,
-        enablePagination: true,
+        enablePagination: false,
         enableColumnPinning: true,
-        enableTableFooter: true,
+        enableTableFooter: false,
         onColumnVisibilityChange: setColumnVisibility,
         onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing,

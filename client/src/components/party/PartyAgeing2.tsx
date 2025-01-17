@@ -92,7 +92,10 @@ export default function PartyAgeing2({ party }: { party: string }) {
         // columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizr
         enableStickyFooter: true,
         muiTablePaperProps: () => ({
-            sx: { height: '30vh', width: '18vw', overflow: 'scroll' }
+            sx: {  width:'50vw' }
+        }),
+        muiTableBodyProps: () => ({
+            sx: {  className:'scrollable-stack' }
         }),
         renderTopToolbarCustomActions: () => (
             <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Ageing 2</Typography>
@@ -136,11 +139,13 @@ export default function PartyAgeing2({ party }: { party: string }) {
         enableDensityToggle: false, initialState: {
             density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
         },
-        enableGrouping: true,
-        enableRowSelection: true,
-        enablePagination: true,
+        enableBottomToolbar:false,
+        enableGlobalFilter:false,
+        enableGrouping: false,
+        enableRowSelection: false,
+        enablePagination: false,
         enableColumnPinning: true,
-        enableTableFooter: true,
+        enableTableFooter: false,
         onColumnVisibilityChange: setColumnVisibility,
         onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing,

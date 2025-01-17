@@ -108,7 +108,7 @@ export default function PartyForcastAndGrowth({ party }: { party: string }) {
             <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Forcast And Growth</Typography>
         ),
         muiTablePaperProps: () => ({
-            sx: { height: '30vh', width: '18vw', overflow: 'scroll' }
+            sx: {  width:'50vw' }
         }),
         muiTableHeadCellProps: ({ column }) => ({
             sx: {
@@ -142,11 +142,13 @@ export default function PartyForcastAndGrowth({ party }: { party: string }) {
         enableDensityToggle: false, initialState: {
             density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
         },
-        enableGrouping: true,
-        enableRowSelection: true,
-        enablePagination: true,
+        enableBottomToolbar:false,
+        enableGlobalFilter:false,
+        enableGrouping: false,
+        enableRowSelection: false,
+        enablePagination: false,
         enableColumnPinning: true,
-        enableTableFooter: true,
+        enableTableFooter: false,
         onColumnVisibilityChange: setColumnVisibility,
         onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing,

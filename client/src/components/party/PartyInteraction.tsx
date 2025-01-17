@@ -107,7 +107,7 @@ export default function PartyInteraction({ party }: { party: string }) {
             variant: 'outlined',
         },
         muiTablePaperProps: () => ({
-            sx: { height: '30vh', width: '100vw', overflow: 'scroll' }
+            sx: {  width: '100vw', overflow: 'scroll' }
         }),
         enableDensityToggle: false, initialState: {
             density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }

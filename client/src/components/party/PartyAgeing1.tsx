@@ -168,18 +168,18 @@ export default function PartyAgeing1({ party }: { party: string }) {
             variant: 'outlined',
         },
         muiTablePaperProps: () => ({
-            sx: { height: '30vh', width: '18vw', overflow: 'scroll' }
+            sx: {  width:'50vw' }
         }),
         enableDensityToggle: false, initialState: {
-            density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
+            density: 'compact', pagination: { pageIndex: 0, pageSize: 500 }
         },
-        enableGrouping: true,
-        enableRowSelection: true,
-        manualPagination: false,
-        enablePagination: true,
-        enableRowNumbers: true,
+        enableBottomToolbar:false,
+        enableGlobalFilter:false,
+        enableGrouping: false,
+        enableRowSelection: false,
+        enablePagination: false,
         enableColumnPinning: true,
-        enableTableFooter: true,
+        enableTableFooter: false,
         enableRowVirtualization: true,
         onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
 
