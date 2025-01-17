@@ -26,8 +26,8 @@ function ViewPartyDetailDialog({ party, dialog, setDialog }: Props) {
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>
                 {party}
             </DialogTitle>
-            <Stack  direction={'row'} gap={1} padding={1} sx={{ width: '100vw' }}>
-                <Stack  sx={{ height: '100vh', width: '55vw' }} direction={'column'} justifyContent={'space-between'}>
+            <Stack  direction={'row'} sx={{ width: '100vw' }} gap={1} p={1}>
+                <Stack  sx={{ height: '100%', width: '50vw' }} gap={1} direction={'column'} justifyContent={'space-between'}>
                     {/* <PartyInteraction party={party} /> */}
                     <PartyAgeing1 party={party} />
                     <PartyAgeing2 party={party} />

@@ -94,9 +94,7 @@ export default function PartyAgeing2({ party }: { party: string }) {
         muiTablePaperProps: () => ({
             sx: {  width:'50vw' }
         }),
-        muiTableBodyProps: () => ({
-            sx: {  className:'scrollable-stack' }
-        }),
+       
         renderTopToolbarCustomActions: () => (
             <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Ageing 2</Typography>
         ),

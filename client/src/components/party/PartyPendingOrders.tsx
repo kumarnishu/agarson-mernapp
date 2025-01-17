@@ -138,6 +138,7 @@ export default function PartyPendingOrders({ party }: { party: string }) {
             shape: 'rounded',
             variant: 'outlined',
         },
+       
         enableDensityToggle: false, initialState: {
             density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
         },
@@ -147,7 +148,7 @@ export default function PartyPendingOrders({ party }: { party: string }) {
         enableRowSelection: true,
         enablePagination: false,
         enableColumnPinning: true,
-        enableTableFooter: false,
+        enableTableFooter: true,
         onColumnVisibilityChange: setColumnVisibility,
         onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing,

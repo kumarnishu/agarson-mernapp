@@ -134,6 +134,7 @@ export default function PartyForcastAndGrowth({ party }: { party: string }) {
 
             },
         }),
+       
         muiPaginationProps: {
             rowsPerPageOptions: [10, 100, 200, 500, 1000, 2000, 5000, 7000, 10000],
             shape: 'rounded',

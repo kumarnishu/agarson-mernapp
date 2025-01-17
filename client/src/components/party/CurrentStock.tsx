@@ -99,7 +99,7 @@ export default function CurrentStock({ party }: { party: string }) {
         renderTopToolbarCustomActions: () => (
             <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Current Stock</Typography>
         ),
-
+       
         muiTableHeadRowProps: () => ({
             sx: {
                 backgroundColor: 'whitesmoke',

@@ -104,6 +104,7 @@ export default function PartyClientSale({ party }: { party: string }) {
         muiTablePaperProps: () => ({
             sx: {  width:'50vw' }
         }),
+       
         muiTableHeadRowProps: () => ({
             sx: {
                 backgroundColor: 'whitesmoke',
@@ -134,6 +135,7 @@ export default function PartyClientSale({ party }: { party: string }) {
 
             },
         }),
+        
         muiPaginationProps: {
             rowsPerPageOptions: [10, 100, 200, 500, 1000, 2000, 5000, 7000, 10000],
             shape: 'rounded',
@@ -148,7 +150,7 @@ export default function PartyClientSale({ party }: { party: string }) {
         enableRowSelection: true,
         enablePagination: false,
         enableColumnPinning: true,
-        enableTableFooter: false,
+        enableTableFooter: true,
         onColumnVisibilityChange: setColumnVisibility,
         onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing,
