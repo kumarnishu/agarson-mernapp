@@ -122,8 +122,8 @@ export default function CurrentStock({ party }: { party: string }) {
                 }
             },
         }),
-        muiTableContainerProps: () => ({
-            sx: { height: '80vh', width: window.screen.width > 600 ? '48.5vw' : 'auto' }
+        muiTableContainerProps: (props) => ({
+            sx: { height: '80vh', width: window.screen.width > 600 && !props.table.getState().isFullScreen ? '48.5vw' : 'auto' }
         }),
 
         muiTableBodyCellProps: () => ({
