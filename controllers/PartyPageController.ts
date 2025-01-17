@@ -200,14 +200,27 @@ export class PartyPageController {
             if (dt)
                 return obj
         }))
-        for (let k = 0; k < keys.length; k++) {
-            let c = keys[k]
-            result.columns.push({ key: c.key, header: c.key, type: c.type })
-        }
+        // for (let k = 0; k < keys.length; k++) {
+        //     let c = keys[k]
+        //     result.columns.push({ key: c.key, header: c.key, type: c.type })
+        // }
         result.rows = promiseResult.filter(row => {
             if (row)
                 return row
         }) as IRowData[]
+        for (let k = 0; k < keys.length; k++) {
+            let c = keys[k]
+            if (c.type !== 'number')
+                result.columns.push({ key: c.key, header: c.key, type: c.type })
+            else {
+                const data: { key: string, value: number }[] = result.rows.map((dt) => { return { key: c.key, value: dt[c.key] } })
+                const total = data.reduce((sum, item) => sum + (item.value || 0), 0);
+                console.log(c.key,total)
+                if (total > 0)
+                    result.columns.push({ key: c.key, header: c.key, type: c.type })
+            }
+
+        }
         return res.status(200).json(result)
     }
     public async GetPartyArticleSaleMonthly(req: Request, res: Response, next: NextFunction) {
@@ -263,14 +276,27 @@ export class PartyPageController {
             if (dt)
                 return obj
         }))
-        for (let k = 0; k < keys.length; k++) {
-            let c = keys[k]
-            result.columns.push({ key: c.key, header: c.key, type: c.type })
-        }
+        // for (let k = 0; k < keys.length; k++) {
+        //     let c = keys[k]
+        //     result.columns.push({ key: c.key, header: c.key, type: c.type })
+        // }
         result.rows = promiseResult.filter(row => {
             if (row)
                 return row
         }) as IRowData[]
+        for (let k = 0; k < keys.length; k++) {
+            let c = keys[k]
+            if (c.type !== 'number')
+                result.columns.push({ key: c.key, header: c.key, type: c.type })
+            else {
+                const data: { key: string, value: number }[] = result.rows.map((dt) => { return { key: c.key, value: dt[c.key] } })
+                const total = data.reduce((sum, item) => sum + (item.value || 0), 0);
+                console.log(c.key,total)
+                if (total > 0)
+                    result.columns.push({ key: c.key, header: c.key, type: c.type })
+            }
+
+        }
         return res.status(200).json(result)
     }
     public async GetPartyPendingOrders(req: Request, res: Response, next: NextFunction) {
@@ -285,19 +311,19 @@ export class PartyPageController {
         let keys = await Key.find({ category: cat._id }).sort('serial_no');
 
         let data = await ExcelDB.find({ category: cat._id, 'Account Name': party }).populate('key').sort('created_at')
-        console.log(cat._id,party,data.length)
         let promiseResult = await Promise.all(data.map(async (_dt) => {
             let obj: IRowData = {}
             let dt = _dt
             if (dt) {
-                for (let i = 0; i < keys.length; i++) {
-                    let key = keys[i].key
+                keys.forEach((item) => {
+                    let key = item.key
+                    let type = item.type
                     //@ts-ignore
                     if (dt[key]) {
-                        if (keys[i].type == "timestamp")
+                        if (type == "timestamp")
                             //@ts-ignore
                             obj[key] = String(decimalToTimeForXlsx(dt[key]))
-                        else if (keys[i].type == "date") {
+                        else if (type == "date") {
                             if (cat && cat.category == 'SalesRep' && key == 'Sales Representative') {
                                 //@ts-ignore
                                 obj[key] = moment(dt[key]).format("MMM-YY")
@@ -314,25 +340,40 @@ export class PartyPageController {
 
                     }
                     else {
-                        if (keys[i].type == "number")
+                        if (type == "number")
                             obj[key] = 0
                         else
                             obj[key] = ""
                     }
 
-                }
+                })
             }
             if (dt)
                 return obj
         }))
-        for (let k = 0; k < keys.length; k++) {
-            let c = keys[k]
-            result.columns.push({ key: c.key, header: c.key, type: c.type })
-        }
+        // for (let k = 0; k < keys.length; k++) {
+        //     let c = keys[k]
+        //     result.columns.push({ key: c.key, header: c.key, type: c.type })
+        // }
+       
         result.rows = promiseResult.filter(row => {
             if (row)
                 return row
         }) as IRowData[]
+
+        for (let k = 0; k < keys.length; k++) {
+            let c = keys[k]
+            if (c.type !== 'number')
+                result.columns.push({ key: c.key, header: c.key, type: c.type })
+            else {
+                const data: { key: string, value: number }[] = result.rows.map((dt) => { return { key: c.key, value: dt[c.key] } })
+                const total = data.reduce((sum, item) => sum + (item.value || 0), 0);
+                console.log(c.key,total)
+                if (total > 0)
+                    result.columns.push({ key: c.key, header: c.key, type: c.type })
+            }
+
+        }
         return res.status(200).json(result)
     }
     public async GetCurrentStock(req: Request, res: Response, next: NextFunction) {
@@ -387,14 +428,26 @@ export class PartyPageController {
             if (dt)
                 return obj
         }))
-        for (let k = 0; k < keys.length; k++) {
-            let c = keys[k]
-            result.columns.push({ key: c.key, header: c.key, type: c.type })
-        }
+
         result.rows = promiseResult.filter(row => {
             if (row)
                 return row
         }) as IRowData[]
+
+        for (let k = 0; k < keys.length; k++) {
+            let c = keys[k]
+            if (c.type !== 'number')
+                result.columns.push({ key: c.key, header: c.key, type: c.type })
+            else {
+                const data: { key: string, value: number }[] = result.rows.map((dt) => { return { key: c.key, value: dt[c.key] } })
+                const total = data.reduce((sum, item) => sum + (item.value || 0), 0);
+                console.log(c.key,total)
+                if (total > 0)
+                    result.columns.push({ key: c.key, header: c.key, type: c.type })
+            }
+
+        }
+
         return res.status(200).json(result)
     }
 

@@ -99,7 +99,7 @@ export default function CurrentStock({ party }: { party: string }) {
         renderTopToolbarCustomActions: () => (
             <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Current Stock</Typography>
         ),
-       
+
         muiTableHeadRowProps: () => ({
             sx: {
                 backgroundColor: 'whitesmoke',
@@ -123,7 +123,7 @@ export default function CurrentStock({ party }: { party: string }) {
             },
         }),
         muiTableContainerProps: () => ({
-            sx: { height: '80vh',width:'50vw' }
+            sx: { height: '80vh', width: window.screen.width > 600 ? '48.5vw' : 'auto' }
         }),
 
         muiTableBodyCellProps: () => ({
@@ -132,19 +132,19 @@ export default function CurrentStock({ party }: { party: string }) {
             },
         }),
         muiPaginationProps: {
-            rowsPerPageOptions: [10, 100, 200, 500, 1000, 2000, 5000, 7000, 10000],
+            rowsPerPageOptions: [10, 50, 100, 200, 500, 1000, 2000, 5000, 7000, 10000],
             shape: 'rounded',
             variant: 'outlined',
         },
         enableDensityToggle: false, initialState: {
-            density: 'compact', pagination: { pageIndex: 0, pageSize: 100 }
+            density: 'compact', pagination: { pageIndex: 0, pageSize: 50 }
         },
         enableGrouping: true,
         enableRowSelection: true,
         enablePagination: true,
         enableColumnPinning: true,
         enableTableFooter: true,
-        enableBottomToolbar:true,
+        enableBottomToolbar: true,
         onColumnVisibilityChange: setColumnVisibility,
         onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing,

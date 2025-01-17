@@ -101,16 +101,7 @@ export default function PartyClientSale({ party }: { party: string }) {
         renderTopToolbarCustomActions: () => (
             <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Articles Sale</Typography>
         ),
-        muiTablePaperProps: () => ({
-            sx: {  width:'50vw' }
-        }),
-       
-        muiTableHeadRowProps: () => ({
-            sx: {
-                backgroundColor: 'whitesmoke',
-                color: 'white'
-            },
-        }),
+    
         muiTableHeadCellProps: ({ column }) => ({
             sx: {
                 '& div:nth-of-type(1) span': {

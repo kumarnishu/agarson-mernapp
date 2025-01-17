@@ -26,8 +26,13 @@ function ViewPartyDetailDialog({ party, dialog, setDialog }: Props) {
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>
                 {party}
             </DialogTitle>
-            <Stack direction={'row'} sx={{ width: '100vw' }} gap={1} p={1}>
-                <Stack sx={{ height: '100%', width: '50vw' }} gap={1} direction={'column'} justifyContent={'space-between'}>
+            <Stack direction={{ sm: 'column', md: 'row' }} sx={{ width: '100vw' }} gap={2}   >
+                <Stack gap={1} direction={'column'} justifyContent={'space-between'} sx={{
+                    width: {
+                        sm: "100%",
+                        md: '49%'
+                    }
+                }}>
                     {!party && <PartyInteraction party={party} />}
                     <PartyAgeing1 party={party} />
                     <PartyAgeing2 party={party} />
@@ -35,7 +40,7 @@ function ViewPartyDetailDialog({ party, dialog, setDialog }: Props) {
                     <PartyClientSale party={party} />
                     <PartyPendingOrders party={party} />
                 </Stack>
-                <Stack sx={{ width: '50vw' }} direction={'row'} justifyContent={'space-between'}>
+                <Stack  direction={'row'} >
                     <CurrentStock party={party} />
                 </Stack>
             </Stack>

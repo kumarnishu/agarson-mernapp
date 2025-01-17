@@ -107,9 +107,7 @@ export default function PartyForcastAndGrowth({ party }: { party: string }) {
         renderTopToolbarCustomActions: () => (
             <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Forcast And Growth</Typography>
         ),
-        muiTablePaperProps: () => ({
-            sx: {  width:'50vw' }
-        }),
+      
         muiTableHeadCellProps: ({ column }) => ({
             sx: {
                 '& div:nth-of-type(1) span': {

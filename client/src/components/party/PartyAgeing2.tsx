@@ -91,9 +91,7 @@ export default function PartyAgeing2({ party }: { party: string }) {
         // , //optionally customize the row virtualizr
         // columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizr
         enableStickyFooter: true,
-        muiTablePaperProps: () => ({
-            sx: {  width:'50vw' }
-        }),
+    
        
         renderTopToolbarCustomActions: () => (
             <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Ageing 2</Typography>

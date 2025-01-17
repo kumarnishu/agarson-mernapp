@@ -167,9 +167,7 @@ export default function PartyAgeing1({ party }: { party: string }) {
             shape: 'rounded',
             variant: 'outlined',
         },
-        muiTablePaperProps: () => ({
-            sx: {  width:'50vw' }
-        }),
+      
        
         enableDensityToggle: false, initialState: {
             density: 'compact', pagination: { pageIndex: 0, pageSize: 500 }
