@@ -98,7 +98,7 @@ export default function PartyPendingOrders({ party }: { party: string }) {
             }
         }),
         muiTablePaperProps: () => ({
-            sx: { height: '30vh', width: '16vw', overflow: 'scroll' }
+            sx: { height: '30vh', width: '18vw', overflow: 'scroll' }
         }),
         renderTopToolbarCustomActions: () => (
             <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Pending Orders</Typography>

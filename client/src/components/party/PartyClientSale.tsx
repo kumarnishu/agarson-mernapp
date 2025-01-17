@@ -102,7 +102,7 @@ export default function PartyClientSale({ party }: { party: string }) {
             <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Articles Sale</Typography>
         ),
         muiTablePaperProps: () => ({
-            sx: { height: '30vh', width: '16vw', overflow: 'scroll' }
+            sx: { height: '30vh', width: '18vw', overflow: 'scroll' }
         }),
         muiTableHeadRowProps: () => ({
             sx: {

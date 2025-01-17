@@ -279,8 +279,7 @@ export class PartyPageController {
             rows: []
         };
         let party = req.query.party
-        let cat: IKeyCategory | null = await KeyCategory.findOne({ category: 'ALL_ORDERS' })
-        console.log(cat)
+        let cat: IKeyCategory | null = await KeyCategory.findOne({ category: 'SALESOWNER' })
         if (!cat)
             return res.status(404).json({ message: `${cat} not exists` })
         let keys = await Key.find({ category: cat._id }).sort('serial_no');

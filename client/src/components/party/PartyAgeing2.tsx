@@ -92,10 +92,10 @@ export default function PartyAgeing2({ party }: { party: string }) {
         // columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizr
         enableStickyFooter: true,
         muiTablePaperProps: () => ({
-            sx: { height: '30vh', width: '16vw', overflow: 'scroll' }
+            sx: { height: '30vh', width: '18vw', overflow: 'scroll' }
         }),
         renderTopToolbarCustomActions: () => (
-            <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Ageing 70,90,120,120+</Typography>
+            <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Ageing 2</Typography>
         ),
       
         muiTableHeadRowProps: () => ({
