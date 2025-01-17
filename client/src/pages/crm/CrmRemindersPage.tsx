@@ -353,10 +353,10 @@ function CrmReminderPage() {
   //load state from local storage
   useEffect(() => {
     const columnVisibility = localStorage.getItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_CrmReminderPage',
     );
     const columnSizing = localStorage.getItem(
-      'mrt_columnSizing_table_1',
+      'mrt_columnSizing_CrmReminderPage',
     );
 
 
@@ -377,7 +377,7 @@ function CrmReminderPage() {
   useEffect(() => {
     if (isFirstRender.current) return;
     localStorage.setItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_CrmReminderPage',
       JSON.stringify(columnVisibility),
     );
   }, [columnVisibility]);
@@ -387,12 +387,12 @@ function CrmReminderPage() {
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    localStorage.setItem('mrt_sorting_CrmReminderPage', JSON.stringify(sorting));
   }, [sorting]);
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    localStorage.setItem('mrt_columnSizing_CrmReminderPage', JSON.stringify(columnSizing));
   }, [columnSizing]);
 
   return (

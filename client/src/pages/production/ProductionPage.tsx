@@ -283,10 +283,10 @@ export default function ProductionPage() {
   //load state from local storage
   useEffect(() => {
     const columnVisibility = localStorage.getItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_ProductionPage',
     );
     const columnSizing = localStorage.getItem(
-      'mrt_columnSizing_table_1',
+      'mrt_columnSizing_ProductionPage',
     );
 
 
@@ -307,7 +307,7 @@ export default function ProductionPage() {
   useEffect(() => {
     if (isFirstRender.current) return;
     localStorage.setItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_ProductionPage',
       JSON.stringify(columnVisibility),
     );
   }, [columnVisibility]);
@@ -317,12 +317,12 @@ export default function ProductionPage() {
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    localStorage.setItem('mrt_sorting_ProductionPage', JSON.stringify(sorting));
   }, [sorting]);
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    localStorage.setItem('mrt_columnSizing_ProductionPage', JSON.stringify(columnSizing));
   }, [columnSizing]);
 
   return (

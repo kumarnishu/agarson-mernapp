@@ -227,10 +227,10 @@ export default function LeaveBalancePage() {
   //load state from local storage
   useEffect(() => {
     const columnVisibility = localStorage.getItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_LeaveBalancePage',
     );
     const columnSizing = localStorage.getItem(
-      'mrt_columnSizing_table_1',
+      'mrt_columnSizing_LeaveBalancePage',
     );
 
 
@@ -251,7 +251,7 @@ export default function LeaveBalancePage() {
   useEffect(() => {
     if (isFirstRender.current) return;
     localStorage.setItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_LeaveBalancePage',
       JSON.stringify(columnVisibility),
     );
   }, [columnVisibility]);
@@ -261,12 +261,12 @@ export default function LeaveBalancePage() {
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    localStorage.setItem('mrt_sorting_LeaveBalancePage', JSON.stringify(sorting));
   }, [sorting]);
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    localStorage.setItem('mrt_columnSizing_LeaveBalancePage', JSON.stringify(columnSizing));
   }, [columnSizing]);
 
   useEffect(() => {

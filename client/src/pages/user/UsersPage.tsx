@@ -452,16 +452,16 @@ export default function UsersPage() {
     //load state from local storage
     useEffect(() => {
         const columnVisibility = localStorage.getItem(
-            'mrt_columnVisibility_table_1',
+            'mrt_columnVisibility_UsersPage',
         );
         const columnSizing = localStorage.getItem(
-            'mrt_columnSizing_table_1',
+            'mrt_columnSizing_UsersPage',
         );
 
 
 
 
-        const sorting = localStorage.getItem('mrt_sorting_table_1');
+        const sorting = localStorage.getItem('mrt_sorting_UsersPage');
 
 
         if (columnVisibility) {
@@ -481,7 +481,7 @@ export default function UsersPage() {
     useEffect(() => {
         if (isFirstRender.current) return;
         localStorage.setItem(
-            'mrt_columnVisibility_table_1',
+            'mrt_columnVisibility_UsersPage',
             JSON.stringify(columnVisibility),
         );
     }, [columnVisibility]);
@@ -490,12 +490,12 @@ export default function UsersPage() {
 
     useEffect(() => {
         if (isFirstRender.current) return;
-        localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+        localStorage.setItem('mrt_sorting_UsersPage', JSON.stringify(sorting));
     }, [sorting]);
 
     useEffect(() => {
         if (isFirstRender.current) return;
-        localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+        localStorage.setItem('mrt_columnSizing_UsersPage', JSON.stringify(columnSizing));
     }, [columnSizing]);
 
     useEffect(() => {

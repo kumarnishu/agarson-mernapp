@@ -235,10 +235,10 @@ export default function UserAssignementPage() {
   //load state from local storage
   useEffect(() => {
     const columnVisibility = localStorage.getItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_UserAssignementPage',
     );
     const columnSizing = localStorage.getItem(
-      'mrt_columnSizing_table_1',
+      'mrt_columnSizing_UserAssignementPage',
     );
 
 
@@ -259,7 +259,7 @@ export default function UserAssignementPage() {
   useEffect(() => {
     if (isFirstRender.current) return;
     localStorage.setItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_UserAssignementPage',
       JSON.stringify(columnVisibility),
     );
   }, [columnVisibility]);
@@ -269,12 +269,12 @@ export default function UserAssignementPage() {
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    localStorage.setItem('mrt_sorting_UserAssignementPage', JSON.stringify(sorting));
   }, [sorting]);
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    localStorage.setItem('mrt_columnSizing_UserAssignementPage', JSON.stringify(columnSizing));
   }, [columnSizing]);
 
   useEffect(() => {

@@ -255,16 +255,16 @@ export default function KeysPage() {
     //load state from local storage
     useEffect(() => {
         const columnVisibility = localStorage.getItem(
-            'mrt_columnVisibility_table_1',
+            'mrt_columnVisibility_KeysPage',
         );
         const columnSizing = localStorage.getItem(
-            'mrt_columnSizing_table_1',
+            'mrt_columnSizing_KeysPage',
         );
 
 
 
 
-        const sorting = localStorage.getItem('mrt_sorting_table_1');
+        const sorting = localStorage.getItem('mrt_sorting_KeysPage');
 
 
         if (columnVisibility) {
@@ -284,7 +284,7 @@ export default function KeysPage() {
     useEffect(() => {
         if (isFirstRender.current) return;
         localStorage.setItem(
-            'mrt_columnVisibility_table_1',
+            'mrt_columnVisibility_KeysPage',
             JSON.stringify(columnVisibility),
         );
     }, [columnVisibility]);
@@ -294,12 +294,12 @@ export default function KeysPage() {
 
     useEffect(() => {
         if (isFirstRender.current) return;
-        localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+        localStorage.setItem('mrt_sorting_KeysPage', JSON.stringify(sorting));
     }, [sorting]);
 
     useEffect(() => {
         if (isFirstRender.current) return;
-        localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+        localStorage.setItem('mrt_columnSizing_KeysPage', JSON.stringify(columnSizing));
     }, [columnSizing]);
 
     return (

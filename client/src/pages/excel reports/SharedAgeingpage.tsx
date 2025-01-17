@@ -204,14 +204,14 @@ export default function SharedAgeingpage() {
   //load state from local storage
   useEffect(() => {
     const columnVisibility = localStorage.getItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_SharedAgeingpage',
     );
     const columnSizing = localStorage.getItem(
-      'mrt_columnSizing_table_1',
+      'mrt_columnSizing_SharedAgeingpage',
     );
 
 
-    const sorting = localStorage.getItem('mrt_sorting_table_1');
+    const sorting = localStorage.getItem('mrt_sorting_SharedAgeingpage');
 
 
     if (columnVisibility) {
@@ -232,7 +232,7 @@ export default function SharedAgeingpage() {
   useEffect(() => {
     if (isFirstRender.current) return;
     localStorage.setItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_SharedAgeingpage',
       JSON.stringify(columnVisibility),
     );
   }, [columnVisibility]);
@@ -242,12 +242,12 @@ export default function SharedAgeingpage() {
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    localStorage.setItem('mrt_sorting_SharedAgeingpage', JSON.stringify(sorting));
   }, [sorting]);
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    localStorage.setItem('mrt_columnSizing_SharedAgeingpage', JSON.stringify(columnSizing));
   }, [columnSizing]);
 
   console.log(obj)

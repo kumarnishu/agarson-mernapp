@@ -170,10 +170,10 @@ export default function ExpenseCategoriesPage() {
   //load state from local storage
   useEffect(() => {
     const columnVisibility = localStorage.getItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_ExpenseCategoriesPage',
     );
     const columnSizing = localStorage.getItem(
-      'mrt_columnSizing_table_1',
+      'mrt_columnSizing_ExpenseCategoriesPage',
     );
 
 
@@ -194,7 +194,7 @@ export default function ExpenseCategoriesPage() {
   useEffect(() => {
     if (isFirstRender.current) return;
     localStorage.setItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_ExpenseCategoriesPage',
       JSON.stringify(columnVisibility),
     );
   }, [columnVisibility]);
@@ -204,12 +204,12 @@ export default function ExpenseCategoriesPage() {
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    localStorage.setItem('mrt_sorting_ExpenseCategoriesPage', JSON.stringify(sorting));
   }, [sorting]);
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    localStorage.setItem('mrt_columnSizing_ExpenseCategoriesPage', JSON.stringify(columnSizing));
   }, [columnSizing]);
 
   return (

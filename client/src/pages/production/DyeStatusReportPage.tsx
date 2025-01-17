@@ -236,10 +236,10 @@ export default function DyeStatusReportPage() {
   //load state from local storage
   useEffect(() => {
     const columnVisibility = localStorage.getItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_DyeStatusReportPage',
     );
     const columnSizing = localStorage.getItem(
-      'mrt_columnSizing_table_1',
+      'mrt_columnSizing_DyeStatusReportPage',
     );
 
 
@@ -260,7 +260,7 @@ export default function DyeStatusReportPage() {
   useEffect(() => {
     if (isFirstRender.current) return;
     localStorage.setItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_DyeStatusReportPage',
       JSON.stringify(columnVisibility),
     );
   }, [columnVisibility]);
@@ -270,12 +270,12 @@ export default function DyeStatusReportPage() {
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    localStorage.setItem('mrt_sorting_DyeStatusReportPage', JSON.stringify(sorting));
   }, [sorting]);
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    localStorage.setItem('mrt_columnSizing_DyeStatusReportPage', JSON.stringify(columnSizing));
   }, [columnSizing]);
 
 

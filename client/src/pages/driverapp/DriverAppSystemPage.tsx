@@ -229,10 +229,10 @@ export default function DriverAppSystemPage() {
   //load state from local storage
   useEffect(() => {
     const columnVisibility = localStorage.getItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_DriverAppSystemPage',
     );
     const columnSizing = localStorage.getItem(
-      'mrt_columnSizing_table_1',
+      'mrt_columnSizing_DriverAppSystemPage',
     );
 
 
@@ -253,7 +253,7 @@ export default function DriverAppSystemPage() {
   useEffect(() => {
     if (isFirstRender.current) return;
     localStorage.setItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_DriverAppSystemPage',
       JSON.stringify(columnVisibility),
     );
   }, [columnVisibility]);
@@ -263,12 +263,12 @@ export default function DriverAppSystemPage() {
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    localStorage.setItem('mrt_sorting_DriverAppSystemPage', JSON.stringify(sorting));
   }, [sorting]);
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    localStorage.setItem('mrt_columnSizing_DriverAppSystemPage', JSON.stringify(columnSizing));
   }, [columnSizing]);
 
   return (

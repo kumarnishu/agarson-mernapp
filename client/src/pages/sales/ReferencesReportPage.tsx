@@ -265,10 +265,10 @@ export default function ReferencesReportPage() {
   //load state from local storage
   useEffect(() => {
     const columnVisibility = localStorage.getItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_ReferencesReportPage',
     );
     const columnSizing = localStorage.getItem(
-      'mrt_columnSizing_table_1',
+      'mrt_columnSizing_ReferencesReportPage',
     );
 
 
@@ -289,7 +289,7 @@ export default function ReferencesReportPage() {
   useEffect(() => {
     if (isFirstRender.current) return;
     localStorage.setItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_ReferencesReportPage',
       JSON.stringify(columnVisibility),
     );
   }, [columnVisibility]);
@@ -299,12 +299,12 @@ export default function ReferencesReportPage() {
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    localStorage.setItem('mrt_sorting_ReferencesReportPage', JSON.stringify(sorting));
   }, [sorting]);
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    localStorage.setItem('mrt_columnSizing_ReferencesReportPage', JSON.stringify(columnSizing));
   }, [columnSizing]);
 
   return (

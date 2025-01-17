@@ -254,16 +254,16 @@ export default function SoleThicknessPage() {
     //load state from local storage
     useEffect(() => {
         const columnVisibility = localStorage.getItem(
-            'mrt_columnVisibility_table_1',
+            'mrt_columnVisibility_SoleThicknessPage',
         );
         const columnSizing = localStorage.getItem(
-            'mrt_columnSizing_table_1',
+            'mrt_columnSizing_SoleThicknessPage',
         );
 
 
 
 
-        const sorting = localStorage.getItem('mrt_sorting_table_1');
+        const sorting = localStorage.getItem('mrt_sorting_SoleThicknessPage');
 
 
         if (columnVisibility) {
@@ -283,7 +283,7 @@ export default function SoleThicknessPage() {
     useEffect(() => {
         if (isFirstRender.current) return;
         localStorage.setItem(
-            'mrt_columnVisibility_table_1',
+            'mrt_columnVisibility_SoleThicknessPage',
             JSON.stringify(columnVisibility),
         );
     }, [columnVisibility]);
@@ -291,12 +291,12 @@ export default function SoleThicknessPage() {
 
     useEffect(() => {
         if (isFirstRender.current) return;
-        localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+        localStorage.setItem('mrt_sorting_SoleThicknessPage', JSON.stringify(sorting));
     }, [sorting]);
 
     useEffect(() => {
         if (isFirstRender.current) return;
-        localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+        localStorage.setItem('mrt_columnSizing_SoleThicknessPage', JSON.stringify(columnSizing));
     }, [columnSizing]);
 
     return (

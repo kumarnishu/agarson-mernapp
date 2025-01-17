@@ -203,10 +203,10 @@ export default function KeysCategoriesPage() {
   //load state from local storage
   useEffect(() => {
     const columnVisibility = localStorage.getItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_KeysCategoriesPage',
     );
     const columnSizing = localStorage.getItem(
-      'mrt_columnSizing_table_1',
+      'mrt_columnSizing_KeysCategoriesPage',
     );
 
 
@@ -227,7 +227,7 @@ export default function KeysCategoriesPage() {
   useEffect(() => {
     if (isFirstRender.current) return;
     localStorage.setItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_KeysCategoriesPage',
       JSON.stringify(columnVisibility),
     );
   }, [columnVisibility]);
@@ -237,12 +237,12 @@ export default function KeysCategoriesPage() {
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    localStorage.setItem('mrt_sorting_KeysCategoriesPage', JSON.stringify(sorting));
   }, [sorting]);
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    localStorage.setItem('mrt_columnSizing_KeysCategoriesPage', JSON.stringify(columnSizing));
   }, [columnSizing]);
 
   return (

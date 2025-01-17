@@ -194,10 +194,10 @@ export default function CrmStatesPage() {
   //load state from local storage
   useEffect(() => {
     const columnVisibility = localStorage.getItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_CrmStatesPage',
     );
     const columnSizing = localStorage.getItem(
-      'mrt_columnSizing_table_1',
+      'mrt_columnSizing_CrmStatesPage',
     );
 
 
@@ -218,7 +218,7 @@ export default function CrmStatesPage() {
   useEffect(() => {
     if (isFirstRender.current) return;
     localStorage.setItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_CrmStatesPage',
       JSON.stringify(columnVisibility),
     );
   }, [columnVisibility]);
@@ -228,12 +228,12 @@ export default function CrmStatesPage() {
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    localStorage.setItem('mrt_sorting_CrmStatesPage', JSON.stringify(sorting));
   }, [sorting]);
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    localStorage.setItem('mrt_columnSizing_CrmStatesPage', JSON.stringify(columnSizing));
   }, [columnSizing]);
 
 

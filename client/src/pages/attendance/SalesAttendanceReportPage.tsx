@@ -256,10 +256,10 @@ export default function SalesAttendanceReportPage() {
   //load state from local storage
   useEffect(() => {
     const columnVisibility = localStorage.getItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_SalesAttendanceReportPage',
     );
     const columnSizing = localStorage.getItem(
-      'mrt_columnSizing_table_1',
+      'mrt_columnSizing_SalesAttendanceReportPage',
     );
 
 
@@ -280,7 +280,7 @@ export default function SalesAttendanceReportPage() {
   useEffect(() => {
     if (isFirstRender.current) return;
     localStorage.setItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_SalesAttendanceReportPage',
       JSON.stringify(columnVisibility),
     );
   }, [columnVisibility]);
@@ -290,12 +290,12 @@ export default function SalesAttendanceReportPage() {
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    localStorage.setItem('mrt_sorting_SalesAttendanceReportPage', JSON.stringify(sorting));
   }, [sorting]);
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    localStorage.setItem('mrt_columnSizing_SalesAttendanceReportPage', JSON.stringify(columnSizing));
   }, [columnSizing]);
 
   useEffect(() => {

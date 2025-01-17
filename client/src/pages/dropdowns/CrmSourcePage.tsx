@@ -186,10 +186,10 @@ export default function CrmLeadSourcesPage() {
   //load state from local storage
   useEffect(() => {
     const columnVisibility = localStorage.getItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_CrmLeadSourcesPage',
     );
     const columnSizing = localStorage.getItem(
-      'mrt_columnSizing_table_1',
+      'mrt_columnSizing_CrmLeadSourcesPage',
     );
 
 
@@ -210,7 +210,7 @@ export default function CrmLeadSourcesPage() {
   useEffect(() => {
     if (isFirstRender.current) return;
     localStorage.setItem(
-      'mrt_columnVisibility_table_1',
+      'mrt_columnVisibility_CrmLeadSourcesPage',
       JSON.stringify(columnVisibility),
     );
   }, [columnVisibility]);
@@ -220,12 +220,12 @@ export default function CrmLeadSourcesPage() {
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+    localStorage.setItem('mrt_sorting_CrmLeadSourcesPage', JSON.stringify(sorting));
   }, [sorting]);
 
   useEffect(() => {
     if (isFirstRender.current) return;
-    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+    localStorage.setItem('mrt_columnSizing_CrmLeadSourcesPage', JSON.stringify(columnSizing));
   }, [columnSizing]);
 
 
