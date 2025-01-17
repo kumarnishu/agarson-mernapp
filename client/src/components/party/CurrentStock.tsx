@@ -123,13 +123,12 @@ export default function CurrentStock({ party }: { party: string }) {
             },
         }),
         muiTableContainerProps: () => ({
-            sx: { height: '80vh',width:'50vw', overflow: 'hidden' }
+            sx: { height: '80vh',width:'50vw' }
         }),
 
         muiTableBodyCellProps: () => ({
             sx: {
                 border: '1px solid #c2beba;',
-
             },
         }),
         muiPaginationProps: {
@@ -138,14 +137,14 @@ export default function CurrentStock({ party }: { party: string }) {
             variant: 'outlined',
         },
         enableDensityToggle: false, initialState: {
-            density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
+            density: 'compact', pagination: { pageIndex: 0, pageSize: 100 }
         },
         enableGrouping: true,
         enableRowSelection: true,
-        enablePagination: false,
+        enablePagination: true,
         enableColumnPinning: true,
         enableTableFooter: true,
-        enableBottomToolbar:false,
+        enableBottomToolbar:true,
         onColumnVisibilityChange: setColumnVisibility,
         onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing,
@@ -161,14 +160,14 @@ export default function CurrentStock({ party }: { party: string }) {
     //load state from local storage
     useEffect(() => {
         const columnVisibility = localStorage.getItem(
-            'mrt_columnVisibility_table_1',
+            'mrt_columnVisibility_CurrentStock',
         );
         const columnSizing = localStorage.getItem(
-            'mrt_columnSizing_table_1',
+            'mrt_columnSizing_CurrentStock',
         );
 
 
-        const sorting = localStorage.getItem('mrt_sorting_table_1');
+        const sorting = localStorage.getItem('mrt_sorting_CurrentStock');
 
 
         if (columnVisibility) {
@@ -189,7 +188,7 @@ export default function CurrentStock({ party }: { party: string }) {
     useEffect(() => {
         if (isFirstRender.current) return;
         localStorage.setItem(
-            'mrt_columnVisibility_table_1',
+            'mrt_columnVisibility_CurrentStock',
             JSON.stringify(columnVisibility),
         );
     }, [columnVisibility]);
@@ -199,12 +198,12 @@ export default function CurrentStock({ party }: { party: string }) {
 
     useEffect(() => {
         if (isFirstRender.current) return;
-        localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+        localStorage.setItem('mrt_sorting_CurrentStock', JSON.stringify(sorting));
     }, [sorting]);
 
     useEffect(() => {
         if (isFirstRender.current) return;
-        localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+        localStorage.setItem('mrt_columnSizing_CurrentStock', JSON.stringify(columnSizing));
     }, [columnSizing]);
 
 

@@ -159,14 +159,14 @@ export default function PartyAgeing2({ party }: { party: string }) {
     //load state from local storage
     useEffect(() => {
         const columnVisibility = localStorage.getItem(
-            'mrt_columnVisibility_table_1',
+            'mrt_columnVisibility_PartyAgeing2',
         );
         const columnSizing = localStorage.getItem(
-            'mrt_columnSizing_table_1',
+            'mrt_columnSizing_PartyAgeing2',
         );
 
 
-        const sorting = localStorage.getItem('mrt_sorting_table_1');
+        const sorting = localStorage.getItem('mrt_sorting_PartyAgeing2');
 
 
         if (columnVisibility) {
@@ -187,7 +187,7 @@ export default function PartyAgeing2({ party }: { party: string }) {
     useEffect(() => {
         if (isFirstRender.current) return;
         localStorage.setItem(
-            'mrt_columnVisibility_table_1',
+            'mrt_columnVisibility_PartyAgeing2',
             JSON.stringify(columnVisibility),
         );
     }, [columnVisibility]);
@@ -197,12 +197,12 @@ export default function PartyAgeing2({ party }: { party: string }) {
 
     useEffect(() => {
         if (isFirstRender.current) return;
-        localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+        localStorage.setItem('mrt_sorting_PartyAgeing2', JSON.stringify(sorting));
     }, [sorting]);
 
     useEffect(() => {
         if (isFirstRender.current) return;
-        localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+        localStorage.setItem('mrt_columnSizing_PartyAgeing2', JSON.stringify(columnSizing));
     }, [columnSizing]);
 
 
