@@ -62,7 +62,7 @@ function CollectionReportPage() {
             {
                 accessorKey: 'party',
                 header: ' Party',
-                Cell: (cell) => <Typography sx={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => {
+                Cell: (cell) => <Typography sx={{ cursor: 'pointer'}} onClick={() => {
                     setParty(cell.row.original.party)
                     setDialog('ViewPartyDetailDialog')
                 }}>{cell.row.original.party || ""}</Typography>,

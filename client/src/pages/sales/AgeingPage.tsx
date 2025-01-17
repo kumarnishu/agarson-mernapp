@@ -107,7 +107,7 @@ export default function AgeingPage() {
                 header: 'Party',
                 filterFn: CustomFilterFunction,
                 Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.party || "" })} />,
-                Cell: (cell) => <Typography sx={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => {
+                Cell: (cell) => <Typography sx={{ cursor: 'pointer'}} onClick={() => {
                     setParty(cell.row.original.party)
                     setDialog('ViewPartyDetailDialog')
                 }}>{cell.row.original.party || ""}</Typography>,
