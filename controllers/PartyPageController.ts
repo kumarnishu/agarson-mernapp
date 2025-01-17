@@ -67,7 +67,7 @@ export class PartyPageController {
     public async GetPartyAgeing1(req: Request, res: Response, next: NextFunction) {
         let result: GetPartyAgeingDto[] = []
         let party = req.query.party
-        let data: IAgeing[] = await Ageing.find({ party: String(party).toLowerCase() }).sort('-created_at');
+        let data: IAgeing[] = await Ageing.find({ party: party }).sort('-created_at');
         result = data.map((dt) => {
             return {
                 _id: dt._id,
