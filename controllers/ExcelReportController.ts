@@ -129,10 +129,10 @@ export class ExcelReportController {
                 result.columns.push({ key: 'next call', header: 'Next Call', type: 'string' })
             }
         }
-        for (let k = 0; k < keys.length; k++) {
-            let c = keys[k]
-            result.columns.push({ key: c.key, header: c.key, type: c.type })
-        }
+        // for (let k = 0; k < keys.length; k++) {
+        //     let c = keys[k]
+        //     result.columns.push({ key: c.key, header: c.key, type: c.type })
+        // }
 
         //actual data filling starts from here
 
@@ -225,6 +225,19 @@ export class ExcelReportController {
             if (row)
                 return row
         }) as IRowData[]
+        for (let k = 0; k < keys.length; k++) {
+            let c = keys[k]
+            if (c.type !== 'number')
+                result.columns.push({ key: c.key, header: c.key, type: c.type })
+            else {
+                const data: { key: string, value: number }[] = result.rows.map((dt) => { return { key: c.key, value: dt[c.key] } })
+                const total = data.reduce((sum, item) => sum + (item.value || 0), 0);
+                console.log(c.key,total)
+                if (total > 0)
+                    result.columns.push({ key: c.key, header: c.key, type: c.type })
+            }
+
+        }
         return res.status(200).json(result)
     }
 
