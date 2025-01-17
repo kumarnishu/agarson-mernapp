@@ -89,7 +89,6 @@ import SalesReportPage from './pages/sales/SalesReportPage.tsx'
 import CollectionReportPage from './pages/sales/CollectionReportPage.tsx'
 import AgeingPage from './pages/sales/AgeingPage.tsx'
 import SharedAgeingpage from './pages/excel reports/SharedAgeingpage.tsx'
-import PartyPage from './pages/PartyPage.tsx'
 
 
 function AppRoutes() {
@@ -458,8 +457,7 @@ function AppRoutes() {
                   <SalesDashboard />
                 }
               />
-              <Route path='PartyPage/:party' element={<PartyPage />} />
-
+              
               {user?.assigned_permissions.includes('salesman_visit_view') && <Route
                 path="SalesmanVisit" element={
                   <SalesmanVisitPage />

@@ -131,15 +131,16 @@ export default function PartyAgeing1({ party }: { party: string }) {
                 color: 'white',
             }
         }),
-        muiTableContainerProps: (table) => ({
-            sx: { height: table.table.getState().isFullScreen ? 'auto' : '70vh' }
-        }),
+      
         muiTableHeadRowProps: () => ({
             sx: {
                 backgroundColor: 'whitesmoke',
                 color: 'white'
             },
         }),
+        renderTopToolbarCustomActions: () => (
+            <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Ageing 25,30,55,60,70,70+</Typography>
+        ),
         muiTableHeadCellProps: ({ column }) => ({
             sx: {
                 '& div:nth-of-type(1) span': {
@@ -166,6 +167,9 @@ export default function PartyAgeing1({ party }: { party: string }) {
             shape: 'rounded',
             variant: 'outlined',
         },
+        muiTablePaperProps: () => ({
+            sx: { height: '30vh', width: '16vw', overflow: 'scroll' }
+        }),
         enableDensityToggle: false, initialState: {
             density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
         },

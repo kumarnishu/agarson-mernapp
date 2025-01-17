@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { decimalToTimeForXlsx } from "../utils/datesHelper";
 import moment from "moment";
-import {  IColumnRowData, IRowData } from "../dtos/SalesDto";
+import { IColumnRowData, IRowData } from "../dtos/SalesDto";
 import { IKeyCategory } from "../interfaces/AuthorizationInterface";
 import { KeyCategory, Key } from "../models/AuthorizationModel";
 import { ExcelDB } from "../models/ExcelReportModel";
@@ -13,7 +13,55 @@ import { IAgeing } from '../interfaces/SalesInterface';
 export class PartyPageController {
     public async GetPartyLast5Remarks(req: Request, res: Response, next: NextFunction) {
         let party = String(req.query.party).toLowerCase()
-        let result: GetPartyRemarkDto[] = []
+        let result: GetPartyRemarkDto[] =[
+            {
+              "_id": "1",
+              "remark": "Followed up with the client, awaiting feedback.",
+              "remark_type": "Follow-up",
+              "party": "ABC Corp",
+              "nextcall": "2025-01-20T10:00:00Z",
+              "created_at": "2025-01-15T14:30:00Z",
+              "created_by": { "id": "101", "label": "John Doe" }
+            },
+            {
+              "_id": "2",
+              "remark": "Discussed contract terms, revisions needed.",
+              "remark_type": "Contract Discussion",
+              "party": "XYZ Ltd",
+              "nextcall": "2025-01-22T15:00:00Z",
+              "created_at": "2025-01-16T09:45:00Z",
+              "created_by": { "id": "102", "label": "Jane Smith" }
+            },
+            {
+              "_id": "3",
+              "remark": "Sent proposal, awaiting approval.",
+              "remark_type": "Proposal Sent",
+              "party": "PQR Industries",
+              "nextcall": "2025-01-21T11:30:00Z",
+              "created_at": "2025-01-17T08:15:00Z",
+              "created_by": { "id": "103", "label": "Emily Johnson" }
+            },
+            {
+              "_id": "4",
+              "remark": "Client raised concerns about pricing.",
+              "remark_type": "Pricing Discussion",
+              "party": "LMN Inc",
+              "nextcall": "2025-01-25T14:00:00Z",
+              "created_at": "2025-01-16T12:00:00Z",
+              "created_by": { "id": "104", "label": "Michael Brown" }
+            },
+            {
+              "_id": "5",
+              "remark": "Completed onboarding process successfully.",
+              "remark_type": "Onboarding",
+              "party": "DEF Partners",
+              "nextcall": "2025-01-30T10:00:00Z",
+              "created_at": "2025-01-15T13:45:00Z",
+              "created_by": { "id": "105", "label": "Sophia Davis" }
+            }
+          ]
+          
+
         return res.status(200).json(result)
     }
     public async GetPartyAgeing1(req: Request, res: Response, next: NextFunction) {
@@ -48,7 +96,7 @@ export class PartyPageController {
             return res.status(404).json({ message: `${cat} not exists` })
         let keys = await Key.find({ category: cat._id }).sort('serial_no');
 
-        let data = await ExcelDB.find({ category: cat._id ,'Account Name':party}).populate('key').sort('created_at')
+        let data = await ExcelDB.find({ category: cat._id, 'Account Name': party }).populate('key').sort('created_at')
 
         let promiseResult = await Promise.all(data.map(async (_dt) => {
             let obj: IRowData = {}
@@ -111,7 +159,7 @@ export class PartyPageController {
             return res.status(404).json({ message: `${cat} not exists` })
         let keys = await Key.find({ category: cat._id }).sort('serial_no');
 
-        let data = await ExcelDB.find({ category: cat._id }).populate('key').sort('created_at')
+        let data = await ExcelDB.find({ category: cat._id, 'PARTY': party }).populate('key').sort('created_at')
 
         let promiseResult = await Promise.all(data.map(async (_dt) => {
             let obj: IRowData = {}
@@ -167,13 +215,14 @@ export class PartyPageController {
             columns: [],
             rows: []
         };
+        let party = req.query.party
 
         let cat: IKeyCategory | null = await KeyCategory.findOne({ category: 'ClientSale' })
         if (!cat)
             return res.status(404).json({ message: `${cat} not exists` })
         let keys = await Key.find({ category: cat._id }).sort('serial_no');
 
-        let data = await ExcelDB.find({ category: cat._id }).populate('key').sort('created_at')
+        let data = await ExcelDB.find({ category: cat._id, 'CUSTOMER': party }).populate('key').sort('created_at')
 
         let promiseResult = await Promise.all(data.map(async (_dt) => {
             let obj: IRowData = {}
@@ -229,13 +278,14 @@ export class PartyPageController {
             columns: [],
             rows: []
         };
-
+        let party = req.query.party
         let cat: IKeyCategory | null = await KeyCategory.findOne({ category: 'ALL_ORDERS' })
+        console.log(cat)
         if (!cat)
             return res.status(404).json({ message: `${cat} not exists` })
         let keys = await Key.find({ category: cat._id }).sort('serial_no');
 
-        let data = await ExcelDB.find({ category: cat._id }).populate('key').sort('created_at')
+        let data = await ExcelDB.find({ category: cat._id, 'Account Name': party }).populate('key').sort('created_at')
 
         let promiseResult = await Promise.all(data.map(async (_dt) => {
             let obj: IRowData = {}

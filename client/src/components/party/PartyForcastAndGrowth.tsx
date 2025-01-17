@@ -7,7 +7,7 @@ import { IColumnRowData } from '../../dtos/SalesDto'
 import { PartyPageService } from '../../services/PartyPageService'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { CustomColumFilter } from '../filter/CustomColumFIlter'
-import { Tooltip } from '@mui/material'
+import { Tooltip, Typography } from '@mui/material'
 import { CustomFilterFunction } from '../filter/CustomFilterFunction'
 
 
@@ -97,14 +97,18 @@ export default function PartyForcastAndGrowth({ party }: { party: string }) {
                 color: 'white',
             }
         }),
-        muiTableContainerProps: (table) => ({
-            sx: { height: table.table.getState().isFullScreen ? 'auto' : '70vh' }
-        }),
+      
         muiTableHeadRowProps: () => ({
             sx: {
                 backgroundColor: 'whitesmoke',
                 color: 'white'
             },
+        }),
+        renderTopToolbarCustomActions: () => (
+            <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Forcast And Growth</Typography>
+        ),
+        muiTablePaperProps: () => ({
+            sx: { height: '30vh', width: '16vw', overflow: 'scroll' }
         }),
         muiTableHeadCellProps: ({ column }) => ({
             sx: {

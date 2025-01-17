@@ -5,10 +5,9 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
-import { useNavigate, useParams } from 'react-router-dom'
-import PopUp from '../../components/popup/PopUp'
+import { useParams } from 'react-router-dom'
 import { UserContext } from '../../contexts/userContext'
-import { Comment, Refresh, Visibility } from '@mui/icons-material'
+import { Refresh } from '@mui/icons-material'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
@@ -20,6 +19,7 @@ import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { IColumnRowData } from '../../dtos/SalesDto'
 import { DropDownDto } from '../../dtos/DropDownDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import ViewPartyDetailDialog from '../../components/dialogs/sales/ViewPartyDetailDialog'
 
 export default function ExcelDBPage() {
   const [hidden, setHidden] = useState(false)
@@ -31,7 +31,6 @@ export default function ExcelDBPage() {
   const [dialog, setDialog] = useState<string | undefined>()
   const { id } = useParams()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const goto = useNavigate()
   const { data: categorydata, refetch: RefetchCategory, isSuccess: isSuccessCategorydata } = useQuery<AxiosResponse<DropDownDto>, BackendError>(["key_categories"], async () => new AuthorizationService().GetKeyCategoryById(id || ""), { enabled: false })
 
   const { data, isLoading, isSuccess, refetch, isRefetching } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb", hidden], async () => new ExcelReportsService().GetExcelDbReport(id || "", hidden), { enabled: false })
@@ -46,94 +45,14 @@ export default function ExcelDBPage() {
 
   let columns = useMemo<MRT_ColumnDef<any, any>[]>(
     () => reportcolumns && reportcolumns.map((item, index) => {
-      if (item.type == "action")
-        return {
-          accessorKey: item.key,
-          header: item.header,
-
-          Cell: (cell) => <PopUp key={item.key}
-            element={
-              <Stack direction="row" spacing={1} >
-                {LoggedInUser?.assigned_permissions.includes('grp_excel_view') && <Tooltip title="view remarks">
-                  <IconButton color="primary"
-
-                    onClick={() => {
-
-                      setDialog('ViewExcelDBRemarksDialog')
-                      //@ts-ignore
-                      if (cell.row.original['Account Name'])
-                        //@ts-ignore
-                        setObj(cell.row.original['Account Name'])
-                      //@ts-ignore
-                      else if (cell.row.original['PARTY'])
-                        //@ts-ignore
-                        setObj(cell.row.original['PARTY'])
-
-                      //@ts-ignore
-                      else if (cell.row.original['Customer Name'])
-                        //@ts-ignore
-                        setObj(cell.row.original['Customer Name'])
-                      //@ts-ignore
-                      else if (cell.row.original['CUSTOMER'])
-                        //@ts-ignore
-                        setObj(cell.row.original['CUSTOMER'])
-                    }}
-                  >
-                    <Visibility />
-                  </IconButton>
-                </Tooltip>}
-
-                {LoggedInUser?.assigned_permissions.includes('grp_excel_edit') &&
-                  <Tooltip title="Add Remark">
-                    <IconButton
-
-                      color="success"
-                      onClick={() => {
-                        //@ts-ignore
-                        if (cell.row.original['Account Name'])
-                          //@ts-ignore
-                          setObj(cell.row.original['Account Name'])
-                        //@ts-ignore
-                        else if (cell.row.original['PARTY'])
-                          //@ts-ignore
-                          setObj(cell.row.original['PARTY'])
-
-                        //@ts-ignore
-                        else if (cell.row.original['Customer Name'])
-                          //@ts-ignore
-                          setObj(cell.row.original['Customer Name'])
-                        //@ts-ignore
-                        else if (cell.row.original['CUSTOMER'])
-                          //@ts-ignore
-                          setObj(cell.row.original['CUSTOMER'])
-                      }}
-
-                    >
-                      <Comment />
-                    </IconButton>
-                  </Tooltip>}
-
-              </Stack>}
-          />,
-          Footer: ""
-        }
-      else if (item.type == "string") {
+      if (item.type == "string") {
         if (item.key == 'last remark' || item.key == 'next call')
           return {
             accessorKey: item.key,
             header: item.header,
             /* @ts-ignore */
-            filterFn: (
-              row,
-              columnId: string,
-              filterValue: unknown[]
-            ) => {
-
-              return filterValue.some(
-                val => row.getValue<unknown[]>(columnId) == val
-              )
-            },
-            Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+            filterFn: CustomFilterFunction,
+            Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span >{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
             Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
           }
         return {
@@ -143,24 +62,26 @@ export default function ExcelDBPage() {
           filterFn: CustomFilterFunction,
           Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span
             style={{ cursor: 'pointer' }} onClick={() => {
-              setDialog('CreateOrEditExcelDBRemarkDialog')
+
+              setDialog('ViewExcelDBRemarksDialog')
               //@ts-ignore
               if (cell.row.original['Account Name'])
                 //@ts-ignore
-                goto(`/Sales/PartyPage/${cell.row.original['Account Name']}`)
+                setObj(cell.row.original['Account Name'])
               //@ts-ignore
               else if (cell.row.original['PARTY'])
                 //@ts-ignore
-                goto(`/Sales/PartyPage/${cell.row.original['PARTY Name']}`)
+                setObj(cell.row.original['PARTY'])
+
               //@ts-ignore
               else if (cell.row.original['Customer Name'])
                 //@ts-ignore
-                goto(`/Sales/PartyPage/${cell.row.original['Customer Name']}`)
+                setObj(cell.row.original['Customer Name'])
               //@ts-ignore
               else if (cell.row.original['CUSTOMER'])
                 //@ts-ignore
-                goto(`/Sales/PartyPage/${cell.row.original['CUSTOMER']}`)
-
+                setObj(cell.row.original['CUSTOMER'])
+              setDialog('ViewPartyDetailDialog')
             }}>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
           Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
           Footer: "",
@@ -220,7 +141,7 @@ export default function ExcelDBPage() {
     }
   }, [isSuccessCategorydata, categorydata]);
 
-
+  console.log(obj, dialog)
   const table = useMaterialReactTable({
     //@ts-ignore
     columns, columnFilterDisplayMode: 'popover',
@@ -401,6 +322,7 @@ export default function ExcelDBPage() {
       </Stack >
       {id && obj && <CreateOrEditExcelDBRemarkDialog dialog={dialog} setDialog={setDialog} category={id} obj={obj} />}
       {id && obj && <ViewExcelDBRemarksDialog dialog={dialog} setDialog={setDialog} id={id} obj={obj} />}
+      {obj && <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} party={obj} />}
       {isRefetching && <LinearProgress />}
       <MaterialReactTable table={table} />
     </>

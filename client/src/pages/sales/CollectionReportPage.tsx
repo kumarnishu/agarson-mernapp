@@ -14,6 +14,7 @@ import { HandleNumbers } from '../../utils/IsDecimal'
 import { GetCollectionsDto } from '../../dtos/SalesDto'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import ViewPartyDetailDialog from '../../components/dialogs/sales/ViewPartyDetailDialog'
 
 function CollectionReportPage() {
     const { user: LoggedInUser } = useContext(UserContext)
@@ -22,7 +23,8 @@ function CollectionReportPage() {
         start_date: moment(new Date().setDate(new Date().getDate() - 1)).format("YYYY-MM-DD")
         , end_date: moment(new Date().setDate(new Date().getDate())).format("YYYY-MM-DD")
     })
-
+    const [dialog, setDialog] = useState<string | undefined>()
+    const [party, setParty] = useState<string>()
     const isFirstRender = useRef(true);
 
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
@@ -60,6 +62,10 @@ function CollectionReportPage() {
             {
                 accessorKey: 'party',
                 header: ' Party',
+                Cell: (cell) => <Typography sx={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => {
+                    setParty(cell.row.original.party)
+                    setDialog('ViewPartyDetailDialog')
+                }}>{cell.row.original.party || ""}</Typography>,
                 filterFn:CustomFilterFunction,
                 Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={collections.map((item) => { return item.party || "" })} />,
             },
@@ -300,6 +306,7 @@ function CollectionReportPage() {
 
                 >Export Selected</MenuItem>}
             </Menu>
+            {party && <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} party={party} />}
             <MaterialReactTable table={table} />
         </>
     )

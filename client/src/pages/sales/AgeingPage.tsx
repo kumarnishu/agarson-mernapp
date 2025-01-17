@@ -17,21 +17,20 @@ import ViewAgeingRemarksDialog from '../../components/dialogs/sales/ViewAgeingRe
 import { GetAgeingDto } from '../../dtos/SalesDto'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
-import { useNavigate } from 'react-router-dom'
-
+import ViewPartyDetailDialog from '../../components/dialogs/sales/ViewPartyDetailDialog'
 
 export default function AgeingPage() {
     const [ageings, setAgeings] = useState<GetAgeingDto[]>([])
     const [dialog, setDialog] = useState<string | undefined>()
+    const [party, setParty] = useState<string>()
     const [hidden, setHidden] = useState(false)
     const { user: LoggedInUser } = useContext(UserContext)
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetAgeingDto[]>, BackendError>(["ageing", hidden], async () => new SalesService().GetAgeingReports({ hidden }))
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const isFirstRender = useRef(true);
-    const [party, setParty] = useState<string>()
+   
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-    const goto = useNavigate()
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
     const columns = useMemo<MRT_ColumnDef<GetAgeingDto>[]>(
@@ -108,7 +107,10 @@ export default function AgeingPage() {
                 header: 'Party',
                 filterFn: CustomFilterFunction,
                 Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.party || "" })} />,
-                Cell: (cell) => <Typography sx={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => { goto(`/Sales/PartyPage/${cell.row.original.party}`) }}>{cell.row.original.party || ""}</Typography>,
+                Cell: (cell) => <Typography sx={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => {
+                    setParty(cell.row.original.party)
+                    setDialog('ViewPartyDetailDialog')
+                }}>{cell.row.original.party || ""}</Typography>,
 
             },
             {
@@ -388,6 +390,7 @@ export default function AgeingPage() {
             {party && <CreateOrEditAgeingRemarkDialog party={party} dialog={dialog} setDialog={setDialog} />}
             {party && <ViewAgeingRemarksDialog party={party} dialog={dialog} setDialog={setDialog} />}
             {/* table */}
+            {party && <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} party={party} />}
             <MaterialReactTable table={table} />
         </>
 

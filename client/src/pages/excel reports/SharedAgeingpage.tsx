@@ -5,9 +5,8 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
-import PopUp from '../../components/popup/PopUp'
 import { UserContext } from '../../contexts/userContext'
-import { Comment, Refresh, Visibility } from '@mui/icons-material'
+import { Refresh } from '@mui/icons-material'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
@@ -16,360 +15,304 @@ import CreateOrEditExcelDBRemarkDialog from '../../components/dialogs/excelrepor
 import ViewExcelDBRemarksDialog from '../../components/dialogs/excelreports/ViewExcelDBRemarksDialog'
 import { IColumnRowData } from '../../dtos/SalesDto'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import ViewPartyDetailDialog from '../../components/dialogs/sales/ViewPartyDetailDialog'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 export default function SharedAgeingpage() {
-    const [hidden, setHidden] = useState(false)
-    const [reports, setReports] = useState<IColumnRowData['rows']>([])
-    const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
-    const [obj, setObj] = useState<string | undefined>()
-    const { user: LoggedInUser } = useContext(UserContext)
-    const [dialog, setDialog] = useState<string | undefined>()
-    const id = '673343932fc46475cdf0ad6d';
-    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [hidden, setHidden] = useState(false)
+  const [reports, setReports] = useState<IColumnRowData['rows']>([])
+  const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
+  const [obj, setObj] = useState<string | undefined>()
+  const { user: LoggedInUser } = useContext(UserContext)
+  const [dialog, setDialog] = useState<string | undefined>()
+  const id = '673343932fc46475cdf0ad6d';
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
+  const { data, isLoading, isSuccess, refetch, isRefetching } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb", hidden], async () => new ExcelReportsService().GetExcelDbReport(id, hidden), { enabled: false })
+  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  const isFirstRender = useRef(true);
 
-    const { data, isLoading, isSuccess, refetch, isRefetching } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb", hidden], async () => new ExcelReportsService().GetExcelDbReport(id, hidden), { enabled: false })
-    const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
-    const isFirstRender = useRef(true);
+  const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
-    const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-    const [sorting, setSorting] = useState<MRT_SortingState>([]);
-    const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-
-    let columns = useMemo<MRT_ColumnDef<any, any>[]>(
-        () => reportcolumns && reportcolumns.map((item, index) => {
-          if (item.type == "action")
-            return {
-              accessorKey: item.key,
-              header: item.header,
-    
-              Cell: (cell) => <PopUp key={item.key}
-                element={
-                  <Stack direction="row" spacing={1} >
-                    {LoggedInUser?.assigned_permissions.includes('grp_excel_view') && <Tooltip title="view remarks">
-                      <IconButton color="primary"
-    
-                        onClick={() => {
-    
-                          setDialog('ViewExcelDBRemarksDialog')
-                          //@ts-ignore
-                          if (cell.row.original['Account Name'])
-                            //@ts-ignore
-                            setObj(cell.row.original['Account Name'])
-                          //@ts-ignore
-                          else if (cell.row.original['PARTY'])
-                            //@ts-ignore
-                            setObj(cell.row.original['PARTY'])
-    
-                          //@ts-ignore
-                          else if (cell.row.original['Customer Name'])
-                            //@ts-ignore
-                            setObj(cell.row.original['Customer Name'])
-                          //@ts-ignore
-                          else if (cell.row.original['CUSTOMER'])
-                            //@ts-ignore
-                            setObj(cell.row.original['CUSTOMER'])
-                        }}
-                      >
-                        <Visibility />
-                      </IconButton>
-                    </Tooltip>}
-    
-                    {LoggedInUser?.assigned_permissions.includes('grp_excel_edit') &&
-                      <Tooltip title="Add Remark">
-                        <IconButton
-    
-                          color="success"
-                          onClick={() => {
-    
-                            setDialog('CreateOrEditExcelDBRemarkDialog')
-                            //@ts-ignore
-                            if (cell.row.original['Account Name'])
-                              //@ts-ignore
-                              setObj(cell.row.original['Account Name'])
-                            //@ts-ignore
-                            else if (cell.row.original['PARTY'])
-                              //@ts-ignore
-                              setObj(cell.row.original['PARTY'])
-                            //@ts-ignore
-                            else if (cell.row.original['Customer Name'])
-                              //@ts-ignore
-                              setObj(cell.row.original['Customer Name'])
-                            //@ts-ignore
-                            else if (cell.row.original['CUSTOMER'])
-                              //@ts-ignore
-                              setObj(cell.row.original['CUSTOMER'])
-                          }}
-                        >
-                          <Comment />
-                        </IconButton>
-                      </Tooltip>}
-    
-                  </Stack>}
-              />,
-              Footer: ""
-            }
-          else if (item.type == "string") {
-            if (item.key == 'last remark' || item.key == 'next call')
-              return {
-                accessorKey: item.key,
-                header: item.header,
-                /* @ts-ignore */
-                filterFn: (
-                  row,
-                  columnId: string,
-                  filterValue: unknown[]
-                ) => {
-                 
-                  return filterValue.some(
-                    val => row.getValue<unknown[]>(columnId)==val
-                  )
-                },
-                Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
-                Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
-              }
-            return {
-              accessorKey: item.key,
-              header: item.header,
-              /* @ts-ignore */
-              filterFn: CustomFilterFunction,
-              Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
-              Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
-              Footer: "",
-            }
+  let columns = useMemo<MRT_ColumnDef<any, any>[]>(
+    () => reportcolumns && reportcolumns.map((item, index) => {
+      if (item.type == "string") {
+        if (item.key == 'last remark' || item.key == 'next call')
+          return {
+            accessorKey: item.key,
+            header: item.header,
+            /* @ts-ignore */
+            filterFn: CustomFilterFunction,
+            Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+            Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
           }
-          else if (item.type == "timestamp")
-            return {
-              accessorKey: item.key, header: item.header,  /* @ts-ignore */
-              filterFn: CustomFilterFunction,
-              Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
-              Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />, Footer: ""
-            }
-          else if (item.type == "date")
-            return {
-              accessorKey: item.key,
-              header: item.header,
-              /* @ts-ignore */
-              filterFn: CustomFilterFunction,
-              Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
-              Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
-              Footer: <b>Total</b>,
-            }
-          else
-            return {
-              accessorKey: item.key, header: item.header,
-              aggregationFn: 'sum',
-              filterVariant: 'range',
-              filterFn: 'betweenInclusive',
-              Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
-              AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+        return {
+          accessorKey: item.key,
+          header: item.header,
+          /* @ts-ignore */
+          filterFn: CustomFilterFunction,
+          Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span onClick={() => {
+
+
+            //@ts-ignore
+            if (cell.row.original['Account Name'])
               //@ts-ignore
-              Footer: ({ table }) => <b>{index < 2 ? table.getFilteredRowModel().rows.length : table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
-            }
-        })
-        ,
-        [reports, reportcolumns],
-        //end
-      );
-    
+              setObj(cell.row.original['Account Name'])
+            //@ts-ignore
+            else if (cell.row.original['PARTY'])
+              //@ts-ignore
+              setObj(cell.row.original['PARTY'])
 
-    useEffect(() => {
-        refetch()
-    }, [hidden])
+            //@ts-ignore
+            else if (cell.row.original['Customer Name'])
+              //@ts-ignore
+              setObj(cell.row.original['Customer Name'])
+            //@ts-ignore
+            else if (cell.row.original['CUSTOMER'])
+              //@ts-ignore
+              setObj(cell.row.original['CUSTOMER'])
+            setDialog('ViewPartyDetailDialog')
 
-    useEffect(() => {
-        if (isSuccess && data) {
-            setReports(data.data.rows);
-            setReportColumns(data.data.columns)
+          }}>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+          Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
+          Footer: "",
         }
-    }, [isSuccess, data]);
-
-    const table = useMaterialReactTable({
-        //@ts-ignore
-        columns, columnFilterDisplayMode: 'popover',
-        data: reports ? reports : [], //10,000 rows       
-        enableColumnResizing: true,
-        enableRowVirtualization: true,
-        rowVirtualizerInstanceRef, //optional
-        // , //optionally customize the row virtualizr
-        // columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizr
-        enableStickyFooter: true,
-        muiTableFooterRowProps: () => ({
-            sx: {
-                backgroundColor: 'whitesmoke',
-                color: 'white',
-            }
-        }),
-        muiTableContainerProps: (table) => ({
-            sx: { height: table.table.getState().isFullScreen ? 'auto' : '70vh' }
-        }),
-        muiTableHeadRowProps: () => ({
-            sx: {
-                backgroundColor: 'whitesmoke',
-                color: 'white'
-            },
-        }),
-        muiTableHeadCellProps: ({ column }) => ({
-            sx: {
-                '& div:nth-of-type(1) span': {
-                    display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
-                },
-                '& div:nth-of-type(2)': {
-                    display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
-                },
-                '&:hover div:nth-of-type(1) span': {
-                    display: 'inline', // Visible on hover
-                },
-                '&:hover div:nth-of-type(2)': {
-                    display: 'block', // Visible on hover
-                }
-            },
-        }),
+      }
+      else if (item.type == "timestamp")
+        return {
+          accessorKey: item.key, header: item.header,  /* @ts-ignore */
+          filterFn: CustomFilterFunction,
+          Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+          Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />, Footer: ""
+        }
+      else if (item.type == "date")
+        return {
+          accessorKey: item.key,
+          header: item.header,
+          /* @ts-ignore */
+          filterFn: CustomFilterFunction,
+          Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+          Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
+          Footer: <b>Total</b>,
+        }
+      else
+        return {
+          accessorKey: item.key, header: item.header,
+          aggregationFn: 'sum',
+          filterVariant: 'range',
+          filterFn: 'betweenInclusive',
+          Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+          AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+          //@ts-ignore
+          Footer: ({ table }) => <b>{index < 2 ? table.getFilteredRowModel().rows.length : table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[item.key]) }, 0).toFixed()}</b>
+        }
+    })
+    ,
+    [reports, reportcolumns],
+    //end
+  );
 
 
-        muiTableBodyCellProps: () => ({
-            sx: {
-                border: '1px solid #c2beba;',
+  useEffect(() => {
+    refetch()
+  }, [hidden])
 
-            },
-        }),
-        muiPaginationProps: {
-            rowsPerPageOptions: [10, 100, 200, 500, 1000, 2000, 5000, 7000, 10000],
-            shape: 'rounded',
-            variant: 'outlined',
+  useEffect(() => {
+    if (isSuccess && data) {
+      setReports(data.data.rows);
+      setReportColumns(data.data.columns)
+    }
+  }, [isSuccess, data]);
+
+  const table = useMaterialReactTable({
+    //@ts-ignore
+    columns, columnFilterDisplayMode: 'popover',
+    data: reports ? reports : [], //10,000 rows       
+    enableColumnResizing: true,
+    enableRowVirtualization: true,
+    rowVirtualizerInstanceRef, //optional
+    // , //optionally customize the row virtualizr
+    // columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizr
+    enableStickyFooter: true,
+    muiTableFooterRowProps: () => ({
+      sx: {
+        backgroundColor: 'whitesmoke',
+        color: 'white',
+      }
+    }),
+    muiTableContainerProps: (table) => ({
+      sx: { height: table.table.getState().isFullScreen ? 'auto' : '70vh' }
+    }),
+    muiTableHeadRowProps: () => ({
+      sx: {
+        backgroundColor: 'whitesmoke',
+        color: 'white'
+      },
+    }),
+    muiTableHeadCellProps: ({ column }) => ({
+      sx: {
+        '& div:nth-of-type(1) span': {
+          display: (column.getIsFiltered() || column.getIsSorted() || column.getIsGrouped()) ? 'inline' : 'none', // Initially hidden
         },
-        enableDensityToggle: false, initialState: {
-            density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
+        '& div:nth-of-type(2)': {
+          display: (column.getIsFiltered() || column.getIsGrouped()) ? 'inline-block' : 'none'
         },
-        enableGrouping: true,
-        enableRowSelection: true,
-        manualPagination: false,
-        enablePagination: true,
-        enableColumnPinning: true,
-        enableTableFooter: true,
-        onColumnVisibilityChange: setColumnVisibility,
-        onSortingChange: setSorting,
-        onColumnSizingChange: setColumnSizing,
-        state: {
-            isLoading: isLoading,
-            columnVisibility,
-            sorting,
-            columnSizing: columnSizing
+        '&:hover div:nth-of-type(1) span': {
+          display: 'inline', // Visible on hover
+        },
+        '&:hover div:nth-of-type(2)': {
+          display: 'block', // Visible on hover
         }
-    });
+      },
+    }),
 
 
-    //load state from local storage
-    useEffect(() => {
-        const columnVisibility = localStorage.getItem(
-            'mrt_columnVisibility_table_1',
-        );
-        const columnSizing = localStorage.getItem(
-            'mrt_columnSizing_table_1',
-        );
+    muiTableBodyCellProps: () => ({
+      sx: {
+        border: '1px solid #c2beba;',
+
+      },
+    }),
+    muiPaginationProps: {
+      rowsPerPageOptions: [10, 100, 200, 500, 1000, 2000, 5000, 7000, 10000],
+      shape: 'rounded',
+      variant: 'outlined',
+    },
+    enableDensityToggle: false, initialState: {
+      density: 'compact', pagination: { pageIndex: 0, pageSize: 7000 }
+    },
+    enableGrouping: true,
+    enableRowSelection: true,
+    manualPagination: false,
+    enablePagination: true,
+    enableColumnPinning: true,
+    enableTableFooter: true,
+    onColumnVisibilityChange: setColumnVisibility,
+    onSortingChange: setSorting,
+    onColumnSizingChange: setColumnSizing,
+    state: {
+      isLoading: isLoading,
+      columnVisibility,
+      sorting,
+      columnSizing: columnSizing
+    }
+  });
 
 
-        const sorting = localStorage.getItem('mrt_sorting_table_1');
+  //load state from local storage
+  useEffect(() => {
+    const columnVisibility = localStorage.getItem(
+      'mrt_columnVisibility_table_1',
+    );
+    const columnSizing = localStorage.getItem(
+      'mrt_columnSizing_table_1',
+    );
 
 
-        if (columnVisibility) {
-            setColumnVisibility(JSON.parse(columnVisibility));
-        }
-
-        if (columnSizing)
-            setColumnSizing(JSON.parse(columnSizing))
-        if (sorting) {
-            setSorting(JSON.parse(sorting));
-        }
-        isFirstRender.current = false;
-    }, []);
+    const sorting = localStorage.getItem('mrt_sorting_table_1');
 
 
+    if (columnVisibility) {
+      setColumnVisibility(JSON.parse(columnVisibility));
+    }
 
-
-    useEffect(() => {
-        if (isFirstRender.current) return;
-        localStorage.setItem(
-            'mrt_columnVisibility_table_1',
-            JSON.stringify(columnVisibility),
-        );
-    }, [columnVisibility]);
+    if (columnSizing)
+      setColumnSizing(JSON.parse(columnSizing))
+    if (sorting) {
+      setSorting(JSON.parse(sorting));
+    }
+    isFirstRender.current = false;
+  }, []);
 
 
 
 
-    useEffect(() => {
-        if (isFirstRender.current) return;
-        localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
-    }, [sorting]);
-
-    useEffect(() => {
-        if (isFirstRender.current) return;
-        localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
-    }, [columnSizing]);
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem(
+      'mrt_columnVisibility_table_1',
+      JSON.stringify(columnVisibility),
+    );
+  }, [columnVisibility]);
 
 
-    return (
-        <>
-            <Stack
-                spacing={2}
-                padding={1}
-                direction="row"
-                justifyContent="space-between"
-                alignItems={'center'}
-            >
-                <Typography
-                    variant={'h6'}
-                    component={'h1'}
-                    sx={{ pl: 1 }}
-                >
 
-                    {`SALES REPRESENTATIVE/CUSTOMER WISE BILLS AGEING REPORT <70,70-90,90-120,>120`}
-                    <Refresh sx={{ cursor: 'pointer', color: 'green' }} onClick={() => window.location.reload()} />
-                </Typography>
-                <Stack direction={'row'}>
-                    <FormControlLabel control={<Switch
-                        defaultChecked={Boolean(hidden)}
-                        onChange={() => setHidden(!hidden)}
-                    />} label="Hidden" />
 
-                    <IconButton size="small" color="primary"
-                        onClick={(e) => setAnchorEl(e.currentTarget)
-                        }
-                        sx={{ border: 2, borderRadius: 3, marginLeft: 1 }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_sorting_table_1', JSON.stringify(sorting));
+  }, [sorting]);
 
-                    <Menu
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={() => setAnchorEl(null)
-                        }
-                        TransitionComponent={Fade}
-                        MenuListProps={{
-                            'aria-labelledby': 'basic-button',
-                        }}
-                        sx={{ borderRadius: 2 }}
-                    >
+  useEffect(() => {
+    if (isFirstRender.current) return;
+    localStorage.setItem('mrt_columnSizing_table_1', JSON.stringify(columnSizing));
+  }, [columnSizing]);
 
-                        {LoggedInUser?.assigned_permissions.includes('grp_excel_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+  console.log(obj)
+  return (
+    <>
+      <Stack
+        spacing={2}
+        padding={1}
+        direction="row"
+        justifyContent="space-between"
+        alignItems={'center'}
+      >
+        <Typography
+          variant={'h6'}
+          component={'h1'}
+          sx={{ pl: 1 }}
+        >
 
-                        >Export All</MenuItem>}
-                        {LoggedInUser?.assigned_permissions.includes('grp_excel_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+          {`SALES REPRESENTATIVE/CUSTOMER WISE BILLS AGEING REPORT <70,70-90,90-120,>120`}
+          <Refresh sx={{ cursor: 'pointer', color: 'green' }} onClick={() => window.location.reload()} />
+        </Typography>
+        <Stack direction={'row'}>
+          <FormControlLabel control={<Switch
+            defaultChecked={Boolean(hidden)}
+            onChange={() => setHidden(!hidden)}
+          />} label="Hidden" />
 
-                        >Export Selected</MenuItem>}
+          <IconButton size="small" color="primary"
+            onClick={(e) => setAnchorEl(e.currentTarget)
+            }
+            sx={{ border: 2, borderRadius: 3, marginLeft: 1 }}
+          >
+            <MenuIcon />
+          </IconButton>
 
-                    </Menu >
-                </Stack>
-            </Stack >
-            {id && obj && <CreateOrEditExcelDBRemarkDialog dialog={dialog} setDialog={setDialog} category={id} obj={obj} />}
-            {id && obj && <ViewExcelDBRemarksDialog dialog={dialog} setDialog={setDialog} id={id} obj={obj} />}
-            {isRefetching && <LinearProgress />}
-            <MaterialReactTable table={table} />
-        </>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={() => setAnchorEl(null)
+            }
+            TransitionComponent={Fade}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button',
+            }}
+            sx={{ borderRadius: 2 }}
+          >
 
-    )
+            {LoggedInUser?.assigned_permissions.includes('grp_excel_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+
+            >Export All</MenuItem>}
+            {LoggedInUser?.assigned_permissions.includes('grp_excel_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+
+            >Export Selected</MenuItem>}
+
+          </Menu >
+        </Stack>
+      </Stack >
+      {id && obj && <CreateOrEditExcelDBRemarkDialog dialog={dialog} setDialog={setDialog} category={id} obj={obj} />}
+      {id && obj && <ViewExcelDBRemarksDialog dialog={dialog} setDialog={setDialog} id={id} obj={obj} />}
+      {isRefetching && <LinearProgress />}
+      {obj && <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} party={obj} />}
+      <MaterialReactTable table={table} />
+    </>
+
+  )
 
 }
 

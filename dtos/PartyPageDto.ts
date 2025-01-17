@@ -1,3 +1,4 @@
+import { DropDownDto } from "./DropDownDto"
 import { GetAgeingDto, IColumnRowData } from "./SalesDto"
 
 export type last5remarks = GetPartyRemarkDto[]
@@ -15,7 +16,7 @@ export type GetPartyRemarkDto = {
     party: string,
     nextcall: string,
     created_at: string,
-    created_by: string
+    created_by: DropDownDto
 }
 export type GetPartyAgeingDto={
         _id: string,

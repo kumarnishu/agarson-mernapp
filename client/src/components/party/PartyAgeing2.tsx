@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios'
-import {  useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
@@ -7,7 +7,7 @@ import { IColumnRowData } from '../../dtos/SalesDto'
 import { PartyPageService } from '../../services/PartyPageService'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { CustomColumFilter } from '../filter/CustomColumFIlter'
-import { Tooltip } from '@mui/material'
+import { Tooltip, Typography } from '@mui/material'
 import { CustomFilterFunction } from '../filter/CustomFilterFunction'
 
 
@@ -91,15 +91,13 @@ export default function PartyAgeing2({ party }: { party: string }) {
         // , //optionally customize the row virtualizr
         // columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizr
         enableStickyFooter: true,
-        muiTableFooterRowProps: () => ({
-            sx: {
-                backgroundColor: 'whitesmoke',
-                color: 'white',
-            }
+        muiTablePaperProps: () => ({
+            sx: { height: '30vh', width: '16vw', overflow: 'scroll' }
         }),
-        muiTableContainerProps: (table) => ({
-            sx: { height: table.table.getState().isFullScreen ? 'auto' : '70vh' }
-        }),
+        renderTopToolbarCustomActions: () => (
+            <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Ageing 70,90,120,120+</Typography>
+        ),
+      
         muiTableHeadRowProps: () => ({
             sx: {
                 backgroundColor: 'whitesmoke',

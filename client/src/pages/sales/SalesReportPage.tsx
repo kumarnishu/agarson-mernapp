@@ -14,6 +14,7 @@ import { HandleNumbers } from '../../utils/IsDecimal'
 import { GetSalesDto } from '../../dtos/SalesDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import ViewPartyDetailDialog from '../../components/dialogs/sales/ViewPartyDetailDialog'
 
 function SalesReportPage() {
   const { user: LoggedInUser } = useContext(UserContext)
@@ -31,7 +32,8 @@ function SalesReportPage() {
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
-
+  const [dialog, setDialog] = useState<string | undefined>()
+  const [party, setParty] = useState<string>()
   const { data, isLoading } = useQuery<AxiosResponse<GetSalesDto[]>, BackendError>(["sales", dates?.start_date, dates?.end_date], async () => new SalesService().GetSalesReports({ start_date: dates?.start_date, end_date: dates?.end_date }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -70,6 +72,10 @@ function SalesReportPage() {
       {
 
         accessorKey: 'party',
+        Cell: (cell) => <Typography sx={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => {
+          setParty(cell.row.original.party)
+          setDialog('ViewPartyDetailDialog')
+        }}>{cell.row.original.party || ""}</Typography>,
         filterFn: CustomFilterFunction,
         Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={sales.map((it) => { return it.party || "" })} />,
         header: ' Party',
@@ -313,6 +319,7 @@ function SalesReportPage() {
 
         >Export Selected</MenuItem>}
       </Menu>
+      {party && <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} party={party} />}
       <MaterialReactTable table={table} />
     </>
   )
