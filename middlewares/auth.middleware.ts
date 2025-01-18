@@ -13,8 +13,8 @@ export const isAuthenticatedUser = async (req: Request, res: Response, next: Nex
     }
     if (!token)
         return res.status(403).json({ message: "please login to access this resource" })
-    if (!UserTokens.includes(token))
-        return res.status(403).json({ message: "login again ! session expired" })
+    // if (!UserTokens.includes(token))
+    //     return res.status(403).json({ message: "login again ! session expired" })
 
 
     jwt.verify(
