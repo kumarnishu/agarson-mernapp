@@ -62,7 +62,7 @@ function ViewPartyRemarksDialog({ party, dialog, setDialog }: Props) {
                                             setdialog2('DeletePartyremarkDialog')
                                         }}>
                                             Delete</IconButton>}
-                                        {user && item.remark && user?.username === item.created_by && new Date(item.created_at) > new Date(previous_date) && <IconButton size="small" color="success"
+                                        {user && user.assigned_permissions.includes('salesman_party_edit') && item.remark && user?.username === item.created_by && new Date(item.created_at) > new Date(previous_date) && <IconButton size="small" color="success"
                                             onClick={() => {
                                                 setRemark(item)
                                                 setdialog2('CreateOrEditPartyRemarkDialog')
@@ -78,11 +78,11 @@ function ViewPartyRemarksDialog({ party, dialog, setDialog }: Props) {
                 </Stack>
                 {remark && <DeletePartyremarkDialog dialog={dialog2} setDialog={setdialog2} remark={remark} />}
                 <CreateOrEditPartyRemarkDialog party={party} remark={remark} dialog={dialog2} setDialog={setdialog2} />
-            <Button variant='contained' fullWidth  onClick={() => {
-                setRemark(undefined)
-                setdialog2('CreateOrEditPartyRemarkDialog')
+                <Button variant='contained' fullWidth onClick={() => {
+                    setRemark(undefined)
+                    setdialog2('CreateOrEditPartyRemarkDialog')
 
-            }}>new Remark</Button>
+                }}>new Remark</Button>
             </DialogContent>
         </Dialog>
     )

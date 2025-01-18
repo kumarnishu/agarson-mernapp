@@ -89,6 +89,7 @@ import SalesReportPage from './pages/sales/SalesReportPage.tsx'
 import CollectionReportPage from './pages/sales/CollectionReportPage.tsx'
 import AgeingPage from './pages/sales/AgeingPage.tsx'
 import SharedAgeingpage from './pages/excel reports/SharedAgeingpage.tsx'
+import PartyPage from './pages/sales/PartyPage.tsx'
 
 
 function AppRoutes() {
@@ -461,6 +462,11 @@ function AppRoutes() {
               {user?.assigned_permissions.includes('salesman_visit_view') && <Route
                 path="SalesmanVisit" element={
                   <SalesmanVisitPage />
+                }
+              />}
+               {user?.assigned_permissions.includes('salesman_party_view') && <Route
+                path="PartyPage" element={
+                  <PartyPage />
                 }
               />}
 

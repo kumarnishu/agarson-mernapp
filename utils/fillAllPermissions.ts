@@ -1294,6 +1294,31 @@ export function FetchAllPermissions() {
         }],
         menues: [
 
+            {
+                label: 'Parties List',
+                permissions: [
+                    {
+                        value: 'salesman_party_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'salesman_party_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'salesman_party_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'salesman_party_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'salesman_party_export',
+                        label: 'export'
+                    }
+                ]
+            },
 
             {
                 label: 'SalesMan Visit',
@@ -1320,6 +1345,7 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
+
             {
                 label: 'Salesman Daily Visit New/old/Time - Chanchal',
                 permissions: [
