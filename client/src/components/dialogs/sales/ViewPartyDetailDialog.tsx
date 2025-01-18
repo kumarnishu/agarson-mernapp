@@ -1,4 +1,4 @@
-import { Dialog, IconButton, Stack, DialogContent, Button } from '@mui/material'
+import { Dialog, IconButton, Stack, Button } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
 import CurrentStock from '../../party/CurrentStock'
 import PartyAgeing1 from '../../party/PartyAgeing1'
@@ -29,41 +29,40 @@ function ViewPartyDetailDialog({ party, dialog, setDialog }: Props) {
                 }
                 }
             >
-                <IconButton style={{ display: 'inline-block', position: 'absolute', left: '0px' }} color="error" onClick={() => {
-                    setdialog2(undefined)
-                    setDialog(undefined)
-                }}>
-                    <Cancel fontSize='large' />
-                </IconButton>
-                <Stack direction={'row'} gap={10} alignItems={'center'} justifyContent={'space-around'}>
+
+                <Stack direction={'row'} gap={10} alignItems={'center'} justifyContent={'center'}>
+                    <IconButton style={{ display: 'inline-block', position: 'absolute', left: '0px' }} color="error" onClick={() => {
+                        setdialog2(undefined)
+                        setDialog(undefined)
+                    }}>
+                        <Cancel fontSize='large' />
+                    </IconButton>
                     <p style={{ fontSize: 20, fontWeight: 'bold' }}>
                         {party}
                     </p>
                     <Button variant='text' color="error" sx={{ fontSize: 17 }} onMouseOver={() => setdialog2('ViewPartyRemarksDialog')}>
-                        View last 5 Remarks
+                        last 5 Remarks
                     </Button>
                 </Stack>
-                <DialogContent>
-                    {dialog && <ArticlesProvider>
-                        <Stack direction={{ sm: 'column', md: 'row' }} sx={{ width: '100vw' }} gap={2}   >
-                            <Stack gap={1} direction={'column'} justifyContent={'space-between'} sx={{
-                                width: {
-                                    sm: "100%",
-                                    md: '48%'
-                                }
-                            }}>
-                                <PartyAgeing1 party={party} />
-                                <PartyAgeing2 party={party} />
-                                <PartyForcastAndGrowth party={party} />
-                                <PartyClientSale party={party} />
-                                <PartyPendingOrders party={party} />
-                            </Stack>
-                            <Stack direction={'row'} >
-                                <CurrentStock party={party} />
-                            </Stack>
+                {dialog && <ArticlesProvider>
+                    <Stack direction={{ sm: 'column', md: 'row' }} sx={{ width: '100vw' }} gap={1}   >
+                        <Stack gap={1} direction={'column'} justifyContent={'space-between'} sx={{
+                            width: {
+                                sm: "100%",
+                                md: '48%'
+                            }
+                        }}>
+                            <PartyAgeing1 party={party} />
+                            <PartyAgeing2 party={party} />
+                            <PartyForcastAndGrowth party={party} />
+                            <PartyClientSale party={party} />
+                            <PartyPendingOrders party={party} />
                         </Stack>
-                    </ArticlesProvider>}
-                </DialogContent>
+                        <Stack direction={'row'} >
+                            <CurrentStock party={party} />
+                        </Stack>
+                    </Stack>
+                </ArticlesProvider>}
             </Dialog>
             <ViewPartyRemarksDialog party={party} dialog={dialog2} setDialog={setdialog2} />
         </>
