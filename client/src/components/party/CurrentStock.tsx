@@ -10,6 +10,7 @@ import { CustomColumFilter } from '../filter/CustomColumFIlter'
 import { Tooltip, Typography } from '@mui/material'
 import { CustomFilterFunction } from '../filter/CustomFilterFunction'
 import { ArticlesContext } from '../../contexts/ArticlesContext'
+import { Refresh } from '@mui/icons-material'
 
 
 export default function CurrentStock({ party }: { party: string }) {
@@ -22,7 +23,7 @@ export default function CurrentStock({ party }: { party: string }) {
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
     const [columnFilterState, setColumnFilterState] = useState<MRT_ColumnFiltersState>([]);
-    const { articles } = useContext(ArticlesContext)
+    const { articles, setArticles } = useContext(ArticlesContext)
 
 
     let columns = useMemo<MRT_ColumnDef<any, any>[]>(
@@ -100,7 +101,15 @@ export default function CurrentStock({ party }: { party: string }) {
             }
         }),
         renderTopToolbarCustomActions: () => (
-            <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Current Stock</Typography>
+
+            <Typography
+                variant={'h6'}
+                component={'h1'}
+                sx={{ pl: 1 }}
+            >
+                Current Stock
+                <Refresh sx={{ cursor: 'pointer', color: 'green' }} onClick={() => setArticles([])} />
+            </Typography>
         ),
 
         muiTableHeadRowProps: () => ({
