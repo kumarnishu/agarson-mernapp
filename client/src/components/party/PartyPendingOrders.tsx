@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
@@ -9,6 +9,7 @@ import { HandleNumbers } from '../../utils/IsDecimal'
 import { CustomColumFilter } from '../filter/CustomColumFIlter'
 import { Tooltip, Typography } from '@mui/material'
 import { CustomFilterFunction } from '../filter/CustomFilterFunction'
+import { ArticlesContext } from '../../contexts/ArticlesContext'
 
 
 export default function PartyPendingOrders({ party }: { party: string }) {
@@ -17,7 +18,7 @@ export default function PartyPendingOrders({ party }: { party: string }) {
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["pendingorders", party], async () => new PartyPageService().GetPartyPendingOrders(party))
     const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const isFirstRender = useRef(true);
-
+    const { setArticles } = useContext(ArticlesContext)
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
@@ -97,7 +98,7 @@ export default function PartyPendingOrders({ party }: { party: string }) {
                 color: 'white',
             }
         }),
-       
+
         renderTopToolbarCustomActions: () => (
             <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Pending Orders</Typography>
         ),
@@ -132,16 +133,16 @@ export default function PartyPendingOrders({ party }: { party: string }) {
             },
         }),
         muiPaginationProps: {
-            rowsPerPageOptions: [1,2,3,10, 100, 200, 500, 1000, 2000, 5000, 7000, 10000],
+            rowsPerPageOptions: [1, 2, 3, 10, 100, 200, 500, 1000, 2000, 5000, 7000, 10000],
             shape: 'rounded',
             variant: 'outlined',
         },
-       
+
         enableDensityToggle: false, initialState: {
             density: 'compact', pagination: { pageIndex: 0, pageSize: 2 }
         },
-        enableBottomToolbar:true,
-        enableGlobalFilter:false,
+        enableBottomToolbar: true,
+        enableGlobalFilter: false,
         enableGrouping: false,
         enableRowSelection: true,
         enablePagination: true,
@@ -207,6 +208,19 @@ export default function PartyPendingOrders({ party }: { party: string }) {
         if (isFirstRender.current) return;
         localStorage.setItem('mrt_columnSizing_PartyPendingOrders', JSON.stringify(columnSizing));
     }, [columnSizing]);
+
+    useEffect(() => {
+        let rows = table.getSelectedRowModel().rows;
+        if (rows.length > 0) {
+            //@ts-ignore
+            let articles = rows.map((i) => { return i.original['Article'] })
+
+            setArticles(articles)
+        }
+        else {
+            setArticles([])
+        }
+    }, [table.getSelectedRowModel().rows])
 
 
     return (

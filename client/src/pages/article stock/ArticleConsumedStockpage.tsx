@@ -33,10 +33,10 @@ export default function ArticleConsumedStockpage() {
     //column definitions...
     () => consumes && [
       {
-        accessorKey: 'actions',   enableColumnActions: false,
-                enableColumnFilter: false,
-                enableSorting: false,
-                enableGrouping: false,
+        accessorKey: 'actions', enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
         header: 'Actions',
         Cell: ({ cell }) => <>
           {LoggedInUser?.role == "admin" && <Button color="error"
@@ -314,11 +314,36 @@ export default function ArticleConsumedStockpage() {
             sx={{ borderRadius: 2 }}
           >
 
-            {LoggedInUser?.assigned_permissions.includes('consumed_stock_export') && < MenuItem onClick={() => ExportToExcel(table.getRowModel().rows.map((row) => { return row.original }), "Exported Data")}
+            {LoggedInUser?.assigned_permissions.includes('consumed_stock_export') && < MenuItem onClick={() => {
+              let data = table.getRowModel().rows.map((row)=>{
+                return {
+                  'PARTY':row.original.party,
+                  'Article':row.original.article,
+                  'Size':row.original.size,
+                  'CTN':row.original.consumed,
+                  'Employee':row.original.employee.label,
+                  'Date':row.original.created_at
+                }
+              })
+              ExportToExcel(data, "Exported Data")
+            }
+            }
 
             >Export All</MenuItem>}
-            {LoggedInUser?.assigned_permissions.includes('consumed_stock_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => ExportToExcel(table.getSelectedRowModel().rows.map((row) => { return row.original }), "Exported Data")}
-
+            {LoggedInUser?.assigned_permissions.includes('consumed_stock_export') && < MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => {
+              let data = table.getSelectedRowModel().rows.map((row)=>{
+                return {
+                  'PARTY':row.original.party,
+                  'Article':row.original.article,
+                  'Size':row.original.size,
+                  'CTN':row.original.consumed,
+                  'Employee':row.original.employee.label,
+                  'Date':row.original.created_at
+                }
+              })
+              ExportToExcel(data, "Exported Data")
+            }
+            }
             >Export Selected</MenuItem>}
 
           </Menu >

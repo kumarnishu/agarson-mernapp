@@ -28,8 +28,8 @@ export class StockSchemeController {
                 size: item.size,
                 consumed: item.consumed,
                 employee: { id: item.employee._id, label: item.employee.username },
-                created_at: moment(item.created_at).calendar(),
-                updated_at: moment(item.updated_at).calendar(),
+                created_at: moment(item.created_at).format('DD-MM-YYYY'),
+                updated_at: moment(item.updated_at).format('DD-MM-YYYY'),
                 created_by: { id: item.created_by._id, label: item.created_by.username },
                 updated_by: { id: item.updated_by._id, label: item.updated_by.username }
             }
@@ -114,8 +114,8 @@ export class StockSchemeController {
                 ten: item.ten,
                 eleven: item.eleven,
                 article: item.article,
-                created_at: moment(item.created_at).format('YYYY-MM-DD'),
-                updated_at: moment(item.updated_at).format('YYYY-MM-DD'),
+                created_at: moment(item.created_at).format('DD-MM-YYYY'),
+                updated_at: moment(item.updated_at).format('DD-MM-YYYY'),
                 created_by: { id: item.created_by._id, label: item.created_by.username },
                 updated_by: { id: item.updated_by._id, label: item.updated_by.username }
             }

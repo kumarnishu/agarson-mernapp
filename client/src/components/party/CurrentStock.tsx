@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
@@ -9,6 +9,7 @@ import { HandleNumbers } from '../../utils/IsDecimal'
 import { CustomColumFilter } from '../filter/CustomColumFIlter'
 import { Tooltip, Typography } from '@mui/material'
 import { CustomFilterFunction } from '../filter/CustomFilterFunction'
+import { ArticlesContext } from '../../contexts/ArticlesContext'
 
 
 export default function CurrentStock({ party }: { party: string }) {
@@ -20,7 +21,7 @@ export default function CurrentStock({ party }: { party: string }) {
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-
+    const { articles } = useContext(ArticlesContext)
 
 
     let columns = useMemo<MRT_ColumnDef<any, any>[]>(
@@ -152,10 +153,12 @@ export default function CurrentStock({ party }: { party: string }) {
             isLoading: isLoading,
             columnVisibility,
             sorting,
+            columnFilters: articles.length > 0 ? [{ id: 'Article', value: articles }] : [],
             columnSizing: columnSizing
         }
     });
 
+    
 
     //load state from local storage
     useEffect(() => {
@@ -206,6 +209,8 @@ export default function CurrentStock({ party }: { party: string }) {
         localStorage.setItem('mrt_columnSizing_CurrentStock', JSON.stringify(columnSizing));
     }, [columnSizing]);
 
+    console.log(table.getState().columnFilters)
+    console.log(articles)
 
     return (
         <>

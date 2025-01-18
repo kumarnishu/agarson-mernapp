@@ -7,6 +7,7 @@ import PartyClientSale from '../../party/PartyClientSale'
 import PartyForcastAndGrowth from '../../party/PartyForcastAndGrowth'
 import PartyPendingOrders from '../../party/PartyPendingOrders'
 import PartyInteraction from '../../party/PartyInteraction'
+import { ArticlesProvider } from '../../../contexts/ArticlesContext'
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
@@ -26,24 +27,26 @@ function ViewPartyDetailDialog({ party, dialog, setDialog }: Props) {
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>
                 {party}
             </DialogTitle>
-            <Stack direction={{ sm: 'column', md: 'row' }} sx={{ width: '100vw' }} gap={2}   >
-                <Stack gap={1} direction={'column'} justifyContent={'space-between'} sx={{
-                    width: {
-                        sm: "100%",
-                        md: '49%'
-                    }
-                }}>
-                    {!party && <PartyInteraction party={party} />}
-                    <PartyAgeing1 party={party} />
-                    <PartyAgeing2 party={party} />
-                    <PartyForcastAndGrowth party={party} />
-                    <PartyClientSale party={party} />
-                    <PartyPendingOrders party={party} />
+            <ArticlesProvider>
+                <Stack direction={{ sm: 'column', md: 'row' }} sx={{ width: '100vw' }} gap={2}   >
+                    <Stack gap={1} direction={'column'} justifyContent={'space-between'} sx={{
+                        width: {
+                            sm: "100%",
+                            md: '49%'
+                        }
+                    }}>
+                        {!party && <PartyInteraction party={party} />}
+                        <PartyAgeing1 party={party} />
+                        <PartyAgeing2 party={party} />
+                        <PartyForcastAndGrowth party={party} />
+                        <PartyClientSale party={party} />
+                        <PartyPendingOrders party={party} />
+                    </Stack>
+                    <Stack direction={'row'} >
+                        <CurrentStock party={party} />
+                    </Stack>
                 </Stack>
-                <Stack  direction={'row'} >
-                    <CurrentStock party={party} />
-                </Stack>
-            </Stack>
+            </ArticlesProvider>
         </Dialog>
     )
 }
