@@ -51,8 +51,8 @@ function ViewPartyRemarksDialog({ party, dialog, setDialog }: Props) {
                     {remarks && remarks.map((item, index) => {
                         return (
 
-                            <Stack gap={1} key={index} style={{ borderRadius: '1px 10px', padding: '10px', background: 'lightblue', paddingLeft: '20px', border: '1px solemployee grey' }}>
-                                <p style={{ fontSize: 16, fontWeight: 'bold' }}>{toTitleCase(item.created_by.label || "")} : {toTitleCase(item.remark || "")} </p>
+                            <Stack gap={1} key={index} style={{ borderRadius: '1px 10px', padding: '10px', background: 'lightgrey', paddingLeft: '20px', border: '1px solemployee grey' }}>
+                                <p style={{ fontSize: 16, fontWeight: '400', letterSpacing: 1.2 }}>{toTitleCase(item.created_by.label || "")} : {toTitleCase(item.remark || "")} </p>
                                 {item.nextcall && <p>Next Call :  {moment(new Date(item.nextcall)).format('MMMM Do YYYY')}</p>}
                                 {item.created_at && <p>Timestamp : {moment(new Date(item.created_at)).format('MMMM Do YYYY, h:mm:ss a')}</p>}
                                 {
@@ -78,7 +78,7 @@ function ViewPartyRemarksDialog({ party, dialog, setDialog }: Props) {
                 </Stack>
                 {remark && <DeletePartyremarkDialog dialog={dialog2} setDialog={setdialog2} remark={remark} />}
                 <CreateOrEditPartyRemarkDialog party={party} remark={remark} dialog={dialog2} setDialog={setdialog2} />
-                <Button sx={{ mt: 2 }} variant='contained' fullWidth onClick={() => {
+                <Button size="large" sx={{ mt: 2, p: 2 }} variant='contained' fullWidth onClick={() => {
                     setRemark(undefined)
                     setdialog2('CreateOrEditPartyRemarkDialog')
 

@@ -39,6 +39,8 @@ export class PartyPageService {
   public async GetPartyLast5Remarks(party: string) {
     return await apiClient.get(`partypage/remarks/?party=${encodeURIComponent(party)}`)
   }
-
+  public async GetPartyList() {
+    return await apiClient.get(`partypage/list`)
+  }
 }
 

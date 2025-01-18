@@ -7,6 +7,7 @@ let controller = new PartyPageController()
 const router = express.Router()
 
 router.route("/partypage/ageing2").get(isAuthenticatedUser, controller.GetPartyAgeingReport2)
+router.route("/partypage/list").get(isAuthenticatedUser, controller.GetALlParties)
 router.route("/partypage/stock").get(isAuthenticatedUser, controller.GetCurrentStock)
 router.route("/partypage/sale").get(isAuthenticatedUser, controller.GetPartyArticleSaleMonthly)
 router.route("/partypage/forcast-growth").get(isAuthenticatedUser, controller.GetPartyForcastAndGrowth)
