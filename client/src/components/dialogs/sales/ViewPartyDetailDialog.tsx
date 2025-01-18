@@ -30,26 +30,29 @@ function ViewPartyDetailDialog({ party, dialog, setDialog }: Props) {
                 }
             >
 
-                <Stack direction={'row'} gap={10} alignItems={'center'} justifyContent={'center'}>
-                    <IconButton style={{ display: 'inline-block', position: 'absolute', left: '0px' }} color="error" onClick={() => {
-                        setdialog2(undefined)
-                        setDialog(undefined)
-                    }}>
-                        <Cancel fontSize='large' />
-                    </IconButton>
-                    <p style={{ fontSize: 20, fontWeight: 'bold' }}>
+                <Stack direction={{ sm: 'column', md: 'row' }} gap={2} alignItems={'center'} justifyContent={'center'}>
+                    <p style={{ fontWeight: 'bold', fontSize: 20, textAlign: 'left' }}>
                         {party}
                     </p>
-                    <Button variant='text' color="error" sx={{ fontSize: 17 }} onMouseOver={() => setdialog2('ViewPartyRemarksDialog')}>
-                        last 5 Remarks
-                    </Button>
+                    <div>
+
+                        <Button variant='text' color="error" sx={{ fontSize: 17 }} onMouseOver={() => setdialog2('ViewPartyRemarksDialog')}>
+                            last 5 Remarks
+                        </Button>
+                        <IconButton style={{ display: 'inline-block' }} color="error" onClick={() => {
+                            setdialog2(undefined)
+                            setDialog(undefined)
+                        }}>
+                            <Cancel fontSize='large' />
+                        </IconButton>
+                    </div>
                 </Stack>
                 {dialog && <ArticlesProvider>
                     <Stack direction={{ sm: 'column', md: 'row' }} sx={{ width: '100vw' }} gap={1}   >
                         <Stack gap={1} direction={'column'} justifyContent={'space-between'} sx={{
                             width: {
                                 sm: "100%",
-                                md: '48%'
+                                md: '49%'
                             }
                         }}>
                             <PartyAgeing1 party={party} />
