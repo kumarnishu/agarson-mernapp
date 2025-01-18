@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef,  MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable, MRT_ColumnFiltersState } from 'material-react-table'
 import { IColumnRowData } from '../../dtos/SalesDto'
 import { PartyPageService } from '../../services/PartyPageService'
 import { HandleNumbers } from '../../utils/IsDecimal'
@@ -16,13 +16,13 @@ export default function PartyClientSale({ party }: { party: string }) {
     const [reports, setReports] = useState<IColumnRowData['rows']>([])
     const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["client_sale", party], async () => new PartyPageService().GetPartyArticleSaleMonthly(party))
-    
+
     const isFirstRender = useRef(true);
     const { articles } = useContext(ArticlesContext)
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-
+    const [columnFilterState, setColumnFilterState] = useState<MRT_ColumnFiltersState>([]);
 
 
     let columns = useMemo<MRT_ColumnDef<any, any>[]>(
@@ -89,7 +89,7 @@ export default function PartyClientSale({ party }: { party: string }) {
         data: reports ? reports : [], //10,000 rows       
         enableColumnResizing: true,
         enableRowVirtualization: true,
-         //optional
+        //optional
         // , //optionally customize the row virtualizr
         // columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizr
         enableStickyFooter: true,
@@ -151,7 +151,7 @@ export default function PartyClientSale({ party }: { party: string }) {
             isLoading: isLoading,
             columnVisibility,
             sorting,
-            columnFilters: articles.length > 0 ? [{ id: 'ARTICLE NAME', value: articles }] : [],
+            columnFilters: columnFilterState,
             columnSizing: columnSizing
         }
     });
@@ -183,7 +183,12 @@ export default function PartyClientSale({ party }: { party: string }) {
     }, []);
 
 
-
+    useEffect(() => {
+        if (articles.length > 0)
+            setColumnFilterState([{ id: 'Article', value: articles }])
+        else
+            setColumnFilterState([])
+    }, [articles])
 
     useEffect(() => {
         if (isFirstRender.current) return;
