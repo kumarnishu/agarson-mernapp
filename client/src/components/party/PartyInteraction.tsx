@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { Typography } from '@mui/material'
 import { AxiosResponse } from "axios"
 import { BackendError } from '../..'
@@ -13,7 +13,6 @@ import { GetPartyRemarkDto } from '../../dtos/PartyPageDto'
 export default function PartyInteraction({ party }: { party: string }) {
     const [remarks, setRemarks] = useState<GetPartyRemarkDto[]>([])
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetPartyRemarkDto[]>, BackendError>(["ageing1", party], async () => new PartyPageService().GetPartyLast5Remarks(party))
-    const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
     const isFirstRender = useRef(true);
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
@@ -63,6 +62,7 @@ export default function PartyInteraction({ party }: { party: string }) {
         columns, columnFilterDisplayMode: 'popover',
         data: remarks, //10,000 rows       
         enableColumnResizing: true,
+        positionToolbarAlertBanner: 'none',
         enableColumnVirtualization: true, enableStickyFooter: true,
         muiTableFooterRowProps: () => ({
             sx: {
@@ -120,7 +120,7 @@ export default function PartyInteraction({ party }: { party: string }) {
         enableColumnPinning: true,
         enableTableFooter: true,
         enableRowVirtualization: true,
-        onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+        onColumnVisibilityChange: setColumnVisibility, 
 
         onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing, state: {
@@ -138,14 +138,7 @@ export default function PartyInteraction({ party }: { party: string }) {
             setRemarks(data.data);
         }
     }, [data, isSuccess]);
-    useEffect(() => {
-        //scroll to the top of the table when the sorting changes
-        try {
-            rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-        } catch (error) {
-            console.error(error);
-        }
-    }, [sorting]);
+  
 
     //load state from local storage
     useEffect(() => {

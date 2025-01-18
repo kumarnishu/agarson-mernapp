@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import PopUp from '../../components/popup/PopUp'
@@ -27,7 +27,7 @@ export default function ReferencesReportPage() {
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
   const [dialog, setDialog] = useState<string | undefined>()
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [party, setParty] = useState<string | undefined>()
   const [stage, setReference] = useState<string | undefined>()
@@ -207,14 +207,7 @@ export default function ReferencesReportPage() {
     }
   }, [isSuccess, data]);
 
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
+  
 
   //load state from local storage
   useEffect(() => {

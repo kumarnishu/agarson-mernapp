@@ -8,7 +8,7 @@ import { UserContext } from '../../contexts/userContext.tsx'
 import { BackendError } from '../../index'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import CreateOrEditReferDialog from '../../components/dialogs/crm/CreateOrEditReferDialog.tsx'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import PopUp from '../../components/popup/PopUp.tsx'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog.tsx'
 import AllReferralPageDialog from '../../components/dialogs/crm/AllReferralPageDialog.tsx'
@@ -48,7 +48,7 @@ export default function RefersPage() {
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  
 
   useEffect(() => {
     if (!filter) {
@@ -348,7 +348,7 @@ export default function RefersPage() {
     enableColumnPinning: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+    onColumnVisibilityChange: setColumnVisibility,  //optional
 
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
@@ -360,21 +360,8 @@ export default function RefersPage() {
     }
   });
 
-  useEffect(() => {
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
+
+  
 
   //load state from local storage
   useEffect(() => {

@@ -5,7 +5,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { UserContext } from '../../contexts/userContext'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { SalesmanLeavesButton } from '../../components/buttons/SalesmanLeavesButton'
 import { SalesService } from '../../services/SalesServices'
 import { IColumnRowData } from '../../dtos/SalesDto'
@@ -19,7 +19,7 @@ export default function SalesmanLeavesReportPage() {
   const { user } = useContext(UserContext)
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["reports"], async () => new SalesService().GetSalesManLeavesReports())
 
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  
 
   const isFirstRender = useRef(true);
 
@@ -121,14 +121,7 @@ export default function SalesmanLeavesReportPage() {
       columnSizing: columnSizing
     }
   });
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
+ 
 
 
   //load state from local storage

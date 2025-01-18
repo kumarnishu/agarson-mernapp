@@ -5,7 +5,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { UserContext } from '../../contexts/userContext'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { Check, Delete, Edit, FilterAlt, FilterAltOff, Menu as MenuIcon, Photo } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import PopUp from '../../components/popup/PopUp'
@@ -37,7 +37,7 @@ export default function SpareDyesPage() {
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
     const [userId, setUserId] = useState<string>()
-    const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+    
     const [dates, setDates] = useState<{ start_date?: string, end_date?: string }>({
         start_date: moment(new Date()).format("YYYY-MM-DD")
         , end_date: moment(new Date().setDate(new Date().getDate() + 1)).format("YYYY-MM-DD")
@@ -244,7 +244,7 @@ export default function SpareDyesPage() {
         enableColumnPinning: true,
         enableTableFooter: true,
         enableRowVirtualization: true,
-        onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+        onColumnVisibilityChange: setColumnVisibility,  //optional
 
         onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing, state: {
@@ -257,21 +257,8 @@ export default function SpareDyesPage() {
     });
 
 
-    useEffect(() => {
-        try {
-            rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-        } catch (error) {
-            console.error(error);
-        }
-    }, [sorting]);
-    useEffect(() => {
-        //scroll to the top of the table when the sorting changes
-        try {
-            rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-        } catch (error) {
-            console.error(error);
-        }
-    }, [sorting]);
+    
+   
 
     //load state from local storage
     useEffect(() => {

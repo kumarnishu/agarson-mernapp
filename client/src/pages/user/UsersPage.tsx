@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useMutation, useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { Assignment, Block, DeviceHubOutlined, Edit, GroupAdd, GroupRemove, Key, KeyOffOutlined, RemoveCircle, Restore, RoundaboutLeft } from '@mui/icons-material'
 import { UserContext } from '../../contexts/userContext'
 import { Menu as MenuIcon } from '@mui/icons-material';
@@ -40,7 +40,7 @@ export default function UsersPage() {
     const [dialog, setDialog] = useState<string | undefined>()
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [flag, setFlag] = useState(1);
-    const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+    
     const { setAlert } = useContext(AlertContext)
 
     const isFirstRender = useRef(true);
@@ -440,14 +440,7 @@ export default function UsersPage() {
             columnSizing: columnSizing
         }
     });
-    useEffect(() => {
-        //scroll to the top of the table when the sorting changes
-        try {
-            rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-        } catch (error) {
-            console.error(error);
-        }
-    }, [sorting]);
+   
 
     //load state from local storage
     useEffect(() => {

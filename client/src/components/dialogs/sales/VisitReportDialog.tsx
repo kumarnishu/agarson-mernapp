@@ -3,7 +3,7 @@ import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { BackendError } from '../../..'
 import { onlyUnique } from '../../../utils/UniqueArray'
 import { Cancel } from '@mui/icons-material'
@@ -17,7 +17,7 @@ function VisitReportPage({ employee }: { employee: string }) {
 
     const [reports, setReports] = useState<GetVisitReportDto[]>([])
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetVisitReportDto[]>, BackendError>(["reports", employee], async () => new SalesService().GetVisitReports({ employee }))
-    const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+    
     const columns = useMemo<MRT_ColumnDef<GetVisitReportDto>[]>(
         //column definitions...
         () => [
@@ -139,7 +139,7 @@ function VisitReportPage({ employee }: { employee: string }) {
         enableColumnPinning: true,
         enableTableFooter: true,
         enableRowVirtualization: true,
-        rowVirtualizerInstanceRef, //optional
+         //optional
 
         onColumnVisibilityChange: setColumnVisibility,
         onSortingChange: setSorting,
@@ -152,14 +152,7 @@ function VisitReportPage({ employee }: { employee: string }) {
         }
     });
 
-    useEffect(() => {
-        //scroll to the top of the table when the sorting changes
-        try {
-            rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-        } catch (error) {
-            console.error(error);
-        }
-    }, [sorting]);
+   
 
     useEffect(() => {
         if (isFirstRender.current) return;
@@ -220,14 +213,7 @@ function VisitReportPage({ employee }: { employee: string }) {
         }
     }, [isSuccess]);
 
-    useEffect(() => {
-        //scroll to the top of the table when the sorting changes
-        try {
-            rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-        } catch (error) {
-            console.error(error);
-        }
-    }, [sorting]);
+   
     return (
         <>
             <Stack

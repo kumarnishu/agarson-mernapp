@@ -5,7 +5,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { UserContext } from '../../contexts/userContext'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { Check, Delete, FilterAlt, FilterAltOff, Menu as MenuIcon, Photo } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
@@ -31,7 +31,7 @@ export default function ShoeWeightPage() {
   const [users, setUsers] = useState<DropDownDto[]>([])
   const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  
   const isFirstRender = useRef(true);
 
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
@@ -354,7 +354,7 @@ export default function ShoeWeightPage() {
     enableColumnPinning: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+    onColumnVisibilityChange: setColumnVisibility,  //optional
 
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
@@ -367,21 +367,8 @@ export default function ShoeWeightPage() {
   });
 
 
-  useEffect(() => {
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
+
+  
 
   //load state from local storage
   useEffect(() => {

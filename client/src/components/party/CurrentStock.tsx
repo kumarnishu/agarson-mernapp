@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef,  MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
 import { IColumnRowData } from '../../dtos/SalesDto'
 import { PartyPageService } from '../../services/PartyPageService'
 import { HandleNumbers } from '../../utils/IsDecimal'
@@ -16,7 +16,7 @@ export default function CurrentStock({ party }: { party: string }) {
     const [reports, setReports] = useState<IColumnRowData['rows']>([])
     const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["stock", party], async () => new PartyPageService().GetCurrentStock(party))
-    const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+    
     const isFirstRender = useRef(true);
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
@@ -86,8 +86,9 @@ export default function CurrentStock({ party }: { party: string }) {
         columns, columnFilterDisplayMode: 'popover',
         data: reports ? reports : [], //10,000 rows       
         enableColumnResizing: true,
+        positionToolbarAlertBanner: 'none',
         enableRowVirtualization: true,
-        rowVirtualizerInstanceRef, //optional
+         //optional
         // , //optionally customize the row virtualizr
         // columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizr
         enableStickyFooter: true,
@@ -208,9 +209,6 @@ export default function CurrentStock({ party }: { party: string }) {
         if (isFirstRender.current) return;
         localStorage.setItem('mrt_columnSizing_CurrentStock', JSON.stringify(columnSizing));
     }, [columnSizing]);
-
-    console.log(table.getState().columnFilters)
-    console.log(articles)
 
     return (
         <>

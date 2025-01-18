@@ -6,7 +6,7 @@ import { useQuery } from 'react-query'
 import { BackendError } from '../..'
 import { UserContext } from '../../contexts/userContext'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import moment from 'moment'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { ProductionService } from '../../services/ProductionService'
@@ -31,7 +31,7 @@ export default function ShowWeightDifferenceReportPage() {
 
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  
   const columns = useMemo<MRT_ColumnDef<GetShoeWeightDiffReportDto>[]>(
     //column definitions...
     () => reports && [
@@ -168,14 +168,7 @@ export default function ShowWeightDifferenceReportPage() {
     [reports],
     //end
   );
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
+  
 
   //load state from local storage
   useEffect(() => {
@@ -317,7 +310,7 @@ export default function ShowWeightDifferenceReportPage() {
     enableColumnPinning: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    rowVirtualizerInstanceRef, //optional
+     //optional
     //optionally customize the column virtualizer
     onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
@@ -328,14 +321,7 @@ export default function ShowWeightDifferenceReportPage() {
       columnSizing: columnSizing
     }
   });
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
+  
   return (
     <>
       {

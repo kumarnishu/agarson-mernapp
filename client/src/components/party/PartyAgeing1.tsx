@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { Typography } from '@mui/material'
 import { AxiosResponse } from "axios"
 import { BackendError } from '../..'
@@ -15,7 +15,7 @@ import { PartyPageService } from '../../services/PartyPageService'
 export default function PartyAgeing1({ party }: { party: string }) {
     const [ageings, setAgeings] = useState<GetAgeingDto[]>([])
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetAgeingDto[]>, BackendError>(["ageing1", party], async () => new PartyPageService().GetPartyAgeing1(party))
-    const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+    
     const isFirstRender = useRef(true);
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
     const goto = useNavigate()
@@ -124,6 +124,7 @@ export default function PartyAgeing1({ party }: { party: string }) {
         columns, columnFilterDisplayMode: 'popover',
         data: ageings, //10,000 rows       
         enableColumnResizing: true,
+        positionToolbarAlertBanner: 'none',
         enableColumnVirtualization: true, enableStickyFooter: true,
         muiTableFooterRowProps: () => ({
             sx: {
@@ -180,7 +181,7 @@ export default function PartyAgeing1({ party }: { party: string }) {
         enableColumnPinning: true,
         enableTableFooter: false,
         enableRowVirtualization: true,
-        onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+        onColumnVisibilityChange: setColumnVisibility,  //optional
 
         onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing, state: {
@@ -198,14 +199,7 @@ export default function PartyAgeing1({ party }: { party: string }) {
             setAgeings(data.data);
         }
     }, [data, isSuccess]);
-    useEffect(() => {
-        //scroll to the top of the table when the sorting changes
-        try {
-            rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-        } catch (error) {
-            console.error(error);
-        }
-    }, [sorting]);
+   
 
     //load state from local storage
     useEffect(() => {

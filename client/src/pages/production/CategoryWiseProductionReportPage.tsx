@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import moment from 'moment'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { UserContext } from '../../contexts/userContext'
@@ -25,7 +25,7 @@ export default function CategoryWiseProductionReportPage() {
   })
   const { user } = useContext(UserContext)
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetCategoryWiseProductionReportDto[]>, BackendError>(["categorywisereports", dates.start_date, dates.end_date], async () =>new ProductionService(). GetproductioncategoryWise({ start_date: dates.start_date, end_date: dates.end_date }))
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  
 
    const isFirstRender = useRef(true);
 
@@ -184,7 +184,7 @@ export default function CategoryWiseProductionReportPage() {
     enableColumnPinning: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    rowVirtualizerInstanceRef, //optional
+     //optional
     //optionally customize the column virtualizer
     onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
@@ -196,14 +196,7 @@ export default function CategoryWiseProductionReportPage() {
       columnSizing: columnSizing
     }
   });
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
+  
 
   //load state from local storage
   useEffect(() => {

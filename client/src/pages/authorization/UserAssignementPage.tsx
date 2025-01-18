@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { Assignment, KeyOffOutlined } from '@mui/icons-material'
 import { UserContext } from '../../contexts/userContext'
 import { Menu as MenuIcon } from '@mui/icons-material';
@@ -26,7 +26,7 @@ export default function UserAssignementPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null); const [flag, setFlag] = useState(1);
+   const [flag, setFlag] = useState(1);
 
   const isFirstRender = useRef(true);
 
@@ -212,7 +212,7 @@ export default function UserAssignementPage() {
     enableColumnPinning: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //
+    onColumnVisibilityChange: setColumnVisibility,  //
     columnVirtualizerOptions: { overscan: 2 },
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
@@ -223,14 +223,7 @@ export default function UserAssignementPage() {
       columnSizing: columnSizing
     }
   });
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
+  
 
   //load state from local storage
   useEffect(() => {

@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../../index'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import moment from 'moment'
 import CreateOrEditReferDialog from '../../components/dialogs/crm/CreateOrEditReferDialog.tsx'
 import DeleteCrmItemDialog from '../../components/dialogs/crm/DeleteCrmItemDialog.tsx'
@@ -39,7 +39,7 @@ export default function NewReferReportPage() {
 
   const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  
   const isFirstRender = useRef(true);
 
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
@@ -325,7 +325,7 @@ export default function NewReferReportPage() {
     enableColumnPinning: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+    onColumnVisibilityChange: setColumnVisibility,  //optional
 
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
@@ -343,14 +343,7 @@ export default function NewReferReportPage() {
       setRefers(data.data);
     }
   }, [isSuccess, data]);
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
+  
 
   //load state from local storage
   useEffect(() => {

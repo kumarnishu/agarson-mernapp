@@ -5,7 +5,7 @@ import { BackendError } from '../..'
 import { Button, CircularProgress, Fade, LinearProgress, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import moment from 'moment'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { DownloadFile } from '../../utils/DownloadFile'
 import { queryClient } from '../../main'
 import { currentYear, getNextMonday, getPrevMonday, nextMonth, nextYear, previousMonth, previousYear } from '../../utils/datesHelper'
@@ -39,7 +39,7 @@ function ChecklistPage() {
   const isFirstRender = useRef(true);
 
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  
   const { data: categorydata, isSuccess: categorySuccess, isLoading: isScoreLoading } = useQuery<AxiosResponse<GetChecklistTopBarDto>, BackendError>(["checklists_top_bar", userId], async () => new ChecklistService().GetChecklistTopBarDetails(userId || "all"))
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const [dialog, setDialog] = useState<string | undefined>()
@@ -467,7 +467,7 @@ function ChecklistPage() {
     },
 
     enableRowVirtualization: true,
-    rowVirtualizerInstanceRef, //optional
+     //optional
     //optionally customize the column virtualizer
     onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
@@ -487,14 +487,7 @@ function ChecklistPage() {
       setChecklists(data.data)
     }
   }, [data])
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
+  
 
   //load state from local storage
   useEffect(() => {

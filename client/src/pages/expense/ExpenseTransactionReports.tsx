@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import moment from 'moment'
 import { UserContext } from '../../contexts/userContext'
 import ExportToExcel from '../../utils/ExportToExcel'
@@ -25,7 +25,7 @@ export default function ExpenseTransactionReports() {
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetExpenseTransactionsDto[]>, BackendError>(["expense_transaction_reports", dates.start_date, dates.end_date], async () => new ExpenseService().GetAllExpenseTransactions({ start_date: dates.start_date, end_date: dates.end_date }))
   const { user: LoggedInUser } = useContext(UserContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  
   const isFirstRender = useRef(true);
 
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
@@ -118,14 +118,7 @@ export default function ExpenseTransactionReports() {
   );
 
 
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
+  
 
   //load state from local storage
   useEffect(() => {
@@ -236,7 +229,7 @@ export default function ExpenseTransactionReports() {
     enableColumnPinning: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+    onColumnVisibilityChange: setColumnVisibility,  //optional
 
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {

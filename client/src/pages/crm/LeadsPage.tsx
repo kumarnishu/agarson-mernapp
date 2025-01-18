@@ -5,7 +5,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { UserContext } from '../../contexts/userContext'
 import { toTitleCase } from '../../utils/TitleCase'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import CreateOrEditLeadDialog from '../../components/dialogs/crm/CreateOrEditLeadDialog'
 import MergeTwoLeadsDialog from '../../components/dialogs/crm/MergeTwoLeadsDialog'
 import BulkDeleteUselessLeadsDialog from '../../components/dialogs/crm/BulkDeleteUselessLeadsDialog'
@@ -45,7 +45,7 @@ export default function LeadsPage() {
   const [stages, setStages] = useState<DropDownDto[]>([])
   const [dialog, setDialog] = useState<string | undefined>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null); const { data, isLoading, isRefetching, refetch } = useQuery<AxiosResponse<GetLeadDto[]>, BackendError>(["leads", stage], async () => new CrmService().GetLeads({ stage: stage }))
+   const { data, isLoading, isRefetching, refetch } = useQuery<AxiosResponse<GetLeadDto[]>, BackendError>(["leads", stage], async () => new CrmService().GetLeads({ stage: stage }))
 
   const { data: stagedata, isSuccess: stageSuccess } = useQuery<AxiosResponse<DropDownDto[]>, BackendError>("crm_stages", new DropdownService().GetAllStages)
 
@@ -467,7 +467,7 @@ export default function LeadsPage() {
     enableColumnPinning: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+    onColumnVisibilityChange: setColumnVisibility,  //optional
 
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
@@ -479,22 +479,6 @@ export default function LeadsPage() {
     }
   });
 
-  useEffect(() => {
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
-
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
 
   //load state from local storage
   useEffect(() => {

@@ -6,7 +6,7 @@ import { Box, Button, Fade, Menu, MenuItem, Stack, TextField,  Typography } from
 import { UserContext } from '../../contexts/userContext'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { FilterAltOff } from '@mui/icons-material'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
@@ -38,7 +38,7 @@ function SalesmanKpiPage() {
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  
   let previous_date = new Date()
   let day = previous_date.getDate() - 4
   previous_date.setDate(day)
@@ -262,7 +262,7 @@ function SalesmanKpiPage() {
     enableColumnPinning: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+    onColumnVisibilityChange: setColumnVisibility,  //optional
 
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
@@ -284,14 +284,7 @@ function SalesmanKpiPage() {
       setKpis(data.data)
     }
   }, [data])
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
+ 
 
   //load state from local storage
   useEffect(() => {

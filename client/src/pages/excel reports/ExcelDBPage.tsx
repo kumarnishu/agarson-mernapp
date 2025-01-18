@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef,  MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
 import { useParams } from 'react-router-dom'
 import { UserContext } from '../../contexts/userContext'
 import { Refresh } from '@mui/icons-material'
@@ -34,7 +34,7 @@ export default function ExcelDBPage() {
   const { data: categorydata, refetch: RefetchCategory, isSuccess: isSuccessCategorydata } = useQuery<AxiosResponse<DropDownDto>, BackendError>(["key_categories"], async () => new AuthorizationService().GetKeyCategoryById(id || ""), { enabled: false })
 
   const { data, isLoading, isSuccess, refetch, isRefetching } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb", hidden], async () => new ExcelReportsService().GetExcelDbReport(id || "", hidden), { enabled: false })
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  
   const isFirstRender = useRef(true);
 
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
@@ -148,7 +148,7 @@ export default function ExcelDBPage() {
     data: reports ? reports : [], //10,000 rows       
     enableColumnResizing: true,
     enableRowVirtualization: true,
-    rowVirtualizerInstanceRef, //optional
+     //optional
     // , //optionally customize the row virtualizr
     // columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizr
     enableStickyFooter: true,

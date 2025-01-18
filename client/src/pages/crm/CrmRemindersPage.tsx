@@ -7,7 +7,7 @@ import { Box, DialogTitle, Stack } from '@mui/material'
 import { Comment, Visibility } from '@mui/icons-material'
 import { IconButton, Tooltip } from '@mui/material'
 import PopUp from '../../components/popup/PopUp'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
 import { onlyUnique } from '../../utils/UniqueArray'
 import { DownloadFile } from '../../utils/DownloadFile'
@@ -28,7 +28,7 @@ function CrmReminderPage() {
   const [dialog, setDialog] = useState<string | undefined>()
 
   const isFirstRender = useRef(true);
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
@@ -326,7 +326,7 @@ function CrmReminderPage() {
     enableColumnPinning: true,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+    onColumnVisibilityChange: setColumnVisibility,  //optional
 
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing, state: {
@@ -341,14 +341,7 @@ function CrmReminderPage() {
     if (isSuccess)
       setRemarks(data?.data)
   }, [remarks, isSuccess, data])
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
+  
 
   //load state from local storage
   useEffect(() => {

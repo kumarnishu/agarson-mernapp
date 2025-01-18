@@ -1,7 +1,7 @@
 import { Stack } from '@mui/system'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { TextField, Typography } from '@mui/material'
 import { AxiosResponse } from "axios"
 import { BackendError } from "../.."
@@ -32,7 +32,7 @@ export default function SalesmanVisitPageAuto() {
     const isFirstRender = useRef(true);
 
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-    const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+    
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
@@ -160,7 +160,7 @@ export default function SalesmanVisitPageAuto() {
         enableColumnPinning: true,
         enableTableFooter: true,
         enableRowVirtualization: true,
-        onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //
+        onColumnVisibilityChange: setColumnVisibility,  //
         columnVirtualizerOptions: { overscan: 2 },
         onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing, state: {
@@ -171,14 +171,7 @@ export default function SalesmanVisitPageAuto() {
             columnSizing: columnSizing
         }
     });
-    useEffect(() => {
-        //scroll to the top of the table when the sorting changes
-        try {
-            rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-        } catch (error) {
-            console.error(error);
-        }
-    }, [sorting]);
+   
 
     //load state from local storage
     useEffect(() => {

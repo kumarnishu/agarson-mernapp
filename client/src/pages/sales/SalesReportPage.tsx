@@ -5,7 +5,7 @@ import { BackendError } from '../..'
 import { Box, Button, Fade, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import moment from 'moment'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { SalesService } from '../../services/SalesServices'
 import { Menu as MenuIcon } from '@mui/icons-material';
@@ -31,7 +31,7 @@ function SalesReportPage() {
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  
   const [dialog, setDialog] = useState<string | undefined>()
   const [party, setParty] = useState<string>()
   const { data, isLoading } = useQuery<AxiosResponse<GetSalesDto[]>, BackendError>(["sales", dates?.start_date, dates?.end_date], async () => new SalesService().GetSalesReports({ start_date: dates?.start_date, end_date: dates?.end_date }))
@@ -182,14 +182,7 @@ function SalesReportPage() {
       setSales(data.data)
     }
   }, [data])
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
+ 
 
   //load state from local storage
   useEffect(() => {

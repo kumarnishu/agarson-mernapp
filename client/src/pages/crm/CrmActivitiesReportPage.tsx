@@ -14,7 +14,7 @@ import { onlyUnique } from '../../utils/UniqueArray'
 import { DownloadFile } from '../../utils/DownloadFile'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 
 
 import { DropdownService } from '../../services/DropDownServices'
@@ -50,7 +50,7 @@ function CrmActivitiesReportPage() {
     const { data, isLoading, refetch: ReftechRemarks, isRefetching } = useQuery<AxiosResponse<GetActivitiesOrRemindersDto[]>, BackendError>(["activities", stage, userId, dates?.start_date, dates?.end_date], async () => new CrmService().GetRemarks({ stage: stage, id: userId, start_date: dates?.start_date, end_date: dates?.end_date }))
     const [dialog, setDialog] = useState<string | undefined>()
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-    const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+    
     const isFirstRender = useRef(true);
 
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
@@ -357,7 +357,7 @@ function CrmActivitiesReportPage() {
         enableColumnPinning: true,
         enableTableFooter: true,
         enableRowVirtualization: true,
-        onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+        onColumnVisibilityChange: setColumnVisibility,  //optional
 
         onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing, state: {
@@ -386,14 +386,7 @@ function CrmActivitiesReportPage() {
 
         }
     }, [data])
-    useEffect(() => {
-        //scroll to the top of the table when the sorting changes
-        try {
-            rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-        } catch (error) {
-            console.error(error);
-        }
-    }, [sorting]);
+   
 
     //load state from local storage
     useEffect(() => {

@@ -6,7 +6,7 @@ import { Button, Fade, IconButton, Menu, MenuItem, Stack, TextField, Tooltip, Ty
 import { UserContext } from '../../contexts/userContext'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import PopUp from '../../components/popup/PopUp'
 import { Delete, Edit, FilterAltOff, Fullscreen, FullscreenExit } from '@mui/icons-material'
 import DBPagination from '../../components/pagination/DBpagination'
@@ -45,7 +45,7 @@ function PaymentsPage() {
   const isFirstRender = useRef(true);
 
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
   const { data, isSuccess, isLoading, refetch } = useQuery<AxiosResponse<{ result: GetPaymentDto[], page: number, total: number, limit: number }>, BackendError>(["payments", userId, stage], async () => new PaymentsService().GetPaymentss({ limit: paginationData?.limit, page: paginationData?.page, id: userId, stage: stage }))
@@ -295,7 +295,7 @@ function PaymentsPage() {
     onSortingChange: setSorting,
     enableTableFooter: true,
     enableRowVirtualization: true,
-    onColumnVisibilityChange: setColumnVisibility, rowVirtualizerInstanceRef, //optional
+    onColumnVisibilityChange: setColumnVisibility,  //optional
 
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
@@ -332,14 +332,7 @@ function PaymentsPage() {
     }
   }, [isSuccess, data])
 
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
+  
 
   //load state from local storage
   useEffect(() => {

@@ -6,7 +6,7 @@ import { Button, CircularProgress, Fade, IconButton, LinearProgress, Menu, MenuI
 import { UserContext } from '../../contexts/userContext'
 import moment from 'moment'
 import { toTitleCase } from '../../utils/TitleCase'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_Row, MRT_RowVirtualizer, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_Row,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import PopUp from '../../components/popup/PopUp'
 import { Delete, Edit } from '@mui/icons-material'
 import { DownloadFile } from '../../utils/DownloadFile'
@@ -58,7 +58,7 @@ function CheckListAdminPage() {
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   ];
-  const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
+  
 
   const { data: categorydata, isSuccess: categorySuccess, isLoading: isScoreLoading } = useQuery<AxiosResponse<GetChecklistTopBarDto>, BackendError>(["checklists_top_bar", userId], async () => new ChecklistService().GetChecklistTopBarDetails(userId || "all"))
   const [dialog, setDialog] = useState<string | undefined>()
@@ -644,7 +644,7 @@ function CheckListAdminPage() {
     },
 
     enableRowVirtualization: true,
-    rowVirtualizerInstanceRef, //optional
+     //optional
     //optionally customize the column virtualizer
     onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
@@ -669,14 +669,7 @@ function CheckListAdminPage() {
       setChecklists(data.data)
     }
   }, [data])
-  useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
+  
 
   //load state from local storage
   useEffect(() => {
