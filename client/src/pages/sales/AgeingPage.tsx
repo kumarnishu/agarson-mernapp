@@ -11,8 +11,6 @@ import { BackendError } from '../..'
 import { SalesService } from '../../services/SalesServices'
 import { AgeingExcelButtons } from '../../components/buttons/AgeingExcelButtons'
 import { HandleNumbers } from '../../utils/IsDecimal'
-import CreateOrEditAgeingRemarkDialog from '../../components/dialogs/sales/CreateOrEditAgeingRemarkDialog'
-import ViewAgeingRemarksDialog from '../../components/dialogs/sales/ViewAgeingRemarksDialog'
 import { GetAgeingDto } from '../../dtos/SalesDto'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
@@ -345,8 +343,6 @@ export default function AgeingPage() {
                     </Menu >
                 </Stack>
             </Stack >
-            {party && <CreateOrEditAgeingRemarkDialog party={party} dialog={dialog} setDialog={setDialog} />}
-            {party && <ViewAgeingRemarksDialog party={party} dialog={dialog} setDialog={setDialog} />}
             {/* table */}
             {party && <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} party={party} />}
             <MaterialReactTable table={table} />
