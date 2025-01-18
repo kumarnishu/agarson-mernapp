@@ -41,8 +41,8 @@ export const isProfileAuthenticated = async (req: Request, res: Response, next: 
     }
     if (!token)
         return res.status(403).json({ message: "login again" })
-    if (!UserTokens.includes(token))
-        return res.status(403).json({ message: "login again" })
+    // if (!UserTokens.includes(token))
+    //     return res.status(403).json({ message: "login again" })
 
     token = token
     jwt.verify(
