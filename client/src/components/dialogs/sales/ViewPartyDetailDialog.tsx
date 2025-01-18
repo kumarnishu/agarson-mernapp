@@ -1,4 +1,4 @@
-import { Dialog, IconButton, DialogTitle, Stack, DialogContent } from '@mui/material'
+import { Dialog, IconButton, Stack, DialogContent, Button } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
 import CurrentStock from '../../party/CurrentStock'
 import PartyAgeing1 from '../../party/PartyAgeing1'
@@ -35,11 +35,14 @@ function ViewPartyDetailDialog({ party, dialog, setDialog }: Props) {
                 }}>
                     <Cancel fontSize='large' />
                 </IconButton>
-                <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>
-                    <p onMouseOver={() => setdialog2('ViewPartyRemarksDialog')}>
+                <Stack direction={'row'} gap={10} alignItems={'center'} justifyContent={'space-around'}>
+                    <p style={{ fontSize: 20 }}>
                         {party}
                     </p>
-                </DialogTitle>
+                    <Button variant='text' sx={{ fontSize: 20 }} onMouseOver={() => setdialog2('ViewPartyRemarksDialog')}>
+                        View last 5 Remarks
+                    </Button>
+                </Stack>
                 <DialogContent>
                     {dialog && <ArticlesProvider>
                         <Stack direction={{ sm: 'column', md: 'row' }} sx={{ width: '100vw' }} gap={2}   >

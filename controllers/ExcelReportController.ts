@@ -13,6 +13,8 @@ import { ExcelDB, ExcelDBRemark } from "../models/ExcelReportModel";
 import { VisitReport } from "../models/SalesModel";
 import { User } from "../models/UserModel";
 import { GetExcelDBRemarksDto } from "../dtos/ExcelReportDto";
+import { IPartyRemark } from "../interfaces/PartyPageInterface";
+import { PartyRemark } from "../models/PartPageModel";
 
 
 export class ExcelReportController {
@@ -29,16 +31,7 @@ export class ExcelReportController {
         }
         let cat: IKeyCategory | null = null
         cat = await KeyCategory.findById(category)
-        if (cat) {
-            if (cat && cat.category == 'BillsAge')
-                result.columns.push({ key: 'action', header: 'Action', type: 'action' })
-            else if (cat && cat.category == 'PartyTarget')
-                result.columns.push({ key: 'action', header: 'Action', type: 'action' })
-            else if (cat && cat.category == 'OrderDash')
-                result.columns.push({ key: 'action', header: 'Action', type: 'action' })
-            else if (cat && cat.category == 'ClientSale')
-                result.columns.push({ key: 'action', header: 'Action', type: 'action' })
-        }
+      
 
         let assigned_keys: any[] = req.user.assigned_keys;
         let assigned_states: string[] = []
@@ -142,7 +135,7 @@ export class ExcelReportController {
 
             let push_row = true
             if (dt) {
-                let lastremark: IExcelDBRemark | undefined = undefined;
+                let lastremark: IPartyRemark | undefined = undefined;
                 for (let i = 0; i < keys.length; i++) {
                     if (assigned_keys.includes(keys[i]._id)) {
                         let key = keys[i].key
@@ -168,38 +161,38 @@ export class ExcelReportController {
                             //adding bills age actions
                             if (cat && cat.category == 'BillsAge' && key == 'Account Name') {
                                 //@ts-ignore
-                                lastremark = await ExcelDBRemark.findOne({ category: category, obj: dt[key] }).sort('-created_at')
+                                lastremark = await PartyRemark.findOne({ category: category, party: dt[key] }).sort('-created_at')
                                 if (lastremark) {
                                     obj['last remark'] = lastremark.remark
-                                    if (lastremark.next_date)
-                                        obj['next call'] = moment(lastremark.next_date).format('YYYY-MM-DD')
+                                    if (lastremark.next_call)
+                                        obj['next call'] = moment(lastremark.next_call).format('YYYY-MM-DD')
                                 }
                             }
                             if (cat && cat.category == 'PartyTarget' && key == 'PARTY') {
                                 //@ts-ignore
-                                lastremark = await ExcelDBRemark.findOne({ category: category, obj: dt[key] }).sort('-created_at')
+                                lastremark = await PartyRemark.findOne({ category: category, party: dt[key] }).sort('-created_at')
                                 if (lastremark) {
                                     obj['last remark'] = lastremark.remark
-                                    if (lastremark.next_date)
-                                        obj['next call'] = moment(lastremark.next_date).format('YYYY-MM-DD')
+                                    if (lastremark.next_call)
+                                        obj['next call'] = moment(lastremark.next_call).format('YYYY-MM-DD')
                                 }
                             }
                             if (cat && cat.category == 'OrderDash' && key == 'Customer Name') {
                                 //@ts-ignore
-                                lastremark = await ExcelDBRemark.findOne({ category: category, obj: dt[key] }).sort('-created_at')
+                                lastremark = await PartyRemark.findOne({ category: category, party: dt[key] }).sort('-created_at')
                                 if (lastremark) {
                                     obj['last remark'] = lastremark.remark
-                                    if (lastremark.next_date)
-                                        obj['next call'] = moment(lastremark.next_date).format('YYYY-MM-DD')
+                                    if (lastremark.next_call)
+                                        obj['next call'] = moment(lastremark.next_call).format('YYYY-MM-DD')
                                 }
                             }
                             if (cat && cat.category == 'ClientSale' && key == 'CUSTOMER') {
                                 //@ts-ignore
-                                lastremark = await ExcelDBRemark.findOne({ category: category, obj: dt[key] }).sort('-created_at')
+                                lastremark = await PartyRemark.findOne({ category: category, party: dt[key] }).sort('-created_at')
                                 if (lastremark) {
                                     obj['last remark'] = lastremark.remark
-                                    if (lastremark.next_date)
-                                        obj['next call'] = moment(lastremark.next_date).format('YYYY-MM-DD')
+                                    if (lastremark.next_call)
+                                        obj['next call'] = moment(lastremark.next_call).format('YYYY-MM-DD')
                                 }
                             }
                         }
@@ -212,7 +205,7 @@ export class ExcelReportController {
                     }
 
                 }
-                if (hidden && hidden !== 'true' && lastremark && lastremark.next_date > dt1) {
+                if (hidden && hidden !== 'true' && lastremark && lastremark.next_call > dt1) {
                     if (lastremark.created_by == req.user._id.valueOf())
                         push_row = false
                 }

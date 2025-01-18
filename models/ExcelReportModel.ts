@@ -8,9 +8,7 @@ const ExcelDBRemarkSchema = new mongoose.Schema<IExcelDBRemark, mongoose.Model<I
         required: true
     },
     obj: {
-        type: String,
-        lowercase: true,
-        required: true
+        type: String
     },
     next_date:Date,
     created_at: {

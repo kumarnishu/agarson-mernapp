@@ -9,17 +9,19 @@ import { PartyRemark } from '../models/PartPageModel';
 export class TestController {
 
     public async test(req: Request, res: Response, next: NextFunction) {
-        let cat: IKeyCategory | null = await KeyCategory.findOne({ category: 'SALESOWNER' })
+        let cat: IKeyCategory | null = await KeyCategory.findOne({ category: 'BillsAge' })
         if (!cat)
             return res.status(404).json({ message: `${cat} not exists` })
         await PartyRemark.deleteMany({})
         let data = await ExcelDB.find({ category: cat._id }).populate('key').sort('created_at')
         //@ts-ignore
         let parties = data.map((i) => { return i['Account Name'] })
+        
+        
         parties.forEach(async (party) => {
-            await ExcelDBRemark.updateMany({ obj: String(party).trim().toLowerCase() }, { party: party })
+            await ExcelDBRemark.updateMany({ obj: String(party).trim().toLowerCase() }, { obj: party })
         })
-
+        
         let r1 = await ExcelDBRemark.find()
         let r2 = await AgeingRemark.find()
         r1.forEach(async (item) => {
