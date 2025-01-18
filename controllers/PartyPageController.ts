@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { decimalToTimeForXlsx } from "../utils/datesHelper";
 import moment from "moment";
 import { IColumnRowData, IRowData } from "../dtos/SalesDto";
-import { IKeyCategory } from "../interfaces/AuthorizationInterface";
+import { ICRMState, IKeyCategory } from "../interfaces/AuthorizationInterface";
 import { KeyCategory, Key } from "../models/AuthorizationModel";
 import { ExcelDB } from "../models/ExcelReportModel";
 import { CreateOrEditPartyRemarkDto, GetPartyAgeingDto, GetPartyRemarkDto } from "../dtos/PartyPageDto";
@@ -11,6 +11,8 @@ import { IAgeing } from '../interfaces/SalesInterface';
 import isMongoId from 'validator/lib/isMongoId';
 import { PartyRemark } from '../models/PartPageModel';
 import { IPartyRemark } from '../interfaces/PartyPageInterface';
+import { User } from '../models/UserModel';
+import { IExcelDb } from '../interfaces/ExcelReportInterface';
 
 
 export class PartyPageController {
@@ -20,13 +22,32 @@ export class PartyPageController {
             columns: [],
             rows: []
         };
-
+        let assigned_states: string[] = []
+        let user = await User.findById(req.user._id).populate('assigned_crm_states')
+        user && user?.assigned_crm_states.map((state: ICRMState) => {
+            assigned_states.push(state.state)
+            if (state.alias1)
+                assigned_states.push(state.alias1)
+            if (state.alias2)
+                assigned_states.push(state.alias2)
+        });
         let cat: IKeyCategory | null = await KeyCategory.findOne({ category: 'BillsAge' })
         if (!cat)
             return res.status(404).json({ message: `${cat} not exists` })
         let keys = await Key.find({ category: cat._id }).sort('serial_no');
 
-        let data = await ExcelDB.find({ category: cat._id }).populate('key').sort('created_at')
+        let data = []
+        if (req.user.is_admin) {
+            data = await ExcelDB.find({
+                category: cat._id
+            }).populate('key').sort('created_at')
+        }
+        else
+            data = await ExcelDB.find({
+                category: cat._id, 'Sales Representative': {
+                    $in: assigned_states.map(state => new RegExp(`^${state.trim()}$`, 'i')) // Case-insensitive and trimmed regex
+                }
+            }).populate('key').sort('created_at')
 
         let promiseResult = await Promise.all(data.map(async (_dt) => {
             let obj: IRowData = {}
@@ -78,7 +99,7 @@ export class PartyPageController {
         let final = result.rows.map((i) => { return { party: i['Account Name'] } })
         return res.status(200).json(final)
     }
-    
+
     public async GetPartyAgeing1(req: Request, res: Response, next: NextFunction) {
         let result: GetPartyAgeingDto[] = []
         let party = req.query.party
