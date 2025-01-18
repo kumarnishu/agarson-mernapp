@@ -90,6 +90,7 @@ export default function CurrentStock({ party }: { party: string }) {
         enableColumnResizing: true,
         positionToolbarAlertBanner: 'none',
         enableRowVirtualization: true,
+        selectAllMode:'all',
         //optional
         // , //optionally customize the row virtualizr
         // columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizr

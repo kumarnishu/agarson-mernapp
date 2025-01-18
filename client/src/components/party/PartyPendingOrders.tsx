@@ -141,6 +141,7 @@ export default function PartyPendingOrders({ party }: { party: string }) {
         enableDensityToggle: false, initialState: {
             density: 'compact', pagination: { pageIndex: 0, pageSize: 2 }
         },
+        selectAllMode:'all',
         enableBottomToolbar: true,
         enableGlobalFilter: true,
         enableGrouping: false,

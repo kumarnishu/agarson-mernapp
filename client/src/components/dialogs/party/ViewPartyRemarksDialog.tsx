@@ -23,7 +23,6 @@ function ViewPartyRemarksDialog({ party, dialog, setDialog }: Props) {
     const [dialog2, setdialog2] = useState<string | undefined>()
     const [remark, setRemark] = useState<GetPartyRemarkDto>()
     const [remarks, setRemarks] = useState<GetPartyRemarkDto[]>()
-
     const { data, isSuccess } = useQuery<AxiosResponse<[]>, BackendError>(["remarks", party], async () => new PartyPageService().GetPartyLast5Remarks(party))
 
 
