@@ -137,7 +137,7 @@ export default function PartyClientSale({ party }: { party: string }) {
             density: 'compact', pagination: { pageIndex: 0, pageSize: 2 }
         },
         enableBottomToolbar: true,
-        enableGlobalFilter: false,
+        enableGlobalFilter: true,
         enableGrouping: false,
         enableRowSelection: true,
         enablePagination: true,

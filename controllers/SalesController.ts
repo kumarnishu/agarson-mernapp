@@ -17,6 +17,7 @@ import { decimalToTimeForXlsx, excelSerialToDate, invalidate, parseExcelDate } f
 import { CreateOrEditSalesAttendanceDto } from '../dtos/AttendanceDto';
 import { IColumnRowData, IRowData, CreateReferenceExcelDto, CreateOrEditReferenceRemarkDto, CreateOrEditVisitSummaryRemarkDto, CreateSalesExcelDto, CreateCollectionsExcelDto, CreateAgeingExcelDto, CreateOrEditAgeingRemarkDto } from '../dtos/SalesDto';
 import { GetSalesAttendancesAuto, GetSalesManVisitSummaryReportDto, GetVisitReportDto, GetReferenceDto, GetReferenceReportForSalesmanDto, GetReferenceRemarksDto, GetVisitSummaryReportRemarkDto, GetSalesDto, GetCollectionsDto, GetAgeingDto, GetAgeingRemarkDto, GetSalesmanKpiDto, GetSalesAttendanceDto } from '../dtos/SalesDto';
+import { PartyRemark } from '../models/PartPageModel';
 
 
 export class SalesController {
@@ -1864,7 +1865,7 @@ export class SalesController {
         let data: IAgeing[] = await Ageing.find({ state: { $in: assigned_states } }).sort('-created_at');
 
         await Promise.all(data.map(async (dt) => {
-            let remark = await AgeingRemark.findOne({ party: dt.party }).sort('-created_at')
+            let remark = await PartyRemark.findOne({ party: dt.party }).sort('-created_at')
             let push_row = true
 
             if (hidden && hidden !== 'true' && remark && remark.next_call > dt1) {
@@ -2046,10 +2047,8 @@ export class SalesController {
         const party = req.query.party;
         if (!party) return res.status(403).json({ message: "please fill required fields" })
         let remarks: IAgeingRemark[] = []
-
-
         let result: GetAgeingRemarkDto[] = []
-        remarks = await AgeingRemark.find({ party: party }).populate('created_by').sort('-created_at')
+        remarks = await PartyRemark.find({ party: party }).populate('created_by').sort('-created_at')
         result = remarks.map((r) => {
             return {
                 _id: r._id,

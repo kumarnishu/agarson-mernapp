@@ -3,15 +3,14 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
-import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Tooltip, Typography } from '@mui/material'
+import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Typography } from '@mui/material'
 import ExportToExcel from '../../utils/ExportToExcel'
-import { Comment, Menu as MenuIcon, Visibility } from '@mui/icons-material';
+import { Menu as MenuIcon } from '@mui/icons-material';
 import { AxiosResponse } from "axios"
 import { BackendError } from '../..'
 import { SalesService } from '../../services/SalesServices'
 import { AgeingExcelButtons } from '../../components/buttons/AgeingExcelButtons'
 import { HandleNumbers } from '../../utils/IsDecimal'
-import PopUp from '../../components/popup/PopUp'
 import CreateOrEditAgeingRemarkDialog from '../../components/dialogs/sales/CreateOrEditAgeingRemarkDialog'
 import ViewAgeingRemarksDialog from '../../components/dialogs/sales/ViewAgeingRemarksDialog'
 import { GetAgeingDto } from '../../dtos/SalesDto'
@@ -36,41 +35,7 @@ export default function AgeingPage() {
     const columns = useMemo<MRT_ColumnDef<GetAgeingDto>[]>(
         //column definitions...
         () => ageings && [
-            {
-                accessorKey: 'action',
-                header: 'Action',
 
-                Cell: (cell) => <PopUp
-                    element={
-                        <Stack direction="row" spacing={1}>
-                            {LoggedInUser?.assigned_permissions.includes('ageing_edit') && <Tooltip title="view remarks">
-                                <IconButton color="primary"
-
-                                    onClick={() => {
-                                        setDialog('ViewAgeingRemarksDialog')
-                                        setParty(cell.row.original.party)
-                                    }}
-                                >
-                                    <Visibility />
-                                </IconButton>
-                            </Tooltip>}
-
-                            {LoggedInUser?.assigned_permissions.includes('ageing_edit') &&
-                                <Tooltip title="Add Remark">
-                                    <IconButton disabled
-                                        color="success"
-                                        onClick={() => {
-                                            setDialog('CreateOrEditAgeingRemarkDialog')
-                                            setParty(cell.row.original.party)
-                                        }}
-                                    >
-                                        <Comment />
-                                    </IconButton>
-                                </Tooltip>}
-
-                        </Stack>}
-                />
-            },
             {
                 accessorKey: 'last_remark',
                 header: 'Last Remark',
