@@ -30,22 +30,22 @@ function ViewPartyDetailDialog({ party, dialog, setDialog }: Props) {
                 }
             >
 
-                <Stack direction={{ sm: 'column', md: 'row' }} gap={2} alignItems={'center'} justifyContent={'center'}>
-                    <p style={{ fontWeight: 'bold', fontSize: 20, textAlign: 'left' }}>
-                        {party}
+                <Stack direction={{ sm: 'column', md: 'row' }} gap={2} alignItems={'center'} justifyContent={'left'} sx={{ width: '100vw' }}>
+                    <IconButton style={{ display: 'inline-block' }} color="error" onClick={() => {
+                        setdialog2(undefined)
+                        setDialog(undefined)
+                    }}>
+                        <Cancel fontSize='large' />
+                    </IconButton>
+                    <p style={{ width: '100%', paddingInline: 10, fontWeight: 'bold', fontSize: 20, textAlign: 'left' }}>
+                        {window.screen.width > 600 ? party : `${party.slice(0, 30)} ...`}
                     </p>
-                    <div>
+                    {/* <Stack direction={{ sm: 'column', md: 'row' }} gap={2}> */}
 
-                        <Button variant='text' color="error" sx={{ fontSize: 17 }} onMouseOver={() => setdialog2('ViewPartyRemarksDialog')}>
-                            last 5 Remarks
-                        </Button>
-                        <IconButton style={{ display: 'inline-block' }} color="error" onClick={() => {
-                            setdialog2(undefined)
-                            setDialog(undefined)
-                        }}>
-                            <Cancel fontSize='large' />
-                        </IconButton>
-                    </div>
+                    <Button variant='text' fullWidth color="error" sx={{ fontSize: 17 }} onMouseOver={() => setdialog2('ViewPartyRemarksDialog')}>
+                        last 5 Remarks
+                    </Button>
+                    {/* </Stack> */}
                 </Stack>
                 {dialog && <ArticlesProvider>
                     <Stack direction={{ sm: 'column', md: 'row' }} sx={{ width: '100vw' }} gap={1}   >
