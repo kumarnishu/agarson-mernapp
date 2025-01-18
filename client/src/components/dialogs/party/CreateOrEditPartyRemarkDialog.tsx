@@ -1,13 +1,13 @@
 import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
-import CreateOrEditAgeingRemarkForm from '../../forms/sales/CreateOrEditAgeingRemarkForm'
-import { GetAgeingRemarkDto } from '../../../dtos/SalesDto'
+import { GetPartyRemarkDto } from '../../../dtos/PartyPageDto'
+import CreateOrEditPartyRemarkForm from '../../forms/party/CreateOrEditPartyRemarkForm'
 
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
     party: string,
-    remark?: GetAgeingRemarkDto
+    remark?: GetPartyRemarkDto
 }
 function CreateOrEditPartyRemarkDialog({ party, remark, dialog, setDialog }: Props) {
 
@@ -23,7 +23,7 @@ function CreateOrEditPartyRemarkDialog({ party, remark, dialog, setDialog }: Pro
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!remark ? "New Remark" : "Edit Remark"}</DialogTitle>
             <DialogContent>
-                <CreateOrEditAgeingRemarkForm party={party} remark={remark} setDialog={setDialog} />
+                <CreateOrEditPartyRemarkForm party={party} remark={remark} setDialog={setDialog} />
             </DialogContent>
         </Dialog>
     )

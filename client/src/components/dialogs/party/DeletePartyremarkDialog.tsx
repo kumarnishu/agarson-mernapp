@@ -7,20 +7,19 @@ import { queryClient } from '../../../main';
 import { Cancel } from '@mui/icons-material';
 import { AlertContext } from '../../../contexts/alertContext';
 import AlertBar from '../../snacks/AlertBar';
-import { SalesService } from '../../../services/SalesServices';
-import { GetAgeingRemarkDto } from '../../../dtos/SalesDto';
+import { PartyPageService } from '../../../services/PartyPageService';
+import { GetPartyRemarkDto } from '../../../dtos/PartyPageDto';
 type Props = {
   dialog: string | undefined,
   setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-  remark: GetAgeingRemarkDto
+  remark: GetPartyRemarkDto
 }
 
 function DeletePartyremarkDialog({ remark, dialog, setDialog }: Props) {
   const { setAlert } = useContext(AlertContext)
   const { mutate, isLoading, isSuccess, error, isError } = useMutation
     <AxiosResponse<any>, BackendError, string>
-    (new SalesService().DeleteAgeingRemark, {
-
+    (new PartyPageService().DeletePartyRemark, {
       onSuccess: () => {
         queryClient.invalidateQueries('remarks')
         setAlert({ message: "success", color: 'success' })

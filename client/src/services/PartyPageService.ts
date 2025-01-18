@@ -3,9 +3,7 @@ import { apiClient } from "./utils/AxiosInterceptor";
 
 export class PartyPageService {
 
-  public async GetPartyLast5Remarks(party: string) {
-    return await apiClient.get(`partypage/remarks/?party=${encodeURIComponent(party)}`)
-  }
+  
   public async GetPartyAgeing1(party: string) {
     return await apiClient.get(`partypage/ageing1/?party=${encodeURIComponent(party)}`)
   }
@@ -35,11 +33,12 @@ export class PartyPageService {
     }
     return await apiClient.put(`partypage/remarks/${remark._id}`, body)
   }
-  public async DeleteAgeingRemark(id: string) {
+  public async DeletePartyRemark(id: string) {
     return await apiClient.delete(`partypage/remarks/${id}`)
   }
-  public async GetAgeingRemarksHistory(party: string) {
+  public async GetPartyLast5Remarks(party: string) {
     return await apiClient.get(`partypage/remarks/?party=${encodeURIComponent(party)}`)
   }
+
 }
 

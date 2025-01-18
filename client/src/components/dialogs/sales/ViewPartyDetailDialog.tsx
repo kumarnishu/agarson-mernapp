@@ -36,10 +36,10 @@ function ViewPartyDetailDialog({ party, dialog, setDialog }: Props) {
                     <Cancel fontSize='large' />
                 </IconButton>
                 <Stack direction={'row'} gap={10} alignItems={'center'} justifyContent={'space-around'}>
-                    <p style={{ fontSize: 20 }}>
+                    <p style={{ fontSize: 20, fontWeight: 'bold' }}>
                         {party}
                     </p>
-                    <Button variant='text' sx={{ fontSize: 20 }} onMouseOver={() => setdialog2('ViewPartyRemarksDialog')}>
+                    <Button variant='text' color="error" sx={{ fontSize: 17 }} onMouseOver={() => setdialog2('ViewPartyRemarksDialog')}>
                         View last 5 Remarks
                     </Button>
                 </Stack>
