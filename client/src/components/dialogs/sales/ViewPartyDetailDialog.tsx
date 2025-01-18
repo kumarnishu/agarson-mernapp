@@ -35,8 +35,10 @@ function ViewPartyDetailDialog({ party, dialog, setDialog }: Props) {
                 }}>
                     <Cancel fontSize='large' />
                 </IconButton>
-                <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"} onMouseOver={() => setdialog2('ViewPartyRemarksDialog')}>
-                    {party}
+                <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>
+                    <p onMouseOver={() => setdialog2('ViewPartyRemarksDialog')}>
+                        {party}
+                    </p>
                 </DialogTitle>
                 <DialogContent>
                     {dialog && <ArticlesProvider>

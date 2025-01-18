@@ -1,7 +1,7 @@
 import { Stack } from '@mui/system'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
 import { Fade, FormControlLabel, IconButton, Menu, MenuItem, Switch, Tooltip, Typography } from '@mui/material'
 import ExportToExcel from '../../utils/ExportToExcel'
@@ -27,9 +27,9 @@ export default function AgeingPage() {
     const { user: LoggedInUser } = useContext(UserContext)
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetAgeingDto[]>, BackendError>(["ageing", hidden], async () => new SalesService().GetAgeingReports({ hidden }))
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-    
+
     const isFirstRender = useRef(true);
-   
+
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
@@ -57,7 +57,7 @@ export default function AgeingPage() {
 
                             {LoggedInUser?.assigned_permissions.includes('ageing_edit') &&
                                 <Tooltip title="Add Remark">
-                                    <IconButton
+                                    <IconButton disabled
                                         color="success"
                                         onClick={() => {
                                             setDialog('CreateOrEditAgeingRemarkDialog')
@@ -107,7 +107,7 @@ export default function AgeingPage() {
                 header: 'Party',
                 filterFn: CustomFilterFunction,
                 Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.party || "" })} />,
-                Cell: (cell) => <Typography sx={{ cursor: 'pointer'}} onClick={() => {
+                Cell: (cell) => <Typography sx={{ cursor: 'pointer' }} onClick={() => {
                     setParty(cell.row.original.party)
                     setDialog('ViewPartyDetailDialog')
                 }}>{cell.row.original.party || ""}</Typography>,
@@ -265,7 +265,7 @@ export default function AgeingPage() {
             setAgeings(data.data);
         }
     }, [data, isSuccess]);
-   
+
 
     //load state from local storage
     useEffect(() => {
