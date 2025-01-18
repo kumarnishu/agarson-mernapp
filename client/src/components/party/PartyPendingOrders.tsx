@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef,  MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
 import { IColumnRowData } from '../../dtos/SalesDto'
 import { PartyPageService } from '../../services/PartyPageService'
 import { HandleNumbers } from '../../utils/IsDecimal'
@@ -10,6 +10,7 @@ import { CustomColumFilter } from '../filter/CustomColumFIlter'
 import { Tooltip, Typography } from '@mui/material'
 import { CustomFilterFunction } from '../filter/CustomFilterFunction'
 import { ArticlesContext } from '../../contexts/ArticlesContext'
+import { onlyUnique } from '../../utils/UniqueArray'
 
 
 export default function PartyPendingOrders({ party }: { party: string }) {
@@ -17,7 +18,7 @@ export default function PartyPendingOrders({ party }: { party: string }) {
     const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["pendingorders", party], async () => new PartyPageService().GetPartyPendingOrders(party))
     const isFirstRender = useRef(true);
-    const { setArticles } = useContext(ArticlesContext)
+    const { articles, setArticles } = useContext(ArticlesContext)
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
@@ -97,12 +98,7 @@ export default function PartyPendingOrders({ party }: { party: string }) {
                 color: 'white',
             }
         }),
-        muiTableBodyRowProps: () => ({
-            sx: {
-                backgroundColor: 'yellow',
-                color: 'white',
-            }
-        }),
+      
         renderTopToolbarCustomActions: () => (
             <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Pending Orders</Typography>
         ),
@@ -213,16 +209,22 @@ export default function PartyPendingOrders({ party }: { party: string }) {
         localStorage.setItem('mrt_columnSizing_PartyPendingOrders', JSON.stringify(columnSizing));
     }, [columnSizing]);
 
+
     useEffect(() => {
         let rows = table.getSelectedRowModel().rows;
+        let tarticles = articles
         if (rows.length > 0) {
             //@ts-ignore
-            let articles = rows.map((i) => { return i.original['Article'] })
-
-            setArticles(articles)
+            rows.map((i) => {
+                if (i.original['Article']) {
+                    tarticles.push(i.original['Article'])
+                }
+            })
+            tarticles = tarticles.filter(onlyUnique)
+            setArticles(tarticles)
         }
         else {
-            setArticles([])
+            setArticles(tarticles)
         }
     }, [table.getSelectedRowModel().rows])
 

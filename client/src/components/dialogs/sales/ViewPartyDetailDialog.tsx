@@ -35,7 +35,7 @@ function ViewPartyDetailDialog({ party, dialog, setDialog }: Props) {
                         <Stack gap={1} direction={'column'} justifyContent={'space-between'} sx={{
                             width: {
                                 sm: "100%",
-                                md: '49%'
+                                md: '48%'
                             }
                         }}>
                             {!party && <PartyInteraction party={party} />}

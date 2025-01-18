@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable, MRT_ColumnFiltersState } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
 import { IColumnRowData } from '../../dtos/SalesDto'
 import { PartyPageService } from '../../services/PartyPageService'
 import { HandleNumbers } from '../../utils/IsDecimal'
@@ -10,19 +10,18 @@ import { CustomColumFilter } from '../filter/CustomColumFIlter'
 import { Tooltip, Typography } from '@mui/material'
 import { CustomFilterFunction } from '../filter/CustomFilterFunction'
 import { ArticlesContext } from '../../contexts/ArticlesContext'
+import { onlyUnique } from '../../utils/UniqueArray'
 
 
 export default function PartyClientSale({ party }: { party: string }) {
     const [reports, setReports] = useState<IColumnRowData['rows']>([])
     const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["client_sale", party], async () => new PartyPageService().GetPartyArticleSaleMonthly(party))
-
+    const { articles, setArticles } = useContext(ArticlesContext)
     const isFirstRender = useRef(true);
-    const { articles } = useContext(ArticlesContext)
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-    const [columnFilterState, setColumnFilterState] = useState<MRT_ColumnFiltersState>([]);
 
 
     let columns = useMemo<MRT_ColumnDef<any, any>[]>(
@@ -151,7 +150,6 @@ export default function PartyClientSale({ party }: { party: string }) {
             isLoading: isLoading,
             columnVisibility,
             sorting,
-            columnFilters: columnFilterState,
             columnSizing: columnSizing
         }
     });
@@ -182,13 +180,23 @@ export default function PartyClientSale({ party }: { party: string }) {
         isFirstRender.current = false;
     }, []);
 
-
     useEffect(() => {
-        if (articles.length > 0)
-            setColumnFilterState([{ id: 'Article', value: articles }])
-        else
-            setColumnFilterState([])
-    }, [articles])
+        let rows = table.getSelectedRowModel().rows;
+        let tarticles = articles
+        if (rows.length > 0) {
+            //@ts-ignore
+            rows.map((i) => {
+                if (i.original['ARTICLE NAME']) {
+                    tarticles.push(i.original['ARTICLE NAME'])
+                }
+            })
+            tarticles = tarticles.filter(onlyUnique)
+            setArticles(tarticles)
+        }
+        else {
+            setArticles(tarticles)
+        }
+    }, [table.getSelectedRowModel().rows])
 
     useEffect(() => {
         if (isFirstRender.current) return;
