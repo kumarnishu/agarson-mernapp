@@ -53,7 +53,7 @@ function ViewPartyRemarksDialog({ party, dialog, setDialog }: Props) {
                         return (
 
                             <Stack gap={1} key={index} style={{ borderRadius: '1px 10px', padding: '10px', background: 'lightblue', paddingLeft: '20px', border: '1px solemployee grey' }}>
-                                <p style={{ fontSize: 16, fontWeight: 'bold' }}>{toTitleCase(item.created_by.label || "")} : {item.remark} </p>
+                                <p style={{ fontSize: 16, fontWeight: 'bold' }}>{toTitleCase(item.created_by.label || "")} : {toTitleCase(item.remark || "")} </p>
                                 {item.nextcall && <p>Next Call :  {moment(new Date(item.nextcall)).format('MMMM Do YYYY')}</p>}
                                 {item.created_at && <p>Timestamp : {moment(new Date(item.created_at)).format('MMMM Do YYYY, h:mm:ss a')}</p>}
                                 {
