@@ -12,7 +12,6 @@ export type current_stock = IColumnRowData
 export type GetPartyRemarkDto = {
     _id: string,
     remark: string,
-    remark_type: string,
     party: string,
     nextcall: string,
     created_at: string,
@@ -31,7 +30,7 @@ export type GetPartyAgeingDto={
 }
 export type CreateOrEditPartyRemarkDto = {
     remark: string,
-    remark_type: string,
     party: string,
     nextcall?: string
 }
+

@@ -5,65 +5,16 @@ import { IColumnRowData, IRowData } from "../dtos/SalesDto";
 import { IKeyCategory } from "../interfaces/AuthorizationInterface";
 import { KeyCategory, Key } from "../models/AuthorizationModel";
 import { ExcelDB } from "../models/ExcelReportModel";
-import { GetPartyAgeingDto, GetPartyRemarkDto } from "../dtos/PartyPageDto";
+import { CreateOrEditPartyRemarkDto, GetPartyAgeingDto, GetPartyRemarkDto } from "../dtos/PartyPageDto";
 import { Ageing } from '../models/SalesModel';
 import { IAgeing } from '../interfaces/SalesInterface';
+import isMongoId from 'validator/lib/isMongoId';
+import { PartyRemark } from '../models/PartPageModel';
+import { IPartyRemark } from '../interfaces/PartyPageInterface';
 
 
 export class PartyPageController {
-    public async GetPartyLast5Remarks(req: Request, res: Response, next: NextFunction) {
-        let party = String(req.query.party).toLowerCase()
-        let result: GetPartyRemarkDto[] = [
-            {
-                "_id": "1",
-                "remark": "Followed up with the client, awaiting feedback.",
-                "remark_type": "Follow-up",
-                "party": "ABC Corp",
-                "nextcall": "2025-01-20T10:00:00Z",
-                "created_at": "2025-01-15T14:30:00Z",
-                "created_by": { "id": "101", "label": "John Doe" }
-            },
-            {
-                "_id": "2",
-                "remark": "Discussed contract terms, revisions needed.",
-                "remark_type": "Contract Discussion",
-                "party": "XYZ Ltd",
-                "nextcall": "2025-01-22T15:00:00Z",
-                "created_at": "2025-01-16T09:45:00Z",
-                "created_by": { "id": "102", "label": "Jane Smith" }
-            },
-            {
-                "_id": "3",
-                "remark": "Sent proposal, awaiting approval.",
-                "remark_type": "Proposal Sent",
-                "party": "PQR Industries",
-                "nextcall": "2025-01-21T11:30:00Z",
-                "created_at": "2025-01-17T08:15:00Z",
-                "created_by": { "id": "103", "label": "Emily Johnson" }
-            },
-            {
-                "_id": "4",
-                "remark": "Client raised concerns about pricing.",
-                "remark_type": "Pricing Discussion",
-                "party": "LMN Inc",
-                "nextcall": "2025-01-25T14:00:00Z",
-                "created_at": "2025-01-16T12:00:00Z",
-                "created_by": { "id": "104", "label": "Michael Brown" }
-            },
-            {
-                "_id": "5",
-                "remark": "Completed onboarding process successfully.",
-                "remark_type": "Onboarding",
-                "party": "DEF Partners",
-                "nextcall": "2025-01-30T10:00:00Z",
-                "created_at": "2025-01-15T13:45:00Z",
-                "created_by": { "id": "105", "label": "Sophia Davis" }
-            }
-        ]
 
-
-        return res.status(200).json(result)
-    }
     public async GetPartyAgeing1(req: Request, res: Response, next: NextFunction) {
         let result: GetPartyAgeingDto[] = []
         let party = req.query.party
@@ -215,7 +166,7 @@ export class PartyPageController {
             else {
                 const data: { key: string, value: number }[] = result.rows.map((dt) => { return { key: c.key, value: dt[c.key] } })
                 const total = data.reduce((sum, item) => sum + (item.value || 0), 0);
-                console.log(c.key,total)
+                console.log(c.key, total)
                 if (total > 0)
                     result.columns.push({ key: c.key, header: c.key, type: c.type })
             }
@@ -291,7 +242,7 @@ export class PartyPageController {
             else {
                 const data: { key: string, value: number }[] = result.rows.map((dt) => { return { key: c.key, value: dt[c.key] } })
                 const total = data.reduce((sum, item) => sum + (item.value || 0), 0);
-                console.log(c.key,total)
+                console.log(c.key, total)
                 if (total > 0)
                     result.columns.push({ key: c.key, header: c.key, type: c.type })
             }
@@ -355,7 +306,7 @@ export class PartyPageController {
         //     let c = keys[k]
         //     result.columns.push({ key: c.key, header: c.key, type: c.type })
         // }
-       
+
         result.rows = promiseResult.filter(row => {
             if (row)
                 return row
@@ -368,7 +319,7 @@ export class PartyPageController {
             else {
                 const data: { key: string, value: number }[] = result.rows.map((dt) => { return { key: c.key, value: dt[c.key] } })
                 const total = data.reduce((sum, item) => sum + (item.value || 0), 0);
-                console.log(c.key,total)
+                console.log(c.key, total)
                 if (total > 0)
                     result.columns.push({ key: c.key, header: c.key, type: c.type })
             }
@@ -441,7 +392,7 @@ export class PartyPageController {
             else {
                 const data: { key: string, value: number }[] = result.rows.map((dt) => { return { key: c.key, value: dt[c.key] } })
                 const total = data.reduce((sum, item) => sum + (item.value || 0), 0);
-                console.log(c.key,total)
+                console.log(c.key, total)
                 if (total > 0)
                     result.columns.push({ key: c.key, header: c.key, type: c.type })
             }
@@ -451,87 +402,69 @@ export class PartyPageController {
         return res.status(200).json(result)
     }
 
-    // public async UpdateExcelDBRemark(req: Request, res: Response, next: NextFunction) {
-    //     const { remark, next_date } = req.body as CreateOrEditExcelDbRemarkDto
-    //     if (!remark) return res.status(403).json({ message: "please fill required fields" })
 
-    //     const id = req.params.id;
-    //     if (!isMongoId(id)) return res.status(403).json({ message: "id not valid" })
-    //     let rremark = await ExcelDBRemark.findById(id)
-    //     if (!rremark) {
-    //         return res.status(404).json({ message: "remark not found" })
-    //     }
-    //     rremark.remark = remark
-    //     if (next_date)
-    //         rremark.next_date = new Date(next_date)
-    //     await rremark.save()
-    //     return res.status(200).json({ message: "remark updated successfully" })
-    // }
+    public async NewPartyRemark(req: Request, res: Response, next: NextFunction) {
+        const { remark, party, nextcall } = req.body as CreateOrEditPartyRemarkDto
+        if (!remark || !party) return res.status(403).json({ message: "please fill required fields" })
 
-    // public async DeleteExcelDBRemark(req: Request, res: Response, next: NextFunction) {
-    //     const id = req.params.id;
-    //     if (!isMongoId(id)) return res.status(403).json({ message: "id not valid" })
-    //     let rremark = await ExcelDBRemark.findById(id)
-    //     if (!rremark) {
-    //         return res.status(404).json({ message: "remark not found" })
-    //     }
-    //     await rremark.remove()
-    //     return res.status(200).json({ message: " remark deleted successfully" })
-    // }
+        await new PartyRemark({
+            remark,
+            party,
+            next_call: nextcall ? new Date(nextcall) : undefined,
+            created_at: new Date(Date.now()),
+            created_by: req.user,
+            updated_at: new Date(Date.now()),
+            updated_by: req.user
+        }).save()
+        return res.status(200).json({ message: "remark added successfully" })
+    }
+    public async UpdatePartyRemark(req: Request, res: Response, next: NextFunction) {
+        const { remark, nextcall } = req.body as CreateOrEditPartyRemarkDto
+        if (!remark) return res.status(403).json({ message: "please fill required fields" })
 
+        const id = req.params.id;
+        if (!isMongoId(id)) return res.status(403).json({ message: "id not valid" })
+        let rremark = await PartyRemark.findById(id)
+        if (!rremark) {
+            return res.status(404).json({ message: "remark not found" })
+        }
+        rremark.remark = remark
+        if (nextcall)
+            rremark.next_call = new Date(nextcall)
+        await rremark.save()
+        return res.status(200).json({ message: "remark updated successfully" })
+    }
 
-    // public async GetExcelDBRemarkHistory(req: Request, res: Response, next: NextFunction) {
-    //     const id = req.params.id;
-    //     const obj = req.query.obj
-    //     let remarks: IExcelDBRemark[] = []
-    //     let result: GetExcelDBRemarksDto[] = []
+    public async DeletePartyRemark(req: Request, res: Response, next: NextFunction) {
+        const id = req.params.id;
+        if (!isMongoId(id)) return res.status(403).json({ message: "id not valid" })
+        let rremark = await PartyRemark.findById(id)
+        if (!rremark) {
+            return res.status(404).json({ message: "remark not found" })
+        }
+        await rremark.remove()
+        return res.status(200).json({ message: " remark deleted successfully" })
+    }
 
-    //     if (!isMongoId(id)) return res.status(400).json({ message: "id not valid" })
-    //     if (!obj) return res.status(404).json({ message: "obj not found" })
+    public async GetPartyLast5Remarks(req: Request, res: Response, next: NextFunction) {
+        const party = req.query.party;
+        if (!party) return res.status(403).json({ message: "please fill required fields" })
+        let remarks: IPartyRemark[] = []
 
-    //     remarks = await ExcelDBRemark.find({ category: id, obj: String(obj).trim().toLowerCase() }).populate('category').populate('created_by').sort('-created_at')
-
-    //     result = remarks.map((r) => {
-    //         return {
-    //             _id: r._id,
-    //             remark: r.remark,
-    //             obj: r.obj,
-    //             category: { id: r.category._id, value: r.category.category, label: r.category.category },
-    //             next_date: r.next_date ? moment(r.next_date).format('DD/MM/YYYY') : "",
-    //             created_date: r.created_at.toString(),
-    //             created_by: r.created_by.username
-    //         }
-    //     })
-    //     return res.json(result)
-    // }
-
-    // public async NewExcelDBRemark(req: Request, res: Response, next: NextFunction) {
-    //     const {
-    //         remark,
-    //         category,
-    //         obj,
-    //         next_date } = req.body as CreateOrEditExcelDbRemarkDto
-    //     if (!remark || !category || !obj) return res.status(403).json({ message: "please fill required fields" })
-
-    //     let categoryObj = await KeyCategory.findById(category)
-    //     if (!category) {
-    //         return res.status(404).json({ message: "category not found" })
-    //     }
-
-    //     let new_remark = new ExcelDBRemark({
-    //         remark,
-    //         obj,
-    //         category: categoryObj,
-    //         created_at: new Date(Date.now()),
-    //         created_by: req.user,
-    //         updated_at: new Date(Date.now()),
-    //         updated_by: req.user
-    //     })
-    //     if (next_date)
-    //         new_remark.next_date = new Date(next_date)
-    //     await new_remark.save()
-    //     return res.status(200).json({ message: "remark added successfully" })
-    // }
+        let result: GetPartyRemarkDto[] = []
+        remarks = await PartyRemark.find({ party: party }).populate('created_by').sort('-created_at').limit(5)
+        result = remarks.map((r) => {
+            return {
+                _id: r._id,
+                remark: r.remark,
+                party: r.party,
+                nextcall: r.next_call ? r.next_call.toString() : "",
+                created_at: r.created_at.toString(),
+                created_by: { id: r.created_by._id, label: r.created_by.username }
+            }
+        })
+        return res.json(result)
+    }
 
 
 
