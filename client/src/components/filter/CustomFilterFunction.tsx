@@ -24,7 +24,8 @@ export const CustomBetweenFunction = (
     }
 
     const [min, max] = filterValue;
-
-    return rowValue >= min && rowValue <= max;
+    if (min > 0 && max > 0)
+        return rowValue >= min && rowValue <= max;
+    return true
 };
 
