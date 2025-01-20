@@ -27,6 +27,8 @@ function CreateOrEditPartyRemarkForm({ party, remark, setDialog }: {
 
             onSuccess: () => {
                 queryClient.refetchQueries('remarks')
+                queryClient.refetchQueries('exceldb')
+                queryClient.refetchQueries('ageings')
                 setAlert({ message: remark ? 'updated remark' : 'created new remark', color: 'success' })
             },
             onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })

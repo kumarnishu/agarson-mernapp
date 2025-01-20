@@ -80,7 +80,10 @@ export default function ExcelDBPage() {
                   cursor: 'pointer', // change cursor to pointer
                 },
               }}
-            > {cell.row.original.last_remark || "..."}
+            >
+              {/*ts-ignore  */}
+              {item.key == 'last remark' ? cell.row.original['last remark'] || "........."
+                : cell.row.original['next call'] || "..."}
             </Typography >,
             Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
           }
