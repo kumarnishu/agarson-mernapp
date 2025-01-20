@@ -335,6 +335,81 @@ export class PartyPageController {
         }
         return res.status(200).json(result)
     }
+    public async GetStockSellerParties(req: Request, res: Response, next: NextFunction) {
+        let result: IColumnRowData = {
+            columns: [],
+            rows: []
+        };
+
+        let cat: IKeyCategory | null = await KeyCategory.findOne({ category: 'ClientSale' })
+        if (!cat)
+            return res.status(404).json({ message: `${cat} not exists` })
+        let keys = await Key.find({ category: cat._id }).sort('serial_no');
+
+        let data = await ExcelDB.find({ category: cat._id }).populate('key').sort('created_at')
+
+        let promiseResult = await Promise.all(data.map(async (_dt) => {
+            let obj: IRowData = {}
+            let dt = _dt
+            if (dt) {
+                for (let i = 0; i < keys.length; i++) {
+                    let key = keys[i].key
+                    //@ts-ignore
+                    if (dt[key]) {
+                        if (keys[i].type == "timestamp")
+                            //@ts-ignore
+                            obj[key] = String(decimalToTimeForXlsx(dt[key]))
+                        else if (keys[i].type == "date") {
+                            if (cat && cat.category == 'SalesRep' && key == 'Sales Representative') {
+                                //@ts-ignore
+                                obj[key] = moment(dt[key]).format("MMM-YY")
+                            }
+                            else {
+                                //@ts-ignore
+                                obj[key] = moment(dt[key]).format("YYYY-MM-DD")
+                            }
+                        }
+                        else
+                            //@ts-ignore
+                            obj[key] = dt[key]
+
+
+                    }
+                    else {
+                        if (keys[i].type == "number")
+                            obj[key] = 0
+                        else
+                            obj[key] = ""
+                    }
+
+                }
+            }
+            if (dt)
+                return obj
+        }))
+        // for (let k = 0; k < keys.length; k++) {
+        //     let c = keys[k]
+        //     result.columns.push({ key: c.key, header: c.key, type: c.type })
+        // }
+        result.rows = promiseResult.filter(row => {
+            if (row)
+                return row
+        }) as IRowData[]
+        for (let k = 0; k < keys.length; k++) {
+            let c = keys[k]
+            if (c.type !== 'number')
+                result.columns.push({ key: c.key, header: c.key, type: c.type })
+            else {
+                const data: { key: string, value: number }[] = result.rows.map((dt) => { return { key: c.key, value: dt[c.key] } })
+                const total = data.reduce((sum, item) => sum + (item.value || 0), 0);
+                console.log(c.key, total)
+                if (total > 0)
+                    result.columns.push({ key: c.key, header: c.key, type: c.type })
+            }
+
+        }
+        return res.status(200).json(result)
+    }
     public async GetPartyPendingOrders(req: Request, res: Response, next: NextFunction) {
         let result: IColumnRowData = {
             columns: [],

@@ -67,7 +67,7 @@ function ViewPartyDetailDialog({ dialog, setDialog }: Props) {
                             <PartyPendingOrders party={party} />
                         </Stack>
                         <Stack direction={'row'} >
-                            <CurrentStock party={party} />
+                            <CurrentStock  />
                         </Stack>
                     </Stack>
                 </ArticlesProvider>}

@@ -90,6 +90,7 @@ import CollectionReportPage from './pages/sales/CollectionReportPage.tsx'
 import AgeingPage from './pages/sales/AgeingPage.tsx'
 import SharedAgeingpage from './pages/excel reports/SharedAgeingpage.tsx'
 import PartyPage from './pages/sales/PartyPage.tsx'
+import ArticleStockSellerPage from './components/party/ArticleStockSellerPage.tsx'
 
 
 function AppRoutes() {
@@ -458,15 +459,20 @@ function AppRoutes() {
                   <SalesDashboard />
                 }
               />
-              
+
               {user?.assigned_permissions.includes('salesman_visit_view') && <Route
                 path="SalesmanVisit" element={
                   <SalesmanVisitPage />
                 }
               />}
-               {user?.assigned_permissions.includes('salesman_party_view') && <Route
+              {user?.assigned_permissions.includes('salesman_party_view') && <Route
                 path="PartyPage" element={
                   <PartyPage />
+                }
+              />}
+              {user?.assigned_permissions.includes('salesman_stock_view') && <Route
+                path="ArticleStockSeller" element={
+                  <ArticleStockSellerPage />
                 }
               />}
 

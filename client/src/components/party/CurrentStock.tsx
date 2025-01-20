@@ -13,10 +13,10 @@ import { ArticlesContext } from '../../contexts/ArticlesContext'
 import { Refresh } from '@mui/icons-material'
 
 
-export default function CurrentStock({ party }: { party: string }) {
+export default function CurrentStock() {
     const [reports, setReports] = useState<IColumnRowData['rows']>([])
     const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
-    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["stock", party], async () => new PartyPageService().GetCurrentStock(party))
+    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["stock"], async () => new PartyPageService().GetCurrentStock())
 
     const isFirstRender = useRef(true);
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});

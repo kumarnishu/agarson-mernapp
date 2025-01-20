@@ -16,11 +16,15 @@ export class PartyPageService {
   public async GetPartyArticleSaleMonthly(party: string) {
     return await apiClient.get(`partypage/sale/?party=${encodeURIComponent(party)}`)
   }
+  public async GetStockSellerParties() {
+    return await apiClient.get(`stocksellers`)
+  }
+  
   public async GetPartyPendingOrders(party: string) {
     return await apiClient.get(`partypage/orders/?party=${encodeURIComponent(party)}`)
   }
-  public async GetCurrentStock(party: string) {
-    return await apiClient.get(`partypage/stock/?party=${encodeURIComponent(party)}`)
+  public async GetCurrentStock() {
+    return await apiClient.get(`partypage/stock`)
   }
 
   public async CreateOrEditPartyRemark({ body, remark }: {

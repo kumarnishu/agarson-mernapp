@@ -1319,6 +1319,31 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
+            {
+                label: 'Stock Sellers',
+                permissions: [
+                    {
+                        value: 'salesman_stock_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'salesman_stock_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'salesman_stock_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'salesman_stock_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'salesman_stock_export',
+                        label: 'export'
+                    }
+                ]
+            },
 
             {
                 label: 'SalesMan Visit',

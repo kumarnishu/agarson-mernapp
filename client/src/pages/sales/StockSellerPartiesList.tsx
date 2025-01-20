@@ -2,26 +2,28 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable, MRT_PaginationState, MRT_ColumnFiltersState } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable, MRT_ColumnFiltersState } from 'material-react-table'
 import { IColumnRowData } from '../../dtos/SalesDto'
 import { PartyPageService } from '../../services/PartyPageService'
 import { HandleNumbers } from '../../utils/IsDecimal'
 import { Tooltip, Typography } from '@mui/material'
 import { ArticlesContext } from '../../contexts/ArticlesContext'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import ViewPartyDetailDialog from '../../components/dialogs/party/ViewPartyDetailDialog'
 
 
-export default function StockSellerPartiesList({ party }: { party: string }) {
+export default function StockSellerPartiesList() {
     const [reports, setReports] = useState<IColumnRowData['rows']>([])
     const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
-    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["client_sale", party], async () => new PartyPageService().GetPartyArticleSaleMonthly(party))
+    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["stock-seller"], async () => new PartyPageService().GetStockSellerParties())
     const { articles } = useContext(ArticlesContext)
     const isFirstRender = useRef(true);
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-    const [pagination, setPagination] = useState<MRT_PaginationState>({ pageIndex: 0, pageSize: 2 })
     const [columnFilterState, setColumnFilterState] = useState<MRT_ColumnFiltersState>([]);
+    const [dialog, setDialog] = useState<string | undefined>()
 
     let columns = useMemo<MRT_ColumnDef<any, any>[]>(
         () => reportcolumns && reportcolumns.map((item, index) => {
@@ -31,7 +33,31 @@ export default function StockSellerPartiesList({ party }: { party: string }) {
                     header: item.header,
                     /* @ts-ignore */
                     filterFn: CustomFilterFunction,
-                    Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+                    Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span
+                        onClick={
+                            () => {
+
+                                //@ts-ignore
+                                if (cell.row.original['Account Name'])
+                                    //@ts-ignore
+                                    setObj(cell.row.original['Account Name'])
+                                //@ts-ignore
+                                else if (cell.row.original['PARTY'])
+                                    //@ts-ignore
+                                    setObj(cell.row.original['PARTY'])
+
+                                //@ts-ignore
+                                else if (cell.row.original['Customer Name'])
+                                    //@ts-ignore
+                                    setObj(cell.row.original['Customer Name'])
+                                //@ts-ignore
+                                else if (cell.row.original['CUSTOMER'])
+                                    //@ts-ignore
+                                    setObj(cell.row.original['CUSTOMER'])
+                                setDialog('ViewPartyDetailDialog')
+                            }
+                        }
+                    >{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
                     Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
                     Footer: "",
                 }
@@ -99,7 +125,7 @@ export default function StockSellerPartiesList({ party }: { party: string }) {
         }),
 
         renderTopToolbarCustomActions: () => (
-            <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Articles Sale</Typography>
+            <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Stock Sellers</Typography>
         ),
 
         muiTableHeadCellProps: ({ column }) => ({
@@ -119,7 +145,9 @@ export default function StockSellerPartiesList({ party }: { party: string }) {
             },
         }),
 
-
+        muiTableContainerProps: () => ({
+            sx: { height: '80vh' }
+        }),
         muiTableBodyCellProps: () => ({
             sx: {
                 border: '1px solid #c2beba;',
@@ -133,7 +161,7 @@ export default function StockSellerPartiesList({ party }: { party: string }) {
             variant: 'outlined',
         },
         enableDensityToggle: false, initialState: {
-            density: 'compact', pagination: pagination
+            density: 'compact', pagination: { pageIndex: 0, pageSize: 10000 }
         },
         selectAllMode: 'all',
         enableBottomToolbar: true,
@@ -146,11 +174,9 @@ export default function StockSellerPartiesList({ party }: { party: string }) {
         onColumnVisibilityChange: setColumnVisibility,
         onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing,
-        onPaginationChange: setPagination,
         state: {
             isLoading: isLoading,
             columnVisibility,
-            pagination: pagination,
             columnFilters: columnFilterState,
             sorting,
             columnSizing: columnSizing
@@ -188,7 +214,7 @@ export default function StockSellerPartiesList({ party }: { party: string }) {
         else
             setColumnFilterState([])
     }, [articles])
-   
+
 
     useEffect(() => {
         if (isFirstRender.current) return;
@@ -214,6 +240,7 @@ export default function StockSellerPartiesList({ party }: { party: string }) {
 
     return (
         <>
+            <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} />
             <MaterialReactTable table={table} />
         </>
 

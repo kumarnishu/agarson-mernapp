@@ -10,12 +10,13 @@ import { Tooltip, Typography } from '@mui/material'
 import { ArticlesContext } from '../../contexts/ArticlesContext'
 import { Refresh } from '@mui/icons-material'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
+import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 
-export default function CurrentStockSellerPage({ party }: { party: string }) {
+export default function CurrentStockSellerPage() {
     const [reports, setReports] = useState<IColumnRowData['rows']>([])
     const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
-    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["stock", party], async () => new PartyPageService().GetCurrentStock(party))
+    const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["stock"], async () => new PartyPageService().GetCurrentStock())
 
     const isFirstRender = useRef(true);
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
@@ -133,8 +134,8 @@ export default function CurrentStockSellerPage({ party }: { party: string }) {
                 }
             },
         }),
-        muiTableContainerProps: (props) => ({
-            sx: { height: '80vh', width: window.screen.width > 600 && !props.table.getState().isFullScreen ? '48.5vw' : 'auto' }
+        muiTableContainerProps: () => ({
+            sx: { height: '80vh'}
         }),
 
         muiTableBodyCellProps: () => ({

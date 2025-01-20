@@ -10,6 +10,7 @@ router.route("/partypage/ageing2").get(isAuthenticatedUser, controller.GetPartyA
 router.route("/partypage/list").get(isAuthenticatedUser, controller.GetALlParties)
 router.route("/partypage/stock").get(isAuthenticatedUser, controller.GetCurrentStock)
 router.route("/partypage/sale").get(isAuthenticatedUser, controller.GetPartyArticleSaleMonthly)
+router.route("/stocksellers").get(isAuthenticatedUser, controller.GetStockSellerParties)
 router.route("/partypage/forcast-growth").get(isAuthenticatedUser, controller.GetPartyForcastAndGrowth)
 router.route("/partypage/orders").get(isAuthenticatedUser, controller.GetPartyPendingOrders)
 router.route("/partypage/ageing1").get(isAuthenticatedUser, controller.GetPartyAgeing1)
