@@ -15,17 +15,18 @@ import { IColumnRowData } from '../../dtos/SalesDto'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import ViewPartyDetailDialog from '../../components/dialogs/party/ViewPartyDetailDialog'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import CreateOrEditPartyRemarkDialog from '../../components/dialogs/party/CreateOrEditPartyRemarkDialog'
+import { PartyContext } from '../../contexts/partyContext'
 
 export default function SharedAgeingpage() {
   const [hidden, setHidden] = useState(false)
   const [reports, setReports] = useState<IColumnRowData['rows']>([])
   const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
-  const [obj, setObj] = useState<string | undefined>()
   const { user: LoggedInUser } = useContext(UserContext)
   const [dialog, setDialog] = useState<string | undefined>()
   const id = '673343932fc46475cdf0ad6d';
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
+  const { setParty } = useContext(PartyContext)
   const { data, isLoading, isSuccess, refetch, isRefetching } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb", hidden], async () => new ExcelReportsService().GetExcelDbReport(id, hidden), { enabled: false })
 
   const isFirstRender = useRef(true);
@@ -43,7 +44,36 @@ export default function SharedAgeingpage() {
             header: item.header,
             /* @ts-ignore */
             filterFn: CustomFilterFunction,
-            Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+            Cell: (cell) => <Typography
+              onClick={() => {
+                //@ts-ignore
+                if (cell.row.original['Account Name'])
+                  //@ts-ignore
+                  setParty(cell.row.original['Account Name'])
+                //@ts-ignore
+                else if (cell.row.original['PARTY'])
+                  //@ts-ignore
+                  setParty(cell.row.original['PARTY'])
+
+                //@ts-ignore
+                else if (cell.row.original['Customer Name'])
+                  //@ts-ignore
+                  setParty(cell.row.original['Customer Name'])
+                //@ts-ignore
+                else if (cell.row.original['CUSTOMER'])
+                  //@ts-ignore
+                  setParty(cell.row.original['CUSTOMER'])
+                setDialog('CreateOrEditPartyRemarkDialog')
+              }}
+              sx={{
+                width: '100%',
+                '&:hover': {
+                  color: 'primary.main', // change color on hover
+                  cursor: 'pointer', // change cursor to pointer
+                },
+              }}
+            > {cell.row.original.last_remark || "...."}
+            </Typography >,
             Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
           }
         return {
@@ -51,7 +81,7 @@ export default function SharedAgeingpage() {
           header: item.header,
           /* @ts-ignore */
           filterFn: CustomFilterFunction,
-          Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span style={{cursor:'pointer'}} onClick={() => {
+          Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span style={{ cursor: 'pointer' }} onClick={() => {
 
 
             //@ts-ignore
@@ -248,7 +278,6 @@ export default function SharedAgeingpage() {
     localStorage.setItem('mrt_columnSizing_SharedAgeingpage', JSON.stringify(columnSizing));
   }, [columnSizing]);
 
-  console.log(obj)
   return (
     <>
       <Stack
@@ -305,6 +334,7 @@ export default function SharedAgeingpage() {
       </Stack >
       {isRefetching && <LinearProgress />}
       <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} />
+      <CreateOrEditPartyRemarkDialog dialog={dialog} setDialog={setDialog} />
       <MaterialReactTable table={table} />
     </>
 

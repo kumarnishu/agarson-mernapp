@@ -2,15 +2,16 @@ import { Dialog, DialogContent, IconButton, DialogTitle } from '@mui/material'
 import { Cancel } from '@mui/icons-material'
 import { GetPartyRemarkDto } from '../../../dtos/PartyPageDto'
 import CreateOrEditPartyRemarkForm from '../../forms/party/CreateOrEditPartyRemarkForm'
+import { useContext } from 'react'
+import { PartyContext } from '../../../contexts/partyContext'
 
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-    party: string,
     remark?: GetPartyRemarkDto
 }
-function CreateOrEditPartyRemarkDialog({ party, remark, dialog, setDialog }: Props) {
-
+function CreateOrEditPartyRemarkDialog({ remark, dialog, setDialog }: Props) {
+    const { party } = useContext(PartyContext)
     return (
         <Dialog
             open={dialog === "CreateOrEditPartyRemarkDialog"}
@@ -23,7 +24,7 @@ function CreateOrEditPartyRemarkDialog({ party, remark, dialog, setDialog }: Pro
             </IconButton>
             <DialogTitle sx={{ minWidth: '350px' }} textAlign={"center"}>{!remark ? "New Remark" : "Edit Remark"}</DialogTitle>
             <DialogContent>
-                <CreateOrEditPartyRemarkForm party={party} remark={remark} setDialog={setDialog} />
+                {party && <CreateOrEditPartyRemarkForm party={party} remark={remark} setDialog={setDialog} />}
             </DialogContent>
         </Dialog>
     )

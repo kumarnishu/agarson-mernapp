@@ -16,6 +16,7 @@ import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import ViewPartyDetailDialog from '../../components/dialogs/party/ViewPartyDetailDialog'
 import { PartyContext } from '../../contexts/partyContext'
+import CreateOrEditPartyRemarkDialog from '../../components/dialogs/party/CreateOrEditPartyRemarkDialog'
 
 export default function AgeingPage() {
     const [ageings, setAgeings] = useState<GetAgeingDto[]>([])
@@ -38,12 +39,27 @@ export default function AgeingPage() {
             {
                 accessorKey: 'last_remark',
                 header: 'Last Remark',
-
                 filterFn: CustomFilterFunction,
                 Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.last_remark || "" })} />,
                 aggregationFn: 'max',
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
-                Cell: (cell) => <>{cell.row.original.last_remark || ""}</>,
+                Cell: (cell) =>
+                    <Typography
+                        onClick={() => {
+                            setParty(cell.row.original.party)
+                            setDialog('CreateOrEditPartyRemarkDialog')
+                        }}
+                        sx={{
+                            width: '100%',
+                            '&:hover': {
+                                color: 'primary.main', // change color on hover
+                                cursor: 'pointer', // change cursor to pointer
+                            },
+                        }}
+                    > {cell.row.original.last_remark || "..."}
+                    </Typography >
+
+
 
             },
             {
@@ -59,7 +75,6 @@ export default function AgeingPage() {
                 accessorKey: 'state',
                 header: 'State',
                 aggregationFn: 'max',
-
                 filterFn: CustomFilterFunction,
                 Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.state || "" })} />,
                 AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
@@ -71,9 +86,11 @@ export default function AgeingPage() {
                 header: 'Party',
                 filterFn: CustomFilterFunction,
                 Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={ageings.map((item) => { return item.party || "" })} />,
-                Cell: (cell) => <Typography sx={{ cursor: 'pointer' }} onClick={() => {
+                Cell: (cell) => <Typography sx={{
+                    cursor: 'pointer'
+                }} onClick={() => {
                     setParty(cell.row.original.party)
-                    setDialog('ViewPartyDetailDialog')
+                    setDialog('CreateOrEditPartyRemarkDialog')
                 }}>{cell.row.original.party || ""}</Typography>,
 
             },
@@ -346,6 +363,7 @@ export default function AgeingPage() {
             </Stack >
             {/* table */}
             <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} />
+            <CreateOrEditPartyRemarkDialog dialog={dialog} setDialog={setDialog} />
             <MaterialReactTable table={table} />
         </>
 

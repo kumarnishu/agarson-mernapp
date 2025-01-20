@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef,  MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
 import { useParams } from 'react-router-dom'
 import { UserContext } from '../../contexts/userContext'
 import { Refresh } from '@mui/icons-material'
@@ -19,6 +19,7 @@ import { DropDownDto } from '../../dtos/DropDownDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import ViewPartyDetailDialog from '../../components/dialogs/party/ViewPartyDetailDialog'
 import { PartyContext } from '../../contexts/partyContext'
+import CreateOrEditPartyRemarkDialog from '../../components/dialogs/party/CreateOrEditPartyRemarkDialog'
 
 export default function ExcelDBPage() {
   const [hidden, setHidden] = useState(false)
@@ -28,12 +29,12 @@ export default function ExcelDBPage() {
   const { user: LoggedInUser } = useContext(UserContext)
   const [dialog, setDialog] = useState<string | undefined>()
   const { id } = useParams()
-  const {setParty}=useContext(PartyContext)
+  const { setParty } = useContext(PartyContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { data: categorydata, refetch: RefetchCategory, isSuccess: isSuccessCategorydata } = useQuery<AxiosResponse<DropDownDto>, BackendError>(["key_categories"], async () => new AuthorizationService().GetKeyCategoryById(id || ""), { enabled: false })
 
   const { data, isLoading, isSuccess, refetch, isRefetching } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb", hidden], async () => new ExcelReportsService().GetExcelDbReport(id || "", hidden), { enabled: false })
-  
+
   const isFirstRender = useRef(true);
 
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
@@ -51,7 +52,36 @@ export default function ExcelDBPage() {
             header: item.header,
             /* @ts-ignore */
             filterFn: CustomFilterFunction,
-            Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span >{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+            Cell: (cell) => <Typography
+              onClick={() => {
+                //@ts-ignore
+                if (cell.row.original['Account Name'])
+                  //@ts-ignore
+                  setParty(cell.row.original['Account Name'])
+                //@ts-ignore
+                else if (cell.row.original['PARTY'])
+                  //@ts-ignore
+                  setParty(cell.row.original['PARTY'])
+
+                //@ts-ignore
+                else if (cell.row.original['Customer Name'])
+                  //@ts-ignore
+                  setParty(cell.row.original['Customer Name'])
+                //@ts-ignore
+                else if (cell.row.original['CUSTOMER'])
+                  //@ts-ignore
+                  setParty(cell.row.original['CUSTOMER'])
+                setDialog('CreateOrEditPartyRemarkDialog')
+              }}
+              sx={{
+                width: '100%',
+                '&:hover': {
+                  color: 'primary.main', // change color on hover
+                  cursor: 'pointer', // change cursor to pointer
+                },
+              }}
+            > {cell.row.original.last_remark || "..."}
+            </Typography >,
             Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
           }
         return {
@@ -79,7 +109,7 @@ export default function ExcelDBPage() {
               else if (cell.row.original['CUSTOMER'])
                 //@ts-ignore
                 setParty(cell.row.original['CUSTOMER'])
-              
+
             }}>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
           Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
           Footer: "",
@@ -145,7 +175,7 @@ export default function ExcelDBPage() {
     data: reports ? reports : [], //10,000 rows       
     enableColumnResizing: true,
     enableRowVirtualization: true,
-     //optional
+    //optional
     // , //optionally customize the row virtualizr
     // columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizr
     enableStickyFooter: true,
@@ -317,8 +347,9 @@ export default function ExcelDBPage() {
           </Menu >
         </Stack>
       </Stack >
-       <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog}  />
+      <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} />
       {isRefetching && <LinearProgress />}
+      <CreateOrEditPartyRemarkDialog dialog={dialog} setDialog={setDialog} />
       <MaterialReactTable table={table} />
     </>
 
