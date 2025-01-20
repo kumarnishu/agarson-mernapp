@@ -9,13 +9,24 @@ import { CreateOrEditPartyRemarkDto, GetPartyAgeingDto, GetPartyRemarkDto } from
 import { Ageing } from '../models/SalesModel';
 import { IAgeing } from '../interfaces/SalesInterface';
 import isMongoId from 'validator/lib/isMongoId';
-import { PartyRemark } from '../models/PartPageModel';
+import { Party, PartyRemark } from '../models/PartPageModel';
 import { IPartyRemark } from '../interfaces/PartyPageInterface';
 import { User } from '../models/UserModel';
 
 
 export class PartyPageController {
 
+    public async GetPartyMobile(req: Request, res: Response, next: NextFunction) {
+        let party = req.query.party
+        if (!party) {
+            return res.status(400).json({ message: 'Provide party name' })
+        }
+        let item = await Party.findOne({ party: party })
+        if (!item)
+            return res.status(404).json({ message: 'party not exists' })
+        let mobile = item.mobile || "Mobile not available"
+        return res.status(200).json(mobile)
+    }
     public async GetALlParties(req: Request, res: Response, next: NextFunction) {
         let result: IColumnRowData = {
             columns: [],

@@ -23,6 +23,10 @@ export class PartyPageService {
   public async GetPartyPendingOrders(party: string) {
     return await apiClient.get(`partypage/orders/?party=${encodeURIComponent(party)}`)
   }
+    
+  public async GetPartyMobile(party: string) {
+    return await apiClient.get(`mobile/?party=${encodeURIComponent(party)}`)
+  }
   public async GetCurrentStock() {
     return await apiClient.get(`partypage/stock`)
   }

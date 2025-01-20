@@ -10,3 +10,15 @@ export type IPartyRemark = {
     created_by: IUser,
     updated_by: IUser
 }
+export type IParty= {
+    _id: string,
+    party: string,
+    mobile: string,
+    city: string,
+    state: string,
+    customer:string,
+    created_at: Date,
+    updated_at: Date,
+    created_by: IUser,
+    updated_by: IUser
+}

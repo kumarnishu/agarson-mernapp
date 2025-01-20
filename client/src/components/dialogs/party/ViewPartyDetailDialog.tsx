@@ -11,6 +11,10 @@ import { useContext, useState } from 'react'
 import ViewPartyRemarksDialog from './ViewPartyRemarksDialog'
 import { PartyContext } from '../../../contexts/partyContext'
 import ViewPartyListDialog from './ViewPartyListDialog'
+import { useQuery } from 'react-query'
+import { AxiosResponse } from 'axios'
+import { BackendError } from '../../..'
+import { PartyPageService } from '../../../services/PartyPageService'
 
 type Props = {
     dialog: string | undefined,
@@ -20,6 +24,9 @@ type Props = {
 function ViewPartyDetailDialog({ dialog, setDialog }: Props) {
     const [dialog2, setdialog2] = useState<string | undefined>()
     const { party } = useContext(PartyContext)
+
+    const { data } = useQuery<AxiosResponse<string>, BackendError>(["mobile", party], async () => new PartyPageService().GetPartyMobile(party || "NA"))
+
     return (
         <>
             {party && <Dialog
@@ -42,7 +49,7 @@ function ViewPartyDetailDialog({ dialog, setDialog }: Props) {
                     <p onMouseOver={() => {
                         setdialog2('ViewPartyListDialog')
                     }} style={{ width: '100%', paddingInline: 10, cursor: 'pointer', fontWeight: 'bold', fontSize: 20, textAlign: 'left' }}>
-                        {window.screen.width > 600 ? party : `${party.slice(0, 30)} ...`}
+                        {window.screen.width > 600 ? party : `${party.slice(0, 30)} ...`} : {data && data.data ? data.data : 'mobile not exists'}
                     </p>
                     {/* <Stack direction={{ sm: 'column', md: 'row' }} gap={2}> */}
 
@@ -67,7 +74,7 @@ function ViewPartyDetailDialog({ dialog, setDialog }: Props) {
                             <PartyPendingOrders party={party} />
                         </Stack>
                         <Stack direction={'row'} >
-                            <CurrentStock  />
+                            <CurrentStock />
                         </Stack>
                     </Stack>
                 </ArticlesProvider>}
