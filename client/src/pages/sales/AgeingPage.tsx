@@ -15,11 +15,12 @@ import { GetAgeingDto } from '../../dtos/SalesDto'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import ViewPartyDetailDialog from '../../components/dialogs/sales/ViewPartyDetailDialog'
+import { PartyContext } from '../../contexts/partyContext'
 
 export default function AgeingPage() {
     const [ageings, setAgeings] = useState<GetAgeingDto[]>([])
     const [dialog, setDialog] = useState<string | undefined>()
-    const [party, setParty] = useState<string>()
+    const { setParty } = useContext(PartyContext)
     const [hidden, setHidden] = useState(false)
     const { user: LoggedInUser } = useContext(UserContext)
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<GetAgeingDto[]>, BackendError>(["ageing", hidden], async () => new SalesService().GetAgeingReports({ hidden }))
@@ -344,7 +345,7 @@ export default function AgeingPage() {
                 </Stack>
             </Stack >
             {/* table */}
-            {party && <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} party={party} />}
+            <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} />
             <MaterialReactTable table={table} />
         </>
 

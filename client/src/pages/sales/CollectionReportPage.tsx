@@ -15,6 +15,7 @@ import { GetCollectionsDto } from '../../dtos/SalesDto'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import ViewPartyDetailDialog from '../../components/dialogs/sales/ViewPartyDetailDialog'
+import { PartyContext } from '../../contexts/partyContext'
 
 function CollectionReportPage() {
     const { user: LoggedInUser } = useContext(UserContext)
@@ -24,7 +25,7 @@ function CollectionReportPage() {
         , end_date: moment(new Date().setDate(new Date().getDate())).format("YYYY-MM-DD")
     })
     const [dialog, setDialog] = useState<string | undefined>()
-    const [party, setParty] = useState<string>()
+    const { setParty } = useContext(PartyContext)
     const isFirstRender = useRef(true);
 
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
@@ -299,7 +300,7 @@ function CollectionReportPage() {
 
                 >Export Selected</MenuItem>}
             </Menu>
-            {party && <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} party={party} />}
+           <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog}  />
             <MaterialReactTable table={table} />
         </>
     )

@@ -5,7 +5,7 @@ import { BackendError } from '../..'
 import { Box, Button, Fade, Menu, MenuItem, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import { UserContext } from '../../contexts/userContext'
 import moment from 'moment'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import ExportToExcel from '../../utils/ExportToExcel'
 import { SalesService } from '../../services/SalesServices'
 import { Menu as MenuIcon } from '@mui/icons-material';
@@ -15,6 +15,7 @@ import { GetSalesDto } from '../../dtos/SalesDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import ViewPartyDetailDialog from '../../components/dialogs/sales/ViewPartyDetailDialog'
+import { PartyContext } from '../../contexts/partyContext'
 
 function SalesReportPage() {
   const { user: LoggedInUser } = useContext(UserContext)
@@ -31,9 +32,9 @@ function SalesReportPage() {
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
 
-  
+
   const [dialog, setDialog] = useState<string | undefined>()
-  const [party, setParty] = useState<string>()
+  const { setParty } = useContext(PartyContext)
   const { data, isLoading } = useQuery<AxiosResponse<GetSalesDto[]>, BackendError>(["sales", dates?.start_date, dates?.end_date], async () => new SalesService().GetSalesReports({ start_date: dates?.start_date, end_date: dates?.end_date }))
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -72,7 +73,7 @@ function SalesReportPage() {
       {
 
         accessorKey: 'party',
-        Cell: (cell) => <Typography sx={{ cursor: 'pointer'}} onClick={() => {
+        Cell: (cell) => <Typography sx={{ cursor: 'pointer' }} onClick={() => {
           setParty(cell.row.original.party)
           setDialog('ViewPartyDetailDialog')
         }}>{cell.row.original.party || ""}</Typography>,
@@ -182,7 +183,7 @@ function SalesReportPage() {
       setSales(data.data)
     }
   }, [data])
- 
+
 
   //load state from local storage
   useEffect(() => {
@@ -312,7 +313,7 @@ function SalesReportPage() {
 
         >Export Selected</MenuItem>}
       </Menu>
-      {party && <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} party={party} />}
+      <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} />
       <MaterialReactTable table={table} />
     </>
   )

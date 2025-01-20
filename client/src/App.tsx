@@ -20,7 +20,7 @@ function App() {
 
       {alert && <AlertBar message={alert.message} color={alert.color} variant={alert.variant} />
       }
-      {!loading && < AppRoutes />}
+        {!loading && < AppRoutes />}
       {loading && <LinearProgress />}
     </>
   )

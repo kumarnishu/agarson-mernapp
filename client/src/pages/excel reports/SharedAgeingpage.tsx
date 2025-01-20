@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef,  MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
 import { Refresh } from '@mui/icons-material'
 import { HandleNumbers } from '../../utils/IsDecimal'
@@ -29,7 +29,7 @@ export default function SharedAgeingpage() {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const { data, isLoading, isSuccess, refetch, isRefetching } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["exceldb", hidden], async () => new ExcelReportsService().GetExcelDbReport(id, hidden), { enabled: false })
-  
+
   const isFirstRender = useRef(true);
 
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
@@ -132,7 +132,7 @@ export default function SharedAgeingpage() {
     data: reports ? reports : [], //10,000 rows       
     enableColumnResizing: true,
     enableRowVirtualization: true,
-     //optional
+    //optional
     // , //optionally customize the row virtualizr
     // columnVirtualizerOptions: { overscan: 2 }, //optionally customize the column virtualizr
     enableStickyFooter: true,
@@ -308,7 +308,7 @@ export default function SharedAgeingpage() {
       {id && obj && <CreateOrEditExcelDBRemarkDialog dialog={dialog} setDialog={setDialog} category={id} obj={obj} />}
       {id && obj && <ViewExcelDBRemarksDialog dialog={dialog} setDialog={setDialog} id={id} obj={obj} />}
       {isRefetching && <LinearProgress />}
-      {obj && <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} party={obj} />}
+      <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} />
       <MaterialReactTable table={table} />
     </>
 

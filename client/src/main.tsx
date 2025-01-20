@@ -7,6 +7,7 @@ import { UserProvider } from "./contexts/userContext";
 import { BrowserRouter } from "react-router-dom";
 import { LoadingProvider } from './contexts/loaderContext.tsx';
 import { AlertProvider } from './contexts/alertContext.tsx';
+import { PartyProvider } from './contexts/partyContext.tsx';
 
 
 export const queryClient = new QueryClient({
@@ -25,7 +26,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <UserProvider>
         <LoadingProvider>
           <AlertProvider>
-            <App />
+            <PartyProvider>
+              <App />
+            </PartyProvider>
           </AlertProvider>
         </LoadingProvider>
       </UserProvider>

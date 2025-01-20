@@ -1,6 +1,6 @@
 import { Stack } from '@mui/system'
 import { AxiosResponse } from 'axios'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { Typography } from '@mui/material'
@@ -9,10 +9,11 @@ import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import ViewPartyDetailDialog from '../../components/dialogs/sales/ViewPartyDetailDialog'
 import { PartyPageService } from '../../services/PartyPageService'
+import { PartyContext } from '../../contexts/partyContext'
 
 
 export default function PartyPage() {
-  const [party, setParty] = useState<string>()
+  const { setParty } = useContext(PartyContext)
   const [parties, setParties] = useState<{ party: string }[]>([])
   const { data, isLoading, isSuccess } = useQuery<AxiosResponse<{ party: string }[]>, BackendError>(["parties"], async () => new PartyPageService().GetPartyList())
 
@@ -33,7 +34,7 @@ export default function PartyPage() {
         accessorKey: 'party',
         header: 'Party Name',
         grow: false,
-        Cell: (cell) => <Typography onClick={() => {
+        Cell: (cell) => <Typography sx={{cursor: 'pointer'}} onClick={() => {
           setParty(cell.row.original.party)
           setDialog('ViewPartyDetailDialog')
         }}>{cell.row.original.party ? cell.row.original.party : ""}</Typography>,
@@ -81,9 +82,8 @@ export default function PartyPage() {
     enableDensityToggle: false, initialState: {
       density: 'compact', showGlobalFilter: true, pagination: { pageIndex: 0, pageSize: 500 }
     },
-    enableGrouping: true,
-    enableRowSelection: true,
-    manualPagination: false,
+    enableGrouping: false,
+    enableRowSelection: false,
     enablePagination: true,
     enableRowNumbers: true,
     enableColumnPinning: true,
@@ -95,7 +95,6 @@ export default function PartyPage() {
     onColumnSizingChange: setColumnSizing, state: {
       isLoading: isLoading,
       columnVisibility,
-
       sorting,
       columnSizing: columnSizing
     }
@@ -178,7 +177,7 @@ export default function PartyPage() {
 
 
         <>
-          {party && <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} party={party} />}
+          <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog}  />
         </>
 
 

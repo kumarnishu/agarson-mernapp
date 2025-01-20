@@ -322,7 +322,7 @@ export default function ExcelDBPage() {
       </Stack >
       {id && obj && <CreateOrEditExcelDBRemarkDialog dialog={dialog} setDialog={setDialog} category={id} obj={obj} />}
       {id && obj && <ViewExcelDBRemarksDialog dialog={dialog} setDialog={setDialog} id={id} obj={obj} />}
-      {obj && <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} party={obj} />}
+       <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog}  />
       {isRefetching && <LinearProgress />}
       <MaterialReactTable table={table} />
     </>

@@ -7,20 +7,22 @@ import PartyClientSale from '../../party/PartyClientSale'
 import PartyForcastAndGrowth from '../../party/PartyForcastAndGrowth'
 import PartyPendingOrders from '../../party/PartyPendingOrders'
 import { ArticlesProvider } from '../../../contexts/ArticlesContext'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import ViewPartyRemarksDialog from '../party/ViewPartyRemarksDialog'
+import ViewPartyListDialog from '../party/ViewpartyListDialog'
+import { PartyContext } from '../../../contexts/partyContext'
 
 type Props = {
     dialog: string | undefined,
     setDialog: React.Dispatch<React.SetStateAction<string | undefined>>
-    party: string
 }
 
-function ViewPartyDetailDialog({ party, dialog, setDialog }: Props) {
+function ViewPartyDetailDialog({ dialog, setDialog }: Props) {
     const [dialog2, setdialog2] = useState<string | undefined>()
+    const { party } = useContext(PartyContext)
     return (
         <>
-            <Dialog
+            {party && <Dialog
                 open={dialog === "ViewPartyDetailDialog"}
                 fullScreen
                 onClose={() => {
@@ -37,17 +39,20 @@ function ViewPartyDetailDialog({ party, dialog, setDialog }: Props) {
                     }}>
                         <Cancel fontSize='large' />
                     </IconButton>
-                    <p style={{ width: '100%', paddingInline: 10, fontWeight: 'bold', fontSize: 20, textAlign: 'left' }}>
+                    <p onClick={() => {
+                        setdialog2('ViewPartyListDialog')
+                    }} style={{ width: '100%', paddingInline: 10, cursor: 'pointer', fontWeight: 'bold', fontSize: 20, textAlign: 'left' }}>
                         {window.screen.width > 600 ? party : `${party.slice(0, 30)} ...`}
                     </p>
                     {/* <Stack direction={{ sm: 'column', md: 'row' }} gap={2}> */}
 
-                    <Button variant='text' fullWidth color="error" sx={{ fontSize: 17 }} onMouseOver={() => setdialog2('ViewPartyRemarksDialog')}>
+                    <Button variant='text' fullWidth color="error" sx={{ fontSize: 17, cursor: 'pointer' }} onMouseOver={() => setdialog2('ViewPartyRemarksDialog')}>
                         last 5 Remarks
                     </Button>
                     {/* </Stack> */}
                 </Stack>
                 {dialog && <ArticlesProvider>
+
                     <Stack direction={{ sm: 'column', md: 'row' }} sx={{ width: '100vw' }} gap={1}   >
                         <Stack gap={1} direction={'column'} justifyContent={'space-between'} sx={{
                             width: {
@@ -66,8 +71,9 @@ function ViewPartyDetailDialog({ party, dialog, setDialog }: Props) {
                         </Stack>
                     </Stack>
                 </ArticlesProvider>}
-            </Dialog>
-            <ViewPartyRemarksDialog party={party} dialog={dialog2} setDialog={setdialog2} />
+                <ViewPartyRemarksDialog party={party} dialog={dialog2} setDialog={setdialog2} />
+                <ViewPartyListDialog dialog={dialog2} setDialog={setdialog2} />
+            </Dialog>}
         </>
     )
 }
