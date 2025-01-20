@@ -347,11 +347,14 @@ export class PartyPageController {
         let keys = await Key.find({ category: cat._id }).sort('serial_no');
         let user = await User.findById(req.user._id).populate('assigned_crm_states')
         user && user?.assigned_crm_states.map((state: ICRMState) => {
-            assigned_states.push(state.state)
+            //@ts-ignore
+            assigned_states.push(new RegExp(`^${state.state}$`, 'i'))
             if (state.alias1)
-                assigned_states.push(state.alias1)
+                //@ts-ignore
+                assigned_states.push(new RegExp(`^${state.alias1}$`, 'i'))
             if (state.alias2)
-                assigned_states.push(state.alias2)
+                //@ts-ignore
+                assigned_states.push(new RegExp(`^${state.alias2}$`, 'i'))
         });
         let data = await ExcelDB.find({ category: cat._id, 'STATE NAME': { $in: assigned_states } }).populate('key').sort('created_at')
 
