@@ -12,7 +12,6 @@ import isMongoId from 'validator/lib/isMongoId';
 import { PartyRemark } from '../models/PartPageModel';
 import { IPartyRemark } from '../interfaces/PartyPageInterface';
 import { User } from '../models/UserModel';
-import { IExcelDb } from '../interfaces/ExcelReportInterface';
 
 
 export class PartyPageController {

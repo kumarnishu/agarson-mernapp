@@ -12,13 +12,19 @@ export const CustomFilterFunction = (
 
 //@ts-nocheck
 export const CustomBetweenFunction = (
-    row,
+    row: any,
     columnId: string,
-    filterValue: unknown[]
+    filterValue: [number, number]
 ) => {
+    const rowValue = row.getValue<number>(columnId);
 
-    return filterValue.some(
-        val => row.getValue<unknown[]>(columnId) == val
-    )
-}
+    // Ensure rowValue is a valid number and filterValue contains two valid numbers
+    if (typeof rowValue !== 'number' || !Array.isArray(filterValue) || filterValue.length !== 2) {
+        return false;
+    }
+
+    const [min, max] = filterValue;
+
+    return rowValue >= min && rowValue <= max;
+};
 

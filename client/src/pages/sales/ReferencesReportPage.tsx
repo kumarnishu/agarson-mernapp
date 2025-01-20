@@ -16,7 +16,7 @@ import { SalesService } from '../../services/SalesServices'
 import EditReferenceStateDialog from '../../components/dialogs/sales/EditReferenceStateDialog'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { GetReferenceDto } from '../../dtos/SalesDto'
-import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
+import { CustomBetweenFunction, CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 export default function ReferencesReportPage() {
   const [hidden, setHidden] = useState(false)
@@ -73,14 +73,22 @@ export default function ReferencesReportPage() {
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
       {
-        accessorKey: 'address',
-        header: 'Address',
-
+        accessorKey: 'gst',
+        header: 'GST',
         filterFn: CustomFilterFunction,
-        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.address || "" })} />,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.gst || "" })} />,
         aggregationFn: 'count',
         AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
       },
+      {
+        accessorKey: 'address',
+        header: 'Address',
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.address || "" })} />,
+        aggregationFn: 'count',
+        
+      },
+     
       {
         accessorKey: 'state',
         header: 'State',
@@ -88,12 +96,11 @@ export default function ReferencesReportPage() {
         filterFn: CustomFilterFunction,
         Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return item.state || "" })} />,
         aggregationFn: 'count',
-        AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+       
       },
       {
         accessorKey: 'pincode',
         header: 'Pincode',
-
         filterFn: CustomFilterFunction,
         Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((item) => { return String(item.pincode) || "" })} />,
         aggregationFn: 'count',
@@ -115,7 +122,7 @@ export default function ReferencesReportPage() {
       accessorKey: key, header: key,
           aggregationFn: 'sum',
           filterVariant: 'range',
-          filterFn: 'betweenInclusive',
+          filterFn: CustomBetweenFunction,
           Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
           AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
           Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[key]) }, 0).toFixed()}</b>
