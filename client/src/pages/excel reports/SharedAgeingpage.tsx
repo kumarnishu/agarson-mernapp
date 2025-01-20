@@ -11,8 +11,6 @@ import { HandleNumbers } from '../../utils/IsDecimal'
 import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import { ExcelReportsService } from '../../services/ExcelReportsServices'
-import CreateOrEditExcelDBRemarkDialog from '../../components/dialogs/excelreports/CreateOrEditExcelDBRemarkDialog'
-import ViewExcelDBRemarksDialog from '../../components/dialogs/excelreports/ViewExcelDBRemarksDialog'
 import { IColumnRowData } from '../../dtos/SalesDto'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import ViewPartyDetailDialog from '../../components/dialogs/party/ViewPartyDetailDialog'
@@ -305,8 +303,6 @@ export default function SharedAgeingpage() {
           </Menu >
         </Stack>
       </Stack >
-      {id && obj && <CreateOrEditExcelDBRemarkDialog dialog={dialog} setDialog={setDialog} category={id} obj={obj} />}
-      {id && obj && <ViewExcelDBRemarksDialog dialog={dialog} setDialog={setDialog} id={id} obj={obj} />}
       {isRefetching && <LinearProgress />}
       <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} />
       <MaterialReactTable table={table} />
