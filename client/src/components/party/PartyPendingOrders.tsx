@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable, MRT_PaginationState } from 'material-react-table'
 import { IColumnRowData } from '../../dtos/SalesDto'
 import { PartyPageService } from '../../services/PartyPageService'
 import { HandleNumbers } from '../../utils/IsDecimal'
@@ -22,8 +22,7 @@ export default function PartyPendingOrders({ party }: { party: string }) {
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-
-
+    const [pagination, setPagination] = useState<MRT_PaginationState>({ pageIndex: 0, pageSize: 2 })
 
     let columns = useMemo<MRT_ColumnDef<any, any>[]>(
         () => reportcolumns && reportcolumns.map((item, index) => {
@@ -98,7 +97,7 @@ export default function PartyPendingOrders({ party }: { party: string }) {
                 color: 'white',
             }
         }),
-      
+
         renderTopToolbarCustomActions: () => (
             <Typography sx={{ overflow: 'hidden', fontSize: '1.1em', fontWeight: 'bold', textAlign: 'center' }} >Pending Orders</Typography>
         ),
@@ -141,7 +140,7 @@ export default function PartyPendingOrders({ party }: { party: string }) {
         enableDensityToggle: false, initialState: {
             density: 'compact', pagination: { pageIndex: 0, pageSize: 2 }
         },
-        selectAllMode:'all',
+        selectAllMode: 'all',
         enableBottomToolbar: true,
         enableGlobalFilter: true,
         enableGrouping: false,
@@ -155,12 +154,22 @@ export default function PartyPendingOrders({ party }: { party: string }) {
         state: {
             isLoading: isLoading,
             columnVisibility,
+            pagination: pagination,
             sorting,
             columnSizing: columnSizing
         }
     });
 
-
+    useEffect(() => {
+        if (table.getState().isFullScreen) {
+            setPagination({ pageIndex: 0, pageSize: 10000 })
+            console.log("success changed")
+        }
+        else {
+            setPagination({ pageIndex: 0, pageSize: 2 })
+            console.log("success changed")
+        }
+    }, [table.getState().isFullScreen])
     //load state from local storage
     useEffect(() => {
         const columnVisibility = localStorage.getItem(

@@ -2,28 +2,26 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable, MRT_PaginationState } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_SortingState, MRT_VisibilityState, MRT_ColumnSizingState, useMaterialReactTable, MRT_PaginationState, MRT_ColumnFiltersState } from 'material-react-table'
 import { IColumnRowData } from '../../dtos/SalesDto'
 import { PartyPageService } from '../../services/PartyPageService'
 import { HandleNumbers } from '../../utils/IsDecimal'
-import { CustomColumFilter } from '../filter/CustomColumFIlter'
 import { Tooltip, Typography } from '@mui/material'
-import { CustomFilterFunction } from '../filter/CustomFilterFunction'
 import { ArticlesContext } from '../../contexts/ArticlesContext'
-import { onlyUnique } from '../../utils/UniqueArray'
+import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 
-export default function PartyClientSale({ party }: { party: string }) {
+export default function StockSellerPartiesList({ party }: { party: string }) {
     const [reports, setReports] = useState<IColumnRowData['rows']>([])
     const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["client_sale", party], async () => new PartyPageService().GetPartyArticleSaleMonthly(party))
-    const { articles, setArticles } = useContext(ArticlesContext)
+    const { articles } = useContext(ArticlesContext)
     const isFirstRender = useRef(true);
     const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
     const [sorting, setSorting] = useState<MRT_SortingState>([]);
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
     const [pagination, setPagination] = useState<MRT_PaginationState>({ pageIndex: 0, pageSize: 2 })
-
+    const [columnFilterState, setColumnFilterState] = useState<MRT_ColumnFiltersState>([]);
 
     let columns = useMemo<MRT_ColumnDef<any, any>[]>(
         () => reportcolumns && reportcolumns.map((item, index) => {
@@ -153,21 +151,12 @@ export default function PartyClientSale({ party }: { party: string }) {
             isLoading: isLoading,
             columnVisibility,
             pagination: pagination,
+            columnFilters: columnFilterState,
             sorting,
             columnSizing: columnSizing
         }
     });
 
-    useEffect(() => {
-        if (table.getState().isFullScreen) {
-            setPagination({ pageIndex: 0, pageSize: 10000 })
-            console.log("success changed")
-        }
-        else{
-            setPagination({ pageIndex: 0, pageSize: 2 })
-            console.log("success changed")
-        }
-    }, [table.getState().isFullScreen])
     //load state from local storage
     useEffect(() => {
         const columnVisibility = localStorage.getItem(
@@ -194,22 +183,12 @@ export default function PartyClientSale({ party }: { party: string }) {
     }, []);
 
     useEffect(() => {
-        let rows = table.getSelectedRowModel().rows;
-        let tarticles = articles
-        if (rows.length > 0) {
-            //@ts-ignore
-            rows.map((i) => {
-                if (i.original['ARTICLE NAME']) {
-                    tarticles.push(i.original['ARTICLE NAME'])
-                }
-            })
-            tarticles = tarticles.filter(onlyUnique)
-            setArticles(tarticles)
-        }
-        else {
-            setArticles(tarticles)
-        }
-    }, [table.getSelectedRowModel().rows])
+        if (articles.length > 0)
+            setColumnFilterState([{ id: 'ARTICLE NAME', value: articles }])
+        else
+            setColumnFilterState([])
+    }, [articles])
+   
 
     useEffect(() => {
         if (isFirstRender.current) return;

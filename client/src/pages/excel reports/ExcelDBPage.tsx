@@ -13,23 +13,22 @@ import { Menu as MenuIcon } from '@mui/icons-material';
 import ExportToExcel from '../../utils/ExportToExcel'
 import { AuthorizationService } from '../../services/AuthorizationService'
 import { ExcelReportsService } from '../../services/ExcelReportsServices'
-import CreateOrEditExcelDBRemarkDialog from '../../components/dialogs/excelreports/CreateOrEditExcelDBRemarkDialog'
-import ViewExcelDBRemarksDialog from '../../components/dialogs/excelreports/ViewExcelDBRemarksDialog'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { IColumnRowData } from '../../dtos/SalesDto'
 import { DropDownDto } from '../../dtos/DropDownDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import ViewPartyDetailDialog from '../../components/dialogs/party/ViewPartyDetailDialog'
+import { PartyContext } from '../../contexts/partyContext'
 
 export default function ExcelDBPage() {
   const [hidden, setHidden] = useState(false)
   const [reports, setReports] = useState<IColumnRowData['rows']>([])
   const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
   const [category, setCategory] = useState<DropDownDto>()
-  const [obj, setObj] = useState<string | undefined>()
   const { user: LoggedInUser } = useContext(UserContext)
   const [dialog, setDialog] = useState<string | undefined>()
   const { id } = useParams()
+  const {setParty}=useContext(PartyContext)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { data: categorydata, refetch: RefetchCategory, isSuccess: isSuccessCategorydata } = useQuery<AxiosResponse<DropDownDto>, BackendError>(["key_categories"], async () => new AuthorizationService().GetKeyCategoryById(id || ""), { enabled: false })
 
@@ -62,26 +61,25 @@ export default function ExcelDBPage() {
           filterFn: CustomFilterFunction,
           Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span
             style={{ cursor: 'pointer' }} onClick={() => {
-
-              setDialog('ViewExcelDBRemarksDialog')
+              setDialog('ViewPartyDetailDialog')
               //@ts-ignore
               if (cell.row.original['Account Name'])
                 //@ts-ignore
-                setObj(cell.row.original['Account Name'])
+                setParty(cell.row.original['Account Name'])
               //@ts-ignore
               else if (cell.row.original['PARTY'])
                 //@ts-ignore
-                setObj(cell.row.original['PARTY'])
+                setParty(cell.row.original['PARTY'])
 
               //@ts-ignore
               else if (cell.row.original['Customer Name'])
                 //@ts-ignore
-                setObj(cell.row.original['Customer Name'])
+                setParty(cell.row.original['Customer Name'])
               //@ts-ignore
               else if (cell.row.original['CUSTOMER'])
                 //@ts-ignore
-                setObj(cell.row.original['CUSTOMER'])
-              setDialog('ViewPartyDetailDialog')
+                setParty(cell.row.original['CUSTOMER'])
+              
             }}>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
           Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={reports.map((it) => { return it[item.key] })} />,
           Footer: "",
@@ -141,7 +139,6 @@ export default function ExcelDBPage() {
     }
   }, [isSuccessCategorydata, categorydata]);
 
-  console.log(obj, dialog)
   const table = useMaterialReactTable({
     //@ts-ignore
     columns, columnFilterDisplayMode: 'popover',
@@ -320,8 +317,6 @@ export default function ExcelDBPage() {
           </Menu >
         </Stack>
       </Stack >
-      {id && obj && <CreateOrEditExcelDBRemarkDialog dialog={dialog} setDialog={setDialog} category={id} obj={obj} />}
-      {id && obj && <ViewExcelDBRemarksDialog dialog={dialog} setDialog={setDialog} id={id} obj={obj} />}
        <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog}  />
       {isRefetching && <LinearProgress />}
       <MaterialReactTable table={table} />

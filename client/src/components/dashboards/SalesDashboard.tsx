@@ -29,6 +29,7 @@ function SalesDashboard() {
 
         user?.assigned_permissions.includes('ageing_admin_view') && tmpfeatures.push({ feature: 'SALES REPRESENTATIVE/CUSTOMER WISE BILLS AGEING REPORT <70,70-90,90-120,>120 ', is_visible: false, url: "SharedAgeingpage" })
         user?.assigned_permissions.includes('salesman_party_view') && tmpfeatures.push({ feature: 'Parties List ', is_visible: false, url: "PartyPage" })
+        user?.assigned_permissions.includes('salesman_stock_view') && tmpfeatures.push({ feature: 'Articles Stock Sellers ', is_visible: false, url: "ArticleStockSeller" })
 
         // tmpfeatures.sort((a, b) => a.feature.localeCompare(b.feature));
     }, [user])
