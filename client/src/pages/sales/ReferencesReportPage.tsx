@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from 'react-query'
 import { BackendError } from '../..'
-import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState,  MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
+import { MaterialReactTable, MRT_ColumnDef, MRT_ColumnSizingState, MRT_SortingState, MRT_VisibilityState, useMaterialReactTable } from 'material-react-table'
 import { UserContext } from '../../contexts/userContext'
 import { ReferencesExcelButtons } from '../../components/buttons/ReferencesExcelButtons'
 import { HandleNumbers } from '../../utils/IsDecimal'
@@ -32,7 +32,7 @@ export default function ReferencesReportPage() {
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
 
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-  
+
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
   const columns = useMemo<MRT_ColumnDef<GetReferenceDto>[]>(() => {
@@ -112,22 +112,22 @@ export default function ReferencesReportPage() {
 
     // Step 3: Define dynamic columns based on extracted keys
     const dynamicColumns: MRT_ColumnDef<GetReferenceDto>[] = dynamicKeys.map((key) => ({
-      accessorKey: key,
-      header: key, // Use the dynamic key as the column header
-      filterVariant: 'range',
-      filterFn: 'betweenInclusive',
-      Cell: ({ cell }) => HandleNumbers(cell.getValue()), // Optional: Format the value if needed
-      aggregationFn: 'sum', // Example: Aggregate total sale_scope
-      AggregatedCell: (cell) => HandleNumbers(cell.cell.getValue()), // Format aggregated value
+      accessorKey: key, header: key,
+          aggregationFn: 'sum',
+          filterVariant: 'range',
+          filterFn: 'betweenInclusive',
+          Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,
+          AggregatedCell: (cell) => cell.cell.getValue() ? HandleNumbers(cell.cell.getValue()) : '',
+          Footer: ({ table }) => <b>{ table.getFilteredRowModel().rows.reduce((a, b) => { return Number(a) + Number(b.original[key]) }, 0).toFixed()}</b>
     }));
 
     // Step 4: Combine static and dynamic columns
     return [
       {
-        accessorKey: 'actions',   enableColumnActions: false,
-                enableColumnFilter: false,
-                enableSorting: false,
-                enableGrouping: false,
+        accessorKey: 'actions', enableColumnActions: false,
+        enableColumnFilter: false,
+        enableSorting: false,
+        enableGrouping: false,
         header: 'Actions',
         Cell: (cell) => <PopUp key={'action'}
           element={
@@ -253,7 +253,7 @@ export default function ReferencesReportPage() {
     }
   }, [isSuccess, data]);
 
- 
+
 
   //load state from local storage
   useEffect(() => {
