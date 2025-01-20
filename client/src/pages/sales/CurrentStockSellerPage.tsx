@@ -12,7 +12,7 @@ import { Refresh } from '@mui/icons-material'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 
 
-export default function CurrentStockForStockSeller({ party }: { party: string }) {
+export default function CurrentStockSellerPage({ party }: { party: string }) {
     const [reports, setReports] = useState<IColumnRowData['rows']>([])
     const [reportcolumns, setReportColumns] = useState<IColumnRowData['columns']>([])
     const { data, isLoading, isSuccess } = useQuery<AxiosResponse<IColumnRowData>, BackendError>(["stock", party], async () => new PartyPageService().GetCurrentStock(party))
