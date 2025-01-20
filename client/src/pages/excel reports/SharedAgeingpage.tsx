@@ -88,20 +88,20 @@ export default function SharedAgeingpage() {
             //@ts-ignore
             if (cell.row.original['Account Name'])
               //@ts-ignore
-              setObj(cell.row.original['Account Name'])
+              setParty(cell.row.original['Account Name'])
             //@ts-ignore
             else if (cell.row.original['PARTY'])
               //@ts-ignore
-              setObj(cell.row.original['PARTY'])
+              setParty(cell.row.original['PARTY'])
 
             //@ts-ignore
             else if (cell.row.original['Customer Name'])
               //@ts-ignore
-              setObj(cell.row.original['Customer Name'])
+              setParty(cell.row.original['Customer Name'])
             //@ts-ignore
             else if (cell.row.original['CUSTOMER'])
               //@ts-ignore
-              setObj(cell.row.original['CUSTOMER'])
+              setParty(cell.row.original['CUSTOMER'])
             setDialog('ViewPartyDetailDialog')
 
           }}>{String(cell.cell.getValue()) !== 'undefined' && String(cell.cell.getValue())}</span></Tooltip>,

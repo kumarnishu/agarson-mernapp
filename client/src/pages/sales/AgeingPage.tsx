@@ -90,7 +90,7 @@ export default function AgeingPage() {
                     cursor: 'pointer'
                 }} onClick={() => {
                     setParty(cell.row.original.party)
-                    setDialog('CreateOrEditPartyRemarkDialog')
+                    setDialog('ViewPartyDetailDialog')
                 }}>{cell.row.original.party || ""}</Typography>,
 
             },
