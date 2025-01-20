@@ -10,7 +10,7 @@ import { ArticlesProvider } from '../../../contexts/ArticlesContext'
 import { useContext, useState } from 'react'
 import ViewPartyRemarksDialog from './ViewPartyRemarksDialog'
 import { PartyContext } from '../../../contexts/partyContext'
-import ViewPartyListDialog from './ViewpartyListDialog'
+import ViewPartyListDialog from './ViewPartyListDialog'
 
 type Props = {
     dialog: string | undefined,
