@@ -167,7 +167,7 @@ export default function StockSellerPartiesList() {
         selectAllMode: 'all',
         enableBottomToolbar: true,
         enableGlobalFilter: true,
-        enableGrouping: false,
+        enableGrouping: true,
         enableRowSelection: true,
         enablePagination: true,
         enableColumnPinning: true,
