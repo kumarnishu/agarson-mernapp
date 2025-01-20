@@ -340,13 +340,20 @@ export class PartyPageController {
             columns: [],
             rows: []
         };
-
+        let assigned_states: string[] = []
         let cat: IKeyCategory | null = await KeyCategory.findOne({ category: 'ClientSale' })
         if (!cat)
             return res.status(404).json({ message: `${cat} not exists` })
         let keys = await Key.find({ category: cat._id }).sort('serial_no');
-
-        let data = await ExcelDB.find({ category: cat._id }).populate('key').sort('created_at')
+        let user = await User.findById(req.user._id).populate('assigned_crm_states')
+        user && user?.assigned_crm_states.map((state: ICRMState) => {
+            assigned_states.push(state.state)
+            if (state.alias1)
+                assigned_states.push(state.alias1)
+            if (state.alias2)
+                assigned_states.push(state.alias2)
+        });
+        let data = await ExcelDB.find({ category: cat._id, 'STATE NAME': { $in: assigned_states } }).populate('key').sort('created_at')
 
         let promiseResult = await Promise.all(data.map(async (_dt) => {
             let obj: IRowData = {}

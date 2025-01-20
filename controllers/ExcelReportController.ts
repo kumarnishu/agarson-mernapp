@@ -31,7 +31,7 @@ export class ExcelReportController {
         }
         let cat: IKeyCategory | null = null
         cat = await KeyCategory.findById(category)
-      
+
 
         let assigned_keys: any[] = req.user.assigned_keys;
         let assigned_states: string[] = []
@@ -161,7 +161,7 @@ export class ExcelReportController {
                             //adding bills age actions
                             if (cat && cat.category == 'BillsAge' && key == 'Account Name') {
                                 //@ts-ignore
-                                lastremark = await PartyRemark.findOne({ category: category, party: dt[key] }).sort('-created_at')
+                                lastremark = await PartyRemark.findOne({ created_by: req.user._id, party: dt[key] }).sort('-created_at')
                                 if (lastremark) {
                                     obj['last remark'] = lastremark.remark
                                     if (lastremark.next_call)
@@ -170,7 +170,7 @@ export class ExcelReportController {
                             }
                             if (cat && cat.category == 'PartyTarget' && key == 'PARTY') {
                                 //@ts-ignore
-                                lastremark = await PartyRemark.findOne({ category: category, party: dt[key] }).sort('-created_at')
+                                lastremark = await PartyRemark.findOne({ created_by: req.user._id, party: dt[key] }).sort('-created_at')
                                 if (lastremark) {
                                     obj['last remark'] = lastremark.remark
                                     if (lastremark.next_call)
@@ -179,7 +179,7 @@ export class ExcelReportController {
                             }
                             if (cat && cat.category == 'OrderDash' && key == 'Customer Name') {
                                 //@ts-ignore
-                                lastremark = await PartyRemark.findOne({ category: category, party: dt[key] }).sort('-created_at')
+                                lastremark = await PartyRemark.findOne({ created_by: req.user._id, party: dt[key] }).sort('-created_at')
                                 if (lastremark) {
                                     obj['last remark'] = lastremark.remark
                                     if (lastremark.next_call)
@@ -188,7 +188,7 @@ export class ExcelReportController {
                             }
                             if (cat && cat.category == 'ClientSale' && key == 'CUSTOMER') {
                                 //@ts-ignore
-                                lastremark = await PartyRemark.findOne({ category: category, party: dt[key] }).sort('-created_at')
+                                lastremark = await PartyRemark.findOne({ created_by: req.user._id, party: dt[key] }).sort('-created_at')
                                 if (lastremark) {
                                     obj['last remark'] = lastremark.remark
                                     if (lastremark.next_call)
@@ -225,7 +225,7 @@ export class ExcelReportController {
             else {
                 const data: { key: string, value: number }[] = result.rows.map((dt) => { return { key: c.key, value: dt[c.key] } })
                 const total = data.reduce((sum, item) => sum + (item.value || 0), 0);
-                console.log(c.key,total)
+                console.log(c.key, total)
                 if (total > 0)
                     result.columns.push({ key: c.key, header: c.key, type: c.type })
             }

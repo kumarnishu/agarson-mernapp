@@ -1865,7 +1865,7 @@ export class SalesController {
         let data: IAgeing[] = await Ageing.find({ state: { $in: assigned_states } }).sort('-created_at');
 
         await Promise.all(data.map(async (dt) => {
-            let remark = await PartyRemark.findOne({ party: dt.party }).sort('-created_at')
+            let remark = await PartyRemark.findOne({ party: dt.party, created_by: req.user._id }).sort('-created_at')
             let push_row = true
 
             if (hidden && hidden !== 'true' && remark && remark.next_call > dt1) {
