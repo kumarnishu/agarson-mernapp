@@ -11,6 +11,7 @@ import { ArticlesContext } from '../../contexts/ArticlesContext'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 import ViewPartyDetailDialog from '../../components/dialogs/party/ViewPartyDetailDialog'
+import { PartyContext } from '../../contexts/partyContext'
 
 
 export default function StockSellerPartiesList() {
@@ -24,7 +25,7 @@ export default function StockSellerPartiesList() {
     const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
     const [columnFilterState, setColumnFilterState] = useState<MRT_ColumnFiltersState>([]);
     const [dialog, setDialog] = useState<string | undefined>()
-
+    const { setParty } = useContext(PartyContext)
     let columns = useMemo<MRT_ColumnDef<any, any>[]>(
         () => reportcolumns && reportcolumns.map((item, index) => {
             if (item.type == "string") {
@@ -33,27 +34,27 @@ export default function StockSellerPartiesList() {
                     header: item.header,
                     /* @ts-ignore */
                     filterFn: CustomFilterFunction,
-                    Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span
+                    Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span style={{ cursor: 'pointer' }}
                         onClick={
                             () => {
 
                                 //@ts-ignore
                                 if (cell.row.original['Account Name'])
                                     //@ts-ignore
-                                    setObj(cell.row.original['Account Name'])
+                                    setParty(cell.row.original['Account Name'])
                                 //@ts-ignore
                                 else if (cell.row.original['PARTY'])
                                     //@ts-ignore
-                                    setObj(cell.row.original['PARTY'])
+                                    setParty(cell.row.original['PARTY'])
 
                                 //@ts-ignore
                                 else if (cell.row.original['Customer Name'])
                                     //@ts-ignore
-                                    setObj(cell.row.original['Customer Name'])
+                                    setParty(cell.row.original['Customer Name'])
                                 //@ts-ignore
                                 else if (cell.row.original['CUSTOMER'])
                                     //@ts-ignore
-                                    setObj(cell.row.original['CUSTOMER'])
+                                    setParty(cell.row.original['CUSTOMER'])
                                 setDialog('ViewPartyDetailDialog')
                             }
                         }
