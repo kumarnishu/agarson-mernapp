@@ -39,7 +39,7 @@ function ViewPartyDetailDialog({ dialog, setDialog }: Props) {
                     }}>
                         <Cancel fontSize='large' />
                     </IconButton>
-                    <p onClick={() => {
+                    <p onMouseOver={() => {
                         setdialog2('ViewPartyListDialog')
                     }} style={{ width: '100%', paddingInline: 10, cursor: 'pointer', fontWeight: 'bold', fontSize: 20, textAlign: 'left' }}>
                         {window.screen.width > 600 ? party : `${party.slice(0, 30)} ...`}
