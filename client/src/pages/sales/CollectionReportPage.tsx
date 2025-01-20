@@ -14,7 +14,7 @@ import { HandleNumbers } from '../../utils/IsDecimal'
 import { GetCollectionsDto } from '../../dtos/SalesDto'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
-import ViewPartyDetailDialog from '../../components/dialogs/sales/ViewPartyDetailDialog'
+import ViewPartyDetailDialog from '../../components/dialogs/party/ViewPartyDetailDialog'
 import { PartyContext } from '../../contexts/partyContext'
 
 function CollectionReportPage() {

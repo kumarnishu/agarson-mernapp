@@ -15,7 +15,7 @@ import CreateOrEditExcelDBRemarkDialog from '../../components/dialogs/excelrepor
 import ViewExcelDBRemarksDialog from '../../components/dialogs/excelreports/ViewExcelDBRemarksDialog'
 import { IColumnRowData } from '../../dtos/SalesDto'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
-import ViewPartyDetailDialog from '../../components/dialogs/sales/ViewPartyDetailDialog'
+import ViewPartyDetailDialog from '../../components/dialogs/party/ViewPartyDetailDialog'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
 
 export default function SharedAgeingpage() {
@@ -53,7 +53,7 @@ export default function SharedAgeingpage() {
           header: item.header,
           /* @ts-ignore */
           filterFn: CustomFilterFunction,
-          Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span onClick={() => {
+          Cell: (cell) => <Tooltip title={String(cell.cell.getValue()) || ""}><span style={{cursor:'pointer'}} onClick={() => {
 
 
             //@ts-ignore

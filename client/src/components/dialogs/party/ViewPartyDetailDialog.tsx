@@ -8,9 +8,9 @@ import PartyForcastAndGrowth from '../../party/PartyForcastAndGrowth'
 import PartyPendingOrders from '../../party/PartyPendingOrders'
 import { ArticlesProvider } from '../../../contexts/ArticlesContext'
 import { useContext, useState } from 'react'
-import ViewPartyRemarksDialog from '../party/ViewPartyRemarksDialog'
-import ViewPartyListDialog from '../party/ViewpartyListDialog'
+import ViewPartyRemarksDialog from './ViewPartyRemarksDialog'
 import { PartyContext } from '../../../contexts/partyContext'
+import ViewPartyListDialog from './ViewpartyListDialog'
 
 type Props = {
     dialog: string | undefined,

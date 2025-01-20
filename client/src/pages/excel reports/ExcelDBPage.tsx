@@ -19,7 +19,7 @@ import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { IColumnRowData } from '../../dtos/SalesDto'
 import { DropDownDto } from '../../dtos/DropDownDto'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
-import ViewPartyDetailDialog from '../../components/dialogs/sales/ViewPartyDetailDialog'
+import ViewPartyDetailDialog from '../../components/dialogs/party/ViewPartyDetailDialog'
 
 export default function ExcelDBPage() {
   const [hidden, setHidden] = useState(false)

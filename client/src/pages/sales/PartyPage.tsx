@@ -7,7 +7,7 @@ import { Typography } from '@mui/material'
 import { BackendError } from '../..'
 import { CustomColumFilter } from '../../components/filter/CustomColumFIlter'
 import { CustomFilterFunction } from '../../components/filter/CustomFilterFunction'
-import ViewPartyDetailDialog from '../../components/dialogs/sales/ViewPartyDetailDialog'
+import ViewPartyDetailDialog from '../../components/dialogs/party/ViewPartyDetailDialog'
 import { PartyPageService } from '../../services/PartyPageService'
 import { PartyContext } from '../../contexts/partyContext'
 
