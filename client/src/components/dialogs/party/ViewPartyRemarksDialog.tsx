@@ -77,7 +77,7 @@ function ViewPartyRemarksDialog({ party, dialog, setDialog }: Props) {
                     })}
                 </Stack>
                 {remark && <DeletePartyremarkDialog dialog={dialog2} setDialog={setdialog2} remark={remark} />}
-                <CreateOrEditPartyRemarkDialog party={party} remark={remark} dialog={dialog2} setDialog={setdialog2} />
+                <CreateOrEditPartyRemarkDialog  remark={remark} dialog={dialog2} setDialog={setdialog2} />
                 <Button size="large" sx={{ mt: 2, p: 2 }} variant='contained' fullWidth onClick={() => {
                     setRemark(undefined)
                     setdialog2('CreateOrEditPartyRemarkDialog')
