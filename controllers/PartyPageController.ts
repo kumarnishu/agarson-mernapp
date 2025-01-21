@@ -5,13 +5,14 @@ import { IColumnRowData, IRowData } from "../dtos/SalesDto";
 import { ICRMState, IKeyCategory } from "../interfaces/AuthorizationInterface";
 import { KeyCategory, Key } from "../models/AuthorizationModel";
 import { ExcelDB } from "../models/ExcelReportModel";
-import { CreateOrEditPartyRemarkDto, GetPartyAgeingDto, GetPartyRemarkDto } from "../dtos/PartyPageDto";
+import { CreateOrEditPartyRemarkDto, CreateOrEditSampleSystemDto, GetPartyAgeingDto, GetPartyRemarkDto, GetSampleSystemDto, PartyListDto } from "../dtos/PartyPageDto";
 import { Ageing } from '../models/SalesModel';
 import { IAgeing } from '../interfaces/SalesInterface';
 import isMongoId from 'validator/lib/isMongoId';
-import { Party, PartyRemark } from '../models/PartPageModel';
-import { IPartyRemark } from '../interfaces/PartyPageInterface';
+import { Party, PartyRemark, SampleSystem } from '../models/PartPageModel';
+import { IPartyRemark, ISampleSystem } from '../interfaces/PartyPageInterface';
 import { User } from '../models/UserModel';
+import { IUser } from '../interfaces/UserInterface';
 
 
 export class PartyPageController {
@@ -27,11 +28,8 @@ export class PartyPageController {
         let mobile = item.mobile || "Mobile not available"
         return res.status(200).json(mobile)
     }
-    public async GetALlParties(req: Request, res: Response, next: NextFunction) {
-        let result: IColumnRowData = {
-            columns: [],
-            rows: []
-        };
+    public async GetALlPartiesWithState(req: Request, res: Response, next: NextFunction) {
+        let result: PartyListDto[] = []
         let assigned_states: string[] = []
         let user = await User.findById(req.user._id).populate('assigned_crm_states')
         user && user?.assigned_crm_states.map((state: ICRMState) => {
@@ -98,16 +96,13 @@ export class PartyPageController {
             if (dt)
                 return obj
         }))
-        for (let k = 0; k < keys.length; k++) {
-            let c = keys[k]
-            result.columns.push({ key: c.key, header: c.key, type: c.type })
-        }
-        result.rows = promiseResult.filter(row => {
+
+        let rows = promiseResult.filter(row => {
             if (row)
                 return row
         }) as IRowData[]
-        let final = result.rows.map((i) => { return { party: i['Account Name'] } })
-        return res.status(200).json(final)
+        result = rows.map((r) => { return { party: r['Account Name'], state: r["Sales Representative"] } })
+        return res.status(200).json(result)
     }
 
     public async GetPartyAgeing1(req: Request, res: Response, next: NextFunction) {
@@ -582,7 +577,6 @@ export class PartyPageController {
         return res.status(200).json(result)
     }
 
-
     public async NewPartyRemark(req: Request, res: Response, next: NextFunction) {
         const { remark, party, nextcall } = req.body as CreateOrEditPartyRemarkDto
         if (!remark || !party) return res.status(403).json({ message: "please fill required fields" })
@@ -646,6 +640,106 @@ export class PartyPageController {
         return res.json(result)
     }
 
+    public async GetSampleSytems(req: Request, res: Response, next: NextFunction) {
+        let attendances: ISampleSystem[] = []
+        let result: GetSampleSystemDto[] = []
+        let start_date = req.query.start_date
+        let end_date = req.query.end_date
+        let dt1 = new Date(String(start_date))
+        let dt2 = new Date(String(end_date))
+        attendances = await SampleSystem.find({ date: { $gte: dt1, $lt: dt2 } }).populate('created_by').populate('updated_by').sort('-date')
+        result = attendances.map((p) => {
+            return {
+                _id: p._id,
+                party: p.party,
+                state: p.state,
+                stage: p.stage,
+                last_remark: p.last_remark,
+                next_call: p.next_call && moment(p.next_call).format("DD/MM/YYYY"),
+                samples: p.samples,
+                date: p.date && moment(p.date).format("DD/MM/YYYY"),
+                created_at: p.created_at && moment(p.created_at).format("DD/MM/YYYY"),
+                updated_at: p.updated_at && moment(p.updated_at).format("DD/MM/YYYY"),
+                created_by: { id: p.created_by._id, value: p.created_by.username, label: p.created_by.username },
+                updated_by: { id: p.updated_by._id, value: p.updated_by.username, label: p.updated_by.username }
+            }
+        })
+        return res.status(200).json(result)
+    }
+    public async CreateSampleSystem(req: Request, res: Response, next: NextFunction) {
+        let {
+            date,
+            party,
+            samples,
+            stage,
+            state,
+
+        } = req.body as CreateOrEditSampleSystemDto
+
+        if (!party || !date || !state || !samples || !stage)
+            return res.status(400).json({ message: "please fill all reqired fields" })
+
+        let prevatt = await SampleSystem.findOne({ party: party, state: state, samples: samples, date: new Date(date) })
+        if (prevatt)
+            return res.status(500).json({ message: 'sample exists already for the same date' })
+        let att = await new SampleSystem({
+            date: new Date(date),
+            party,
+            samples,
+            stage,
+            state,
+            created_at: new Date(),
+            updated_at: new Date(),
+            created_by: req.user,
+            updated_by: req.user
+        }).save()
+
+        return res.status(201).json(att)
+    }
+    public async UpdateSampleSystem(req: Request, res: Response, next: NextFunction) {
+        let {
+            party,
+            date,
+            samples,
+            stage,
+            state,
+
+        } = req.body as CreateOrEditSampleSystemDto
+
+        if (!party || !date || !state || !samples || !stage)
+            return res.status(400).json({ message: "please fill all reqired fields" })
 
 
+        const id = req.params.id
+        if (!isMongoId(id))
+            return res.status(400).json({ message: "not a valid request" })
+        let sample = await SampleSystem.findById(id)
+
+
+        if (!sample)
+            return res.status(404).json({ message: "attendance not exists" })
+
+        await SampleSystem.findByIdAndUpdate(sample._id,
+            {
+                party,
+                date,
+                samples,
+                stage,
+                state,
+                updated_at: new Date(),
+                updated_by: req.user
+            })
+        return res.status(200).json({ message: "sample updated" })
+    }
+    public async DeleteSampleSystem(req: Request, res: Response, next: NextFunction) {
+        const id = req.params.id
+        if (!id)
+            return res.status(400).json({ message: "not a valid request" })
+        let sample = await SampleSystem.findById(id)
+        if (!sample)
+            return res.status(404).json({ message: "sample not exists" })
+
+        await SampleSystem.findByIdAndDelete(sample._id)
+        return res.status(200).json({ message: "sample system removed" })
+    }
 }

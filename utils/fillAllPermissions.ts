@@ -1344,6 +1344,31 @@ export function FetchAllPermissions() {
                     }
                 ]
             },
+            {
+                label: 'Sample Update System',
+                permissions: [
+                    {
+                        value: 'sample_update_system_view',
+                        label: 'view'
+                    },
+                    {
+                        value: 'sample_update_system_create',
+                        label: 'create'
+                    },
+                    {
+                        value: 'sample_update_system_edit',
+                        label: 'edit'
+                    },
+                    {
+                        value: 'sample_update_system_delete',
+                        label: 'delete'
+                    },
+                    {
+                        value: 'sample_update_system_export',
+                        label: 'export'
+                    }
+                ]
+            },
 
             {
                 label: 'SalesMan Visit',

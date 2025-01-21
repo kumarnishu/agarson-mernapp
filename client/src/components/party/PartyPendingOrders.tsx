@@ -138,7 +138,7 @@ export default function PartyPendingOrders({ party }: { party: string }) {
         },
 
         enableDensityToggle: false, initialState: {
-            density: 'compact', pagination: { pageIndex: 0, pageSize: 2 }
+            density: 'compact', pagination: pagination
         },
         selectAllMode: 'all',
         enableBottomToolbar: true,
@@ -151,6 +151,7 @@ export default function PartyPendingOrders({ party }: { party: string }) {
         onColumnVisibilityChange: setColumnVisibility,
         onSortingChange: setSorting,
         onColumnSizingChange: setColumnSizing,
+        onPaginationChange: setPagination,
         state: {
             isLoading: isLoading,
             columnVisibility,

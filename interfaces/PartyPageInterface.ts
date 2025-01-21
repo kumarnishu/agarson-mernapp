@@ -10,6 +10,7 @@ export type IPartyRemark = {
     created_by: IUser,
     updated_by: IUser
 }
+
 export type IParty= {
     _id: string,
     party: string,
@@ -17,6 +18,21 @@ export type IParty= {
     city: string,
     state: string,
     customer:string,
+    created_at: Date,
+    updated_at: Date,
+    created_by: IUser,
+    updated_by: IUser
+}
+
+export type ISampleSystem={
+    _id:string
+    date:Date,
+    party:string,
+    state:string,
+    samples:string,
+    last_remark:string,
+    next_call:Date,
+    stage:string,
     created_at: Date,
     updated_at: Date,
     created_by: IUser,

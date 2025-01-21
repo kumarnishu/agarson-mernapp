@@ -34,3 +34,26 @@ export type CreateOrEditPartyRemarkDto = {
     nextcall?: string
 }
 
+export type PartyListDto={ party: string, state: string }
+
+export type GetSampleSystemDto={
+    _id:string
+    date:string,
+    party:string,
+    state:string,
+    samples:string,
+    last_remark:string,
+    next_call:string,
+    stage:string,
+    created_at: string,
+    updated_at: string,
+    created_by: DropDownDto,
+    updated_by: DropDownDto
+}
+export type CreateOrEditSampleSystemDto={
+    date:string,
+    party:string,
+    state:string,
+    samples:string,
+    stage:string
+}

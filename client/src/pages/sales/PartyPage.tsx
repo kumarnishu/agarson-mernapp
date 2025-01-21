@@ -10,12 +10,13 @@ import { CustomFilterFunction } from '../../components/filter/CustomFilterFuncti
 import ViewPartyDetailDialog from '../../components/dialogs/party/ViewPartyDetailDialog'
 import { PartyPageService } from '../../services/PartyPageService'
 import { PartyContext } from '../../contexts/partyContext'
+import { PartyListDto } from '../../dtos/PartyPageDto'
 
 
 export default function PartyPage() {
   const { setParty } = useContext(PartyContext)
-  const [parties, setParties] = useState<{ party: string }[]>([])
-  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<{ party: string }[]>, BackendError>(["parties"], async () => new PartyPageService().GetPartyList())
+  const [parties, setParties] = useState<PartyListDto[]>([])
+  const { data, isLoading, isSuccess } = useQuery<AxiosResponse<PartyListDto[]>, BackendError>(["parties"], async () => new PartyPageService().GetPartyList())
 
 
   const [dialog, setDialog] = useState<string | undefined>()
@@ -26,7 +27,7 @@ export default function PartyPage() {
 
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [columnSizing, setColumnSizing] = useState<MRT_ColumnSizingState>({})
-  const columns = useMemo<MRT_ColumnDef<{ party: string }>[]>(
+  const columns = useMemo<MRT_ColumnDef<PartyListDto>[]>(
     //column definitions...
     () => parties && [
 
@@ -34,12 +35,20 @@ export default function PartyPage() {
         accessorKey: 'party',
         header: 'Party Name',
         grow: false,
-        Cell: (cell) => <Typography sx={{cursor: 'pointer'}} onClick={() => {
+        Cell: (cell) => <Typography sx={{ cursor: 'pointer' }} onClick={() => {
           setParty(cell.row.original.party)
           setDialog('ViewPartyDetailDialog')
         }}>{cell.row.original.party ? cell.row.original.party : ""}</Typography>,
         filterFn: CustomFilterFunction,
         Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={parties.map((item) => { return item.party || "" })} />,
+      },
+      {
+        accessorKey: 'state',
+        header: 'State',
+        grow: false,
+        Cell: (cell) => <Typography  >{cell.row.original.state ? cell.row.original.state : ""}</Typography>,
+        filterFn: CustomFilterFunction,
+        Filter: (props) => <CustomColumFilter id={props.column.id} table={props.table} options={parties.map((item) => { return item.state || "" })} />,
       },
     ],
     [parties],
@@ -68,7 +77,7 @@ export default function PartyPage() {
         color: 'white'
       },
     }),
-   
+
     muiTableBodyCellProps: () => ({
       sx: {
         border: '1px solid #c2beba;',
@@ -177,7 +186,7 @@ export default function PartyPage() {
 
 
         <>
-          <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog}  />
+          <ViewPartyDetailDialog dialog={dialog} setDialog={setDialog} />
         </>
 
 

@@ -1,9 +1,9 @@
-import { CreateOrEditPartyRemarkDto, GetPartyRemarkDto } from "../dtos/PartyPageDto";
+import { CreateOrEditPartyRemarkDto, CreateOrEditSampleSystemDto, GetPartyRemarkDto, GetSampleSystemDto } from "../dtos/PartyPageDto";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 export class PartyPageService {
 
-  
+
   public async GetPartyAgeing1(party: string) {
     return await apiClient.get(`partypage/ageing1/?party=${encodeURIComponent(party)}`)
   }
@@ -19,11 +19,11 @@ export class PartyPageService {
   public async GetStockSellerParties() {
     return await apiClient.get(`stocksellers`)
   }
-  
+
   public async GetPartyPendingOrders(party: string) {
     return await apiClient.get(`partypage/orders/?party=${encodeURIComponent(party)}`)
   }
-    
+
   public async GetPartyMobile(party: string) {
     return await apiClient.get(`mobile/?party=${encodeURIComponent(party)}`)
   }
@@ -49,6 +49,17 @@ export class PartyPageService {
   }
   public async GetPartyList() {
     return await apiClient.get(`partypage/list`)
+  }
+  public async GetSampleSystems() {
+    return await apiClient.get(`sample-system`)
+  }
+  public async CreateOrEditSampleSystems({ sample, body }: { sample?: GetSampleSystemDto, body: CreateOrEditSampleSystemDto }) {
+    if (sample)
+      return await apiClient.put(`sample-system/${sample._id}`, body)
+    return await apiClient.post(`sample-system/`, body)
+  }
+  public async DeleteSampleSystem(id: string) {
+    return await apiClient.delete(`sample-system/:${id}`)
   }
 }
 
