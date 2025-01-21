@@ -1,7 +1,7 @@
 import { Button, Checkbox, CircularProgress, FormControlLabel, FormGroup, Stack, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { useFormik } from 'formik';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import * as Yup from "yup"
 import { BackendError } from '../../..';
@@ -9,12 +9,12 @@ import { queryClient } from '../../../main';
 import moment from 'moment';
 import { AlertContext } from '../../../contexts/alertContext';
 import { PartyPageService } from '../../../services/PartyPageService';
-import { CreateOrEditSampleSystemDto, GetSampleSystemDto, PartyListDto } from '../../../dtos/PartyPageDto'; 
+import { CreateOrEditSampleSystemDto, GetSampleSystemDto, PartyListDto } from '../../../dtos/PartyPageDto';
+import { onlyUnique } from '../../../utils/UniqueArray';
 
-function CreateOrEditSampleSystem({ sample, setDialog }: { sample?: GetSampleSystemDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+function CreateOrEditSampleSystemForm({ sample, setDialog }: { sample?: GetSampleSystemDto, setDialog: React.Dispatch<React.SetStateAction<string | undefined>> }) {
     const { setAlert } = useContext(AlertContext)
     const { data: parties } = useQuery<AxiosResponse<PartyListDto[]>, BackendError>("parties", async () => new PartyPageService().GetPartyList())
-    const [otherparty, setOtherParty] = useState(false)
     const { mutate, isLoading, isSuccess } = useMutation<AxiosResponse<GetSampleSystemDto>, BackendError, {
         sample?: GetSampleSystemDto,
         body: CreateOrEditSampleSystemDto
@@ -24,14 +24,14 @@ function CreateOrEditSampleSystem({ sample, setDialog }: { sample?: GetSampleSys
             setAlert({ message: sample ? "updated" : "created", color: 'success' })
         },
         onError: (error) => setAlert({ message: error.response.data.message || "an error ocurred", color: 'error' })
-    
-    })
 
+    })
 
     const formik = useFormik({
         initialValues: {
             date: sample ? moment(sample.date).format("YYYY-MM-DD") : moment(new Date()).format("YYYY-MM-DD"),
             party: sample ? sample.party : '',
+            otherparty: sample?.otherparty || false,
             state: sample ? sample.state : "",
             samples: sample ? sample.samples : "",
             stage: sample ? sample.stage : 'pending',
@@ -39,6 +39,7 @@ function CreateOrEditSampleSystem({ sample, setDialog }: { sample?: GetSampleSys
         validationSchema: Yup.object({
             party: Yup.string()
                 .required('Required field'),
+            otherparty: Yup.boolean(),
             state: Yup.string()
                 .required('Required field'),
             samples: Yup.string().required(),
@@ -60,6 +61,13 @@ function CreateOrEditSampleSystem({ sample, setDialog }: { sample?: GetSampleSys
         }
     });
 
+
+    useEffect(() => {
+        if (formik.values.otherparty)
+            formik.values.party = ""
+
+    }, [formik.values.otherparty])
+
     useEffect(() => {
         if (isSuccess) {
             setDialog(undefined)
@@ -74,10 +82,8 @@ function CreateOrEditSampleSystem({ sample, setDialog }: { sample?: GetSampleSys
                 pt={2}
             >
 
-                {otherparty ? <TextField
+                {formik.values.otherparty ? <TextField
                     fullWidth
-                    multiline
-                    minRows={4}
                     error={
                         formik.touched.party && formik.errors.party ? true : false
                     }
@@ -116,29 +122,12 @@ function CreateOrEditSampleSystem({ sample, setDialog }: { sample?: GetSampleSys
                     }
                 </TextField>}
 
-                {new Date(formik.values.date).getDay() == 0 && <FormGroup>
+                <FormGroup>
                     <FormControlLabel control={<Checkbox
-                        checked={otherparty}
-                        onChange={() => setOtherParty(!otherparty)}
+                        checked={formik.values.otherparty}
+                        {...formik.getFieldProps('otherparty')}
                     />} label="Other Party" />
-                </FormGroup>}
-
-                < TextField
-                    type="date"
-                    focused
-                    error={
-                        formik.touched.date && formik.errors.date ? true : false
-                    }
-                    disabled={sample ? true : false}
-                    id="date"
-                    label="Date"
-                    fullWidth
-                    required
-                    helperText={
-                        formik.touched.date && formik.errors.date ? formik.errors.date : ""
-                    }
-                    {...formik.getFieldProps('date')}
-                />
+                </FormGroup>
                 < TextField
                     select
                     SelectProps={{
@@ -156,10 +145,11 @@ function CreateOrEditSampleSystem({ sample, setDialog }: { sample?: GetSampleSys
                     label="Select State"
                     fullWidth
                 >
-                    <option key={'00'} value={undefined}>
+                    <option key={'00'} value={sample?.party || ""}>
+                        {sample?.party || ""}
                     </option>
                     {
-                        parties && parties.data && parties.data.map((party, index) => {
+                        parties && parties.data && parties.data.filter(onlyUnique).map((party, index) => {
                             return (<option key={index} value={party.state}>
                                 {party.state}
                             </option>)
@@ -167,6 +157,37 @@ function CreateOrEditSampleSystem({ sample, setDialog }: { sample?: GetSampleSys
                         })
                     }
                 </TextField>
+                < TextField
+                    type="date"
+                    focused
+                    error={
+                        formik.touched.date && formik.errors.date ? true : false
+                    }
+                    id="date"
+                    label="Date"
+                    fullWidth
+                    required
+                    helperText={
+                        formik.touched.date && formik.errors.date ? formik.errors.date : ""
+                    }
+                    {...formik.getFieldProps('date')}
+                />
+                < TextField
+                    focused
+                    error={
+                        formik.touched.samples && formik.errors.samples ? true : false
+                    }
+                    multiline
+                    rows={4}
+                    id="samples"
+                    label="Samples"
+                    fullWidth
+                    required
+                    helperText={
+                        formik.touched.samples && formik.errors.samples ? formik.errors.samples : ""
+                    }
+                    {...formik.getFieldProps('samples')}
+                />
                 < TextField
                     select
                     SelectProps={{
@@ -187,8 +208,8 @@ function CreateOrEditSampleSystem({ sample, setDialog }: { sample?: GetSampleSys
                     <option key={'pending'} value={'pending'}>
                         Pending
                     </option>
-                    <option key={'approved'} value={'approved'}>
-                        Approved
+                    <option key={'ordered'} value={'ordered'}>
+                        Ordered
                     </option>
                     <option key={'rejected'} value={'rejected'}>
                         Rejected
@@ -203,4 +224,4 @@ function CreateOrEditSampleSystem({ sample, setDialog }: { sample?: GetSampleSys
     )
 }
 
-export default CreateOrEditSampleSystem
+export default CreateOrEditSampleSystemForm

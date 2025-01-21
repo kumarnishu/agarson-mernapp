@@ -91,7 +91,7 @@ import AgeingPage from './pages/sales/AgeingPage.tsx'
 import SharedAgeingpage from './pages/excel reports/SharedAgeingpage.tsx'
 import PartyPage from './pages/sales/PartyPage.tsx'
 import ArticleStockSellerPage from './components/party/ArticleStockSellerPage.tsx'
-import SampleUpdateSystem from './pages/sales/SampleUpdateSystem.tsx'
+import SampleUpdateSystemPage from './pages/sales/SampleUpdateSystemPage.tsx'
 
 
 function AppRoutes() {
@@ -463,7 +463,7 @@ function AppRoutes() {
 
               {user?.assigned_permissions.includes('sample_update_system_view') && <Route
                 path="SampleUpdate" element={
-                  <SampleUpdateSystem />
+                  <SampleUpdateSystemPage />
                 }
               />}
               {user?.assigned_permissions.includes('salesman_visit_view') && <Route

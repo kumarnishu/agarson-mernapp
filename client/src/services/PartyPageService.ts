@@ -1,4 +1,5 @@
 import { CreateOrEditPartyRemarkDto, CreateOrEditSampleSystemDto, GetPartyRemarkDto, GetSampleSystemDto } from "../dtos/PartyPageDto";
+import { CreateOrEditSampleRemarkDto, GetSampleSystemRemarkDto } from "../dtos/RemarkDto";
 import { apiClient } from "./utils/AxiosInterceptor";
 
 export class PartyPageService {
@@ -39,7 +40,8 @@ export class PartyPageService {
     if (!remark) {
       return await apiClient.post(`partypage/remarks`, body)
     }
-    return await apiClient.put(`partypage/remarks/${remark._id}`, body)
+    else
+      return await apiClient.put(`partypage/remarks/${remark._id}`, body)
   }
   public async DeletePartyRemark(id: string) {
     return await apiClient.delete(`partypage/remarks/${id}`)
@@ -50,8 +52,8 @@ export class PartyPageService {
   public async GetPartyList() {
     return await apiClient.get(`partypage/list`)
   }
-  public async GetSampleSystems() {
-    return await apiClient.get(`sample-system`)
+  public async GetSampleSystems({ start_date, end_date, hidden }: { start_date?: string, end_date?: string, hidden: boolean }) {
+    return await apiClient.get(`sample-system/?start_date=${start_date}&end_date=${end_date}&hidden=${hidden}`)
   }
   public async CreateOrEditSampleSystems({ sample, body }: { sample?: GetSampleSystemDto, body: CreateOrEditSampleSystemDto }) {
     if (sample)
@@ -59,7 +61,24 @@ export class PartyPageService {
     return await apiClient.post(`sample-system/`, body)
   }
   public async DeleteSampleSystem(id: string) {
-    return await apiClient.delete(`sample-system/:${id}`)
+    return await apiClient.delete(`sample-system/${id}`)
   }
+
+  public async CreateOrEditSampleRemark({ body, remark }: {
+    body: CreateOrEditSampleRemarkDto,
+    remark?: GetSampleSystemRemarkDto
+
+  }) {
+    if (remark)
+      return await apiClient.put(`sample-system/remarks/${remark._id}`, body)
+    return await apiClient.post(`sample-system/remarks`, body)
+  }
+  public async DeleteSampleRemark(id: string) {
+    return await apiClient.delete(`sample-system/remarks/${id}`)
+  }
+  public async GetSampleRemarksHistory(id: string) {
+    return await apiClient.get(`sample-system/remarks/${id}`)
+  }
+
 }
 

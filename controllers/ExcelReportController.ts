@@ -1,18 +1,14 @@
 import xlsx from "xlsx"
-import { NextFunction, Request, Response, Router } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { decimalToTimeForXlsx, excelSerialToDate, invalidate, parseExcelDate } from "../utils/datesHelper";
 import moment from "moment";
-import isMongoId from "validator/lib/isMongoId";
-import { CreateOrEditExcelDbRemarkDto } from "../dtos/ExcelReportDto";
 import { IColumnRowData, IRowData } from "../dtos/SalesDto";
 import { IKeyCategory, ICRMState } from "../interfaces/AuthorizationInterface";
-import { IExcelDBRemark } from "../interfaces/ExcelReportInterface";
 import { IUser } from "../interfaces/UserInterface";
 import { KeyCategory, Key } from "../models/AuthorizationModel";
-import { ExcelDB, ExcelDBRemark } from "../models/ExcelReportModel";
+import { ExcelDB } from "../models/ExcelReportModel";
 import { VisitReport } from "../models/SalesModel";
 import { User } from "../models/UserModel";
-import { GetExcelDBRemarksDto } from "../dtos/ExcelReportDto";
 import { IPartyRemark } from "../interfaces/PartyPageInterface";
 import { PartyRemark } from "../models/PartPageModel";
 
@@ -234,7 +230,6 @@ export class ExcelReportController {
         return res.status(200).json(result)
     }
 
-
     static async SaveVisistReports(user: IUser) {
         let salesman: IUser[] = []
         salesman = await User.find({ assigned_permissions: 'sales_menu' })
@@ -357,91 +352,5 @@ export class ExcelReportController {
         else
             return res.status(200).json([]);
     }
-
-
-
-    public async UpdateExcelDBRemark(req: Request, res: Response, next: NextFunction) {
-        const { remark, next_date } = req.body as CreateOrEditExcelDbRemarkDto
-        if (!remark) return res.status(403).json({ message: "please fill required fields" })
-
-        const id = req.params.id;
-        if (!isMongoId(id)) return res.status(403).json({ message: "id not valid" })
-        let rremark = await ExcelDBRemark.findById(id)
-        if (!rremark) {
-            return res.status(404).json({ message: "remark not found" })
-        }
-        rremark.remark = remark
-        if (next_date)
-            rremark.next_date = new Date(next_date)
-        await rremark.save()
-        return res.status(200).json({ message: "remark updated successfully" })
-    }
-
-    public async DeleteExcelDBRemark(req: Request, res: Response, next: NextFunction) {
-        const id = req.params.id;
-        if (!isMongoId(id)) return res.status(403).json({ message: "id not valid" })
-        let rremark = await ExcelDBRemark.findById(id)
-        if (!rremark) {
-            return res.status(404).json({ message: "remark not found" })
-        }
-        await rremark.remove()
-        return res.status(200).json({ message: " remark deleted successfully" })
-    }
-
-
-    public async GetExcelDBRemarkHistory(req: Request, res: Response, next: NextFunction) {
-        const id = req.params.id;
-        const obj = req.query.obj
-        let remarks: IExcelDBRemark[] = []
-        let result: GetExcelDBRemarksDto[] = []
-
-        if (!isMongoId(id)) return res.status(400).json({ message: "id not valid" })
-        if (!obj) return res.status(404).json({ message: "obj not found" })
-
-        remarks = await ExcelDBRemark.find({ category: id, obj: String(obj).trim().toLowerCase() }).populate('category').populate('created_by').sort('-created_at')
-
-        result = remarks.map((r) => {
-            return {
-                _id: r._id,
-                remark: r.remark,
-                obj: r.obj,
-                category: { id: r.category._id, value: r.category.category, label: r.category.category },
-                next_date: r.next_date ? moment(r.next_date).format('DD/MM/YYYY') : "",
-                created_date: r.created_at.toString(),
-                created_by: r.created_by.username
-            }
-        })
-        return res.json(result)
-    }
-
-    public async NewExcelDBRemark(req: Request, res: Response, next: NextFunction) {
-        const {
-            remark,
-            category,
-            obj,
-            next_date } = req.body as CreateOrEditExcelDbRemarkDto
-        if (!remark || !category || !obj) return res.status(403).json({ message: "please fill required fields" })
-
-        let categoryObj = await KeyCategory.findById(category)
-        if (!category) {
-            return res.status(404).json({ message: "category not found" })
-        }
-
-        let new_remark = new ExcelDBRemark({
-            remark,
-            obj,
-            category: categoryObj,
-            created_at: new Date(Date.now()),
-            created_by: req.user,
-            updated_at: new Date(Date.now()),
-            updated_by: req.user
-        })
-        if (next_date)
-            new_remark.next_date = new Date(next_date)
-        await new_remark.save()
-        return res.status(200).json({ message: "remark added successfully" })
-    }
-
-
 
 }

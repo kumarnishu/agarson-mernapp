@@ -40,9 +40,9 @@ const SampleSystemSchema = new mongoose.Schema<ISampleSystem, mongoose.Model<ISa
     stage: { type: String, required: true, default: 'pending' },
     last_remark: {
         type: String,
-        lowercase: true,
-        required: true
+        lowercase: true
     },
+    otherparty: { type: Boolean, default: false },
     next_call: Date,
     created_at: {
         type: Date,

@@ -27,6 +27,7 @@ export type IParty= {
 export type ISampleSystem={
     _id:string
     date:Date,
+    otherparty:boolean,
     party:string,
     state:string,
     samples:string,

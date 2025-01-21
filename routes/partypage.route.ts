@@ -19,6 +19,6 @@ router.route("/partypage/remarks").get(isAuthenticatedUser, controller.GetPartyL
 router.route("/partypage/remarks/:id").put(isAuthenticatedUser, controller.UpdatePartyRemark).delete(isAuthenticatedUser, controller.DeletePartyRemark)
 
 router.route("/sample-system").get(isAuthenticatedUser, controller.GetSampleSytems).post(isAuthenticatedUser, controller.CreateSampleSystem)
-router.route("/sample-system/:id").get(isAuthenticatedUser, controller.UpdateSampleSystem).delete(isAuthenticatedUser, controller.DeleteSampleSystem)
+router.route("/sample-system/:id").put(isAuthenticatedUser, controller.UpdateSampleSystem).delete(isAuthenticatedUser, controller.DeleteSampleSystem)
 
 export default router

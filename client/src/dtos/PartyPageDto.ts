@@ -37,8 +37,9 @@ export type CreateOrEditPartyRemarkDto = {
 export type PartyListDto={ party: string, state: string }
 
 export type GetSampleSystemDto={
-    _id:string
+    _id:string,
     date:string,
+    otherparty:boolean,
     party:string,
     state:string,
     samples:string,
@@ -53,6 +54,7 @@ export type GetSampleSystemDto={
 export type CreateOrEditSampleSystemDto={
     date:string,
     party:string,
+    otherparty:boolean,
     state:string,
     samples:string,
     stage:string

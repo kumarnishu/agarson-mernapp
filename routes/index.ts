@@ -34,7 +34,7 @@ import PaymentCategoryRoutes from "./payment-category.routes"
 import KeyRoutes from "./key.routes"
 import KeyCategoryRoutes from "./key-category.routes"
 import ExcelDBRoutes from "./excel-db.routes"
-import ExcelDBRemarkRoutes from "./excel-db-remarks.routes"
+import RemarkRoutes from "./remarks.routes"
 import VisitRemarkRoutes from "./visist-remark.routes"
 import ExpenseCategoryRoutes from "./expense-category.route"
 import ExpenseLocationRoutes from "./expense-location.route"
@@ -89,7 +89,7 @@ router.use(PaymentRoutes)
 router.use(KeyRoutes)
 router.use(KeyCategoryRoutes)
 router.use(ExcelDBRoutes)
-router.use(ExcelDBRemarkRoutes)
+router.use(RemarkRoutes)
 router.use(VisitRemarkRoutes)
 router.use(AttendancesRoutes)
 router.use(ExpenseCategoryRoutes)

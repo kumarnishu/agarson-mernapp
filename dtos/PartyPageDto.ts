@@ -40,6 +40,7 @@ export type GetSampleSystemDto={
     _id:string,
     date:string,
     party:string,
+    otherparty:boolean,
     state:string,
     samples:string,
     last_remark:string,
@@ -53,6 +54,7 @@ export type GetSampleSystemDto={
 export type CreateOrEditSampleSystemDto={
     date:string,
     party:string,
+    otherparty:boolean,
     state:string,
     samples:string,
     stage:string

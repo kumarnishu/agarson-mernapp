@@ -12,7 +12,7 @@ import isMongoId from 'validator/lib/isMongoId';
 import { Party, PartyRemark, SampleSystem } from '../models/PartPageModel';
 import { IPartyRemark, ISampleSystem } from '../interfaces/PartyPageInterface';
 import { User } from '../models/UserModel';
-import { IUser } from '../interfaces/UserInterface';
+import { SampleSystemRemark } from '../models/RemarksModel';
 
 
 export class PartyPageController {
@@ -645,20 +645,29 @@ export class PartyPageController {
         let result: GetSampleSystemDto[] = []
         let start_date = req.query.start_date
         let end_date = req.query.end_date
+        let hidden = req.query.hidden
         let dt1 = new Date(String(start_date))
         let dt2 = new Date(String(end_date))
+        let dt11 = new Date()
+        dt11.setDate(dt11.getDate() + 1)
+        dt11.setHours(0, 0, 0, 0)
         attendances = await SampleSystem.find({ date: { $gte: dt1, $lt: dt2 } }).populate('created_by').populate('updated_by').sort('-date')
+        if (hidden && hidden !== 'true') {
+            attendances = attendances.filter((A) => { return !A.next_call || A.next_call < dt11 })
+        }
+
         result = attendances.map((p) => {
             return {
                 _id: p._id,
                 party: p.party,
+                otherparty: p.otherparty,
                 state: p.state,
                 stage: p.stage,
                 last_remark: p.last_remark,
                 next_call: p.next_call && moment(p.next_call).format("DD/MM/YYYY"),
                 samples: p.samples,
                 date: p.date && moment(p.date).format("DD/MM/YYYY"),
-                created_at: p.created_at && moment(p.created_at).format("DD/MM/YYYY"),
+                created_at: p.created_at.toString(),
                 updated_at: p.updated_at && moment(p.updated_at).format("DD/MM/YYYY"),
                 created_by: { id: p.created_by._id, value: p.created_by.username, label: p.created_by.username },
                 updated_by: { id: p.updated_by._id, value: p.updated_by.username, label: p.updated_by.username }
@@ -671,6 +680,7 @@ export class PartyPageController {
             date,
             party,
             samples,
+            otherparty,
             stage,
             state,
 
@@ -686,6 +696,7 @@ export class PartyPageController {
             date: new Date(date),
             party,
             samples,
+            otherparty,
             stage,
             state,
             created_at: new Date(),
@@ -701,6 +712,7 @@ export class PartyPageController {
             party,
             date,
             samples,
+            otherparty,
             stage,
             state,
 
@@ -722,9 +734,10 @@ export class PartyPageController {
         await SampleSystem.findByIdAndUpdate(sample._id,
             {
                 party,
-                date,
+                date: new Date(date),
                 samples,
                 stage,
+                otherparty,
                 state,
                 updated_at: new Date(),
                 updated_by: req.user
@@ -740,6 +753,7 @@ export class PartyPageController {
             return res.status(404).json({ message: "sample not exists" })
 
         await SampleSystem.findByIdAndDelete(sample._id)
+        await SampleSystemRemark.deleteMany({ sample: id })
         return res.status(200).json({ message: "sample system removed" })
     }
 }
