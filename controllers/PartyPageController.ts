@@ -48,7 +48,7 @@ export class PartyPageController {
         if (req.user.is_admin) {
             data = await ExcelDB.find({
                 category: cat._id
-            }).populate('key').sort('created_at')
+            }).populate('key')
         }
         else
             data = await ExcelDB.find({
@@ -101,7 +101,16 @@ export class PartyPageController {
             if (row)
                 return row
         }) as IRowData[]
-        result = rows.map((r) => { return { party: r['Account Name'], state: r["Sales Representative"] } })
+        result = rows
+            .map((r) => {
+                return { party: r['Account Name'], state: r["Sales Representative"] };
+            })
+            .sort((a, b) => {
+                // Sorting by 'party' (Account Name) in ascending order
+                if (a.party < b.party) return -1;
+                if (a.party > b.party) return 1;
+                return 0;
+            });
         return res.status(200).json(result)
     }
 
